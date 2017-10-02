@@ -8,7 +8,7 @@ import rx.Observable;
  * Created by zulfikarrahman on 9/20/17.
  */
 
-public interface ActionManageProductRepository {
+public interface ActionProductManageRepository {
     Observable<Boolean> editPrice(TKPDMapParam<String, String> params);
 
     Observable<Boolean> deleteProduct(TKPDMapParam<String, String> params);

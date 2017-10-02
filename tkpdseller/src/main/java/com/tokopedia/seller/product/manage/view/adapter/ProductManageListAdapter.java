@@ -14,7 +14,7 @@ import java.util.List;
  * Created by zulfikarrahman on 9/25/17.
  */
 
-public class ManageProductListAdapter extends BaseListAdapter<ProductManageViewModel> implements ManageProductListViewHolder.ClickOptionCallbackHolder {
+public class ProductManageListAdapter extends BaseListAdapter<ProductManageViewModel> implements ProductManageListViewHolder.ClickOptionCallbackHolder {
 
     public interface ClickOptionCallback{
         void onClickOptionItem(ProductManageViewModel productManageViewModel);
@@ -24,7 +24,7 @@ public class ManageProductListAdapter extends BaseListAdapter<ProductManageViewM
 
     private List<String> featuredProduct;
 
-    public ManageProductListAdapter() {
+    public ProductManageListAdapter() {
         featuredProduct = new ArrayList<>();
     }
 
@@ -32,10 +32,10 @@ public class ManageProductListAdapter extends BaseListAdapter<ProductManageViewM
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case ProductManageViewModel.TYPE:
-                ManageProductListViewHolder manageProductListViewHolder = new ManageProductListViewHolder(
+                ProductManageListViewHolder productManageListViewHolder = new ProductManageListViewHolder(
                         getLayoutView(parent, R.layout.item_manage_product_list));
-                manageProductListViewHolder.setClickOptionCallbackHolder(this);
-                return manageProductListViewHolder;
+                productManageListViewHolder.setClickOptionCallbackHolder(this);
+                return productManageListViewHolder;
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -44,7 +44,7 @@ public class ManageProductListAdapter extends BaseListAdapter<ProductManageViewM
     @Override
     protected void bindData(int position, RecyclerView.ViewHolder viewHolder) {
         super.bindData(position, viewHolder);
-        ((ManageProductListViewHolder)viewHolder).bindFeaturedProduct(isFeaturedProduct(data.get(position).getProductId()));
+        ((ProductManageListViewHolder)viewHolder).bindFeaturedProduct(isFeaturedProduct(data.get(position).getProductId()));
     }
 
     public void setClickOptionCallback(ClickOptionCallback clickOptionCallback) {

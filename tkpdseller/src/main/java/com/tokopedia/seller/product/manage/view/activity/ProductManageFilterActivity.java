@@ -5,17 +5,16 @@ import android.support.v4.content.ContextCompat;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.manage.view.fragment.FilterManageProductFragment;
-import com.tokopedia.seller.product.manage.view.fragment.SortManageProductFragment;
+import com.tokopedia.seller.product.manage.view.fragment.ProductManageFilterFragment;
 
 /**
  * Created by zulfikarrahman on 9/26/17.
  */
 
-public class FilterManageProductActivity extends BaseSimpleActivity {
+public class ProductManageFilterActivity extends BaseSimpleActivity {
     @Override
     protected Fragment getNewFragment() {
-        return new FilterManageProductFragment();
+        return new ProductManageFilterFragment();
     }
 
     @Override

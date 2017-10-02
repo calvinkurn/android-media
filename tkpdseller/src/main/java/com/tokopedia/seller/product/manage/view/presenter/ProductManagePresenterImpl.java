@@ -10,7 +10,7 @@ import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.domain.DeleteProductUseCase;
 import com.tokopedia.seller.product.manage.domain.EditPriceProductUseCase;
-import com.tokopedia.seller.product.manage.view.listener.ManageProductView;
+import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
 import com.tokopedia.seller.product.manage.view.mapper.GetProductListManageMapperView;
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
@@ -24,7 +24,7 @@ import rx.Subscriber;
  * Created by zulfikarrahman on 9/22/17.
  */
 
-public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProductView> implements ManageProductPresenter {
+public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManageView> implements ProductManagePresenter {
 
     private final GetProductListSellingUseCase getProductListSellingUseCase;
     private final EditPriceProductUseCase editPriceProductUseCase;
@@ -32,7 +32,7 @@ public class ManageProductPresenterImpl extends BaseDaggerPresenter<ManageProduc
     private final GetProductListManageMapperView getProductListManageMapperView;
     private final SellerModuleRouter sellerModuleRouter;
 
-    public ManageProductPresenterImpl(GetProductListSellingUseCase getProductListSellingUseCase,
+    public ProductManagePresenterImpl(GetProductListSellingUseCase getProductListSellingUseCase,
                                       EditPriceProductUseCase editPriceProductUseCase,
                                       DeleteProductUseCase deleteProductUseCase,
                                       GetProductListManageMapperView getProductListManageMapperView,

@@ -6,7 +6,6 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.common.constant.ProductNetworkConstant;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 
 import javax.inject.Inject;
 
@@ -17,18 +16,18 @@ import rx.Observable;
  */
 
 public class DeleteProductUseCase extends UseCase<Boolean> {
-    private ActionManageProductRepository actionManageProductRepository;
+    private ActionProductManageRepository actionProductManageRepository;
 
     @Inject
     public DeleteProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                   ActionManageProductRepository actionManageProductRepository) {
+                                   ActionProductManageRepository actionProductManageRepository) {
         super(threadExecutor, postExecutionThread);
-        this.actionManageProductRepository = actionManageProductRepository;
+        this.actionProductManageRepository = actionProductManageRepository;
     }
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return actionManageProductRepository.deleteProduct(requestParams.getParamsAllValueInString());
+        return actionProductManageRepository.deleteProduct(requestParams.getParamsAllValueInString());
     }
 
     public static RequestParams createRequestParams(String productId){

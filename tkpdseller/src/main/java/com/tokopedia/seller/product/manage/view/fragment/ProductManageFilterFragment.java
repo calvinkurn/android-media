@@ -18,7 +18,7 @@ import com.tokopedia.seller.common.widget.LabelView;
  * Created by zulfikarrahman on 9/26/17.
  */
 
-public class FilterManageProductFragment extends TkpdBaseV4Fragment {
+public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
 
     private LabelView etalase;
     private LabelView category;

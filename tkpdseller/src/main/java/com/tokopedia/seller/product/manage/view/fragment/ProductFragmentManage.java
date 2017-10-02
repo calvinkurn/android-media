@@ -20,13 +20,13 @@ import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListe
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
-import com.tokopedia.seller.product.manage.di.DaggerManageProductComponent;
-import com.tokopedia.seller.product.manage.di.ManageProductModule;
-import com.tokopedia.seller.product.manage.view.adapter.ManageProductListAdapter;
-import com.tokopedia.seller.product.manage.view.listener.ManageProductView;
+import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
+import com.tokopedia.seller.product.manage.di.ProductManageModule;
+import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
+import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
 import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
-import com.tokopedia.seller.product.manage.view.presenter.ManageProductPresenter;
+import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
 
 import java.util.List;
 
@@ -36,11 +36,11 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 9/22/17.
  */
 
-public class ManageProductFragment extends BaseSearchListFragment<ManageProductPresenter, ProductManageViewModel>
-        implements ManageProductView, ManageProductListAdapter.ClickOptionCallback {
+public class ProductFragmentManage extends BaseSearchListFragment<ProductManagePresenter, ProductManageViewModel>
+        implements ProductManageView, ProductManageListAdapter.ClickOptionCallback {
 
     @Inject
-    ManageProductPresenter manageProductPresenter;
+    ProductManagePresenter productManagePresenter;
 
     private ProgressDialog progressDialog;
 
@@ -50,12 +50,12 @@ public class ManageProductFragment extends BaseSearchListFragment<ManageProductP
     @Override
     protected void initInjector() {
         super.initInjector();
-        DaggerManageProductComponent.builder()
-                .manageProductModule(new ManageProductModule())
+        DaggerProductManageComponent.builder()
+                .manageProductModule(new ProductManageModule())
                 .productComponent(getComponent(ProductComponent.class))
                 .build()
                 .inject(this);
-        manageProductPresenter.attachView(this);
+        productManagePresenter.attachView(this);
     }
 
     @Override
@@ -79,17 +79,17 @@ public class ManageProductFragment extends BaseSearchListFragment<ManageProductP
 
     @Override
     protected BaseListAdapter<ProductManageViewModel> getNewAdapter() {
-        ManageProductListAdapter manageProductListAdapter = new ManageProductListAdapter();
-        manageProductListAdapter.setClickOptionCallback(this);
-        return manageProductListAdapter;
+        ProductManageListAdapter productManageListAdapter = new ProductManageListAdapter();
+        productManageListAdapter.setClickOptionCallback(this);
+        return productManageListAdapter;
     }
 
     @Override
     protected void searchForPage(int page) {
         if(page == getStartPage()){
-            manageProductPresenter.getListFeaturedProduct();
+            productManagePresenter.getListFeaturedProduct();
         }
-        manageProductPresenter.getListProduct(page, keywordFilter);
+        productManagePresenter.getListProduct(page, keywordFilter);
         hasNextPage = false;
     }
 
@@ -137,7 +137,7 @@ public class ManageProductFragment extends BaseSearchListFragment<ManageProductP
     @Override
     public void onDestroy() {
         super.onDestroy();
-        manageProductPresenter.detachView();
+        productManagePresenter.detachView();
     }
 
     @Override
@@ -157,7 +157,7 @@ public class ManageProductFragment extends BaseSearchListFragment<ManageProductP
 
     @Override
     public void onGetFeaturedProductList(List<String> data) {
-        ((ManageProductListAdapter)adapter).setFeaturedProduct(data);
+        ((ProductManageListAdapter)adapter).setFeaturedProduct(data);
         adapter.notifyDataSetChanged();
     }
 
@@ -213,7 +213,7 @@ public class ManageProductFragment extends BaseSearchListFragment<ManageProductP
         alertDialog.setPositiveButton(R.string.title_save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                manageProductPresenter.editPrice(productId, String.valueOf(priceInputView.getCounterValue()), priceInputView.getSpinnerValue());
+                productManagePresenter.editPrice(productId, String.valueOf(priceInputView.getCounterValue()), priceInputView.getSpinnerValue());
             }
         });
         alertDialog.setNegativeButton(R.string.title_cancel, null);
@@ -227,7 +227,7 @@ public class ManageProductFragment extends BaseSearchListFragment<ManageProductP
         alertDialog.setPositiveButton(R.string.label_delete, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                manageProductPresenter.deleteProduct(productId);
+                productManagePresenter.deleteProduct(productId);
             }
         });
         alertDialog.setNegativeButton(R.string.title_cancel, null);
