@@ -49,6 +49,11 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     }
 
     @Override
+    public void setCashback(String productId, String cashback) {
+        sellerModuleRouter.setCashBack(productId, cashback).subscribe(getSubscriberSetCashback());
+    }
+
+    @Override
     public void deleteListProduct(List<String> productIds) {
         multipleDeleteProductUseCase.execute(MultipleDeleteProductUseCase.createRequestParams(productIds), getSubscriberDeleteProduct());
     }
@@ -175,11 +180,39 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         return productIds;
     }
 
+
+
+    private Subscriber<Boolean> getSubscriberSetCashback() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()){
+                    getView().onErrorSetCashback();
+                }
+            }
+
+            @Override
+            public void onNext(Boolean isSuccess) {
+                if(isSuccess){
+                    getView().onSuccessSetCashback();
+                }else{
+                    getView().onErrorSetCashback();
+                }
+            }
+        };
+    }
+
     @Override
     public void detachView() {
         super.detachView();
         getProductListSellingUseCase.unsubscribe();
         editPriceProductUseCase.unsubscribe();
         deleteProductUseCase.unsubscribe();
+        multipleDeleteProductUseCase.unsubscribe();
     }
 }

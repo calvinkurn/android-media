@@ -7,6 +7,10 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.gm.cashback.data.repository.GmCashbackRepositoryImpl;
+import com.tokopedia.gm.cashback.data.source.CashbackApi;
+import com.tokopedia.gm.cashback.data.source.GMCashbackDataSource;
+import com.tokopedia.gm.cashback.domain.GMCashbackRepository;
 import com.tokopedia.gm.featured.data.GMFeaturedProductDataSource;
 import com.tokopedia.gm.featured.data.cloud.api.GMFeaturedProductApi;
 import com.tokopedia.gm.featured.di.scope.GMFeaturedProductScope;
@@ -92,6 +96,18 @@ public class GMModule {
     @GMScope
     public ShopApi provideShopApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(ShopApi.class);
+    }
+
+    @Provides
+    @GMScope
+    public GMCashbackRepository provideCashbackRepository(GMCashbackDataSource gmCashbackDataSource){
+        return new GmCashbackRepositoryImpl(gmCashbackDataSource);
+    }
+
+    @Provides
+    @GMScope
+    public CashbackApi cashbackApi(@GoldMerchantQualifier Retrofit retrofit){
+        return retrofit.create(CashbackApi.class);
     }
 
 }

@@ -29,4 +29,8 @@ public interface ProductManageView extends CustomerView {
     void onGetFeaturedProductList(List<String> data);
 
     void onErrorGetFeaturedProductList();
+
+    void onErrorSetCashback();
+
+    void onSuccessSetCashback();
 }
