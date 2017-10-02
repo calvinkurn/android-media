@@ -5,7 +5,6 @@ import com.tokopedia.core.cache.data.source.cache.CacheApiVersionCache;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiDataManager;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
-import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 
 import java.util.Collection;
@@ -64,15 +63,15 @@ public class ApiCacheDataSource {
         });
     }
 
-    public Observable<CacheApiWhitelist> getWhiteList(final String host, final String path) {
+    public Observable<CacheApiWhitelist> getWhiteList(String host, String path) {
         return cacheApiDataManager.getWhiteList(host, path);
     }
 
-    public Observable<Boolean> isInWhiteList(final String host, final String path) {
+    public Observable<Boolean> isInWhiteList(String host, String path) {
         return cacheApiDataManager.isInWhiteList(host, path);
     }
 
-    public Observable<String> getCachedResponse(final String host, final String path, final String param) {
+    public Observable<String> getCachedResponse(String host, String path, String param) {
         return cacheApiDataManager.getCachedResponse(host, path, param);
     }
 
@@ -80,20 +79,20 @@ public class ApiCacheDataSource {
         return cacheApiDataManager.deleteAllCacheData();
     }
 
-    public Observable<Boolean> clearTimeout() {
-        return cacheApiDataManager.clearTimeout();
+    public Observable<Boolean> deleteExpiredCachedData() {
+        return cacheApiDataManager.deleteExpiredCachedData();
     }
 
     public Observable<Boolean> deleteCachedData(String host, String path) {
         return cacheApiDataManager.deleteCachedData(host, path);
     }
 
-    public Observable<Boolean> deleteWhiteList(final CacheApiWhiteListDomain cacheApiWhiteListDomain) {
-        return cacheApiDataManager.deleteWhiteList(cacheApiWhiteListDomain);
+    public Observable<Boolean> deleteWhiteList(String host, String path) {
+        return cacheApiDataManager.deleteWhiteList(host, path);
     }
 
     public Observable<Boolean> updateResponse(
-            final CacheApiData cacheApiData, final CacheApiWhitelist cacheApiWhitelist, final Response response) {
+            CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response) {
         return cacheApiDataManager.updateResponse(cacheApiData, cacheApiWhitelist, response);
     }
 }

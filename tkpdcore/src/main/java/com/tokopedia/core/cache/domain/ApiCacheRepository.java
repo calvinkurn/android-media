@@ -18,6 +18,10 @@ import rx.Observable;
 
 public interface ApiCacheRepository {
 
+    Observable<CacheApiWhitelist> getWhiteList(String host, String path);
+
+    Observable<Boolean> isInWhiteList(String host, String path);
+
     /**
      * bulk insert
      * {"ws.tokopedia.com","/konyol/coba.pl", 10},{"lucu.female.com","towel/doeng.pl", 100}
@@ -25,33 +29,28 @@ public interface ApiCacheRepository {
      * @param cacheApiWhiteListDomains
      * @return
      */
-    Observable<Boolean> bulkInsert(@Nullable Collection<CacheApiWhiteListDomain> cacheApiWhiteListDomains);
+    Observable<Boolean> insertWhiteList(@Nullable Collection<CacheApiWhiteListDomain> cacheApiWhiteListDomains);
 
     /**
      * bulk delete
      * {"ws.tokopedia.com","/konyol/coba.pl", 10},{"lucu.female.com","towel/doeng.pl", 100}
      *
-     * @param cacheApiWhiteListDomain
      * @return
      */
-    Observable<Boolean> singleDelete(@Nullable CacheApiWhiteListDomain cacheApiWhiteListDomain);
-
-    /**
-     * delete data stored at white list cache data
-     *
-     * @return true if delete operation success, false if param is null or data isn't available
-     */
-    Observable<Boolean> singleDataDelete(String host, String path);
-
-    Observable<Boolean> isInWhiteList(String host, String path);
-
-    Observable<Boolean> deleteAllCache();
-
-    Observable<Boolean> clearTimeout();
-
-    Observable<String> getCachedResponse(String host, String path, String requestParam);
+    Observable<Boolean> deleteWhiteList(String host, String path);
 
     Observable<Boolean> updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response);
 
-    Observable<CacheApiWhitelist> getWhiteList(String host, String path);
+    /**
+     * Delete cached data
+     *
+     * @return true if delete operation success, false if param is null or data isn't available
+     */
+    Observable<Boolean> deleteCachedData(String host, String path);
+
+    Observable<Boolean> deleteAllCacheData();
+
+    Observable<Boolean> deleteExpiredCachedData();
+
+    Observable<String> getCachedResponse(String host, String path, String requestParam);
 }

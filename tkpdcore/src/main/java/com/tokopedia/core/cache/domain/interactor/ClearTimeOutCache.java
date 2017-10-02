@@ -4,7 +4,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 
 import rx.Observable;
@@ -24,6 +23,6 @@ public class ClearTimeOutCache extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return apiCacheRepository.clearTimeout();
+        return apiCacheRepository.deleteExpiredCachedData();
     }
 }

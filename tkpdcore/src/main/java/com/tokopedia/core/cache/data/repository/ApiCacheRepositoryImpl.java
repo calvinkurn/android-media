@@ -1,7 +1,5 @@
 package com.tokopedia.core.cache.data.repository;
 
-import android.support.annotation.Nullable;
-
 import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
@@ -29,17 +27,17 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
     }
 
     @Override
-    public Observable<Boolean> bulkInsert(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
+    public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
         return apiCacheDataSource.bulkInsert(cacheApiDatas);
     }
 
     @Override
-    public Observable<Boolean> singleDelete(@Nullable CacheApiWhiteListDomain cacheApiWhiteListDomain) {
-        return apiCacheDataSource.deleteWhiteList(cacheApiWhiteListDomain);
+    public Observable<Boolean> deleteWhiteList(String host, String path) {
+        return apiCacheDataSource.deleteWhiteList(host, path);
     }
 
     @Override
-    public Observable<Boolean> singleDataDelete(String host, String path) {
+    public Observable<Boolean> deleteCachedData(String host, String path) {
         return apiCacheDataSource.deleteCachedData(host, path);
     }
 
@@ -54,13 +52,13 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
     }
 
     @Override
-    public Observable<Boolean> deleteAllCache() {
+    public Observable<Boolean> deleteAllCacheData() {
         return apiCacheDataSource.deleteAllCacheData();
     }
 
     @Override
-    public Observable<Boolean> clearTimeout() {
-        return apiCacheDataSource.clearTimeout();
+    public Observable<Boolean> deleteExpiredCachedData() {
+        return apiCacheDataSource.deleteExpiredCachedData();
     }
 
     @Override

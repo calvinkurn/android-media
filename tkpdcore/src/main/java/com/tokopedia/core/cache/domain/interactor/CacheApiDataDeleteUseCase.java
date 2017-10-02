@@ -35,7 +35,7 @@ public class CacheApiDataDeleteUseCase extends UseCase<Boolean> {
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         String domain = requestParams.getString(PARAM_DOMAIN, "");
         String path = requestParams.getString(PARAM_PATH, "");
-        return apiCacheRepository.singleDataDelete(domain, path);
+        return apiCacheRepository.deleteCachedData(domain, path);
     }
 
     public static RequestParams createParams(String url) {

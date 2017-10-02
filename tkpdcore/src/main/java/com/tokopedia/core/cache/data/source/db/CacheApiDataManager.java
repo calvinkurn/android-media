@@ -114,7 +114,7 @@ public class CacheApiDataManager {
         });
     }
 
-    public Observable<Boolean> clearTimeout() {
+    public Observable<Boolean> deleteExpiredCachedData() {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
@@ -142,8 +142,8 @@ public class CacheApiDataManager {
         });
     }
 
-    public Observable<Boolean> deleteWhiteList(final CacheApiWhiteListDomain cacheApiWhiteListDomain) {
-        return getWhiteList(cacheApiWhiteListDomain.getHost(), cacheApiWhiteListDomain.getPath()).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
+    public Observable<Boolean> deleteWhiteList(final String host, final String path) {
+        return getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
                 cacheApiWhitelist.delete();
