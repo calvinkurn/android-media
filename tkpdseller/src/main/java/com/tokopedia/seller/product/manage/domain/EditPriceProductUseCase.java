@@ -16,22 +16,22 @@ import rx.Observable;
  */
 
 public class EditPriceProductUseCase extends UseCase<Boolean> {
-    private ActionManageProductRepository actionManageProductRepository;
+    private ActionProductManageRepository actionProductManageRepository;
     private ShopInfoRepository shopInfoRepository;
 
     @Inject
     public EditPriceProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                   ActionManageProductRepository actionManageProductRepository,
+                                   ActionProductManageRepository actionProductManageRepository,
                                    ShopInfoRepository shopInfoRepository) {
         super(threadExecutor, postExecutionThread);
-        this.actionManageProductRepository = actionManageProductRepository;
+        this.actionProductManageRepository = actionProductManageRepository;
         this.shopInfoRepository = shopInfoRepository;
     }
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         requestParams.putString(ProductNetworkConstant.SHOP_ID, shopInfoRepository.getShopId());
-        return actionManageProductRepository.editPrice(requestParams.getParamsAllValueInString());
+        return actionProductManageRepository.editPrice(requestParams.getParamsAllValueInString());
     }
 
     public static RequestParams createRequestParams(String price, String priceCurrency, String productId){

@@ -14,12 +14,12 @@ import rx.Observable;
  * Created by zulfikarrahman on 9/22/17.
  */
 
-public class ActionManageProductDataSourceCloud {
+public class ActionProductManageDataSourceCloud {
 
     private final ProductActionApi productActionApi;
 
     @Inject
-    public ActionManageProductDataSourceCloud(ProductActionApi productActionApi) {
+    public ActionProductManageDataSourceCloud(ProductActionApi productActionApi) {
         this.productActionApi = productActionApi;
     }
 

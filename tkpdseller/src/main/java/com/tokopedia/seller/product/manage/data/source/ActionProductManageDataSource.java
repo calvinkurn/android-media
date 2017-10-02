@@ -19,24 +19,24 @@ import rx.Observable;
  * Created by zulfikarrahman on 9/22/17.
  */
 
-public class ActionManageProductDataSource {
-    private ActionManageProductDataSourceCloud actionManageProductDataSourceCloud;
+public class ActionProductManageDataSource {
+    private ActionProductManageDataSourceCloud actionProductManageDataSourceCloud;
     private Context context;
 
     @Inject
-    public ActionManageProductDataSource(ActionManageProductDataSourceCloud actionManageProductDataSourceCloud, @ApplicationContext Context context) {
-        this.actionManageProductDataSourceCloud = actionManageProductDataSourceCloud;
+    public ActionProductManageDataSource(ActionProductManageDataSourceCloud actionProductManageDataSourceCloud, @ApplicationContext Context context) {
+        this.actionProductManageDataSourceCloud = actionProductManageDataSourceCloud;
         this.context = context;
     }
 
     public Observable<Boolean> editPrice(TKPDMapParam<String, String> params) {
-        return actionManageProductDataSourceCloud.editPrice(AuthUtil.generateParamsNetwork(context,params))
+        return actionProductManageDataSourceCloud.editPrice(AuthUtil.generateParamsNetwork(context,params))
                 .map(new SimpleDataResponseMapper<ResponseEditPriceData>())
                 .map(new EditPriceCloudMapper());
     }
 
     public Observable<Boolean> deleteProduct(TKPDMapParam<String, String> params) {
-        return actionManageProductDataSourceCloud.deleteProduct(AuthUtil.generateParamsNetwork(context, params))
+        return actionProductManageDataSourceCloud.deleteProduct(AuthUtil.generateParamsNetwork(context, params))
                 .map(new SimpleDataResponseMapper<ResponseDeleteProductData>())
                 .map(new DeleteProductCloudMapper());
     }

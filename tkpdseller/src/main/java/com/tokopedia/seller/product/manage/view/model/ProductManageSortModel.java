@@ -4,14 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.seller.base.view.adapter.ItemIdType;
-import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 
 /**
  * Created by zulfikarrahman on 9/26/17.
  */
 
-public class SortManageProductModel implements ItemIdType, Parcelable {
+public class ProductManageSortModel implements ItemIdType, Parcelable {
 
     public static final int TYPE = 223;
 
@@ -54,23 +53,23 @@ public class SortManageProductModel implements ItemIdType, Parcelable {
         dest.writeString(this.titleSort);
     }
 
-    public SortManageProductModel() {
+    public ProductManageSortModel() {
     }
 
-    protected SortManageProductModel(Parcel in) {
+    protected ProductManageSortModel(Parcel in) {
         this.sortId = in.readString();
         this.titleSort = in.readString();
     }
 
-    public static final Creator<SortManageProductModel> CREATOR = new Creator<SortManageProductModel>() {
+    public static final Creator<ProductManageSortModel> CREATOR = new Creator<ProductManageSortModel>() {
         @Override
-        public SortManageProductModel createFromParcel(Parcel source) {
-            return new SortManageProductModel(source);
+        public ProductManageSortModel createFromParcel(Parcel source) {
+            return new ProductManageSortModel(source);
         }
 
         @Override
-        public SortManageProductModel[] newArray(int size) {
-            return new SortManageProductModel[size];
+        public ProductManageSortModel[] newArray(int size) {
+            return new ProductManageSortModel[size];
         }
     };
 }

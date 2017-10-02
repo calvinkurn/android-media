@@ -12,7 +12,7 @@ import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
  * Created by zulfikarrahman on 9/29/17.
  */
 
-public class FilterManageProductModel implements Parcelable {
+public class ProductManageFilterModel implements Parcelable {
 
     @EtalaseProductOption String etalaseProductOption;
     @PictureStatusProductOption String pictureStatusOption;
@@ -60,7 +60,7 @@ public class FilterManageProductModel implements Parcelable {
         this.category = category;
     }
 
-    public FilterManageProductModel() {
+    public ProductManageFilterModel() {
     }
 
     @Override
@@ -77,7 +77,7 @@ public class FilterManageProductModel implements Parcelable {
         dest.writeString(this.category);
     }
 
-    protected FilterManageProductModel(Parcel in) {
+    protected ProductManageFilterModel(Parcel in) {
         this.etalaseProductOption = in.readString();
         this.pictureStatusOption = in.readString();
         this.conditionProductOption = in.readString();
@@ -85,15 +85,15 @@ public class FilterManageProductModel implements Parcelable {
         this.category = in.readString();
     }
 
-    public static final Creator<FilterManageProductModel> CREATOR = new Creator<FilterManageProductModel>() {
+    public static final Creator<ProductManageFilterModel> CREATOR = new Creator<ProductManageFilterModel>() {
         @Override
-        public FilterManageProductModel createFromParcel(Parcel source) {
-            return new FilterManageProductModel(source);
+        public ProductManageFilterModel createFromParcel(Parcel source) {
+            return new ProductManageFilterModel(source);
         }
 
         @Override
-        public FilterManageProductModel[] newArray(int size) {
-            return new FilterManageProductModel[size];
+        public ProductManageFilterModel[] newArray(int size) {
+            return new ProductManageFilterModel[size];
         }
     };
 }
