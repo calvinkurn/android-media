@@ -36,7 +36,7 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 9/22/17.
  */
 
-public class ProductFragmentManage extends BaseSearchListFragment<ProductManagePresenter, ProductManageViewModel>
+public class ProductManageFragment extends BaseSearchListFragment<ProductManagePresenter, ProductManageViewModel>
         implements ProductManageView, ProductManageListAdapter.ClickOptionCallback {
 
     @Inject
@@ -51,7 +51,7 @@ public class ProductFragmentManage extends BaseSearchListFragment<ProductManageP
     protected void initInjector() {
         super.initInjector();
         DaggerProductManageComponent.builder()
-                .manageProductModule(new ProductManageModule())
+                .productManageModule(new ProductManageModule())
                 .productComponent(getComponent(ProductComponent.class))
                 .build()
                 .inject(this);

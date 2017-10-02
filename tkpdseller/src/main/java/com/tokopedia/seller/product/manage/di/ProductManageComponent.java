@@ -1,8 +1,8 @@
 package com.tokopedia.seller.product.manage.di;
 
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.manage.view.fragment.ProductFragmentManage;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSortFragmentManageSort;
+import com.tokopedia.seller.product.manage.view.fragment.ProductManageFragment;
+import com.tokopedia.seller.product.manage.view.fragment.ProductManageSortFragment;
 
 import dagger.Component;
 
@@ -13,7 +13,7 @@ import dagger.Component;
 @ProductManageScope
 @Component(modules = ProductManageModule.class, dependencies = ProductComponent.class)
 public interface ProductManageComponent {
-    void inject(ProductFragmentManage productManageFragment);
+    void inject(ProductManageFragment productManageFragment);
 
-    void inject(ProductManageSortFragmentManageSort productManageSortFragment);
+    void inject(ProductManageSortFragment productManageSortFragment);
 }

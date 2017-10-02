@@ -161,4 +161,10 @@
     <string name="product_picker_empty_search_description">Ubah pencarian untuk memilih Produk Unggulan</string>
     <string name="title_picture_product">Gambar Produk</string>
 
+    <string name="product_manage_title_both_picture_option_menu">Dengan &amp; Tanpa Gambar</string>
+    <string name="product_manage_title_with_picture_menu">Dengan Gambar</string>
+    <string name="product_manage_title_without_picture_menu">Tanpa Gambar</string>
+    <string name="product_manage_title_both_catalog_option_menu">Dengan &amp; Tanpa Katalog</string>
+    <string name="product_manage_title_with_catalog_menu">Dengan Katalog</string>
+    <string name="product_manage_title_without_catalog_menu">Tanpa Katalog</string>
 </resources>
