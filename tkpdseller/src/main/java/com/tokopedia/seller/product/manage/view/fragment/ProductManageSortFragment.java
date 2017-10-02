@@ -25,15 +25,15 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 9/26/17.
  */
 
-public class ProductManageSortFragmentManageSort extends BaseListFragment<ProductManageSortPresenter, ProductManageSortModel> implements ProductManageSortView {
+public class ProductManageSortFragment extends BaseListFragment<ProductManageSortPresenter, ProductManageSortModel> implements ProductManageSortView {
 
     @Inject
     ProductManageSortPresenter productManageSortPresenter;
 
     String selectedSortProduct = SortProductOption.POSITION;
 
-    public static ProductManageSortFragmentManageSort createInstance(String selectedSortProduct){
-        ProductManageSortFragmentManageSort productManageSortFragment = new ProductManageSortFragmentManageSort();
+    public static ProductManageSortFragment createInstance(String selectedSortProduct){
+        ProductManageSortFragment productManageSortFragment = new ProductManageSortFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ProductManageConstant.EXTRA_SORT_SELECTED, selectedSortProduct);
         productManageSortFragment.setupArguments(bundle);
@@ -45,7 +45,7 @@ public class ProductManageSortFragmentManageSort extends BaseListFragment<Produc
         super.initInjector();
         DaggerProductManageComponent.builder()
                 .productComponent(getComponent(ProductComponent.class))
-                .manageProductModule(new ProductManageModule())
+                .productManageModule(new ProductManageModule())
                 .build()
                 .inject(this);
         productManageSortPresenter.attachView(this);

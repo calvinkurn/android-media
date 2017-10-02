@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/both_picture_option_menu"
+        android:title="@string/product_manage_title_both_picture_option_menu" />
+    <item
+        android:id="@+id/with_picture_option_menu"
+        android:title="@string/product_manage_title_with_picture_menu" />
+    <item
+        android:id="@+id/without_picture_option_menu"
+        android:title="@string/product_manage_title_without_picture_menu" />
+
+</menu>

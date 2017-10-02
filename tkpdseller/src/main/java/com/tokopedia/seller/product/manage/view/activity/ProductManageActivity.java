@@ -6,7 +6,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.manage.view.fragment.ProductFragmentManage;
+import com.tokopedia.seller.product.manage.view.fragment.ProductManageFragment;
 
 /**
  * Created by zulfikarrahman on 9/25/17.
@@ -15,7 +15,7 @@ import com.tokopedia.seller.product.manage.view.fragment.ProductFragmentManage;
 public class ProductManageActivity extends BaseSimpleActivity implements HasComponent<ProductComponent> {
     @Override
     protected Fragment getNewFragment() {
-        return new ProductFragmentManage();
+        return new ProductManageFragment();
     }
 
     @Override
