@@ -35,7 +35,9 @@ public interface InboxReputationDetail {
 
         void onEditReview(InboxReputationDetailItemViewModel element);
 
-        void onGoToGiveReview(String reviewId, String productId, int shopId, boolean reviewIsSkippable);
+        void onGoToGiveReview(String reviewId, String productId, int shopId,
+                              boolean reviewIsSkippable,
+                              String productAvatar, String productName);
 
         void onErrorSendSmiley(String errorMessage);
 

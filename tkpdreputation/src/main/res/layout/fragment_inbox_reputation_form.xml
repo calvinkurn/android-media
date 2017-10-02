@@ -10,9 +10,38 @@
         android:orientation="vertical"
         >
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_activity">
+
+            <com.tokopedia.core.customView.RoundedCornerImageView
+                android:id="@+id/product_avatar"
+                android:layout_width="@dimen/product_avatar"
+                android:layout_height="@dimen/product_avatar"
+                android:layout_marginRight="@dimen/margin_small"/>
+
+            <TextView
+                android:id="@+id/product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="6sp"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/fontvs"
+                android:textStyle="normal"
+                tools:text="Yellow Rose Bomber Jacket Bordir - Not all roses are red"
+                />
+
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
             android:background="@color/white"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="7sp"
@@ -28,13 +57,19 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:paddingLeft="@dimen/padding_activity"
-            android:paddingRight="@dimen/padding_activity">
+            android:paddingRight="@dimen/padding_activity"
+            android:paddingBottom="@dimen/padding_activity">
 
             <RatingBar
                 android:id="@+id/rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:numStars="5"
+                android:rating="4"
                 android:stepSize="1"
+                android:backgroundTint="@color/yellow_600"
+                android:progressTint="@color/yellow_600"
+                android:secondaryProgressTint="@android:color/transparent"
                 />
 
             <TextView

@@ -6,11 +6,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -28,6 +32,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
@@ -73,6 +78,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     public static final int RESULT_CODE_SKIP = 321;
 
+    ImageView productImage;
+    TextView productName;
     RatingBar rating;
     TextView ratingText;
     EditText review;
@@ -97,13 +104,15 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
 
     public static InboxReputationFormFragment createInstance(String reviewId, String
-            reputationId, String productId, String shopId) {
+            reputationId, String productId, String shopId, String productAvatar, String productName) {
         InboxReputationFormFragment fragment = new InboxReputationFormFragment();
         Bundle bundle = new Bundle();
         bundle.putString(InboxReputationFormActivity.ARGS_SHOP_ID, shopId);
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId);
         bundle.putString(InboxReputationFormActivity.ARGS_REVIEW_ID, reviewId);
         bundle.putString(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId);
+        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_AVATAR, productAvatar);
+        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_NAME, productName);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -111,7 +120,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     public static Fragment createInstanceEdit(String reviewId, String reputationId,
                                               String productId, String shopId,
                                               int rating, String review,
-                                              ArrayList<ImageAttachmentViewModel> listImage) {
+                                              ArrayList<ImageAttachmentViewModel> listImage,
+                                              String productAvatar, String productName) {
         InboxReputationFormFragment fragment = new InboxReputationFormFragment();
         Bundle bundle = new Bundle();
         bundle.putString(InboxReputationFormActivity.ARGS_SHOP_ID, shopId);
@@ -122,6 +132,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         bundle.putString(InboxReputationFormActivity.ARGS_REVIEW, review);
         bundle.putParcelableArrayList(InboxReputationFormActivity.ARGS_REVIEW_IMAGES, listImage);
         bundle.putBoolean(InboxReputationFormActivity.ARGS_IS_EDIT, true);
+        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_AVATAR, productAvatar);
+        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_NAME, productName);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -161,12 +173,26 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         reviewTips = (RecyclerView) parentView.findViewById(R.id.review_tips);
         tipsHeader = parentView.findViewById(R.id.expand_product_review_tips);
         tipsArrow = (ImageView) parentView.findViewById(R.id.iv_expand_collapse);
+        productImage = (ImageView) parentView.findViewById(R.id.product_avatar);
+        productName = (TextView) parentView.findViewById(R.id.product_name);
         prepareView();
         presenter.attachView(this);
         return parentView;
     }
 
     private void prepareView() {
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            try {
+                Drawable progressDrawable = rating.getProgressDrawable();
+                if (progressDrawable != null) {
+                    DrawableCompat.setTint(progressDrawable, ContextCompat.getColor(getContext(),
+                            R.color.yellow_600));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         adapter = ImageUploadAdapter.createAdapter(getContext());
         adapter.setCanUpload(true);
@@ -343,6 +369,11 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             }
         });
 
+        productName.setText(MethodChecker.fromHtml(getArguments().getString
+                (InboxReputationFormActivity.ARGS_PRODUCT_NAME)));
+
+        ImageHandler.LoadImage(productImage, getArguments().getString
+                (InboxReputationFormActivity.ARGS_PRODUCT_AVATAR));
     }
 
     private void setTips() {

@@ -230,7 +230,9 @@ public class InboxReputationDetailItemViewHolder extends
                 viewListener.onGoToGiveReview(element.getReviewId(),
                         element.getProductId(),
                         element.getShopId(),
-                        element.isReviewIsSkippable());
+                        element.isReviewIsSkippable(),
+                        element.getProductAvatar(),
+                        element.getProductName());
             }
         });
 

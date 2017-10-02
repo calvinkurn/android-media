@@ -224,17 +224,23 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                         String.valueOf(element.getShopId()),
                         element.getReviewStar(),
                         element.getReview(),
-                        element.getReviewAttachment()),
-                REQUEST_EDIT_REVIEW);
+                        element.getReviewAttachment(),
+                        element.getProductAvatar(),
+                        element.getProductName()),
+                REQUEST_EDIT_REVIEW
+        );
     }
 
     @Override
     public void onGoToGiveReview(String reviewId, String productId,
-                                 int shopId, boolean reviewIsSkippable) {
+                                 int shopId, boolean reviewIsSkippable, String productAvatar, String productName) {
         startActivityForResult(
-                InboxReputationFormActivity.getGiveReviewIntent(getActivity(), reviewId,
+                InboxReputationFormActivity.getGiveReviewIntent(
+                        getActivity(),
+                        reviewId,
                         passModel.getReputationId(), productId,
-                        String.valueOf(shopId), reviewIsSkippable),
+                        String.valueOf(shopId), reviewIsSkippable,
+                        productAvatar, productName),
                 REQUEST_GIVE_REVIEW);
     }
 

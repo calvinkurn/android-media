@@ -45,11 +45,15 @@ public class InboxReputationFormActivity extends BasePresenterActivity
     public static final String ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID";
     public static final String ARGS_SHOP_ID = "ARGS_SHOP_ID";
     private static final String ARGS_IS_SKIPPABLE = "ARGS_IS_SKIPPABLE";
+    public static final String ARGS_PRODUCT_AVATAR = "ARGS_PRODUCT_AVATAR";
+    public static final String ARGS_PRODUCT_NAME = "ARGS_PRODUCT_NAME";
+
 
     public static final String ARGS_IS_EDIT = "ARGS_IS_EDIT";
     public static final String ARGS_RATING = "ARGS_RATING";
     public static final String ARGS_REVIEW = "ARGS_REVIEW";
     public static final String ARGS_REVIEW_IMAGES = "ARGS_REVIEW_IMAGES";
+
 
     SkipListener listener;
 
@@ -110,6 +114,8 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         String reviewId = getIntent().getExtras().getString(ARGS_REVIEW_ID, "");
         String productId = getIntent().getExtras().getString(ARGS_PRODUCT_ID, "");
         String shopId = getIntent().getExtras().getString(ARGS_SHOP_ID, "");
+        String productAvatar = getIntent().getExtras().getString(ARGS_PRODUCT_AVATAR, "");
+        String productName = getIntent().getExtras().getString(ARGS_PRODUCT_NAME, "");
 
         int rating = getIntent().getExtras().getInt(ARGS_RATING);
         String review = getIntent().getExtras().getString(ARGS_REVIEW, "");
@@ -120,10 +126,10 @@ public class InboxReputationFormActivity extends BasePresenterActivity
                 (InboxReputationFormFragment.class.getSimpleName());
         if (fragment == null && getIntent().getExtras().getBoolean(ARGS_IS_EDIT, false)) {
             fragment = InboxReputationFormFragment.createInstanceEdit(reviewId, reputationId,
-                    productId, shopId, rating, review, listImage);
+                    productId, shopId, rating, review, listImage, productAvatar, productName);
         } else if (fragment == null) {
             fragment = InboxReputationFormFragment.createInstance(reviewId, reputationId,
-                    productId, shopId);
+                    productId, shopId, productAvatar, productName);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container,
@@ -157,7 +163,8 @@ public class InboxReputationFormActivity extends BasePresenterActivity
 
     public static Intent getGiveReviewIntent(Context context, String reviewId,
                                              String reputationId, String productId,
-                                             String shopId, boolean reviewIsSkippable) {
+                                             String shopId, boolean reviewIsSkippable,
+                                             String productAvatar, String productName) {
         Intent intent = new Intent(context, InboxReputationFormActivity.class);
         intent.putExtra(ARGS_PRODUCT_ID, productId);
         intent.putExtra(ARGS_REPUTATION_ID, reputationId);
@@ -165,6 +172,8 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         intent.putExtra(ARGS_SHOP_ID, shopId);
         intent.putExtra(ARGS_IS_SKIPPABLE, reviewIsSkippable);
         intent.putExtra(ARGS_IS_EDIT, false);
+        intent.putExtra(ARGS_PRODUCT_AVATAR, productAvatar);
+        intent.putExtra(ARGS_PRODUCT_NAME, productName);
 
         return intent;
     }
@@ -172,7 +181,8 @@ public class InboxReputationFormActivity extends BasePresenterActivity
     public static Intent getEditReviewIntent(Context context, String reviewId,
                                              String reputationId, String productId,
                                              String shopId, int reviewStar, String review,
-                                             ArrayList<ImageAttachmentViewModel> reviewAttachment) {
+                                             ArrayList<ImageAttachmentViewModel> reviewAttachment,
+                                             String productAvatar, String productName) {
         Intent intent = new Intent(context, InboxReputationFormActivity.class);
         intent.putExtra(ARGS_PRODUCT_ID, productId);
         intent.putExtra(ARGS_REPUTATION_ID, reputationId);
@@ -183,6 +193,8 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         intent.putExtra(ARGS_RATING, reviewStar);
         intent.putExtra(ARGS_REVIEW, review);
         intent.putParcelableArrayListExtra(ARGS_REVIEW_IMAGES, reviewAttachment);
+        intent.putExtra(ARGS_PRODUCT_AVATAR, productAvatar);
+        intent.putExtra(ARGS_PRODUCT_NAME, productName);
         return intent;
     }
 

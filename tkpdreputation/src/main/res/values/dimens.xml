@@ -15,5 +15,6 @@
     <dimen name="smiley_size">50dp</dimen>
     <dimen name="opponent_smiley">17dp</dimen>
     <dimen name="search_not_found_icon_size">75dp</dimen>
+    <dimen name="product_avatar">52dp</dimen>
 
 </resources>
