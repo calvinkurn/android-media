@@ -186,6 +186,16 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     }
 
+    @Override
+    public void onErrorSetCashback() {
+
+    }
+
+    @Override
+    public void onSuccessSetCashback() {
+
+    }
+
     private void showActionProductDialog(ProductManageViewModel productManageViewModel) {
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)

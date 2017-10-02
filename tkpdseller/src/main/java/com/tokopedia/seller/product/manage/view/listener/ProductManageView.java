@@ -30,4 +30,8 @@ public interface ProductManageView extends BaseListViewListener<ProductManageVie
     void onGetFeaturedProductList(List<String> data);
 
     void onErrorGetFeaturedProductList();
+
+    void onErrorSetCashback();
+
+    void onSuccessSetCashback();
 }

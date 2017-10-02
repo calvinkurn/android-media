@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/both_condtion_option_menu"
+        android:title="@string/product_manage_title_both_condition_option_menu" />
+    <item
+        android:id="@+id/new_condition_option_menu"
+        android:title="@string/product_manage_title_new_condition_menu" />
+    <item
+        android:id="@+id/old_condition_option_menu"
+        android:title="@string/product_manage_title_old_condition_menu" />
+
+</menu>

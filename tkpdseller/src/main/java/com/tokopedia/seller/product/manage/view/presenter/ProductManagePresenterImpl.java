@@ -10,6 +10,7 @@ import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.domain.DeleteProductUseCase;
 import com.tokopedia.seller.product.manage.domain.EditPriceProductUseCase;
+import com.tokopedia.seller.product.manage.domain.MultipleDeleteProductUseCase;
 import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
 import com.tokopedia.seller.product.manage.view.mapper.GetProductListManageMapperView;
 import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
@@ -32,17 +33,30 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private final DeleteProductUseCase deleteProductUseCase;
     private final GetProductListManageMapperView getProductListManageMapperView;
     private final SellerModuleRouter sellerModuleRouter;
+    private final MultipleDeleteProductUseCase multipleDeleteProductUseCase;
 
     public ProductManagePresenterImpl(GetProductListSellingUseCase getProductListSellingUseCase,
                                       EditPriceProductUseCase editPriceProductUseCase,
                                       DeleteProductUseCase deleteProductUseCase,
                                       GetProductListManageMapperView getProductListManageMapperView,
-                                      SellerModuleRouter sellerModuleRouter) {
+                                      SellerModuleRouter sellerModuleRouter,
+                                      MultipleDeleteProductUseCase multipleDeleteProductUseCase) {
         this.getProductListSellingUseCase = getProductListSellingUseCase;
         this.editPriceProductUseCase = editPriceProductUseCase;
         this.deleteProductUseCase = deleteProductUseCase;
         this.getProductListManageMapperView = getProductListManageMapperView;
         this.sellerModuleRouter = sellerModuleRouter;
+        this.multipleDeleteProductUseCase = multipleDeleteProductUseCase;
+    }
+
+    @Override
+    public void setCashback(String productId, String cashback) {
+        sellerModuleRouter.setCashBack(productId, cashback).subscribe(getSubscriberSetCashback());
+    }
+
+    @Override
+    public void deleteListProduct(List<String> productIds) {
+        multipleDeleteProductUseCase.execute(MultipleDeleteProductUseCase.createRequestParams(productIds), getSubscriberDeleteProduct());
     }
 
     @Override
@@ -176,11 +190,39 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         return productIds;
     }
 
+
+
+    private Subscriber<Boolean> getSubscriberSetCashback() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()){
+                    getView().onErrorSetCashback();
+                }
+            }
+
+            @Override
+            public void onNext(Boolean isSuccess) {
+                if(isSuccess){
+                    getView().onSuccessSetCashback();
+                }else{
+                    getView().onErrorSetCashback();
+                }
+            }
+        };
+    }
+
     @Override
     public void detachView() {
         super.detachView();
         getProductListSellingUseCase.unsubscribe();
         editPriceProductUseCase.unsubscribe();
         deleteProductUseCase.unsubscribe();
+        multipleDeleteProductUseCase.unsubscribe();
     }
 }

@@ -579,4 +579,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<GMFeaturedProductDomainModel> getFeaturedProduct() {
         return Observable.just(new GMFeaturedProductDomainModel().setData(new ArrayList<GMFeaturedProductDomainModel.Datum>()));
     }
+
+    @Override
+    public Observable<Boolean> setCashBack(String productId, String cashback) {
+        return Observable.just(false);
+    }
 }
