@@ -27,7 +27,9 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.di.DaggerInboxReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
@@ -298,7 +300,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                 inboxReputationViewModel.getRole(),
                 inboxReputationViewModel.getRevieweeBadgeCustomerViewModel(),
                 inboxReputationViewModel.getRevieweeBadgeSellerViewModel(),
-                inboxReputationViewModel.getShopId());
+                inboxReputationViewModel.getShopId(),
+                inboxReputationViewModel.getUserId());
     }
 
     private String getTextDeadline(InboxReputationItemViewModel element) {
@@ -474,6 +477,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onGoToProductDetail(String productId) {
+        if (getActivity().getApplication() instanceof PdpRouter) {
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productId);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, passModel);
@@ -507,6 +517,20 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onFavoriteShopClicked(int shopId) {
         presenter.onFavoriteShopClicked(shopId);
+    }
+
+    @Override
+    public void onGoToShopDetail(int shopId) {
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onGoToPeopleProfile(int userId) {
+        startActivity(PeopleInfoNoDrawerActivity.createInstance(getActivity(), String.valueOf
+                (userId)));
     }
 
     private String getReputationSmileyMessage(String name) {

@@ -76,7 +76,8 @@ public class GetFirstTimeInboxReputationSubscriber extends Subscriber<InboxReput
                             .getRevieweeBadgeCustomer()),
                     convertToSellerReputationViewModel(domain.getRevieweeData()
                             .getRevieweeBadgeSeller()),
-                    domain.getShopId()));
+                    domain.getShopId(),
+                    domain.getUserId()));
 
         }
         return list;

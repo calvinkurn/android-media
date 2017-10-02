@@ -38,6 +38,10 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
         void onReputationSmileyClicked(String name, String value);
 
         void onFavoriteShopClicked(int shopId);
+
+        void onGoToShopDetail(int shopId);
+
+        void onGoToPeopleProfile(int userId);
     }
 
     ArrayList<SmileyModel> list;

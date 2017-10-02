@@ -14,6 +14,7 @@ public class InboxReputationDetailHeaderViewModel implements
     private final RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel;
     private final RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel;
     private final int shopId;
+    private final int userId;
     String avatarImage;
     String name;
     String deadline;
@@ -26,7 +27,7 @@ public class InboxReputationDetailHeaderViewModel implements
             int role,
             RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
             RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
-            int shopId) {
+            int shopId, int userId) {
         this.avatarImage = avatarImage;
         this.name = name;
         this.deadline = deadline;
@@ -35,6 +36,11 @@ public class InboxReputationDetailHeaderViewModel implements
         this.revieweeBadgeCustomerViewModel = revieweeBadgeCustomerViewModel;
         this.revieweeBadgeSellerViewModel = revieweeBadgeSellerViewModel;
         this.shopId = shopId;
+        this.userId = userId;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 
     public String getAvatarImage() {

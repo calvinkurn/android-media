@@ -84,7 +84,20 @@ public class InboxReputationDetailHeaderViewHolder extends
     @Override
     public void bind(final InboxReputationDetailHeaderViewModel element) {
         ImageHandler.LoadImage(userAvatar, element.getAvatarImage());
-        name.setText(element.getName());
+        userAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToInfoPage(element);
+            }
+        });
+        name.setText(MethodChecker.fromHtml(element.getName()));
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToInfoPage(element);
+            }
+        });
+
         setReputation(element);
 
         if (!TextUtils.isEmpty(element.getDeadline()) && element.getReputationDataViewModel()
@@ -140,6 +153,14 @@ public class InboxReputationDetailHeaderViewHolder extends
 
         setSmileyOpponent(element);
 
+    }
+
+    private void goToInfoPage(InboxReputationDetailHeaderViewModel element) {
+        if(element.getRole() ==  InboxReputationItemViewModel.ROLE_SELLER){
+            reputationListener.onGoToShopDetail(element.getShopId());
+        }else{
+            reputationListener.onGoToPeopleProfile(element.getUserId());
+        }
     }
 
     private void setFavorite(RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel) {

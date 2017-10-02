@@ -10,12 +10,12 @@
 
     <ImageView
         android:id="@+id/helpful_icon"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_sm"
-        android:src="@drawable/ic_icon_repsis_like"/>
+        android:layout_marginRight="@dimen/margin_small"
+        android:src="@drawable/ic_thumbsup"/>
 
 
     <TextView

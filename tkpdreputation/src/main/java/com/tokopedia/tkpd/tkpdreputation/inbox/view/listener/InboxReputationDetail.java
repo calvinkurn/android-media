@@ -89,6 +89,8 @@ public interface InboxReputationDetail {
         void onErrorLikeDislikeReview(String errorMessage);
 
         void onSuccessLikeDislikeReview(int adapterPosition, int likeStatus, int totalLike);
+
+        void onGoToProductDetail(String productId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

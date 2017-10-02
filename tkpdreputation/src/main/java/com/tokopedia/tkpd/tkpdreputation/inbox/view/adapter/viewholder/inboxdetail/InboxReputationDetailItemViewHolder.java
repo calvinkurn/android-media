@@ -174,7 +174,20 @@ public class InboxReputationDetailItemViewHolder extends
     @Override
     public void bind(final InboxReputationDetailItemViewModel element) {
         productName.setText(MethodChecker.fromHtml(element.getProductName()));
+        productName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToProductDetail(element.getProductId());
+            }
+        });
+
         ImageHandler.LoadImage(productAvatar, element.getProductAvatar());
+        productAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToProductDetail(element.getProductId());
+            }
+        });
 
         if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
                 || element.isReviewSkipped()) {
@@ -207,7 +220,6 @@ public class InboxReputationDetailItemViewHolder extends
             });
             reviewOverflow.setOnClickListener(onReviewOverflowClicked(element));
 
-            helpfulLayout.setVisibility(View.VISIBLE);
             setHelpful(element);
 
             if (element.getReviewResponseViewModel() != null
@@ -276,6 +288,7 @@ public class InboxReputationDetailItemViewHolder extends
         sellerReplyTime.setText(getFormattedTime(reviewResponseViewModel.getResponseCreateTime()));
         sellerReply.setText(MethodChecker.fromHtml(reviewResponseViewModel.getResponseMessage()));
         if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+            helpfulLayout.setVisibility(View.VISIBLE);
             replyOverflow.setVisibility(View.VISIBLE);
             replyOverflow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -412,50 +425,67 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
     public void setHelpful(final InboxReputationDetailItemViewModel element) {
+
         final LikeDislikeViewModel likeDislike = element.getLikeDislikeViewModel();
         String helpfulString = "";
 
         if (likeDislike != null
                 && likeDislike.getTotalLike() == 1
-                && likeDislike.getLikeStatus() == InboxReputationDetailItemViewModel.IS_LIKED) {
+                && likeDislike.getLikeStatus() == InboxReputationDetailItemViewModel.IS_LIKED
+                && element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+            setHelpfulVisible();
             ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
-                    .ic_icon_repsis_like_active);
+                    .ic_thumbsup_active);
             helpfulString += MainApplication.getAppContext().getString(R.string.you_got_helped);
         } else if (likeDislike != null
                 && likeDislike.getTotalLike() > 1
-                && likeDislike.getLikeStatus() == InboxReputationDetailItemViewModel.IS_LIKED) {
+                && likeDislike.getLikeStatus() == InboxReputationDetailItemViewModel.IS_LIKED
+                && element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+            setHelpfulVisible();
             ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
-                    .ic_icon_repsis_like_active);
+                    .ic_thumbsup_active);
             helpfulString += MainApplication.getAppContext().getString(R.string.You_and)
                     + " " + likeDislike.getTotalLike() + " " + MainApplication.getAppContext()
                     .getString(R.string.people_helped);
         } else if (likeDislike != null
                 && likeDislike.getTotalLike() != 0
                 && likeDislike.getLikeStatus() != InboxReputationDetailItemViewModel.IS_LIKED) {
+            setHelpfulVisible();
             ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
-                    .ic_icon_repsis_like);
+                    .ic_thumbsup);
             helpfulString += likeDislike.getTotalDislike() + " " + MainApplication.getAppContext()
                     .getString(R.string.people_helped);
-        } else {
+        } else if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+            setHelpfulVisible();
             ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
-                    .ic_icon_repsis_like);
+                    .ic_thumbsup);
             helpfulString += MainApplication.getAppContext().getString(R.string
                     .helpful_question);
+        } else {
+            helpfulIcon.setVisibility(View.GONE);
+            helpfulText.setVisibility(View.GONE);
+            helpfulLayout.setVisibility(View.GONE);
         }
 
         helpfulText.setText(helpfulString);
-
-        helpfulIcon.setOnClickListener(new View.OnClickListener()
-        {
+        helpfulIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onLikeReview(getAdapterPosition(),
-                        element.getReviewId(),
-                        likeDislike.getLikeStatus(),
-                        element.getProductId(),
-                        String.valueOf(element.getShopId()));
+                if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+                    viewListener.onLikeReview(getAdapterPosition(),
+                            element.getReviewId(),
+                            likeDislike.getLikeStatus(),
+                            element.getProductId(),
+                            String.valueOf(element.getShopId()));
+                }
             }
         });
 
+    }
+
+    private void setHelpfulVisible() {
+        helpfulIcon.setVisibility(View.VISIBLE);
+        helpfulText.setVisibility(View.VISIBLE);
+        helpfulLayout.setVisibility(View.VISIBLE);
     }
 }

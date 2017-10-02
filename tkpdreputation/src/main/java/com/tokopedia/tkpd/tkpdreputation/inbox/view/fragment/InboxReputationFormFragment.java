@@ -740,6 +740,6 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         super.onDestroy();
         presenter.detachView();
         shareDialog = null;
-        callbackManager = null
+        callbackManager = null;
     }
 }

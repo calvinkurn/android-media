@@ -15,6 +15,7 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
     private final RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel;
     private final RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel;
     private final int shopId;
+    private final int userId;
     private String revieweeName;
     private String createTime;
     private String revieweePicture;
@@ -32,7 +33,7 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
             int role,
             RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
             RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
-            int shopId) {
+            int shopId, int userId) {
         this.reputationId = reputationId;
         this.revieweeName = revieweeName;
         this.createTime = createTime;
@@ -44,6 +45,11 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
         this.revieweeBadgeCustomerViewModel = revieweeBadgeCustomerViewModel;
         this.revieweeBadgeSellerViewModel = revieweeBadgeSellerViewModel;
         this.shopId = shopId;
+        this.userId = userId;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 
     public String getRevieweeName() {
