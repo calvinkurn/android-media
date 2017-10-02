@@ -14,7 +14,7 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
  * Created by zulfikarrahman on 9/25/17.
  */
 
-public class ManageProductListViewHolder extends BaseViewHolder<ProductManageViewModel> {
+public class ProductManageListViewHolder extends BaseViewHolder<ProductManageViewModel> {
 
     public interface ClickOptionCallbackHolder{
         void onClickOptionItem(ProductManageViewModel productManageViewModel);
@@ -24,7 +24,7 @@ public class ManageProductListViewHolder extends BaseViewHolder<ProductManageVie
     private TextView titleProduct;
     private ClickOptionCallbackHolder clickOptionCallbackHolder;
 
-    public ManageProductListViewHolder(View layoutView) {
+    public ProductManageListViewHolder(View layoutView) {
         super(layoutView);
         imageProduct = (ImageView) layoutView.findViewById(R.id.image_product_manage);
         titleProduct = (TextView) layoutView.findViewById(R.id.title_product_manage);

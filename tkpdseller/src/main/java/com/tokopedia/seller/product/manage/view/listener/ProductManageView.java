@@ -9,7 +9,7 @@ import java.util.List;
  * Created by zulfikarrahman on 9/22/17.
  */
 
-public interface ManageProductView extends CustomerView {
+public interface ProductManageView extends CustomerView {
     void onErrorEditPrice();
 
     void onSuccessEditPrice();

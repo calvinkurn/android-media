@@ -10,15 +10,15 @@ import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
-import com.tokopedia.seller.product.manage.data.repository.ActionManageProductRepositoryImpl;
-import com.tokopedia.seller.product.manage.data.source.ActionManageProductDataSource;
+import com.tokopedia.seller.product.manage.data.repository.ActionProductManageRepositoryImpl;
+import com.tokopedia.seller.product.manage.data.source.ActionProductManageDataSource;
 import com.tokopedia.seller.product.manage.data.source.ProductActionApi;
-import com.tokopedia.seller.product.manage.domain.ActionManageProductRepository;
+import com.tokopedia.seller.product.manage.domain.ActionProductManageRepository;
 import com.tokopedia.seller.product.manage.domain.DeleteProductUseCase;
 import com.tokopedia.seller.product.manage.domain.EditPriceProductUseCase;
 import com.tokopedia.seller.product.manage.view.mapper.GetProductListManageMapperView;
-import com.tokopedia.seller.product.manage.view.presenter.ManageProductPresenter;
-import com.tokopedia.seller.product.manage.view.presenter.ManageProductPresenterImpl;
+import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
+import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenterImpl;
 import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
 import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
 import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
@@ -35,62 +35,62 @@ import retrofit2.Retrofit;
  */
 
 @Module
-@ManageProductScope
-public class ManageProductModule {
+@ProductManageScope
+public class ProductManageModule {
     @Provides
-    @ManageProductScope
-    public ManageProductPresenter provideManageProductPresenter(GetProductListSellingUseCase getProductListSellingUseCase,
+    @ProductManageScope
+    public ProductManagePresenter provideManageProductPresenter(GetProductListSellingUseCase getProductListSellingUseCase,
                                                                 EditPriceProductUseCase editPriceProductUseCase,
                                                                 DeleteProductUseCase deleteProductUseCase,
                                                                 GetProductListManageMapperView getProductListManageMapperView,
                                                                 SellerModuleRouter sellerModuleRouter){
-        return new ManageProductPresenterImpl(getProductListSellingUseCase, editPriceProductUseCase, deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter);
+        return new ProductManagePresenterImpl(getProductListSellingUseCase, editPriceProductUseCase, deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter);
     }
 
     @Provides
-    @ManageProductScope
+    @ProductManageScope
     public GetProductListSellingRepository provideGetProductListSellingRepository(GetProductListSellingDataSource getProductListSellingDataSource){
         return new GetProductListSellingRepositoryImpl(getProductListSellingDataSource);
     }
 
     @Provides
-    @ManageProductScope
+    @ProductManageScope
     public GetProductListSellerApi provideGetProductListSellerApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(GetProductListSellerApi.class);
     }
 
     @Provides
-    @ManageProductScope
-    public ActionManageProductRepository provideActionManageProductRepository(ActionManageProductDataSource actionManageProductDataSource){
-        return new ActionManageProductRepositoryImpl(actionManageProductDataSource);
+    @ProductManageScope
+    public ActionProductManageRepository provideActionManageProductRepository(ActionProductManageDataSource actionProductManageDataSource){
+        return new ActionProductManageRepositoryImpl(actionProductManageDataSource);
     }
 
     @Provides
-    @ManageProductScope
+    @ProductManageScope
     public ProductActionApi provideProductActionApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(ProductActionApi.class);
     }
 
     @Provides
-    @ManageProductScope
+    @ProductManageScope
     public ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
         return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
     }
 
     @Provides
-    @ManageProductScope
+    @ProductManageScope
     public TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
         return retrofit.create(TomeApi.class);
     }
 
     @Provides
-    @ManageProductScope
+    @ProductManageScope
     public ShopApi provideShopApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(ShopApi.class);
     }
 
     @Provides
-    @ManageProductScope
+    @ProductManageScope
     public SellerModuleRouter provideSellerModuleRouter(@ApplicationContext Context context){
         if(context instanceof SellerModuleRouter){
             return ((SellerModuleRouter)context);
