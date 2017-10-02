@@ -4,8 +4,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.cache.util.CacheApiUtils;
 
-import java.net.URL;
-
 /**
  * Created by normansyahputa on 8/14/17.
  */
@@ -20,19 +18,19 @@ public class CacheApiWhiteListDomain {
     private long expireTime;
 
     public CacheApiWhiteListDomain(String fullPath, long expireTime) {
-        String host = CacheApiUtils.getDomain(fullPath);
+        String host = CacheApiUtils.getHost(fullPath);
         String path = CacheApiUtils.getPath(fullPath);
         if (!TextUtils.isEmpty(host) && !TextUtils.isEmpty(path)) {
-            setHost(CacheApiUtils.generateCacheHost(host));
-            setPath(CacheApiUtils.generateCachePath(path));
-            setExpireTime(expireTime);
+            this.host = host;
+            this.path = path;
+            this.expireTime = expireTime;
         }
     }
 
     public CacheApiWhiteListDomain(String host, String path, long expireTime) {
-        setHost(CacheApiUtils.generateCacheHost(host));
-        setPath(CacheApiUtils.generateCachePath(path));
-        setExpireTime(expireTime);
+        this.host = host;
+        this.path = path;
+        this.expireTime = expireTime;
     }
 
     public String getHost() {

@@ -6,7 +6,6 @@ import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
-import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 
 import java.util.Collection;
@@ -40,8 +39,8 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
     }
 
     @Override
-    public Observable<Boolean> singleDataDelete(@Nullable CacheApiDataDomain cacheApiDataDomain) {
-        return apiCacheDataSource.deleteCachedData(cacheApiDataDomain);
+    public Observable<Boolean> singleDataDelete(String host, String path) {
+        return apiCacheDataSource.deleteCachedData(host, path);
     }
 
     @Override
@@ -50,7 +49,7 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
     }
 
     @Override
-    public Observable<CacheApiWhitelist> isInWhiteListRaw(String host, String path) {
+    public Observable<CacheApiWhitelist> getWhiteList(String host, String path) {
         return apiCacheDataSource.getWhiteList(host, path);
     }
 
@@ -65,8 +64,8 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
     }
 
     @Override
-    public Observable<CacheApiData> queryDataFrom(String host, String path, String requestParam) {
-        return apiCacheDataSource.getCachedData(host, path, requestParam);
+    public Observable<String> getCachedResponse(String host, String path, String requestParam) {
+        return apiCacheDataSource.getCachedResponse(host, path, requestParam);
     }
 
     @Override

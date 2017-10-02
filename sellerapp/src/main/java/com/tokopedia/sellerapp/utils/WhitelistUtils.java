@@ -14,7 +14,8 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class WhitelistUtils {
-    
+
+    private static final long TEN_SECOND = TimeUnit.SECONDS.toSeconds(10);
     private static final long THIRTY_SECOND = TimeUnit.SECONDS.toSeconds(30);
     private static final long ONE_MINUTE = TimeUnit.MINUTES.toSeconds(1);
     private static final long FIVE_MINUTE = TimeUnit.MINUTES.toSeconds(5);
@@ -52,7 +53,11 @@ public class WhitelistUtils {
         // TopAds
         // TopAds Deposit
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
-                TopAdsNetworkConstant.PATH_DASHBOARD_DEPOSIT, THIRTY_SECOND));
+                TopAdsNetworkConstant.PATH_DASHBOARD_DEPOSIT, TEN_SECOND));
+
+        // Topads Credit
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
+                TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT, ONE_HOUR));
 
         // TopAds Statistic
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,

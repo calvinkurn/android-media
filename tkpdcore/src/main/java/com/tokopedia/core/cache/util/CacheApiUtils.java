@@ -6,14 +6,12 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.cache.constant.CacheApiConstant;
 import com.tokopedia.core.cache.constant.HTTPMethodDef;
-import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.network.retrofit.response.BaseResponseError;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
 
 import okhttp3.Headers;
 import okhttp3.MediaType;
@@ -31,44 +29,26 @@ import okio.Okio;
  */
 
 public class CacheApiUtils {
+
     private static final int BYTE_COUNT = 2048;
-
     private static final long DEFAULT_MAX_CONTENT_LENGTH = 250000L;
-
     private static final Charset UTF8 = Charset.forName("UTF-8");
-
     private static final String[] UNUSED_PARAM = {"hash", "device_time", "device_id"};
-
-    private static final String HTTPS = "https://";
-    private static final String COM_WITH_SLASH = ".com/";
-    private static final String COM1 = ".com";
     private static final String PARAM_SEPARATOR = "-";
 
-    public static String generateCacheHost(String host) {
-        return (host.replace(HTTPS, "").replace(COM_WITH_SLASH, COM1));
-    }
-
-    public static String generateCachePath(String path) {
-        if (!path.startsWith("/")) {
-            return "/" + path;
-        } else {
-            return path;
-        }
-    }
-
-    public static String getDomain(String fullPath) {
+    public static String getHost(String fullUrl) {
         try {
-            URL url = new URL(fullPath);
-            return url.getAuthority();
+            URL url = new URL(fullUrl);
+            return url.getHost();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static String getPath(String fullPath) {
+    public static String getPath(String fullUrl) {
         try {
-            URL url = new URL(fullPath);
+            URL url = new URL(fullUrl);
             return url.getPath();
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,6 +56,16 @@ public class CacheApiUtils {
         return null;
     }
 
+    /**
+     * Get request param for get and post. If post has body it will be added at the back
+     * eg:
+     * get = '?a=1&b=2'
+     * post = 'c=3'
+     * request param = 'a=1&b=2 - c=3'
+     *
+     * @param request
+     * @return
+     */
     public static String getRequestParam(Request request) {
         String requestParam = "";
         try {
@@ -104,15 +94,26 @@ public class CacheApiUtils {
         return buffer.readUtf8();
     }
 
+    /**
+     * Remove unused param
+     * eg device_time, device_id
+     *
+     * @param url
+     * @return
+     */
     private static String getRemovedUnusedRequestParam(String url) {
-        for (String param: UNUSED_PARAM) {
+        for (String param : UNUSED_PARAM) {
             url = url.replaceAll("[?&]" + param + ".*?(?=&|\\?|$)", "");
         }
         return url;
     }
 
-
-
+    /**
+     * Check if response is valid to be cached or not
+     *
+     * @param response
+     * @return
+     */
     public static boolean isResponseValidToBeCached(Response response) {
         if (response.code() != CacheApiConstant.CODE_OK) {
             return false;
@@ -137,6 +138,12 @@ public class CacheApiUtils {
         return true;
     }
 
+    /**
+     * Get response body from response object
+     *
+     * @param response
+     * @return
+     */
     public static String getResponseBody(Response response) {
         try {
             ResponseBody responseBody = response.body();
@@ -150,7 +157,7 @@ public class CacheApiUtils {
                     charset = contentType.charset(UTF8);
                 }
                 if (isPlaintext(buffer)) {
-                    return readFromBuffer(buffer.clone(), charset));
+                    return readFromBuffer(buffer.clone(), charset);
                 }
             }
         } catch (Exception e) {

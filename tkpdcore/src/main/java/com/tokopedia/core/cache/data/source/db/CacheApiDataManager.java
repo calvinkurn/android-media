@@ -3,14 +3,13 @@ package com.tokopedia.core.cache.data.source.db;
 import android.text.TextUtils;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.cache.domain.mapper.CacheApiWhiteListMapper;
-import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.cache.util.CacheApiUtils;
+import com.tokopedia.core.util.EncoderDecoder;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -29,6 +28,8 @@ import rx.functions.Func1;
 public class CacheApiDataManager {
 
     private static final long DIVIDE_FOR_SECONDS = 1000L;
+
+    private static final String CACHE_API_KEY = "BU}~GV2(K)%z$1+H";
 
     @Inject
     public CacheApiDataManager() {
@@ -62,7 +63,7 @@ public class CacheApiDataManager {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 CommonUtils.dumper(String.format("Inserting White List"));
-                for (CacheApiWhiteListDomain cacheApiWhiteListDomain: cacheApiDatas) {
+                for (CacheApiWhiteListDomain cacheApiWhiteListDomain : cacheApiDatas) {
                     CacheApiWhitelist whiteList = CacheApiWhiteListMapper.from(cacheApiWhiteListDomain);
                     CommonUtils.dumper(String.format("Insert white list: %s - %s", whiteList.getHost(), whiteList.getPath()));
                     whiteList.save();
@@ -76,23 +77,29 @@ public class CacheApiDataManager {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                SQLite.delete(CacheApiWhitelist.class).execute();
+                new Delete().from(CacheApiWhitelist.class).execute();
                 subscriber.onNext(true);
             }
         });
     }
 
-    public Observable<CacheApiData> getCachedData(final String host, final String path, final String param) {
-        return Observable.create(new Observable.OnSubscribe<CacheApiData>() {
+    public Observable<String> getCachedResponse(final String host, final String path, final String param) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
-            public void call(Subscriber<? super CacheApiData> subscriber) {
+            public void call(Subscriber<? super String> subscriber) {
                 Where<CacheApiData> selection = new Select()
                         .from(CacheApiData.class)
                         .where(CacheApiData_Table.host.eq(host))
                         .and(CacheApiData_Table.path.eq(path))
                         .and(CacheApiData_Table.request_param.eq(param));
                 CommonUtils.dumper("CachedData : " + selection.toString());
-                subscriber.onNext(selection.querySingle());
+                CacheApiData cacheApiData = selection.querySingle();
+                String cachedResponseBody = null;
+                if (cacheApiData != null) {
+                    cachedResponseBody = cacheApiData.getResponseBody();
+                    cachedResponseBody = getDecrypted(cachedResponseBody);
+                }
+                subscriber.onNext(cachedResponseBody);
             }
         });
     }
@@ -101,7 +108,7 @@ public class CacheApiDataManager {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                SQLite.delete(CacheApiData.class).execute();
+                new Delete().from(CacheApiData.class).execute();
                 subscriber.onNext(true);
             }
         });
@@ -121,14 +128,14 @@ public class CacheApiDataManager {
         });
     }
 
-    public Observable<Boolean> deleteCachedData(final CacheApiDataDomain cacheApiDataDomain) {
+    public Observable<Boolean> deleteCachedData(final String host, final String path) {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 new Delete()
                         .from(CacheApiData.class)
-                        .where(CacheApiData_Table.host.eq(cacheApiDataDomain.getHost()))
-                        .and(CacheApiData_Table.path.eq(cacheApiDataDomain.getPath()))
+                        .where(CacheApiData_Table.host.eq(host))
+                        .and(CacheApiData_Table.path.eq(path))
                         .execute();
                 subscriber.onNext(true);
             }
@@ -158,10 +165,19 @@ public class CacheApiDataManager {
                 expiredCalendar.add(Calendar.SECOND, (int) cacheApiWhitelist.getExpiredTime());
                 cacheApiData.setResponseTime(System.currentTimeMillis() / DIVIDE_FOR_SECONDS);
                 cacheApiData.setExpiredTime(expiredCalendar.getTimeInMillis() / DIVIDE_FOR_SECONDS);
+                responseBody = getEncrypted(responseBody);
                 cacheApiData.setResponseBody(responseBody);
                 cacheApiData.save();
                 subscriber.onNext(true);
             }
         });
+    }
+
+    private String getEncrypted(String text) {
+        return EncoderDecoder.Encrypt(text, CACHE_API_KEY);
+    }
+
+    private String getDecrypted(String text) {
+        return EncoderDecoder.Decrypt(text, CACHE_API_KEY);
     }
 }

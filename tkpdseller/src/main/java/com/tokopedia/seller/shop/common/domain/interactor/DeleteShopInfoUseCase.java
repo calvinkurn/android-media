@@ -28,9 +28,8 @@ public class DeleteShopInfoUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        CacheApiDataDomain cacheApiDataDomain = new CacheApiDataDomain(TkpdBaseURL.BASE_DOMAIN,
+        RequestParams newRequestParams = CacheApiDataDeleteUseCase.createParams(TkpdBaseURL.BASE_DOMAIN,
                 TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO);
-        RequestParams newRequestParams = CacheApiDataDeleteUseCase.createParams(cacheApiDataDomain);
         return cacheApiDataDeleteUseCase.createObservable(newRequestParams);
     }
 }

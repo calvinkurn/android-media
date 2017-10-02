@@ -37,22 +37,21 @@ public interface ApiCacheRepository {
     Observable<Boolean> singleDelete(@Nullable CacheApiWhiteListDomain cacheApiWhiteListDomain);
 
     /**
-     * delete data stored at whitelist cache data
+     * delete data stored at white list cache data
      *
-     * @param cacheApiDataDomain {@link CacheApiDataDomain} object
      * @return true if delete operation success, false if param is null or data isn't available
      */
-    Observable<Boolean> singleDataDelete(@Nullable CacheApiDataDomain cacheApiDataDomain);
+    Observable<Boolean> singleDataDelete(String host, String path);
 
-    Observable<Boolean> isInWhiteList(String url, String method);
+    Observable<Boolean> isInWhiteList(String host, String path);
 
     Observable<Boolean> deleteAllCache();
 
     Observable<Boolean> clearTimeout();
 
-    Observable<CacheApiData> queryDataFrom(String host, String path, String requestParam);
+    Observable<String> getCachedResponse(String host, String path, String requestParam);
 
     Observable<Boolean> updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response);
 
-    Observable<CacheApiWhitelist> isInWhiteListRaw(final String host, final String path);
+    Observable<CacheApiWhitelist> getWhiteList(String host, String path);
 }

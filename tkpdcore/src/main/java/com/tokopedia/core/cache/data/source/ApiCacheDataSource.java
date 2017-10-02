@@ -72,8 +72,8 @@ public class ApiCacheDataSource {
         return cacheApiDataManager.isInWhiteList(host, path);
     }
 
-    public Observable<CacheApiData> getCachedData(final String host, final String path, final String param) {
-        return cacheApiDataManager.getCachedData(host, path, param);
+    public Observable<String> getCachedResponse(final String host, final String path, final String param) {
+        return cacheApiDataManager.getCachedResponse(host, path, param);
     }
 
     public Observable<Boolean> deleteAllCacheData() {
@@ -84,8 +84,8 @@ public class ApiCacheDataSource {
         return cacheApiDataManager.clearTimeout();
     }
 
-    public Observable<Boolean> deleteCachedData(final CacheApiDataDomain cacheApiDataDomain) {
-        return cacheApiDataManager.deleteCachedData(cacheApiDataDomain);
+    public Observable<Boolean> deleteCachedData(String host, String path) {
+        return cacheApiDataManager.deleteCachedData(host, path);
     }
 
     public Observable<Boolean> deleteWhiteList(final CacheApiWhiteListDomain cacheApiWhiteListDomain) {

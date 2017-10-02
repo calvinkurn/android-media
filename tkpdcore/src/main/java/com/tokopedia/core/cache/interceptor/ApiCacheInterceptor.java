@@ -58,9 +58,9 @@ public class ApiCacheInterceptor implements Interceptor {
         ThreadExecutor threadExecutor = new JobExecutor();
         PostExecutionThread postExecutionThread = new UIThread();
         String versionName = MainApplication.getAppContext().getPackageManager().getPackageInfo(MainApplication.getAppContext().getPackageName(), 0).versionName;
-        ApiCacheRepository apiCacheRepository = new ApiCacheRepositoryImpl(
-                new ApiCacheDataSource(new CacheApiVersionCache(
-                        new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.CACHE_API), versionName), new CacheApiDataManager())
+        ApiCacheRepository apiCacheRepository = new ApiCacheRepositoryImpl(new ApiCacheDataSource(new CacheApiVersionCache(
+                new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.CACHE_API), versionName),
+                new CacheApiDataManager())
         );
 
         new ClearTimeOutCache(threadExecutor, postExecutionThread, apiCacheRepository).executeSync(RequestParams.EMPTY);
@@ -72,7 +72,7 @@ public class ApiCacheInterceptor implements Interceptor {
         RequestParams requestParams = RequestParams.create();
 
         requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_METHOD, request.method());
-        requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_HOST, request.url().host());
+        requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_DOMAIN, request.url().host());
         requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_PATH, CacheApiUtils.getPath(request.url().toString()));
 
         boolean inWhiteList = checkWhiteListUseCase.getData(requestParams);
@@ -82,8 +82,8 @@ public class ApiCacheInterceptor implements Interceptor {
             throw new Exception("Not registered in white list");
         }
         requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_REQUEST_PARAM, CacheApiUtils.getRequestParam(request));
-        String cacheData = getCacheDataUseCase.getData(requestParams);
-        if (TextUtils.isEmpty(cacheData)) {
+        String cachedResponseData = getCacheDataUseCase.getData(requestParams);
+        if (TextUtils.isEmpty(cachedResponseData)) {
             CommonUtils.dumper(String.format("Data is not here, fetch and save: %s", request.url().toString()));
             Response response = getDefaultResponse(chain);
             if (CacheApiUtils.isResponseValidToBeCached(response)) {
@@ -98,7 +98,7 @@ public class ApiCacheInterceptor implements Interceptor {
             builder.protocol(Protocol.HTTP_1_1);
             builder.code(CacheApiConstant.CODE_OK);
             builder.message("");
-            builder.body(ResponseBody.create(MediaType.parse(CacheApiConstant.TYPE_APPLICATION_JSON), cacheData));
+            builder.body(ResponseBody.create(MediaType.parse(CacheApiConstant.TYPE_APPLICATION_JSON), cachedResponseData));
             return builder.build();
         }
     }

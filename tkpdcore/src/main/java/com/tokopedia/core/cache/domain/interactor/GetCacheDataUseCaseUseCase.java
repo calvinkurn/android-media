@@ -26,18 +26,10 @@ public class GetCacheDataUseCaseUseCase extends BaseApiCacheInterceptorUseCase<S
             public Boolean call(Boolean aBoolean) {
                 return aBoolean;
             }
-        }).flatMap(new Func1<Boolean, Observable<CacheApiData>>() {
+        }).flatMap(new Func1<Boolean, Observable<String>>() {
             @Override
-            public Observable<CacheApiData> call(Boolean aBoolean) {
-                return apiCacheRepository.queryDataFrom(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
-            }
-        }).map(new Func1<CacheApiData, String>() {
-            @Override
-            public String call(CacheApiData cacheApiData) {
-                if (cacheApiData == null) {
-                    return null;
-                }
-                return cacheApiData.getResponseBody();
+            public Observable<String> call(Boolean aBoolean) {
+                return apiCacheRepository.getCachedResponse(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
             }
         });
     }
