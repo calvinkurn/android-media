@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.design.text.SpinnerCounterInputView;
@@ -20,8 +21,10 @@ import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListe
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
+import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.seller.product.manage.di.ProductManageModule;
+import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
 import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
 import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
@@ -60,10 +63,31 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_product_manage;
+    }
+
+    @Override
     protected void initView(View view) {
         super.initView(view);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        Button buttonSort = (Button) view.findViewById(R.id.button_sort);
+        buttonSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = ProductManageSortActivity.createIntent(getActivity(), SortProductOption.NEW_PRODUCT);
+                getActivity().startActivity(intent);
+            }
+        });
+        Button buttonFilter = (Button) view.findViewById(R.id.button_filter);
+        buttonFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ProductManageSortActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
     }
 
     @Override
