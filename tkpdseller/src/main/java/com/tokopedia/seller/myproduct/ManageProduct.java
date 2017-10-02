@@ -1579,7 +1579,7 @@ public class ManageProduct extends TkpdActivity implements
                     }
 
                     @Override
-                    public void onSuccess(String path, int position) {
+                    public void onSuccess(String path) {
                         ImageEditorActivity.start(ManageProduct.this, path);
                     }
 

@@ -204,7 +204,7 @@ public class ShopEditorActivity extends TActivity implements
             }
 
             @Override
-            public void onSuccess(String path, int position) {
+            public void onSuccess(String path) {
                 File file = UploadPhotoTask.writeImageToTkpdPath(AddProductFragment.compressImage(path));
                 Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
                 if (fragment != null && file != null) {

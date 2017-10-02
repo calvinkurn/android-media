@@ -540,7 +540,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             public void clickImageEditor(int position) {
                 String uriOrPath = productImageViewHolder.getImagesSelectView().getImageAt(position).getUriOrPath();
                 if (!TextUtils.isEmpty(uriOrPath)) {
-                    ImageEditorActivity.start(getContext(), ProductAddFragment.this, uriOrPath);
+                    onImageEditor(uriOrPath);
                 }
             }
 
@@ -573,6 +573,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 imagesSelectView.removeImage();
             }
         });
+    }
+
+    @Override
+    public void onImageEditor(String uriOrPath) {
+        ImageEditorActivity.start(getContext(), ProductAddFragment.this, uriOrPath);
     }
 
     private void clearFocus(){

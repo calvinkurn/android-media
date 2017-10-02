@@ -368,7 +368,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 }
 
                 @Override
-                public void onSuccess(String path, int position) {
+                public void onSuccess(String path) {
                     ArrayList<String> imageUrls = new ArrayList<>();
                     imageUrls.add(path);
                     ProductAddActivity.start(ProductDraftListFragment.this, getActivity(), imageUrls);

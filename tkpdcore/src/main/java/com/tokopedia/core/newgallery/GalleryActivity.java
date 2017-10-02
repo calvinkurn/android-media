@@ -92,7 +92,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static final String FORCE_OPEN_CAMERA = "FORCE_OPEN_CAMERA";
     public static final String MAX_IMAGE_SELECTION = "MAX_IMAGE_SELECTION";
     public static final String COMPRESS_TO_TKPD = "CMPRS_TKPD";
-    public static final int ADD_PRODUCT_IMAGE_LOCATION_DEFAULT = 0;
 
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     public static final int INSTAGRAM_SELECT_REQUEST_CODE = 101;
@@ -414,7 +413,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
             }
             Bundle bundle = intent.getExtras();
 
-            position = bundle.getInt(ADD_PRODUCT_IMAGE_LOCATION, ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
             forceOpenCamera = bundle.getBoolean(FORCE_OPEN_CAMERA, false);
             maxSelection = bundle.getInt(MAX_IMAGE_SELECTION, -1);
             compressToTkpd = bundle.getBoolean(COMPRESS_TO_TKPD, false);

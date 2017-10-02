@@ -247,6 +247,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
+            currentSelectedIndex = -1;
             if (onImageSelectionListener != null) {
                 onImageSelectionListener.onAddClick(position);
             }
