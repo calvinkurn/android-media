@@ -56,6 +56,7 @@ public class InboxReputationDetailItemViewHolder extends
 
     TextView productName;
     ImageView productAvatar;
+    TextView emptyReviewText;
     View viewReview;
     TextView reviewerName;
     TextView reviewTime;
@@ -90,6 +91,7 @@ public class InboxReputationDetailItemViewHolder extends
         this.viewListener = viewListener;
         productName = (TextView) itemView.findViewById(R.id.product_name);
         productAvatar = (ImageView) itemView.findViewById(R.id.product_image);
+        emptyReviewText = (TextView) itemView.findViewById(R.id.empty_review_text);
         viewReview = itemView.findViewById(R.id.review_layout);
         reviewerName = (TextView) itemView.findViewById(R.id.reviewer_name);
         reviewTime = (TextView) itemView.findViewById(R.id.review_time);
@@ -184,7 +186,9 @@ public class InboxReputationDetailItemViewHolder extends
         if (!element.isReviewHasReviewed()) {
             viewReview.setVisibility(View.GONE);
             helpfulLayout.setVisibility(View.GONE);
+            emptyReviewText.setVisibility(View.VISIBLE);
         } else {
+            emptyReviewText.setVisibility(View.GONE);
             viewReview.setVisibility(View.VISIBLE);
             giveReview.setVisibility(View.GONE);
             reviewerName.setText(MethodChecker.fromHtml(getReviewerNameText(element

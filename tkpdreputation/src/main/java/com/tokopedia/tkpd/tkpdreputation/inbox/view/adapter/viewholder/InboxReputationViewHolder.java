@@ -27,6 +27,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     public static final int LAYOUT = R.layout.inbox_reputation_item;
     private final InboxReputation.View viewListener;
 
+    private View mainView;
     private TextView textDeadline;
     private ImageView deadline;
     private TextView invoice;
@@ -35,13 +36,13 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private ReputationView reputation;
     private TextView date;
     private TextView action;
-    private View arrowNext;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", Locale.getDefault());
     private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
 
     public InboxReputationViewHolder(View itemView, InboxReputation.View viewListener) {
         super(itemView);
+        mainView = itemView.findViewById(R.id.main_view);
         textDeadline = (TextView) itemView.findViewById(R.id.deadline_text);
         deadline = (ImageView) itemView.findViewById(R.id.icon_deadline);
         invoice = (TextView) itemView.findViewById(R.id.invoice);
@@ -50,7 +51,6 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         reputation = (ReputationView) itemView.findViewById(R.id.reputation);
         date = (TextView) itemView.findViewById(R.id.date);
         action = (TextView) itemView.findViewById(R.id.action);
-        arrowNext = itemView.findViewById(R.id.right_arrow);
         this.viewListener = viewListener;
 
     }
@@ -66,22 +66,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         setReputation(element);
         setAction(element);
 
-        action.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToDetail(
-                        element.getReputationId(),
-                        element.getInvoice(),
-                        element.getCreateTime(),
-                        element.getRevieweeName(),
-                        element.getRevieweePicture(),
-                        element.getReputationDataViewModel(),
-                        getTextDeadline(element),
-                        getAdapterPosition(),
-                        element.getRole());
-            }
-        });
-        arrowNext.setOnClickListener(new View.OnClickListener() {
+        mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewListener.onGoToDetail(

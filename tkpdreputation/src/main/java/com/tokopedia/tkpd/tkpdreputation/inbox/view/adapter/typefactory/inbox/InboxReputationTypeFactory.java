@@ -13,12 +13,9 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationIte
 
 public interface InboxReputationTypeFactory {
 
-    int type(EmptyModel emptyModel);
-
     int type(InboxReputationItemViewModel viewModel);
 
     int type(EmptySearchModel viewModel);
-
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 

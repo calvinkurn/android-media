@@ -348,6 +348,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent getHomeHotlistIntent(Context context) {
+        return ParentIndexHome.getHotlistIntent(context);
+    }
+
+    @Override
     public Intent getInboxReputationIntent(Context context) {
         return InboxReputationActivity.getCallingIntent(context);
     }

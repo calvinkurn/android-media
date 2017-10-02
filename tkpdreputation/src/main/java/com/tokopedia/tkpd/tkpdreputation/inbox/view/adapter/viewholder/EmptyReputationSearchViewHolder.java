@@ -6,7 +6,6 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.EmptySearchModel;
 
 /**
@@ -18,21 +17,25 @@ public class EmptyReputationSearchViewHolder extends AbstractViewHolder<EmptySea
     @LayoutRes
     public static final int LAYOUT = R.layout.list_empty_search_reputation;
 
-    TextView seeAllButton;
+    TextView button;
+    TextView title;
 
-    public EmptyReputationSearchViewHolder(View itemView, final InboxReputation.View viewListener) {
+    public EmptyReputationSearchViewHolder(View itemView) {
         super(itemView);
-        seeAllButton = (TextView) itemView.findViewById(R.id.see_all);
-        seeAllButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onResetSearch();
-            }
-        });
+        title = (TextView) itemView.findViewById(R.id.title);
+        button = (TextView) itemView.findViewById(R.id.button);
     }
 
     @Override
-    public void bind(EmptySearchModel element) {
+    public void bind(final EmptySearchModel element) {
+        title.setText(element.getTitle());
+        button.setText(element.getButtonText());
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                element.getButtonListener();
+            }
+        });
 
     }
 }

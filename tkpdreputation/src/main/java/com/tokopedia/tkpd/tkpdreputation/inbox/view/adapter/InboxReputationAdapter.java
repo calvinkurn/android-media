@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
@@ -24,7 +23,6 @@ import java.util.List;
 public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
-    private EmptyModel emptyModel;
     private EmptySearchModel emptySearchModel;
     private LoadingModel loadingModel;
     private final InboxReputationTypeFactory typeFactory;
@@ -32,7 +30,6 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
     public InboxReputationAdapter(InboxReputationTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
-        this.emptyModel = new EmptyModel();
         this.loadingModel = new LoadingModel();
         this.emptySearchModel = new EmptySearchModel();
     }
@@ -70,12 +67,15 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
         notifyDataSetChanged();
     }
 
-    public void showEmpty() {
-        this.list.add(emptyModel);
+    public void showEmpty(String title, String buttonText, View.OnClickListener onClickListener) {
+        emptySearchModel.setTitle(title);
+        emptySearchModel.setButtonText(buttonText);
+        emptySearchModel.setButtonListener(onClickListener);
+        this.list.add(emptySearchModel);
     }
 
     public void removeEmpty() {
-        this.list.remove(emptyModel);
+        this.list.remove(emptySearchModel);
     }
 
     public void showLoading() {
@@ -101,13 +101,4 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
     public void clearList() {
         this.list.clear();
     }
-
-    public void showEmptySearch() {
-        this.list.add(emptySearchModel);
-    }
-
-    public void removeEmptySearch() {
-        this.list.remove(emptySearchModel);
-    }
-
 }

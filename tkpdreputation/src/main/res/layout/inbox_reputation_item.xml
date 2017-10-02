@@ -5,6 +5,7 @@
               android:layout_height="wrap_content"
               android:layout_marginBottom="@dimen/margin_small"
               android:background="@color/white"
+              android:id="@+id/main_view"
               android:orientation="vertical">
 
     <View

@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -319,7 +321,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetFilteredInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
-        adapter.removeEmptySearch();
+        adapter.removeEmpty();
         adapter.setList(inboxReputationViewModel.getList());
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
@@ -343,20 +345,44 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onShowEmpty() {
         searchView.setVisibility(View.GONE);
         adapter.clearList();
-        adapter.showEmpty();
+        adapter.showEmpty(getString(R.string.inbox_reputation_empty_title),
+                getString(R.string.inbox_reputation_empty_button),
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        goToHotlist();
+                    }
+                });
         adapter.notifyDataSetChanged();
+    }
+
+    private void goToHotlist() {
+        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeHotlistIntent
+                    (getActivity());
+            startActivity(intent);
+            getActivity().finish();
+        }
     }
 
     @Override
     public void onShowEmptyFilteredInboxReputation() {
         adapter.clearList();
-        adapter.showEmptySearch();
+        adapter.showEmpty(getString(R.string.inbox_reputation_search_empty_title),
+                getString(R.string.inbox_reputation_search_empty_button),
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onResetSearch();
+                    }
+                });
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onResetSearch() {
         searchView.setQuery("", true);
+        onRefresh();
     }
 
     @Override
