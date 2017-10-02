@@ -8,8 +8,12 @@ import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
  */
 
 public interface ProductManagePresenter extends CustomerPresenter<ProductManageView> {
+
     void editPrice(String productId, String price, String priceCurrency);
+
     void deleteProduct(String productId);
+
     void getListProduct(int page, String keywordFilter);
+
     void getListFeaturedProduct();
 }

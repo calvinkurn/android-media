@@ -1,7 +1,9 @@
 package com.tokopedia.seller.product.manage.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
+import android.support.annotation.NonNull;
+
+import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 
 import java.util.List;
 
@@ -9,7 +11,10 @@ import java.util.List;
  * Created by zulfikarrahman on 9/22/17.
  */
 
-public interface ProductManageView extends CustomerView {
+public interface ProductManageView extends BaseListViewListener<ProductManageViewModel> {
+
+    void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNext);
+
     void onErrorEditPrice();
 
     void onSuccessEditPrice();
@@ -17,10 +22,6 @@ public interface ProductManageView extends CustomerView {
     void onSuccessDeleteProduct();
 
     void onErrorDeleteProduct();
-
-    void onGetProductList(ProductListManageModelView transform);
-
-    void onErrorGetProductList(Throwable e);
 
     void showLoadingProgress();
 

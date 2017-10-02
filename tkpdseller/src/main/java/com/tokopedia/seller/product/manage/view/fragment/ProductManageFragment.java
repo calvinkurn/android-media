@@ -27,6 +27,7 @@ import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
 import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
+import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
 
 import java.util.List;
 
@@ -86,7 +87,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     protected void searchForPage(int page) {
-        if(page == getStartPage()){
+        if (page == getStartPage()) {
             productManagePresenter.getListFeaturedProduct();
         }
         productManagePresenter.getListProduct(page, keywordFilter);
@@ -119,19 +120,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onGetProductList(ProductListManageModelView productListManageModelView) {
-        onSearchLoaded(productListManageModelView.getProductManageViewModels(), productListManageModelView.getProductManageViewModels().size());
-        hasNextPage = productListManageModelView.isHasNextPage();
+    public void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNext) {
+        onSearchLoaded(list, totalItem);
+        this.hasNextPage = hasNext;
     }
 
     @Override
     protected boolean hasNextPage() {
         return hasNextPage;
-    }
-
-    @Override
-    public void onErrorGetProductList(Throwable e) {
-        onLoadSearchError(e);
     }
 
     @Override
@@ -157,7 +153,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onGetFeaturedProductList(List<String> data) {
-        ((ProductManageListAdapter)adapter).setFeaturedProduct(data);
+        ((ProductManageListAdapter) adapter).setFeaturedProduct(data);
         adapter.notifyDataSetChanged();
     }
 
@@ -184,15 +180,15 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             @Override
             public void onBottomSheetItemClick(MenuItem item) {
                 int itemId = item.getItemId();
-                if(itemId == R.id.edit_product_menu){
+                if (itemId == R.id.edit_product_menu) {
                     goToEditProduct(productManageViewModel.getId());
-                }else if(itemId == R.id.duplicat_product_menu){
+                } else if (itemId == R.id.duplicat_product_menu) {
                     goToDuplicateProduct(productManageViewModel.getId());
-                }else if(itemId == R.id.delete_product_menu){
+                } else if (itemId == R.id.delete_product_menu) {
                     showDialogActionDeleteProduct(productManageViewModel.getId());
-                }else if(itemId == R.id.change_price_product_menu){
+                } else if (itemId == R.id.change_price_product_menu) {
                     showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPrice(), productManageViewModel.getProductCurrencyId());
-                }else if(itemId == R.id.share_product_menu){
+                } else if (itemId == R.id.share_product_menu) {
                     goToShareProduct(productManageViewModel);
                 }
             }
