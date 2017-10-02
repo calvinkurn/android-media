@@ -167,4 +167,7 @@
     <string name="product_manage_title_both_catalog_option_menu">Dengan &amp; Tanpa Katalog</string>
     <string name="product_manage_title_with_catalog_menu">Dengan Katalog</string>
     <string name="product_manage_title_without_catalog_menu">Tanpa Katalog</string>
+    <string name="product_manage_title_both_condition_option_menu">Semua Kondisi</string>
+    <string name="product_manage_title_new_condition_menu">Baru</string>
+    <string name="product_manage_title_old_condition_menu">Bekas</string>
 </resources>

@@ -25,4 +25,5 @@ public interface SellerModuleRouter {
     Observable<GMFeaturedProductDomainModel> getFeaturedProduct();
     void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList);
     void goToGMSubscribe(Activity activity);
+    Observable<Boolean> setCashBack(String productId, String cashback);
 }

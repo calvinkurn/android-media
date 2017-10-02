@@ -26,6 +26,7 @@ import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
@@ -100,4 +101,6 @@ public interface GMComponent {
     ApiCacheDataSource cacheHelper();
 
     GMFeaturedProductGetListUseCase getFeaturedProductGetListUseCase();
+
+    SetCashbackUseCase getSetCashbackUseCase();
 }

@@ -44,7 +44,7 @@ public class ProductManageModule {
                                                                 DeleteProductUseCase deleteProductUseCase,
                                                                 GetProductListManageMapperView getProductListManageMapperView,
                                                                 SellerModuleRouter sellerModuleRouter){
-        return new ProductManagePresenterImpl(getProductListSellingUseCase, editPriceProductUseCase, deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter);
+        return new ProductManagePresenterImpl(getProductListSellingUseCase, editPriceProductUseCase, deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter, multipleDeleteProductUseCase);
     }
 
     @Provides
