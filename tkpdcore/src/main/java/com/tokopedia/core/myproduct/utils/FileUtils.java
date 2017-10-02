@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -22,13 +23,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
  * Created by m.normansyah on 12/8/15.
  */
 public class FileUtils {
-
     public static final String CACHE_TOKOPEDIA = "/cache/tokopedia/";
     public static final String CROP_TEMP = "crop_temp";
     public static final String JPG = ".jpg";
@@ -74,7 +75,7 @@ public class FileUtils {
      */
     public static File writeImageToTkpdPath(byte[] buffer, String fileName) {
         if (buffer != null) {
-            File photo = getTkpdCacheFile(fileName);
+            File photo = getTkpdImageCacheFile(fileName);
             if (photo.exists()) {
                 // photo already exist in cache
                 if (photo.length() == buffer.length) {
@@ -107,7 +108,7 @@ public class FileUtils {
     }
 
     public static File writeImageToTkpdPath(InputStream source, String fileName) {
-        File photo = getTkpdCacheFile(fileName);
+        File photo = getTkpdImageCacheFile(fileName);
 
         if (photo.exists()) {
             photo.delete();
@@ -169,6 +170,33 @@ public class FileUtils {
         }
     }
 
+    public static void deleteAllCacheTkpdFiles(ArrayList<String> filesToDelete) {
+        if (filesToDelete == null || filesToDelete.size() == 0) {
+            return;
+        }
+        File tkpdCacheDirectory = getTkpdCacheDirectory();
+        String tkpdcacheDirPath = tkpdCacheDirectory.getAbsolutePath();
+        for (int i = 0, sizei = filesToDelete.size(); i<sizei; i++) {
+            String filePathToDelete = filesToDelete.get(i);
+            File fileToDelete = new File(filePathToDelete);
+            if (fileToDelete.getAbsolutePath().contains(tkpdcacheDirPath) && fileToDelete.exists()) {
+                fileToDelete.delete();
+            }
+        }
+    }
+
+    public static void deleteAllCacheTkpdFile(String fileToDeletePath) {
+        if (TextUtils.isEmpty(fileToDeletePath)) {
+            return;
+        }
+        File tkpdCacheDirectory = getTkpdCacheDirectory();
+        String tkpdcacheDirPath = tkpdCacheDirectory.getAbsolutePath();
+        File fileToDelete = new File(fileToDeletePath);
+        if (fileToDelete.getAbsolutePath().contains(tkpdcacheDirPath) && fileToDelete.exists()) {
+            fileToDelete.delete();
+        }
+    }
+
     /**
      * Close the given closeable object (Stream) in a safe way: check if it is null and catch-log
      * exception thrown.
@@ -185,7 +213,7 @@ public class FileUtils {
     }
 
     @NonNull
-    private static File getTkpdCacheFile(String fileName) {
+    private static File getTkpdCacheDirectory() {
         String externalDirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
         String tkpdFolderPath = FileUtils.getFolderPathForUploadNoRand(externalDirPath);
 
@@ -193,11 +221,17 @@ public class FileUtils {
         if (!tkpdRootdirectory.exists()) {
             tkpdRootdirectory.mkdirs();
         }
-        File tkpdCachedirectory = new File(tkpdFolderPath + CACHE_TOKOPEDIA);
+        File tkpdCachedirectory = new File(tkpdRootdirectory.getAbsolutePath() + CACHE_TOKOPEDIA);
         if (!tkpdCachedirectory.exists()) {
             tkpdCachedirectory.mkdirs();
         }
-        return new File(tkpdRootdirectory.getAbsolutePath() + CACHE_TOKOPEDIA + fileName + ".jpg");
+        return tkpdCachedirectory;
+    }
+
+    @NonNull
+    private static File getTkpdImageCacheFile(String fileName) {
+        File tkpdCachedirectory = getTkpdCacheDirectory();
+        return new File(tkpdCachedirectory.getAbsolutePath() + "/"+ fileName + ".jpg");
     }
 
     // URI starts with "content://gmail-ls/"
@@ -205,7 +239,7 @@ public class FileUtils {
         File attach;
         try {
             InputStream attachment = context.getContentResolver().openInputStream(contentUri);
-            String fileName = FileUtils.generateUniqueFileName(contentUri.toString());
+            String fileName = FileUtils.generateUniqueFileName();
             attach = FileUtils.writeImageToTkpdPath(attachment, fileName);
             if (attach == null) {
                 return null;
@@ -224,7 +258,7 @@ public class FileUtils {
                 String path = getPath(context, uri);
                 Bitmap bmp = BitmapFactory.decodeStream(is);
                 bmp = ImageHandler.RotatedBitmap(bmp, path);
-                String fileName = FileUtils.generateUniqueFileName(path);
+                String fileName = FileUtils.generateUniqueFileName();
                 File file = writeImageToTkpdPath(bmp, fileName);
                 if (file!= null) {
                     return file.getAbsolutePath();

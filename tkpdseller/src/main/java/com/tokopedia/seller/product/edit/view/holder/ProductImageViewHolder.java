@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.utils.StringUtils;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
@@ -41,6 +42,8 @@ public class ProductImageViewHolder extends ProductViewHolder {
         void onTotalImageUpdated(int total);
 
         void onImageResolutionChanged(int maxSize);
+
+        void onImageEditor(String uriOrPath);
     }
 
     public static final int MIN_IMG_RESOLUTION = 300;
@@ -85,6 +88,13 @@ public class ProductImageViewHolder extends ProductViewHolder {
                     listener.onResolutionImageCheckFailed(uri);
                 }
             }
+
+            @Override
+            public void removePreviousPath(String uri) {
+                if (!TextUtils.isEmpty(uri)) {
+                    FileUtils.deleteAllCacheTkpdFile(uri);
+                }
+            }
         });
         imagesSelectView.setOnImageChanged(new ImagesSelectView.OnImageChanged() {
             @Override
@@ -110,26 +120,25 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY && data != null) {
-            int position = data.getIntExtra(GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION, GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
             String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
             if (!TextUtils.isEmpty(imageUrl)) {
-                if (position == imagesSelectView.getSelectedImageIndex()) {
-                    imagesSelectView.changeImagePath(imageUrl);
-                } else {
-                    imagesSelectView.addImageString(imageUrl);
+                listener.onImageEditor(imageUrl);
+            } else {
+                ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
+                if (imageUrls != null) {
+                    imagesSelectView.addImagesString(imageUrls);
                 }
-            }
-
-            ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
-            if (imageUrls != null) {
-                imagesSelectView.addImagesString(imageUrls);
             }
         } else if (resultCode == Activity.RESULT_OK && requestCode == ImageEditorActivity.REQUEST_CODE && data != null) {
             List<String> resultImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_IMAGE_PATH);
             if (resultImageUrl!= null && resultImageUrl.size() > 0) {
                 String imageUrl = resultImageUrl.get(0);
                 if (!TextUtils.isEmpty(imageUrl)) {
-                    imagesSelectView.changeImagePath(imageUrl);
+                    if (imagesSelectView.getSelectedImageIndex() < 0) {
+                        imagesSelectView.addImageString(imageUrl);
+                    } else {
+                        imagesSelectView.changeImagePath(imageUrl);
+                    }
                 }
             }
         }

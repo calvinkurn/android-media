@@ -1579,8 +1579,10 @@ public class ManageProduct extends TkpdActivity implements
                     }
 
                     @Override
-                    public void onSuccess(String path, int position) {
-                        ImageEditorActivity.start(ManageProduct.this, path);
+                    public void onSuccess(String path) {
+                        ArrayList<String> imageUrls = new ArrayList<>();
+                        imageUrls.add(path);
+                        ImageEditorActivity.start(ManageProduct.this, imageUrls);
                     }
 
                     @Override
@@ -1601,7 +1603,6 @@ public class ManageProduct extends TkpdActivity implements
             }
             break;
         }
-
 
     }
 

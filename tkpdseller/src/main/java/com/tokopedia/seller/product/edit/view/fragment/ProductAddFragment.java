@@ -25,6 +25,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -52,6 +53,7 @@ import com.tokopedia.seller.product.edit.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
+import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -228,6 +230,18 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         // will be overriden when not adding product
         UploadProductInputViewModel model = collectDataFromView();
         return !model.equalsDefault(firstTimeViewModel);
+    }
+
+    public void deleteNotUsedTkpdCacheImage(){
+        ArrayList<ImageSelectModel> imageSelectModelArrayList = productImageViewHolder.getImagesSelectView().getImageList();
+        if (imageSelectModelArrayList == null || imageSelectModelArrayList.size() == 0) {
+            return;
+        }
+        ArrayList<String> uriArrayList = new ArrayList<>();
+        for (int i = 0, sizei = imageSelectModelArrayList.size(); i<sizei; i++) {
+            uriArrayList.add(imageSelectModelArrayList.get(i).getUriOrPath());
+        }
+        FileUtils.deleteAllCacheTkpdFiles(uriArrayList);
     }
 
     public void saveDraft(boolean isUploading) {
@@ -540,7 +554,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             public void clickImageEditor(int position) {
                 String uriOrPath = productImageViewHolder.getImagesSelectView().getImageAt(position).getUriOrPath();
                 if (!TextUtils.isEmpty(uriOrPath)) {
-                    ImageEditorActivity.start(getContext(), ProductAddFragment.this, uriOrPath);
+                    onImageEditor(uriOrPath);
                 }
             }
 
@@ -570,9 +584,24 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             @Override
             public void clickRemoveImage(int positions) {
                 ImagesSelectView imagesSelectView = productImageViewHolder.getImagesSelectView();
+                ImageSelectModel imageSelectModel = imagesSelectView.getSelectedImage();
+                if (imageSelectModel!= null) {
+                    String path = imageSelectModel.getUriOrPath();
+                    if (!TextUtils.isEmpty(path)) {
+                        FileUtils.deleteAllCacheTkpdFile(path);
+                    }
+                }
+
                 imagesSelectView.removeImage();
             }
         });
+    }
+
+    @Override
+    public void onImageEditor(String uriOrPath) {
+        ArrayList<String> imageUrls = new ArrayList<>();
+        imageUrls.add(uriOrPath);
+        ImageEditorActivity.start(getContext(), ProductAddFragment.this, imageUrls);
     }
 
     private void clearFocus(){
@@ -647,6 +676,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onResolutionImageCheckFailed(String uri) {
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.error_image_resolution));
+        FileUtils.deleteAllCacheTkpdFile(uri);
     }
 
     @Override

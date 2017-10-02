@@ -42,6 +42,8 @@ public class ImagesSelectView extends BaseCustomView {
         boolean isResolutionCorrect(String uri);
 
         void resolutionCheckFailed(String uri);
+
+        void removePreviousPath(String uri);
     }
 
     public static final int DEFAULT_LIMIT = 5;
@@ -202,6 +204,7 @@ public class ImagesSelectView extends BaseCustomView {
 
     public void changeImagePath(String path) {
         if (successHandleResolution(path)) {
+            onCheckResolutionListener.removePreviousPath (getSelectedImage().getUriOrPath());
             imageSelectorAdapter.changeImagePath(path);
         }
     }

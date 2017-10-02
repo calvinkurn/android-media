@@ -2,14 +2,12 @@ package com.tokopedia.seller.common.imageeditor;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
@@ -30,43 +28,35 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
 
     public static final int REQUEST_CODE = 520;
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
-    public static final String EXTRA_IMAGE_URL = "IMG_URL";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_IMAGE_URLS = "SAVED_IMG_URLS";
+    public static final String SAVED_ALL_CROPPED_PATHS = "SAVED_CROPPED_PATHS";
     public static final String RESULT_IMAGE_PATH = "RES_PATH";
 
     private ArrayList<String> imageUrls;
     private ArrayList<String> resultImageUrls;
+
+    // store the cropped paths (and the original), so the unused files can be deleted later
+    private ArrayList<String> savedCroppedPaths;
+
     private int imageIndex;
 
     private TkpdProgressDialog progressDialog;
 
-    public static void start(Context context, Fragment fragment, String imageUrl) {
-        Intent intent = createInstance(context, imageUrl);
+    public static void start(Context context, Fragment fragment, ArrayList<String> imageUrls) {
+        Intent intent = createInstance(context, imageUrls);
         fragment.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static void start(Activity activity,String imageUrl) {
-        Intent intent = createInstance(activity, imageUrl);
+    public static void start(Activity activity, ArrayList<String> imageUrls) {
+        Intent intent = createInstance(activity, imageUrls);
         activity.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    //    public static void start(Context context, Fragment fragment, ArrayList<String> imageUrls) {
-//        Intent intent = createInstance(context, imageUrls);
-//        fragment.startActivityForResult(intent, REQUEST_CODE);
-//    }
-//
-
-//    public static Intent createInstance(Context context, ArrayList<String> imageUrls) {
-//        Intent intent = new Intent(context, ImageEditorActivity.class);
-//        intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
-//        return intent;
-//    }
-
-    public static Intent createInstance(Context context, String imageUrl) {
+    public static Intent createInstance(Context context, ArrayList<String> imageUrls) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
-        intent.putExtra(EXTRA_IMAGE_URL, imageUrl);
+        intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
         return intent;
     }
 
@@ -79,11 +69,7 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
         getSupportActionBar().setHomeButtonEnabled(true);
 
         if (savedInstanceState == null) {
-            if (getIntent().hasExtra(EXTRA_IMAGE_URL)) {
-                String imageUrl = getIntent().getStringExtra(EXTRA_IMAGE_URL);
-                imageUrls = new ArrayList<>();
-                imageUrls.add(imageUrl);
-            } else if (getIntent().hasExtra(EXTRA_IMAGE_URLS)) {
+            if (getIntent().hasExtra(EXTRA_IMAGE_URLS)) {
                 imageUrls = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS);
             } else {
                 finish();
@@ -91,15 +77,17 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
             }
             imageIndex = 0;
             resultImageUrls = new ArrayList<>();
+            savedCroppedPaths = new ArrayList<>();
         } else {
             imageIndex = savedInstanceState.getInt(SAVED_IMAGE_INDEX, 0);
             imageUrls = savedInstanceState.getStringArrayList(SAVED_IMAGE_URLS);
             resultImageUrls = savedInstanceState.getStringArrayList(RESULT_IMAGE_PATH);
+            savedCroppedPaths = savedInstanceState.getStringArrayList(SAVED_ALL_CROPPED_PATHS);
         }
 
-        if (resultImageUrls== null || resultImageUrls.size() == 0) {
+        if (resultImageUrls == null || resultImageUrls.size() == 0) {
             boolean isNetworkImage = false;
-            for (int i=0, sizei = imageUrls.size(); i<sizei; i++) {
+            for (int i = 0, sizei = imageUrls.size(); i < sizei; i++) {
                 if (imageUrls.get(i).startsWith("http")) {
                     isNetworkImage = true;
                     break;
@@ -135,28 +123,28 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     }
 
 
-    private void startEditLocalImages(){
+    private void startEditLocalImages() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.findFragmentByTag(ImageEditorFragment.TAG) == null) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, ImageEditorFragment.newInstance(
-                            imageUrls.get(imageIndex)), ImageEditorFragment.TAG)
+                    .replace(R.id.container, ImageEditorWatermarkFragment.newInstance(
+                            imageUrls.get(imageIndex)), ImageEditorWatermarkFragment.TAG)
                     .commit();
         }
         setUpToolbarTitle();
     }
 
-    private void showProgressDialog(){
+    private void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
             progressDialog.setCancelable(false);
         }
-        if (! progressDialog.isProgress()) {
+        if (!progressDialog.isProgress()) {
             progressDialog.showDialog();
         }
     }
 
-    private void hideProgressDialog(){
+    private void hideProgressDialog() {
         if (progressDialog != null && progressDialog.isProgress()) {
             progressDialog.dismiss();
         }
@@ -164,8 +152,10 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
 
     private void copyOriginalUrlsToResult() {
         resultImageUrls = new ArrayList<>();
+        savedCroppedPaths = new ArrayList<>();
         for (int i = 0, sizei = imageUrls.size(); i < sizei; i++) {
             resultImageUrls.add(imageUrls.get(i));
+            savedCroppedPaths.add(imageUrls.get(i));
         }
     }
 
@@ -176,7 +166,10 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
             File file = FileUtils.writeImageToTkpdPath(bitmap, FileUtils.generateUniqueFileName());
             if (file != null && file.exists()) {
                 String path = file.getAbsolutePath();
+
+                // save the new path
                 resultImageUrls.set(imageIndex, path);
+                savedCroppedPaths.add(path);
                 imageIndex++;
                 if (imageIndex == imageUrls.size()) {
                     finishEditing(true);
@@ -184,8 +177,8 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
                     // continue to next image index
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction()
-                            .replace(R.id.container, ImageEditorFragment.newInstance(
-                                    imageUrls.get(imageIndex)), ImageEditorFragment.TAG)
+                            .replace(R.id.container, ImageEditorWatermarkFragment.newInstance(
+                                    imageUrls.get(imageIndex)), ImageEditorWatermarkFragment.TAG)
                             .addToBackStack(String.valueOf(imageIndex))
                             .commit();
                     setUpToolbarTitle();
@@ -194,11 +187,35 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
         }
     }
 
-    private void finishEditing(boolean isResultOK){
+    private void finishEditing(boolean isResultOK) {
         Intent intent = new Intent();
-        intent.putExtra(RESULT_IMAGE_PATH, resultImageUrls);
-        setResult(isResultOK? Activity.RESULT_OK: Activity.RESULT_CANCELED, intent);
+        if (isResultOK) {
+            intent.putExtra(RESULT_IMAGE_PATH, resultImageUrls);
+            deleteAllTkpdFilesNotInResult(savedCroppedPaths, resultImageUrls);
+        } else {
+            intent.putExtra(RESULT_IMAGE_PATH, getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS));
+            deleteAllTkpdFilesNotInResult(savedCroppedPaths, getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS));
+        }
+        setResult(Activity.RESULT_OK, intent);
         finish();
+    }
+
+    private void deleteAllTkpdFilesNotInResult(ArrayList<String> savedCroppedPaths, ArrayList<String> resultImageUrls){
+        ArrayList<String> toBeDeletedFiles = new ArrayList<>();
+        for (int i=0, sizei = savedCroppedPaths.size(); i<sizei; i++) {
+            String savedCroppedPath = savedCroppedPaths.get(i);
+            boolean croppedFilesIsInResult = false;
+            for (int j = 0, sizej = resultImageUrls.size(); j<sizej; j++) {
+                if (savedCroppedPath.equals(resultImageUrls.get(j))) {
+                    croppedFilesIsInResult = true;
+                    break;
+                }
+            }
+            if (!croppedFilesIsInResult) {
+                toBeDeletedFiles.add(savedCroppedPath);
+            }
+        }
+        FileUtils.deleteAllCacheTkpdFiles(toBeDeletedFiles);
     }
 
     @Override
@@ -237,5 +254,6 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
         outState.putInt(SAVED_IMAGE_INDEX, imageIndex);
         outState.putStringArrayList(RESULT_IMAGE_PATH, resultImageUrls);
         outState.putStringArrayList(SAVED_IMAGE_URLS, imageUrls);
+        outState.putStringArrayList(SAVED_ALL_CROPPED_PATHS, savedCroppedPaths);
     }
 }
