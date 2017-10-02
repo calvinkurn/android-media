@@ -245,12 +245,14 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     @Override
     public void onSearchSubmitted(String text) {
+        super.onSearchSubmitted(text);
         filterSearch(text);
         resetPageAndSearch();
     }
 
     @Override
     public void onSearchTextChanged(String text) {
+        super.onSearchTextChanged(text);
         filterSearch(text);
         resetPageAndSearch();
     }
@@ -285,5 +287,10 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     public long getSelectedUnitId() {
         return selectedVariantUnitId;
+    }
+
+    @Override
+    protected long getDelayTextChanged() {
+        return 0;
     }
 }
