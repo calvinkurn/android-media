@@ -95,7 +95,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     public void renderData(@NonNull ProductDetailData data) {
         tvName.setText(MethodChecker.fromHtml(data.getInfo().getProductName()));
         tvPrice.setText(data.getInfo().getProductPrice());
-        setVisibility(VISIBLE);
+
 
         if (data.getCashBack() != null && !data.getCashBack().getProductCashbackValue().isEmpty()) {
             cashbackTextView.setText(data.getCashBack().getProductCashbackValue());
@@ -115,6 +115,8 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         if(data.getShopInfo().getShopIsOfficial() != null && data.getShopInfo().getShopIsOfficial() == 1) {
             textOfficialStore.setVisibility(VISIBLE);
         }
+
+        setVisibility(VISIBLE);
     }
 
     public void renderTempData(ProductPass productPass) {
