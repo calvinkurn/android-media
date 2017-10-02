@@ -31,6 +31,8 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.branch.referral.Branch;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -59,7 +61,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LocalBroadcastManager.getInstance(this).registerReceiver(new DeepLinkReceiver(), intentFilter);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
-
+        // initialize the Branch object
+        initBranch();
     }
 
     private void generateConsumerAppBaseUrl() {
@@ -90,6 +93,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.GRAPHQL_DOMAIN = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         TkpdBaseURL.SCROOGE_DOMAIN = ConsumerAppBaseUrl.SCROOGE_DOMAIN;
         TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = ConsumerAppBaseUrl.SCROOGE_CREDIT_CARD_DOMAIN;
+        TkpdBaseURL.PAYMENT_DOMAIN = ConsumerAppBaseUrl.PAYMENT_DOMAIN;
+        TkpdBaseURL.GALADRIEL = ConsumerAppBaseUrl.GALADRIEL;
+        TkpdBaseURL.MAPS_DOMAIN = ConsumerAppBaseUrl.MAPS_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {
@@ -166,5 +172,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SoLoader.init(this, false);
     }
 
-
+    private void initBranch() {
+        Branch.getAutoInstance(this);
+    }
 }

@@ -30,7 +30,6 @@ import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -38,6 +37,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -69,7 +69,6 @@ import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.fragment.RegisterPassPhoneFragment;
-import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.intentservice.LoginResultReceiver;
 import com.tokopedia.session.session.intentservice.LoginService;
 import com.tokopedia.session.session.intentservice.OTPResultReceiver;
@@ -105,7 +104,7 @@ import permissions.dispatcher.RuntimePermissions;
  * 1. Logout Fragment currently dialog is discard when rotate.
  */
 @RuntimePermissions
-public class Login extends GoogleActivity implements SessionView, GoogleActivity.GoogleListener
+public class Login extends BaseActivity implements SessionView
         , DownloadResultReceiver.Receiver
         , LoginResultReceiver.Receiver
         , RegisterResultReceiver.Receiver
@@ -132,7 +131,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     RegisterResultReceiver registerReceiver;
     ResetPasswordResultReceiver resetPasswordReceiver;
     OTPResultReceiver otpReceiver;
-    ErrorNetworkReceiver mReceiverLogout;
 
     @DeepLink({Constants.Applinks.LOGIN})
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
@@ -230,7 +228,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_login2);
-        mReceiverLogout = new ErrorNetworkReceiver();
 
         session = new SessionImpl(this);
         session.fetchExtras(getIntent());
@@ -268,8 +265,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         getSupportActionBar().setHomeButtonEnabled(true);
 
         setToolbarColor();
-
-        initListener(this);
 
          /* Starting Download Service */
         mReceiver = new DownloadResultReceiver(new Handler());
@@ -334,8 +329,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     public void moveToFragment(Fragment fragment, boolean isAddtoBackStack, String TAG, int type) {
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.login_fragment, fragment, TAG);
-        if (isAddtoBackStack)
-            fragmentTransaction.addToBackStack(null);
+        try {
+            if (isAddtoBackStack)
+                fragmentTransaction.addToBackStack(null);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
         fragmentTransaction.commit();
     }
 
@@ -484,19 +483,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     }
 
     @Override
-    public void onCancelChooseAccount() {
-        Fragment fragment = supportFragmentManager.findFragmentById(R.id.login_fragment);
-        if (fragment instanceof LoginFragment && fragment.isVisible()) {
-            ((LoginFragment) fragment).showProgress(false);
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-
-        mReceiverLogout.setReceiver(this);
-
 
         switch (session.getWhichFragment()) {
             case TkpdState.DrawerPosition.LOGIN:
@@ -550,7 +538,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     protected void onPause() {
         super.onPause();
-        mReceiverLogout.setReceiver(null);
 
     }
 
@@ -639,65 +626,22 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void showSignedInUI() {
-        updateUI(true);
-    }
-
-    @Override
-    public void showSignedOutUI() {
-        updateUI(false);
-    }
-
     @NeedsPermission(android.Manifest.permission.GET_ACCOUNTS)
     @Override
-    public void updateUI(boolean isSignedIn) {
+    public void updateUI(boolean isSignedIn, LoginGoogleModel model) {
         if (isSignedIn) {
-            Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-            String email;
-            try {
-                email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-            } catch (Exception e) {
-                email = "";
-            }
-            if (currentPerson != null && email != null && !email.equals("")) {
-                // Show signed-in user's name
-                String name = currentPerson.getDisplayName();
-
-                LoginGoogleModel model = new LoginGoogleModel();
-                model.setFullName(currentPerson.getDisplayName());
-                model.setGoogleId(currentPerson.getId());
-                model.setEmail(email);
-                model.setGender(getGenderFromGoogle(currentPerson));
-                model.setBirthday(getBirthdayFromGoogle(currentPerson));
-                model.setImageUrl(currentPerson.getImage().getUrl());
-
-                Fragment fragment = supportFragmentManager.findFragmentById(R.id.login_fragment);
-                if (fragment instanceof LoginFragment && fragment.isVisible()) {
-                    ((LoginFragment) fragment).startLoginWithGoogle(LoginModel.GoogleType, model);
-                }
-
-                // [START] pass some data to register fragment
-                fragment = supportFragmentManager.findFragmentById(R.id.login_fragment);
-                if (fragment instanceof RegisterInitialFragment && fragment.isVisible()) {
-                    ((RegisterInitialFragment) fragment).startLoginWithGoogle(LoginModel.GoogleType, model);
-                }
-                // [END] pass some data to register fragment
-
-                // Show users' email address (which requires GET_ACCOUNTS permission)
-//                if (checkAccountsPermission()) {
-//                String currentAccount = Plus.AccountApi.getAccountName(mGoogleApiClient);
-//                Toast.makeText(this, name+" currentAccount : "+currentAccount, Toast.LENGTH_LONG).show();
-//                }
-            } else {
-                // If getCurrentPerson returns null there is generally some error with the
-                // configuration of the application (invalid Client ID, Plus API not enabled, etc).
-                Log.w(TAG, "null person");
-                SnackbarManager.make(this, "Profil tidak ditemukan", Snackbar.LENGTH_LONG).show();
+            Fragment fragment = supportFragmentManager.findFragmentById(R.id.login_fragment);
+            if (fragment instanceof LoginFragment && fragment.isVisible()) {
+                ((LoginFragment) fragment).startLoginWithGoogle(LoginModel.GoogleType, model);
             }
 
-            onDisconnectClicked();
-            // Set button visibility
+            // [START] pass some data to register fragment
+            fragment = supportFragmentManager.findFragmentById(R.id.login_fragment);
+            if (fragment instanceof RegisterInitialFragment && fragment.isVisible()) {
+                ((RegisterInitialFragment) fragment).startLoginWithGoogle(LoginModel.GoogleType, model);
+            }
+            // [END] pass some data to register fragment
+
         } else {
             // Show signed-out message and clear email field
 

@@ -28,6 +28,7 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -51,6 +52,7 @@ import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCa
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -98,7 +100,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter {
+        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -507,6 +509,37 @@ public abstract class SellerRouterApplication extends MainApplication
                 urlQuery != null ? urlQuery : "",
                 "GET",
                 AuthUtil.KEY.KEY_WSV4);
+    }
+
+    @Override
+    public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
+                                    String customSubject, String customMessage, String source) {
+        return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
+                customSubject, customMessage, source);
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                     String customSubject, String customMessage, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+                customSubject, customMessage, source);
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source);
+    }
+
+    @Override
+    public Intent getAskUserIntent(Context context, String userId, String userName, String source) {
+        return SendMessageActivity.getAskUserIntent(context, userId, userName, source);
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                     String customSubject, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+                customSubject, source);
     }
 
     @Override

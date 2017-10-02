@@ -3,11 +3,8 @@ package com.tokopedia.topads.dashboard.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -19,10 +16,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
-
-import java.util.List;
-
-import bolts.AppLink;
 
 import static com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS;
 
@@ -117,7 +110,7 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
         if (isTaskRoot()) {
             //coming from deeplink
             String deepLink = getIntent().getStringExtra(DeepLink.URI);
-            if(deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)) {
+            if(!TextUtils.isEmpty(deepLink) && deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE)) {
                 super.onBackPressed();
             } else {
                 Intent intent = new Intent(this, TopAdsDashboardActivity.class);

@@ -126,14 +126,30 @@ public class FileUtils {
         }
     }
 
-    public static String getRealPathFromURI(Context context, Uri uri) {
+    public static String getTkpdPathFromURI(Context context, Uri uri) {
         InputStream is = null;
         if (uri.getAuthority() != null) {
             try {
                 is = context.getContentResolver().openInputStream(uri);
+                String path = getPath(context, uri);
                 Bitmap bmp = BitmapFactory.decodeStream(is);
-                return writeToTempImageAndGetPathUri(context, bmp);
-            } catch (FileNotFoundException e) {
+                bmp = ImageHandler.RotatedBitmap(bmp, path);
+                ByteArrayOutputStream bao = new ByteArrayOutputStream();
+                byte[] bytes;
+                if (bmp != null) {
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, bao);
+                    bytes = bao.toByteArray();
+                    String fileName = FileUtils.generateUniqueFileName(path);
+                    File file = writeImageToTkpdPath(bytes,fileName);
+                    if (file!= null) {
+                        return file.getAbsolutePath();
+                    } else {
+                        return null;
+                    }
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 try {
@@ -204,7 +220,17 @@ public class FileUtils {
     }
 
     public static byte[] compressImage(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
+        Bitmap tempPicToUpload = compressImageToBitmap(imagePathToCompress, maxWidth, maxHeight, compressionQuality);
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        if (tempPicToUpload != null) {
+            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, compressionQuality, bao);
+            return bao.toByteArray();
+        }
+        return null;
+    }
 
+
+    public static Bitmap compressImageToBitmap(String imagePathToCompress, int maxWidth, int maxHeight, int compressionQuality) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         BitmapFactory.Options checksize = new BitmapFactory.Options();
@@ -213,8 +239,7 @@ public class FileUtils {
         BitmapFactory.decodeFile(imagePathToCompress, checksize);
         options.inSampleSize = ImageHandler.calculateInSampleSize(checksize);
         Bitmap tempPic = BitmapFactory.decodeFile(imagePathToCompress, options);
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        Bitmap tempPicToUpload = null;
+        Bitmap tempPicToUpload;
         if (tempPic != null) {
             try {
                 tempPic = ImageHandler.RotatedBitmap(tempPic, imagePathToCompress);
@@ -226,8 +251,7 @@ public class FileUtils {
             } else {
                 tempPicToUpload = tempPic;
             }
-            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, compressionQuality, bao);
-            return bao.toByteArray();
+            return tempPicToUpload;
         }
         return null;
     }

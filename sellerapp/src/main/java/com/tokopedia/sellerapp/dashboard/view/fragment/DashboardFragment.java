@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.dashboard.view.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.ShopStatisticDetail;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
@@ -145,6 +148,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         ivSettingIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_SETTINGS);
                 Intent intent = new Intent(getContext(), ManageShopActivity.class);
                 startActivity(intent);
             }
@@ -152,6 +157,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         newOrderLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_ORDER_BARU);
                 Intent intent = SellerRouter.getActivitySellingTransactionNewOrder(getActivity());
                 startActivity(intent);
             }
@@ -159,6 +166,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         deliveryConfirmationLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_KONFIRMASI_PENGIRIMAN);
                 Intent intent = SellerRouter.getActivitySellingTransactionConfirmShipping(getActivity());
                 startActivity(intent);
             }
@@ -166,6 +175,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         deliveryStatusLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_STATUS_PENGIRIMAN);
                 Intent intent = SellerRouter.getActivitySellingTransactionShippingStatus(getActivity());
                 startActivity(intent);
             }
@@ -173,6 +184,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         opportunityLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_PELUANG);
                 Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(getActivity());
                 startActivity(intent);
             }
@@ -180,6 +193,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         messageLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_PESAN);
                 Intent intent = InboxRouter.getInboxMessageActivityIntent(getActivity());
                 startActivity(intent);
             }
@@ -187,6 +202,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         discussionLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_DISKUSI_PRODUK);
                 Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
                 startActivity(intent);
             }
@@ -194,6 +211,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         reviewLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_ULASAN);
                 Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
                 startActivity(intent);
             }
@@ -201,6 +220,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         shopScoreWidget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_PERFORMA_TOKO);
                 Intent intent = new Intent(getActivity(), ShopScoreDetailActivity.class);
                 startActivity(intent);
             }
@@ -280,6 +301,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         reputationLabelLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_REPUTASI_TOKO);
                 startActivity(new Intent(getContext(),SellerReputationInfoActivity.class));
             }
         });
@@ -293,6 +316,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         transactionlabelLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_TRANSAKSI_SUKSES);
                 String shopInfo = CacheUtil.convertModelToString(shopModel,
                         new TypeToken<ShopModel>() {
                         }.getType());
@@ -357,6 +382,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 sellerDashboardPresenter.openShop();
             }
         });
+        shopWarningTickerView.setTickerColor(ContextCompat.getColor(getContext(), R.color.green_ticker));
         shopWarningTickerView.setVisibility(View.VISIBLE);
     }
 
@@ -364,6 +390,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         shopWarningTickerView.setIcon(R.drawable.ic_moderasi);
         shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_in_moderation));
         shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopModel.closedInfo.reason) );
+        shopWarningTickerView.setTickerColor(ContextCompat.getColor(getContext(), R.color.yellow_ticker));
         shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);
     }
@@ -377,8 +404,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public void onSuccessGetTickers(Ticker.Tickers[] tickers) {
         tickerView.setVisibility(View.VISIBLE);
         ArrayList<String> messages = new ArrayList<>();
+        final ArrayList<String> backgrounds = new ArrayList<>();
         for (Ticker.Tickers ticker : tickers) {
             messages.add(ticker.getBasicMessage());
+            backgrounds.add(ticker.getColor());
         }
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_yellow_status));
@@ -388,6 +417,22 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 Intent intent = new Intent(getActivity(), BannerWebView.class);
                 intent.putExtra("url", messageClick);
                 startActivity(intent);
+            }
+        });
+        tickerView.setOnPageChangeListener(new TickerView.OnPageChangeListener() {
+            @Override
+            public void onScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onSelected(int position) {
+                tickerView.setHighLightColor(Color.parseColor(backgrounds.get(position)));
+            }
+
+            @Override
+            public void onScrollStateChanged(int state) {
+
             }
         });
         tickerView.buildView();

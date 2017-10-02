@@ -224,19 +224,35 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     public void onLoadSearchError(Throwable t) {
         hideLoading();
         if (adapter.getDataSize() > 0) {
-            showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
-                @Override
-                public void onRetryClicked() {
-                    searchForPage(currentPage);
-                }
-            });
+            onLoadSearchErrorWithDataExist(t);
         } else {
-            recyclerView.removeOnScrollListener(onScrollListener);
-            adapter.showRetryFull(true);
-            if (swipeToRefresh != null) {
-                swipeToRefresh.setEnabled(false);
-            }
+            onLoadSearchErrorWithDataEmpty(t);
         }
+    }
+
+    /**
+     * Error when adapter is empty
+     * @param t
+     */
+    protected void onLoadSearchErrorWithDataEmpty(Throwable t) {
+        recyclerView.removeOnScrollListener(onScrollListener);
+        adapter.showRetryFull(true);
+        if (swipeToRefresh != null) {
+            swipeToRefresh.setEnabled(false);
+        }
+    }
+
+    /**
+     * Error when adapter is not empty
+     * @param t
+     */
+    protected void onLoadSearchErrorWithDataExist(Throwable t) {
+        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                searchForPage(currentPage);
+            }
+        });
     }
 
     protected void hideLoading() {

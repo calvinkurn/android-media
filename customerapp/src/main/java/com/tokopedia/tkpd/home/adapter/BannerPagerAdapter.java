@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.home.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -118,29 +121,50 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
 
                 trackingBannerClick(view.getContext(), item, currentPosition);
 
-                String url = item.getPromoUrl();
-                try {
-                    UnifyTracking.eventSlideBannerClicked(url);
-                    Uri uri = Uri.parse(url);
-                    String host = uri.getHost();
-                    List<String> linkSegment = uri.getPathSegments();
-                    if (isBaseHost(host) && isShop(linkSegment)) {
-                        String shopDomain = linkSegment.get(0);
-                        getShopInfo(url, shopDomain, view.getContext());
-                    } else if (isBaseHost(host) && isProduct(linkSegment)) {
-                        String shopDomain = linkSegment.get(0);
-                        openProductPageIfValid(url, shopDomain, view.getContext());
-                    } else if (DeepLinkChecker.getDeepLinkType(url)==DeepLinkChecker.CATEGORY) {
-                        DeepLinkChecker.openCategory(url, view.getContext());
-                    } else {
+                if (view.getContext() != null
+                        && view.getContext().getApplicationContext() instanceof IDigitalModuleRouter
+                        && ((IDigitalModuleRouter) view.getContext().getApplicationContext()).isSupportedDelegateDeepLink(item.getPromoApplink())) {
+                    ((IDigitalModuleRouter) view.getContext().getApplicationContext())
+                            .actionNavigateByApplinksUrl(getActivity(view), item.getPromoApplink(), new Bundle());
+                } else {
+
+                    String url = item.getPromoUrl();
+                    try {
+                        UnifyTracking.eventSlideBannerClicked(url);
+                        Uri uri = Uri.parse(url);
+                        String host = uri.getHost();
+                        List<String> linkSegment = uri.getPathSegments();
+                        if (isBaseHost(host) && isShop(linkSegment)) {
+                            String shopDomain = linkSegment.get(0);
+                            getShopInfo(url, shopDomain, view.getContext());
+                        } else if (isBaseHost(host) && isProduct(linkSegment)) {
+                            String shopDomain = linkSegment.get(0);
+                            openProductPageIfValid(url, shopDomain, view.getContext());
+                        } else if (DeepLinkChecker.getDeepLinkType(url)==DeepLinkChecker.CATEGORY) {
+                            DeepLinkChecker.openCategory(url, view.getContext());
+                        } else {
+                            openWebViewURL(url, view.getContext());
+                        }
+
+                    } catch (Exception e) {
                         openWebViewURL(url, view.getContext());
+                        e.printStackTrace();
                     }
 
-                } catch (Exception e) {
-                    openWebViewURL(url, view.getContext());
                 }
             }
         };
+    }
+
+    private Activity getActivity(View view) {
+        Context context = view.getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
     }
 
     private void trackingBannerClick(Context context, BannerView.PromoItem item, int currentPosition) {

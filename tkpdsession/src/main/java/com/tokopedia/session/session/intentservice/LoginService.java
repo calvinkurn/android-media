@@ -9,6 +9,7 @@ import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -433,7 +434,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
 
     public Observable<AccountsParameter> getObservableAccountsToken(AccountsParameter accountsParameter) {
         Bundle bundle = new Bundle();
-        Map<String, String> params = new HashMap<>();
+        final Map<String, String> params = new HashMap<>();
         Parcelable parcelable = accountsParameter.getParcelable();
 
         params.put(Login.GRANT_TYPE, accountsParameter.getGrantType());
@@ -448,20 +449,11 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 if (Parcels.unwrap(parcelable) instanceof LoginFacebookViewModel) {
                     LoginFacebookViewModel loginFacebookViewModel = Parcels.unwrap(parcelable);
                     accountsParameter.setEmail(loginFacebookViewModel.getEmail());
-                    params.put(Login.SOCIAL_ID, loginFacebookViewModel.getFbId());
-                    params.put(Login.EMAIL_ACCOUNTS, loginFacebookViewModel.getEmail());
-                    params.put(Login.FULL_NAME, loginFacebookViewModel.getFullName());
-                    params.put(Login.BIRTHDATE, loginFacebookViewModel.getBirthday());
-                    params.put(Login.GENDER_ACCOUNTS, loginFacebookViewModel.getGender());
+                    params.put(Login.ACCESS_TOKEN, loginFacebookViewModel.getFbToken());
                 } else if (Parcels.unwrap(parcelable) instanceof LoginGoogleModel) {
                     LoginGoogleModel loginGoogleModel = Parcels.unwrap(parcelable);
                     accountsParameter.setEmail(loginGoogleModel.getEmail());
-                    params.put(Login.SOCIAL_ID, loginGoogleModel.getGoogleId());
-                    params.put(Login.EMAIL_ACCOUNTS, loginGoogleModel.getEmail());
-                    params.put(Login.PICTURE_ACCOUNTS, loginGoogleModel.getImageUrl());
-                    params.put(Login.FULL_NAME, loginGoogleModel.getFullName());
-                    params.put(Login.BIRTHDATE, loginGoogleModel.getBirthday());
-                    params.put(Login.GENDER_ACCOUNTS, loginGoogleModel.getGender());
+                    params.put(Login.ACCESS_TOKEN, loginGoogleModel.getAccessToken());
                 }
                 break;
             case Login.GRANT_WEBVIEW:
@@ -486,6 +478,11 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                     accountsParameter.setTokenModel(model);
                 } else {
                     accountsParameter.setErrorModel(errorModel);
+                    try {
+                        GoogleAuthUtil.clearToken(getApplicationContext(), params.get(Login.ACCESS_TOKEN));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 return accountsParameter;
             }
