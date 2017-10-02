@@ -49,6 +49,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private final TopAdsRecyclerAdapter adapter;
     private RecyclerView recyclerView;
     private static final int ROW_ADS_INDEX_FEED = 2;
+    private static final int ROW_ADS_INDEX_HEADER = 1;
 
     public TopAdsPlacer(TopAdsRecyclerAdapter adapter, Context context,
                         TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
@@ -161,7 +162,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         itemList.clear();
         if (hasHeader)
             headerPlaced = false;
-        Log.d(TAG, "reset");
     }
 
     public void clearAds(){
@@ -198,7 +198,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         } else {
             if (hasHeader && !headerPlaced) {
                 headerPlaced = true;
-                setTopAds(adsItems, 1);
+                setTopAds(adsItems, ROW_ADS_INDEX_HEADER);
             } else {
                 if (headerPlaced || position > 0) {
                     position = position - 1;
@@ -224,7 +224,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         itemList.addAll(arrayList);
         if (hasHeader && !adsItems.isEmpty() && !headerPlaced) {
             headerPlaced = true;
-            setTopAds(adsItems, 1);
+            setTopAds(adsItems, ROW_ADS_INDEX_HEADER);
         }
         observer.onStreamLoaded(observerType);
     }
