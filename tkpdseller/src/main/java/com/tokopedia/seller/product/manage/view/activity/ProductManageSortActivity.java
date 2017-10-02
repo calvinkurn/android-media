@@ -9,7 +9,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSortFragmentManageSort;
+import com.tokopedia.seller.product.manage.view.fragment.ProductManageSortFragment;
 
 /**
  * Created by zulfikarrahman on 9/26/17.
@@ -25,7 +25,7 @@ public class ProductManageSortActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return ProductManageSortFragmentManageSort.createInstance(getIntent().getStringExtra(ProductManageConstant.EXTRA_SORT_SELECTED));
+        return ProductManageSortFragment.createInstance(getIntent().getStringExtra(ProductManageConstant.EXTRA_SORT_SELECTED));
     }
 
     @Override
