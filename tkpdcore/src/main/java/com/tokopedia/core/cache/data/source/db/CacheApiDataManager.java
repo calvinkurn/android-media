@@ -91,7 +91,7 @@ public class CacheApiDataManager {
                         .from(CacheApiData.class)
                         .where(CacheApiData_Table.host.eq(host))
                         .and(CacheApiData_Table.path.eq(path))
-                        .and(CacheApiData_Table.request_param.eq(param));
+                        .and(CacheApiData_Table.request_param.eq(getEncrypted(param)));
                 CommonUtils.dumper("CachedData : " + selection.toString());
                 CacheApiData cacheApiData = selection.querySingle();
                 String cachedResponseBody = null;
@@ -167,7 +167,7 @@ public class CacheApiDataManager {
                 cacheApiData.setMethod(response.request().method());
                 cacheApiData.setHost(response.request().url().host());
                 cacheApiData.setPath(CacheApiUtils.getPath(response.request().url().toString()));
-                cacheApiData.setRequestParam(CacheApiUtils.getRequestParam(response.request()));
+                cacheApiData.setRequestParam(getEncrypted(CacheApiUtils.getRequestParam(response.request())));
                 cacheApiData.setResponseBody(getEncrypted(responseBody));
                 cacheApiData.setResponseTime(responseTime);
                 cacheApiData.setExpiredTime(responseTime + expiredTime);
