@@ -21,6 +21,7 @@ ext {
     tkpdDesignVersion = '1.+'
     tkpdFeedVersion = '1.+'
     tkpdRideVersion = '1.+'
+    tkpdReactNativeVersion = '1.+'
     compileSdkVersion = 24
     minSdkVersion = 16
     targetSdkVersion = 24
@@ -180,7 +181,8 @@ ext {
             tkpdpdp    : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
             design     : "com.tokopedia.design:design:${tkpdDesignVersion}",
             feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
-            ride     : "com.tokopedia.ride:ride:${tkpdRideVersion}"
+            ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
+            reactNative: "com.tokopedia.tkpdreactnative:reactnative${tkpdReactNativeVersion}"
     ]
 
     tkpdLibDependencies = [
