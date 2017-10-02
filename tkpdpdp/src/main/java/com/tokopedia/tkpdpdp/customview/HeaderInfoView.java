@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.TintableBackgroundView;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -103,14 +104,15 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                     .replace("X", data.getCashBack().getProductCashback()));
             cashbackTextView.setBackgroundResource(com.tokopedia.core.R.drawable.bg_label);
             cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white));
-            ColorStateList tint = ColorStateList.valueOf(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core.R.color.tkpd_main_green));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 cashbackTextView.setBackgroundTintList(tint);
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && cashbackTextView instanceof TintableBackgroundView) {
+                    ((TintableBackgroundView) cashbackTextView).setSupportBackgroundTintList(tint);
             } else {
                 ViewCompat.setBackgroundTintList(cashbackTextView, tint);
             }
             cashbackTextView.setVisibility(VISIBLE);
-            cashbackTextView.invalidate();
         }
 
         if(data.getShopInfo().getShopIsOfficial() != null && data.getShopInfo().getShopIsOfficial() == 1) {
