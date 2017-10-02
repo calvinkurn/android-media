@@ -126,13 +126,11 @@ public class ProductImageViewHolder extends ProductViewHolder {
             if (resultImageUrl!= null && resultImageUrl.size() > 0) {
                 String imageUrl = resultImageUrl.get(0);
                 if (!TextUtils.isEmpty(imageUrl)) {
-                    imagesSelectView.changeImagePath(imageUrl);
-                }
-
-                if (imagesSelectView.getSelectedImageIndex() < 0) {
-                    imagesSelectView.addImageString(imageUrl);
-                } else {
-                    imagesSelectView.changeImagePath(imageUrl);
+                    if (imagesSelectView.getSelectedImageIndex() < 0) {
+                        imagesSelectView.addImageString(imageUrl);
+                    } else {
+                        imagesSelectView.changeImagePath(imageUrl);
+                    }
                 }
             }
         }

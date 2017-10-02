@@ -106,7 +106,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
     public static final int RESULT_CODE = 323;
     public static final int DEF_WIDTH_CMPR = 2048;
-    public static final int DEF_QLTY_COMPRESS = 70;
+    public static final int DEF_QLTY_COMPRESS = 95;
     public static final int WIDTH_DOWNLOAD = 2048;
 
     String FRAGMENT;
@@ -257,43 +257,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         }
         return new File(mediaStorageDir.getPath() + File.separator
                 + "IMG_" + System.currentTimeMillis() / 1000L + ".jpg");
-    }
-
-    public static File writeImageToTkpdPath(File source) {
-        InputStream inStream = null;
-        OutputStream outStream = null;
-        File dest = null;
-        try {
-
-            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            dest = new File(directory.getAbsolutePath() + "/image.jpg");
-
-            inStream = new FileInputStream(source);
-            outStream = new FileOutputStream(dest);
-
-            byte[] buffer = new byte[1024];
-
-            int length;
-            //copy the file content in bytes
-            while ((length = inStream.read(buffer)) > 0) {
-
-                outStream.write(buffer, 0, length);
-
-            }
-
-            inStream.close();
-            outStream.close();
-
-            Log.d(TAG, "File is copied successful!");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return dest;
     }
 
     @Override
@@ -473,7 +436,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         if (fragment != null && fragment instanceof ImageGalleryFragment && path != null) {
             Intent intent = new Intent();
             if (compressToTkpd) {
-                String fileNameToMove = FileUtils.generateUniqueFileName(path);
+                String fileNameToMove = FileUtils.generateUniqueFileName();
                 File photo = FileUtils.writeImageToTkpdPath(
                         FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                         fileNameToMove);
@@ -498,12 +461,14 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                 ArrayList<String> tkpdPaths = new ArrayList<>();
                 for (int i = 0, sizei = paths.size(); i < sizei; i++) {
                     String path = paths.get(i);
-                    String fileNameToMove = FileUtils.generateUniqueFileName(path);
+                    String fileNameToMove = FileUtils.generateUniqueFileName();
                     File photo = FileUtils.writeImageToTkpdPath(
                             FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                             fileNameToMove);
                     if (photo != null) {
                         tkpdPaths.add(photo.getAbsolutePath());
+
+                        FileUtils.deleteAllCacheTkpdFile(path);
                     }
                 }
                 if (tkpdPaths.size() > 0) {
@@ -611,12 +576,16 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                             if (imagePathCamera != null) {
                                 Intent intent = new Intent();
                                 if (compressToTkpd) {
-                                    String fileNameToMove = FileUtils.generateUniqueFileName(imagePathCamera);
+                                    String fileNameToMove = FileUtils.generateUniqueFileName();
                                     File photo = FileUtils.writeImageToTkpdPath(
                                             FileUtils.compressImage(imagePathCamera, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                                             fileNameToMove);
                                     if (photo != null) {
                                         intent.putExtra(GalleryActivity.IMAGE_URL, photo.getAbsolutePath());
+
+                                        FileUtils.deleteAllCacheTkpdFile(imagePathCamera);
+                                    } else {
+                                        intent.putExtra(GalleryActivity.IMAGE_URL, imagePathCamera);
                                     }
                                 } else {
                                     intent.putExtra(GalleryActivity.IMAGE_URL, imagePathCamera);
@@ -739,4 +708,5 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public String getScreenName() {
         return AppScreen.SCREEN_GALLERY_BROWSER;
     }
+
 }

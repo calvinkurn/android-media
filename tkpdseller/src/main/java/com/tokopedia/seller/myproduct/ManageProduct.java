@@ -1580,7 +1580,9 @@ public class ManageProduct extends TkpdActivity implements
 
                     @Override
                     public void onSuccess(String path) {
-                        ImageEditorActivity.start(ManageProduct.this, path);
+                        ArrayList<String> imageUrls = new ArrayList<>();
+                        imageUrls.add(path);
+                        ImageEditorActivity.start(ManageProduct.this, imageUrls);
                     }
 
                     @Override
