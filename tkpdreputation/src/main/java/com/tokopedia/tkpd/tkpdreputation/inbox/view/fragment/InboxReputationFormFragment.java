@@ -7,10 +7,12 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +22,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +34,16 @@ import android.widget.RatingBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppScreen;
@@ -54,6 +64,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationFormPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
 
 import java.util.ArrayList;
@@ -98,13 +109,16 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     boolean isValidReview = false;
 
     TkpdProgressDialog progressDialog;
+    private ShareDialog shareDialog;
+    private CallbackManager callbackManager;
 
     @Inject
     InboxReputationFormPresenter presenter;
 
 
     public static InboxReputationFormFragment createInstance(String reviewId, String
-            reputationId, String productId, String shopId, String productAvatar, String productName) {
+            reputationId, String productId, String shopId, String productAvatar, String productName,
+                                                             String productUrl) {
         InboxReputationFormFragment fragment = new InboxReputationFormFragment();
         Bundle bundle = new Bundle();
         bundle.putString(InboxReputationFormActivity.ARGS_SHOP_ID, shopId);
@@ -113,6 +127,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         bundle.putString(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId);
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_AVATAR, productAvatar);
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_NAME, productName);
+        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_URL, productUrl);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -121,7 +136,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                                               String productId, String shopId,
                                               int rating, String review,
                                               ArrayList<ImageAttachmentViewModel> listImage,
-                                              String productAvatar, String productName) {
+                                              String productAvatar, String productName,
+                                              String productUrl) {
         InboxReputationFormFragment fragment = new InboxReputationFormFragment();
         Bundle bundle = new Bundle();
         bundle.putString(InboxReputationFormActivity.ARGS_SHOP_ID, shopId);
@@ -134,6 +150,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         bundle.putBoolean(InboxReputationFormActivity.ARGS_IS_EDIT, true);
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_AVATAR, productAvatar);
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_NAME, productName);
+        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_URL, productUrl);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -181,6 +198,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
+        callbackManager = CallbackManager.Factory.create();
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             try {
@@ -338,7 +356,12 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                             adapter.getList(),
                             adapter.getDeletedList(),
                             shareFbSwitch.isChecked(),
-                            anomymousSwitch.isChecked());
+                            anomymousSwitch.isChecked(),
+                            getArguments().getString(InboxReputationFormActivity
+                                    .ARGS_PRODUCT_NAME),
+                            getArguments().getString(InboxReputationFormActivity
+                                    .ARGS_PRODUCT_AVATAR),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_URL));
                 } else {
                     presenter.sendReview(
                             getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW_ID),
@@ -350,7 +373,12 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                             adapter.getList(),
                             adapter.getDeletedList(),
                             shareFbSwitch.isChecked(),
-                            anomymousSwitch.isChecked());
+                            anomymousSwitch.isChecked(),
+                            getArguments().getString(InboxReputationFormActivity
+                                    .ARGS_PRODUCT_NAME),
+                            getArguments().getString(InboxReputationFormActivity
+                                    .ARGS_PRODUCT_AVATAR),
+                            getArguments().getString(InboxReputationFormActivity.ARGS_PRODUCT_URL));
                 }
             }
         });
@@ -531,6 +559,68 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         getActivity().finish();
     }
 
+    @Override
+    public void onSuccessSendReviewWithShareFB(ShareModel model) {
+        getActivity().setResult(Activity.RESULT_OK);
+        showFbShareDialog(model);
+
+    }
+
+    private void showFbShareDialog(ShareModel model) {
+        if (shareDialog == null)
+            shareDialog = new ShareDialog(this);
+
+        shareDialog.registerCallback(callbackManager, new
+                FacebookCallback<Sharer.Result>() {
+                    @Override
+                    public void onSuccess(Sharer.Result result) {
+                        SnackbarManager.make(getActivity(), getString(R.string.success_share_review)
+                                , Snackbar.LENGTH_LONG).show();
+                        getActivity().finish();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Log.i("facebook", "onCancel");
+                        getActivity().finish();
+
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        Log.i("facebook", "onError: " + error);
+                        SnackbarManager.make(getActivity(), getString(R.string.error_share_review)
+                                , Snackbar.LENGTH_LONG).show();
+                        getActivity().finish();
+                    }
+                });
+
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+            ShareLinkContent.Builder builder = new ShareLinkContent.Builder();
+            if (model.getTitle() != null && !model.getTitle().equals(""))
+                builder.setContentTitle(model.getTitle());
+
+            if (model.getContent() != null && !model.getContent().equals(""))
+                builder.setQuote(model.getContent());
+
+            if (model.getImage() != null && !model.getImage().equals(""))
+                builder.setImageUrl(Uri.parse(model.getImage()));
+
+            if (model.getLink() != null && !model.getLink().equals(""))
+                builder.setContentUrl(Uri.parse(model.getLink()));
+
+            ShareLinkContent linkContent = builder.build();
+            shareDialog.show(linkContent);
+        }
+
+    }
+
+    @Override
+    public void onSuccessEditReviewWithShareFb(ShareModel shareModel) {
+        getActivity().setResult(Activity.RESULT_OK);
+        showFbShareDialog(shareModel);
+    }
+
 
     @Override
     public void skipReview() {
@@ -563,6 +653,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ImageUploadHandler.REQUEST_CODE
                 && resultCode == Activity.RESULT_OK) {
             String fileLoc = "";

@@ -84,11 +84,12 @@
     <string name="helpful_question">Terbantu?</string>
     <string name="people_helped">Orang terbantu</string>
     <string name="change">Ubah</string>
-    <string name="You_and">Anda dan</string>
+    <string name="You_and">Anda dan </string>
     <string name="inbox_reputation_empty_title">Ulasan anda masih kosong</string>
     <string name="inbox_reputation_empty_button">Mulai Cari Produk</string>
     <string name="inbox_reputation_search_empty_title">Hasil Pencarian tidak ditemukan</string>
     <string name="inbox_reputation_search_empty_button">Lihat Semua Ulasan</string>
     <string name="not_reviewed">Belum diulas</string>
+    <string name="you_got_helped">Anda terbantu</string>
 
 </resources>

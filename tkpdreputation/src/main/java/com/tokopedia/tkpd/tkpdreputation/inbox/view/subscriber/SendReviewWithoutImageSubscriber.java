@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 
 import rx.Subscriber;
 
@@ -15,9 +16,14 @@ import rx.Subscriber;
 public class SendReviewWithoutImageSubscriber extends Subscriber<SendReviewValidateDomain> {
 
     private final InboxReputationForm.View viewListener;
+    private final boolean shareFb;
+    private final ShareModel shareModel;
 
-    public SendReviewWithoutImageSubscriber(InboxReputationForm.View viewListener) {
+    public SendReviewWithoutImageSubscriber(InboxReputationForm.View viewListener,
+                                            boolean shareFb, ShareModel shareModel) {
         this.viewListener = viewListener;
+        this.shareFb = shareFb;
+        this.shareModel = shareModel;
     }
 
     @Override
@@ -34,10 +40,13 @@ public class SendReviewWithoutImageSubscriber extends Subscriber<SendReviewValid
     @Override
     public void onNext(SendReviewValidateDomain sendReviewValidateDomain) {
         viewListener.finishLoadingProgress();
-        if (sendReviewValidateDomain.getIsSuccess() == 1)
+        if (sendReviewValidateDomain.getIsSuccess() == 1 && shareFb)
+            viewListener.onSuccessSendReviewWithShareFB(shareModel);
+        else if (sendReviewValidateDomain.getIsSuccess() == 1) {
             viewListener.onSuccessSendReview();
-        else
+        } else {
             viewListener.onErrorSendReview(MainApplication.getAppContext().getString(R.string
                     .default_request_error_unknown));
+        }
     }
 }

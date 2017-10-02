@@ -37,8 +37,8 @@ public class SendSmileySubscriber extends Subscriber<SendSmileyReputationDomain>
 
     @Override
     public void onNext(SendSmileyReputationDomain sendSmileyReputationDomain) {
+        viewListener.finishLoadingDialog();
         if (sendSmileyReputationDomain.isSuccess()) {
-            viewListener.finishLoadingDialog();
             viewListener.onSuccessSendSmiley(Integer.parseInt(score));
         } else {
             viewListener.onErrorSendSmiley(MainApplication.getAppContext().getString(R.string

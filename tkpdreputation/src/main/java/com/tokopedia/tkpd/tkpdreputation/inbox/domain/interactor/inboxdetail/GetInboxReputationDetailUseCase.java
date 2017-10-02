@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -52,36 +54,40 @@ public class GetInboxReputationDetailUseCase extends UseCase<InboxReputationDeta
         return new Func1<InboxReputationDetailDomain, Observable<InboxReputationDetailDomain>>() {
             @Override
             public Observable<InboxReputationDetailDomain> call(InboxReputationDetailDomain inboxReputationDetailDomain) {
-                return getLikeDislikeReviewUseCase.createObservable(
-                        GetLikeDislikeReviewUseCase.getParam(
-                                getListReviewId(domain.getReviewDomain().getData()),
-                                requestParams.getString(GetReviewUseCase.PARAM_USER_ID, "")
-                        ))
-                        .flatMap(new Func1<GetLikeDislikeReviewDomain, Observable<InboxReputationDetailDomain>>() {
-                            @Override
-                            public Observable<InboxReputationDetailDomain> call
-                                    (GetLikeDislikeReviewDomain getLikeDislikeReviewDomain) {
-                                int i = 0;
-                                int j = 0;
-                                while (i < domain.getReviewDomain().getData().size()) {
-                                    ReviewItemDomain reviewItemDomain = domain.getReviewDomain()
-                                            .getData().get(i);
-                                    LikeDislikeListDomain likeDislikeListDomain =
-                                            getLikeDislikeReviewDomain.getList()
-                                                    .get(j);
-                                    if (reviewItemDomain.getReviewId() == 0) {
-                                        i++;
-                                    } else if (reviewItemDomain.getReviewId() ==
-                                            likeDislikeListDomain.getReviewId()
-                                            ) {
-                                        reviewItemDomain.setLikeDislikeDomain(likeDislikeListDomain);
-                                        j++;
-                                        i++;
+                if (!TextUtils.isEmpty(getListReviewId(domain.getReviewDomain().getData()))) {
+                    return getLikeDislikeReviewUseCase.createObservable(
+                            GetLikeDislikeReviewUseCase.getParam(
+                                    getListReviewId(domain.getReviewDomain().getData()),
+                                    requestParams.getString(GetReviewUseCase.PARAM_USER_ID, "")
+                            ))
+                            .flatMap(new Func1<GetLikeDislikeReviewDomain, Observable<InboxReputationDetailDomain>>() {
+                                @Override
+                                public Observable<InboxReputationDetailDomain> call
+                                        (GetLikeDislikeReviewDomain getLikeDislikeReviewDomain) {
+                                    int i = 0;
+                                    int j = 0;
+                                    while (i < domain.getReviewDomain().getData().size()) {
+                                        ReviewItemDomain reviewItemDomain = domain.getReviewDomain()
+                                                .getData().get(i);
+                                        LikeDislikeListDomain likeDislikeListDomain =
+                                                getLikeDislikeReviewDomain.getList()
+                                                        .get(j);
+                                        if (reviewItemDomain.getReviewId() == 0) {
+                                            i++;
+                                        } else if (reviewItemDomain.getReviewId() ==
+                                                likeDislikeListDomain.getReviewId()
+                                                ) {
+                                            reviewItemDomain.setLikeDislikeDomain(likeDislikeListDomain);
+                                            j++;
+                                            i++;
+                                        }
                                     }
+                                    return Observable.just(domain);
                                 }
-                                return Observable.just(domain);
-                            }
-                        });
+                            });
+                } else {
+                    return Observable.just(domain);
+                }
             }
         };
     }

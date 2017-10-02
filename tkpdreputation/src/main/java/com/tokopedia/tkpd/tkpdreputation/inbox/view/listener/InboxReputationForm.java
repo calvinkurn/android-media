@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
 
 import java.util.ArrayList;
@@ -36,13 +37,18 @@ public interface InboxReputationForm {
         void onErrorEditReview(String errorMessage);
 
         void onSuccessEditReview();
+
+        void onSuccessSendReviewWithShareFB(ShareModel shareModel);
+
+        void onSuccessEditReviewWithShareFb(ShareModel shareModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void sendReview(String reviewId, String reputationId, String productId, String shopId,
                         String review, float rating, ArrayList<ImageUpload> list,
-                        List<ImageUpload> deletedList, boolean shareFb, boolean anonymous);
+                        List<ImageUpload> deletedList, boolean shareFb, boolean anonymous,
+                        String productName, String productAvatar, String productUrl);
 
         void openCamera();
 
@@ -58,6 +64,7 @@ public interface InboxReputationForm {
 
         void editReview(String reviewId, String reputationId, String productId, String shopId,
                         String review, float rating, ArrayList<ImageUpload> list,
-                        List<ImageUpload> deletedList, boolean shareFb, boolean anonymous);
+                        List<ImageUpload> deletedList, boolean shareFb, boolean anonymous,
+                        String productName, String productAvatar, String productUrl);
     }
 }

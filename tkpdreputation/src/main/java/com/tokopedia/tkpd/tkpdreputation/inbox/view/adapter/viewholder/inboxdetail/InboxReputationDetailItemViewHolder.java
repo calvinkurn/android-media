@@ -236,7 +236,8 @@ public class InboxReputationDetailItemViewHolder extends
                         element.getShopId(),
                         element.isReviewIsSkippable(),
                         element.getProductAvatar(),
-                        element.getProductName());
+                        element.getProductName(),
+                        element.getProductUrl());
             }
         });
 
@@ -415,26 +416,37 @@ public class InboxReputationDetailItemViewHolder extends
         String helpfulString = "";
 
         if (likeDislike != null
+                && likeDislike.getTotalLike() == 1
                 && likeDislike.getLikeStatus() == InboxReputationDetailItemViewModel.IS_LIKED) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
                     .ic_icon_repsis_like_active);
-            helpfulString += MainApplication.getAppContext().getString(R.string.You_and);
-        } else {
+            helpfulString += MainApplication.getAppContext().getString(R.string.you_got_helped);
+        } else if (likeDislike != null
+                && likeDislike.getTotalLike() > 1
+                && likeDislike.getLikeStatus() == InboxReputationDetailItemViewModel.IS_LIKED) {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
+                    .ic_icon_repsis_like_active);
+            helpfulString += MainApplication.getAppContext().getString(R.string.You_and)
+                    + " " + likeDislike.getTotalLike() + " " + MainApplication.getAppContext()
+                    .getString(R.string.people_helped);
+        } else if (likeDislike != null
+                && likeDislike.getTotalLike() != 0
+                && likeDislike.getLikeStatus() != InboxReputationDetailItemViewModel.IS_LIKED) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
                     .ic_icon_repsis_like);
-        }
-
-        if (likeDislike != null && likeDislike.getTotalLike() != 0) {
             helpfulString += likeDislike.getTotalDislike() + " " + MainApplication.getAppContext()
                     .getString(R.string.people_helped);
         } else {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
+                    .ic_icon_repsis_like);
             helpfulString += MainApplication.getAppContext().getString(R.string
                     .helpful_question);
         }
 
         helpfulText.setText(helpfulString);
 
-        helpfulIcon.setOnClickListener(new View.OnClickListener() {
+        helpfulIcon.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v) {
                 viewListener.onLikeReview(getAdapterPosition(),

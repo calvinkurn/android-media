@@ -209,14 +209,16 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetFirstTimeInboxReputation(String errorMessage) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new
-                NetworkErrorHelper
-                        .RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.getFirstTimeInboxReputation(getTab());
-                    }
-                });
+        if (getActivity() != null & getView() != null) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new
+                    NetworkErrorHelper
+                            .RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            presenter.getFirstTimeInboxReputation(getTab());
+                        }
+                    });
+        }
     }
 
     @Override

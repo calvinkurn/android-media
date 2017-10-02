@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 
 import rx.Subscriber;
 
@@ -14,9 +15,14 @@ import rx.Subscriber;
 
 public class EditReviewSubscriber extends Subscriber<SendReviewDomain> {
     private final InboxReputationForm.View viewListener;
+    private final boolean shareFb;
+    private final ShareModel shareModel;
 
-    public EditReviewSubscriber(InboxReputationForm.View viewListener) {
+    public EditReviewSubscriber(InboxReputationForm.View viewListener,
+                                boolean shareFb, ShareModel shareModel) {
         this.viewListener = viewListener;
+        this.shareFb = shareFb;
+        this.shareModel = shareModel;
     }
 
     @Override
@@ -33,7 +39,9 @@ public class EditReviewSubscriber extends Subscriber<SendReviewDomain> {
     @Override
     public void onNext(SendReviewDomain sendReviewDomain) {
         viewListener.finishLoadingProgress();
-        if (sendReviewDomain.isSuccess())
+        if (sendReviewDomain.isSuccess() && shareFb) {
+            viewListener.onSuccessEditReviewWithShareFb(shareModel);
+        } else if (sendReviewDomain.isSuccess())
             viewListener.onSuccessEditReview();
         else
             viewListener.onErrorSendReview(MainApplication.getAppContext().getString(R.string

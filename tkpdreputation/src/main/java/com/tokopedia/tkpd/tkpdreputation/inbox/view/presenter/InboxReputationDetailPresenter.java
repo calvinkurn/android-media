@@ -70,6 +70,11 @@ public class InboxReputationDetailPresenter
         super.detachView();
         getInboxReputationDetailUseCase.unsubscribe();
         sendSmileyReputationUseCase.unsubscribe();
+        checkShopFavoritedUseCase.unsubscribe();
+        favoriteShopUseCase.unsubscribe();
+        deleteReviewResponseUseCase.unsubscribe();
+        sendReplyReviewUseCase.unsubscribe();
+        likeDislikeReviewUseCase.unsubscribe();
     }
 
     @Override
@@ -147,11 +152,12 @@ public class InboxReputationDetailPresenter
     }
 
     private int getNewLikeStatus(int formerLikeStatus) {
-        if (formerLikeStatus == LikeDislikeReviewUseCase.DEFAULT_NOT_LIKED)
-            return LikeDislikeReviewUseCase.STATUS_LIKE;
-        else
+        if (formerLikeStatus == LikeDislikeReviewUseCase.STATUS_LIKE)
             return LikeDislikeReviewUseCase.STATUS_RESET;
+        else
+            return LikeDislikeReviewUseCase.STATUS_LIKE;
     }
+
 
 }
 
