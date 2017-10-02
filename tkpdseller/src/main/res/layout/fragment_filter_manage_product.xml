@@ -25,13 +25,6 @@
             app:title="@string/title_category" />
 
         <com.tokopedia.seller.common.widget.LabelView
-            android:id="@+id/status"
-            style="@style/LabelLayout.BorderBottom"
-            app:content_color="@color/tkpd_main_green"
-            app:label_show_arrow="true"
-            app:title="@string/title_status" />
-
-        <com.tokopedia.seller.common.widget.LabelView
             android:id="@+id/condition"
             style="@style/LabelLayout.BorderBottom"
             app:content_color="@color/tkpd_main_green"

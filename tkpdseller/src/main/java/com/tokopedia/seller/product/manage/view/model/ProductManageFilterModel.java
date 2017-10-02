@@ -14,11 +14,29 @@ import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
 
 public class ProductManageFilterModel implements Parcelable {
 
-    @EtalaseProductOption String etalaseProductOption;
-    @PictureStatusProductOption String pictureStatusOption;
-    @ConditionProductOption String conditionProductOption;
-    @CatalogProductOption String catalogProductOption;
-    String category;
+    private String etalaseProductOption = EtalaseProductOption.ALL_SHOWCASE;
+    private String etalaseProductOptionName;
+    @PictureStatusProductOption String pictureStatusOption = PictureStatusProductOption.NOT_USED;
+    @ConditionProductOption String conditionProductOption = ConditionProductOption.NOT_USED;
+    @CatalogProductOption String catalogProductOption = CatalogProductOption.NOT_USED;
+    private String categoryId;
+    private String categoryName;
+
+    public String getEtalaseProductOptionName() {
+        return etalaseProductOptionName;
+    }
+
+    public void setEtalaseProductOptionName(String etalaseProductOptionName) {
+        this.etalaseProductOptionName = etalaseProductOptionName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 
     public String getEtalaseProductOption() {
         return etalaseProductOption;
@@ -28,39 +46,49 @@ public class ProductManageFilterModel implements Parcelable {
         this.etalaseProductOption = etalaseProductOption;
     }
 
-    public String getPictureStatusOption() {
+    public @PictureStatusProductOption String getPictureStatusOption() {
         return pictureStatusOption;
     }
 
-    public void setPictureStatusOption(String pictureStatusOption) {
+    public void setPictureStatusOption(@PictureStatusProductOption String pictureStatusOption) {
         this.pictureStatusOption = pictureStatusOption;
     }
 
-    public String getConditionProductOption() {
+    public @ConditionProductOption String getConditionProductOption() {
         return conditionProductOption;
     }
 
-    public void setConditionProductOption(String conditionProductOption) {
+    public void setConditionProductOption(@ConditionProductOption String conditionProductOption) {
         this.conditionProductOption = conditionProductOption;
     }
 
-    public String getCatalogProductOption() {
+    public @CatalogProductOption String getCatalogProductOption() {
         return catalogProductOption;
     }
 
-    public void setCatalogProductOption(String catalogProductOption) {
+    public void setCatalogProductOption(@CatalogProductOption String catalogProductOption) {
         this.catalogProductOption = catalogProductOption;
     }
 
-    public String getCategory() {
-        return category;
+    public String getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 
     public ProductManageFilterModel() {
+    }
+
+    public void reset() {
+        etalaseProductOption = EtalaseProductOption.ALL_SHOWCASE;
+        etalaseProductOptionName = "";
+        categoryId = "";
+        categoryName = "";
+        pictureStatusOption = PictureStatusProductOption.NOT_USED;
+        catalogProductOption = CatalogProductOption.NOT_USED;
+        conditionProductOption = ConditionProductOption.NOT_USED;
     }
 
     @Override
@@ -71,18 +99,22 @@ public class ProductManageFilterModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.etalaseProductOption);
+        dest.writeString(this.etalaseProductOptionName);
         dest.writeString(this.pictureStatusOption);
         dest.writeString(this.conditionProductOption);
         dest.writeString(this.catalogProductOption);
-        dest.writeString(this.category);
+        dest.writeString(this.categoryId);
+        dest.writeString(this.categoryName);
     }
 
     protected ProductManageFilterModel(Parcel in) {
         this.etalaseProductOption = in.readString();
+        this.etalaseProductOptionName = in.readString();
         this.pictureStatusOption = in.readString();
         this.conditionProductOption = in.readString();
         this.catalogProductOption = in.readString();
-        this.category = in.readString();
+        this.categoryId = in.readString();
+        this.categoryName = in.readString();
     }
 
     public static final Creator<ProductManageFilterModel> CREATOR = new Creator<ProductManageFilterModel>() {
