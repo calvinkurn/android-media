@@ -92,6 +92,12 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     }
 
     @Override
+    public void getRestoreData(ResultViewModel resultViewModel) {
+        this.resultViewModel = resultViewModel;
+        mainView.updateView(resultViewModel);
+    }
+
+    @Override
     public void chooseProductProblemClicked() {
         ArrayList<ProblemResult> problemResults = new ArrayList<>();
         for (ProblemResult problemResult : resultViewModel.problem) {

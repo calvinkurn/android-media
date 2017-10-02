@@ -61,6 +61,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     View problemView, footer;
     String orderId = "";
     ProgressBar progressBar;
+    ResultViewModel resultViewModel;
 
     @Inject
     CreateResolutionCenterPresenter presenter;
@@ -114,12 +115,13 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putParcelable(RESULT_VIEW_MODEL_DATA, resultViewModel);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        resultViewModel = savedState.getParcelable(RESULT_VIEW_MODEL_DATA);
+        presenter.getRestoreData(resultViewModel);
     }
 
     @Override
@@ -195,6 +197,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     public void updateView(ResultViewModel resultViewModel) {
+        this.resultViewModel = resultViewModel;
         ffSolution.setEnabled(false);
         ffUploadProve.setEnabled(false);
         btnCreateResolution.setEnabled(false);

@@ -89,7 +89,12 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
 
     @Override
     public void inflateFragment(Fragment fragment, String TAG) {
-        if (getFragmentManager().findFragmentByTag(TAG) == null) {
+        if (getFragmentManager().findFragmentByTag(TAG) != null) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container,
+                    getFragmentManager().findFragmentByTag(TAG))
+            .commit();
+        } else {
             getFragmentManager().beginTransaction()
                     .add(R.id.container, fragment, TAG)
                     .commit();

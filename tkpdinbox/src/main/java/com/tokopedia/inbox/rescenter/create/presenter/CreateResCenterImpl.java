@@ -24,10 +24,6 @@ public class CreateResCenterImpl implements CreateResCenterPresenter {
 
     @Override
     public void initFragment(@NonNull Context context, Uri uriData, Bundle bundleData) {
-//        listener.inflateFragment(
-//                ChooseTroubleFragment.newInstance(generatePassData(bundleData, uriData)),
-//                ChooseTroubleFragment.class.getSimpleName()
-//        );
         listener.inflateFragment(CreateResolutionCenterFragment.newInstance(generatePassData(bundleData, uriData)),
                 CreateResolutionCenterFragment.class.getSimpleName());
     }

@@ -56,6 +56,8 @@ public interface CreateResolutionCenter {
 
         void chooseProductProblemClicked();
 
+        void getRestoreData(ResultViewModel resultViewModel);
+
         void updateProductProblemResponseDomain(ProductProblemResponseDomain productProblemResponseDomain);
 
         void solutionClicked();
