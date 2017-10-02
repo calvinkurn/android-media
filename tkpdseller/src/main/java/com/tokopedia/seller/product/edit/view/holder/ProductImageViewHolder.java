@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.utils.StringUtils;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
@@ -85,6 +86,13 @@ public class ProductImageViewHolder extends ProductViewHolder {
             public void resolutionCheckFailed(String uri) {
                 if (listener != null) {
                     listener.onResolutionImageCheckFailed(uri);
+                }
+            }
+
+            @Override
+            public void removePreviousPath(String uri) {
+                if (!TextUtils.isEmpty(uri)) {
+                    FileUtils.deleteAllCacheTkpdFile(uri);
                 }
             }
         });

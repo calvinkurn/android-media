@@ -1604,7 +1604,6 @@ public class ManageProduct extends TkpdActivity implements
             break;
         }
 
-
     }
 
     @Override

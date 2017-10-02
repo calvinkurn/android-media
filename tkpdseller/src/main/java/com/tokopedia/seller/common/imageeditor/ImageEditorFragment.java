@@ -32,9 +32,9 @@ import java.io.File;
 
 public class ImageEditorFragment extends Fragment implements CropImageView.OnSetImageUriCompleteListener, CropImageView.OnCropImageCompleteListener {
     public static final String TAG = ImageEditorFragment.class.getSimpleName();
-    private static final String ARG_LOCAL_PATH = "loc_pth";
+    protected static final String ARG_LOCAL_PATH = "loc_pth";
 
-    private CropImageView mCropImageView;
+    protected CropImageView mCropImageView;
     private String localPath;
 
     OnImageEditorFragmentListener onImageEditorFragmentListener;

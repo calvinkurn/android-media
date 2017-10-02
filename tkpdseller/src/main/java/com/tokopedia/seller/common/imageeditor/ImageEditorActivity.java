@@ -127,8 +127,8 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.findFragmentByTag(ImageEditorFragment.TAG) == null) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, ImageEditorFragment.newInstance(
-                            imageUrls.get(imageIndex)), ImageEditorFragment.TAG)
+                    .replace(R.id.container, ImageEditorWatermarkFragment.newInstance(
+                            imageUrls.get(imageIndex)), ImageEditorWatermarkFragment.TAG)
                     .commit();
         }
         setUpToolbarTitle();
@@ -177,8 +177,8 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
                     // continue to next image index
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     fragmentManager.beginTransaction()
-                            .replace(R.id.container, ImageEditorFragment.newInstance(
-                                    imageUrls.get(imageIndex)), ImageEditorFragment.TAG)
+                            .replace(R.id.container, ImageEditorWatermarkFragment.newInstance(
+                                    imageUrls.get(imageIndex)), ImageEditorWatermarkFragment.TAG)
                             .addToBackStack(String.valueOf(imageIndex))
                             .commit();
                     setUpToolbarTitle();
