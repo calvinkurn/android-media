@@ -79,6 +79,12 @@ public class InboxReputationFormPresenter
     public void detachView() {
         super.detachView();
         sendReviewUseCase.unsubscribe();
+        sendReviewValidateUseCase.unsubscribe();
+        setReviewFormCacheUseCase.unsubscribe();
+        getSendReviewFormUseCase.unsubscribe();
+        skipReviewUseCase.unsubscribe();
+        editReviewUseCase.unsubscribe();
+        editReviewValidateUseCase.unsubscribe();
     }
 
     public void sendReview(String reviewId, String reputationId, String productId, String shopId,

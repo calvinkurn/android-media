@@ -734,4 +734,12 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+        shareDialog = null;
+        callbackManager = null
+    }
 }
