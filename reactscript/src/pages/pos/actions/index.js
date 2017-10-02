@@ -135,11 +135,18 @@ const doPayment = async () => {
   const shop_id = await getShopId()
   const cart = await getCart()
 
-  const makePaymentToNative = await makePaymentToNativeStepOne(api_url, 
-    parseInt(user_id), '1', parseInt(addr_id), '', parseInt(shop_id), cart)
-  // console.log(env, api_url, user_id, addr_id, shop_id, cart)
-}
+  const data_payment = {
+    base_api_url: api_url,
+    user_id: parseInt(user_id),
+    os_type: '1',
+    addr_id: parseInt(addr_id),
+    client_id: '',
+    shop_id: parseInt(shop_id),
+    cart
+  }
 
+  const makePaymentToNative = await makePaymentToNativeStepOne(data_payment)
+}
 
 const getUserId = () => {
   return SessionModule.getUserId()
@@ -191,17 +198,17 @@ const getBaseAPI = (env) => {
   }
 }
 
-const makePaymentToNativeStepOne = (base_api_url, user_id, os_type, addr_id, client_id, shop_id, cart) => {
+const makePaymentToNativeStepOne = (data_payment) => {
   const data = {
-    user_id,
-    os_type,
-    addr_id,
-    client_id,
-    shop_id,
-    cart: cart
+    user_id: data_payment.user_id,
+    os_type: data_payment.os_type,
+    addr_id: data_payment.addr_id,
+    client_id: data_payment.client_id,
+    shop_id: data_payment.shop_id,
+    cart: data_payment.cart
   }
 
-  return NetworkModule.getResponse(`${base_api_url}/o2o/get_payment_params`, `POST`, JSON.stringify(data), true, 'JSON')
+  return NetworkModule.getResponse(`${data_payment.base_api_url}/o2o/get_payment_params`, `POST`, JSON.stringify(data), true, 'JSON')
     .then(response => {
       const jsonResponse = JSON.parse(response)
       console.log(jsonResponse)
@@ -209,6 +216,12 @@ const makePaymentToNativeStepOne = (base_api_url, user_id, os_type, addr_id, cli
     .catch(err => console.log(err))
 }
 // ===================== Make Payment 1 ===================== //
+
+
+
+// ===================== Make Payment 2 ===================== //
+// ....... //
+// ===================== Make Payment 2 ===================== //
 
 
 
