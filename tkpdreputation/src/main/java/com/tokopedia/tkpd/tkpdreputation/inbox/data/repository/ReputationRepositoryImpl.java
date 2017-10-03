@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.repository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.InboxReputationFactory;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
@@ -22,11 +22,11 @@ import rx.Observable;
  * @author by nisie on 8/14/17.
  */
 
-public class InboxReputationRepositoryImpl implements InboxReputationRepository {
+public class ReputationRepositoryImpl implements ReputationRepository {
 
-    InboxReputationFactory reputationFactory;
+    ReputationFactory reputationFactory;
 
-    public InboxReputationRepositoryImpl(InboxReputationFactory reputationFactory) {
+    public ReputationRepositoryImpl(ReputationFactory reputationFactory) {
         this.reputationFactory = reputationFactory;
     }
 

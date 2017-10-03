@@ -48,7 +48,6 @@ public interface InboxReputation {
 
         void onShowEmptyFilteredInboxReputation();
 
-        void onResetSearch();
     }
 
     interface Presenter extends CustomerPresenter<View> {

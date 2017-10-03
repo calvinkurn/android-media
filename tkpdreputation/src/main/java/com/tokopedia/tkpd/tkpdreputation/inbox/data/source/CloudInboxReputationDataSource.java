@@ -47,13 +47,15 @@ public class CloudInboxReputationDataSource {
         return new Action1<InboxReputationDomain>() {
             @Override
             public void call(InboxReputationDomain inboxReputationDomain) {
-                globalCacheManager.setKey(GetFirstTimeInboxReputationUseCase.CACHE_REPUTATION +
-                        requestParams.getParameters().get(GetInboxReputationUseCase.PARAM_TAB))
-                        .setCacheDuration(GetFirstTimeInboxReputationUseCase.DURATION_CACHE)
-                        .setValue(CacheUtil.convertModelToString(inboxReputationDomain,
-                                new TypeToken<InboxReputationDomain>() {
-                                }.getType()))
-                        .store();
+                if (!inboxReputationDomain.getInboxReputation().isEmpty()) {
+                    globalCacheManager.setKey(GetFirstTimeInboxReputationUseCase.CACHE_REPUTATION +
+                            requestParams.getParameters().get(GetInboxReputationUseCase.PARAM_TAB))
+                            .setCacheDuration(GetFirstTimeInboxReputationUseCase.DURATION_CACHE)
+                            .setValue(CacheUtil.convertModelToString(inboxReputationDomain,
+                                    new TypeToken<InboxReputationDomain>() {
+                                    }.getType()))
+                            .store();
+                }
             }
         };
     }

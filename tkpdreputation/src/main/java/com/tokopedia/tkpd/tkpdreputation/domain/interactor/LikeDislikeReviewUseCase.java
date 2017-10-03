@@ -5,8 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
-import com.tokopedia.tkpd.tkpdreputation.domain.model.ReportReviewDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 
 import rx.Observable;
 
@@ -28,18 +27,18 @@ public class LikeDislikeReviewUseCase extends UseCase<LikeDislikeDomain> {
     private static final String PARAM_ACTION = "action";
     private static final String ACTION_LIKE_DISLIKE_REVIEW = "event_like_dislike_review";
 
-    InboxReputationRepository inboxReputationRepository;
+    ReputationRepository reputationRepository;
 
     public LikeDislikeReviewUseCase(ThreadExecutor threadExecutor,
                                     PostExecutionThread postExecutionThread,
-                                    InboxReputationRepository inboxReputationRepository) {
+                                    ReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread);
-        this.inboxReputationRepository = inboxReputationRepository;
+        this.reputationRepository = reputationRepository;
     }
 
     @Override
     public Observable<LikeDislikeDomain> createObservable(RequestParams requestParams) {
-        return inboxReputationRepository.likeDislikeReview(requestParams);
+        return reputationRepository.likeDislikeReview(requestParams);
     }
 
     public static RequestParams getParam(String reviewId, int likeStatus, 

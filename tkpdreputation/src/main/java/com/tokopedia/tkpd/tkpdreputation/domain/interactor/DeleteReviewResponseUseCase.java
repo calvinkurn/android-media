@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 
 import rx.Observable;
@@ -20,11 +20,11 @@ public class DeleteReviewResponseUseCase extends UseCase<DeleteReviewResponseDom
     private static final String PARAM_SHOP_ID = "shop_id";
     private static final String PARAM_REPUTATION_ID = "reputation_id";
 
-    InboxReputationRepository reputationRepository;
+    ReputationRepository reputationRepository;
 
     public DeleteReviewResponseUseCase(ThreadExecutor threadExecutor,
                                        PostExecutionThread postExecutionThread,
-                                       InboxReputationRepository reputationRepository) {
+                                       ReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread);
         this.reputationRepository = reputationRepository;
     }

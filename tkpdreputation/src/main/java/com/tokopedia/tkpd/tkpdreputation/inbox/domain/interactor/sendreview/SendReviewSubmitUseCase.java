@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewRequestModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
@@ -20,13 +20,13 @@ import rx.Observable;
 
 public class SendReviewSubmitUseCase extends UseCase<SendReviewSubmitDomain> {
 
-    protected InboxReputationRepository reputationRepository;
+    protected ReputationRepository reputationRepository;
     private static final String PARAM_POST_KEY = "post_key";
     private static final String PARAM_FILE_UPLOADED = "file_uploaded";
 
     public SendReviewSubmitUseCase(ThreadExecutor threadExecutor,
                                    PostExecutionThread postExecutionThread,
-                                   InboxReputationRepository reputationRepository) {
+                                   ReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread);
         this.reputationRepository = reputationRepository;
     }

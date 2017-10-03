@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,13 +30,13 @@ public class EmptyReputationSearchViewHolder extends AbstractViewHolder<EmptySea
     @Override
     public void bind(final EmptySearchModel element) {
         title.setText(element.getTitle());
-        button.setText(element.getButtonText());
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                element.getButtonListener();
-            }
-        });
+        if (!TextUtils.isEmpty(element.getButtonText())) {
+            button.setVisibility(View.VISIBLE);
+            button.setText(element.getButtonText());
+            button.setOnClickListener(element.getButtonListener());
+        } else {
+            button.setVisibility(View.GONE);
+        }
 
     }
 }

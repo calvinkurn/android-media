@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
+package com.tokopedia.tkpd.tkpdreputation.data.mapper;
 
 import android.text.TextUtils;
 

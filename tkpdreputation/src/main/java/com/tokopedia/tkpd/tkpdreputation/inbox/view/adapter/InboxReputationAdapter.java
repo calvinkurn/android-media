@@ -101,4 +101,11 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
     public void clearList() {
         this.list.clear();
     }
+
+    public void showEmpty(String title) {
+        emptySearchModel.setTitle(title);
+        emptySearchModel.setButtonText("");
+        emptySearchModel.setButtonListener(null);
+        this.list.add(emptySearchModel);
+    }
 }

@@ -22,8 +22,9 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.di.DaggerInboxReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFilterActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationAdapter;
@@ -81,8 +82,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
     protected void initInjector() {
         AppComponent appComponent = getComponent(AppComponent.class);
 
-        DaggerInboxReputationComponent reputationComponent =
-                (DaggerInboxReputationComponent) DaggerInboxReputationComponent
+        DaggerReputationComponent reputationComponent =
+                (DaggerReputationComponent) DaggerReputationComponent
                         .builder()
                         .appComponent(appComponent)
                         .build();
@@ -347,20 +348,30 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onShowEmpty() {
         searchView.setVisibility(View.GONE);
         adapter.clearList();
-        adapter.showEmpty(getString(R.string.inbox_reputation_empty_title),
-                getString(R.string.inbox_reputation_empty_button),
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        goToHotlist();
-                    }
-                });
+        if (GlobalConfig.isSellerApp()) {
+            adapter.showEmpty(getString(R.string.inbox_reputation_empty_title));
+        } else {
+            adapter.showEmpty(getString(R.string.inbox_reputation_empty_title),
+                    getString(R.string.inbox_reputation_empty_button),
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            goToHotlist();
+                        }
+                    });
+        }
         adapter.notifyDataSetChanged();
     }
 
     private void goToHotlist() {
-        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+        if (MainApplication.getAppContext() instanceof TkpdCoreRouter
+                && !GlobalConfig.isSellerApp()) {
             Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeHotlistIntent
+                    (getActivity());
+            startActivity(intent);
+            getActivity().finish();
+        } else if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent
                     (getActivity());
             startActivity(intent);
             getActivity().finish();
@@ -375,16 +386,13 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onResetSearch();
+                        timeFilter= "";
+                        statusFilter = "";
+                        searchView.setQuery("", true);
+
                     }
                 });
         adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onResetSearch() {
-        searchView.setQuery("", true);
-        onRefresh();
     }
 
     @Override
@@ -393,12 +401,11 @@ public class InboxReputationFragment extends BaseDaggerFragment
             onRefresh();
         } else if (requestCode == REQUEST_FILTER
                 && resultCode == Activity.RESULT_OK
-                && data.getStringExtra(
-                InboxReputationFilterFragment.SELECTED_TIME_FILTER) != null) {
-            timeFilter = data.getStringExtra(
-                    InboxReputationFilterFragment.SELECTED_TIME_FILTER);
-            statusFilter = data.getStringExtra(InboxReputationFilterFragment
-                    .SELECTED_STATUS_FILTER);
+                && data != null) {
+            timeFilter = data.getExtras().getString(
+                    InboxReputationFilterFragment.SELECTED_TIME_FILTER, "");
+            statusFilter = data.getExtras().getString(InboxReputationFilterFragment
+                    .SELECTED_STATUS_FILTER, "");
             presenter.getFilteredInboxReputation(
                     getQuery(),
                     timeFilter,

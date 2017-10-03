@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.inbox.di;
+package com.tokopedia.tkpd.tkpdreputation.di;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -14,20 +14,20 @@ import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseU
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.ReportReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.InboxReputationFactory;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.DeleteReviewResponseMapper;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
+import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.FaveShopMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReplyReviewMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReportReviewMapper;
+import com.tokopedia.tkpd.tkpdreputation.data.mapper.ReportReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewSubmitMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendSmileyReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ShopFavoritedMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SkipReviewMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepositoryImpl;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetCacheInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
@@ -62,15 +62,15 @@ import dagger.Provides;
  */
 
 @Module
-public class InboxReputationModule {
+public class ReputationModule {
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     GlobalCacheManager provideGlobalCacheManager() {
         return new GlobalCacheManager();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     GetFirstTimeInboxReputationUseCase
     provideGetFirstTimeInboxReputationUseCase(ThreadExecutor threadExecutor,
@@ -78,7 +78,7 @@ public class InboxReputationModule {
                                               GetInboxReputationUseCase getInboxReputationUseCase,
                                               GetCacheInboxReputationUseCase
                                                       getCacheInboxReputationUseCase,
-                                              InboxReputationRepository reputationRepository) {
+                                              ReputationRepository reputationRepository) {
         return new GetFirstTimeInboxReputationUseCase(
                 threadExecutor,
                 postExecutionThread,
@@ -87,27 +87,27 @@ public class InboxReputationModule {
                 reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     GetInboxReputationUseCase
     provideGetInboxReputationUseCase(ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
-                                     InboxReputationRepository reputationRepository) {
+                                     ReputationRepository reputationRepository) {
         return new GetInboxReputationUseCase(
                 threadExecutor,
                 postExecutionThread,
                 reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
-    InboxReputationRepository provideReputationRepository(InboxReputationFactory reputationFactory) {
-        return new InboxReputationRepositoryImpl(reputationFactory);
+    ReputationRepository provideReputationRepository(ReputationFactory reputationFactory) {
+        return new ReputationRepositoryImpl(reputationFactory);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
-    InboxReputationFactory provideReputationFactory(
+    ReputationFactory provideReputationFactory(
             TomeService tomeService,
             ReputationService reputationService,
             InboxReputationMapper inboxReputationMapper,
@@ -125,7 +125,7 @@ public class InboxReputationModule {
             ReplyReviewMapper replyReviewMapper,
             GetLikeDislikeMapper getLikeDislikeMapper,
             LikeDislikeMapper likeDislikeMapper) {
-        return new InboxReputationFactory(tomeService, reputationService, inboxReputationMapper,
+        return new ReputationFactory(tomeService, reputationService, inboxReputationMapper,
                 inboxReputationDetailMapper, sendSmileyReputationMapper,
                 sendReviewValidateMapper, sendReviewSubmitMapper,
                 skipReviewMapper, reportReviewMapper,
@@ -140,37 +140,37 @@ public class InboxReputationModule {
     }
 
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     InboxReputationMapper provideInboxReputationMapper() {
         return new InboxReputationMapper();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     ReputationService provideReputationService() {
         return new ReputationService();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     InboxReputationDetailMapper provideInboxReputationDetailMapper() {
         return new InboxReputationDetailMapper();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     GetReviewUseCase
     provideGetReviewUseCase(ThreadExecutor threadExecutor,
                             PostExecutionThread postExecutionThread,
-                            InboxReputationRepository reputationRepository) {
+                            ReputationRepository reputationRepository) {
         return new GetReviewUseCase(
                 threadExecutor,
                 postExecutionThread,
                 reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     GetInboxReputationDetailUseCase
     provideGetInboxReputationDetailUseCase(ThreadExecutor threadExecutor,
@@ -186,18 +186,18 @@ public class InboxReputationModule {
                 getLikeDislikeReviewUseCase);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     SendSmileyReputationMapper provideSendSmileyReputationMapper() {
         return new SendSmileyReputationMapper();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     SendSmileyReputationUseCase
     provideSendSmileyReputationUseCase(ThreadExecutor threadExecutor,
                                        PostExecutionThread postExecutionThread,
-                                       InboxReputationRepository reputationRepository) {
+                                       ReputationRepository reputationRepository) {
         return new SendSmileyReputationUseCase(
                 threadExecutor,
                 postExecutionThread,
@@ -205,26 +205,26 @@ public class InboxReputationModule {
     }
 
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     SendReviewValidateMapper provideSendReviewValidateMapper() {
         return new SendReviewValidateMapper();
     }
 
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     SendReviewValidateUseCase
     provideSendReviewValidateUseCase(ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
-                                     InboxReputationRepository reputationRepository) {
+                                     ReputationRepository reputationRepository) {
         return new SendReviewValidateUseCase(
                 threadExecutor,
                 postExecutionThread,
                 reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     SendReviewUseCase
     provideSendReviewUseCase(ThreadExecutor threadExecutor,
@@ -244,7 +244,7 @@ public class InboxReputationModule {
         );
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     GetSendReviewFormUseCase
     provideGetSendReviewFormUseCase(ThreadExecutor threadExecutor,
@@ -256,7 +256,7 @@ public class InboxReputationModule {
                 globalCacheManager);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     SetReviewFormCacheUseCase
     provideSetReviewFormCacheUseCase(ThreadExecutor threadExecutor,
@@ -268,7 +268,7 @@ public class InboxReputationModule {
                 globalCacheManager);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     UploadImageUseCase
     provideUploadImageUseCase(ThreadExecutor threadExecutor,
@@ -280,7 +280,7 @@ public class InboxReputationModule {
                 imageUploadRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     GenerateHostUseCase
     provideGenerateHostUseCase(ThreadExecutor threadExecutor,
@@ -292,14 +292,14 @@ public class InboxReputationModule {
                 imageUploadRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     ImageUploadRepository
     provideImageUploadRepository(ImageUploadFactory imageUploadFactory) {
         return new ImageUploadRepositoryImpl(imageUploadFactory);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     ImageUploadFactory
     provideImageUploadFactory(GenerateHostActService generateHostActService,
@@ -312,85 +312,85 @@ public class InboxReputationModule {
                 uploadImageMapper);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     GenerateHostActService
     provideGenerateHostActService() {
         return new GenerateHostActService();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     UploadImageService
     provideUploadImageService() {
         return new UploadImageService();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     GenerateHostMapper
     provideGenerateHostMapper() {
         return new GenerateHostMapper();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     UploadImageMapper
     provideUploadImageMapper() {
         return new UploadImageMapper();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     SendReviewSubmitUseCase
     provideSendReviewSubmitUseCase(ThreadExecutor threadExecutor,
                                    PostExecutionThread postExecutionThread,
-                                   InboxReputationRepository reputationRepository) {
+                                   ReputationRepository reputationRepository) {
         return new SendReviewSubmitUseCase(
                 threadExecutor,
                 postExecutionThread,
                 reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     SendReviewSubmitMapper provideSendReviewSubmitMapper() {
         return new SendReviewSubmitMapper();
     }
 
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     SkipReviewUseCase provideSkipReviewUseCase(ThreadExecutor threadExecutor,
                                                PostExecutionThread postExecutionThread,
-                                               InboxReputationRepository reputationRepository) {
+                                               ReputationRepository reputationRepository) {
         return new SkipReviewUseCase(threadExecutor, postExecutionThread, reputationRepository);
     }
 
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     SkipReviewMapper provideSkipReviewMapper() {
         return new SkipReviewMapper();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     EditReviewValidateUseCase provideEditReviewValidateUseCase(ThreadExecutor threadExecutor,
                                                                PostExecutionThread postExecutionThread,
-                                                               InboxReputationRepository reputationRepository) {
+                                                               ReputationRepository reputationRepository) {
         return new EditReviewValidateUseCase(threadExecutor, postExecutionThread, reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     EditReviewSubmitUseCase provideEditReviewSubmitUseCase(ThreadExecutor threadExecutor,
                                                            PostExecutionThread postExecutionThread,
-                                                           InboxReputationRepository reputationRepository) {
+                                                           ReputationRepository reputationRepository) {
         return new EditReviewSubmitUseCase(threadExecutor, postExecutionThread, reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     EditReviewUseCase provideEditReviewUseCase(ThreadExecutor threadExecutor,
                                                PostExecutionThread postExecutionThread,
@@ -403,133 +403,133 @@ public class InboxReputationModule {
                 uploadImageUseCase, editReviewSubmitUseCase);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     ReportReviewMapper provideReportReviewMapper() {
         return new ReportReviewMapper();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     ReportReviewUseCase provideReportReviewUseCase(ThreadExecutor threadExecutor,
                                                    PostExecutionThread postExecutionThread,
-                                                   InboxReputationRepository reputationRepository) {
+                                                   ReputationRepository reputationRepository) {
         return new ReportReviewUseCase(threadExecutor, postExecutionThread, reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     GetCacheInboxReputationUseCase provideGetCacheInboxReputationUseCase(ThreadExecutor threadExecutor,
                                                                          PostExecutionThread postExecutionThread,
-                                                                         InboxReputationRepository reputationRepository) {
+                                                                         ReputationRepository reputationRepository) {
         return new GetCacheInboxReputationUseCase(threadExecutor, postExecutionThread, reputationRepository);
     }
 
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     TomeService provideTomeService() {
         return new TomeService();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     ShopFavoritedMapper provideShopFavoritedMapper() {
         return new ShopFavoritedMapper();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     CheckShopFavoritedUseCase provideCheckShopFavoritedUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
-            InboxReputationRepository reputationRepository
+            ReputationRepository reputationRepository
     ) {
         return new CheckShopFavoritedUseCase(threadExecutor, postExecutionThread, reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     FavoriteShopUseCase provideFavoriteShopUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
-            InboxReputationRepository reputationRepository
+            ReputationRepository reputationRepository
     ) {
         return new FavoriteShopUseCase(threadExecutor, postExecutionThread, reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     FaveShopMapper provideFaveShopMapper() {
         return new FaveShopMapper();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     FaveShopActService provideFaveShopActService() {
         return new FaveShopActService();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     DeleteReviewResponseUseCase provideDeleteReviewResponseUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
-            InboxReputationRepository reputationRepository) {
+            ReputationRepository reputationRepository) {
         return new DeleteReviewResponseUseCase(threadExecutor, postExecutionThread,
                 reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     DeleteReviewResponseMapper provideDeleteReviewResponseMapper() {
         return new DeleteReviewResponseMapper();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     SendReplyReviewUseCase provideSendReplyReviewUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
-            InboxReputationRepository reputationRepository) {
+            ReputationRepository reputationRepository) {
         return new SendReplyReviewUseCase(threadExecutor, postExecutionThread,
                 reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     ReplyReviewMapper provideReplyReviewMapper() {
         return new ReplyReviewMapper();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     LikeDislikeReviewUseCase provideLikeDislikeReviewUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
-            InboxReputationRepository reputationRepository) {
+            ReputationRepository reputationRepository) {
         return new LikeDislikeReviewUseCase(threadExecutor, postExecutionThread,
                 reputationRepository);
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     GetLikeDislikeMapper provideGetLikeDislikeMapper() {
         return new GetLikeDislikeMapper();
     }
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     GetLikeDislikeReviewUseCase provideGetLikeDislikeReviewUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
-            InboxReputationRepository reputationRepository) {
+            ReputationRepository reputationRepository) {
         return new GetLikeDislikeReviewUseCase(threadExecutor, postExecutionThread,
                 reputationRepository);
     }
 
 
-    @InboxReputationScope
+    @ReputationScope
     @Provides
     LikeDislikeMapper provideLikeDislikeMapper() {
         return new LikeDislikeMapper();

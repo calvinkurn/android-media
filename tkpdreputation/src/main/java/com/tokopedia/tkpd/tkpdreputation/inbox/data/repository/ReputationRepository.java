@@ -21,7 +21,7 @@ import rx.Observable;
  * @author by nisie on 8/14/17.
  */
 
-public interface InboxReputationRepository {
+public interface ReputationRepository {
 
     Observable<InboxReputationDomain> getInboxReputationFromCloud(RequestParams requestParams);
 

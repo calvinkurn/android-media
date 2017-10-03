@@ -31,7 +31,7 @@ import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.inbox.di.DaggerInboxReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
@@ -98,8 +98,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     protected void initInjector() {
         AppComponent appComponent = getComponent(AppComponent.class);
-        DaggerInboxReputationComponent reputationComponent =
-                (DaggerInboxReputationComponent) DaggerInboxReputationComponent
+        DaggerReputationComponent reputationComponent =
+                (DaggerReputationComponent) DaggerReputationComponent
                         .builder()
                         .appComponent(appComponent)
                         .build();

@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 
 import rx.Observable;
@@ -16,7 +16,7 @@ public class EditReviewValidateUseCase extends SendReviewValidateUseCase {
 
     public EditReviewValidateUseCase(ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
-                                     InboxReputationRepository reputationRepository) {
+                                     ReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread, reputationRepository);
     }
 

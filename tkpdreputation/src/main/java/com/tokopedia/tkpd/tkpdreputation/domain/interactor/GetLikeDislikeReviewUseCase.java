@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 
 import rx.Observable;
 
@@ -18,12 +18,12 @@ public class GetLikeDislikeReviewUseCase extends UseCase<GetLikeDislikeReviewDom
     private static final String PARAM_REVIEW_IDS = "review_ids";
     private static final String PARAM_USER_ID = "user_id";
 
-    InboxReputationRepository reputationRepository;
+    ReputationRepository reputationRepository;
 
 
     public GetLikeDislikeReviewUseCase(ThreadExecutor threadExecutor,
                                        PostExecutionThread postExecutionThread,
-                                       InboxReputationRepository reputationRepository) {
+                                       ReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread);
         this.reputationRepository = reputationRepository;
     }

@@ -6,7 +6,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.InboxReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.ReportReviewDomain;
 
 import rx.Observable;
@@ -27,11 +27,11 @@ public class ReportReviewUseCase extends UseCase<ReportReviewDomain> {
     private static final String PARAM_OTHER_REASON = "otherreason";
 
 
-    private final InboxReputationRepository reputationRepository;
+    private final ReputationRepository reputationRepository;
 
     public ReportReviewUseCase(ThreadExecutor threadExecutor,
                                PostExecutionThread postExecutionThread,
-                               InboxReputationRepository reputationRepository) {
+                               ReputationRepository reputationRepository) {
         super(threadExecutor, postExecutionThread);
         this.reputationRepository = reputationRepository;
     }
