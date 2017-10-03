@@ -26,10 +26,16 @@ public class UtilRNModule extends ReactContextBaseJavaModule {
         promise.resolve(AuthUtil.calculateRFC2104HMAC(data, getSecretKey(url)));
     }
 
+    @ReactMethod
+    public void convertParamToJson(String param, Promise promise) {
+        promise.resolve(param);
+    }
+
     private String getSecretKey(String url) {
         if(url.equals(TkpdBaseURL.PAYMENT_DOMAIN + TkpdBaseURL.Payment.PATH_PAYMENT)) {
-            return "PdsU23He0aJ828P1st8";
+            return AuthUtil.KEY.KEY_PAYMENT;
         }
-        return "";
+
+        return AuthUtil.KEY.KEY_WSV4;
     }
 }

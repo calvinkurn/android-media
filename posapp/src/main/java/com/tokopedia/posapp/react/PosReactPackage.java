@@ -9,6 +9,7 @@ import com.tokopedia.posapp.react.nativemodules.PaymentRNModule;
 import com.tokopedia.posapp.react.nativemodules.PosCacheRNModule;
 import com.tokopedia.posapp.react.nativemodules.ProductDiscoveryRNModule;
 import com.tokopedia.posapp.react.nativemodules.SessionRNModule;
+import com.tokopedia.posapp.react.nativemodules.UtilRNModule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +27,7 @@ public class PosReactPackage implements ReactPackage {
         modules.add(new SessionRNModule(reactContext));
         modules.add(new PaymentRNModule(reactContext));
         modules.add(new ProductDiscoveryRNModule(reactContext));
+        modules.add(new UtilRNModule(reactContext));
         return modules;
     }
 
