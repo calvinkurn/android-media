@@ -16,9 +16,10 @@ import android.widget.TextView;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.WrapContentViewPager;
+import com.tokopedia.core.database.model.category.Category;
+import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.digital.widget.model.category.Category;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 
@@ -77,10 +78,10 @@ public class DigitalWidgetView extends BaseCustomView {
         });
     }
 
-    public void renderDataWidget(List<Category> rechargeCategory, FragmentManager fragmentManager) {
+    public void renderDataWidget(CategoryData rechargeCategory, FragmentManager fragmentManager) {
         List<Integer> newRechargePositions = new ArrayList<>();
 
-        if (rechargeCategory.size() == 0) {
+        if (rechargeCategory.getData().size() == 0) {
             return;
         }
 
@@ -88,17 +89,17 @@ public class DigitalWidgetView extends BaseCustomView {
         tabLayout.removeAllTabs();
         addChildTablayout(rechargeCategory, newRechargePositions);
         getPositionFlagNewRecharge(newRechargePositions);
-        setModeScrollerWidget(rechargeCategory.size());
+        setModeScrollerWidget(rechargeCategory.getData().size());
 
         if (rechargeViewPagerAdapter == null) {
-            rechargeViewPagerAdapter = new RechargeViewPagerAdapter(fragmentManager, rechargeCategory);
+            rechargeViewPagerAdapter = new RechargeViewPagerAdapter(fragmentManager, rechargeCategory.getData());
             viewPager.setAdapter(rechargeViewPagerAdapter);
         } else {
-            rechargeViewPagerAdapter.addFragments(rechargeCategory);
+            rechargeViewPagerAdapter.addFragments(rechargeCategory.getData());
         }
         addTablayoutListener(rechargeViewPagerAdapter);
-        viewPager.setOffscreenPageLimit(rechargeCategory.size());
-        setTabSelected(rechargeCategory.size());
+        viewPager.setOffscreenPageLimit(rechargeCategory.getData().size());
+        setTabSelected(rechargeCategory.getData().size());
     }
 
     public void hideDigitalWidget() {
@@ -120,9 +121,9 @@ public class DigitalWidgetView extends BaseCustomView {
         }
     }
 
-    private void addChildTablayout(List<Category> rechargeCategory, List<Integer> newRechargePositions) {
-        for (int i = 0; i < rechargeCategory.size(); i++) {
-            Category category = rechargeCategory.get(i);
+    private void addChildTablayout(CategoryData rechargeCategory, List<Integer> newRechargePositions) {
+        for (int i = 0; i < rechargeCategory.getData().size(); i++) {
+            com.tokopedia.core.database.model.category.Category category = rechargeCategory.getData().get(i);
             TabLayout.Tab tab = tabLayout.newTab();
             tab.setText(category.getAttributes().getName());
             tabLayout.addTab(tab);
