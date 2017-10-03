@@ -49,6 +49,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private final TopAdsRecyclerAdapter adapter;
     private RecyclerView recyclerView;
     private static final int ROW_ADS_INDEX_FEED = 2;
+    private static final int ROW_ADS_INDEX_HEADER = 1;
 
     public TopAdsPlacer(TopAdsRecyclerAdapter adapter, Context context,
                         TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
@@ -91,6 +92,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     public void onChanged() {
+        reset();
         observerType = ObserverType.CHANGE;
         if (shouldLoadAds && adsItems.isEmpty()) {
             loadTopAds();
@@ -158,10 +160,12 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         ajustedPositionStart = 0;
         mPage = 1;
         itemList.clear();
-        adsItems.clear();
-        setShouldLoadAds(true);
         if (hasHeader)
             headerPlaced = false;
+    }
+
+    public void clearAds(){
+        adsItems.clear();
     }
 
     @Override
@@ -184,22 +188,22 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
             if (getItemCount() > tresHold) {
                 if (hasHeader && !headerPlaced) {
                     headerPlaced = true;
-                    setTopAds(adsItems, itemList, ROW_ADS_INDEX_FEED);
+                    setTopAds(adsItems, ROW_ADS_INDEX_FEED);
                 } else {
-                    setTopAds(adsItems, itemList, getItemCount() - tresHold);
+                    setTopAds(adsItems, getItemCount() - tresHold);
                 }
             } else {
-                setTopAds(adsItems, itemList, getItemCount());
+                setTopAds(adsItems, getItemCount());
             }
         } else {
             if (hasHeader && !headerPlaced) {
                 headerPlaced = true;
-                setTopAds(adsItems, itemList, 1);
+                setTopAds(adsItems, ROW_ADS_INDEX_HEADER);
             } else {
                 if (headerPlaced || position > 0) {
                     position = position - 1;
                 }
-                setTopAds(adsItems, itemList, position);
+                setTopAds(adsItems, position);
                 if (recyclerView != null && position == 0) {
                     recyclerView.scrollToPosition(position);
                 }
@@ -220,7 +224,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         itemList.addAll(arrayList);
         if (hasHeader && !adsItems.isEmpty() && !headerPlaced) {
             headerPlaced = true;
-            setTopAds(adsItems, itemList, 1);
+            setTopAds(adsItems, ROW_ADS_INDEX_HEADER);
         }
         observer.onStreamLoaded(observerType);
     }
@@ -263,13 +267,15 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         return presenter.getConfig();
     }
 
-    private void setTopAds(List<Item> list, List<Item> arrayList, int pos) {
+    private void setTopAds(List<Item> list, int pos) {
         Log.d(TAG, "setTopAds size " + list.size() + " pos " + pos);
-        if (list.size() > 0) {
-            arrayList.add(pos, new TopAdsViewModel(list));
-            adapter.notifyItemInserted(pos);
-        } else {
-            setShouldLoadAds(false);
+        if (pos > 0) {
+            if (list.size() > 0) {
+                itemList.add(pos, new TopAdsViewModel(list));
+                adapter.notifyItemInserted(pos);
+            } else {
+                setShouldLoadAds(false);
+            }
         }
     }
 
