@@ -601,7 +601,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     public void onImageEditor(String uriOrPath) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(uriOrPath);
-        ImageEditorActivity.start(getContext(), ProductAddFragment.this, imageUrls);
+        ImageEditorActivity.start(getContext(), ProductAddFragment.this, imageUrls, null);
     }
 
     private void clearFocus(){

@@ -28,6 +28,7 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
 
     public static final int REQUEST_CODE = 520;
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
+    public static final String EXTRA_WATERMARK_TEXT = "WTRMK_TEXT";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_IMAGE_URLS = "SAVED_IMG_URLS";
@@ -43,20 +44,22 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     private int imageIndex;
 
     private TkpdProgressDialog progressDialog;
+    private String watermarkText;
 
-    public static void start(Context context, Fragment fragment, ArrayList<String> imageUrls) {
-        Intent intent = createInstance(context, imageUrls);
+    public static void start(Context context, Fragment fragment, ArrayList<String> imageUrls, String watermarkText) {
+        Intent intent = createInstance(context, imageUrls, watermarkText);
         fragment.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static void start(Activity activity, ArrayList<String> imageUrls) {
-        Intent intent = createInstance(activity, imageUrls);
+    public static void start(Activity activity, ArrayList<String> imageUrls, String watermarkText) {
+        Intent intent = createInstance(activity, imageUrls, watermarkText);
         activity.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static Intent createInstance(Context context, ArrayList<String> imageUrls) {
+    public static Intent createInstance(Context context, ArrayList<String> imageUrls, String watermarkText) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
+        intent.putExtra(EXTRA_WATERMARK_TEXT, watermarkText);
         return intent;
     }
 
@@ -68,6 +71,7 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        watermarkText = getIntent().getStringExtra(EXTRA_WATERMARK_TEXT);
         if (savedInstanceState == null) {
             if (getIntent().hasExtra(EXTRA_IMAGE_URLS)) {
                 imageUrls = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS);
@@ -126,12 +130,16 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     private void startEditLocalImages() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.findFragmentByTag(ImageEditorFragment.TAG) == null) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, ImageEditorWatermarkFragment.newInstance(
-                            imageUrls.get(imageIndex)), ImageEditorWatermarkFragment.TAG)
-                    .commit();
+            replaceEditorFragment(fragmentManager);
         }
         setUpToolbarTitle();
+    }
+
+    private void replaceEditorFragment(FragmentManager fragmentManager){
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, ImageEditorFragment.newInstance(
+                        imageUrls.get(imageIndex)), ImageEditorFragment.TAG)
+                .commit();
     }
 
     private void showProgressDialog() {
@@ -176,11 +184,7 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
                 } else {
                     // continue to next image index
                     FragmentManager fragmentManager = getSupportFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.container, ImageEditorWatermarkFragment.newInstance(
-                                    imageUrls.get(imageIndex)), ImageEditorWatermarkFragment.TAG)
-                            .addToBackStack(String.valueOf(imageIndex))
-                            .commit();
+                    replaceEditorFragment(fragmentManager);
                     setUpToolbarTitle();
                 }
             }

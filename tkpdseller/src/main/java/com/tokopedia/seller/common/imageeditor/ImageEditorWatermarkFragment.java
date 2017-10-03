@@ -14,14 +14,21 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.tokopedia.seller.R;
 
 /**
- * Created by User on 9/25/2017.
+ * Created by hendry on 9/25/2017.
  */
 
 public class ImageEditorWatermarkFragment extends ImageEditorFragment{
 
-    public static ImageEditorWatermarkFragment newInstance(String localPath) {
+    private WatermarkView watermarkView;
+
+    protected static final String ARG_WATERMARK_TEXT = "ARG_WMARK_TEXT";
+
+    private String watermarkText;
+
+    public static ImageEditorWatermarkFragment newInstance(String localPath, String watermarkText) {
         Bundle args = new Bundle();
         args.putString(ARG_LOCAL_PATH, localPath);
+        args.putString(ARG_WATERMARK_TEXT, watermarkText);
         ImageEditorWatermarkFragment fragment = new ImageEditorWatermarkFragment();
         fragment.setArguments(args);
         return fragment;
@@ -30,12 +37,14 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        watermarkText = getArguments().getString(ARG_WATERMARK_TEXT);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_image_editor_watermark, container, false);
+        watermarkView = (WatermarkView) view.findViewById(R.id.watermark_view);
         return view;
     }
 
@@ -45,9 +54,14 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment{
         mCropImageView.setOnSetCropOverlayReleasedListener(new CropImageView.OnSetCropOverlayReleasedListener() {
             @Override
             public void onCropOverlayReleased(Rect rect) {
-                
+                // TODO rectangle released
             }
         });
+        Rect rect = mCropImageView.getCropRect();
+        if (rect!= null) {
+            watermarkView.setText(watermarkText);
+            watermarkView.setTextCoord(rect.left, rect.top);
+        }
     }
 
     @Override
