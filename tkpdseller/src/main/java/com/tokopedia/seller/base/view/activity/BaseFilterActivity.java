@@ -15,9 +15,9 @@ import android.widget.Button;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BaseFilterContentFragment;
-import com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsFilterListFragment;
+import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.seller.base.view.listener.BaseFilterContentViewListener;
-import com.tokopedia.seller.topads.dashboard.view.model.FilterTitleItem;
+import com.tokopedia.seller.base.view.model.FilterTitleItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
     protected abstract Intent getDefaultIntentResult();
 
     protected int getLayoutId() {
-        return R.layout.activity_top_ads_filter;
+        return R.layout.activity_base_filter;
     }
 
     protected void initView() {

@@ -149,7 +149,7 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter {
             case VIEW_TYPE_NO_USE_CATALOG:
             case VIEW_TYPE_ITEM:
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-                View view = inflater.inflate(R.layout.item_simple_catalog, parent, false);
+                View view = inflater.inflate(R.layout.item_product_catalog, parent, false);
                 return new ItemViewHolder(view);
             default:
                 return super.onCreateViewHolder(parent, viewType);

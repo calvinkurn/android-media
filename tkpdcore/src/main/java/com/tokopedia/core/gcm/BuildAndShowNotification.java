@@ -417,6 +417,6 @@ public class BuildAndShowNotification {
         if (GlobalConfig.isSellerApp())
             return R.drawable.ic_stat_notify2;
         else
-            return R.drawable.ic_stat_notify;
+            return R.drawable.ic_stat_notify_white;
     }
 }

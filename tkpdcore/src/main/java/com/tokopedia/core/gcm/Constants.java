@@ -53,6 +53,7 @@ public interface Constants {
     interface Applinks {
         String HOME = "tokopedia://home";
         String HOME_FEED = "tokopedia://home/feed";
+        String FEED = "tokopedia://feed";
         String HOME_CATEGORY = "tokopedia://home/category";
         String HOME_HOTLIST = "tokopedia://hot";
         String MESSAGE = "tokopedia://message";
@@ -101,6 +102,7 @@ public interface Constants {
         String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
         String LOGIN = "tokopedia://login";
         String OFFICIAL_STORES = "tokopedia://official-stores";
+        String RESCENTER = "tokopedia://resolution/{resolution_id}";
 
         interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";

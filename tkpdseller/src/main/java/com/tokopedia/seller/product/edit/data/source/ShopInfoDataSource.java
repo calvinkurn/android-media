@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.edit.data.source;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.product.edit.data.source.cache.ShopInfoCache;
 import com.tokopedia.seller.product.edit.data.source.cloud.ShopInfoCloud;
 
 import javax.inject.Inject;
@@ -25,25 +24,8 @@ public class ShopInfoDataSource {
     }
 
     public Observable<ShopModel> getShopInfo() {
-        Observable<ShopModel> cacheShopModel = ShopInfoCache.getShopInfo();
-        if (cacheShopModel == null) {
-            return getShopInfoFromNetwork();
-        }
-        return cacheShopModel;
-    }
-
-    public Observable<ShopModel> getShopInfoFromNetwork() {
         return shopInfoCloud.getShopInfo()
-                .map(mapper)
-                .doOnNext(new Action1<ShopModel>() {
-                    @Override
-                    public void call(ShopModel shopModel) {
-                        ShopInfoCache.saveShopInfoToCache(shopModel);
-                    }
-                });
+                .map(mapper);
     }
 
-    public boolean clearCacheShopInfo() {
-        return ShopInfoCache.clearShopInfoCache();
-    }
 }

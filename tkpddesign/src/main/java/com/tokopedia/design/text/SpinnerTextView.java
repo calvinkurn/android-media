@@ -226,7 +226,7 @@ public class SpinnerTextView extends BaseCustomView {
     private void updateEntries(String[] entries, int position) {
         if (entries != null) {
             this.entries = entries;
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_top_ads_autocomplete_text, entries);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text, entries);
             textAutoComplete.setAdapter(adapter);
             selectionIndex = position;
             if (selectionIndex >= 0) {
