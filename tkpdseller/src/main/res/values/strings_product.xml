@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Product -->
+    <!-- Product add -->
+    <string name="product_label_wholesale">Grosir</string>
+    <string name="product_label_po">PO</string>
     <string name="product_label_product_info">Info Produk</string>
     <string name="product_label_name">Nama Produk</string>
     <string name="product_label_catalog">Katalog</string>
@@ -161,4 +163,10 @@
     <string name="product_variant_stock_available">Tersedia</string>
     <string name="product_variant_dialog_cancel_title">Perubahan tidak akan tersimpan</string>
     <string name="product_variant_dialog_cancel_message">Yakin untuk keluar?</string>
+
+    <!-- Product manage -->
+    <string name="product_manage_stock">Stok %1$s</string>
+    <string name="product_manage_price_rp">Rp %1$s</string>
+    <string name="product_manage_cashback">Cashback %1$s</string>
+
 </resources>

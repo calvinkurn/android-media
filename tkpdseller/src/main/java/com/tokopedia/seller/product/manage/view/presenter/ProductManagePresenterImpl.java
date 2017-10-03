@@ -13,6 +13,7 @@ import com.tokopedia.seller.product.manage.domain.EditPriceProductUseCase;
 import com.tokopedia.seller.product.manage.domain.MultipleDeleteProductUseCase;
 import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
 import com.tokopedia.seller.product.manage.view.mapper.GetProductListManageMapperView;
+import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 
@@ -91,8 +92,10 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onError(Throwable e) {
-                getView().hideLoadingProgress();
-                getView().onErrorDeleteProduct();
+                if (isViewAttached()) {
+                    getView().hideLoadingProgress();
+                    getView().onErrorDeleteProduct();
+                }
             }
 
             @Override
@@ -116,8 +119,10 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onError(Throwable e) {
-                getView().hideLoadingProgress();
-                getView().onErrorEditPrice();
+                if (isViewAttached()) {
+                    getView().hideLoadingProgress();
+                    getView().onErrorEditPrice();
+                }
             }
 
             @Override
@@ -141,12 +146,17 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorGetProductList(e);
+                if (isViewAttached()) {
+                    getView().onLoadSearchError(e);
+                }
             }
 
             @Override
             public void onNext(ProductListSellerModel productListSellerModel) {
-                getView().onGetProductList(getProductListManageMapperView.transform(productListSellerModel));
+                ProductListManageModelView productListManageModelView = getProductListManageMapperView.transform(productListSellerModel);
+                getView().onSearchLoaded(productListManageModelView.getProductManageViewModels(),
+                        productListManageModelView.getProductManageViewModels().size(),
+                        productListManageModelView.isHasNextPage());
             }
         };
     }
@@ -160,7 +170,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onError(Throwable e) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().onErrorGetFeaturedProductList();
                 }
             }
@@ -174,7 +184,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
     private List<String> transform(List<GMFeaturedProductDomainModel.Datum> datas) {
         List<String> productIds = new ArrayList<>();
-        for(GMFeaturedProductDomainModel.Datum data : datas){
+        for (GMFeaturedProductDomainModel.Datum data : datas) {
             productIds.add(String.valueOf(data.getProductId()));
         }
         return productIds;

@@ -2,7 +2,10 @@ package com.tokopedia.transaction.purchase.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.activity.TxVerDetailActivity;
 import com.tokopedia.transaction.purchase.fragment.TxVerificationFragment;
@@ -101,6 +104,26 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
     }
 
     @Override
+    public void processCancelTransaction(Context context, TxVerData data) {
+        viewListener.showProgressLoading();
+        TKPDMapParam<String, String> cancelTransactionParams = new TKPDMapParam<>();
+        cancelTransactionParams.put("payment_id", data.getPaymentId());
+        netInteractor
+                .showCancelTransactionDialog(AuthUtil.generateParamsNetwork(
+                        context, cancelTransactionParams
+                ), dialogListener(data.getPaymentId()));
+    }
+
+    @Override
+    public void confirmCancelTransaction(Context context, String paymentId) {
+        TKPDMapParam<String, String> cancelTransactionParams = new TKPDMapParam<>();
+        cancelTransactionParams.put("payment_id", paymentId);
+        netInteractor.cancelTransaction(AuthUtil.generateParamsNetwork(
+                context, cancelTransactionParams
+        ), confirmCancelTransactionListener());
+    }
+
+    @Override
     public void uploadProofImageWSV4(Context context, String imagePath, TxVerData txVerData) {
         if (imagePath == null || imagePath.isEmpty()) {
             viewListener.showToastMessage(context.getString(
@@ -153,5 +176,66 @@ public class TxVerificationPresenterImpl implements TxVerificationPresenter {
                     }
                 });
 
+    }
+
+    private TxOrderNetInteractor.CancelTransactionDialogListener dialogListener (
+            final String paymentId
+    ) {
+        return new TxOrderNetInteractor.CancelTransactionDialogListener() {
+            @Override
+            public void onSuccess(String message) {
+                viewListener.showCancelTransactionDialog(message, paymentId);
+                viewListener.hideProgressLoading();
+            }
+
+            @Override
+            public void onError(String message) {
+                viewListener.showSnackbarWithMessage(message);
+                viewListener.hideProgressLoading();
+            }
+
+            @Override
+            public void onTimeout(String message) {
+                viewListener.showSnackbarWithMessage(message);
+                viewListener.hideProgressLoading();
+            }
+
+            @Override
+            public void onNoConnection(String message) {
+                viewListener.showSnackbarWithMessage(message);
+                viewListener.hideProgressLoading();
+            }
+        };
+    }
+
+    private TxOrderNetInteractor.CancelTransactionListener confirmCancelTransactionListener() {
+        return new TxOrderNetInteractor.CancelTransactionListener() {
+            @Override
+            public void onSuccess(String message) {
+                viewListener.resetData();
+                viewListener.showSnackbarWithMessage(message);
+            }
+
+            @Override
+            public void onPaymentExpired(String message) {
+                viewListener.resetData();
+                viewListener.showSnackbarWithMessage(message);
+            }
+
+            @Override
+            public void onError(String message) {
+                viewListener.showSnackbarWithMessage(message);
+            }
+
+            @Override
+            public void onTimeout(String message) {
+                viewListener.showSnackbarWithMessage(message);
+            }
+
+            @Override
+            public void onNoConnection(String message) {
+                viewListener.showSnackbarWithMessage(message);
+            }
+        };
     }
 }

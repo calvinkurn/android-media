@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.design.text.SpinnerCounterInputView;
@@ -20,11 +21,14 @@ import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListe
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
+import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.seller.product.manage.di.ProductManageModule;
+import com.tokopedia.seller.product.manage.view.activity.ProductManageFilterActivity;
+import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
 import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
-import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
+import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
 
@@ -59,10 +63,31 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_product_manage;
+    }
+
+    @Override
     protected void initView(View view) {
         super.initView(view);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        Button buttonSort = (Button) view.findViewById(R.id.button_sort);
+        buttonSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = ProductManageSortActivity.createIntent(getActivity(), SortProductOption.NEW_PRODUCT);
+                getActivity().startActivity(intent);
+            }
+        });
+        Button buttonFilter = (Button) view.findViewById(R.id.button_filter);
+        buttonFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = ProductManageFilterActivity.createIntent(getActivity(), new ProductManageFilterModel());
+                getActivity().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -86,7 +111,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     protected void searchForPage(int page) {
-        if(page == getStartPage()){
+        if (page == getStartPage()) {
             productManagePresenter.getListFeaturedProduct();
         }
         productManagePresenter.getListProduct(page, keywordFilter);
@@ -119,19 +144,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onGetProductList(ProductListManageModelView productListManageModelView) {
-        onSearchLoaded(productListManageModelView.getProductManageViewModels(), productListManageModelView.getProductManageViewModels().size());
-        hasNextPage = productListManageModelView.isHasNextPage();
+    public void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNext) {
+        onSearchLoaded(list, totalItem);
+        this.hasNextPage = hasNext;
     }
 
     @Override
     protected boolean hasNextPage() {
         return hasNextPage;
-    }
-
-    @Override
-    public void onErrorGetProductList(Throwable e) {
-        onLoadSearchError(e);
     }
 
     @Override
@@ -157,7 +177,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onGetFeaturedProductList(List<String> data) {
-        ((ProductManageListAdapter)adapter).setFeaturedProduct(data);
+        ((ProductManageListAdapter) adapter).setFeaturedProduct(data);
         adapter.notifyDataSetChanged();
     }
 
@@ -194,15 +214,15 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             @Override
             public void onBottomSheetItemClick(MenuItem item) {
                 int itemId = item.getItemId();
-                if(itemId == R.id.edit_product_menu){
+                if (itemId == R.id.edit_product_menu) {
                     goToEditProduct(productManageViewModel.getId());
-                }else if(itemId == R.id.duplicat_product_menu){
+                } else if (itemId == R.id.duplicat_product_menu) {
                     goToDuplicateProduct(productManageViewModel.getId());
-                }else if(itemId == R.id.delete_product_menu){
+                } else if (itemId == R.id.delete_product_menu) {
                     showDialogActionDeleteProduct(productManageViewModel.getId());
-                }else if(itemId == R.id.change_price_product_menu){
+                } else if (itemId == R.id.change_price_product_menu) {
                     showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPrice(), productManageViewModel.getProductCurrencyId());
-                }else if(itemId == R.id.share_product_menu){
+                } else if (itemId == R.id.share_product_menu) {
                     goToShareProduct(productManageViewModel);
                 }
             }

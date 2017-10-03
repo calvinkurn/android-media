@@ -108,4 +108,10 @@
         <item name="colorControlActivated">@color/tkpd_main_green</item>
         <item name="colorControlHighlight">@color/tkpd_main_green</item>
     </style>
+
+    <style name="CheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textSize">@dimen/font_subheading</item>
+        <item name="android:textColor">@color/font_black_primary_70</item>
+    </style>
+
 </resources>

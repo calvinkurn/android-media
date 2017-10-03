@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.facade;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.core.facade.BaseFacade;
@@ -20,6 +21,7 @@ public class FacadePromo extends BaseFacade {
         public String promoUrl;
         public String title;
         public String id;
+        public String appLink;
 
         public PromoItem() {
 
@@ -31,23 +33,25 @@ public class FacadePromo extends BaseFacade {
         }
 
         @Override
-        public void writeToParcel(android.os.Parcel dest, int flags) {
+        public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.imgUrl);
             dest.writeString(this.promoUrl);
             dest.writeString(this.title);
             dest.writeString(this.id);
+            dest.writeString(this.appLink);
         }
 
-        protected PromoItem(android.os.Parcel in) {
+        protected PromoItem(Parcel in) {
             this.imgUrl = in.readString();
             this.promoUrl = in.readString();
             this.title = in.readString();
             this.id = in.readString();
+            this.appLink = in.readString();
         }
 
         public static final Creator<PromoItem> CREATOR = new Creator<PromoItem>() {
             @Override
-            public PromoItem createFromParcel(android.os.Parcel source) {
+            public PromoItem createFromParcel(Parcel source) {
                 return new PromoItem(source);
             }
 
@@ -84,6 +88,7 @@ public class FacadePromo extends BaseFacade {
         p.title = s.getTitle();
         p.imgUrl = s.getImageUrl();
         p.promoUrl = s.getRedirectUrl();
+        p.appLink = s.getApplink();
         return p;
     }
 }
