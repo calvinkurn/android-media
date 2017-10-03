@@ -155,6 +155,7 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
             case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
             case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
             default:
+                gmFeaturedContainer.setBackgroundResource(android.R.color.white);
                 break;
         }
 

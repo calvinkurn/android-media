@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.ShopStatisticDetail;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.ticker.model.Ticker;
@@ -146,6 +148,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         ivSettingIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_SETTINGS);
                 Intent intent = new Intent(getContext(), ManageShopActivity.class);
                 startActivity(intent);
             }
@@ -153,6 +157,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         newOrderLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_ORDER_BARU);
                 Intent intent = SellerRouter.getActivitySellingTransactionNewOrder(getActivity());
                 startActivity(intent);
             }
@@ -160,6 +166,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         deliveryConfirmationLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_KONFIRMASI_PENGIRIMAN);
                 Intent intent = SellerRouter.getActivitySellingTransactionConfirmShipping(getActivity());
                 startActivity(intent);
             }
@@ -167,6 +175,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         deliveryStatusLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_STATUS_PENGIRIMAN);
                 Intent intent = SellerRouter.getActivitySellingTransactionShippingStatus(getActivity());
                 startActivity(intent);
             }
@@ -174,6 +184,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         opportunityLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_PELUANG);
                 Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(getActivity());
                 startActivity(intent);
             }
@@ -181,6 +193,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         messageLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_PESAN);
                 Intent intent = InboxRouter.getInboxMessageActivityIntent(getActivity());
                 startActivity(intent);
             }
@@ -188,6 +202,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         discussionLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_DISKUSI_PRODUK);
                 Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
                 startActivity(intent);
             }
@@ -195,6 +211,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         reviewLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_ULASAN);
                 Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
                 startActivity(intent);
             }
@@ -202,6 +220,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         shopScoreWidget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_PERFORMA_TOKO);
                 Intent intent = new Intent(getActivity(), ShopScoreDetailActivity.class);
                 startActivity(intent);
             }
@@ -281,6 +301,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         reputationLabelLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_REPUTASI_TOKO);
                 startActivity(new Intent(getContext(),SellerReputationInfoActivity.class));
             }
         });
@@ -294,6 +316,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         transactionlabelLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
+                        AppEventTracking.EventLabel.DASHBOARD_ITEM_TRANSAKSI_SUKSES);
                 String shopInfo = CacheUtil.convertModelToString(shopModel,
                         new TypeToken<ShopModel>() {
                         }.getType());

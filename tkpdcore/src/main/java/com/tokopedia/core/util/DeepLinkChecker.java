@@ -10,6 +10,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.gcm.Constants;
@@ -293,10 +294,12 @@ public class DeepLinkChecker {
     }
 
     public static void openHomepage(Context context, int tab) {
-        Intent intent = new Intent(context, HomeRouter.getHomeActivityClass());
-        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, tab);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        context.startActivity(intent);
+        if (context.getApplicationContext() instanceof TkpdCoreRouter){
+            Intent intent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
+            intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, tab);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            context.startActivity(intent);
+        }
     }
 
     public static void openShopWithParameter(String url, Context context, Bundle parameter) {

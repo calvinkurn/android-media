@@ -14,6 +14,8 @@ public interface WishList {
     String TAG = "MNORMANSYAH";
     String messageTAG = "WishList : ";
     String WISHLIST_MODEL = "WISHLIST_MODEL";
+    String WISHLIST_ENTITY = "WISHLIST_ENTITY";
+    String PAGINATION_MODEL = "PAGINATION_MODEL";
 
     void initDataInstance(Context context);
 
@@ -92,4 +94,6 @@ public interface WishList {
     void fetchDataAfterClearSearch(Context context);
 
     void refreshDataOnSearch(CharSequence query);
+
+    void onResume(Context context);
 }

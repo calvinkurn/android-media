@@ -180,6 +180,9 @@ dependencies {
         exclude group: 'com.android.support'
     }
     compile rootProject.ext.debugToolsDependencies.stetho
+    compile(rootProject.ext.analyticsDependencies.branch) {
+        exclude module: 'answers-shim'
+    }
 
     compile rootProject.ext.apolloDependencies.apolloRxSupport
     compile rootProject.ext.apolloDependencies.apolloRuntime

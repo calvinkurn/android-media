@@ -2,6 +2,7 @@ package com.tokopedia.gm.statistic.view.holder;
 
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.Button;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.card.EmptyCardContentView;
@@ -31,12 +32,12 @@ public class GMTopAdsAmountViewHolder implements GMStatisticViewHolder {
     private OnTopAdsViewHolderListener onTopAdsViewHolderListener;
     public GMTopAdsAmountViewHolder(View view) {
         titleCardView = (TitleCardView) view.findViewById(R.id.topads_statistic_card_view);
-        View vSeeTopAds = titleCardView.findViewById(R.id.tv_see_topads);
+        Button buttonTopAds = (Button) titleCardView.findViewById(R.id.button_see_top_ads);
         gmStatisticTopAdsGraph = (LineChartView) view.findViewById(R.id.gm_statistic_topads_graph);
         gmTopAdsLineChartWidget = (LineChartContainerWidget) titleCardView.findViewById(R.id.topads_line_chart_container);
         gmTopAdsLineChartWidget.setTvSubtitleTextColor(R.color.font_black_secondary_54);
         monthNamesAbrev = view.getResources().getStringArray(R.array.lib_date_picker_month_entries);
-        vSeeTopAds.setOnClickListener(new View.OnClickListener() {
+        buttonTopAds.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (onTopAdsViewHolderListener != null) {

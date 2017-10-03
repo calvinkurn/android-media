@@ -63,12 +63,6 @@ public class StandardizedInterceptor extends TkpdBaseInterceptor {
             throw new SessionExpiredException("invalid_grant");*/
     }
 
-    private void showForceLogoutDialog() {
-        Intent intent = new Intent();
-        intent.setAction("com.tokopedia.tkpd.FORCE_LOGOUT");
-        MainApplication.getAppContext().sendBroadcast(intent);
-    }
-
     private Response createNewResponse(Response oldResponse, String oldBodyResponse) {
         ResponseBody body = ResponseBody.create(oldResponse.body().contentType(), oldBodyResponse);
 
