@@ -45,7 +45,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     }
 
     @Override
-    public void fecthDataRechargeCategory() {
+    public void fetchDataRechargeCategory() {
         rechargeNetworkInteractor.getStatus(getStatusSubscriber());
     }
 
@@ -56,7 +56,26 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
     @Override
     public void fetchRecentNumberList() {
-        rechargeNetworkInteractor.getRecentNumbers(AuthUtil.generateParams(activity));
+        rechargeNetworkInteractor.getRecentNumbers(getRecentNumberSubscriber(), AuthUtil.generateParams(activity));
+    }
+
+    private Subscriber<Boolean> getRecentNumberSubscriber() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.renderErrorMessage();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+
+            }
+        };
     }
 
     @Override
@@ -128,7 +147,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                onNetworkError();
+                view.renderErrorMessage();
             }
 
             @Override
@@ -140,10 +159,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
                 }
             }
         };
-    }
-
-    public void onNetworkError() {
-        view.renderErrorMessage();
     }
 
     private boolean isVersionMatch(Status status) {
