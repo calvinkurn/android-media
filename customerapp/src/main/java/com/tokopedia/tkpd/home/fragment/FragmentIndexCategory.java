@@ -45,7 +45,6 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.RechargeEditText;
 import com.tokopedia.core.customView.WrapContentViewPager;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
@@ -74,7 +73,6 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPas
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
@@ -272,12 +270,16 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void initData() {
+        rechargeCategoryPresenter.fetchDataRechargeCategory();
         getAnnouncement();
         getPromo();
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
         topPicksPresenter.fetchTopPicks();
         brandsPresenter.fetchBrands();
         fetchRemoteConfig();
+        if (SessionHandler.isV4Login(getActivity())) {
+            rechargeCategoryPresenter.fetchLastOrder();
+        }
     }
 
     private void fetchRemoteConfig() {
@@ -346,9 +348,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
             @Override
             public void OnError() {
-                if (holder.MainView.getParent() != null
-                        && holder.bannerView != null) {
-                    ((ViewGroup) holder.bannerView.getParent()).removeView(holder.bannerView);
+                if (holder.bannerView != null) {
+                    holder.bannerView.setVisibility(View.GONE);
                 }
                 showGetHomeMenuNetworkError();
             }
@@ -360,7 +361,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             holder.bannerView.setPromoList(mappingListBannerPromo(promoList));
             holder.bannerView.buildView();
         } else {
-            ((ViewGroup) holder.bannerView.getParent()).removeView(holder.bannerView);
+            if (holder.bannerView != null) {
+                holder.bannerView.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -402,7 +405,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 new RechargeNetworkInteractorImpl(
                         new DigitalWidgetRepository(
                                 new RechargeService(), new DigitalEndpointService())));
-
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
         tokoCashPresenter = new TokoCashPresenterImpl(this);
@@ -419,7 +421,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 holder.cardBrandLayout.setVisibility(View.GONE);
             }
         });
-        rechargeCategoryPresenter.fecthDataRechargeCategory();
         tokoCashBroadcastReceiver = new TokoCashBroadcastReceiver(this);
         getActivity().registerReceiver(tokoCashBroadcastReceiver, new IntentFilter(
                 TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH
@@ -472,9 +473,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onResume() {
-        if (SessionHandler.isV4Login(getActivity())) {
-            rechargeCategoryPresenter.fetchLastOrder();
-        }
         super.onResume();
     }
 
@@ -846,12 +844,15 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
-                    rechargeCategoryPresenter.fecthDataRechargeCategory();
+                    rechargeCategoryPresenter.fetchDataRechargeCategory();
                     getAnnouncement();
                     getPromo();
                     homeCatMenuPresenter.fetchHomeCategoryMenu(true);
                     topPicksPresenter.fetchTopPicks();
                     brandsPresenter.fetchBrands();
+                    if (SessionHandler.isV4Login(getActivity())) {
+                        rechargeCategoryPresenter.fetchLastOrder();
+                    }
                 }
             });
         }
@@ -1003,16 +1004,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void renderErrorNetwork() {
-        if (messageSnackbar == null) {
-            messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                    new NetworkErrorHelper.RetryClickedListener() {
-                @Override
-                public void onRetryClicked() {
-                    rechargeCategoryPresenter.fecthDataRechargeCategory();
-                }
-            });
-        }
-        messageSnackbar.showRetrySnackbar();
+        showGetHomeMenuNetworkError();
     }
 
     @Override

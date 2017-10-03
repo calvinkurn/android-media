@@ -311,6 +311,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onRefresh() {
+        topAdsRecyclerAdapter.clearAds();
         newFeed.setVisibility(View.GONE);
         presenter.refreshPage();
     }
