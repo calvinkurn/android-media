@@ -2,12 +2,11 @@ package com.tokopedia.posapp.data.source.cloud;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
-import com.tokopedia.core.network.di.qualifier.AceAuth;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductCampaignResponse;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.posapp.data.mapper.GetProductListMapper;
 import com.tokopedia.posapp.data.mapper.GetProductMapper;
-import com.tokopedia.posapp.data.mapper.GetShopProductMapper;
 import com.tokopedia.posapp.data.source.cloud.api.AceApi;
 import com.tokopedia.posapp.data.source.cloud.api.ProductApi;
 import com.tokopedia.posapp.domain.model.shop.ProductListDomain;
@@ -27,13 +26,13 @@ public class ProductCloudSource {
     private MojitoApi mojitoApi;
     private AceApi aceApi;
     private GetProductMapper getProductMapper;
-    private GetShopProductMapper getProductListMapper;
+    private GetProductListMapper getProductListMapper;
 
     public ProductCloudSource(ProductApi productApi,
                               MojitoApi mojitoApi,
                               AceApi aceApi,
                               GetProductMapper getProductMapper,
-                              GetShopProductMapper getProductListMapper) {
+                              GetProductListMapper getProductListMapper) {
         this.productApi = productApi;
         this.mojitoApi = mojitoApi;
         this.aceApi = aceApi;
@@ -52,7 +51,7 @@ public class ProductCloudSource {
     }
 
     public Observable<ProductListDomain> getProductList(RequestParams params) {
-        return aceApi.getShopProduct(params.getParamsAllValueInString()).map(getProductListMapper);
+        return aceApi.getProductList(params.getParamsAllValueInString()).map(getProductListMapper);
     }
 
     private Func1<Response<ProductCampaignResponse>, ProductCampaign> mapToProductCampaign() {

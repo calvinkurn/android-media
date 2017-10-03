@@ -1,8 +1,8 @@
 package com.tokopedia.posapp.data.factory;
 
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
+import com.tokopedia.posapp.data.mapper.GetProductListMapper;
 import com.tokopedia.posapp.data.mapper.GetProductMapper;
-import com.tokopedia.posapp.data.mapper.GetShopProductMapper;
 import com.tokopedia.posapp.data.source.cloud.ProductCloudSource;
 import com.tokopedia.posapp.data.source.cloud.api.AceApi;
 import com.tokopedia.posapp.data.source.cloud.api.ProductApi;
@@ -17,13 +17,13 @@ public class ProductFactory {
     private MojitoApi mojitoApi;
     private AceApi aceApi;
     private GetProductMapper getProductMapper;
-    private GetShopProductMapper getProductListMapper;
+    private GetProductListMapper getProductListMapper;
 
     public ProductFactory(ProductApi productApi,
                           MojitoApi mojitoApi,
                           AceApi aceApi,
                           GetProductMapper getProductMapper,
-                          GetShopProductMapper getProductListMapper) {
+                          GetProductListMapper getProductListMapper) {
         this.productApi = productApi;
         this.mojitoApi = mojitoApi;
         this.aceApi = aceApi;

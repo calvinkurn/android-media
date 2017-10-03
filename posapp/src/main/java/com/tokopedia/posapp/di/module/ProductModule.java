@@ -7,8 +7,8 @@ import com.tokopedia.core.network.di.qualifier.AceAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.posapp.data.factory.ProductFactory;
+import com.tokopedia.posapp.data.mapper.GetProductListMapper;
 import com.tokopedia.posapp.data.mapper.GetProductMapper;
-import com.tokopedia.posapp.data.mapper.GetShopProductMapper;
 import com.tokopedia.posapp.data.repository.ProductRepository;
 import com.tokopedia.posapp.data.repository.ProductRepositoryImpl;
 import com.tokopedia.posapp.data.source.cloud.api.AceApi;
@@ -50,8 +50,8 @@ public class ProductModule {
     }
 
     @Provides
-    GetShopProductMapper provideGetProductListMapper() {
-        return new GetShopProductMapper();
+    GetProductListMapper provideGetProductListMapper() {
+        return new GetProductListMapper();
     }
 
     @Provides
@@ -59,7 +59,7 @@ public class ProductModule {
                                          MojitoApi mojitoApi,
                                          AceApi aceApi,
                                          GetProductMapper getProductMapper,
-                                         GetShopProductMapper getProductListMapper) {
+                                         GetProductListMapper getProductListMapper) {
         return new ProductFactory(productApi, mojitoApi, aceApi, getProductMapper, getProductListMapper);
     }
 

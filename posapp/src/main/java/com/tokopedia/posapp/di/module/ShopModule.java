@@ -5,8 +5,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.AceAuth;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.posapp.data.factory.ShopFactory;
+import com.tokopedia.posapp.data.mapper.GetProductListMapper;
 import com.tokopedia.posapp.data.mapper.GetShopMapper;
-import com.tokopedia.posapp.data.mapper.GetShopProductMapper;
 import com.tokopedia.posapp.data.repository.ShopRepository;
 import com.tokopedia.posapp.data.repository.ShopRepositoryImpl;
 import com.tokopedia.posapp.data.source.cloud.api.AceApi;
@@ -32,29 +32,15 @@ public class ShopModule {
 
     @ShopScope
     @Provides
-    AceApi provideAceApi(@AceAuth Retrofit retrofit) {
-        return retrofit.create(AceApi.class);
-    }
-
-    @ShopScope
-    @Provides
     GetShopMapper provideGetShopMapper() {
         return new GetShopMapper();
     }
 
     @ShopScope
     @Provides
-    GetShopProductMapper provideGetProductListMapper() {
-        return new GetShopProductMapper();
-    }
-
-    @ShopScope
-    @Provides
     ShopFactory provideShopFactory(ShopApi shopApi,
-                                   AceApi aceApi,
-                                   GetShopMapper shopMapper,
-                                   GetShopProductMapper getShopProductMapper) {
-        return new ShopFactory(shopApi, aceApi, shopMapper, getShopProductMapper);
+                                   GetShopMapper shopMapper) {
+        return new ShopFactory(shopApi, shopMapper);
     }
 
     @ShopScope

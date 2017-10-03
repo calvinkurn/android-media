@@ -13,9 +13,9 @@ import rx.functions.Func1;
  * Created by okasurya on 8/28/17.
  */
 
-public class GetShopProductMapper implements Func1<Response<TkpdResponse>, ProductListDomain> {
+public class GetProductListMapper implements Func1<Response<TkpdResponse>, ProductListDomain> {
     @Inject
-    public GetShopProductMapper() {
+    public GetProductListMapper() {
 
     }
 

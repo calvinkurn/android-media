@@ -113,7 +113,7 @@ public class ProductDetailActivity extends BasePresenterActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_installment) {
-            Intent intent = new Intent(this, ScanCreditCardActivity.class);
+            Intent intent = new Intent(this, ReactInstallmentActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
