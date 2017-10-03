@@ -21,6 +21,7 @@ import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -383,7 +384,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onProductShopMessageClicked(@NonNull Bundle bundle) {
+    public void onProductShopMessageClicked(@NonNull Intent intent) {
 
     }
 
@@ -499,6 +500,16 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void showSuccessWishlistSnackBar() {
+
+    }
+
+    @Override
+    public void showPromoWidget(PromoAttributes promoAttributes) {
+
+    }
+
+    @Override
+    public void onPromoWidgetCopied() {
 
     }
 

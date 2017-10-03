@@ -15,6 +15,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -34,6 +35,9 @@ import com.tokopedia.posapp.view.drawer.DrawerPosHelper;
 import com.tokopedia.posapp.view.service.SchedulerService;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -49,6 +53,12 @@ public class PosRouterApplication extends MainApplication implements
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
+
+    @Override
+    protected List<CacheApiWhiteListDomain> getWhiteList() {
+        List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
+        return cacheApiWhiteList;
+    }
 
     @Override
     public void onCreate() {
@@ -134,7 +144,6 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public void actionApplink(Activity activity, String linkUrl, String extras) {
-        // TODO: 9/29/17 implement in other apps too
         DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
         Intent intent = activity.getIntent();
         intent.setData(Uri.parse(linkUrl));

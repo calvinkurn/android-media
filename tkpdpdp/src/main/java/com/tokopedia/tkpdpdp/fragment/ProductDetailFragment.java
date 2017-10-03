@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -43,6 +44,7 @@ import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SessionRouter;
@@ -76,6 +78,7 @@ import com.tokopedia.tkpdpdp.customview.NewShopView;
 import com.tokopedia.tkpdpdp.customview.OtherProductsView;
 import com.tokopedia.tkpdpdp.customview.PictureView;
 import com.tokopedia.tkpdpdp.customview.PriceSimulationView;
+import com.tokopedia.tkpdpdp.customview.PromoWidgetView;
 import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.ShopInfoViewV2;
 import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
@@ -129,6 +132,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private PictureView pictureView;
     private RatingTalkCourierView ratingTalkCourierView;
     private PriceSimulationView priceSimulationView;
+    private PromoWidgetView promoWidgetView;
     private ShopInfoViewV2 shopInfoView;
     private TransactionDetailView transactionDetailView;
     private VideoDescriptionLayout videoDescriptionLayout;
@@ -220,6 +224,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
         ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
         newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
+        promoWidgetView = (PromoWidgetView) view.findViewById(R.id.view_promo_widget);
         mostHelpfulReviewView = (MostHelpfulReviewView) view.findViewById(R.id.view_most_helpful);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
         lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
@@ -242,7 +247,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
-        initStatusBarDark();
         setHasOptionsMenu(true);
         initToolbarTransparant();
     }
@@ -260,6 +264,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         shopInfoView.setListener(this);
         videoDescriptionLayout.setListener(this);
         mostHelpfulReviewView.setListener(this);
+        promoWidgetView.setListener(this);
         transactionDetailView.setListener(this);
         priceSimulationView.setListener(this);
         latestTalkView.setListener(this);
@@ -468,8 +473,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void onProductShopMessageClicked(@NonNull Bundle bundle) {
-        presenter.processToSendMessage(context, bundle);
+    public void onProductShopMessageClicked(@NonNull Intent intent) {
+        presenter.processToSendMessage(context, intent);
     }
 
     @Override
@@ -571,13 +576,34 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
         if (isFromDeeplink) {
             ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
-            webViewHandleListener = (DeepLinkWebViewHandleListener) getActivity();
-            webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
+            if (webViewHandleListener != null) {
+                webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
+            }
         } else {
             showToastMessage("Produk tidak ditemukan!");
             closeView();
         }
 
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof DeepLinkWebViewHandleListener){
+            webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
+        } else {
+            throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
+        }
+    }
+
+    @Override
+    public void onAttach(Context activity) {
+        super.onAttach(context);
+        if (activity instanceof DeepLinkWebViewHandleListener){
+            webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
+        } else {
+            throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
+        }
     }
 
     @Override
@@ -907,6 +933,25 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
+    public void showPromoWidget(PromoAttributes promoAttributes) {
+        this.promoWidgetView.renderData(promoAttributes);
+    }
+
+    @Override
+    public void onPromoWidgetCopied() {
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout,context.getString(R.string.title_copied),
+                Snackbar.LENGTH_LONG);
+        snackbar.setAction(context.getString(R.string.close), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.setActionTextColor(Color.WHITE);
+        snackbar.show();
+    }
+
+    @Override
     public void showProductCampaign(ProductCampaign productCampaign) {
         this.productCampaign = productCampaign;
         headerInfoView.renderProductCampaign(this.productCampaign);
@@ -967,11 +1012,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    initStatusBarLight();
                     initToolbarLight();
                     fabWishlist.hide();
                 } else {
-                    initStatusBarDark();
                     initToolbarTransparant();
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
@@ -986,18 +1029,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
         if (menu != null && menu.size() > 2) {
-            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.share_thin_black));
+            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.icon_share));
             LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.cart_active_black));
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart_notif));
             } else {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_black));
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart));
             }
         }
-        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_black));
+        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_more));
 
     }
 
@@ -1005,43 +1048,22 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setBackgroundColor(Color.TRANSPARENT);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
         if (menu != null && menu.size() > 1) {
-            menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.share_thin_white));
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white));
             LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
                 menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
             } else {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_white));
+                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart_white));
             }
-            toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_white));
-        }
-    }
-
-    private void initStatusBarDark() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation()) {
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.black));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                View decor = getActivity().getWindow().getDecorView();
-                decor.setSystemUiVisibility(0);
-
-            }
+            toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_more_white));
         }
     }
 
     private boolean getWindowValidation() {
         return getActivity() != null && getActivity().getWindow() != null;
-    }
-
-    private void initStatusBarLight() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getWindowValidation()) {
-            View decor = getActivity().getWindow().getDecorView();
-            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.white));
-        }
     }
 
     private class EditClick implements View.OnClickListener {

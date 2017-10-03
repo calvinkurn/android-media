@@ -51,6 +51,7 @@ import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
@@ -849,11 +850,14 @@ public class ShopInfoActivity extends BaseActivity
         Intent intent;
         Bundle bundle = new Bundle();
         if (SessionHandler.isV4Login(this)) {
-            intent = InboxRouter.getSendMessageActivityIntent(ShopInfoActivity.this);
-            bundle.putString(InboxRouter.PARAM_SHOP_ID, shopModel.info.shopId);
-            bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, shopModel.info.shopName);
-            intent.putExtras(bundle);
-            startActivity(intent);
+            if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                        .getAskSellerIntent(this,
+                                shopModel.info.shopId,
+                                shopModel.info.shopName,
+                                TkpdInboxRouter.SHOP);
+                startActivity(intent);
+            }
         } else {
             bundle.putBoolean("login", true);
             intent = SessionRouter.getLoginActivityIntent(this);

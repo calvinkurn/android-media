@@ -11,7 +11,7 @@ import rx.Observable;
 /**
  * Created by sebastianuskh on 3/8/17.
  */
-
+@Deprecated
 public class CheckVersionCategoryUseCase extends UseCase<Boolean> {
     private CategoryRepository categoryRepository;
 

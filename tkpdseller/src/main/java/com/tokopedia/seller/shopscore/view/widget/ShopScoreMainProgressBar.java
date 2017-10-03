@@ -12,8 +12,12 @@ import com.tokopedia.seller.R;
 
 public class ShopScoreMainProgressBar extends SquareProgressBar {
     private float limit;
-    private ShopScoreMainProgressBarListener parent;
+    private ShopScoreMainProgressBarListener listener;
     private float defaultLimit = 80;
+
+    public void setListener(ShopScoreMainProgressBarListener listener) {
+        this.listener = listener;
+    }
 
     public ShopScoreMainProgressBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -29,30 +33,25 @@ public class ShopScoreMainProgressBar extends SquareProgressBar {
         }
     }
 
-    private void initListener() {
-        if (getParent() instanceof ShopScoreMainProgressBarListener) {
-            parent = (ShopScoreMainProgressBarListener) getParent();
-        } else {
-            throw new RuntimeException("implement ShopScoreMainProgressBarListener to its parent");
-        }
-    }
-
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        initListener();
         setLimit(defaultLimit);
     }
 
     public void setLimit(float limit) {
         this.limit = limit;
-        parent.updateLimitViewOutside(calculateProgressWidth(limit));
+        if (listener != null) {
+            listener.updateLimitViewOutside(calculateProgressWidth(limit));
+        }
     }
 
     @Override
     protected void onSizeChanged(int newWidth, int newHeight, int oldWidth, int oldHeight) {
         super.onSizeChanged(newWidth, newHeight, oldWidth, oldHeight);
-        parent.updateLimitViewOutside(calculateProgressWidth(limit));
+        if (listener != null) {
+            listener.updateLimitViewOutside(calculateProgressWidth(limit));
+        }
     }
 
     private int calculateProgressWidth(float progress) {
