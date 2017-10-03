@@ -135,7 +135,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                 .appComponent(getApplicationComponent())
-        .reactNativeModule(new ReactNativeModule(this));
+                .reactNativeModule(new ReactNativeModule(this));
     }
 
     @Override
@@ -426,7 +426,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
                                                 Bundle data, String notifTitle) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                ((ReputationRouter) mContext).getInboxReputationIntent(mContext)
+                ((ReputationRouter) MainApplication.getAppContext())
+                        .getInboxReputationIntent(MainApplication.getAppContext())
         );
         mNotificationPass.classParentStack = InboxReputationActivity.class;
         mNotificationPass.title = notifTitle;
@@ -455,7 +456,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getProductReputationIntent(Context context) {
         return new Intent(context, ReputationProduct.class);
-        }
+    }
 
     @Override
     public void actionAppLink(Context context, String linkUrl) {
@@ -626,7 +627,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,customSubject, source);
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
     }
 
     @Override

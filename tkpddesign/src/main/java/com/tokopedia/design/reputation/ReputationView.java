@@ -34,7 +34,6 @@ public class ReputationView extends BaseCustomView {
     private int viewType;
     private LinearLayout layout;
 
-    //
     public ReputationView(Context context) {
         super(context);
         init();
@@ -61,6 +60,7 @@ public class ReputationView extends BaseCustomView {
             view = inflate(getContext(), R.layout.buyer_reputation, this);
             iconView = (ImageView) view.findViewById(R.id.icon);
             percent = (TextView) view.findViewById(R.id.percent);
+            layout = (LinearLayout) view.findViewById(R.id.buyer_reputation);
         } else {
             view = inflate(getContext(), R.layout.seller_reputation, this);
             layout = (LinearLayout) view.findViewById(R.id.seller_reputation);
@@ -84,20 +84,13 @@ public class ReputationView extends BaseCustomView {
         } else {
             setIcon(getResources().getDrawable(R.drawable.ic_smiley_good));
             setTitleText(text);
-            if (iconView != null)
-                iconView.setOnClickListener(new OnClickListener() {
+            if (layout != null)
+                layout.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         ToolTipUtils.showToolTip(setViewToolTip(positive, neutral, negative), v);
                     }
 
-                });
-            if (percent != null)
-                percent.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ToolTipUtils.showToolTip(setViewToolTip(positive, neutral, negative), v);
-                    }
                 });
         }
     }

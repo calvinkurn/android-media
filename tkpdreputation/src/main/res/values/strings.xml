@@ -40,7 +40,7 @@
     <string name="smiley_good">Puas</string>
     <string name="seller_has_not_review">Penjual Belum Menilai</string>
     <string name="score_from_seller">Penilaian dari Penjual</string>
-    <string name="locked_reputation">Ulasan terisi otomatis karena batas waktu pengisian telah habis.</string>
+    <string name="locked_reputation">Waktu penilaian telah habis, penilaian terkunci</string>
     <string name="smiley_prompt_prefix">Berikan penilaian</string>
     <string name="smiley_prompt_suffix_shop">pada toko ini?</string>
     <string name="upload_product_image">Upload Gambar Produk</string>
@@ -82,7 +82,7 @@
     <string name="menu_delete">Hapus</string>
     <string name="menu_share">Bagikan</string>
     <string name="helpful_question">Terbantu?</string>
-    <string name="people_helped">Orang terbantu</string>
+    <string name="people_helped">Orang lainnya terbantu dengan ulasan ini</string>
     <string name="change">Ubah</string>
     <string name="You_and">Anda dan </string>
     <string name="inbox_reputation_empty_title">Ulasan anda masih kosong</string>
@@ -90,6 +90,6 @@
     <string name="inbox_reputation_search_empty_title">Hasil Pencarian tidak ditemukan</string>
     <string name="inbox_reputation_search_empty_button">Lihat Semua Ulasan</string>
     <string name="not_reviewed">Belum diulas</string>
-    <string name="you_got_helped">Anda terbantu</string>
+    <string name="you_got_helped">Anda terbantu dengan ulasan ini</string>
 
 </resources>

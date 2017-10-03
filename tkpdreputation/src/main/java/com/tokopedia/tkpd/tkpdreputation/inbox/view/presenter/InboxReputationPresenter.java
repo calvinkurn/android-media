@@ -94,9 +94,10 @@ public class InboxReputationPresenter
         return itemPosition == visibleItem;
     }
 
-    public void refreshPage(int tab) {
+    public void refreshPage(String query, String timeFilter, String readStatusFilter, int tab) {
         getFirstTimeInboxReputationUseCase.execute(
-                GetFirstTimeInboxReputationUseCase.getFirstTimeParam(tab),
+                GetFirstTimeInboxReputationUseCase.getParam(1, query, timeFilter,
+                        readStatusFilter, tab),
                 new RefreshInboxReputationSubscriber(viewListener));
     }
 

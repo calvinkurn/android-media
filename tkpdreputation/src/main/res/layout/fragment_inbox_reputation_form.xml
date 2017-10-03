@@ -229,7 +229,7 @@
             android:background="@color/white"
             android:orientation="horizontal"
             android:padding="@dimen/padding_activity"
-            android:visibility="gone"
+            android:visibility="visible"
             >
 
             <LinearLayout

@@ -168,7 +168,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
         return new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                presenter.refreshPage(getTab());
+                presenter.refreshPage(getQuery(),
+                        timeFilter, statusFilter, getTab());
             }
         };
     }
@@ -263,7 +264,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
                         .RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.refreshPage(getTab());
+                        presenter.refreshPage(getQuery(), timeFilter, statusFilter, getTab());
                     }
                 });
     }
@@ -386,7 +387,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        timeFilter= "";
+                        timeFilter = "";
                         statusFilter = "";
                         searchView.setQuery("", true);
 

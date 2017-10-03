@@ -106,7 +106,6 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     ImageUploadAdapter adapter;
     ReviewTipsAdapter tipsAdapter;
     boolean isValidRating = false;
-    boolean isValidReview = false;
 
     TkpdProgressDialog progressDialog;
     private ShareDialog shareDialog;
@@ -339,8 +338,6 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             }
         });
 
-        review.addTextChangedListener(watcher(reviewLayout));
-
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -451,7 +448,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
 
     private void setButtonEnabled() {
-        if (isValidRating && isValidReview) {
+        if (isValidRating) {
             sendButton.setEnabled(true);
             sendButton.setTextColor(getResources().getColor(R.color.white));
             MethodChecker.setBackground(sendButton, getResources().getDrawable(R.drawable.green_button_rounded));
@@ -459,43 +456,6 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             sendButton.setEnabled(false);
             sendButton.setTextColor(getResources().getColor(R.color.grey_700));
             MethodChecker.setBackground(sendButton, getResources().getDrawable(R.drawable.bg_button_disabled));
-        }
-    }
-
-    private TextWatcher watcher(final TextInputLayout wrapper) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setWrapperError(wrapper, null);
-                    isValidReview = true;
-                    setButtonEnabled();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    setWrapperError(wrapper, getString(R.string.error_field_required));
-                    isValidReview = false;
-                    setButtonEnabled();
-                }
-            }
-        };
-    }
-
-    private void setWrapperError(TextInputLayout wrapper, String s) {
-        if (s == null) {
-            wrapper.setError(s);
-            wrapper.setErrorEnabled(false);
-        } else {
-            wrapper.setErrorEnabled(true);
-            wrapper.setError(s);
         }
     }
 

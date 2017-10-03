@@ -108,8 +108,9 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
                 requestParams.getString(SendReviewValidateUseCase.PARAM_RATING, ""),
                 requestParams.getString(SendReviewValidateUseCase.PARAM_REVIEW_MESSAGE, ""),
                 (ArrayList<ImageUpload>) requestParams.getObject(PARAM_LIST_IMAGE),
-                (List<ImageUpload>) requestParams.getObject(PARAM_LIST_DELETED_IMAGE)
-        );
+                (List<ImageUpload>) requestParams.getObject(PARAM_LIST_DELETED_IMAGE),
+                requestParams.getInt(SendReviewValidateUseCase.PARAM_ANONYMOUS, 0) ==
+                        SendReviewValidateUseCase.DEFAULT_IS_ANONYMOUS);
     }
 
     protected Func1<List<UploadImageDomain>, Observable<SendReviewRequestModel>>
@@ -214,10 +215,11 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
                                          String rating,
                                          String reviewMessage,
                                          ArrayList<ImageUpload> list,
-                                         List<ImageUpload> deletedList) {
+                                         List<ImageUpload> deletedList, boolean isAnonymous) {
         RequestParams params = RequestParams.create();
         params.getParameters().putAll(SendReviewValidateUseCase.getParamWithImage(reviewId, productId,
-                reputationId, shopId, rating, reviewMessage, list, deletedList).getParameters());
+                reputationId, shopId, rating, reviewMessage, list, deletedList, isAnonymous).getParameters
+                ());
         params.putObject(PARAM_LIST_IMAGE, list);
         params.putObject(PARAM_LIST_DELETED_IMAGE, deletedList);
         return params;

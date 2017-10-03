@@ -105,7 +105,7 @@ public class InboxReputationFormPresenter
     private void sendReviewWithImage(String reviewId, String reputationId, String productId,
                                      String shopId, String review, float rating,
                                      ArrayList<ImageUpload> list, List<ImageUpload> deletedList,
-                                     boolean shareFb, boolean anonymous,
+                                     boolean shareFb, boolean isAnonymous,
                                      String productName, String productAvatar, String productUrl) {
         sendReviewUseCase.execute(SendReviewUseCase.getParam(reviewId,
                 productId,
@@ -114,7 +114,8 @@ public class InboxReputationFormPresenter
                 String.valueOf(rating),
                 review,
                 list,
-                deletedList),
+                deletedList,
+                isAnonymous),
                 new SendReviewSubscriber(viewListener, shareFb, new ShareModel(
                         productName,
                         review,
@@ -125,14 +126,16 @@ public class InboxReputationFormPresenter
 
     private void sendReviewWithoutImage(String reviewId, String reputationId, String productId,
                                         String shopId, String review, float rating, boolean shareFb,
-                                        boolean anonymous, String productName, String productAvatar, String productUrl) {
+                                        boolean isAnonymous, String productName, String
+                                                productAvatar, String productUrl) {
         sendReviewValidateUseCase.execute(SendReviewValidateUseCase.getParam(
                 reviewId,
                 productId,
                 reputationId,
                 shopId,
                 String.valueOf(rating),
-                review
+                review,
+                isAnonymous
         ), new SendReviewWithoutImageSubscriber(viewListener, shareFb, new ShareModel(
                 productName,
                 review,
@@ -196,15 +199,15 @@ public class InboxReputationFormPresenter
     public void editReview(String reviewId, String reputationId, String productId,
                            String shopId, String review, float rating,
                            ArrayList<ImageUpload> list, List<ImageUpload> deletedList,
-                           boolean shareFb, boolean anonymous, String productName, String
+                           boolean shareFb, boolean isAnonymous, String productName, String
                                    productAvatar, String productUrl) {
         viewListener.showLoadingProgress();
         if (list.isEmpty()) {
             editReviewWithoutImage(reviewId, reputationId, productId, shopId, review, rating,
-                    shareFb, productName, productAvatar, productUrl);
+                    shareFb, productName, productAvatar, productUrl, isAnonymous);
         } else {
             editReviewWithImage(reviewId, reputationId, productId, shopId, review, rating, list,
-                    deletedList, shareFb, anonymous, productName, productAvatar, productUrl);
+                    deletedList, shareFb, isAnonymous, productName, productAvatar, productUrl);
         }
     }
 
@@ -212,13 +215,13 @@ public class InboxReputationFormPresenter
                                      String shopId, String review, float rating,
                                      ArrayList<ImageUpload> list,
                                      List<ImageUpload> deletedList,
-                                     boolean shareFb, boolean anonymous,
+                                     boolean shareFb, boolean isAnonymous,
                                      String productName, String
                                              productAvatar, String productUrl) {
         editReviewUseCase.execute(EditReviewUseCase.getParam(
                 reviewId, productId, reputationId, shopId,
-                String.valueOf(rating), review, list, deletedList
-        ), new EditReviewSubscriber(viewListener, shareFb, new ShareModel(
+                String.valueOf(rating), review, list, deletedList,
+                isAnonymous), new EditReviewSubscriber(viewListener, shareFb, new ShareModel(
                 productName,
                 review,
                 productUrl,
@@ -230,11 +233,11 @@ public class InboxReputationFormPresenter
     private void editReviewWithoutImage(String reviewId, String reputationId,
                                         String productId, String shopId,
                                         String review, float rating, boolean shareFb,
-                                        String productName, String productAvatar, String productUrl) {
+                                        String productName, String productAvatar, String productUrl, boolean isAnonymous) {
         editReviewValidateUseCase.execute(EditReviewValidateUseCase.getParam(
                 reviewId, productId,
                 reputationId, shopId,
-                String.valueOf(rating), review),
+                String.valueOf(rating), review, isAnonymous),
                 new EditReviewWithoutImageSubscriber(viewListener, shareFb, new ShareModel(
                         productName,
                         review,

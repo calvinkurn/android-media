@@ -235,9 +235,9 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         builder.setMessage(message).setPositiveButton(context.getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (context instanceof ReputationRouter) {
-                            Intent intent = ((ReputationRouter) context).getInboxReputationIntent
-                                    (context);
+                        if (MainApplication.getAppContext() instanceof ReputationRouter) {
+                            Intent intent = ((ReputationRouter) MainApplication.getAppContext())
+                                    .getInboxReputationIntent(MainApplication.getAppContext());
                             intent.putExtra("unread", true);
                             dialog.dismiss();
                             viewListener.navigateToActivity(intent);
