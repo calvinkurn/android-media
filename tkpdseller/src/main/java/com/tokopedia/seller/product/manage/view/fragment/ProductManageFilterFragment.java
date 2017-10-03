@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.manage.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.MenuRes;
@@ -50,11 +51,11 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     }
 
     public static Fragment createInstance(ProductManageFilterModel productManageFilterModel){
-        ProductManageFragment productManageFragment = new ProductManageFragment();
+        ProductManageFilterFragment productManageFilterFragment = new ProductManageFilterFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ProductManageConstant.EXTRA_FILTER_SELECTED, productManageFilterModel);
-        productManageFragment.setArguments(bundle);
-        return productManageFragment;
+        productManageFilterFragment.setArguments(bundle);
+        return productManageFilterFragment;
     }
 
     @Override
@@ -71,11 +72,20 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_activation_resent, container);
-        setHasOptionsMenu(true);
+        return inflater.inflate(R.layout.fragment_filter_manage_product, container);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
         etalase = (LabelView) view.findViewById(R.id.etalase);
         category = (LabelView) view.findViewById(R.id.category);
@@ -122,7 +132,7 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
                 onSubmitFilter();
             }
         });
-        return view;
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

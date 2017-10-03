@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.view.fragment.ProductManageSortFragment;
@@ -15,7 +18,7 @@ import com.tokopedia.seller.product.manage.view.fragment.ProductManageSortFragme
  * Created by zulfikarrahman on 9/26/17.
  */
 
-public class ProductManageSortActivity extends BaseSimpleActivity {
+public class ProductManageSortActivity extends BaseSimpleActivity implements HasComponent<ProductComponent> {
 
     public static Intent createIntent(Context context, @SortProductOption String sortProductOption){
         Intent intent = new Intent(context, ProductManageSortActivity.class);
@@ -37,5 +40,10 @@ public class ProductManageSortActivity extends BaseSimpleActivity {
     protected void setToolbarColorWhite() {
         super.setToolbarColorWhite();
         getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close));
+    }
+
+    @Override
+    public ProductComponent getComponent() {
+        return ((SellerModuleRouter)getApplication()).getProductComponent();
     }
 }
