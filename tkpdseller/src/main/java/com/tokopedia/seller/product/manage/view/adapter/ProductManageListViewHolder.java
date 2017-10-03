@@ -1,6 +1,5 @@
 package com.tokopedia.seller.product.manage.view.adapter;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,32 +15,47 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 
 public class ProductManageListViewHolder extends BaseViewHolder<ProductManageViewModel> {
 
-    public interface ClickOptionCallbackHolder{
+    public interface ClickOptionCallbackHolder {
         void onClickOptionItem(ProductManageViewModel productManageViewModel);
     }
 
-    private ImageView imageProduct;
-    private TextView titleProduct;
+    private ImageView productImageView;
+    private TextView titleTextView;
+    private TextView stockTextView;
+    private TextView priceTextView;
+    private ImageView featuredImageView;
+    private TextView cashbackTextView;
+    private TextView wholesaleTextView;
+    private TextView poTextView;
+    private ImageView freeReturnImageView;
     private ClickOptionCallbackHolder clickOptionCallbackHolder;
 
     public ProductManageListViewHolder(View layoutView) {
         super(layoutView);
-        imageProduct = (ImageView) layoutView.findViewById(R.id.image_product_manage);
-        titleProduct = (TextView) layoutView.findViewById(R.id.title_product_manage);
+        productImageView = (ImageView) layoutView.findViewById(R.id.image_view_product);
+        titleTextView = (TextView) layoutView.findViewById(R.id.text_view_title);
+        stockTextView = (TextView) layoutView.findViewById(R.id.text_view_stock);
+        priceTextView = (TextView) layoutView.findViewById(R.id.text_view_price);
+
+        featuredImageView = (ImageView) layoutView.findViewById(R.id.image_view_featured);
+        cashbackTextView = (TextView) layoutView.findViewById(R.id.text_view_cashback);
+        wholesaleTextView = (TextView) layoutView.findViewById(R.id.text_view_wholesale);
+        poTextView = (TextView) layoutView.findViewById(R.id.text_view_po);
+        freeReturnImageView = (ImageView) layoutView.findViewById(R.id.image_view_free_return);
     }
 
     @Override
     public void bindObject(final ProductManageViewModel productManageViewModel) {
         ImageHandler.loadImageRounded2(
-                imageProduct.getContext(),
-                imageProduct,
+                productImageView.getContext(),
+                productImageView,
                 productManageViewModel.getImageUrl()
         );
-        titleProduct.setText(productManageViewModel.getProductName());
-        imageProduct.setOnClickListener(new View.OnClickListener() {
+        titleTextView.setText(productManageViewModel.getProductName());
+        productImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(clickOptionCallbackHolder != null){
+                if (clickOptionCallbackHolder != null) {
                     clickOptionCallbackHolder.onClickOptionItem(productManageViewModel);
                 }
             }

@@ -16,6 +16,7 @@ import com.tokopedia.seller.product.manage.data.source.ProductActionApi;
 import com.tokopedia.seller.product.manage.domain.ActionProductManageRepository;
 import com.tokopedia.seller.product.manage.domain.DeleteProductUseCase;
 import com.tokopedia.seller.product.manage.domain.EditPriceProductUseCase;
+import com.tokopedia.seller.product.manage.domain.MultipleDeleteProductUseCase;
 import com.tokopedia.seller.product.manage.view.mapper.GetProductListManageMapperView;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenterImpl;
@@ -43,7 +44,8 @@ public class ProductManageModule {
                                                                 EditPriceProductUseCase editPriceProductUseCase,
                                                                 DeleteProductUseCase deleteProductUseCase,
                                                                 GetProductListManageMapperView getProductListManageMapperView,
-                                                                SellerModuleRouter sellerModuleRouter){
+                                                                SellerModuleRouter sellerModuleRouter,
+                                                                MultipleDeleteProductUseCase multipleDeleteProductUseCase){
         return new ProductManagePresenterImpl(getProductListSellingUseCase, editPriceProductUseCase, deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter, multipleDeleteProductUseCase);
     }
 

@@ -24,13 +24,13 @@ import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.seller.product.manage.di.ProductManageModule;
+import com.tokopedia.seller.product.manage.view.activity.ProductManageFilterActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
 import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
-import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
+import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
-import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
 
 import java.util.List;
 
@@ -84,7 +84,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         buttonFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ProductManageSortActivity.class);
+                Intent intent = ProductManageFilterActivity.createIntent(getActivity(), new ProductManageFilterModel());
                 getActivity().startActivity(intent);
             }
         });
