@@ -38,6 +38,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
     private String localPath;
 
     OnImageEditorFragmentListener onImageEditorFragmentListener;
+    protected Bitmap myBitmap;
 
     public interface OnImageEditorFragmentListener{
         void onSuccessCrop(CropImageView.CropResult cropResult);
@@ -75,7 +76,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
 
         File imgFile = new File(localPath);
         if(imgFile.exists()){
-            Bitmap myBitmap = null;
+            myBitmap = null;
             BitmapFactory.Options options;
 
             try {
