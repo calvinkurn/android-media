@@ -10,4 +10,6 @@ public class ProductManageConstant {
     public static final int REQUEST_CODE_CATEGORY = 2789;
     public static final int REQUEST_CODE_ETALASE = 5321;
     public static final String LIST_ID_DELETED = "list_id_deleted";
+    public static final int REQUEST_CODE_FILTER = 9483;
+    public static final int REQUEST_CODE_SORT = 4782;
 }

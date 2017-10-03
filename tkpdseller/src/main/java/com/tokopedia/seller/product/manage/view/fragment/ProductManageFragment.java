@@ -1,10 +1,12 @@
 package com.tokopedia.seller.product.manage.view.fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -21,6 +23,7 @@ import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListe
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
+import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
 import com.tokopedia.seller.product.manage.di.ProductManageModule;
@@ -29,6 +32,7 @@ import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivi
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
 import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
 import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
+import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
 
@@ -49,7 +53,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private ProgressDialog progressDialog;
 
     private boolean hasNextPage;
-    private String keywordFilter = "";
+    private String keywordFilter;
+    private @SortProductOption String sortProductOption;
+    private ProductManageFilterModel productManageFilterModel;
 
     @Override
     protected void initInjector() {
@@ -76,18 +82,49 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         buttonSort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = ProductManageSortActivity.createIntent(getActivity(), SortProductOption.NEW_PRODUCT);
-                getActivity().startActivity(intent);
+                Intent intent = ProductManageSortActivity.createIntent(getActivity(), SortProductOption.POSITION);
+                startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_SORT);
             }
         });
         Button buttonFilter = (Button) view.findViewById(R.id.button_filter);
         buttonFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = ProductManageFilterActivity.createIntent(getActivity(), new ProductManageFilterModel());
-                getActivity().startActivity(intent);
+                Intent intent = ProductManageFilterActivity.createIntent(getActivity(), productManageFilterModel);
+                startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_FILTER);
             }
         });
+    }
+
+    @Override
+    protected void initialVar() {
+        super.initialVar();
+        sortProductOption = SortProductOption.POSITION;
+        productManageFilterModel = new ProductManageFilterModel();
+        keywordFilter = "";
+        hasNextPage = false;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case ProductManageConstant.REQUEST_CODE_FILTER:
+                if(resultCode == Activity.RESULT_OK){
+                    productManageFilterModel = data.getParcelableExtra(ProductManageConstant.EXTRA_FILTER_SELECTED);
+                    resetPageAndSearch();
+                }
+                break;
+            case ProductManageConstant.REQUEST_CODE_SORT:
+                if(resultCode == Activity.RESULT_OK){
+                    ProductManageSortModel productManageSortModel = data.getParcelableExtra(ProductManageConstant.EXTRA_SORT_SELECTED);
+                    sortProductOption = productManageSortModel.getId();
+                    resetPageAndSearch();
+                }
+                break;
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -114,7 +151,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         if (page == getStartPage()) {
             productManagePresenter.getListFeaturedProduct();
         }
-        productManagePresenter.getListProduct(page, keywordFilter);
+        productManagePresenter.getListProduct(page, keywordFilter,
+                productManageFilterModel.getCatalogProductOption(), productManageFilterModel.getConditionProductOption(),
+                productManageFilterModel.getEtalaseProductOption(), productManageFilterModel.getPictureStatusOption(),
+                sortProductOption);
         hasNextPage = false;
     }
 
@@ -234,7 +274,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void showDialogChangeProductPrice(final String productId, String productPrice, String productCurrencyId) {
-        LayoutInflater li = LayoutInflater.from(getActivity());
+        LayoutInflater li = getActivity().getLayoutInflater();
         View promptsView = li.inflate(R.layout.layout_prompt_change_price_product, null);
         final SpinnerCounterInputView priceInputView = (SpinnerCounterInputView) promptsView.findViewById(R.id.spinner_counter_input_view_price);
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
