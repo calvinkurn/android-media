@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.TintableBackgroundView;
 import android.support.v4.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,8 +54,10 @@ public class IndicatorViewHelper {
                     labelText.setBackgroundResource(R.drawable.bg_label);
                     labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
                     ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                         labelText.setBackgroundTintList(tint);
+                    } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && labelText instanceof TintableBackgroundView) {
+                        ((TintableBackgroundView) labelText).setSupportBackgroundTintList(tint);
                     } else {
                         ViewCompat.setBackgroundTintList(labelText, tint);
                     }
