@@ -372,7 +372,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 dailUssdToCheckBalance(simSlot, ussdCode);
             } else {
                 view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed), view.getActivity().getString(R.string.message_ussd_title));
-
             }
 
         } else {
@@ -495,9 +494,9 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     private RequestBodyPulsaBalance getRequestBodyPulsaBalance(String message, int selectedSim) {
-        String number = getDeviceMobileNumber(selectedSim);
+        String number = getUssdPhoneNumberFromCache(selectedSim);
         if (number == null || "".equalsIgnoreCase(number.trim())) {
-            number = getUssdPhoneNumberFromCache(selectedSim);
+            number = getDeviceMobileNumber(selectedSim);
         }
         RequestBodyPulsaBalance requestBodyPulsaBalance = new RequestBodyPulsaBalance();
         requestBodyPulsaBalance.setType("balance");
@@ -528,9 +527,9 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
     @Override
     public Operator getSelectedUssdOperator(int selectedSim) {
-        String number = getDeviceMobileNumber(selectedSim);
+        String number = getUssdPhoneNumberFromCache(selectedSim);
         if (number == null || "".equalsIgnoreCase(number.trim())) {
-            number = getUssdPhoneNumberFromCache(selectedSim);
+            number = getDeviceMobileNumber(selectedSim);
         }
         List<Operator> selectedOperatorList = getSelectedUssdOperatorList(selectedSim);
         for (Operator operator : selectedOperatorList) {

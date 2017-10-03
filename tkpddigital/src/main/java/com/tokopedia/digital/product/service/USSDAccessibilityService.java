@@ -120,7 +120,7 @@ public class USSDAccessibilityService extends AccessibilityService {
             return;
         }
         List<AccessibilityNodeInfo> list = source
-                .findAccessibilityNodeInfosByText(getString(R.string.label_cancel));
+                .findAccessibilityNodeInfosByText(getString(R.string.label_ussd_cancel));
         boolean isClosed = false;
         if (list != null) {
             for (AccessibilityNodeInfo node : list) {
@@ -138,6 +138,22 @@ public class USSDAccessibilityService extends AccessibilityService {
                     if (node != null) {
                         node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         isClosed = true;
+                    }
+                }
+            }
+        }
+
+        //this block is for in case system language is Indonatia then buttn text may be "Batal"
+        if (!isClosed) {
+            for (int i = 0; i < source.getChildCount(); i++) {
+                AccessibilityNodeInfo node = source.getChild(i);
+                if (node != null && node.getText() != null) {
+                    if (getString(R.string.label_ussd_cancel).equalsIgnoreCase(node.getText().toString()) ||
+                            getString(R.string.ok).equalsIgnoreCase(node.getText().toString()) ||
+                            "Batal".equalsIgnoreCase(node.getText().toString())) {
+                        node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        isClosed = true;
+                        break;
                     }
                 }
             }
