@@ -97,5 +97,6 @@ dependencies {
     apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.miscDependencies.reactNative
-    compile rootProject.ext.miscDependencies.codePushReactNative
+    //compile rootProject.ext.miscDependencies.codePushReactNative
+    compile(group: 'com.microsoft.codepush', name: 'react-native-codepush', version: '1.0', ext: 'aar')
 }
