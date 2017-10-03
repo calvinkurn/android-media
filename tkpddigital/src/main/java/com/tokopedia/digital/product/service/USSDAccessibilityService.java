@@ -143,7 +143,7 @@ public class USSDAccessibilityService extends AccessibilityService {
             }
         }
 
-        //this block is for in case system language is Indonatia then buttn text may be "Batal"
+        //this block is for in case system language is Indonesia then buttn text may be "Batal"
         if (!isClosed) {
             for (int i = 0; i < source.getChildCount(); i++) {
                 AccessibilityNodeInfo node = source.getChild(i);
