@@ -3,9 +3,14 @@ import {
   PosCacheModule,
   NetworkModule,
   SessionModule,
-  PaymentModule
+  PaymentModule,
+  UtilModule
 } from 'NativeModules'
-import { BASE_API_URL } from '../lib/api.js'
+import { 
+  BASE_API_URL_PAYMENT,
+  BASE_API_URL_SCROOGE,
+  BASE_API_URL_PCIDSS
+} from '../lib/api.js'
 
 
 
@@ -136,7 +141,7 @@ const doPayment = async () => {
   const cart = await getCart()
 
   const data_payment = {
-    base_api_url: api_url,
+    base_api_url: api_url.api_url_payment,
     user_id: parseInt(user_id),
     os_type: '1',
     addr_id: parseInt(addr_id),
@@ -145,7 +150,10 @@ const doPayment = async () => {
     cart
   }
 
-  const makePaymentToNative = await makePaymentToNativeStepOne(data_payment)
+  const paymentToNative_firstStep = await makePaymentToNativeStepOne(data_payment)
+  const signature = await getSignature(paymentToNative_firstStep, api_url.api_url_scrooge)
+
+  const paymentToNative_secondStep = await makePaymentToNativeStepTwo(paymentToNative_firstStep)
 }
 
 const getUserId = () => {
@@ -188,13 +196,23 @@ const getEnv = () => {
 }
 
 const getBaseAPI = (env) => {
-  let api_url;
+  let data_api = {}
+
   if (env === 'production'){
-    api_url = `${BASE_API_URL.PRODUCTION}`
-    return api_url
+    const data_api = {
+      api_url_payment: `${BASE_API_URL_PAYMENT.PRODUCTION}`,
+      api_url_scrooge: `${BASE_API_URL_SCROOGE.PRODUCTION}`,
+      api_url_pcidss: `${BASE_API_URL_PCIDSS.PRODUCTION}`
+    }
+    return data_api
+
   } else {
-    api_url = `${BASE_API_URL.STAGING}`
-    return api_url
+    const data_api = {
+      api_url_payment: `${BASE_API_URL_PAYMENT.STAGING}`,
+      api_url_scrooge: `${BASE_API_URL_SCROOGE.STAGING}`,
+      api_url_pcidss: `${BASE_API_URL_PCIDSS.STAGING}`
+    }
+    return data_api
   }
 }
 
@@ -211,16 +229,41 @@ const makePaymentToNativeStepOne = (data_payment) => {
   return NetworkModule.getResponse(`${data_payment.base_api_url}/o2o/get_payment_params`, `POST`, JSON.stringify(data), true, 'JSON')
     .then(response => {
       const jsonResponse = JSON.parse(response)
-      console.log(jsonResponse)
+      return jsonResponse
     })
-    .catch(err => console.log(err))
+    .catch(err => { console.log(err) })
 }
 // ===================== Make Payment 1 ===================== //
 
 
 
 // ===================== Make Payment 2 ===================== //
-// ....... //
+const getSignature = (data, base_api_url_scrooge) => {
+  return UtilModule.generateHmac(`${base_api_url_scrooge}/v1/api/payment/`, 
+    JSON.stringify(data.data.parameter))
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => { console.log(err) })
+}
+
+const makePaymentToNativeStepTwo = (data) => {
+  console.log(data)
+  console.log(data.data.parameter)
+}
+
+// export const MAKE_PAYMENT_TO_NATIVE_STEP_TWO = 'MAKE_PAYMENT_TO_NATIVE_STEP_TWO'
+// export const makePaymentToNativeStepTwo = (data) => {
+//   console.log(data)
+//   // return {
+//   //   type: MAKE_PAYMENT_TO_NATIVE_STEP_TWO,
+//   //   payload: doPaymentDua(data)
+//   // }
+// }
+
+// const doPaymentDua = (data) => {
+//   console.log(data)
+// }
 // ===================== Make Payment 2 ===================== //
 
 
