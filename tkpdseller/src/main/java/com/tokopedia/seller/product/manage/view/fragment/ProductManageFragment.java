@@ -13,9 +13,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
@@ -49,6 +50,8 @@ import javax.inject.Inject;
 
 public class ProductManageFragment extends BaseSearchListFragment<ProductManagePresenter, ProductManageViewModel>
         implements ProductManageView, ProductManageListAdapter.ClickOptionCallback, BaseMultipleCheckListAdapter.CheckedCallback<ProductManageViewModel> {
+
+    private BottomActionView bottomActionView;
 
     @Inject
     ProductManagePresenter productManagePresenter;
@@ -88,16 +91,15 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         super.initView(view);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
-        Button buttonSort = (Button) view.findViewById(R.id.button_sort);
-        buttonSort.setOnClickListener(new View.OnClickListener() {
+        bottomActionView = (BottomActionView) view.findViewById(R.id.bottom_action_view);
+        bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = ProductManageSortActivity.createIntent(getActivity(), sortProductOption);
                 startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_SORT);
             }
         });
-        Button buttonFilter = (Button) view.findViewById(R.id.button_filter);
-        buttonFilter.setOnClickListener(new View.OnClickListener() {
+        bottomActionView.setButton2OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = ProductManageFilterActivity.createIntent(getActivity(), productManageFilterModel);
