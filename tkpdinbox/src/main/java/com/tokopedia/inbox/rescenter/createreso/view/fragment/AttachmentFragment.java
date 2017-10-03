@@ -36,10 +36,8 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.Attachment;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;

@@ -4,15 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.inbox.rescenter.createreso.data.mapper.GetProductProblemMapper;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.SolutionMapper;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
-
-import org.json.JSONObject;
 
 import rx.Observable;
 

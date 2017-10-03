@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.AttachmentAdapterListener;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentImage;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
 
 import java.io.File;

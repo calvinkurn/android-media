@@ -6,9 +6,6 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.GenerateHostUploadRepository;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.GenerateHostDomain;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
-
-import org.json.JSONObject;
 
 import rx.Observable;
 

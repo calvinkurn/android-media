@@ -35,7 +35,7 @@ public class CreateSubmitResponse {
 
     @Override
     public String toString() {
-        return "CreateResoStep2Response{" +
+        return "CreateSubmitResponse{" +
                 "resolution='" + resolution + '\'' +
                 ", successMessage='" + successMessage + '\'' +
                 '}';

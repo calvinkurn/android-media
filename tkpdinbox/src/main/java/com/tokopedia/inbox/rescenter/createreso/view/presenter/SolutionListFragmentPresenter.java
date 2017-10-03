@@ -1,12 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
@@ -19,19 +13,11 @@ import com.tokopedia.inbox.rescenter.createreso.view.subscriber.EditSolutionSubs
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.EditSolutionWithoutRefundSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.SolutionSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.RequireViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 /**
  * Created by yoasfs on 24/08/17.

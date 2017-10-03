@@ -12,11 +12,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.GenerateHostUploadRepository;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoRequestDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.GenerateHostDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.UploadDomain;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
-
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;

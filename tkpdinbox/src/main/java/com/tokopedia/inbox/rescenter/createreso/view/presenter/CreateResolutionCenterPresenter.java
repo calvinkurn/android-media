@@ -17,12 +17,12 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Ship
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusInfoDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusTroubleDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithoutAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithAttachmentUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithoutAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
-import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoWithoutAttachmentSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoWithAttachmentSubscriber;
+import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoWithoutAttachmentSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.LoadProductSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;

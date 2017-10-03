@@ -3,9 +3,7 @@ package com.tokopedia.inbox.rescenter.createreso.data.source.cloud;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.AppealSolutionMapper;
-import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditSolutionMapper;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.AppealSolutionResponseDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
 
 import rx.Observable;

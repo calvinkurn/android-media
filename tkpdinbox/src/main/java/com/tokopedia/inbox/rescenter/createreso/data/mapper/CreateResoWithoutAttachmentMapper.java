@@ -8,9 +8,6 @@ import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.ResolutionR
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoWithoutAttachmentDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.ResolutionDomain;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import retrofit2.Response;
 import rx.functions.Func1;
 

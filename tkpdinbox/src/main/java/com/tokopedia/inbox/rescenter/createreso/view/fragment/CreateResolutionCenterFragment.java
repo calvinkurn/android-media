@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +19,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.AttachmentActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemListActivity;
@@ -29,10 +29,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCe
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.CreateResolutionCenterPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
-import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 
 import java.util.ArrayList;
 import java.util.List;

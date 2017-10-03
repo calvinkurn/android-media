@@ -2,7 +2,6 @@ package com.tokopedia.inbox.rescenter.createreso.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditAppealResolutionSolutionDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
 
 import rx.Observable;
 

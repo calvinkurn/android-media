@@ -6,9 +6,6 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.GenerateHostResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.GenerateHostDomain;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import retrofit2.Response;
 import rx.functions.Func1;
 

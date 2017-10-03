@@ -2,13 +2,10 @@ package com.tokopedia.inbox.rescenter.createreso.view.subscriber;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
-import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionListFragment;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCenter;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;

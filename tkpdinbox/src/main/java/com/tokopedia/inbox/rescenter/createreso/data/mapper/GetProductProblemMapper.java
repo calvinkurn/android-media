@@ -29,9 +29,6 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.Stat
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusInfoDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.StatusTroubleDomain;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 

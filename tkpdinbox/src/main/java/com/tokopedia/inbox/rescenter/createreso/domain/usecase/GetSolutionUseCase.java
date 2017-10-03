@@ -4,9 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepository;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 

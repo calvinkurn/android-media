@@ -15,9 +15,6 @@ import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.RequireDom
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 

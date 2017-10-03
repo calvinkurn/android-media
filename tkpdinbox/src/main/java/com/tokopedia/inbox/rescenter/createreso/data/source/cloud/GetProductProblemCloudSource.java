@@ -9,7 +9,6 @@ import com.tokopedia.inbox.rescenter.createreso.data.mapper.GetProductProblemMap
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 
-
 import rx.Observable;
 
 /**

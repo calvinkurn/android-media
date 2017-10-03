@@ -1,16 +1,10 @@
 package com.tokopedia.inbox.rescenter.createreso.data.source.cloud;
 
-import android.content.Context;
-
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.EditSolutionMapper;
-import com.tokopedia.inbox.rescenter.createreso.data.mapper.SolutionMapper;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditSolutionResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
 
 import rx.Observable;
 

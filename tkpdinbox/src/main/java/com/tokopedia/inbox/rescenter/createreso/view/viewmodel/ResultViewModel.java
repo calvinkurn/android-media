@@ -8,7 +8,6 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.Attach
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

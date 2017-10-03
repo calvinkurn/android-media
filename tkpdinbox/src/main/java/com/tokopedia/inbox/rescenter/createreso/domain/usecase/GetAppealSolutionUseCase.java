@@ -5,9 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.AppealSolutionRepository;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.EditSolutionRepository;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.AppealSolutionResponseDomain;
-import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
 
 import rx.Observable;
 

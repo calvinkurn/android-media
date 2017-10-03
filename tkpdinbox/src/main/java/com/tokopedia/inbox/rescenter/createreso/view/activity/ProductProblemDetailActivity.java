@@ -10,7 +10,6 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailActivityPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDetailActivityPresenterImpl;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 
 /**

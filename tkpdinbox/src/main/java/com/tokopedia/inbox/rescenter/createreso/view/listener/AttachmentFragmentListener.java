@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
-import android.app.Fragment;
 import android.content.Intent;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;

@@ -3,10 +3,7 @@ package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 import android.content.Context;
 
 import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionDetailFragment;
-import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionListFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailActivityListener;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionDetailFragmentListener;
-import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListActivityListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;

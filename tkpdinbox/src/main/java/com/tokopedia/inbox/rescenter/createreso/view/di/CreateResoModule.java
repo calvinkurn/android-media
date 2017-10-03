@@ -39,8 +39,8 @@ import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRe
 import com.tokopedia.inbox.rescenter.createreso.data.repository.ProductProblemRepositoryImpl;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepository;
 import com.tokopedia.inbox.rescenter.createreso.data.repository.SolutionRepositoryImpl;
-import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithoutAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithAttachmentUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithoutAttachmentUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;

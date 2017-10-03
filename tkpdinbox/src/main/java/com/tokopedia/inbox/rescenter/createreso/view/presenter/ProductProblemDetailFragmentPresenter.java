@@ -9,7 +9,6 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Pr
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusInfoViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusTroubleViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.customview.StatusView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

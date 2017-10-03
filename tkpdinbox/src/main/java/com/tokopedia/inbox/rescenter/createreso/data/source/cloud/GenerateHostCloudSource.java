@@ -3,9 +3,6 @@ package com.tokopedia.inbox.rescenter.createreso.data.source.cloud;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
-import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
-import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
-import com.tokopedia.core.network.apiservices.upload.apis.UploadImageActApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.createreso.data.mapper.GenerateHostMapper;
