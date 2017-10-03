@@ -50,6 +50,12 @@ public class RechargeViewPagerAdapter extends FragmentStatePagerAdapter {
         }
     }
 
+    public void addFragments(List<Category> categoryList) {
+        this.categoryList.clear();
+        this.categoryList.addAll(categoryList);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return categoryList.size();
