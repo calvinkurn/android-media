@@ -15,6 +15,7 @@ import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.view.ManagePaymentOptionsContract;
 import com.tokopedia.ride.bookingride.view.ManagePaymentOptionsPresenter;
 import com.tokopedia.ride.bookingride.view.activity.AddCreditCardActivity;
+import com.tokopedia.ride.bookingride.view.activity.EditDeleteCreditCardActivity;
 import com.tokopedia.ride.bookingride.view.adapter.PaymentMethodAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.PaymentMethodItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.factory.PaymentMethodAdapterTypeFactory;
@@ -55,7 +56,7 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
 
     @Override
     public void onPaymentMethodSelected(PaymentMethodViewModel paymentMethodViewModel) {
-
+        startActivity(EditDeleteCreditCardActivity.getCallingActivity(getActivity(),paymentMethodViewModel));
     }
 
     public interface OnFragmentInteractionListener {

@@ -70,7 +70,9 @@
         <activity
             android:name=".bookingride.view.activity.ManagePaymentOptionsActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
-
+        <activity android:name=".bookingride.view.activity.EditDeleteCreditCardActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar"
+            />
         <service android:name=".ontrip.view.service.ActivityRecognizedService"></service>
     </application>
 

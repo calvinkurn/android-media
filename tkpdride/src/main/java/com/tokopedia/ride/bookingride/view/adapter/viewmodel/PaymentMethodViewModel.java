@@ -1,5 +1,8 @@
 package com.tokopedia.ride.bookingride.view.adapter.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.ride.bookingride.view.adapter.factory.PaymentMethodTypeFactory;
 
@@ -7,7 +10,7 @@ import com.tokopedia.ride.bookingride.view.adapter.factory.PaymentMethodTypeFact
  * Created by alvarisi on 5/3/17.
  */
 
-public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactory> {
+public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactory>,Parcelable {
     String name;
     boolean isActive;
     String type;
@@ -17,6 +20,24 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         this.isActive = isActive;
         this.type = type;
     }
+
+    protected PaymentMethodViewModel(Parcel in) {
+        name = in.readString();
+        isActive = in.readByte() != 0;
+        type = in.readString();
+    }
+
+    public static final Creator<PaymentMethodViewModel> CREATOR = new Creator<PaymentMethodViewModel>() {
+        @Override
+        public PaymentMethodViewModel createFromParcel(Parcel in) {
+            return new PaymentMethodViewModel(in);
+        }
+
+        @Override
+        public PaymentMethodViewModel[] newArray(int size) {
+            return new PaymentMethodViewModel[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -45,5 +66,17 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
     @Override
     public int type(PaymentMethodTypeFactory paymentMethodTypeFactory) {
         return paymentMethodTypeFactory.type(this);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeByte((byte) (isActive ? 1 : 0));
+        dest.writeString(type);
     }
 }

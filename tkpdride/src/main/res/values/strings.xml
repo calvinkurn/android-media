@@ -152,6 +152,7 @@
     <string name="interrupt_tos_cancel">Cancel</string>
     <string name="interrupt_tos_accept">Accept</string>
     <string name="edit">EDIT</string>
+    <string name="delete">DELETE</string>
     <string name="menu_remove">Remove</string>
     <string name="change_destination">CHANGE</string>
     <string name="change_destination_insufficient_balance_title">Oops, you don\'t have enought Tokocash balance to change your destination</string>
