@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tokopedia.applink.SessionApplinkModule;
+import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -42,25 +44,26 @@ import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
         PdpApplinkModule.class,
         RideDeeplinkModule.class,
         DiscoveryApplinkModule.class,
+        SessionApplinkModule.class,
         ReputationApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
     public static DeepLinkDelegate getDelegateInstance() {
-        return
-                new DeepLinkDelegate(
-                        new ConsumerDeeplinkModuleLoader(),
-                        new CoreDeeplinkModuleLoader(),
-                        new InboxDeeplinkModuleLoader(),
-                        new SellerApplinkModuleLoader(),
-                        new TransactionApplinkModuleLoader(),
-                        new DigitalApplinkModuleLoader(),
-                        new PdpApplinkModuleLoader(),
-                        new RideDeeplinkModuleLoader(),
-                        new DiscoveryApplinkModuleLoader(),
-                        new ReputationApplinkModuleLoader()
-                );
+        return new DeepLinkDelegate(
+                new ConsumerDeeplinkModuleLoader(),
+                new CoreDeeplinkModuleLoader(),
+                new InboxDeeplinkModuleLoader(),
+                new SellerApplinkModuleLoader(),
+                new TransactionApplinkModuleLoader(),
+                new DigitalApplinkModuleLoader(),
+                new PdpApplinkModuleLoader(),
+                new RideDeeplinkModuleLoader(),
+                new DiscoveryApplinkModuleLoader(),
+                new SessionApplinkModuleLoader(),
+                new ReputationApplinkModuleLoader()
+        );
     }
 
     @Override
@@ -71,7 +74,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         if (getIntent() != null) {
             Intent intent = getIntent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Uri applink = intent.getData();
+            Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
             presenter.processUTM(applink);
             if (deepLinkDelegate.supportsUri(applink.toString())) {
                 deepLinkDelegate.dispatchFrom(this, intent);
@@ -91,15 +94,14 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     }
 
 
-    @DeepLink(Constants.Applinks.SELLER_APP_HOME)
+    @DeepLink(Constants.Applinks.SellerApp.SELLER_APP_HOME)
     public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {
-        String MARKET_URL = "market://details?id=";
         Intent launchIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
 
         if (launchIntent == null) {
             launchIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(MARKET_URL + GlobalConfig.PACKAGE_SELLER_APP)
+                    Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
             );
         }
         return launchIntent;

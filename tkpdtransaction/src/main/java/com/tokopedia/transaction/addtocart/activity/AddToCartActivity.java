@@ -13,6 +13,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.view.MenuItem;
@@ -36,7 +37,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -323,6 +324,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         );
         etQuantity.setEnabled(true);
         etRemark.setEnabled(true);
+        if (!TextUtils.isEmpty(productCartPass.getNotes())) {
+            etRemark.setText(productCartPass.getNotes());
+        }
         tvProductPrice.setText(data.getProductPrice());
     }
 

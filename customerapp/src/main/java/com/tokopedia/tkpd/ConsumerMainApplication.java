@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -16,8 +17,10 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
@@ -25,11 +28,18 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.branch.referral.Branch;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
 
-public class ConsumerMainApplication extends ConsumerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction, InAppManager.InAppMessageListener{
+public class ConsumerMainApplication extends ConsumerRouterApplication implements
+        MoEPushCallBacks.OnMoEPushNavigationAction,
+        InAppManager.InAppMessageListener {
 
     @Override
     public void onCreate() {
@@ -39,8 +49,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         generateConsumerAppBaseUrl();
+        generateConsumerAppNetworkKeys();
         initializeDatabase();
         super.onCreate();
+        initReact();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
@@ -49,6 +61,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LocalBroadcastManager.getInstance(this).registerReceiver(new DeepLinkReceiver(), intentFilter);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
+        // initialize the Branch object
+        initBranch();
     }
 
     private void generateConsumerAppBaseUrl() {
@@ -78,6 +92,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_WEBSITE_DOMAIN;
         TkpdBaseURL.GRAPHQL_DOMAIN = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         TkpdBaseURL.SCROOGE_DOMAIN = ConsumerAppBaseUrl.SCROOGE_DOMAIN;
+        TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = ConsumerAppBaseUrl.SCROOGE_CREDIT_CARD_DOMAIN;
+        TkpdBaseURL.PAYMENT_DOMAIN = ConsumerAppBaseUrl.PAYMENT_DOMAIN;
+        TkpdBaseURL.GALADRIEL = ConsumerAppBaseUrl.GALADRIEL;
+        TkpdBaseURL.MAPS_DOMAIN = ConsumerAppBaseUrl.MAPS_DOMAIN;
+    }
+
+    private void generateConsumerAppNetworkKeys() {
+        AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
     }
 
     public void initializeDatabase() {
@@ -138,6 +160,19 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }else{
             return false;
         }
+    }
 
+    @Override
+    protected List<CacheApiWhiteListDomain> getWhiteList() {
+        List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
+        return cacheApiWhiteList;
+    }
+
+    private void initReact() {
+        SoLoader.init(this, false);
+    }
+
+    private void initBranch() {
+        Branch.getAutoInstance(this);
     }
 }

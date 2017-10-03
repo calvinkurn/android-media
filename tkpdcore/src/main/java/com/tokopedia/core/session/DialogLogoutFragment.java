@@ -51,6 +51,7 @@ public class DialogLogoutFragment extends DialogFragment {
     Button okButton;
     TkpdProgressDialog progressDialog;
 
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Activity activity = getActivity();
@@ -81,8 +82,8 @@ public class DialogLogoutFragment extends DialogFragment {
         SessionService sessionService = new SessionService();
         compositeSubscription.add(
                 sessionService.getApi().logout(AuthUtil.generateParams(activity, new HashMap<String, String>()))
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<Response<TkpdResponse>>() {
                             @Override

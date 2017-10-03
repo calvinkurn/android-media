@@ -1,5 +1,6 @@
 package com.tokopedia.seller.myproduct;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,23 +14,38 @@ import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.di.component.DaggerProductDraftListCountComponent;
-import com.tokopedia.seller.product.di.module.ProductDraftListCountModule;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
-import com.tokopedia.seller.product.view.service.UploadProductService;
+import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListCountComponent;
+import com.tokopedia.seller.product.draft.di.module.ProductDraftListCountModule;
+import com.tokopedia.seller.product.edit.view.service.UploadProductService;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
+
+@RuntimePermissions
 public class ManageProductSeller extends ManageProduct implements
         ProductDraftListCountView {
+    public static final int MAX_INSTAGRAM_SELECT = 20;
+    public static final boolean DEFAULT_NEED_COMPRESS_TKPD = true;
     private BroadcastReceiver draftBroadCastReceiver;
 
     @Inject
     ProductDraftListCountPresenter productDraftListCountPresenter;
+
     private TextView tvDraftProductInfo;
 
     @Override
@@ -42,11 +58,10 @@ public class ManageProductSeller extends ManageProduct implements
         super.onCreate(savedInstanceState);
         tvDraftProductInfo = (TextView) findViewById(R.id.tv_draft_product);
         tvDraftProductInfo.setVisibility(View.GONE);
-
         DaggerProductDraftListCountComponent
                 .builder()
                 .productDraftListCountModule(new ProductDraftListCountModule())
-                .appComponent(getComponent())
+                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent())
                 .build()
                 .inject(this);
         productDraftListCountPresenter.attachView(this);
@@ -56,6 +71,37 @@ public class ManageProductSeller extends ManageProduct implements
     protected void onDestroy() {
         super.onDestroy();
         productDraftListCountPresenter.detachView();
+    }
+
+    @Override
+    protected void onFabMenuItemClicked(int menuItemId) {
+        super.onFabMenuItemClicked(menuItemId);
+        if (menuItemId == R.id.action_instagram) {
+            ManageProductSellerPermissionsDispatcher.onInstagramClickedWithCheck(ManageProductSeller.this);
+        }
+    }
+
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void onInstagramClicked() {
+        if (getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) getApplication()).startInstopedActivityForResult(ManageProductSeller.this,
+                    INSTAGRAM_SELECT_REQUEST_CODE, MAX_INSTAGRAM_SELECT);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == RESULT_OK && data!= null) {
+            ArrayList<InstagramMediaModel> images = data.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
+            if (images == null || images.size() == 0) {
+                return;
+            }
+            if (getApplication() instanceof SellerModuleRouter) {
+                ((SellerModuleRouter) getApplication()).goMultipleInstagramAddProduct(this,
+                        images);
+            }
+        }
     }
 
     @Override

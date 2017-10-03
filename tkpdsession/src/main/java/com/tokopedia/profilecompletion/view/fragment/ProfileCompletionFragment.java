@@ -24,7 +24,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -57,20 +56,16 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     ViewPager viewPager;
     TextView percentText;
     TextView proceed;
+    View progress;
+    View main;
+    View loading;
+    FragmentTransaction transaction;
+    @Inject
+    ProfileCompletionPresenter presenter;
     private ProgressBarAnimation animation;
     private ProfileCompletionViewModel data;
     private String filled;
     private View skip;
-    View progress;
-
-    View main;
-    View loading;
-
-    FragmentTransaction transaction;
-
-    @Inject
-    ProfileCompletionPresenter presenter;
-
     private Unbinder unbinder;
     private Pair<Integer, Integer> pair;
     private NetworkErrorHelper.RetryClickedListener retryAction;
@@ -278,7 +273,10 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
     private String findChildTag() {
         Fragment fragment = getChildFragmentManager().findFragmentById(R.id.fragment_container);
-        return fragment.getTag();
+        if(fragment != null) {
+            return fragment.getTag();
+        }
+        return "";
     }
 
 
@@ -326,7 +324,6 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     protected void initInjector() {
         DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
                 .appModule(new AppModule(getContext()))
-                .activityModule(new ActivityModule(getActivity()))
                 .build();
         DaggerProfileCompletionComponent daggerProfileCompletionComponent
                 = (DaggerProfileCompletionComponent) DaggerProfileCompletionComponent.builder()

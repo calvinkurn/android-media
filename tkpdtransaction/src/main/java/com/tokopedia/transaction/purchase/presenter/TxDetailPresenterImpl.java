@@ -18,17 +18,18 @@ import android.widget.TextView;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.TagHandlerUtil;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
 import com.tokopedia.transaction.purchase.activity.TxHistoryActivity;
@@ -156,21 +157,21 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     @SuppressWarnings("deprecation")
     @Override
     public void processAskSeller(Context context, OrderData orderData) {
-        Intent intent = InboxRouter.getSendMessageActivityIntent(context);
-        Bundle bundle = new Bundle();
-        bundle.putString(InboxRouter.PARAM_SHOP_ID,
-                orderData.getOrderShop().getShopId());
-        bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME,
-                orderData.getOrderShop().getShopName());
-        bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
-                orderData.getOrderDetail().getDetailInvoice());
-        bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
-                MethodChecker.fromHtml(
-                        context.getString(R.string.custom_content_message_ask_seller)
-                                .replace("XXX",
-                                        orderData.getOrderDetail().getDetailPdfUri())).toString()
-        );
-        viewListener.navigateToActivity(intent.putExtras(bundle));
+
+        if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+            Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                    .getAskSellerIntent(context,
+                            orderData.getOrderShop().getShopId(),
+                            orderData.getOrderShop().getShopName(),
+                            orderData.getOrderDetail().getDetailInvoice(),
+                            MethodChecker.fromHtml(
+                                    context.getString(R.string.custom_content_message_ask_seller)
+                                            .replace("XXX",
+                                                    orderData.getOrderDetail().getDetailPdfUri())
+                            ).toString(),
+                            TkpdInboxRouter.TX_ASK_SELLER);
+            viewListener.navigateToActivity(intent);
+        }
     }
 
     @Override
@@ -260,8 +261,8 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         TextView tvFinishBody = (TextView) dialog.findViewById(R.id.tvFinishBody);
         Button btnFinish = (Button) dialog.findViewById(R.id.btnFinish);
         Button btnComplain = (Button) dialog.findViewById(R.id.btnComplain);
-        tvFinishTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupTitle(), null, new TagHandlerUtil()));
-        tvFinishBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupMsg(), null, new TagHandlerUtil()));
+        tvFinishTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupTitle()));
+        tvFinishBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailFinishPopupMsg()));
         btnComplain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -290,8 +291,8 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         TextView tvFreeReturn = (TextView) dialog.findViewById(R.id.tvFreeReturn);
         TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
         TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
-        tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle(), null, new TagHandlerUtil()));
-        tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg(), null, new TagHandlerUtil()));
+        tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle()));
+        tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg()));
 
         llFreeReturn.setVisibility(View.GONE);
         btnBack.setVisibility(View.GONE);
@@ -362,9 +363,8 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         Button btnCheckCourier = (Button) dialog.findViewById(R.id.btnCheckCourier);
         TextView tvNotReceivedTitle = (TextView) dialog.findViewById(R.id.tvNotReceivedTitle);
         TextView tvNotReceivedBody = (TextView) dialog.findViewById(R.id.tvNotReceivedBody);
-        tvNotReceivedTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle(), null, new TagHandlerUtil()));
-        tvNotReceivedBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedMsg(), null,
-                new TagHandlerUtil()));
+        tvNotReceivedTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedTitle()));
+        tvNotReceivedBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintNotReceivedMsg()));
         btnRefund.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

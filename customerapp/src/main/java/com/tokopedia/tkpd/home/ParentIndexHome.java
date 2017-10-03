@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.home;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
@@ -19,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -61,7 +58,7 @@ import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.product.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
@@ -72,7 +69,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 
@@ -106,7 +102,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
-    private GetFingerprintUseCase getFingerprintUseCase;
 
     private AnalyticsCacheHandler cacheHandler;
     List<String> content;
@@ -122,7 +117,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.HOME_FEED)
+    @DeepLink({Constants.Applinks.HOME_FEED, Constants.Applinks.FEED})
     public static Intent getFeedApplinkCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ParentIndexHome.class)
@@ -136,6 +131,15 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ParentIndexHome.class)
                 .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
+    @DeepLink(Constants.Applinks.HOME_HOTLIST)
+    public static Intent getHotlistApplinkCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ParentIndexHome.class)
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST)
                 .setData(uri.build())
                 .putExtras(extras);
     }
@@ -182,6 +186,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         initStateFragment = getDefaultTabPosition();
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
+
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         if (arg0 != null) {
             //be16268	commit id untuk memperjelas yang bawah
@@ -232,6 +237,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         initCreate();
         adapter.notifyDataSetChanged();
 
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+
+        cacheHandler = new AnalyticsCacheHandler();
+
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -246,10 +255,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         });
 
         t.start();
-
-        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
-
-        cacheHandler = new AnalyticsCacheHandler();
 
         checkAppUpdate();
     }
@@ -342,7 +347,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             mViewPager.setAdapter(adapter);
             mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
             indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
-            mViewPager.setCurrentItem(0);
+            if (initStateFragment == INIT_STATE_FRAGMENT_HOTLIST){
+                mViewPager.setCurrentItem(1);
+            } else {
+                mViewPager.setCurrentItem(0);
+            }
         }
 
         mViewPager.setOffscreenPageLimit(3);

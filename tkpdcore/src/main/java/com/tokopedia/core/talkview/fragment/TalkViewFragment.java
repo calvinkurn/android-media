@@ -420,8 +420,10 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
     }
 
     private void revertTalk() {
-        items.remove(items.size() - 1);
-        adapter.notifyDataSetChanged();
+        if(items.size() > 0) {
+            items.remove(items.size() - 1);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override

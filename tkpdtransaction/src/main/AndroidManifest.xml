@@ -7,7 +7,7 @@
         android:supportsRtl="true">
         <activity
             android:name="com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity"
-            android:label="@string/title_activity_payment_confirmation"
+            android:label="@string/title_change_payment"
             android:screenOrientation="portrait"/>
         <activity
             android:name="com.tokopedia.transaction.purchase.activity.TxConfirmationDetailActivity"
@@ -52,7 +52,8 @@
 
         <activity android:name=".bcaoneklik.BcaOneClickEditActivity" />
 
-        <activity android:name=".bcaoneklik.activity.ListPaymentTypeActivity"/>
+        <activity android:name=".bcaoneklik.activity.ListPaymentTypeActivity"
+            android:label="@string/label_payment_setting"/>
 
         <service
             android:name="com.tokopedia.transaction.purchase.services.TxActionIntentService"

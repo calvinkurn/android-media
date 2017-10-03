@@ -59,6 +59,7 @@ public class AuthUtil {
     public static final String WEBVIEW_FLAG_PARAM_DEVICE = "device";
     public static final String WEBVIEW_FLAG_PARAM_UTM_SOURCE = "utm_source";
     public static final String WEBVIEW_FLAG_PARAM_APP_VERSION = "app_version";
+    public static final String WEBVIEW_FLAG_PARAM_OS_VERSION = "os_version";
 
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP = "1";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
@@ -72,6 +73,7 @@ public class AuthUtil {
         public static final String KEY_MOJITO = "mojito_api_v1";
         public static final String KEY_KEROPPI = "Keroppi";
         public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
+        public static String KEY_CREDIT_CARD_VAULT = "AdKc1ag2NmYgRUF97eQQ8J";
     }
 
     public static Map<String, String> generateHeadersWithXUserId(

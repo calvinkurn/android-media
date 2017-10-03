@@ -34,7 +34,9 @@ public class SpinnerTextView extends BaseCustomView {
     private AutoCompleteTextView textAutoComplete;
 
     private String hintText;
-    private @StyleRes int hintTextAppearance;
+    private
+    @StyleRes
+    int hintTextAppearance;
     private CharSequence[] entries;
     private CharSequence[] values;
     private int selectionIndex;
@@ -93,7 +95,7 @@ public class SpinnerTextView extends BaseCustomView {
         if (entries != null) {
             updateEntries(ConverterUtils.convertCharSequenceToString(entries));
         }
-        if (hintTextAppearance!= 0) {
+        if (hintTextAppearance != 0) {
             textInputLayout.setHintTextAppearance(hintTextAppearance);
         }
         textAutoComplete.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
@@ -155,7 +157,7 @@ public class SpinnerTextView extends BaseCustomView {
 
     public String getSpinnerValue() {
         if (values == null || selectionIndex < 0) {
-            return null;
+            return String.valueOf(DEFAULT_INDEX_NOT_SELECTED);
         }
         return values[selectionIndex].toString();
     }
@@ -165,25 +167,25 @@ public class SpinnerTextView extends BaseCustomView {
     }
 
     public void setSpinnerPosition(int position) {
-        if (position >= 0 && position < values.length) {
+        if (position >= 0 && position < values.length && position != selectionIndex) {
             selectionIndex = position;
             textAutoComplete.setText(entries[position]);
             updateOnItemChanged(position);
         }
     }
 
-    public int getSpinnerPosition(){
+    public int getSpinnerPosition() {
         return selectionIndex;
     }
 
     private void updateOnItemChanged(final int position) {
-        if (onItemChangeListener != null) {
+        if (onItemChangeListener != null && entries != null && values != null) {
             onItemChangeListener.onItemChanged(position, entries[position].toString(), values[position].toString());
         }
     }
 
     public void setSpinnerValue(String value) {
-        if (TextUtils.isEmpty(value)) {
+        if (TextUtils.isEmpty(value) || values == null) {
             resetPosition();
             return;
         }
@@ -197,7 +199,7 @@ public class SpinnerTextView extends BaseCustomView {
         resetPosition();
     }
 
-    public void setSpinnerValueByEntries(String entri){
+    public void setSpinnerValueByEntries(String entri) {
         if (TextUtils.isEmpty(entri)) {
             resetPosition();
             return;
@@ -219,7 +221,7 @@ public class SpinnerTextView extends BaseCustomView {
     private void updateEntries(String[] entries) {
         if (entries != null) {
             this.entries = entries;
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_top_ads_autocomplete_text, entries);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text, entries);
             textAutoComplete.setAdapter(adapter);
             if (selectionIndex >= 0) {
                 textAutoComplete.setText(entries[selectionIndex]);

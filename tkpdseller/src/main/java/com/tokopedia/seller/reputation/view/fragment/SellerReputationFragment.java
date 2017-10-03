@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -42,6 +43,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.common.datepicker.view.listener.DatePickerResultListener;
+import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
+import com.tokopedia.seller.common.utils.NetworkStatus;
 import com.tokopedia.seller.reputation.data.mapper.ReputationReviewMapper;
 import com.tokopedia.seller.reputation.data.repository.ReputationReviewRepositoryImpl;
 import com.tokopedia.seller.reputation.data.source.cloud.CloudReputationReviewDataSource;
@@ -58,8 +61,6 @@ import com.tokopedia.seller.reputation.view.helper.GMStatHeaderViewHelper;
 import com.tokopedia.seller.reputation.view.helper.ReputationViewHelper;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.reputation.view.presenter.SellerReputationFragmentPresenter;
-import com.tokopedia.seller.topads.dashboard.utils.DefaultErrorSubscriber;
-import com.tokopedia.seller.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
 import com.tokopedia.seller.util.ShopNetworkController;
 
 import java.util.ArrayList;
@@ -140,7 +141,6 @@ public class SellerReputationFragment extends BaseDaggerFragment
                     SellerReputationAdapter.KEY_LIST_DATA);
         }
 
-        Log.d(TAG, "ON CREATE VIEW");
         return inflater.inflate(getFragmentLayout(), container, false);
     }
 
@@ -254,7 +254,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
 
     private void fetchData() {
         if (presenter.getNetworkStatus()
-                == TopAdsAddProductListPresenter.NetworkStatus.ONACTIVITYFORRESULT) {
+                == NetworkStatus.ONACTIVITYFORRESULT) {
             refreshHandler.setRefreshing(true);
             firstTimeNetworkCall();
         } else {
@@ -266,8 +266,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
                         .doOnNext(new Action1<Boolean>() {
                             @Override
                             public void call(Boolean aBoolean) {
-                                presenter.setNetworkStatus(
-                                        TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                                presenter.setNetworkStatus(NetworkStatus.PULLTOREFRESH);
                                 adapter.showLoadingFull(true);
                                 /*
                                 below is a must otherwise it will throw
@@ -308,7 +307,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
                 if (lastItemPosition == visibleItem
                         && adapter.getDataSize() < Integer.MAX_VALUE) {
                     presenter.incrementPage();
-                    presenter.setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.LOADMORE);
+                    presenter.setNetworkStatus(NetworkStatus.LOADMORE);
                     presenter.loadMoreNetworkCall();
                 }
             }
@@ -381,8 +380,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
                 }
 
                 presenter.resetPage();
-                presenter.setNetworkStatus(
-                        TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                presenter.setNetworkStatus(NetworkStatus.PULLTOREFRESH);
                 firstTimeNetworkCall();
             }
         };
@@ -440,8 +438,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
                 }
 
                 presenter.resetPage();
-                presenter.setNetworkStatus(
-                        TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                presenter.setNetworkStatus(NetworkStatus.PULLTOREFRESH);
                 firstTimeNetworkCall();
             }
         });
@@ -635,12 +632,11 @@ public class SellerReputationFragment extends BaseDaggerFragment
         switch (presenter.getNetworkStatus()) {
             case ONACTIVITYFORRESULT:
             case PULLTOREFRESH:
-                presenter.setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                presenter.setNetworkStatus(NetworkStatus.PULLTOREFRESH);
                 firstTimeNetworkCall();
                 break;
             default:
-                presenter.setNetworkStatus(
-                        TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
+                presenter.setNetworkStatus(NetworkStatus.RETRYNETWORKCALL);
                 loadMoreCall();
                 break;
         }
@@ -726,12 +722,11 @@ public class SellerReputationFragment extends BaseDaggerFragment
         presenter.setStartDate(sDate);
         presenter.setEndDate(eDate);
 
-        presenter.setNetworkStatus(
-                TopAdsAddProductListPresenter.NetworkStatus.ONACTIVITYFORRESULT);
+        presenter.setNetworkStatus(NetworkStatus.ONACTIVITYFORRESULT);
     }
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AppScreen.SCREEN_SELLER_REP_HISTORY;
     }
 }

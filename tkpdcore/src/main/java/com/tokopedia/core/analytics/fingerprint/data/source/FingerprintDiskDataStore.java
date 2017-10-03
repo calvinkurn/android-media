@@ -17,15 +17,16 @@ import rx.functions.Func1;
 public class FingerprintDiskDataStore implements FingerprintDataStore {
 
     @Override
-    public Observable<String> getFingerprint(final FingerPrint data) {
-        return Observable.just(data)
-                .map(new Func1<FingerPrint, FingerPrint>() {
+    public Observable<String> getFingerprint() {
+        return Observable.just(true)
+                .map(new Func1<Boolean, FingerPrint>() {
                     @Override
-                    public FingerPrint call(FingerPrint fingerPrint) {
+                    public FingerPrint call(Boolean bool) {
 
                         String deviceName   = Utilities.getDeviceModel();
                         String deviceFabrik = Utilities.getDeviceFabrik();
                         String deviceOS     = Utilities.getDeviceOS();
+                        String deviceSystem = "android";
                         boolean isRooted    = Utilities.isDeviceRooted();
                         String timezone     = Utilities.getTimeZoneOffset();
                         String userAgent    = Utilities.getHttpAgent();
@@ -40,6 +41,7 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                                 .deviceName(deviceName)
                                 .deviceManufacturer(deviceFabrik)
                                 .model(deviceName)
+                                .system(deviceSystem)
                                 .currentOS(deviceOS)
                                 .jailbreak(isRooted)
                                 .timezone(timezone)

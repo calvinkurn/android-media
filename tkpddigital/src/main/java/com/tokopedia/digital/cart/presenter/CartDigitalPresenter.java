@@ -421,6 +421,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
             @Override
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
+                cartDigitalInfoData.setForceRenderCart(true);
                 view.renderCartDigitalInfoData(cartDigitalInfoData);
             }
         };
@@ -449,6 +450,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             attributes.setReseller(true);
         }
         attributes.setIdentifier(view.getDigitalIdentifierParam());
+        attributes.setShowSubscribeFlag(true);
         requestBodyAtcDigital.setType("add_cart");
         requestBodyAtcDigital.setAttributes(attributes);
         return requestBodyAtcDigital;
@@ -466,6 +468,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         attributes.setUserAgent(checkoutData.getUserAgent());
         attributes.setIdentifier(view.getDigitalIdentifierParam());
         attributes.setClientId(TrackingUtils.getClientID());
+        attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam());
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
                 new Relationships(new Cart(new Data(

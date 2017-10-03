@@ -265,7 +265,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
             Glide.with(getActivity()).load(rideHistory.getDriverPictureUrl())
                     .asBitmap()
                     .centerCrop()
-                    .error(R.mipmap.ic_launcher)
+                    .error(R.drawable.default_user_pic_light)
                     .into(new BitmapImageViewTarget(driverPictTextView) {
                         @Override
                         protected void setResource(Bitmap resource) {

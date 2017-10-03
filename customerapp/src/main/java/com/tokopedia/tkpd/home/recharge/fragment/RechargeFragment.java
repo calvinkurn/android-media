@@ -25,10 +25,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -55,6 +57,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
 import com.tokopedia.tkpd.home.recharge.activity.RechargePaymentWebView;
@@ -132,6 +135,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     Button buyButton;
     @BindView(R.id.radio_group_container)
     LinearLayout radGroupContainer;
+    @BindView(R.id.layout_checkout)
+    RelativeLayout layoutCheckout;
+    @BindView(R.id.tooltip_instant_checkout)
+    ImageView tooltipInstantCheckout;
 
     //endregion
 
@@ -153,6 +160,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private Unbinder unbinder;
     private RadioGroup radGroup;
     private LocalCacheHandler localCacheHandlerLastClientNumber;
+    private BottomSheetView bottomSheetView;
     //endregion
 
     private String lastClientNumberTyped = "";
@@ -411,6 +419,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void onButtonContactClicked() {
         RechargeFragmentPermissionsDispatcher.doLaunchContactPickerWithCheck(RechargeFragment.this);
+        UnifyTracking.eventClickPhoneIcon(category.getAttributes().getName(), selectedOperator == null ? "" : selectedOperator.name);
     }
 
     @OnClick(R.id.btn_buy)
@@ -465,8 +474,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 spnNominal.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
-                        if(motionEvent.getAction()== MotionEvent.ACTION_UP)
-                        {
+                        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                             UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(), selectedProduct.getAttributes().getPrice());
                         }
                         return false;
@@ -508,8 +516,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             spnOperator.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if(motionEvent.getAction()== MotionEvent.ACTION_UP)
-                    {
+                    if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                         UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
                                 selectedOperator == null ? "" : selectedOperator.name);
                     }
@@ -734,6 +741,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
         setTextToEditTextOrSetVisibilityForm();
         setPhoneBookVisibility();
+        setBottomSheetDialog();
 
         if (!category.getAttributes().isValidatePrefix()) {
             selectedOperatorId = category.getAttributes().getDefaultOperatorId();
@@ -748,17 +756,32 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         }
     }
 
+    private void setBottomSheetDialog() {
+        bottomSheetView = new BottomSheetView(getActivity());
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(getActivity().getString(com.tokopedia.digital.R.string.title_tooltip_instan_payment))
+                .setBody(getActivity().getString(com.tokopedia.digital.R.string.body_tooltip_instan_payment))
+                .setImg(com.tokopedia.digital.R.drawable.ic_digital_instant_payment)
+                .build());
+    }
+
     private void renderInstantCheckoutOption(boolean isInstantCheckoutAvailable) {
-        buyWithCreditCheckbox.setVisibility(isInstantCheckoutAvailable ? View.VISIBLE : View.GONE);
         if (isInstantCheckoutAvailable) {
-            buyWithCreditCheckbox.setVisibility(View.VISIBLE);
+            layoutCheckout.setVisibility(View.VISIBLE);
             buyWithCreditCheckbox.setOnCheckedChangeListener(this);
             buyWithCreditCheckbox.setChecked(
                     rechargePresenter.isRecentInstantCheckoutUsed(String.valueOf(category.getId())));
         } else {
             buyWithCreditCheckbox.setChecked(false);
-            buyWithCreditCheckbox.setVisibility(View.GONE);
+            layoutCheckout.setVisibility(View.GONE);
         }
+        tooltipInstantCheckout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetView.show();
+            }
+        });
     }
 
     private void setInputTypeEditTextRecharge(boolean allowAlphanumeric) {
@@ -826,7 +849,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         } else if (SessionHandler.isV4Login(getActivity())
                 && !rechargePresenter.isAlreadyHaveLastOrderDataOnCacheByCategoryId(category.getId())
                 && !TextUtils.isEmpty(lastClientNumberTyped)
-                && lastOperatorSelected.equals(selectedOperatorId) ) {
+                && lastOperatorSelected.equals(selectedOperatorId)) {
             rechargeEditText.setText(lastClientNumberTyped);
             handlingAppearanceFormAndImageOperator();
         } else if (SessionHandler.isV4Login(getActivity())

@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/view_group_product_image"
     style="@style/LabelLayout"
-    android:layout_marginTop="@dimen/product_margin_cards">
+    android:layout_marginTop="@dimen/margin_med">
 
-    <com.tokopedia.seller.product.view.widget.ImagesSelectView
+    <com.tokopedia.seller.product.edit.view.widget.ImagesSelectView
         android:id="@+id/image_select_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/image_select_view_height"

@@ -2,14 +2,14 @@ package com.tokopedia.seller.product.draft.data.mapper;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.seller.product.data.source.db.model.ImageProductInputDraftModel;
+import com.tokopedia.seller.product.edit.data.source.db.model.ImageProductInputDraftModel;
 import com.tokopedia.seller.product.draft.data.source.db.model.ProductDraftModel;
-import com.tokopedia.seller.product.data.source.db.model.ProductPhotoListDraftModel;
-import com.tokopedia.seller.product.data.source.db.model.ProductWholesaleDraftModel;
-import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
-import com.tokopedia.seller.product.domain.model.ProductWholesaleDomainModel;
-import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.data.source.db.model.ProductPhotoListDraftModel;
+import com.tokopedia.seller.product.edit.data.source.db.model.ProductWholesaleDraftModel;
+import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ProductWholesaleDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +70,8 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         domainModel.setProductStatus(draftModel.getProductStatus());
         domainModel.setProductId(draftModel.getProductId());
         domainModel.setNameEditable(draftModel.getProductNameEditable());
+        domainModel.setProductVariantDataSubmit(draftModel.getProductVariantDataSubmit());
+        domainModel.setVariantStringSelection(draftModel.getVariantStringSelection());
         return domainModel;
     }
 
@@ -145,10 +147,16 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         draftModel.setProductStatus(domainModel.getProductStatus());
         draftModel.setProductId(domainModel.getProductId());
         draftModel.setProductNameEditable(domainModel.getNameEditable());
+        draftModel.setSwitchVariant(domainModel.getSwitchVariant());
+        draftModel.setProductVariantDataSubmit(domainModel.getProductVariantDataSubmit());
+        draftModel.setVariantStringSelection(domainModel.getVariantStringSelection());
         return draftModel;
     }
 
     private static List<ProductWholesaleDraftModel> mapWholesaleDomainToDraft(List<ProductWholesaleDomainModel> productWholesaleList) {
+        if (productWholesaleList == null) {
+            return new ArrayList<>();
+        }
         List<ProductWholesaleDraftModel> draftModels = new ArrayList<>();
         for (ProductWholesaleDomainModel domainModel : productWholesaleList){
             ProductWholesaleDraftModel draftModel = new ProductWholesaleDraftModel();
@@ -162,9 +170,10 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
 
     private static ProductPhotoListDraftModel mapProductPhoto(ProductPhotoListDomainModel productPhotos) {
         ProductPhotoListDraftModel draftModel = new ProductPhotoListDraftModel();
-        draftModel.setProductDefaultPicture(productPhotos.getProductDefaultPicture());
-        draftModel.setOriProductDefaultPicture(productPhotos.getOriginalProductDefaultPicture());
-        draftModel.setPhotos(mapPhotosDomainToDraft(productPhotos.getPhotos()));
+        draftModel.setProductDefaultPicture(productPhotos == null? 0: productPhotos.getProductDefaultPicture());
+        draftModel.setOriProductDefaultPicture(productPhotos == null? 0:productPhotos.getOriginalProductDefaultPicture());
+        draftModel.setPhotos(productPhotos == null?  new ArrayList<ImageProductInputDraftModel>():
+                (mapPhotosDomainToDraft(productPhotos.getPhotos())));
         return draftModel;
     }
 

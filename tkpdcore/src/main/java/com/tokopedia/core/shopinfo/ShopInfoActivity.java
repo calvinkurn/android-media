@@ -39,6 +39,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -47,12 +48,13 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTabPagerAdapter;
@@ -81,6 +83,7 @@ import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
 public class ShopInfoActivity extends BaseActivity
         implements OfficialShopHomeFragment.OfficialShopInteractionListener,
         ProductList.ProductListCallback {
+    private static final int FAVORITE_LOGIN_REQUEST_CODE = 1020;
 
     public static final String SHOP_STATUS_IS_FAVORITED = "shopIsFavorited";
     public static final String FAVORITE_STATUS_UPDATED = "favoriteStatusUpdated";
@@ -205,6 +208,7 @@ public class ShopInfoActivity extends BaseActivity
     @DeepLink(Constants.Applinks.SHOP_ETALASE)
     public static Intent getCallingIntentEtalaseSelected(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+
         return new Intent(context, ShopInfoActivity.class)
                 .setData(uri.build())
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_ETALASE)
@@ -340,6 +344,17 @@ public class ShopInfoActivity extends BaseActivity
         return new ActionShopInfoRetrofit.OnActionToggleFavListener() {
             @Override
             public void onSuccess() {
+                if (shopModel.info.shopAlreadyFavorited == 1) {
+                    if(getApplication() instanceof IReactNativeRouter) {
+                        IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getApplication();
+                        reactNativeRouter.sendRemoveFavoriteEmitter(String.valueOf(shopModel.info.shopId), SessionHandler.getLoginID(ShopInfoActivity.this));
+                    }
+                } else {
+                    if(getApplication() instanceof IReactNativeRouter) {
+                        IReactNativeRouter reactNativeRouter = (IReactNativeRouter) getApplication();
+                        reactNativeRouter.sendAddFavoriteEmitter(String.valueOf(shopModel.info.shopId), SessionHandler.getLoginID(ShopInfoActivity.this));
+                    }
+                }
                 shopModel.info.shopAlreadyFavorited = (shopModel.info.shopAlreadyFavorited + 1) % 2;
                 updateIsFavoritedIntent(shopModel.info.shopAlreadyFavorited != 0);
                 setShopAlreadyFavorite();
@@ -803,8 +818,15 @@ public class ShopInfoActivity extends BaseActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.favorite.startAnimation(animateFav);
-                facadeAction.actionToggleFav();
+                if (SessionHandler.isV4Login(ShopInfoActivity.this)){
+                    holder.favorite.startAnimation(animateFav);
+                    facadeAction.actionToggleFav();
+                } else {
+                    Intent intent = SessionRouter.getLoginActivityIntent(ShopInfoActivity.this);
+                    intent.putExtra(Session.WHICH_FRAGMENT_KEY,
+                            TkpdState.DrawerPosition.LOGIN);
+                    startActivityForResult(intent, ShopInfoActivity.FAVORITE_LOGIN_REQUEST_CODE);
+                }
             }
         };
     }
@@ -828,11 +850,14 @@ public class ShopInfoActivity extends BaseActivity
         Intent intent;
         Bundle bundle = new Bundle();
         if (SessionHandler.isV4Login(this)) {
-            intent = InboxRouter.getSendMessageActivityIntent(ShopInfoActivity.this);
-            bundle.putString(InboxRouter.PARAM_SHOP_ID, shopModel.info.shopId);
-            bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, shopModel.info.shopName);
-            intent.putExtras(bundle);
-            startActivity(intent);
+            if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                        .getAskSellerIntent(this,
+                                shopModel.info.shopId,
+                                shopModel.info.shopName,
+                                TkpdInboxRouter.SHOP);
+                startActivity(intent);
+            }
         } else {
             bundle.putBoolean("login", true);
             intent = SessionRouter.getLoginActivityIntent(this);
@@ -970,8 +995,6 @@ public class ShopInfoActivity extends BaseActivity
                     holder.pager.setCurrentItem(0, true);
                     break;
                 case TAB_POSITION_ETALASE:
-                    ProductList productListFragment = (ProductList) adapter.getItem(1);
-                    productListFragment.setSelectedEtalase(extras.getString("etalase_id"));
                     holder.pager.setCurrentItem(1, true);
                     break;
                 case TAB_POSITION_TALK:
@@ -993,8 +1016,6 @@ public class ShopInfoActivity extends BaseActivity
             switch (extras.getInt(EXTRA_STATE_TAB_POSITION, 0)) {
                 case TAB_POSITION_HOME:
                 case TAB_POSITION_ETALASE:
-                    ProductList productListFragment = (ProductList) adapter.getItem(1);
-                    productListFragment.setSelectedEtalase(extras.getString("etalase_id"));
                     holder.pager.setCurrentItem(0, true);
                     break;
                 case TAB_POSITION_TALK:
