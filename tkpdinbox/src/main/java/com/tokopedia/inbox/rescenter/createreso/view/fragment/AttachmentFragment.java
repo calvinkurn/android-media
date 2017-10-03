@@ -166,12 +166,14 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
 
     @Override
     public void onSaveState(Bundle state) {
-
+        resultViewModel.message.remark = etInformation.getText().toString();
+        state.putParcelable(RESULT_VIEW_MODEL_DATA, resultViewModel);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        resultViewModel = savedState.getParcelable(RESULT_VIEW_MODEL_DATA);
+        presenter.initResultViewModel(resultViewModel);
     }
 
     @Override
@@ -228,6 +230,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     @Override
     public void addAttachmentFile(AttachmentViewModel attachmentViewModel) {
         adapter.addAttachment(attachmentViewModel);
+        resultViewModel.attachmentList = adapter.getList();
     }
 
     public void buttonSelected(Button button) {

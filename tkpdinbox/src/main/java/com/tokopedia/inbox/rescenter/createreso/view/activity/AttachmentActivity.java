@@ -22,9 +22,14 @@ public class AttachmentActivity  extends BasePresenterActivity<AttachmentActivit
 
     @Override
     public void inflateFragment(Fragment fragment, String TAG) {
-        if (getFragmentManager().findFragmentByTag(TAG) == null) {
+        if (getFragmentManager().findFragmentByTag(TAG) != null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment, TAG)
+                    .replace(com.tokopedia.core.R.id.container,
+                            getFragmentManager().findFragmentByTag(TAG))
+                    .commit();
+        } else {
+            getFragmentManager().beginTransaction()
+                    .add(com.tokopedia.core.R.id.container, fragment, TAG)
                     .commit();
         }
     }
