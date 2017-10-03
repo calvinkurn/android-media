@@ -727,7 +727,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     private void processCartAnalytics(ProductDetail productDetail) {
-        if(productDetail != null) {
+        if (productDetail != null) {
             com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
             product.setCategoryName(productDetail.getProductCatName());
             product.setCategoryId(productDetail.getProductCatId());
@@ -779,6 +779,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     private void quantityChangedEvent(Editable quantity) {
+        if (orderData == null) {
+            presenter.getCartFormData(this, productCartPass);
+            return;
+        }
         orderData.setQuantity(quantity.length() == 0 ?
                 0 : Integer.parseInt(etQuantity.getText().toString()));
         if (orderData.getQuantity() < orderData.getMinOrder()) {
