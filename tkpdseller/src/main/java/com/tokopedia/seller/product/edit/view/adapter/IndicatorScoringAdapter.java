@@ -35,7 +35,7 @@ public class IndicatorScoringAdapter extends RecyclerView.Adapter<IndicatorScori
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_list_indicator_product_score, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_product_score_indicator, parent, false);
         return new ViewHolder(view);
     }
 
@@ -72,7 +72,7 @@ public class IndicatorScoringAdapter extends RecyclerView.Adapter<IndicatorScori
             containerDescription.removeAllViews();
             for(String desc: indicatorScoreView.getIndicatorDescs()){
                 View itemViewDesc = LayoutInflater.from(context).
-                        inflate(R.layout.item_description_indicator_score, containerDescription, false);
+                        inflate(R.layout.item_product_score_description_indicator, containerDescription, false);
                 ImageView imageViewDesc = (ImageView) itemViewDesc.findViewById(R.id.image_desc_score);
                 TextView descText = (TextView) itemViewDesc.findViewById(R.id.content_desc_product_score);
 

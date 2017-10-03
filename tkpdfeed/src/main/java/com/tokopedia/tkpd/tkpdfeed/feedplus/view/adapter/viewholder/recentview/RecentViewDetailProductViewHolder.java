@@ -78,7 +78,7 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
             productRating.setRating(element.getRating());
             productRating.setVisibility(View.VISIBLE);
         } else {
-            productRating.setVisibility(View.INVISIBLE);
+            productRating.setVisibility(View.GONE);
         }
 
         if (element.getCashback().equals(""))

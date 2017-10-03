@@ -67,7 +67,11 @@ public class UploadProductInputViewModel {
     }
 
     public void setProductPhotos(ProductPhotoListViewModel productPhotos) {
-        this.productPhotos = productPhotos;
+        if (productPhotos == null) {
+            this.productPhotos = new ProductPhotoListViewModel();
+        } else {
+            this.productPhotos = productPhotos;
+        }
     }
 
     public List<ProductWholesaleViewModel> getProductWholesaleList() {
@@ -84,10 +88,6 @@ public class UploadProductInputViewModel {
 
     public void setProductVideos(List<String> productVideos) {
         this.productVideos = productVideos;
-    }
-
-    public void setSwitchVariant(int switchVariant) {
-        this.switchVariant = switchVariant;
     }
 
     public int getSwitchVariant() {
@@ -108,6 +108,13 @@ public class UploadProductInputViewModel {
 
     public void setProductVariantData(ProductVariantDataSubmit productVariantDataSubmit) {
         this.productVariantDataSubmit = productVariantDataSubmit;
+        if (productVariantDataSubmit== null
+                || productVariantDataSubmit.getProductVariantUnitSubmitList()== null
+                || productVariantDataSubmit.getProductVariantUnitSubmitList().size() == 0) {
+            switchVariant = ProductVariantConstant.SWITCH_VARIANT_NOT_EXIST;
+        } else {
+            switchVariant = ProductVariantConstant.SWITCH_VARIANT_EXIST;
+        }
     }
 
     public String getProductName() {

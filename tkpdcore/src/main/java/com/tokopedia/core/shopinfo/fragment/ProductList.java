@@ -232,6 +232,9 @@ public class ProductList extends V2BaseFragment {
         adapter.setEtalaseAdapter(etalaseAdapter);
         adapter.setFeaturedProductAdapter(featuredProductAdapter);
         configSearchView();
+
+        TextView searchText = (TextView) holder.searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchText.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.black_38));
     }
 
     @Override
@@ -621,6 +624,7 @@ public class ProductList extends V2BaseFragment {
             @Override
             public void onSuccess(List<FeaturedProductItem> featuredProductItemList) {
                 featuredProductAdapter.setDataList(featuredProductItemList);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -669,6 +673,14 @@ public class ProductList extends V2BaseFragment {
                 } else if (getActivity().getIntent().getExtras() != null &&
                         !TextUtils.isEmpty(getActivity().getIntent().getExtras().getString(ETALASE_ID, ""))){
                     String etalaseId = getActivity().getIntent().getExtras().getString(ETALASE_ID);
+                    for (int i = 0; i < etalaseList.size(); i++) {
+                        if (etalaseList.get(i).getEtalaseId().equalsIgnoreCase(etalaseId)) {
+                            index = i;
+                            break;
+                        }
+                    }
+                } else {
+                    String etalaseId = productShopParam.getEtalaseId();
                     for (int i = 0; i < etalaseList.size(); i++) {
                         if (etalaseList.get(i).getEtalaseId().equalsIgnoreCase(etalaseId)) {
                             index = i;

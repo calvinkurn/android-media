@@ -1,5 +1,7 @@
 package com.tokopedia.core.cache.domain.model;
 
+import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
+
 /**
  * Created by normansyahputa on 8/24/17.
  */
@@ -7,7 +9,11 @@ package com.tokopedia.core.cache.domain.model;
 public class CacheApiDataDomain {
     private String host;
     private String path;
-    private String param;
+
+    public CacheApiDataDomain(String host, String path) {
+        setHost(ApiCacheDataSource.generateCacheHost(host));
+        setPath(ApiCacheDataSource.generateCachePath(path));
+    }
 
     public String getHost() {
         return host;
@@ -23,13 +29,5 @@ public class CacheApiDataDomain {
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public String getParam() {
-        return param;
-    }
-
-    public void setParam(String param) {
-        this.param = param;
     }
 }

@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.category.view.model.CategoryViewModel;
+import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 
 /**
  * @author sebastianuskh on 4/7/17.

@@ -108,7 +108,7 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
                     public void onClick(DialogInterface dialogInterface, int i) {
                         onDeleteVariant();
                     }
-                }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
                         // no op
                     }

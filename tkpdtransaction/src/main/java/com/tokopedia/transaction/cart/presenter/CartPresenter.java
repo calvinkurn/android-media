@@ -60,7 +60,7 @@ public class CartPresenter implements ICartPresenter {
     private static final int MUST_INSURANCE_MODE = 3;
     public static final int OPTIONAL_INSURANCE_MODE = 2;
     public static final String VOUCHER_CODE = "voucher_code";
-    public static final String IS_SUGGESTED = "is_suggested";
+    public static final String IS_SUGGESTED = "suggested";
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
 

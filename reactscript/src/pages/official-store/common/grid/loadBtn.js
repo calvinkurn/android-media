@@ -3,39 +3,49 @@ import {
   View,
   Image,
   Button,
-  AsyncStorage,
   Text,
   TouchableNativeFeedback,
   TouchableOpacity,
   Platform,
   StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
-import { icons } from '../../../../icons/index'
+import { NavigationModule } from 'NativeModules'
 
 
 // const icon_arrowUp = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/load-more.png?alt=media&token=bbc027ae-dea6-4a81-a319-776c4c3effbe'
 const LoadMore = ({ onLoadMore, onSlideMore, offset, limit, canFetch, isFetching }) => {
   const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
-  let User_ID;
-  AsyncStorage.getItem('user_id').then(res => { User_ID = res })
+  // let User_ID;
+  // AsyncStorage.getItem('user_id').then(res => { User_ID = res })
 
   _onClick = () => {
-    if (isFetching) {
-      return
-    } else {
-      if (canFetch) {
-        onLoadMore(limit, offset, User_ID, 'LOADANDREPLACE')
+    NavigationModule.getCurrentUserId().then(uuid => {
+      if (isFetching) {
+        return
       } else {
-        onSlideMore()
+        if (canFetch) {
+          onLoadMore(limit, offset, uuid, 'LOADANDREPLACE')
+        } else {
+          onSlideMore()
+        }
       }
-    }
+    })
+    // if (isFetching) {
+    //   return
+    // } else {
+    //   if (canFetch) {
+    //     onLoadMore(limit, offset, User_ID, 'LOADANDREPLACE')
+    //   } else {
+    //     onSlideMore()
+    //   }
+    // }
   }
   
   return (
     <View style={{flex: 1 / 3}}>
       <Touchable onPress={_onClick}>
         <View style={styles.container}>
-          <Image source={ icons.load_more } style={{ flex:1, width:35, height:10, marginTop:30, marginBottom:5 }} />
+          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_offstore/load_more.png' }} style={{ flex:1, width:35, height:10, marginTop:30, marginBottom:5 }} />
           <Text style={styles.text}>Brand Lainnya</Text>
         </View>
       </Touchable>
