@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
@@ -154,13 +153,6 @@ public class WishListImpl implements WishList {
         mPaging.nextPage();
         params.putInt(SearchWishlistUsecase.KEY_PAGE, mPaging.getPage());
         searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
-    }
-
-    @Override
-    public void setLocalyticFlow(Context context, String screenName) {
-        if (context != null) {
-            ScreenTracking.screenLoca(screenName);
-        }
     }
 
     @Override

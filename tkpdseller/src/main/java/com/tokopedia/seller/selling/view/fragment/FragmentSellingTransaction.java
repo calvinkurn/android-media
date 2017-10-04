@@ -102,8 +102,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         initPresenter();
 
         presenter.getStatusTransactionList(isVisibleToUser, SellingStatusTransactionImpl.Type.TRANSACTION);
-        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_TXSTATUS);
-        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_TXSTATUS);
         ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST);
         super.setUserVisibleHint(isVisibleToUser);
     }

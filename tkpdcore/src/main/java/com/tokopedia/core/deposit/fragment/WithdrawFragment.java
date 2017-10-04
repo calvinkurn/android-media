@@ -153,7 +153,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         
         String screenName = getString(R.string.withdraw_page);
-        ScreenTracking.screenLoca(screenName);
 
         getActivity().invalidateOptionsMenu();
     }
