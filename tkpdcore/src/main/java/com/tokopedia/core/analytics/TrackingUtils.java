@@ -527,10 +527,6 @@ public class TrackingUtils extends TrackingConfig {
         eventLocaInAppMessaging(eventName);
     }
 
-    public static void eventLocaSetNotification(boolean notificationsDisabled){
-        getLocaEngine().setNotificationsDisabled(notificationsDisabled);
-    }
-
     public static void eventLocaUserAttributes(String loginID, String username, String email){
         getLocaEngine().tagUserAttributes(loginID, username, email);
     }
