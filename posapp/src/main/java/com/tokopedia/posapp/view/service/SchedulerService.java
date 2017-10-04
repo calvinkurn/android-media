@@ -40,6 +40,7 @@ public class SchedulerService extends IntentService {
                 && SessionHandler.isV4Login(this)) {
             handleActionStart();
         }
+        stopSelf();
     }
 
     private void handleActionStart() {

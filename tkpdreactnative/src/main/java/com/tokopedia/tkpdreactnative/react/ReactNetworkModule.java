@@ -53,21 +53,44 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getResponse(String url, String method, String request, Boolean isAuth, final Promise promise) {
-        getResponse(url, method, request, isAuth, "", promise);
+        try {
+            Subscription subscribe = reactNetworkRepository
+                    .getResponse(url, method, convertStringRequestToHashMap(request), isAuth)
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(new Subscriber<String>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            promise.reject(e);
+                        }
+
+                        @Override
+                        public void onNext(String s) {
+                            if (getCurrentActivity() != null) {
+                                promise.resolve(s);
+                            } else {
+                                promise.resolve("");
+                            }
+                        }
+                    });
+        } catch (UnknownMethodException e) {
+            promise.reject(e);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
     }
 
     @ReactMethod
-    public void getResponse(String url, String method, String request, Boolean isAuth, String requestType, final Promise promise) {
+    public void getResponseJson(String url, String method, String request, Boolean isAuth, final Promise promise) {
         try {
             CommonUtils.dumper(url + " " + request);
-            Observable<String> repository;
-            if(requestType.equals(ReactConst.JSON)) {
-                repository = reactNetworkRepository.getResponse(url, method, request, isAuth);
-            } else {
-                repository = reactNetworkRepository.getResponse(url, method, convertStringRequestToHashMap(request), isAuth);
-            }
-
-            Subscription subscribe = repository.subscribeOn(Schedulers.newThread())
+            Subscription subscribe = reactNetworkRepository
+                    .getResponse(url, method, request, isAuth)
+                    .subscribeOn(Schedulers.newThread())
                     .subscribe(new Subscriber<String>() {
                         @Override
                         public void onCompleted() {

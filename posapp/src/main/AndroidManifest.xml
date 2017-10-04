@@ -82,6 +82,9 @@
         <activity
             android:name=".view.activity.ReactInstallmentActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.OTPActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
