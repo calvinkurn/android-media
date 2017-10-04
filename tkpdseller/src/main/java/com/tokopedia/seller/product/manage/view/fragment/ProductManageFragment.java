@@ -14,9 +14,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.design.button.BottomActionView;
-import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
@@ -51,11 +51,9 @@ import javax.inject.Inject;
 public class ProductManageFragment extends BaseSearchListFragment<ProductManagePresenter, ProductManageViewModel>
         implements ProductManageView, ProductManageListAdapter.ClickOptionCallback, BaseMultipleCheckListAdapter.CheckedCallback<ProductManageViewModel> {
 
-    private BottomActionView bottomActionView;
-
     @Inject
     ProductManagePresenter productManagePresenter;
-
+    private BottomActionView bottomActionView;
     private ProgressDialog progressDialog;
 
     private boolean hasNextPage;
@@ -318,10 +316,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void showActionProductDialog(ProductManageViewModel productManageViewModel) {
+        CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
+
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .setMenu(R.menu.menu_manage_product_action_item)
-                .addTitleItem(productManageViewModel.getProductName());
+                .addTitleItem(productManageViewModel.getProductName())
+                .setMenu(R.menu.menu_manage_product_action_item);
 
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
