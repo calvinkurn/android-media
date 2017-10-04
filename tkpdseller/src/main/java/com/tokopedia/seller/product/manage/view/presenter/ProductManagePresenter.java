@@ -25,5 +25,5 @@ public interface ProductManagePresenter extends CustomerPresenter<ProductManageV
 
     void getListProduct(int page, String keywordFilter, @CatalogProductOption String catalogOption,
                         @ConditionProductOption String conditionOption, String etalaseId,
-                        @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption);
+                        @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption, String categoryId);
 }

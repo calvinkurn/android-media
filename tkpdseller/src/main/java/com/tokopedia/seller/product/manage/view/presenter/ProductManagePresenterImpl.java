@@ -56,6 +56,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
     @Override
     public void deleteListProduct(List<String> productIds) {
+        getView().showLoadingProgress();
         multipleDeleteProductUseCase.execute(MultipleDeleteProductUseCase.createRequestParams(productIds), getSubscriberDeleteProduct());
     }
 
@@ -79,10 +80,10 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     @Override
     public void getListProduct(int page, String keywordFilter, @CatalogProductOption String catalogOption,
                                @ConditionProductOption String conditionOption, String etalaseId,
-                               @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption) {
+                               @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption, String categoryId) {
         getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(page,
-                keywordFilter, CatalogProductOption.NOT_USED, ConditionProductOption.NOT_USED, "", EtalaseProductOption.ALL_SHOWCASE,
-                PictureStatusProductOption.NOT_USED, SortProductOption.POSITION), getSubscriberGetListProduct());
+                keywordFilter, catalogOption, conditionOption, categoryId, etalaseId,
+                pictureOption, sortOption), getSubscriberGetListProduct());
     }
 
     private Subscriber<Boolean> getSubscriberDeleteProduct() {

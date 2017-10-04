@@ -97,6 +97,10 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
         return deletedItems.isEmpty() ? null : deletedItems;
     }
 
+    public List<String> getListChecked() {
+        return new ArrayList<>(hashSet);
+    }
+
 
     public interface CheckedCallback<T> {
 

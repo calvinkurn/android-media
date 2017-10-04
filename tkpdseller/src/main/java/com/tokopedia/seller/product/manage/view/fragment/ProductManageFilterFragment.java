@@ -8,6 +8,9 @@ import android.support.annotation.MenuRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -81,7 +84,7 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_filter_manage_product, container);
+        return inflater.inflate(R.layout.fragment_filter_manage_product, container, false);
     }
 
     @Override
@@ -138,6 +141,12 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_filter_manage_product, menu);
+        for(int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green)), 0, spanString.length(), 0);
+            item.setTitle(spanString);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -226,8 +235,8 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
                 if(resultCode == Activity.RESULT_OK){
                     long etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
                     String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
-                    productManageFilterModel.setCategoryId(String.valueOf(etalaseId));
-                    productManageFilterModel.setCategoryName(etalaseName);
+                    productManageFilterModel.setEtalaseProductOption(String.valueOf(etalaseId));
+                    productManageFilterModel.setEtalaseProductOptionName(etalaseName);
                     updateView();
                 }
                 break;
