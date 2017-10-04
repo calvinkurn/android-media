@@ -45,6 +45,7 @@ import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.gm.GMModuleRouter;
+import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
@@ -545,7 +546,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Observable<GMFeaturedProductDomainModel> getFeaturedProduct() {
         GMFeaturedProductGetListUseCase gmFeaturedProductGetListUseCase = getGMComponent().getFeaturedProductGetListUseCase();
-        return gmFeaturedProductGetListUseCase.getExecuteObservable(RequestParams.EMPTY);
+        return gmFeaturedProductGetListUseCase.getExecuteObservableAsync(RequestParams.EMPTY);
     }
 
     @Override
@@ -564,5 +565,11 @@ public abstract class SellerRouterApplication extends MainApplication
     public void goToGMSubscribe(Activity activity) {
         Intent intent = new Intent(activity, GmSubscribeHomeActivity.class);
         activity.startActivity(intent);
+    }
+
+    @Override
+    public Observable<Boolean> setCashBack(String productId, String cashback) {
+        SetCashbackUseCase setCashbackUseCase = getGMComponent().getSetCashbackUseCase();
+        return setCashbackUseCase.getExecuteObservableAsync(SetCashbackUseCase.createRequestParams(productId, cashback));
     }
 }
