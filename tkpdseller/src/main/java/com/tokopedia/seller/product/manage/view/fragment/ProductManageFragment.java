@@ -60,7 +60,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     private boolean hasNextPage;
     private String keywordFilter;
-    private @SortProductOption String sortProductOption;
+    private
+    @SortProductOption
+    String sortProductOption;
     private ProductManageFilterModel productManageFilterModel;
     private ActionMode actionMode;
 
@@ -175,16 +177,16 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
+        switch (requestCode) {
             case ProductManageConstant.REQUEST_CODE_FILTER:
-                if(resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     productManageFilterModel = data.getParcelableExtra(ProductManageConstant.EXTRA_FILTER_SELECTED);
                     resetPageAndSearch();
                     swipeToRefresh.setRefreshing(true);
                 }
                 break;
             case ProductManageConstant.REQUEST_CODE_SORT:
-                if(resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     ProductManageSortModel productManageSortModel = data.getParcelableExtra(ProductManageConstant.EXTRA_SORT_SELECTED);
                     sortProductOption = productManageSortModel.getId();
                     resetPageAndSearch();
@@ -199,14 +201,22 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onSearchSubmitted(String text) {
+        super.onSearchSubmitted(text);
         keywordFilter = text;
         resetPageAndSearch();
     }
 
     @Override
     public void onSearchTextChanged(String text) {
+        super.onSearchTextChanged(text);
         keywordFilter = text;
         resetPageAndSearch();
+    }
+
+    @Override
+    protected void showSearchView(boolean show) {
+        super.showSearchView(show);
+        bottomActionView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override

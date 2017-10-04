@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.manage.view.adapter;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,7 +33,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
     private TextView wholesaleTextView;
     private TextView poTextView;
     private ImageView freeReturnImageView;
-    private ImageView imageButtonOption;
+    private ImageButton optionImageButton;
     private CheckBox checkBoxProduct;
     private ClickOptionCallbackHolder clickOptionCallbackHolder;
 
@@ -49,7 +50,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         poTextView = (TextView) layoutView.findViewById(R.id.text_view_po);
         freeReturnImageView = (ImageView) layoutView.findViewById(R.id.image_view_free_return);
         checkBoxProduct = (CheckBox) layoutView.findViewById(R.id.check_box_product);
-        imageButtonOption = (ImageView) layoutView.findViewById(R.id.image_button_option);
+        optionImageButton = (ImageButton) layoutView.findViewById(R.id.image_button_option);
     }
 
     @Override
@@ -94,7 +95,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
                 productManageViewModel.getImageUrl()
         );
         titleTextView.setText(productManageViewModel.getProductName());
-        imageButtonOption.setOnClickListener(new View.OnClickListener() {
+        optionImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (clickOptionCallbackHolder != null) {
