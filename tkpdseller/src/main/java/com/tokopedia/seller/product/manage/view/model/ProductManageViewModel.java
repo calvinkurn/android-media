@@ -143,6 +143,9 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         dest.writeString(this.productStatus);
         dest.writeString(this.productCurrencyId);
         dest.writeString(this.productUrl);
+        dest.writeString(this.productCurrencySymbol);
+        dest.writeInt(this.productReturnable);
+        dest.writeInt(this.productPreorder);
     }
 
     protected ProductManageViewModel(Parcel in) {
@@ -153,6 +156,9 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productStatus = in.readString();
         this.productCurrencyId = in.readString();
         this.productUrl = in.readString();
+        this.productCurrencySymbol = in.readString();
+        this.productReturnable = in.readInt();
+        this.productPreorder = in.readInt();
     }
 
     public static final Creator<ProductManageViewModel> CREATOR = new Creator<ProductManageViewModel>() {
