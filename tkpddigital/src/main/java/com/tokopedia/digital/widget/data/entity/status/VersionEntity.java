@@ -21,9 +21,6 @@ public class VersionEntity {
     @SerializedName("minimum_android_build")
     @Expose
     private String minimumAndroidBuild;
-    @SerializedName("minimum_ios_build")
-    @Expose
-    private String minimumIosBuild;
 
 
     public int getCategory() {
@@ -56,13 +53,5 @@ public class VersionEntity {
 
     public void setMinimumAndroidBuild(String minimumAndroidBuild) {
         this.minimumAndroidBuild = minimumAndroidBuild;
-    }
-
-    public String getMinimumIosBuild() {
-        return minimumIosBuild;
-    }
-
-    public void setMinimumIosBuild(String minimumIosBuild) {
-        this.minimumIosBuild = minimumIosBuild;
     }
 }

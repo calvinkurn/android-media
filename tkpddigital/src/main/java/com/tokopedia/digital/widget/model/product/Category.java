@@ -7,20 +7,15 @@ import android.os.Parcelable;
  * Created by nabillasabbaha on 9/19/17.
  */
 
-public class Category implements Parcelable {
+public class Category implements Parcelable{
 
     private Data data;
 
+    public Category() {
+    }
+
     protected Category(Parcel in) {
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        data = in.readParcelable(Data.class.getClassLoader());
     }
 
     public static final Creator<Category> CREATOR = new Creator<Category>() {
@@ -41,5 +36,15 @@ public class Category implements Parcelable {
 
     public void setData(Data data) {
         this.data = data;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(data, flags);
     }
 }

@@ -11,6 +11,9 @@ public class Operator implements Parcelable {
 
     private Data data;
 
+    public Operator() {
+    }
+
     protected Operator(Parcel in) {
         data = in.readParcelable(Data.class.getClassLoader());
     }

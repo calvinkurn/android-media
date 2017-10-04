@@ -13,20 +13,13 @@ public class RecentNumber implements Parcelable {
     private Attributes attributes;
     private Relationship relationships;
 
+    public RecentNumber() {
+    }
+
     protected RecentNumber(Parcel in) {
         type = in.readString();
         attributes = in.readParcelable(Attributes.class.getClassLoader());
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(type);
-        dest.writeParcelable(attributes, flags);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        relationships = in.readParcelable(Relationship.class.getClassLoader());
     }
 
     public static final Creator<RecentNumber> CREATOR = new Creator<RecentNumber>() {
@@ -40,6 +33,18 @@ public class RecentNumber implements Parcelable {
             return new RecentNumber[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(type);
+        dest.writeParcelable(attributes, flags);
+        dest.writeParcelable(relationships, flags);
+    }
 
     public String getType() {
         return type;

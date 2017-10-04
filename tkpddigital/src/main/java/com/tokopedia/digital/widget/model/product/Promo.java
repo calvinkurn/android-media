@@ -16,6 +16,9 @@ public class Promo implements Parcelable {
     private String terms;
     private String valueText;
 
+    public Promo() {
+    }
+
     protected Promo(Parcel in) {
         bonusText = in.readString();
         newPrice = in.readString();

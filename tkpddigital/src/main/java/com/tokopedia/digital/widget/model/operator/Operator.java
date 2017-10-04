@@ -13,6 +13,9 @@ public class Operator implements Parcelable {
     private int id;
     private String type;
 
+    public Operator() {
+    }
+
     protected Operator(Parcel in) {
         attributes = in.readParcelable(Attributes.class.getClassLoader());
         id = in.readInt();

@@ -12,6 +12,9 @@ public class Data implements Parcelable {
     private int id;
     private String type;
 
+    public Data() {
+    }
+
     protected Data(Parcel in) {
         id = in.readInt();
         type = in.readString();

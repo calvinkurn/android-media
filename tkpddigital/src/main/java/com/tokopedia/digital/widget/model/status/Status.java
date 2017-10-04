@@ -12,6 +12,9 @@ public class Status implements Parcelable {
     private String type;
     private Attributes attributes;
 
+    public Status() {
+    }
+
     protected Status(Parcel in) {
         type = in.readString();
         attributes = in.readParcelable(Attributes.class.getClassLoader());
