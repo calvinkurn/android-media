@@ -421,15 +421,7 @@
                 <category android:name="com.tokopedia.tkpd" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".service.ErrorNetworkReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="com.tokopedia.tkpd.FORCE_LOGOUT" />
-                <action android:name="com.tokopedia.tkpd.SERVER_ERROR" />
-                <action android:name="com.tokopedia.tkpd.TIMEZONE_ERROR" />
-            </intent-filter>
-        </receiver>
+
         <receiver android:name=".msisdn.IncomingSmsReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />

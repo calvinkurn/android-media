@@ -13,6 +13,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.TopPicksWebView;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 
@@ -47,9 +48,22 @@ public class BannerPagerAdapter extends PagerAdapter {
                 @Override
                 public void onClick(View view) {
                     UnifyTracking.eventBannerClickCategory(categoryId,bannerList.get(position).getUrl());
-                    Intent intent = new Intent(context, TopPicksWebView.class);
-                    intent.putExtra(URL, bannerList.get(position).getUrl());
-                    context.startActivity(intent);
+                    switch ((DeepLinkChecker.getDeepLinkType(bannerList.get(position).getUrl()))) {
+                        case DeepLinkChecker.BROWSE:
+                            DeepLinkChecker.openBrowse(bannerList.get(position).getUrl(), context);
+                            break;
+                        case DeepLinkChecker.HOT:
+                            DeepLinkChecker.openHot(bannerList.get(position).getUrl(), context);
+                            break;
+                        case DeepLinkChecker.CATALOG:
+                            DeepLinkChecker.openCatalog(bannerList.get(position).getUrl(), context);
+                            break;
+                        default:
+                            Intent intent = new Intent(context, BannerWebView.class);
+                            intent.putExtra(URL, bannerList.get(position).getUrl());
+                            context.startActivity(intent);
+                    }
+
                 }
             });
         }
