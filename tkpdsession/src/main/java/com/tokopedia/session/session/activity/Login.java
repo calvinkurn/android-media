@@ -19,7 +19,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -31,8 +30,6 @@ import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -72,7 +69,6 @@ import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.fragment.RegisterPassPhoneFragment;
-import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.intentservice.LoginResultReceiver;
 import com.tokopedia.session.session.intentservice.LoginService;
 import com.tokopedia.session.session.intentservice.OTPResultReceiver;
@@ -94,9 +90,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-
-import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
-import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
 /**
  * Created by m.normansyah on 04/11/2015.
@@ -540,7 +533,6 @@ public class Login extends BaseActivity implements SessionView
                 }
                 break;
         }
-        session.sendNotifLocalyticsCallback(getIntent());
     }
 
     @Override
@@ -737,13 +729,13 @@ public class Login extends BaseActivity implements SessionView
             case OTPService.ACTION_REQUEST_OTP_WITH_CALL:
                 if (fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_BUNDLE) != null) {
                     session.sendGTMEvent(resultData, type);
-                    session.sendLocalyticsEvent(resultData, type);
+                    session.sendAnalyticsEvent(resultData, type);
                     ((FragmentSecurityQuestion) fragment).onSuccessRequestOTPWithCall(resultData.getString(OTPService.EXTRA_BUNDLE));
                 }
             case OTPService.ACTION_REQUEST_OTP:
                 if (fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_BUNDLE) != null) {
                     session.sendGTMEvent(resultData, type);
-                    session.sendLocalyticsEvent(resultData, type);
+                    session.sendAnalyticsEvent(resultData, type);
                     ((FragmentSecurityQuestion) fragment).onSuccessRequestOTP(resultData.getString(OTPService.EXTRA_BUNDLE));
                 }
             case DownloadService.LOGIN_EMAIL:
@@ -763,7 +755,7 @@ public class Login extends BaseActivity implements SessionView
                         moveToRegisterPassPhone(model, null, resultData);
                     } else {
                         session.sendGTMEvent(resultData, type);
-                        session.sendLocalyticsEvent(resultData, type);
+                        session.sendAnalyticsEvent(resultData, type);
                         ((BaseView) fragment).setData(type, resultData);
                         UserAuthenticationAnalytics.sendAnalytics(resultData);
                     }
@@ -943,7 +935,6 @@ public class Login extends BaseActivity implements SessionView
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        session.sendNotifLocalyticsCallback(getIntent());
     }
 
     @Override
