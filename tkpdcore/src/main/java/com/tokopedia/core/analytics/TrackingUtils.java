@@ -524,20 +524,7 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void eventLocaNotification(String eventName, Map<String, String> params){
-        eventLoca(eventName, params);
         eventLocaInAppMessaging(eventName);
-    }
-
-    public static void eventLoca(String eventName){
-        getLocaEngine().tagEvent(eventName);
-    }
-
-    public static void eventLoca(String eventName, Map<String, String> params){
-        getLocaEngine().tagEvent(eventName, params);
-    }
-
-    static void eventLoca(String eventName, Map<String, String> params, long value){
-        getLocaEngine().tagEvent(eventName, params, value);
     }
 
     public static void eventLocaSetNotification(boolean notificationsDisabled){

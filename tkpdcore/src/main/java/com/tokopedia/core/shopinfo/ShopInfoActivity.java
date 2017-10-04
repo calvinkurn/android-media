@@ -269,8 +269,6 @@ public class ShopInfoActivity extends BaseActivity
 //                updateView();
             }
         }
-
-        sendEventLoca();
     }
 
     @Override
@@ -896,10 +894,6 @@ public class ShopInfoActivity extends BaseActivity
 
     public void setToolbarCollapse() {
         holder.appBarLayout.setExpanded(false, true);
-    }
-
-    private void sendEventLoca() {
-        ScreenTracking.eventLoca(AppScreen.SCREEN_VIEWED_SHOP_PAGE);
     }
 
     @Override

@@ -1315,28 +1315,8 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventLocaGoodReview(Integer accuracy, Integer quality) {
         if (accuracy > 3 && quality > 3) {
-            eventLoca(AppScreen.EVENT_GOOD_REVIEW);
+
         }
-    }
-
-    public static void eventViewATC() {
-        eventLoca(AppScreen.SCREEN_VIEWED_ADD_TO_CART);
-    }
-
-    public static void eventViewFavStore() {
-        eventLoca(AppScreen.SCREEN_VIEWED_FAV_STORE);
-    }
-
-    public static void eventViewLoginPage() {
-        eventLoca(AppScreen.SCREEN_VIEWED_LOGIN);
-    }
-
-    public static void eventViewShopTransactionPage() {
-        eventLoca(AppScreen.SCREEN_VIEWED_TRANSACTION_SHOP);
-    }
-
-    public static void eventViewWishlist() {
-        eventLoca(AppScreen.SCREEN_VIEWED_WISHLIST_PAGE);
     }
 
     public static void deleteProfileAttrLoca() {

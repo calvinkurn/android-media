@@ -889,7 +889,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected void onResume() {
         super.onResume();
-        UnifyTracking.eventViewATC();
     }
 
     private void showBuyError(String errorMessage) {

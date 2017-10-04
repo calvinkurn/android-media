@@ -660,8 +660,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         Map<String, String> values = new HashMap<>();
         values.put(getString(R.string.value_category_name), title);
 
-        TrackingUtils.eventLoca("event : " + getString(R.string.event_click_category), values);
-
         UnifyTracking.eventHomeCategory(title);
     }
 
