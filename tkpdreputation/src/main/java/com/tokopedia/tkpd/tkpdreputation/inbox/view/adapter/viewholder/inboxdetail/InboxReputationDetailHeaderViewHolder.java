@@ -132,8 +132,7 @@ public class InboxReputationDetailHeaderViewHolder extends
                     adapter.showChangeSmiley(element.getReputationDataViewModel().getReviewerScore());
                 }
             });
-        }
-        else
+        } else
             changeButton.setVisibility(View.GONE);
 
         if (element.getRevieweeBadgeSellerViewModel().getIsFavorited() != -1
@@ -156,9 +155,9 @@ public class InboxReputationDetailHeaderViewHolder extends
     }
 
     private void goToInfoPage(InboxReputationDetailHeaderViewModel element) {
-        if(element.getRole() ==  InboxReputationItemViewModel.ROLE_SELLER){
+        if (element.getRole() == InboxReputationItemViewModel.ROLE_SELLER) {
             reputationListener.onGoToShopDetail(element.getShopId());
-        }else{
+        } else {
             reputationListener.onGoToPeopleProfile(element.getUserId());
         }
     }
@@ -182,28 +181,37 @@ public class InboxReputationDetailHeaderViewHolder extends
     }
 
     private void setSmileyOpponent(InboxReputationDetailHeaderViewModel element) {
+
+        opponentSmileyText.setText(getOpponentSmileyPromptText(element));
+
         switch (element.getReputationDataViewModel().getRevieweeScore()) {
             case NO_REPUTATION:
                 ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_empty);
-                opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
-                        .seller_has_not_review));
                 break;
             case SMILEY_BAD:
                 ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_bad);
-                opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
-                        .score_from_seller));
                 break;
             case SMILEY_NEUTRAL:
                 ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_netral);
-                opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
-                        .score_from_seller));
                 break;
             case SMILEY_GOOD:
                 ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_good);
-                opponentSmileyText.setText(MainApplication.getAppContext().getString(R.string
-                        .score_from_seller));
                 break;
         }
+
+    }
+
+    private String getOpponentSmileyPromptText(InboxReputationDetailHeaderViewModel element) {
+        if (element.getReputationDataViewModel().getRevieweeScore() == NO_REPUTATION)
+            return element.getRole() == InboxReputationItemViewModel
+                    .ROLE_BUYER ? MainApplication.getAppContext().getString(R.string
+                    .seller_has_not_review) : MainApplication.getAppContext().getString(R.string
+                    .buyer_has_not_review);
+        else
+            return element.getRole() == InboxReputationItemViewModel
+                    .ROLE_BUYER ? MainApplication.getAppContext().getString(R.string
+                    .score_from_seller) : MainApplication.getAppContext().getString(R.string
+                    .score_from_buyer);
     }
 
     private void setSmiley(InboxReputationDetailHeaderViewModel element, ReputationAdapter adapter) {

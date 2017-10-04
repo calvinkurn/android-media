@@ -41,6 +41,7 @@ import rx.Subscriber;
 
 public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputationDetailDomain> {
 
+    private static final int PRODUCT_IS_DELETED = 0;
     protected final InboxReputationDetail.View viewListener;
 
     public GetInboxReputationDetailSubscriber(InboxReputationDetail.View viewListener) {
@@ -112,6 +113,8 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                         detailDomain.getReviewData()
                                 .getReviewResponse()),
                 convertToLikeDislikeViewModel(detailDomain.getLikeDislikeDomain()),
+                detailDomain.getReviewData().isReviewAnonymity(),
+                detailDomain.getProductData().getProductStatus() == PRODUCT_IS_DELETED
                 detailDomain.getReviewData().isReviewAnonymity(),
                 !TextUtils.isEmpty(detailDomain.getReviewData().getReviewUpdateTime()
                         .getDateTimeFmt1())

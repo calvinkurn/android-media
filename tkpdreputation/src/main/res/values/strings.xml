@@ -62,6 +62,7 @@
     <string name="review_report_question">Bantu kami memahami apa yang terjadi. Mengapa Anda melaporkan ulasan ini?</string>
     <string name="report_option_spam">Ini adalah spam</string>
     <string name="report_option_sara">Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/normal sosial</string>
+    <string name="report_option_others">Lainnya</string>
     <string name="hint_input_reason">Isi alasan disini</string>
     <string name="success_report_review">Sukses mengirim laporan</string>
     <string name="success_edit_review">Sukses mengubah ulasan</string>
@@ -92,5 +93,7 @@
     <string name="not_reviewed">Belum diulas</string>
     <string name="you_got_helped">Anda terbantu dengan ulasan ini</string>
     <string name="edited">(diubah)</string>
+    <string name="buyer_has_not_review">Pembeli belum menilai</string>
+    <string name="score_from_buyer">Penilaian dari Pembeli</string>
 
 </resources>

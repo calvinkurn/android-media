@@ -38,6 +38,7 @@ public class InboxReputationDetailItemViewModel implements
     int tab;
     private String productUrl;
     private boolean reviewIsAnonymous;
+    private boolean isProductDeleted;
 
     public InboxReputationDetailItemViewModel(int reputationId, String productId, String productName,
                                               String productAvatar,
@@ -55,9 +56,9 @@ public class InboxReputationDetailItemViewModel implements
                                               @Nullable ReviewResponseViewModel
                                                       reviewResponseViewModel,
                                               @Nullable LikeDislikeViewModel
-                                                      likeDislikeViewModel,
+                                              likeDislikeViewModel,
                                               boolean reviewIsAnonymous,
-                                              boolean reviewIsEdited) {
+                                              boolean isProductDeleted) {
         this.reputationId = reputationId;
         this.productId = productId;
         this.productName = productName;
@@ -78,6 +79,7 @@ public class InboxReputationDetailItemViewModel implements
         this.reviewResponseViewModel = reviewResponseViewModel;
         this.likeDislikeViewModel = likeDislikeViewModel;
         this.reviewIsAnonymous = reviewIsAnonymous;
+        this.isProductDeleted = isProductDeleted;
         this.reviewIsEdited = reviewIsEdited;
     }
 
@@ -172,6 +174,14 @@ public class InboxReputationDetailItemViewModel implements
 
     public void setReviewIsAnonymous(boolean reviewIsAnonymous) {
         this.reviewIsAnonymous = reviewIsAnonymous;
+    }
+
+    public boolean isProductDeleted() {
+        return isProductDeleted;
+    }
+
+    public void setProductDeleted(boolean isProductDeleted) {
+        this.isProductDeleted = isProductDeleted;
     }
 
     public boolean isReviewIsEdited() {

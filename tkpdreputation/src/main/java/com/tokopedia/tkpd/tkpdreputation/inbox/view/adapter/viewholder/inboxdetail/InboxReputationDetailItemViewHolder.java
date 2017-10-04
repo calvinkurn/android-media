@@ -173,21 +173,33 @@ public class InboxReputationDetailItemViewHolder extends
 
     @Override
     public void bind(final InboxReputationDetailItemViewModel element) {
-        productName.setText(MethodChecker.fromHtml(element.getProductName()));
-        productName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToProductDetail(element.getProductId());
-            }
-        });
+        if (element.isProductDeleted()) {
+            productName.setText(MethodChecker.fromHtml(element.getProductName()));
+            productName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewListener.onGoToProductDetail(element.getProductId());
+                }
+            });
 
-        ImageHandler.LoadImage(productAvatar, element.getProductAvatar());
-        productAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToProductDetail(element.getProductId());
-            }
-        });
+            ImageHandler.LoadImage(productAvatar, element.getProductAvatar());
+        } else {
+            productName.setText(MethodChecker.fromHtml(element.getProductName()));
+            productName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewListener.onGoToProductDetail(element.getProductId());
+                }
+            });
+
+            ImageHandler.LoadImage(productAvatar, element.getProductAvatar());
+            productAvatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewListener.onGoToProductDetail(element.getProductId());
+                }
+            });
+        }
 
         if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
                 || element.isReviewSkipped()) {
@@ -200,6 +212,9 @@ public class InboxReputationDetailItemViewHolder extends
             viewReview.setVisibility(View.GONE);
             helpfulLayout.setVisibility(View.GONE);
             emptyReviewText.setVisibility(View.VISIBLE);
+        } else if (element.isReviewHasReviewed() && element.isReviewSkipped()) {
+            viewReview.setVisibility(View.GONE);
+            helpfulLayout.setVisibility(View.GONE);
         } else {
             emptyReviewText.setVisibility(View.GONE);
             viewReview.setVisibility(View.VISIBLE);
