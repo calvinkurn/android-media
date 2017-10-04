@@ -13,6 +13,9 @@ public class LastOrder implements Parcelable {
     private int id;
     private Attributes attributes;
 
+    public LastOrder() {
+    }
+
     protected LastOrder(Parcel in) {
         type = in.readString();
         id = in.readInt();

@@ -12,18 +12,12 @@ public class Attributes implements Parcelable {
     private Version version;
     private boolean isMaintenance;
 
+    public Attributes() {
+    }
+
     protected Attributes(Parcel in) {
+        version = in.readParcelable(Version.class.getClassLoader());
         isMaintenance = in.readByte() != 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (isMaintenance ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public static final Creator<Attributes> CREATOR = new Creator<Attributes>() {
@@ -37,6 +31,17 @@ public class Attributes implements Parcelable {
             return new Attributes[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(version, flags);
+        dest.writeByte((byte) (isMaintenance ? 1 : 0));
+    }
 
     public Version getVersion() {
         return version;

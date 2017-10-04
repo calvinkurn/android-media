@@ -12,6 +12,9 @@ public class Relationship implements Parcelable {
     private Category category;
     private Operator operator;
 
+    public Relationship() {
+    }
+
     protected Relationship(Parcel in) {
         category = in.readParcelable(Category.class.getClassLoader());
         operator = in.readParcelable(Operator.class.getClassLoader());

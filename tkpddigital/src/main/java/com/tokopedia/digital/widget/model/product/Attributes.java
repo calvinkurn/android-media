@@ -19,6 +19,10 @@ public class Attributes implements Parcelable {
     private int status;
     private int weight;
 
+    public Attributes() {
+    }
+
+
     protected Attributes(Parcel in) {
         desc = in.readString();
         detail = in.readString();
@@ -26,6 +30,7 @@ public class Attributes implements Parcelable {
         info = in.readString();
         price = in.readString();
         pricePlain = in.readLong();
+        promo = in.readParcelable(Promo.class.getClassLoader());
         status = in.readInt();
         weight = in.readInt();
     }
@@ -38,6 +43,7 @@ public class Attributes implements Parcelable {
         dest.writeString(info);
         dest.writeString(price);
         dest.writeLong(pricePlain);
+        dest.writeParcelable(promo, flags);
         dest.writeInt(status);
         dest.writeInt(weight);
     }

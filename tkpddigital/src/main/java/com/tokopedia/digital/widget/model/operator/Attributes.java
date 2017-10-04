@@ -12,12 +12,11 @@ import java.util.List;
 
 public class Attributes implements Parcelable {
 
-    private List<Object> additionalForm = new ArrayList<Object>();
     private String image;
     private int maximumLength;
     private int minimumLength;
     private String name;
-    private List<String> prefix = new ArrayList<String>();
+    private List<String> prefix = new ArrayList<>();
     private String slug;
     private int status;
     private int weight;
@@ -36,7 +35,27 @@ public class Attributes implements Parcelable {
         slug = in.readString();
         status = in.readInt();
         weight = in.readInt();
+        rule = in.readParcelable(Rule.class.getClassLoader());
         defaultProductId = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(image);
+        dest.writeInt(maximumLength);
+        dest.writeInt(minimumLength);
+        dest.writeString(name);
+        dest.writeStringList(prefix);
+        dest.writeString(slug);
+        dest.writeInt(status);
+        dest.writeInt(weight);
+        dest.writeParcelable(rule, flags);
+        dest.writeInt(defaultProductId);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Attributes> CREATOR = new Creator<Attributes>() {
@@ -50,14 +69,6 @@ public class Attributes implements Parcelable {
             return new Attributes[size];
         }
     };
-
-    public List<Object> getAdditionalForm() {
-        return additionalForm;
-    }
-
-    public void setAdditionalForm(List<Object> additionalForm) {
-        this.additionalForm = additionalForm;
-    }
 
     public String getImage() {
         return image;
@@ -137,23 +148,5 @@ public class Attributes implements Parcelable {
 
     public void setDefaultProductId(int defaultProductId) {
         this.defaultProductId = defaultProductId;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(image);
-        dest.writeInt(maximumLength);
-        dest.writeInt(minimumLength);
-        dest.writeString(name);
-        dest.writeStringList(prefix);
-        dest.writeString(slug);
-        dest.writeInt(status);
-        dest.writeInt(weight);
-        dest.writeInt(defaultProductId);
     }
 }
