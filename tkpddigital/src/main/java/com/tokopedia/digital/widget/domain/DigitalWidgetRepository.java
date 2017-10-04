@@ -327,18 +327,6 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     @Override
-    public Observable<Status> getObservableStatusOnResume() {
-        return Observable.concat(getObservableStatusDB(), getObservableStatusNetwork())
-                .first(new Func1<Status, Boolean>() {
-                    @Override
-                    public Boolean call(Status status) {
-                        return status != null && status.getData() != null;
-                    }
-                })
-                .doOnNext(validateStatus(false));
-    }
-
-    @Override
     public Observable<List<String>> getObservableRecentData(final int categoryId) {
         List<String> recentDataList = new RechargeRecentDataManager()
                 .getListDataByCategory(categoryId);
