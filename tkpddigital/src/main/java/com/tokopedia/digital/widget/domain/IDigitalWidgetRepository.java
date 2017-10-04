@@ -25,8 +25,6 @@ public interface IDigitalWidgetRepository {
 
     Observable<Status> getObservableStatus();
 
-    Observable<Status> getObservableStatusOnResume();
-
     Observable<List<String>> getObservableRecentData(int categoryId);
 
     Observable<Boolean> storeObservableRecentDataNetwork(Map<String, String> params);

@@ -68,16 +68,6 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
     }
 
     @Override
-    public void getStatusResume(Subscriber<Status> subscriber) {
-        compositeSubscription.add(
-                repository.getObservableStatusOnResume()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber));
-    }
-
-    @Override
     public void onDestroy() {
         if (compositeSubscription != null)
             compositeSubscription.unsubscribe();
