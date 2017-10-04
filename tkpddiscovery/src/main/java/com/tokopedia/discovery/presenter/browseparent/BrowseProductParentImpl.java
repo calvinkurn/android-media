@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.discovery.model.Breadcrumb;
@@ -312,10 +313,13 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
             sourceKey = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
         }
 
-        discoveryInteractor.getDynamicAttribute(view.getContext(),
-                sourceKey,
-                browseProductActivityModel.getDepartmentId(),
-                query);
+        String depId = browseProductActivityModel.getDepartmentId();
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT.equals(source)
+                && TextUtils.isEmpty(depId)) {
+            depId = "0";
+        }
+
+        discoveryInteractor.getDynamicAttribute(view.getContext(), sourceKey, depId, query);
     }
 
     private boolean isSearchResultNotEmpty() {
