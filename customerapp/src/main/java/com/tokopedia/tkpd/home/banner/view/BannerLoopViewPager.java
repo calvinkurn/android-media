@@ -49,23 +49,27 @@ public class BannerLoopViewPager extends ViewPager {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (isCanScroll) {
-            if (onItemClickListener != null) {
-                switch (ev.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        oldX = ev.getX();
-                        break;
+            if (getCurrentItem() == 0 && getChildCount() == 0) {
+                return false;
+            } else {
+                if (onItemClickListener != null) {
+                    switch (ev.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            oldX = ev.getX();
+                            break;
 
-                    case MotionEvent.ACTION_UP:
-                        newX = ev.getX();
-                        if (Math.abs(oldX - newX) < sens) {
-                            onItemClickListener.onItemClick((getRealItem()));
-                        }
-                        oldX = 0;
-                        newX = 0;
-                        break;
+                        case MotionEvent.ACTION_UP:
+                            newX = ev.getX();
+                            if (Math.abs(oldX - newX) < sens) {
+                                onItemClickListener.onItemClick((getRealItem()));
+                            }
+                            oldX = 0;
+                            newX = 0;
+                            break;
+                    }
                 }
+                return super.onTouchEvent(ev);
             }
-            return super.onTouchEvent(ev);
         } else
             return false;
     }
