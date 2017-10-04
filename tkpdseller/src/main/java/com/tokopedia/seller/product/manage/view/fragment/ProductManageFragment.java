@@ -128,9 +128,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if(itemId == R.id.add_product_menu){
+        if (itemId == R.id.add_product_menu) {
             startActivity(ProductAddActivity.getCallingIntent(getActivity()));
-        }else if(itemId == R.id.checklist_product_menu){
+        } else if (itemId == R.id.checklist_product_menu) {
             getActivity().startActionMode(getCallbackActionMode());
         }
         return super.onOptionsItemSelected(item);
@@ -141,8 +141,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         return new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                mode.setTitle(String.valueOf(((ProductManageListAdapter)adapter).getTotalChecked()));
-                ProductManageFragment.this.actionMode = mode;
+                mode.setTitle(String.valueOf(((ProductManageListAdapter) adapter).getTotalChecked()));
+                actionMode = mode;
                 getActivity().getMenuInflater().inflate(R.menu.menu_product_manage_action_mode, menu);
                 setAdapterActionMode(true);
                 return true;
@@ -155,8 +155,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                if(item.getItemId() == R.id.delete_product_menu){
-                    productManagePresenter.deleteListProduct(((ProductManageListAdapter)adapter).getListChecked());
+                if (item.getItemId() == R.id.delete_product_menu) {
+                    productManagePresenter.deleteListProduct(((ProductManageListAdapter) adapter).getListChecked());
                     mode.finish();
                 }
                 return false;
@@ -166,12 +166,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             public void onDestroyActionMode(ActionMode mode) {
                 ((ProductManageListAdapter) adapter).resetCheckedItemSet();
                 setAdapterActionMode(false);
+                actionMode = null;
             }
         };
     }
 
     protected void setAdapterActionMode(boolean isActionMode) {
-        ((ProductManageListAdapter)adapter).setActionMode(isActionMode);
+        ((ProductManageListAdapter) adapter).setActionMode(isActionMode);
         adapter.notifyDataSetChanged();
     }
 
@@ -241,7 +242,16 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onItemClicked(ProductManageViewModel productManageViewModel) {
-        ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productManageViewModel.getProductUrl());
+        if (actionMode == null) {
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productManageViewModel.getProductUrl());
+        }
+    }
+
+    @Override
+    public void onItemChecked(ProductManageViewModel productManageViewModel, boolean checked) {
+        if (actionMode != null) {
+            actionMode.setTitle(String.valueOf(((ProductManageListAdapter) adapter).getTotalChecked()));
+        }
     }
 
     @Override
@@ -387,12 +397,5 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private void goToEditProduct(String productId) {
         Intent intent = ProductEditActivity.createInstance(getActivity(), productId);
         startActivity(intent);
-    }
-
-    @Override
-    public void onItemChecked(ProductManageViewModel productManageViewModel, boolean checked) {
-        if(actionMode != null){
-            actionMode.setTitle(String.valueOf(((ProductManageListAdapter)adapter).getTotalChecked()));
-        }
     }
 }

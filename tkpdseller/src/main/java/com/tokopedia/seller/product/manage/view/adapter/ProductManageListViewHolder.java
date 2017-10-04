@@ -124,9 +124,11 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         if (isActionMode) {
             checkBoxProduct.setEnabled(true);
             checkBoxProduct.setVisibility(View.VISIBLE);
+            optionImageButton.setVisibility(View.GONE);
         } else {
             checkBoxProduct.setEnabled(false);
             checkBoxProduct.setVisibility(View.GONE);
+            optionImageButton.setVisibility(View.VISIBLE);
         }
     }
 
