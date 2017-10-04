@@ -13,9 +13,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
@@ -52,12 +53,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Inject
     ProductManagePresenter productManagePresenter;
-
+    private BottomActionView bottomActionView;
     private ProgressDialog progressDialog;
 
     private boolean hasNextPage;
     private String keywordFilter;
-    private @SortProductOption String sortProductOption;
+    private
+    @SortProductOption
+    String sortProductOption;
     private ProductManageFilterModel productManageFilterModel;
     private ActionMode actionMode;
 
@@ -88,16 +91,15 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         super.initView(view);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
-        Button buttonSort = (Button) view.findViewById(R.id.button_sort);
-        buttonSort.setOnClickListener(new View.OnClickListener() {
+        bottomActionView = (BottomActionView) view.findViewById(R.id.bottom_action_view);
+        bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = ProductManageSortActivity.createIntent(getActivity(), sortProductOption);
                 startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_SORT);
             }
         });
-        Button buttonFilter = (Button) view.findViewById(R.id.button_filter);
-        buttonFilter.setOnClickListener(new View.OnClickListener() {
+        bottomActionView.setButton2OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = ProductManageFilterActivity.createIntent(getActivity(), productManageFilterModel);
@@ -173,16 +175,16 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
+        switch (requestCode) {
             case ProductManageConstant.REQUEST_CODE_FILTER:
-                if(resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     productManageFilterModel = data.getParcelableExtra(ProductManageConstant.EXTRA_FILTER_SELECTED);
                     resetPageAndSearch();
                     swipeToRefresh.setRefreshing(true);
                 }
                 break;
             case ProductManageConstant.REQUEST_CODE_SORT:
-                if(resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     ProductManageSortModel productManageSortModel = data.getParcelableExtra(ProductManageConstant.EXTRA_SORT_SELECTED);
                     sortProductOption = productManageSortModel.getId();
                     resetPageAndSearch();
@@ -197,14 +199,22 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onSearchSubmitted(String text) {
+        super.onSearchSubmitted(text);
         keywordFilter = text;
         resetPageAndSearch();
     }
 
     @Override
     public void onSearchTextChanged(String text) {
+        super.onSearchTextChanged(text);
         keywordFilter = text;
         resetPageAndSearch();
+    }
+
+    @Override
+    protected void showSearchView(boolean show) {
+        super.showSearchView(show);
+        bottomActionView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -306,10 +316,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void showActionProductDialog(ProductManageViewModel productManageViewModel) {
+        CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
+
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .setMenu(R.menu.menu_manage_product_action_item)
-                .addTitleItem(productManageViewModel.getProductName());
+                .addTitleItem(productManageViewModel.getProductName())
+                .setMenu(R.menu.menu_manage_product_action_item);
 
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))

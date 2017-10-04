@@ -144,9 +144,6 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
             unitSpinnerTextView.setVisibility(View.VISIBLE);
             unitSpinnerTextView.setSpinnerValue(String.valueOf(selectedVariantUnitId));
         }
-        if (productVariantOptionList != null && productVariantOptionList.size() >= MINIMUM_SHOW_SEARCH_BOX) {
-            searchInputView.setVisibility(View.VISIBLE);
-        }
         pickerMultipleItem.validateFooterAndInfoView();
         initCheckedItem();
         resetPageAndSearch();
@@ -187,6 +184,15 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
         if (filteredProductVariantOptionList != null) {
             onSearchLoaded(filteredProductVariantOptionList, filteredProductVariantOptionList.size());
         }
+    }
+
+    @Override
+    protected void showSearchView(boolean show) {
+        if (productVariantOptionList != null && productVariantOptionList.size() >= MINIMUM_SHOW_SEARCH_BOX) {
+            super.showSearchView(show);
+            return;
+        }
+        super.showSearchView(false);
     }
 
     @Override

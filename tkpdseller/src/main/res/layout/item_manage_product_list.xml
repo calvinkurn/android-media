@@ -41,7 +41,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_ms">
+            android:layout_marginTop="@dimen/margin_ms"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/image_view_featured"
@@ -54,6 +55,9 @@
                 style="@style/TextView.Caption.BlackDisabled"
                 android:layout_marginLeft="@dimen/margin_ms"
                 android:layout_marginStart="@dimen/margin_ms"
+                android:background="@drawable/bg_rect_stroke_green"
+                android:padding="@dimen/padding_vs"
+                android:textColor="@android:color/white"
                 tools:text="@string/product_manage_cashback" />
 
             <TextView
@@ -61,6 +65,8 @@
                 style="@style/TextView.Caption.BlackDisabled"
                 android:layout_marginLeft="@dimen/margin_ms"
                 android:layout_marginStart="@dimen/margin_ms"
+                android:background="@drawable/bg_rect_stroke_lighter_gray"
+                android:padding="@dimen/padding_vs"
                 android:text="@string/product_label_wholesale" />
 
             <TextView
@@ -68,6 +74,8 @@
                 style="@style/TextView.Caption.BlackDisabled"
                 android:layout_marginLeft="@dimen/margin_ms"
                 android:layout_marginStart="@dimen/margin_ms"
+                android:background="@drawable/bg_rect_stroke_lighter_gray"
+                android:padding="@dimen/padding_vs"
                 android:text="@string/product_label_po" />
 
             <ImageView
@@ -87,8 +95,10 @@
 
         <ImageButton
             android:id="@+id/image_button_option"
-            android:layout_width="@dimen/image_width_s"
-            android:layout_height="@dimen/image_width_s"
+            android:layout_width="@dimen/image_width_m"
+            android:layout_height="@dimen/image_width_m"
+            android:background="?selectableItemBackground"
+        		android:src="@drawable/ic_more_vert_grey"
             android:layout_alignParentTop="true" />
 
         <android.support.v7.widget.AppCompatCheckBox
