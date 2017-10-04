@@ -51,20 +51,22 @@ public class GetInboxReputationDetailUseCase extends UseCase<InboxReputationDeta
     public Observable<InboxReputationDetailDomain> createObservable(RequestParams requestParams) {
         InboxReputationDetailDomain domain = new InboxReputationDetailDomain();
         return getReputation(domain, getReputationParam(requestParams))
-                .flatMap(checkShopFavorited(getShopFavoritedParam(domain, requestParams)))
+                .flatMap(checkShopFavorited(requestParams))
                 .flatMap(getReview(domain, getReviewParam(requestParams)))
                 .flatMap(getLikeDislike(domain, requestParams));
     }
 
+
+
     private Func1<InboxReputationDetailDomain, Observable<InboxReputationDetailDomain>>
-    checkShopFavorited(final RequestParams shopFavoritedParam) {
+    checkShopFavorited(final RequestParams requestParams) {
         return new Func1<InboxReputationDetailDomain, Observable<InboxReputationDetailDomain>>() {
             @Override
             public Observable<InboxReputationDetailDomain> call(final InboxReputationDetailDomain inboxReputationDetailDomain) {
                 if (inboxReputationDetailDomain.getInboxReputationDomain().getInboxReputation()
                         .get(0).getRevieweeData().getRevieweeRoleId() ==
                         InboxReputationItemViewModel.ROLE_SELLER) {
-                    return checkShopFavoritedUseCase.createObservable(shopFavoritedParam)
+                    return checkShopFavoritedUseCase.createObservable(getShopFavoritedParam(inboxReputationDetailDomain, requestParams))
                             .flatMap(new Func1<CheckShopFavoriteDomain, Observable<InboxReputationDetailDomain>>() {
                                 @Override
                                 public Observable<InboxReputationDetailDomain> call(CheckShopFavoriteDomain checkShopFavoriteDomain) {
