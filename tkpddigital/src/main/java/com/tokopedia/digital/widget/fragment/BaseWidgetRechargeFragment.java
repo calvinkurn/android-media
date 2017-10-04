@@ -22,7 +22,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -32,6 +31,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.model.WidgetContact;
+import com.tokopedia.digital.widget.model.category.Category;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
