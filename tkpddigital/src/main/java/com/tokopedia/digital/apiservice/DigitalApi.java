@@ -1,4 +1,4 @@
-package com.tokopedia.core.network.apiservices.digital;
+package com.tokopedia.digital.apiservice;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -26,7 +26,7 @@ import rx.Observable;
 public interface DigitalApi {
 
     @GET(TkpdBaseURL.DigitalApi.PATH_STATUS)
-    Observable<Response<TkpdDigitalResponse>> getStatus(@QueryMap Map<String, String> params);
+    Observable<Response<TkpdDigitalResponse>> getStatus();
 
     @GET(TkpdBaseURL.DigitalApi.PATH_CATEGORY + "/{categoryId}")
     Observable<Response<TkpdDigitalResponse>> getCategory(
@@ -34,13 +34,13 @@ public interface DigitalApi {
     );
 
     @GET(TkpdBaseURL.DigitalApi.PATH_CATEGORY_LIST)
-    Observable<Response<TkpdDigitalResponse>> getCategoryList(@QueryMap Map<String, String> params);
+    Observable<Response<TkpdDigitalResponse>> getCategoryList();
 
     @GET(TkpdBaseURL.DigitalApi.PATH_OPERATOR)
-    Observable<Response<TkpdDigitalResponse>> getOperatorList(@QueryMap Map<String, String> params);
+    Observable<Response<TkpdDigitalResponse>> getOperatorList();
 
     @GET(TkpdBaseURL.DigitalApi.PATH_PRODUCT)
-    Observable<Response<TkpdDigitalResponse>> getProductList(@QueryMap Map<String, String> params);
+    Observable<Response<TkpdDigitalResponse>> getProductList();
 
     @GET(TkpdBaseURL.DigitalApi.PATH_BANNER)
     Observable<Response<TkpdDigitalResponse>> getBanner(@QueryMap Map<String, String> params);
