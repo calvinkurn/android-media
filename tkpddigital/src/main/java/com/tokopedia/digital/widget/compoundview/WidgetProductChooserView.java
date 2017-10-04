@@ -97,7 +97,6 @@ public class WidgetProductChooserView extends LinearLayout {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 listener.initDataView(products.get(i));
                 checkStockProduct(products.get(i));
-
             }
 
             @Override
@@ -142,8 +141,7 @@ public class WidgetProductChooserView extends LinearLayout {
     private void setSpnNominalSelectionBasedLastOrder(List<Product> productList, LastOrder lastOrder,
                                                       String lastProductSelected) {
         if (SessionHandler.isV4Login(getContext())
-                && lastOrder != null && lastOrder != null
-                && lastOrder.getAttributes() != null) {
+                && lastOrder != null && lastOrder.getAttributes() != null) {
             int lastProductId = lastOrder.getAttributes().getProductId();
             for (int i = 0; i < productList.size(); i++) {
                 if (productList.get(i).getId() == (lastProductId)) {

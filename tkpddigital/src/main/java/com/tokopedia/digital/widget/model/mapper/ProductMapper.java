@@ -29,41 +29,46 @@ public class ProductMapper implements Func1<List<ProductEntity>, List<Product>> 
             product.setType(productEntity.getType());
 
             Attributes attributes = new Attributes();
-            attributes.setDesc(productEntity.getAttributes().getDesc());
-            attributes.setDetail(productEntity.getAttributes().getDetail());
-            attributes.setDetailUrl(productEntity.getAttributes().getDetailUrl());
-            attributes.setInfo(productEntity.getAttributes().getInfo());
-            attributes.setPrice(productEntity.getAttributes().getPrice());
-            attributes.setPricePlain(productEntity.getAttributes().getPricePlain());
-            attributes.setStatus(productEntity.getAttributes().getStatus());
-            attributes.setWeight(productEntity.getAttributes().getWeight());
+            if (productEntity.getAttributes() != null) {
+                attributes.setDesc(productEntity.getAttributes().getDesc());
+                attributes.setDetail(productEntity.getAttributes().getDetail());
+                attributes.setDetailUrl(productEntity.getAttributes().getDetailUrl());
+                attributes.setInfo(productEntity.getAttributes().getInfo());
+                attributes.setPrice(productEntity.getAttributes().getPrice());
+                attributes.setPricePlain(productEntity.getAttributes().getPricePlain());
+                attributes.setStatus(productEntity.getAttributes().getStatus());
+                attributes.setWeight(productEntity.getAttributes().getWeight());
 
-            Promo promo = new Promo();
-            promo.setBonusText(productEntity.getAttributes().getPromo().getBonusText());
-            promo.setNewPrice(productEntity.getAttributes().getPromo().getNewPrice());
-            promo.setNewPricePlain(productEntity.getAttributes().getPromo().getNewPricePlain());
-            promo.setTag(productEntity.getAttributes().getPromo().getTag());
-            promo.setTerms(productEntity.getAttributes().getPromo().getTerms());
-            promo.setValueText(productEntity.getAttributes().getPromo().getValueText());
-            attributes.setPromo(promo);
+                Promo promo = new Promo();
+                if (productEntity.getAttributes().getPromo() != null) {
+                    promo.setBonusText(productEntity.getAttributes().getPromo().getBonusText());
+                    promo.setNewPrice(productEntity.getAttributes().getPromo().getNewPrice());
+                    promo.setNewPricePlain(productEntity.getAttributes().getPromo().getNewPricePlain());
+                    promo.setTag(productEntity.getAttributes().getPromo().getTag());
+                    promo.setTerms(productEntity.getAttributes().getPromo().getTerms());
+                    promo.setValueText(productEntity.getAttributes().getPromo().getValueText());
+                }
+                attributes.setPromo(promo);
+            }
 
             product.setAttributes(attributes);
 
             Relationship relationship = new Relationship();
-            Category category = new Category();
-            Data dataCategory = new Data();
-            dataCategory.setId(productEntity.getRelationships().getCategory().getData().getId());
-            dataCategory.setType(productEntity.getRelationships().getCategory().getData().getType());
-            category.setData(dataCategory);
-            relationship.setCategory(category);
+            if (productEntity.getRelationships() != null) {
+                Category category = new Category();
+                Data dataCategory = new Data();
+                dataCategory.setId(productEntity.getRelationships().getCategory().getData().getId());
+                dataCategory.setType(productEntity.getRelationships().getCategory().getData().getType());
+                category.setData(dataCategory);
+                relationship.setCategory(category);
 
-            Operator operator = new Operator();
-            Data dataOperator = new Data();
-            dataOperator.setId(productEntity.getRelationships().getOperator().getData().getId());
-            dataOperator.setType(productEntity.getRelationships().getOperator().getData().getType());
-            operator.setData(dataOperator);
-            relationship.setOperator(operator);
-
+                Operator operator = new Operator();
+                Data dataOperator = new Data();
+                dataOperator.setId(productEntity.getRelationships().getOperator().getData().getId());
+                dataOperator.setType(productEntity.getRelationships().getOperator().getData().getType());
+                operator.setData(dataOperator);
+                relationship.setOperator(operator);
+            }
             product.setRelationships(relationship);
 
             productList.add(product);

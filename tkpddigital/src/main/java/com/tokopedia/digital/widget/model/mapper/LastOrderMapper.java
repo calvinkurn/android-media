@@ -19,10 +19,12 @@ public class LastOrderMapper implements Func1<LastOrderEntity, LastOrder> {
         lastOrder.setId(lastOrderEntity.getId());
 
         Attributes attributes = new Attributes();
-        attributes.setCategoryId(lastOrderEntity.getAttributes().getCategoryId());
-        attributes.setClientNumber(lastOrderEntity.getAttributes().getClientNumber());
-        attributes.setOperatorId(lastOrderEntity.getAttributes().getOperatorId());
-        attributes.setProductId(lastOrderEntity.getAttributes().getProductId());
+        if (lastOrderEntity.getAttributes() != null) {
+            attributes.setCategoryId(lastOrderEntity.getAttributes().getCategoryId());
+            attributes.setClientNumber(lastOrderEntity.getAttributes().getClientNumber());
+            attributes.setOperatorId(lastOrderEntity.getAttributes().getOperatorId());
+            attributes.setProductId(lastOrderEntity.getAttributes().getProductId());
+        }
         lastOrder.setAttributes(attributes);
 
         return lastOrder;

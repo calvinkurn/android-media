@@ -21,25 +21,29 @@ public class OperatorMapper implements Func1<List<OperatorEntity>, List<Operator
         List<Operator> operatorList = new ArrayList<>();
         for (OperatorEntity operatorEntity : operatorEntities) {
             Attributes attributes = new Attributes();
-            attributes.setImage(operatorEntity.getAttributes().getImage());
-            attributes.setMaximumLength(operatorEntity.getAttributes().getMaximumLength());
-            attributes.setMinimumLength(operatorEntity.getAttributes().getMinimumLength());
-            attributes.setName(operatorEntity.getAttributes().getName());
-            attributes.setSlug(operatorEntity.getAttributes().getSlug());
-            attributes.setStatus(operatorEntity.getAttributes().getStatus());
-            attributes.setWeight(operatorEntity.getAttributes().getWeight());
-            attributes.setDefaultProductId(operatorEntity.getAttributes().getDefaultProductId());
-            attributes.setPrefix(operatorEntity.getAttributes().getPrefix());
+            if (operatorEntity.getAttributes() != null) {
+                attributes.setImage(operatorEntity.getAttributes().getImage());
+                attributes.setMaximumLength(operatorEntity.getAttributes().getMaximumLength());
+                attributes.setMinimumLength(operatorEntity.getAttributes().getMinimumLength());
+                attributes.setName(operatorEntity.getAttributes().getName());
+                attributes.setSlug(operatorEntity.getAttributes().getSlug());
+                attributes.setStatus(operatorEntity.getAttributes().getStatus());
+                attributes.setWeight(operatorEntity.getAttributes().getWeight());
+                attributes.setDefaultProductId(operatorEntity.getAttributes().getDefaultProductId());
+                attributes.setPrefix(operatorEntity.getAttributes().getPrefix());
 
-            Rule rule = new Rule();
-            rule.setProductText(operatorEntity.getAttributes().getRule().getProductText());
-            rule.setProductsViewStyle(operatorEntity.getAttributes().getRule().getProductsViewStyle());
-            rule.setShowPrice(operatorEntity.getAttributes().getRule().isShowPrice());
-            rule.setShowProduct(operatorEntity.getAttributes().getRule().isShowProduct());
-            rule.setShowProductListPage(operatorEntity.getAttributes().getRule().isShowProductListPage());
-            rule.setAllowAphanumericNumber(operatorEntity.getAttributes().getRule().isAllowAphanumericNumber());
-            rule.setButtonLabel(operatorEntity.getAttributes().getRule().getButtonLabel());
-            attributes.setRule(rule);
+                Rule rule = new Rule();
+                if (operatorEntity.getAttributes().getRule() != null) {
+                    rule.setProductText(operatorEntity.getAttributes().getRule().getProductText());
+                    rule.setProductsViewStyle(operatorEntity.getAttributes().getRule().getProductsViewStyle());
+                    rule.setShowPrice(operatorEntity.getAttributes().getRule().isShowPrice());
+                    rule.setShowProduct(operatorEntity.getAttributes().getRule().isShowProduct());
+                    rule.setShowProductListPage(operatorEntity.getAttributes().getRule().isShowProductListPage());
+                    rule.setAllowAphanumericNumber(operatorEntity.getAttributes().getRule().isAllowAphanumericNumber());
+                    rule.setButtonLabel(operatorEntity.getAttributes().getRule().getButtonLabel());
+                }
+                attributes.setRule(rule);
+            }
 
             Operator operator = new Operator();
             operator.setAttributes(attributes);
