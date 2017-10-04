@@ -32,7 +32,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
@@ -51,6 +50,7 @@ import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListene
 import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
 import com.tokopedia.session.session.activity.Login;
 
+import net.hockeyapp.android.Tracking;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -473,7 +473,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     @Override
     public void goToActivationPage(RegisterEmailViewModel viewModel) {
 
-        sendLocalyticsRegisterEvent(viewModel.getUserId());
         sendGTMRegisterEvent();
 
         dismissLoadingProgress();
@@ -533,16 +532,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         registerViewModel.setAgreedTermCondition(true);
         registerViewModel.setPassword(registerPassword.getText().toString());
         registerViewModel.setIsAutoVerify(isEmailAddressFromDevice() ? 1 : 0);
-    }
-
-    private void sendLocalyticsRegisterEvent(int userId) {
-        Map<String, String> attributesLogin = new HashMap<String, String>();
-        CustomerWrapper customerLogin = new CustomerWrapper();
-        customerLogin.setCustomerId(Integer.toString(userId));
-        customerLogin.setFullName(name.getText().toString());
-        customerLogin.setEmailAddress(email.getText().toString());
-        customerLogin.setExtraAttr(attributesLogin);
-        customerLogin.setMethod(getString(com.tokopedia.core.R.string.title_email));
     }
 
     private void sendGTMRegisterEvent() {
