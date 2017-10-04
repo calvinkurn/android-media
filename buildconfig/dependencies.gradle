@@ -8,20 +8,20 @@ ext {
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.2.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
-    tkpdCoreVersion = '1.+'
-    tkpdInboxVersion = '1.+'
-    tkpdSessionVersion = '1.+'
-    tkpdSellerVersion = '1.+'
-    tkpdTransactionVersion = '1.+'
-    tkpdDiscoveryVersion = '1.+'
-    tkpdDigitalVersion = '1.+'
-    tkpdTopAdsSDKVersion = '1.+'
-    tkpdPaymentVersion = '1.+'
-    tkpdPdpVersion = '1.+'
-    tkpdDesignVersion = '1.+'
-    tkpdFeedVersion = '1.+'
-    tkpdRideVersion = '1.+'
-    tkpdReactNativeVersion = '1.+'
+    tkpdCoreVersion = '1.77'
+    tkpdInboxVersion = '1.77'
+    tkpdSessionVersion = '1.77'
+    tkpdSellerVersion = '1.77'
+    tkpdTransactionVersion = '1.77'
+    tkpdDiscoveryVersion = '1.77'
+    tkpdDigitalVersion = '1.77'
+    tkpdTopAdsSDKVersion = '1.77'
+    tkpdPaymentVersion = '1.77'
+    tkpdPdpVersion = '1.77'
+    tkpdDesignVersion = '1.77'
+    tkpdFeedVersion = '1.77'
+    tkpdRideVersion = '1.77'
+    tkpdReactNativeVersion = '1.77'
     compileSdkVersion = 24
     minSdkVersion = 16
     targetSdkVersion = 24
@@ -182,7 +182,7 @@ ext {
             design     : "com.tokopedia.design:design:${tkpdDesignVersion}",
             feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
             ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
-            reactNative: "com.tokopedia.tkpdreactnative:reactnative${tkpdReactNativeVersion}"
+            reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}"
     ]
 
     tkpdLibDependencies = [
