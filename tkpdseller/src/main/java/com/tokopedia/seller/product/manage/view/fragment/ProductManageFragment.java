@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.design.button.BottomActionView;
@@ -61,7 +62,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Inject
     ProductManagePresenter productManagePresenter;
-
+    private BottomActionView bottomActionView;
     private ProgressDialog progressDialog;
 
     private boolean hasNextPage;
@@ -322,10 +323,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void showActionProductDialog(ProductManageViewModel productManageViewModel) {
+        CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
+
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .setMenu(R.menu.menu_manage_product_action_item)
-                .addTitleItem(productManageViewModel.getProductName());
+                .addTitleItem(productManageViewModel.getProductName())
+                .setMenu(R.menu.menu_manage_product_action_item);
 
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
