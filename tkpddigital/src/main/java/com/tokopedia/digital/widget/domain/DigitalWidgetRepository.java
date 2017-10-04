@@ -14,10 +14,10 @@ import com.tokopedia.core.database.recharge.product.ProductData;
 import com.tokopedia.core.database.recharge.recentNumber.RecentData;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.database.recharge.status.Status;
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
+import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
 
 import java.util.ArrayList;
