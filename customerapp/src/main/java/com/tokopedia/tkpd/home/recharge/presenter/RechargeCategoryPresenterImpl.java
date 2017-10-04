@@ -171,7 +171,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     private void finishPrepareRechargeModule() {
         if (activity != null && view != null) {
             if (categoryList != null) {
-//                Collections.sort(categoryList, new CategoryComparator());
                 view.renderDataRechargeCategory(categoryList);
             } else {
                 view.failedRenderDataRechargeCategory();
