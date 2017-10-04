@@ -98,6 +98,7 @@ public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWis
             wholesalePriceDomain.setMaximum(wholesalePrice.getMaximum());
             wholesalePriceDomain.setMinimum(wholesalePrice.getMinimum());
             wholesalePriceDomain.setPrice(wholesalePrice.getPrice());
+            wholesalePriceDomains.add(wholesalePriceDomain);
         }
         return wholesalePriceDomains;
     }
@@ -123,6 +124,7 @@ public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWis
                 badgeWishlistDomain.setImageUrl(badgeResponse.getImageUrl());
                 badgeWishlistDomain.setImgUrl(badgeResponse.getImgUrl());
                 badgeWishlistDomain.setTitle(badgeResponse.getTitle());
+                badgeWishlistDomains.add(badgeWishlistDomain);
             }
         }
         return badgeWishlistDomains;
