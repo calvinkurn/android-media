@@ -1,12 +1,12 @@
 package com.tokopedia.seller.product.manage.view.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,12 +20,12 @@ import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListCountComponent;
+import com.tokopedia.seller.product.draft.di.module.ProductDraftListCountModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
-import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListCountComponent;
-import com.tokopedia.seller.product.draft.di.module.ProductDraftListCountModule;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
 import java.util.ArrayList;
@@ -38,8 +38,7 @@ import permissions.dispatcher.RuntimePermissions;
 import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 
 @RuntimePermissions
-public class ProductManageSellerFragment extends ManageProduct implements
-        ProductDraftListCountView {
+public class ProductManageSellerFragment extends ProductManageFragment implements ProductDraftListCountView {
     public static final int MAX_INSTAGRAM_SELECT = 20;
     public static final boolean DEFAULT_NEED_COMPRESS_TKPD = true;
     private BroadcastReceiver draftBroadCastReceiver;
@@ -50,63 +49,68 @@ public class ProductManageSellerFragment extends ManageProduct implements
     private TextView tvDraftProductInfo;
 
     @Override
-    protected int getLayoutResource (){
+    protected int getFragmentLayout() {
         return R.layout.activity_manage_product_seller;
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        tvDraftProductInfo = (TextView) findViewById(R.id.tv_draft_product);
+    protected void initView(View view) {
+        super.initView(view);
+        tvDraftProductInfo = (TextView) view.findViewById(R.id.tv_draft_product);
         tvDraftProductInfo.setVisibility(View.GONE);
-        DaggerProductDraftListCountComponent
-                .builder()
-                .productDraftListCountModule(new ProductDraftListCountModule())
-                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent())
-                .build()
-                .inject(this);
+    }
+
+    @Override
+    protected void initInjector() {
+        super.initInjector();
+//        DaggerProductDraftListCountComponent
+//                .builder()
+//                .productDraftListCountModule(new ProductDraftListCountModule())
+//                .productComponent(getComponent(ProductComponent.class))
+//                .build()
+//                .inject(this);
         productDraftListCountPresenter.attachView(this);
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         productDraftListCountPresenter.detachView();
     }
 
-    @Override
-    protected void onFabMenuItemClicked(int menuItemId) {
-        super.onFabMenuItemClicked(menuItemId);
-        if (menuItemId == R.id.action_instagram) {
-            ManageProductSellerPermissionsDispatcher.onInstagramClickedWithCheck(ProductManageSellerFragment.this);
-        }
-    }
+//    @Override
+//    protected void onFabMenuItemClicked(int menuItemId) {
+//        super.onFabMenuItemClicked(menuItemId);
+//        if (menuItemId == R.id.action_instagram) {
+//            ManageProductSellerPermissionsDispatcher.onInstagramClickedWithCheck(ProductManageSellerFragment.this);
+//        }
+//    }
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onInstagramClicked() {
-        if (getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) getApplication()).startInstopedActivityForResult(ProductManageSellerFragment.this,
+        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) getActivity().getApplication()).startInstopedActivityForResult(getActivity(),
                     INSTAGRAM_SELECT_REQUEST_CODE, MAX_INSTAGRAM_SELECT);
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == RESULT_OK && data!= null) {
+        if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK && data!= null) {
             ArrayList<InstagramMediaModel> images = data.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
             if (images == null || images.size() == 0) {
                 return;
             }
-            if (getApplication() instanceof SellerModuleRouter) {
-                ((SellerModuleRouter) getApplication()).goMultipleInstagramAddProduct(this,
+            if (getActivity().getApplication() instanceof SellerModuleRouter) {
+                ((SellerModuleRouter) getActivity().getApplication()).goMultipleInstagramAddProduct(getActivity(),
                         images);
             }
         }
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         registerDraftReceiver();
         if (isMyServiceRunning(UploadProductService.class)) {
@@ -117,7 +121,7 @@ public class ProductManageSellerFragment extends ManageProduct implements
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
                 return true;
@@ -137,16 +141,16 @@ public class ProductManageSellerFragment extends ManageProduct implements
                 }
             };
         }
-        LocalBroadcastManager.getInstance(this).registerReceiver(
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
                 draftBroadCastReceiver,new IntentFilter(UploadProductService.ACTION_DRAFT_CHANGED));
     }
 
     private void unregisterDraftReceiver(){
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(draftBroadCastReceiver);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(draftBroadCastReceiver);
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         unregisterDraftReceiver();
     }
@@ -162,7 +166,7 @@ public class ProductManageSellerFragment extends ManageProduct implements
                 @Override
                 public void onClick(View v) {
                     UnifyTracking.eventManageProductClicked(AppEventTracking.EventLabel.DRAFT_PRODUCT);
-                    startActivity(new Intent(ProductManageSellerFragment.this, ProductDraftListActivity.class));
+                    startActivity(new Intent(getActivity(), ProductDraftListActivity.class));
                 }
             });
             tvDraftProductInfo.setVisibility(View.VISIBLE);

@@ -14,5 +14,5 @@ import dagger.Component;
 @ProductAddScope
 @Component(modules = ProductDraftListCountModule.class, dependencies = ProductComponent.class)
 public interface ProductDraftListCountComponent {
-    void inject(ProductManageSellerFragment manageProduct);
+//    void inject(ProductManageSellerFragment manageProduct);
 }
