@@ -21,18 +21,32 @@ public class CategoryMapper implements Func1<List<CategoryEntity>, List<Category
     public List<Category> call(List<CategoryEntity> categoryEntities) throws MapperDataException {
         List<Category> categoryList = new ArrayList<>();
         for (CategoryEntity categoryEntity : categoryEntities) {
-            ClientNumber clientNumber = new ClientNumber();
-            clientNumber.setHelp(categoryEntity.getAttributes().getClientNumber().getHelp());
-            clientNumber.setOperatorStyle(categoryEntity.getAttributes().getClientNumber().getOperatorStyle());
-            clientNumber.setPlaceholder(categoryEntity.getAttributes().getClientNumber().getPlaceholder());
-            clientNumber.setShown(categoryEntity.getAttributes().getClientNumber().isShown());
-            clientNumber.setText(categoryEntity.getAttributes().getClientNumber().getText());
-
             Attributes attributes = new Attributes();
-            attributes.setClientNumber(clientNumber);
-            attributes.setDefaultOperatorId(categoryEntity.getAttributes().getDefaultOperatorId());
-            attributes.setIcon(categoryEntity.getAttributes().getIcon());
+            if (categoryEntity.getAttributes() != null) {
 
+                ClientNumber clientNumber = new ClientNumber();
+                if (categoryEntity.getAttributes().getClientNumber() != null) {
+                    clientNumber.setHelp(categoryEntity.getAttributes().getClientNumber().getHelp());
+                    clientNumber.setOperatorStyle(categoryEntity.getAttributes().getClientNumber().getOperatorStyle());
+                    clientNumber.setPlaceholder(categoryEntity.getAttributes().getClientNumber().getPlaceholder());
+                    clientNumber.setShown(categoryEntity.getAttributes().getClientNumber().isShown());
+                    clientNumber.setText(categoryEntity.getAttributes().getClientNumber().getText());
+                }
+
+                attributes.setClientNumber(clientNumber);
+                attributes.setName(categoryEntity.getAttributes().getName());
+                attributes.setDefaultOperatorId(categoryEntity.getAttributes().getDefaultOperatorId());
+                attributes.setIcon(categoryEntity.getAttributes().getIcon());
+                attributes.setInstantCheckoutAvailable(categoryEntity.getAttributes().isInstantCheckoutAvailable());
+                attributes.setNew(categoryEntity.getAttributes().isNew());
+                attributes.setOperatorLabel(categoryEntity.getAttributes().getOperatorLabel());
+                attributes.setShowOperator(categoryEntity.getAttributes().isShowOperator());
+                attributes.setSlug(categoryEntity.getAttributes().getSlug());
+                attributes.setStatus(categoryEntity.getAttributes().getStatus());
+                attributes.setUsePhonebook(categoryEntity.getAttributes().isUsePhonebook());
+                attributes.setValidatePrefix(categoryEntity.getAttributes().isValidatePrefix());
+                attributes.setWeight(categoryEntity.getAttributes().getWeight());
+            }
 
             Category category = new Category();
             category.setAttributes(attributes);
