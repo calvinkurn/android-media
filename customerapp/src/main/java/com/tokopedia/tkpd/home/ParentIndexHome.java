@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.apollographql.apollo.ApolloClient;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -28,6 +29,10 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.data.UserAttributesRepository;
+import com.tokopedia.core.analytics.data.UserAttributesRepositoryImpl;
+import com.tokopedia.core.analytics.data.factory.UserAttributesFactory;
+import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.MainApplication;
@@ -36,8 +41,12 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.core.appupdate.ApplicationUpdate;
 import com.tokopedia.core.appupdate.model.DetailUpdate;
+import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
@@ -48,6 +57,8 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -69,6 +80,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 
@@ -102,6 +114,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
+    private GetUserAttributesUseCase getUserAttributesUseCase;
 
     private AnalyticsCacheHandler cacheHandler;
     List<String> content;
@@ -257,6 +270,32 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         t.start();
 
         checkAppUpdate();
+        getUserAttributes();
+    }
+
+    public void getUserAttributes(){
+        ThreadExecutor threadExecutor = new JobExecutor();
+        PostExecutionThread postExecutionThread = new UIThread();
+        UserAttributesRepository userAttributesRepository = new UserAttributesRepositoryImpl(new UserAttributesFactory(ApolloClient.builder().okHttpClient(OkHttpFactory.create().buildClientDefaultAuth()).serverUrl(TkpdBaseURL.TWO_FEATURES_GRAPHQL_DOMAIN).build()));
+
+        getUserAttributesUseCase = new GetUserAttributesUseCase(threadExecutor, postExecutionThread, userAttributesRepository);
+
+        getUserAttributesUseCase.execute(getUserAttributesUseCase.getUserAttrParam(sessionHandler), new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(String s) {
+                CommonUtils.dumper("rxapollo string "+s);
+            }
+        });
     }
 
     @Override
