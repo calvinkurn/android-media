@@ -1,7 +1,11 @@
 package com.tokopedia.gm.cashback.data.source;
 
 import com.tokopedia.gm.cashback.data.model.RequestCashbackModel;
+import com.tokopedia.gm.cashback.data.model.RequestGetCashbackModel;
+import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.data.response.DataResponse;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -23,5 +27,9 @@ public class GMCashbackDataSourceCloud {
 
     public Observable<Response<DataResponse<String>>> setCashback(RequestCashbackModel cashback) {
         return cashbackApi.setCashback(cashback);
+    }
+
+    public Observable<Response<DataResponse<List<DataCashbackModel>>>> getCashbackList(RequestGetCashbackModel requestGetCashbackModel) {
+        return cashbackApi.getCashbackList(requestGetCashbackModel);
     }
 }

@@ -727,6 +727,7 @@ public class TkpdBaseURL {
         public static final String GET_GM_SUBSCRIBE_PRODUCT = "/v1/gold/product";
         public static final String GET_FEATURED_PRODUCTS = "/v1/mobile/featured_product/{shopId}?json=1";
         public static final String SET_CASHBACK_PRODUCTS = "/v1/cashback/set";
+        public static final String GET_CASHBACK_PRODUCTS = "v1/tx/cashback";
     }
 
     public static class FCM {

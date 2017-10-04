@@ -17,16 +17,27 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
     private String imageUrl;
     private String productId;
     private String productPrice;
+    private String productPricePlain;
     private String productStatus;
     private String productCurrencyId;
     private String productUrl;
     private String productCurrencySymbol;
     private int productReturnable;
     private int productPreorder;
+    private int productCashback;
+    private int productCashbackAmount;
 
     @Override
     public int getType() {
         return TYPE;
+    }
+
+    public String getProductPricePlain() {
+        return productPricePlain;
+    }
+
+    public void setProductPricePlain(String productPricePlain) {
+        this.productPricePlain = productPricePlain;
     }
 
     public String getProductCurrencySymbol() {
@@ -129,6 +140,22 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productUrl = productUrl;
     }
 
+    public void setProductCashback(int productCashback) {
+        this.productCashback = productCashback;
+    }
+
+    public int getProductCashback() {
+        return productCashback;
+    }
+
+    public void setProductCashbackAmount(int productCashbackAmount) {
+        this.productCashbackAmount = productCashbackAmount;
+    }
+
+    public int getProductCashbackAmount() {
+        return productCashbackAmount;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -140,12 +167,15 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         dest.writeString(this.imageUrl);
         dest.writeString(this.productId);
         dest.writeString(this.productPrice);
+        dest.writeString(this.productPricePlain);
         dest.writeString(this.productStatus);
         dest.writeString(this.productCurrencyId);
         dest.writeString(this.productUrl);
         dest.writeString(this.productCurrencySymbol);
         dest.writeInt(this.productReturnable);
         dest.writeInt(this.productPreorder);
+        dest.writeInt(this.productCashback);
+        dest.writeInt(this.productCashbackAmount);
     }
 
     protected ProductManageViewModel(Parcel in) {
@@ -153,12 +183,15 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.imageUrl = in.readString();
         this.productId = in.readString();
         this.productPrice = in.readString();
+        this.productPricePlain = in.readString();
         this.productStatus = in.readString();
         this.productCurrencyId = in.readString();
         this.productUrl = in.readString();
         this.productCurrencySymbol = in.readString();
         this.productReturnable = in.readInt();
         this.productPreorder = in.readInt();
+        this.productCashback = in.readInt();
+        this.productCashbackAmount = in.readInt();
     }
 
     public static final Creator<ProductManageViewModel> CREATOR = new Creator<ProductManageViewModel>() {

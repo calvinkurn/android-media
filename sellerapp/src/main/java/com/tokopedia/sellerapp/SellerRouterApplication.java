@@ -45,15 +45,17 @@ import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.gm.GMModuleRouter;
+import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
 import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
+import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
-import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
+//import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -71,7 +73,8 @@ import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
-import com.tokopedia.seller.product.manage.view.activity.ManageProductActivity;
+//import com.tokopedia.seller.product.manage.view.activity.ManageProductActivity;
+import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
@@ -88,6 +91,7 @@ import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
@@ -171,7 +175,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, ManageProductActivity.class);
+        Intent intent = new Intent(context, ProductManageActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -515,32 +519,37 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
                                     String customSubject, String customMessage, String source) {
-        return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
-                customSubject, customMessage, source);
+        return null;
+//        return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
+//                customSubject, customMessage, source);
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String customMessage, String source) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
-                customSubject, customMessage, source);
+        return null;
+//        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+//                customSubject, customMessage, source);
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String source) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source);
+        return null;
+        //return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source);
     }
 
     @Override
     public Intent getAskUserIntent(Context context, String userId, String userName, String source) {
-        return SendMessageActivity.getAskUserIntent(context, userId, userName, source);
+        return null;
+//        return SendMessageActivity.getAskUserIntent(context, userId, userName, source);
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
-                customSubject, source);
+        return null;
+//        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+//                customSubject, source);
     }
 
     @Override
@@ -571,5 +580,11 @@ public abstract class SellerRouterApplication extends MainApplication
     public Observable<Boolean> setCashBack(String productId, String cashback) {
         SetCashbackUseCase setCashbackUseCase = getGMComponent().getSetCashbackUseCase();
         return setCashbackUseCase.getExecuteObservableAsync(SetCashbackUseCase.createRequestParams(productId, cashback));
+    }
+
+    @Override
+    public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
+        GetCashbackUseCase getCashbackUseCase = getGMComponent().getCashbackUseCase();
+        return getCashbackUseCase.getExecuteObservable(GetCashbackUseCase.createRequestParams(productIds));
     }
 }
