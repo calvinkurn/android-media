@@ -63,7 +63,6 @@ public class NotificationAnalyticsReceiver implements INotificationAnalyticsRece
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            sendLocalyticsPushReceived(data);
         }
         return data;
 
@@ -74,9 +73,5 @@ public class NotificationAnalyticsReceiver implements INotificationAnalyticsRece
         Map<String, String> params = new HashMap<>();
         params.put("Notification code", code);
         TrackingUtils.eventLocaNotification(eventName, params);
-    }
-
-    private void sendLocalyticsPushReceived(Bundle data) {
-        TrackingUtils.eventLocaNotificationReceived(data);
     }
 }

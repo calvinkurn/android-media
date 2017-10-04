@@ -523,10 +523,6 @@ public class TrackingUtils extends TrackingConfig {
         getAFEngine().sendTrackEvent(AFInAppEventType.CONTENT_VIEW, listViewEvent);
     }
 
-    public static void eventLocaNotificationReceived(Bundle data){
-        getLocaEngine().sendReceiveNotification(data);
-    }
-
     public static void eventLocaNotification(String eventName, Map<String, String> params){
         eventLoca(eventName, params);
         eventLocaInAppMessaging(eventName);
