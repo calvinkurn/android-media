@@ -279,12 +279,11 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                             getOfficialStoreBanner(p.q);
                         }
                     }
+
                     if (view.checkHasFilterAttrIsNull(PAGER_THREE_TAB_PRODUCT_POSITION)) {
-                        discoveryInteractor.getDynamicAttribute(view.getContext(),
-                                BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT,
-                                browseProductActivityModel.getDepartmentId(),
-                                browseProductActivityModel.getQ());
+                        fetchDynamicAttribute(source);
                     }
+
                     if(source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)){
                         view.showTabLayout();
                     }
@@ -297,6 +296,26 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 view.setOfficialStoreBanner((BannerOfficialStoreModel) data.getModel2().body());
                 break;
         }
+    }
+
+    private void fetchDynamicAttribute(String source) {
+
+        String query = browseProductActivityModel.getQ();
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT.equals(source)
+                || BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY.equals(source)) {
+            query = "";
+        }
+
+        String sourceKey = source;
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP.equals(sourceKey)
+                || BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG.equals(sourceKey)) {
+            sourceKey = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
+        }
+
+        discoveryInteractor.getDynamicAttribute(view.getContext(),
+                sourceKey,
+                browseProductActivityModel.getDepartmentId(),
+                query);
     }
 
     private boolean isSearchResultNotEmpty() {
