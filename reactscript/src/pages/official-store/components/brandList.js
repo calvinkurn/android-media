@@ -9,7 +9,7 @@ import {
   Button,
   TouchableWithoutFeedback
 } from 'react-native'
-import { NetworkModule, NavigationModule } from 'NativeModules';
+import { NavigationModule } from 'NativeModules';
 import unescape from 'lodash/unescape'
 import LoadMore from './LoadMore'
 import Grid from '../common/grid/grid'
