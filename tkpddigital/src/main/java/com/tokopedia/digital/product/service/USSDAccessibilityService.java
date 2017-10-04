@@ -119,31 +119,17 @@ public class USSDAccessibilityService extends AccessibilityService {
         if (source == null) {
             return;
         }
-        List<AccessibilityNodeInfo> list = source
-                .findAccessibilityNodeInfosByText(getString(R.string.label_ussd_cancel));
-        boolean isClosed = false;
-        if (list != null) {
-            for (AccessibilityNodeInfo node : list) {
-                if (node != null) {
-                    node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    isClosed = true;
-                }
-            }
-        }
+        boolean isClosed = checkAndClosed(source,getString(R.string.label_ussd_cancel));
+
         if (!isClosed) {
-            list = source
-                    .findAccessibilityNodeInfosByText(getString(R.string.ok));
-            if (list != null) {
-                for (AccessibilityNodeInfo node : list) {
-                    if (node != null) {
-                        node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        isClosed = true;
-                    }
-                }
-            }
+            isClosed = checkAndClosed(source,"Batal");
         }
 
-        //this block is for in case system language is Indonesia then buttn text may be "Batal"
+        if (!isClosed) {
+            isClosed = checkAndClosed(source,getString(R.string.ok));
+        }
+
+        //this block is for in case system language is Indonesia then button text may be "Batal"
         if (!isClosed) {
             for (int i = 0; i < source.getChildCount(); i++) {
                 AccessibilityNodeInfo node = source.getChild(i);
@@ -160,7 +146,20 @@ public class USSDAccessibilityService extends AccessibilityService {
         }
         if (!isClosed && startFromApp && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN)
             performGlobalAction(GLOBAL_ACTION_BACK); // This works on 4.1+ only
+    }
 
-
+    private boolean checkAndClosed(AccessibilityNodeInfo source,String btnText) {
+        List<AccessibilityNodeInfo> list = source
+                .findAccessibilityNodeInfosByText(btnText);
+        boolean isClosed = false;
+        if (list != null) {
+            for (AccessibilityNodeInfo node : list) {
+                if (node != null) {
+                    node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    isClosed = true;
+                }
+            }
+        }
+        return isClosed;
     }
 }
