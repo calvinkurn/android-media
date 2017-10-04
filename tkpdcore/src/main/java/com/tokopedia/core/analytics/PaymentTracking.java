@@ -46,16 +46,6 @@ public class PaymentTracking extends TrackingUtils {
         getAFEngine().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 
-    public static void atcLoca(ProductCartPass productCartPass, String productId,
-                               String priceItem, Map<String, String> values) {
-        eventLoca("event : " + MainApplication.getAppContext().getString(R.string.event_add_to_cart), values);
-        getLocaEngine().tagAddedToCart(productCartPass.getProductName(), productId, productCartPass.getProductCategory(), Long.parseLong(priceItem.replace("Rp", "").replace(".", "").trim()), null)
-                .setProfileAttribute(
-                        MainApplication.getAppContext().getString(R.string.profile_last_date_add_to_cart),
-                        new GregorianCalendar().getTime(),
-                        Localytics.ProfileScope.APPLICATION);
-    }
-
     public static void atcAF(Map<String, Object> values) {
         getAFEngine().sendTrackEvent(AFInAppEventType.ADD_TO_CART, values);
     }
