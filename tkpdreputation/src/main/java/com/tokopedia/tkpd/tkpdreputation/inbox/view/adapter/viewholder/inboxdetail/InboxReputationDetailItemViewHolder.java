@@ -206,7 +206,15 @@ public class InboxReputationDetailItemViewHolder extends
             giveReview.setVisibility(View.GONE);
             reviewerName.setText(MethodChecker.fromHtml(getReviewerNameText(element
                     .getReviewerName())));
-            reviewTime.setText(getFormattedTime(element.getReviewTime()));
+            String time;
+            if (element.isReviewIsEdited()) {
+                time = getFormattedTime(element.getReviewTime()) +
+                        MainApplication.getAppContext().getString(R.string.edited);
+            } else {
+                time = getFormattedTime(element.getReviewTime());
+            }
+            reviewTime.setText(time);
+
             reviewStar.setRating(element.getReviewStar());
             review.setText(getReview(element.getReview()));
             review.setOnClickListener(new View.OnClickListener() {

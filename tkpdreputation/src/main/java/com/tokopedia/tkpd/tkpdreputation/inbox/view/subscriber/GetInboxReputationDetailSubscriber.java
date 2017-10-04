@@ -112,7 +112,9 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                         detailDomain.getReviewData()
                                 .getReviewResponse()),
                 convertToLikeDislikeViewModel(detailDomain.getLikeDislikeDomain()),
-                detailDomain.getReviewData().isReviewAnonymity()
+                detailDomain.getReviewData().isReviewAnonymity(),
+                !TextUtils.isEmpty(detailDomain.getReviewData().getReviewUpdateTime()
+                        .getDateTimeFmt1())
         );
     }
 

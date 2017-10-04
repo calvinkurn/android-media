@@ -91,5 +91,6 @@
     <string name="inbox_reputation_search_empty_button">Lihat Semua Ulasan</string>
     <string name="not_reviewed">Belum diulas</string>
     <string name="you_got_helped">Anda terbantu dengan ulasan ini</string>
+    <string name="edited">(diubah)</string>
 
 </resources>
