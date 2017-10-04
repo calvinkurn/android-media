@@ -58,7 +58,8 @@ public class InboxReputationDetailItemViewModel implements
                                               @Nullable LikeDislikeViewModel
                                               likeDislikeViewModel,
                                               boolean reviewIsAnonymous,
-                                              boolean isProductDeleted) {
+                                              boolean isProductDeleted,
+                                              boolean reviewIsEdited) {
         this.reputationId = reputationId;
         this.productId = productId;
         this.productName = productName;

@@ -114,8 +114,7 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                                 .getReviewResponse()),
                 convertToLikeDislikeViewModel(detailDomain.getLikeDislikeDomain()),
                 detailDomain.getReviewData().isReviewAnonymity(),
-                detailDomain.getProductData().getProductStatus() == PRODUCT_IS_DELETED
-                detailDomain.getReviewData().isReviewAnonymity(),
+                detailDomain.getProductData().getProductStatus() == PRODUCT_IS_DELETED,
                 !TextUtils.isEmpty(detailDomain.getReviewData().getReviewUpdateTime()
                         .getDateTimeFmt1())
         );
