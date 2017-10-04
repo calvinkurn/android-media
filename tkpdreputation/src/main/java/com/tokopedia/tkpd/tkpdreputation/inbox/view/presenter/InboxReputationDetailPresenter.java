@@ -32,7 +32,6 @@ public class InboxReputationDetailPresenter
     private final GetInboxReputationDetailUseCase getInboxReputationDetailUseCase;
     private final SessionHandler sessionHandler;
     private final SendSmileyReputationUseCase sendSmileyReputationUseCase;
-    private final CheckShopFavoritedUseCase checkShopFavoritedUseCase;
     private final FavoriteShopUseCase favoriteShopUseCase;
     private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
     private final SendReplyReviewUseCase sendReplyReviewUseCase;
@@ -51,7 +50,6 @@ public class InboxReputationDetailPresenter
             SessionHandler sessionHandler) {
         this.getInboxReputationDetailUseCase = getInboxReputationDetailUseCase;
         this.sendSmileyReputationUseCase = sendSmileyReputationUseCase;
-        this.checkShopFavoritedUseCase = checkShopFavoritedUseCase;
         this.favoriteShopUseCase = favoriteShopUseCase;
         this.deleteReviewResponseUseCase = deleteReviewResponseUseCase;
         this.sendReplyReviewUseCase = sendReplyReviewUseCase;
@@ -70,7 +68,6 @@ public class InboxReputationDetailPresenter
         super.detachView();
         getInboxReputationDetailUseCase.unsubscribe();
         sendSmileyReputationUseCase.unsubscribe();
-        checkShopFavoritedUseCase.unsubscribe();
         favoriteShopUseCase.unsubscribe();
         deleteReviewResponseUseCase.unsubscribe();
         sendReplyReviewUseCase.unsubscribe();
@@ -95,12 +92,6 @@ public class InboxReputationDetailPresenter
                 score,
                 role),
                 new SendSmileySubscriber(viewListener, score));
-    }
-
-    @Override
-    public void checkShopFavorited(int shopId) {
-        checkShopFavoritedUseCase.execute(CheckShopFavoritedUseCase.getParam(sessionHandler
-                .getLoginID(), shopId), new CheckShopFavoriteSubscriber(viewListener));
     }
 
     @Override

@@ -21,7 +21,9 @@ public class ReplyReviewMapper implements Func1<Response<TkpdResponse>, SendRepl
     @Override
     public SendReplyReviewDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if (!response.body().isNullData()) {
+            if ((!response.body().isNullData()
+                    && response.body().getErrorMessageJoined().equals(""))
+                    || !response.body().isNullData() && response.body().getErrorMessages() == null) {
                 ReplyReviewPojo data = response.body().convertDataObj(ReplyReviewPojo.class);
                 return mappingToDomain(data);
             } else {

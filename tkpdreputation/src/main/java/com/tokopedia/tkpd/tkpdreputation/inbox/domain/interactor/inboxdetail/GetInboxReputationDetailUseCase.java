@@ -11,9 +11,11 @@ import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeListDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewItemDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 
 import java.util.List;
 
@@ -29,24 +31,74 @@ public class GetInboxReputationDetailUseCase extends UseCase<InboxReputationDeta
     private final GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase;
     private final GetInboxReputationUseCase getInboxReputationUseCase;
     private final GetReviewUseCase getReviewUseCase;
+    private final CheckShopFavoritedUseCase checkShopFavoritedUseCase;
 
     public GetInboxReputationDetailUseCase(ThreadExecutor threadExecutor,
                                            PostExecutionThread postExecutionThread,
                                            GetInboxReputationUseCase getInboxReputationUseCase,
                                            GetReviewUseCase getReviewUseCase,
-                                           GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase) {
+                                           GetLikeDislikeReviewUseCase
+                                                   getLikeDislikeReviewUseCase,
+                                           CheckShopFavoritedUseCase checkShopFavoritedUseCase) {
         super(threadExecutor, postExecutionThread);
         this.getInboxReputationUseCase = getInboxReputationUseCase;
         this.getReviewUseCase = getReviewUseCase;
         this.getLikeDislikeReviewUseCase = getLikeDislikeReviewUseCase;
+        this.checkShopFavoritedUseCase = checkShopFavoritedUseCase;
     }
 
     @Override
     public Observable<InboxReputationDetailDomain> createObservable(RequestParams requestParams) {
         InboxReputationDetailDomain domain = new InboxReputationDetailDomain();
         return getReputation(domain, getReputationParam(requestParams))
+                .flatMap(checkShopFavorited(getShopFavoritedParam(domain, requestParams)))
                 .flatMap(getReview(domain, getReviewParam(requestParams)))
                 .flatMap(getLikeDislike(domain, requestParams));
+    }
+
+    private Func1<InboxReputationDetailDomain, Observable<InboxReputationDetailDomain>>
+    checkShopFavorited(final RequestParams shopFavoritedParam) {
+        return new Func1<InboxReputationDetailDomain, Observable<InboxReputationDetailDomain>>() {
+            @Override
+            public Observable<InboxReputationDetailDomain> call(final InboxReputationDetailDomain inboxReputationDetailDomain) {
+                if (inboxReputationDetailDomain.getInboxReputationDomain().getInboxReputation()
+                        .get(0).getRevieweeData().getRevieweeRoleId() ==
+                        InboxReputationItemViewModel.ROLE_SELLER) {
+                    return checkShopFavoritedUseCase.createObservable(shopFavoritedParam)
+                            .flatMap(new Func1<CheckShopFavoriteDomain, Observable<InboxReputationDetailDomain>>() {
+                                @Override
+                                public Observable<InboxReputationDetailDomain> call(CheckShopFavoriteDomain checkShopFavoriteDomain) {
+                                    inboxReputationDetailDomain.getInboxReputationDomain().getInboxReputation()
+                                            .get(0).getRevieweeData().getRevieweeBadgeSeller()
+                                            .setIsFavorited(checkShopFavoriteDomain
+                                                    .isShopFavorited() ? 1 : 0);
+                                    return Observable.just(inboxReputationDetailDomain);
+                                }
+                            })
+                            .onErrorResumeNext(new Func1<Throwable, Observable<? extends InboxReputationDetailDomain>>() {
+                                @Override
+                                public Observable<? extends InboxReputationDetailDomain> call(Throwable throwable) {
+                                    inboxReputationDetailDomain.getInboxReputationDomain().getInboxReputation()
+                                            .get(0).getRevieweeData().getRevieweeBadgeSeller()
+                                            .setIsFavorited(-1);
+                                    return Observable.just(inboxReputationDetailDomain);
+                                }
+                            });
+                } else {
+                    inboxReputationDetailDomain.getInboxReputationDomain().getInboxReputation()
+                            .get(0).getRevieweeData().getRevieweeBadgeSeller()
+                            .setIsFavorited(-1);
+                    return Observable.just(inboxReputationDetailDomain);
+                }
+            }
+        };
+    }
+
+    private RequestParams getShopFavoritedParam(InboxReputationDetailDomain domain, RequestParams requestParams) {
+        return CheckShopFavoritedUseCase.getParam(
+                requestParams.getString(GetReviewUseCase.PARAM_USER_ID, ""),
+                domain.getInboxReputationDomain().getInboxReputation().get(0).getShopId()
+        );
     }
 
     private Func1<InboxReputationDetailDomain, Observable<InboxReputationDetailDomain>>

@@ -78,8 +78,8 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                 shopReputationDomain.getScore(),
                 shopReputationDomain.getMinBadgeScore(),
                 shopReputationDomain.getReputationBadgeUrl(),
-                convertToReputationBadgeViewModel(shopReputationDomain.getReputationBadge())
-        );
+                convertToReputationBadgeViewModel(shopReputationDomain.getReputationBadge()),
+                revieweeBadgeSeller.getIsFavorited());
     }
 
     private ReputationBadgeViewModel convertToReputationBadgeViewModel(ReputationBadgeDomain reputationBadge) {
@@ -214,7 +214,7 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                 revieweeBadgeSeller.getScore(),
                 revieweeBadgeSeller.getMinBadgeScore(),
                 revieweeBadgeSeller.getReputationBadgeUrl(),
-                convertToReputationBadgeViewModel(revieweeBadgeSeller.getReputationBadge()));
+                convertToReputationBadgeViewModel(revieweeBadgeSeller.getReputationBadge()), revieweeBadgeSeller.getIsFavorited());
     }
 
     private RevieweeBadgeCustomerViewModel convertToBuyerReputationViewModel(

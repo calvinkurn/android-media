@@ -19,13 +19,14 @@ public class RevieweeBadgeSellerViewModel implements Parcelable {
 
     public RevieweeBadgeSellerViewModel(String tooltip, String reputationScore, int score,
                                         int minBadgeScore, String reputationBadgeUrl,
-                                        ReputationBadgeViewModel reputationBadge) {
+                                        ReputationBadgeViewModel reputationBadge, int isFavorited) {
         this.tooltip = tooltip;
         this.reputationScore = reputationScore;
         this.score = score;
         this.minBadgeScore = minBadgeScore;
         this.reputationBadgeUrl = reputationBadgeUrl;
         this.reputationBadge = reputationBadge;
+        this.isFavorited = isFavorited;
     }
 
     protected RevieweeBadgeSellerViewModel(Parcel in) {
@@ -90,11 +91,11 @@ public class RevieweeBadgeSellerViewModel implements Parcelable {
         return reputationBadge;
     }
 
-    public void setIsFavorited(int isFavorited) {
-        this.isFavorited = isFavorited;
-    }
-
     public int getIsFavorited() {
         return isFavorited;
+    }
+
+    public void setIsFavorited(int isFavorited) {
+        this.isFavorited = isFavorited;
     }
 }

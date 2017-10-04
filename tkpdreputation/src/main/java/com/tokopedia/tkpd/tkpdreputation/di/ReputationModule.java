@@ -8,19 +8,19 @@ import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
+import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
+import com.tokopedia.tkpd.tkpdreputation.data.mapper.ReportReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.ReportReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
-import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.FaveShopMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationDetailMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.InboxReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ReplyReviewMapper;
-import com.tokopedia.tkpd.tkpdreputation.data.mapper.ReportReviewMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewSubmitMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendSmileyReputationMapper;
@@ -177,13 +177,16 @@ public class ReputationModule {
                                            PostExecutionThread postExecutionThread,
                                            GetInboxReputationUseCase getInboxReputationUseCase,
                                            GetReviewUseCase getReviewUseCase,
-                                           GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase) {
+                                           GetLikeDislikeReviewUseCase
+                                                   getLikeDislikeReviewUseCase,
+                                           CheckShopFavoritedUseCase checkShopFavoritedUseCase) {
         return new GetInboxReputationDetailUseCase(
                 threadExecutor,
                 postExecutionThread,
                 getInboxReputationUseCase,
                 getReviewUseCase,
-                getLikeDislikeReviewUseCase);
+                getLikeDislikeReviewUseCase,
+                checkShopFavoritedUseCase);
     }
 
     @ReputationScope

@@ -23,8 +23,9 @@ public class SendReviewValidateMapper implements Func1<Response<TkpdResponse>,
     @Override
     public SendReviewValidateDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if (!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals("")) {
+            if ((!response.body().isNullData()
+                    && response.body().getErrorMessageJoined().equals(""))
+                    || !response.body().isNullData() && response.body().getErrorMessages() == null) {
                 SendReviewValidatePojo data = response.body().convertDataObj(SendReviewValidatePojo.class);
                 return mappingToDomain(data);
             } else {

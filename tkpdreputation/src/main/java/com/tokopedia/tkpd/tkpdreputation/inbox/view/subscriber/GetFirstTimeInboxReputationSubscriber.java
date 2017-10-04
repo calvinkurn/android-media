@@ -89,7 +89,8 @@ public class GetFirstTimeInboxReputationSubscriber extends Subscriber<InboxReput
                 revieweeBadgeSeller.getScore(),
                 revieweeBadgeSeller.getMinBadgeScore(),
                 revieweeBadgeSeller.getReputationBadgeUrl(),
-                convertToReputationBadgeViewModel(revieweeBadgeSeller.getReputationBadge()));
+                convertToReputationBadgeViewModel(revieweeBadgeSeller.getReputationBadge()),
+                revieweeBadgeSeller.getIsFavorited());
     }
 
     private ReputationBadgeViewModel convertToReputationBadgeViewModel(ReputationBadgeDomain reputationBadge) {

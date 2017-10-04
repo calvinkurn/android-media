@@ -62,10 +62,6 @@ public interface InboxReputationDetail {
 
         void onSuccessSendSmiley(int score);
 
-        void onErrorCheckShopIsFavorited();
-
-        void onSuccessCheckShopIsFavorited(int shopFavorited);
-
         void onErrorFavoriteShop(String errorMessage);
 
         void onSuccessFavoriteShop();
@@ -98,8 +94,6 @@ public interface InboxReputationDetail {
         void getInboxDetail(String id, int anInt);
 
         void sendSmiley(String reputationId, String score, int role);
-
-        void checkShopFavorited(int shopId);
 
         void onFavoriteShopClicked(int shopId);
 

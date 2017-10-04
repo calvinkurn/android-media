@@ -21,8 +21,9 @@ public class SendReviewSubmitMapper implements Func1<Response<TkpdResponse>, Sen
     @Override
     public SendReviewSubmitDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if (!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals("")) {
+            if ((!response.body().isNullData()
+                    && response.body().getErrorMessageJoined().equals(""))
+                    || !response.body().isNullData() && response.body().getErrorMessages() == null) {
                 SendReviewSubmitPojo data = response.body().convertDataObj(SendReviewSubmitPojo
                         .class);
                 return mappingToDomain(data);

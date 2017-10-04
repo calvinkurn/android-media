@@ -22,7 +22,9 @@ public class SendSmileyReputationMapper implements Func1<Response<TkpdResponse>,
     @Override
     public SendSmileyReputationDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if (!response.body().isNullData()) {
+            if ((!response.body().isNullData()
+                    && response.body().getErrorMessageJoined().equals(""))
+                    || !response.body().isNullData() && response.body().getErrorMessages() == null) {
                 SendSmileyPojo data = response.body().convertDataObj(SendSmileyPojo.class);
                 return mappingToDomain(data);
             } else {

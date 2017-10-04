@@ -22,7 +22,9 @@ public class SkipReviewMapper implements Func1<Response<TkpdResponse>, SkipRevie
     @Override
     public SkipReviewDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            if (!response.body().isNullData()) {
+            if ((!response.body().isNullData()
+                    && response.body().getErrorMessageJoined().equals(""))
+                    || !response.body().isNullData() && response.body().getErrorMessages() == null) {
                 SkipReviewPojo data = response.body().convertDataObj(SkipReviewPojo.class);
                 return mappingToDomain(data);
             } else {

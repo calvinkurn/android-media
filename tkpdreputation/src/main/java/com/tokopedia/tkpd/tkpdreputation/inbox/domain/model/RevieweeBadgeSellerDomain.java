@@ -12,6 +12,7 @@ public class RevieweeBadgeSellerDomain {
     private int minBadgeScore;
     private String reputationBadgeUrl;
     private ReputationBadgeDomain reputationBadge;
+    private int isFavorited;
 
     public RevieweeBadgeSellerDomain(String tooltip, String reputationScore, int score,
                                      int minBadgeScore, String reputationBadgeUrl,
@@ -22,6 +23,14 @@ public class RevieweeBadgeSellerDomain {
         this.minBadgeScore = minBadgeScore;
         this.reputationBadgeUrl = reputationBadgeUrl;
         this.reputationBadge = reputationBadge;
+    }
+
+    public int getIsFavorited() {
+        return isFavorited;
+    }
+
+    public void setIsFavorited(int isFavorited) {
+        this.isFavorited = isFavorited;
     }
 
     public String getTooltip() {
