@@ -82,13 +82,13 @@ public class ProductManageFilterModel implements Parcelable {
     }
 
     public void reset() {
-        etalaseProductOption = EtalaseProductOption.ALL_SHOWCASE;
-        etalaseProductOptionName = "";
-        categoryId = "";
-        categoryName = "";
-        pictureStatusOption = PictureStatusProductOption.NOT_USED;
-        catalogProductOption = CatalogProductOption.NOT_USED;
-        conditionProductOption = ConditionProductOption.NOT_USED;
+        setEtalaseProductOption(EtalaseProductOption.ALL_SHOWCASE);
+        setEtalaseProductOptionName("");
+        setCategoryId("");
+        setCategoryName("");
+        setPictureStatusOption(PictureStatusProductOption.NOT_USED);
+        setCatalogProductOption(CatalogProductOption.NOT_USED);
+        setConditionProductOption(ConditionProductOption.NOT_USED);
     }
 
     @Override

@@ -7,7 +7,7 @@
 
     <com.tokopedia.design.text.SpinnerCounterInputView
         android:id="@+id/spinner_counter_input_view_price"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         app:spinner_decimal_entries="@array/product_currency_entries"

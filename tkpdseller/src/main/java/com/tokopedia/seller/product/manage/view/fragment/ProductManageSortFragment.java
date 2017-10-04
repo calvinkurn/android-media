@@ -79,7 +79,7 @@ public class ProductManageSortFragment extends BaseListFragment<ProductManageSor
         ((ProductManageSortAdapter)adapter).setSortProductOption(productManageSortModel.getId());
         adapter.notifyDataSetChanged();
         Intent intent = new Intent();
-        intent.putExtra(ProductManageConstant.EXTRA_SORT_SELECTED, productManageSortModel.getId());
+        intent.putExtra(ProductManageConstant.EXTRA_SORT_SELECTED, productManageSortModel);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }

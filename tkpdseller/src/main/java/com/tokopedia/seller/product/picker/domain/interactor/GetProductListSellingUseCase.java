@@ -60,17 +60,17 @@ public class GetProductListSellingUseCase extends UseCase<ProductListSellerModel
         requestParams.putString(ProductListPickerConstant.QUERY_PAGE, String.valueOf(page));
         requestParams.putString(ProductListPickerConstant.QUERY_SORT, String.valueOf(sort));
         requestParams.putString(ProductListPickerConstant.QUERY_KEYWORD, keywordFilter);
-        if (catalogId != CatalogProductOption.NOT_USED) {
+        if (!catalogId.equals(CatalogProductOption.NOT_USED)) {
             requestParams.putString(ProductListPickerConstant.QUERY_CATALOG, catalogId);
         }
-        if (condition != ConditionProductOption.NOT_USED) {
+        if (!condition.equals(ConditionProductOption.NOT_USED)) {
             requestParams.putString(ProductListPickerConstant.QUERY_CONDITION, condition);
         }
-        if (!departmentId.isEmpty()) {
+        if (departmentId!= null && !departmentId.isEmpty()) {
             requestParams.putString(ProductListPickerConstant.QUERY_DEPARTMENT_ID, departmentId);
         }
         requestParams.putString(ProductListPickerConstant.QUERY_ETALASE_ID, etalaseId);
-        if(pictureStatus != PictureStatusProductOption.NOT_USED) {
+        if(!pictureStatus.equals(PictureStatusProductOption.NOT_USED)) {
             requestParams.putString(ProductListPickerConstant.QUERY_PICTURE_STATUS, pictureStatus);
         }
         return requestParams;

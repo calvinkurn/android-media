@@ -81,8 +81,23 @@
 
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/image_button_option"
-        android:layout_width="@dimen/image_width_s"
-        android:layout_height="@dimen/image_width_s" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/image_button_option"
+            android:layout_width="@dimen/image_width_s"
+            android:layout_height="@dimen/image_width_s"
+            android:layout_alignParentTop="true" />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/check_box_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:theme="@style/checkBoxStyle"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 </LinearLayout>

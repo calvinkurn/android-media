@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 
 import java.util.ArrayList;
@@ -14,7 +15,8 @@ import java.util.List;
  * Created by zulfikarrahman on 9/25/17.
  */
 
-public class ProductManageListAdapter extends BaseListAdapter<ProductManageViewModel> implements ProductManageListViewHolder.ClickOptionCallbackHolder {
+public class ProductManageListAdapter extends BaseMultipleCheckListAdapter<ProductManageViewModel> implements ProductManageListViewHolder.ClickOptionCallbackHolder {
+
 
     public interface ClickOptionCallback{
         void onClickOptionItem(ProductManageViewModel productManageViewModel);
@@ -23,6 +25,7 @@ public class ProductManageListAdapter extends BaseListAdapter<ProductManageViewM
     private ClickOptionCallback clickOptionCallback;
 
     private List<String> featuredProduct;
+    private boolean isActionMode;
 
     public ProductManageListAdapter() {
         featuredProduct = new ArrayList<>();
@@ -45,6 +48,7 @@ public class ProductManageListAdapter extends BaseListAdapter<ProductManageViewM
     protected void bindData(int position, RecyclerView.ViewHolder viewHolder) {
         super.bindData(position, viewHolder);
         ((ProductManageListViewHolder)viewHolder).bindFeaturedProduct(isFeaturedProduct(data.get(position).getProductId()));
+        ((ProductManageListViewHolder)viewHolder).bindActionMode(isActionMode);
     }
 
     public void setClickOptionCallback(ClickOptionCallback clickOptionCallback) {
@@ -61,6 +65,10 @@ public class ProductManageListAdapter extends BaseListAdapter<ProductManageViewM
     public void setFeaturedProduct(List<String> featuredProduct) {
         if(featuredProduct != null)
         this.featuredProduct = featuredProduct;
+    }
+
+    public void setActionMode(boolean actionMode) {
+        isActionMode = actionMode;
     }
 
     public boolean isFeaturedProduct(String productId){
