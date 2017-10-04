@@ -13,15 +13,15 @@ public class Version implements Parcelable {
     private int operator;
     private int product;
     private String minimumAndroidBuild;
-    private String minimumIosBuild;
 
+    public Version() {
+    }
 
     protected Version(Parcel in) {
         category = in.readInt();
         operator = in.readInt();
         product = in.readInt();
         minimumAndroidBuild = in.readString();
-        minimumIosBuild = in.readString();
     }
 
     @Override
@@ -30,7 +30,6 @@ public class Version implements Parcelable {
         dest.writeInt(operator);
         dest.writeInt(product);
         dest.writeString(minimumAndroidBuild);
-        dest.writeString(minimumIosBuild);
     }
 
     @Override
@@ -80,13 +79,5 @@ public class Version implements Parcelable {
 
     public void setMinimumAndroidBuild(String minimumAndroidBuild) {
         this.minimumAndroidBuild = minimumAndroidBuild;
-    }
-
-    public String getMinimumIosBuild() {
-        return minimumIosBuild;
-    }
-
-    public void setMinimumIosBuild(String minimumIosBuild) {
-        this.minimumIosBuild = minimumIosBuild;
     }
 }

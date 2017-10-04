@@ -12,15 +12,7 @@ public class Category implements Parcelable {
     private Data data;
 
     protected Category(Parcel in) {
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        data = in.readParcelable(Data.class.getClassLoader());
     }
 
     public static final Creator<Category> CREATOR = new Creator<Category>() {
@@ -34,6 +26,16 @@ public class Category implements Parcelable {
             return new Category[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(data, flags);
+    }
 
     public Data getData() {
         return data;

@@ -14,6 +14,9 @@ public class Attributes implements Parcelable {
     private int operatorId;
     private int categoryId;
 
+    public Attributes() {
+    }
+
     protected Attributes(Parcel in) {
         clientNumber = in.readString();
         productId = in.readInt();

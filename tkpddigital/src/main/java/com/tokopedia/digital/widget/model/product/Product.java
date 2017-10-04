@@ -14,22 +14,14 @@ public class Product implements Parcelable {
     private Relationship relationships;
     private String type;
 
+    public Product() {
+    }
+
     protected Product(Parcel in) {
         attributes = in.readParcelable(Attributes.class.getClassLoader());
         id = in.readInt();
+        relationships = in.readParcelable(Relationship.class.getClassLoader());
         type = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(attributes, flags);
-        dest.writeInt(id);
-        dest.writeString(type);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {
@@ -43,6 +35,19 @@ public class Product implements Parcelable {
             return new Product[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(attributes, flags);
+        dest.writeInt(id);
+        dest.writeParcelable(relationships, flags);
+        dest.writeString(type);
+    }
 
     public Attributes getAttributes() {
         return attributes;

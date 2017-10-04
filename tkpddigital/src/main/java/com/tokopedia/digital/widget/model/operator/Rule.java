@@ -17,6 +17,9 @@ public class Rule implements Parcelable {
     private boolean allowAphanumericNumber;
     private String buttonLabel;
 
+    public Rule() {
+    }
+
     protected Rule(Parcel in) {
         productText = in.readString();
         productsViewStyle = in.readInt();

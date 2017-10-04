@@ -33,33 +33,13 @@ public class Attributes implements Parcelable {
         isNew = in.readByte() != 0;
         validatePrefix = in.readByte() != 0;
         instantCheckoutAvailable = in.readByte() != 0;
+        clientNumber = in.readParcelable(ClientNumber.class.getClassLoader());
         defaultOperatorId = in.readString();
         usePhonebook = in.readByte() != 0;
         showOperator = in.readByte() != 0;
         slug = in.readString();
         status = in.readInt();
         operatorLabel = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeInt(weight);
-        dest.writeString(icon);
-        dest.writeByte((byte) (isNew ? 1 : 0));
-        dest.writeByte((byte) (validatePrefix ? 1 : 0));
-        dest.writeByte((byte) (instantCheckoutAvailable ? 1 : 0));
-        dest.writeString(defaultOperatorId);
-        dest.writeByte((byte) (usePhonebook ? 1 : 0));
-        dest.writeByte((byte) (showOperator ? 1 : 0));
-        dest.writeString(slug);
-        dest.writeInt(status);
-        dest.writeString(operatorLabel);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public static final Creator<Attributes> CREATOR = new Creator<Attributes>() {
@@ -176,5 +156,27 @@ public class Attributes implements Parcelable {
 
     public void setOperatorLabel(String operatorLabel) {
         this.operatorLabel = operatorLabel;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeInt(weight);
+        dest.writeString(icon);
+        dest.writeByte((byte) (isNew ? 1 : 0));
+        dest.writeByte((byte) (validatePrefix ? 1 : 0));
+        dest.writeByte((byte) (instantCheckoutAvailable ? 1 : 0));
+        dest.writeParcelable(clientNumber, flags);
+        dest.writeString(defaultOperatorId);
+        dest.writeByte((byte) (usePhonebook ? 1 : 0));
+        dest.writeByte((byte) (showOperator ? 1 : 0));
+        dest.writeString(slug);
+        dest.writeInt(status);
+        dest.writeString(operatorLabel);
     }
 }
