@@ -1,5 +1,5 @@
 include ':customerapp'
-include ':tkpdreactnative', ':react-native-codepush'
+include ':tkpdreactnative'
 include ':tkpdride'
 include ':tkpdfeed'
 include ':tkpddigital'
