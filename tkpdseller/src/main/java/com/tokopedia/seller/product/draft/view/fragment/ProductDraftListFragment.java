@@ -42,7 +42,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.seller.product.manage.view.fragment.ManageProductSeller;
+import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
@@ -260,7 +260,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) getActivity().getApplication()).startInstopedActivityForResult(getContext(),
                     ProductDraftListFragment.this,
-                    GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE, ManageProductSeller.MAX_INSTAGRAM_SELECT);
+                    GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE, ProductManageSellerFragment.MAX_INSTAGRAM_SELECT);
         }
     }
 
@@ -337,7 +337,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             }
             showProgressDialog();
             ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(getContext());
-            imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList, ManageProductSeller.DEFAULT_NEED_COMPRESS_TKPD,
+            imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList, ProductManageSellerFragment.DEFAULT_NEED_COMPRESS_TKPD,
                     new ImageDownloadHelper.OnImageDownloadListener() {
                         @Override
                         public void onError(Throwable e) {

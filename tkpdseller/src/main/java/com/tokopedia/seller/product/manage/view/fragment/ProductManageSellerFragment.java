@@ -38,7 +38,7 @@ import permissions.dispatcher.RuntimePermissions;
 import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 
 @RuntimePermissions
-public class ManageProductSeller extends ManageProduct implements
+public class ProductManageSellerFragment extends ManageProduct implements
         ProductDraftListCountView {
     public static final int MAX_INSTAGRAM_SELECT = 20;
     public static final boolean DEFAULT_NEED_COMPRESS_TKPD = true;
@@ -78,14 +78,14 @@ public class ManageProductSeller extends ManageProduct implements
     protected void onFabMenuItemClicked(int menuItemId) {
         super.onFabMenuItemClicked(menuItemId);
         if (menuItemId == R.id.action_instagram) {
-            ManageProductSellerPermissionsDispatcher.onInstagramClickedWithCheck(ManageProductSeller.this);
+            ManageProductSellerPermissionsDispatcher.onInstagramClickedWithCheck(ProductManageSellerFragment.this);
         }
     }
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onInstagramClicked() {
         if (getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) getApplication()).startInstopedActivityForResult(ManageProductSeller.this,
+            ((TkpdCoreRouter) getApplication()).startInstopedActivityForResult(ProductManageSellerFragment.this,
                     INSTAGRAM_SELECT_REQUEST_CODE, MAX_INSTAGRAM_SELECT);
         }
     }
@@ -162,7 +162,7 @@ public class ManageProductSeller extends ManageProduct implements
                 @Override
                 public void onClick(View v) {
                     UnifyTracking.eventManageProductClicked(AppEventTracking.EventLabel.DRAFT_PRODUCT);
-                    startActivity(new Intent(ManageProductSeller.this, ProductDraftListActivity.class));
+                    startActivity(new Intent(ProductManageSellerFragment.this, ProductDraftListActivity.class));
                 }
             });
             tvDraftProductInfo.setVisibility(View.VISIBLE);

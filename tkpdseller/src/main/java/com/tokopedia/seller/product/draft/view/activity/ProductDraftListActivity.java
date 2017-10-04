@@ -17,7 +17,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.product.manage.view.fragment.ManageProductSeller;
+import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftSaveBulkComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftSaveBulkModule;
@@ -77,7 +77,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
             }
             ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(this);
             imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList,
-                    ManageProductSeller.DEFAULT_NEED_COMPRESS_TKPD,
+                    ProductManageSellerFragment.DEFAULT_NEED_COMPRESS_TKPD,
                     new ImageDownloadHelper.OnImageDownloadListener() {
                         @Override
                         public void onError(Throwable e) {
