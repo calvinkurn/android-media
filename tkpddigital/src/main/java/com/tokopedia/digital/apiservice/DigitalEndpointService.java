@@ -1,4 +1,4 @@
-package com.tokopedia.core.network.apiservices.digital;
+package com.tokopedia.digital.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
