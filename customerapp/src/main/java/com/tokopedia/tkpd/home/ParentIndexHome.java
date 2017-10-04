@@ -167,17 +167,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         }
 
-        sendNotifLocalyticsCallback();
-
-    }
-
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-            }
-        }
     }
 
     @Override
@@ -574,8 +563,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         invalidateOptionsMenu();
         MainApplication.setCurrentActivity(this);
         super.onResume();
-
-        sendNotifLocalyticsCallback();
 
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
     }

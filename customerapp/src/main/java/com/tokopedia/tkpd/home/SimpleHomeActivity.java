@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.home;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,9 +17,7 @@ import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -31,7 +28,6 @@ import com.tokopedia.tkpd.home.fragment.WishListFragment;
 import com.tokopedia.tkpd.home.presenter.SimpleHome;
 import com.tokopedia.tkpd.home.presenter.SimpleHomeImpl;
 import com.tokopedia.tkpd.home.presenter.SimpleHomeView;
-import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -170,7 +166,6 @@ public class SimpleHomeActivity extends TActivity
     @Override
     protected void onResume() {
         super.onResume();
-        sendNotifLocalyticsCallback();
         invalidateOptionsMenu();
     }
 
@@ -232,15 +227,5 @@ public class SimpleHomeActivity extends TActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        sendNotifLocalyticsCallback();
-    }
-
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-            }
-        }
     }
 }

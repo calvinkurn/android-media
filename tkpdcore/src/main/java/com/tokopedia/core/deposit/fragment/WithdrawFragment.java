@@ -151,8 +151,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        
-        String screenName = getString(R.string.withdraw_page);
 
         getActivity().invalidateOptionsMenu();
     }

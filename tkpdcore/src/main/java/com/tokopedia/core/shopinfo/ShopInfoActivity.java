@@ -277,7 +277,6 @@ public class ShopInfoActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         registerReceiver(loginReceiver, new IntentFilter(LOGIN_ACTION));
-        sendNotifLocalyticsCallback();
     }
 
 
@@ -893,16 +892,6 @@ public class ShopInfoActivity extends BaseActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        sendNotifLocalyticsCallback();
-    }
-
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-            }
-        }
     }
 
     public void setToolbarCollapse() {
