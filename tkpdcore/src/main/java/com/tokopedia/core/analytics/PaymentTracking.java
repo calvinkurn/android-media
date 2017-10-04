@@ -2,10 +2,8 @@ package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
-import com.localytics.android.Localytics;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
@@ -14,7 +12,6 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 
 import org.json.JSONArray;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,23 +26,6 @@ public class PaymentTracking extends TrackingUtils {
         getGTMEngine().eventTransaction(purchase);
         getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
         getGTMEngine().clearTransactionDataLayer(purchase);
-    }
-
-    public static void eventTransactionLoca(Map<String, String> values, ArrayList<Product> products) {
-        String screenName = MainApplication.getAppContext().getString(R.string.cart_pg_3);
-        String transcatAttrKey = MainApplication.getAppContext().getString(R.string.event_value_total_transaction);
-        getLocaEngine()
-                .tagScreen(screenName)
-                .tageEventandInApp("event : Viewed " + screenName)
-                .tagEvent(MainApplication.getAppContext().getString(R.string.event_finish_transaction), values, Long.parseLong(values.get(transcatAttrKey)))
-                .incrementProfileAttribute(transcatAttrKey, Long.parseLong(values.get(transcatAttrKey)), Localytics.ProfileScope.APPLICATION);
-
-        if (products != null && !products.isEmpty()) {
-            for (Product product : products) {
-                getLocaEngine()
-                        .tagPurchasedEvent(product);
-            }
-        }
     }
 
     /* new from TopPayActivity revamped*/
