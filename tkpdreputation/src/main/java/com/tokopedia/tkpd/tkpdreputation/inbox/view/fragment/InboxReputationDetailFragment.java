@@ -221,7 +221,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                         element.getReviewAttachment(),
                         element.getProductAvatar(),
                         element.getProductName(),
-                        element.getProductUrl()),
+                        element.getProductUrl(),
+                        element.isReviewIsAnonymous()),
                 REQUEST_EDIT_REVIEW
         );
     }

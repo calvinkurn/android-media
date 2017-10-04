@@ -266,6 +266,7 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
     private void setSellerReply(final InboxReputationDetailItemViewModel element) {
+        sellerAddReplyLayout.setVisibility(View.GONE);
         seeReplyText.setVisibility(View.VISIBLE);
         replyArrow.setVisibility(View.VISIBLE);
 
@@ -329,7 +330,6 @@ public class InboxReputationDetailItemViewHolder extends
             replyArrow.setRotation(0);
             sellerReplyLayout.setVisibility(View.GONE);
         }
-
 
     }
 

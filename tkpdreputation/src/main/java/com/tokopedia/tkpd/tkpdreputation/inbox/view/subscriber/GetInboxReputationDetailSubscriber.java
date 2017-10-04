@@ -18,8 +18,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDo
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewItemDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopDataDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ShopReputationDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.UserReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
@@ -113,7 +111,8 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                 convertToReviewResponseViewModel(inboxDomain.getShopData(),
                         detailDomain.getReviewData()
                                 .getReviewResponse()),
-                convertToLikeDislikeViewModel(detailDomain.getLikeDislikeDomain())
+                convertToLikeDislikeViewModel(detailDomain.getLikeDislikeDomain()),
+                detailDomain.getReviewData().isReviewAnonymity()
         );
     }
 

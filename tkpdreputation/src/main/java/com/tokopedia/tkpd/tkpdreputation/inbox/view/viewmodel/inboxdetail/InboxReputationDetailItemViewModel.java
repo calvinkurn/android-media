@@ -36,6 +36,7 @@ public class InboxReputationDetailItemViewModel implements
     boolean reviewIsSkipped;
     int tab;
     private String productUrl;
+    private boolean reviewIsAnonymous;
 
     public InboxReputationDetailItemViewModel(int reputationId, String productId, String productName,
                                               String productAvatar,
@@ -53,7 +54,8 @@ public class InboxReputationDetailItemViewModel implements
                                               @Nullable ReviewResponseViewModel
                                                       reviewResponseViewModel,
                                               @Nullable LikeDislikeViewModel
-                                              likeDislikeViewModel) {
+                                              likeDislikeViewModel,
+                                              boolean reviewIsAnonymous) {
         this.reputationId = reputationId;
         this.productId = productId;
         this.productName = productName;
@@ -73,6 +75,7 @@ public class InboxReputationDetailItemViewModel implements
         this.tab = tab;
         this.reviewResponseViewModel = reviewResponseViewModel;
         this.likeDislikeViewModel = likeDislikeViewModel;
+        this.reviewIsAnonymous = reviewIsAnonymous;
     }
 
     public String getReviewId() {
@@ -158,5 +161,13 @@ public class InboxReputationDetailItemViewModel implements
 
     public LikeDislikeViewModel getLikeDislikeViewModel() {
         return likeDislikeViewModel;
+    }
+
+    public boolean isReviewIsAnonymous() {
+        return reviewIsAnonymous;
+    }
+
+    public void setReviewIsAnonymous(boolean reviewIsAnonymous) {
+        this.reviewIsAnonymous = reviewIsAnonymous;
     }
 }

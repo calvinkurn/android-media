@@ -19,9 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -136,7 +134,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                                               int rating, String review,
                                               ArrayList<ImageAttachmentViewModel> listImage,
                                               String productAvatar, String productName,
-                                              String productUrl) {
+                                              String productUrl, boolean isAnonymous) {
         InboxReputationFormFragment fragment = new InboxReputationFormFragment();
         Bundle bundle = new Bundle();
         bundle.putString(InboxReputationFormActivity.ARGS_SHOP_ID, shopId);
@@ -150,6 +148,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_AVATAR, productAvatar);
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_NAME, productName);
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_URL, productUrl);
+        bundle.putBoolean(InboxReputationFormActivity.ARGS_ANONYMOUS, isAnonymous);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -418,6 +417,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 .ARGS_IS_EDIT)) {
             review.setText(getArguments().getString(InboxReputationFormActivity.ARGS_REVIEW));
             rating.setRating(getArguments().getInt(InboxReputationFormActivity.ARGS_RATING));
+            anomymousSwitch.setChecked(getArguments().getBoolean(InboxReputationFormActivity
+                    .ARGS_ANONYMOUS, false));
             adapter.addList(convertToImageList(getArguments().<ImageAttachmentViewModel>getParcelableArrayList
                     (InboxReputationFormActivity.ARGS_REVIEW_IMAGES)));
         }
