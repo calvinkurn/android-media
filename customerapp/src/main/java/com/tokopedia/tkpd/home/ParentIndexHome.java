@@ -331,12 +331,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     break;
             }
 
-
-            /**
-             * send Localytics user attributes
-             * by : Hafizh Herdi
-             */
-            getUserCache();
         } else {
             adapter = new PagerAdapter(getSupportFragmentManager());
             mViewPager.setAdapter(adapter);
@@ -351,20 +345,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         mViewPager.setOffscreenPageLimit(3);
         adapter.notifyDataSetChanged();// DON'T DELETE THIS BECAUSE IT WILL NOTIFY ADAPTER TO CHANGE FROM GUEST TO LOGIN
-    }
-
-    /**
-     * send Localytics user attributes
-     * by : Hafizh Herdi
-     */
-    private void getUserCache() {
-        try {
-            LocalCacheHandler cacheUser = new LocalCacheHandler(this, TkpdState.CacheName.CACHE_USER);
-            TrackingUtils.eventLocaUserAttributes(SessionHandler.getLoginID(this), cacheUser.getString("user_name"), "");
-        } catch (Exception e) {
-            CommonUtils.dumper(TAG + " error connecting to GCM Service");
-            TrackingUtils.eventLogAnalytics(ParentIndexHome.class.getSimpleName(), e.getMessage());
-        }
     }
 
     private void setView() {

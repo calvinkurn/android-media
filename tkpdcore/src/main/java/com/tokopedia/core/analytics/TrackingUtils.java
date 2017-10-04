@@ -523,26 +523,6 @@ public class TrackingUtils extends TrackingConfig {
         getAFEngine().sendTrackEvent(AFInAppEventType.CONTENT_VIEW, listViewEvent);
     }
 
-    public static void eventLocaNotification(String eventName, Map<String, String> params){
-        eventLocaInAppMessaging(eventName);
-    }
-
-    public static void eventLocaUserAttributes(String loginID, String username, String email){
-        getLocaEngine().tagUserAttributes(loginID, username, email);
-    }
-
-    public static void eventLocaInApp(String eventName){
-        getLocaEngine().triggerInAppMessage(eventName);
-    }
-
-    public static void eventLocaInAppMessaging(String eventName){
-        getLocaEngine().tageEventandInApp(eventName);
-    }
-
-    public static void eventLocaSearched(String keyword){
-        getLocaEngine().sendEventSearchProduct(keyword,"product",null,null);
-    }
-
     static void sendGTMEvent(Map<String, Object> dataLayers){
         getGTMEngine().sendEvent(dataLayers);
     }

@@ -1266,16 +1266,6 @@ public class UnifyTracking extends TrackingUtils {
         eventAppsFlyerContentView(afProdIds, keyword, prodIdArray);
     }
 
-
-    public static void eventLocaRegister(String userID) {
-        getLocaEngine().tagEventWithAttribute(
-                "event : " + "Successful Register",
-                userID,
-                new String[]{"customer_name", userID},
-                new String[]{"Login Type", "E-mail"}
-        );
-    }
-
     public static void eventPDPDetail(ProductDetail productDetail) {
         getGTMEngine()
                 .eventDetail(productDetail)
@@ -1300,27 +1290,10 @@ public class UnifyTracking extends TrackingUtils {
                 .clearAddtoCartDataLayer(GTMCart.REMOVE_ACTION);
     }
 
-    public static void eventLoginLoca(CustomerWrapper customerWrapper) {
-        getLocaEngine().sendLoginSuccessfull(customerWrapper);
-    }
-
-    public static void eventRegisterLoca(CustomerWrapper customerWrapper) {
-        getLocaEngine().sendEventRegister(customerWrapper);
-    }
-
-    public static void eventLogoutLoca() {
-        Map<String, String> attrs = new HashMap<>();
-        getLocaEngine().sendEventLoggedOut(attrs);
-    }
-
     public static void eventLocaGoodReview(Integer accuracy, Integer quality) {
         if (accuracy > 3 && quality > 3) {
 
         }
-    }
-
-    public static void deleteProfileAttrLoca() {
-        getLocaEngine().deleteProfileAttribute("profile : last date has product in cart");
     }
 
     public static void sendAFCompleteRegistrationEvent() {
@@ -1348,15 +1321,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.INSTALLED,
                 userId
         ).getEvent());
-    }
-
-    public static void sendLocaProductDetailEvent(ProductDetailData successResult, Map<String, String> attributes) {
-        getLocaEngine().sendEventProductView(
-                successResult.getInfo().getProductName(),
-                Integer.toString(successResult.getInfo().getProductId()),
-                successResult.getInfo().getProductCatalogName(),
-                attributes
-        );
     }
 
     public static void eventClickCatalog(String label) {

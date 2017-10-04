@@ -31,7 +31,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -52,7 +51,6 @@ import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListene
 import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
 import com.tokopedia.session.session.activity.Login;
 
-import net.hockeyapp.android.Tracking;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -545,7 +543,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         customerLogin.setEmailAddress(email.getText().toString());
         customerLogin.setExtraAttr(attributesLogin);
         customerLogin.setMethod(getString(com.tokopedia.core.R.string.title_email));
-        UnifyTracking.eventLoginLoca(customerLogin);
     }
 
     private void sendGTMRegisterEvent() {

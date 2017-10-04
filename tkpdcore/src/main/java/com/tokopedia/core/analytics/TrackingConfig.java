@@ -1,17 +1,9 @@
 package com.tokopedia.core.analytics;
 
-import android.app.Application;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-
-import com.localytics.android.MessagingListener;
-import com.localytics.android.PlacesCampaign;
-import com.localytics.android.PushCampaign;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IGTMContainer;
-import com.tokopedia.core.analytics.container.ILocalyticsContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.container.IPerformanceMonitoring;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
@@ -27,7 +19,6 @@ public abstract class TrackingConfig {
     public enum AnalyticsKind {
         GTM,
         APPSFLYER,
-        LOCALYTICS,
         MOENGAGE
     }
 
@@ -45,14 +36,6 @@ public abstract class TrackingConfig {
      */
     static IAppsflyerContainer getAFEngine(){
         return Jordan.init(MainApplication.getAppContext()).getAFContainer();
-    }
-
-    /**
-     * Get Localytics Engine Instance
-     * @return Localytics Instance
-     */
-    static ILocalyticsContainer getLocaEngine(){
-        return Jordan.init(MainApplication.getAppContext()).getLocalyticsContainer();
     }
 
     /**

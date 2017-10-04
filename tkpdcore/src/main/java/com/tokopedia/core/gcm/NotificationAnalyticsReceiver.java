@@ -19,8 +19,6 @@ import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
-
 /**
  * @author by alvarisi on 12/20/16.
  */
@@ -34,7 +32,6 @@ public class NotificationAnalyticsReceiver implements INotificationAnalyticsRece
         bundle.map(new Func1<Bundle, Boolean>() {
             @Override
             public Boolean call(Bundle data) {
-                sendNotificationCodeReceived(data.getString(ARG_NOTIFICATION_CODE));
                 return true;
             }
         }).subscribeOn(Schedulers.io())
@@ -68,10 +65,4 @@ public class NotificationAnalyticsReceiver implements INotificationAnalyticsRece
 
     }
 
-    private void sendNotificationCodeReceived(String code) {
-        String eventName = "event : gcm notification";
-        Map<String, String> params = new HashMap<>();
-        params.put("Notification code", code);
-        TrackingUtils.eventLocaNotification(eventName, params);
-    }
 }
