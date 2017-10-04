@@ -22,7 +22,5 @@ public interface RechargeNetworkInteractor {
 
     void getStatus(Subscriber<Status> subscriber);
 
-    void getStatusResume(Subscriber<Status> subscriber);
-
     void onDestroy();
 }

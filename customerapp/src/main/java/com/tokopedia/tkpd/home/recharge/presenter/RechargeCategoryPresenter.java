@@ -8,8 +8,6 @@ public interface RechargeCategoryPresenter {
 
     void fetchDataRechargeCategory();
 
-    void fetchStatusDigitalProductData();
-
     void fetchRecentNumberList();
 
     void fetchLastOrder();

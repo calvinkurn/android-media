@@ -50,11 +50,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     }
 
     @Override
-    public void fetchStatusDigitalProductData() {
-        rechargeNetworkInteractor.getStatusResume(getStatusSubscriber());
-    }
-
-    @Override
     public void fetchRecentNumberList() {
         rechargeNetworkInteractor.getRecentNumbers(getRecentNumberSubscriber(), AuthUtil.generateParams(activity));
     }
