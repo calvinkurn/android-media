@@ -50,14 +50,6 @@ public class PaymentTracking extends TrackingUtils {
         getAFEngine().sendTrackEvent(AFInAppEventType.ADD_TO_CART, values);
     }
 
-    public static void confirmPaymentLoca(Map<String, String> values) {
-        String transcatAttrKey = MainApplication.getAppContext().getString(R.string.event_value_total_transaction);
-        long amtPayment = Long.valueOf(values.get(transcatAttrKey));
-        eventLoca(MainApplication.getAppContext().getString(R.string.event_confirm_payment),
-                values, amtPayment);
-        getLocaEngine().incrementProfileAttribute(transcatAttrKey, amtPayment, Localytics.ProfileScope.APPLICATION);
-    }
-
     public static void checkoutEventAppsflyer(ProductCartPass param) {
         Map<String, Object> values = new HashMap<>();
         values.put(AFInAppEventParameterName.CONTENT_ID, param.getProductId());
