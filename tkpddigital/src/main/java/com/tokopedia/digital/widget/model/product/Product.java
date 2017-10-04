@@ -80,4 +80,9 @@ public class Product implements Parcelable {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return attributes.getDesc();
+    }
 }
