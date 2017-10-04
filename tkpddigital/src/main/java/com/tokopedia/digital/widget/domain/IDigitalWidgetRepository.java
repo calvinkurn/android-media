@@ -1,10 +1,10 @@
 package com.tokopedia.digital.widget.domain;
 
-import com.tokopedia.core.database.model.category.CategoryData;
-import com.tokopedia.core.database.recharge.operator.Operator;
-import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.core.database.recharge.status.Status;
+import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
+import com.tokopedia.digital.widget.data.entity.lastorder.LastOrderEntity;
+import com.tokopedia.digital.widget.data.entity.operator.OperatorEntity;
+import com.tokopedia.digital.widget.data.entity.product.ProductEntity;
+import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -17,18 +17,19 @@ import rx.Observable;
 
 public interface IDigitalWidgetRepository {
 
-    Observable<CategoryData> getObservableCategoryData();
+    Observable<List<CategoryEntity>> getObservableCategoryData();
 
-    Observable<List<Product>> getObservableProducts();
+    Observable<List<ProductEntity>> getObservableProducts();
 
-    Observable<List<Operator>> getObservableOperators();
+    Observable<List<OperatorEntity>> getObservableOperators();
 
-    Observable<Status> getObservableStatus();
+    Observable<StatusEntity> getObservableStatus();
 
     Observable<List<String>> getObservableRecentData(int categoryId);
 
     Observable<Boolean> storeObservableRecentDataNetwork(Map<String, String> params);
 
-    Observable<LastOrder> getObservableLastOrderNetwork(Map<String, String> params);
+    Observable<LastOrderEntity> getObservableLastOrderNetwork(Map<String, String> params);
+
 
 }
