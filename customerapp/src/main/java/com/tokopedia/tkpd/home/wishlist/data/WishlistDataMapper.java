@@ -109,6 +109,7 @@ public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWis
                 LabelWishlistDomain labelWishlistDomain = new LabelWishlistDomain();
                 labelWishlistDomain.setTitle(labelResponse.getTitle());
                 labelWishlistDomain.setColor(labelResponse.getColor());
+                labelWishlistDomains.add(labelWishlistDomain);
             }
         }
         return labelWishlistDomains;
