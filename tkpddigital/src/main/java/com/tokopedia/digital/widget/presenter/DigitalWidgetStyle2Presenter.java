@@ -2,11 +2,11 @@ package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.database.model.RechargeOperatorModel;
-import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle2View;
+import com.tokopedia.digital.widget.model.operator.Operator;
+import com.tokopedia.digital.widget.model.product.Product;
 
 import java.util.List;
 
@@ -87,8 +87,8 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
         widgetInteractor.getOperatorById(getOperatorModelSubscriber(), operatorId);
     }
 
-    private Subscriber<RechargeOperatorModel> getOperatorModelSubscriber() {
-        return new Subscriber<RechargeOperatorModel>() {
+    private Subscriber<Operator> getOperatorModelSubscriber() {
+        return new Subscriber<Operator>() {
             @Override
             public void onCompleted() {
 
@@ -100,7 +100,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
             }
 
             @Override
-            public void onNext(RechargeOperatorModel rechargeOperatorModel) {
+            public void onNext(Operator rechargeOperatorModel) {
                 view.renderOperator(rechargeOperatorModel);
             }
         };
@@ -140,8 +140,8 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
         widgetInteractor.getOperatorsFromCategory(getOperatorByCategorySubscriber(), categoryId);
     }
 
-    private Subscriber<List<RechargeOperatorModel>> getOperatorByCategorySubscriber() {
-        return new Subscriber<List<RechargeOperatorModel>>() {
+    private Subscriber<List<Operator>> getOperatorByCategorySubscriber() {
+        return new Subscriber<List<Operator>>() {
             @Override
             public void onCompleted() {
 
@@ -153,7 +153,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
             }
 
             @Override
-            public void onNext(List<RechargeOperatorModel> rechargeOperatorModels) {
+            public void onNext(List<Operator> rechargeOperatorModels) {
                 if (rechargeOperatorModels.size() > 0)
                     view.renderOperators(rechargeOperatorModels);
                 else

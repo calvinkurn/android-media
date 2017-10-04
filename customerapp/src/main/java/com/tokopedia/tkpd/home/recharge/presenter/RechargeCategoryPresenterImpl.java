@@ -7,24 +7,23 @@ import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.model.category.CategoryData;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
+import com.tokopedia.digital.widget.model.category.Category;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.status.Status;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
-import com.tokopedia.tkpd.home.recharge.util.CategoryComparator;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 
-import java.util.Collections;
+import java.util.List;
 
 import rx.Subscriber;
 
 /**
  * @author kulomady 05 on 7/13/2016.
- * Modify by Nabilla Sabbaha on 8/16/2017
+ *         Modify by Nabilla Sabbaha on 8/16/2017
  */
 public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter {
 
@@ -33,7 +32,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     private Activity activity;
     private RechargeCategoryView view;
     private RechargeNetworkInteractor rechargeNetworkInteractor;
-    private CategoryData categoryData;
+    private List<Category> categoryList;
     private final LocalCacheHandler cacheHandler;
 
     public RechargeCategoryPresenterImpl(Activity activity, RechargeCategoryView view,
@@ -102,7 +101,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
                     if (sessionHandler.isV4Login(activity)) {
                         fetchRecentNumberList();
                     }
-                    if (status.getData().getAttributes().getIsMaintenance() || !isVersionMatch(status)) {
+                    if (status.getAttributes().isMaintenance() || !isVersionMatch(status)) {
                         view.failedRenderDataRechargeCategory();
                     } else {
                         rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber());
@@ -112,8 +111,8 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
         };
     }
 
-    private Subscriber<CategoryData> getCategoryDataSubscriber() {
-        return new Subscriber<CategoryData>() {
+    private Subscriber<List<Category>> getCategoryDataSubscriber() {
+        return new Subscriber<List<Category>>() {
             @Override
             public void onCompleted() {
 
@@ -125,8 +124,8 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
             }
 
             @Override
-            public void onNext(CategoryData data) {
-                categoryData = data;
+            public void onNext(List<Category> data) {
+                categoryList = data;
                 finishPrepareRechargeModule();
             }
         };
@@ -159,7 +158,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     private boolean isVersionMatch(Status status) {
         try {
             int minApiSupport = Integer.parseInt(
-                    status.getData().getAttributes().getVersion().getMinimumAndroidBuild()
+                    status.getAttributes().getVersion().getMinimumAndroidBuild()
             );
             Log.d(TAG, "version code : " + getVersionCode());
             return getVersionCode() >= minApiSupport;
@@ -171,9 +170,9 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
     private void finishPrepareRechargeModule() {
         if (activity != null && view != null) {
-            if (categoryData != null) {
-                Collections.sort(categoryData.getData(), new CategoryComparator());
-                view.renderDataRechargeCategory(categoryData);
+            if (categoryList != null) {
+//                Collections.sort(categoryList, new CategoryComparator());
+                view.renderDataRechargeCategory(categoryList);
             } else {
                 view.failedRenderDataRechargeCategory();
             }
