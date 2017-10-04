@@ -70,32 +70,9 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
         );
     }
 
-    protected RevieweeBadgeSellerViewModel convertToRevieweeBadgeSellerViewModel
-            (ShopReputationDomain shopReputationDomain) {
-        return new RevieweeBadgeSellerViewModel(
-                shopReputationDomain.getTooltip(),
-                shopReputationDomain.getReputationScore(),
-                shopReputationDomain.getScore(),
-                shopReputationDomain.getMinBadgeScore(),
-                shopReputationDomain.getReputationBadgeUrl(),
-                convertToReputationBadgeViewModel(shopReputationDomain.getReputationBadge()),
-                revieweeBadgeSeller.getIsFavorited());
-    }
-
     private ReputationBadgeViewModel convertToReputationBadgeViewModel(ReputationBadgeDomain reputationBadge) {
         return new ReputationBadgeViewModel(reputationBadge.getLevel(),
                 reputationBadge.getSet());
-    }
-
-    protected RevieweeBadgeCustomerViewModel convertToRevieweeBadgeCustomerViewModel
-            (UserReputationDomain userReputationDomain) {
-        return new RevieweeBadgeCustomerViewModel(
-                userReputationDomain.getPositive(),
-                userReputationDomain.getNeutral(),
-                userReputationDomain.getNegative(),
-                userReputationDomain.getPositivePercentage(),
-                userReputationDomain.getNoReputation()
-        );
     }
 
     protected List<Visitable> mappingToListItemViewModel(ReviewDomain
