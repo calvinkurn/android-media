@@ -57,7 +57,6 @@ public class GetInboxReputationDetailUseCase extends UseCase<InboxReputationDeta
     }
 
 
-
     private Func1<InboxReputationDetailDomain, Observable<InboxReputationDetailDomain>>
     checkShopFavorited(final RequestParams requestParams) {
         return new Func1<InboxReputationDetailDomain, Observable<InboxReputationDetailDomain>>() {
@@ -120,7 +119,8 @@ public class GetInboxReputationDetailUseCase extends UseCase<InboxReputationDeta
                                         (GetLikeDislikeReviewDomain getLikeDislikeReviewDomain) {
                                     int i = 0;
                                     int j = 0;
-                                    while (i < domain.getReviewDomain().getData().size()) {
+                                    while (i < domain.getReviewDomain().getData().size()
+                                            && j < getLikeDislikeReviewDomain.getList().size()) {
                                         ReviewItemDomain reviewItemDomain = domain.getReviewDomain()
                                                 .getData().get(i);
                                         LikeDislikeListDomain likeDislikeListDomain =
