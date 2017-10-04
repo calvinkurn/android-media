@@ -1,4 +1,4 @@
-package com.tokopedia.seller.myproduct;
+package com.tokopedia.seller.product.manage.view.fragment;
 
 import android.Manifest;
 import android.app.ActivityManager;
@@ -20,6 +20,7 @@ import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;

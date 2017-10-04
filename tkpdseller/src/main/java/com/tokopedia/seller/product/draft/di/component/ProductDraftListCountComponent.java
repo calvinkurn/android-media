@@ -1,9 +1,8 @@
 package com.tokopedia.seller.product.draft.di.component;
 
-import com.tokopedia.seller.myproduct.ManageProductSeller;
+import com.tokopedia.seller.product.manage.view.fragment.ManageProductSeller;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListCountModule;
-import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.di.scope.ProductAddScope;
 
 import dagger.Component;

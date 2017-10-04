@@ -48,7 +48,7 @@
             android:theme="@style/ShopAppTheme" />
 
         <activity
-            android:name=".myproduct.ManageProductSeller"
+            android:name=".product.manage.view.fragment.ManageProductSeller"
             android:label="@string/title_activity_manage_product"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
