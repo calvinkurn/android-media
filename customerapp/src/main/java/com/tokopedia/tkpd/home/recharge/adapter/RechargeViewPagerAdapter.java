@@ -7,8 +7,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.customView.WrapContentViewPager;
-import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.digital.widget.fragment.WidgetFactory;
+import com.tokopedia.digital.widget.model.category.Category;
 
 import java.util.List;
 

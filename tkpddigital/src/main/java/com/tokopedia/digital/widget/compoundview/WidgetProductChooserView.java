@@ -11,12 +11,12 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.widget.adapter.WidgetNominalAdapter;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.product.Product;
 
 import java.util.List;
 
@@ -142,9 +142,9 @@ public class WidgetProductChooserView extends LinearLayout {
     private void setSpnNominalSelectionBasedLastOrder(List<Product> productList, LastOrder lastOrder,
                                                       String lastProductSelected) {
         if (SessionHandler.isV4Login(getContext())
-                && lastOrder != null && lastOrder.getData() != null
-                && lastOrder.getData().getAttributes() != null) {
-            int lastProductId = lastOrder.getData().getAttributes().getProduct_id();
+                && lastOrder != null && lastOrder != null
+                && lastOrder.getAttributes() != null) {
+            int lastProductId = lastOrder.getAttributes().getProductId();
             for (int i = 0; i < productList.size(); i++) {
                 if (productList.get(i).getId() == (lastProductId)) {
                     spinnerNominal.setSelection(i);
