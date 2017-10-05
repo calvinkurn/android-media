@@ -15,7 +15,7 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 
 public class ProductManageSortViewHolder extends BaseViewHolder<ProductManageSortModel> {
 
-    public interface ListenerCheckedSort{
+    public interface ListenerCheckedSort {
         boolean isItemChecked(@SortProductOption String productSortId);
     }
 
@@ -25,8 +25,8 @@ public class ProductManageSortViewHolder extends BaseViewHolder<ProductManageSor
 
     public ProductManageSortViewHolder(View layoutView) {
         super(layoutView);
-        titleSort = (TextView) layoutView.findViewById(R.id.title_sort);
-        imageCheckList = (ImageView) layoutView.findViewById(R.id.image_checklist);
+        titleSort = (TextView) layoutView.findViewById(R.id.text_view_title);
+        imageCheckList = (ImageView) layoutView.findViewById(R.id.image_view_check);
     }
 
     public void setListenerCheckedSort(ListenerCheckedSort listenerCheckedSort) {
@@ -36,15 +36,15 @@ public class ProductManageSortViewHolder extends BaseViewHolder<ProductManageSor
     @Override
     public void bindObject(ProductManageSortModel productManageSortModel) {
         boolean isItemChecked = false;
-        if(listenerCheckedSort != null){
+        if (listenerCheckedSort != null) {
             isItemChecked = listenerCheckedSort.isItemChecked(productManageSortModel.getId());
         }
 
         titleSort.setText(productManageSortModel.getTitleSort());
-        if(isItemChecked){
+        if (isItemChecked) {
             imageCheckList.setVisibility(View.VISIBLE);
-        }else{
-            imageCheckList.setVisibility(View.GONE);
+        } else {
+            imageCheckList.setVisibility(View.INVISIBLE);
         }
     }
 }

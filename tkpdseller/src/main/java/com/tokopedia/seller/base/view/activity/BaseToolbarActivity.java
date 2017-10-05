@@ -41,8 +41,11 @@ abstract class BaseToolbarActivity extends BaseActivity {
         }
         setupLayout(savedInstanceState);
         setupFragment(savedInstanceState);
-        if(isToolbarWhite()){
+        if (isToolbarWhite()) {
             setToolbarColorWhite();
+        }
+        if (getSupportActionBar() != null && isShowCloseButton()) {
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close));
         }
     }
 
@@ -75,6 +78,10 @@ abstract class BaseToolbarActivity extends BaseActivity {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
+    }
+
+    protected boolean isShowCloseButton() {
+        return false;
     }
 
     @CallSuper

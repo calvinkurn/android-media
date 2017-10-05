@@ -147,7 +147,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 mode.setTitle(String.valueOf(((ProductManageListAdapter) adapter).getTotalChecked()));
-                ProductManageFragment.this.actionMode = mode;
+                actionMode = mode;
                 getActivity().getMenuInflater().inflate(R.menu.menu_product_manage_action_mode, menu);
                 setAdapterActionMode(true);
                 return true;
@@ -171,6 +171,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             public void onDestroyActionMode(ActionMode mode) {
                 ((ProductManageListAdapter) adapter).resetCheckedItemSet();
                 setAdapterActionMode(false);
+                actionMode = null;
             }
         };
     }
@@ -246,7 +247,16 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onItemClicked(ProductManageViewModel productManageViewModel) {
-        ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productManageViewModel.getProductUrl());
+        if (actionMode == null) {
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productManageViewModel.getProductUrl());
+        }
+    }
+
+    @Override
+    public void onItemChecked(ProductManageViewModel productManageViewModel, boolean checked) {
+        if (actionMode != null) {
+            actionMode.setTitle(String.valueOf(((ProductManageListAdapter) adapter).getTotalChecked()));
+        }
     }
 
     @Override

@@ -32,7 +32,7 @@ public class ProductManageSortFragment extends BaseListFragment<ProductManageSor
 
     String selectedSortProduct = SortProductOption.POSITION;
 
-    public static ProductManageSortFragment createInstance(String selectedSortProduct){
+    public static ProductManageSortFragment createInstance(String selectedSortProduct) {
         ProductManageSortFragment productManageSortFragment = new ProductManageSortFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ProductManageConstant.EXTRA_SORT_SELECTED, selectedSortProduct);
@@ -49,6 +49,11 @@ public class ProductManageSortFragment extends BaseListFragment<ProductManageSor
                 .build()
                 .inject(this);
         productManageSortPresenter.attachView(this);
+    }
+
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_product_manage_sort;
     }
 
     @Override
@@ -76,7 +81,7 @@ public class ProductManageSortFragment extends BaseListFragment<ProductManageSor
 
     @Override
     public void onItemClicked(ProductManageSortModel productManageSortModel) {
-        ((ProductManageSortAdapter)adapter).setSortProductOption(productManageSortModel.getId());
+        ((ProductManageSortAdapter) adapter).setSortProductOption(productManageSortModel.getId());
         adapter.notifyDataSetChanged();
         Intent intent = new Intent();
         intent.putExtra(ProductManageConstant.EXTRA_SORT_SELECTED, productManageSortModel);

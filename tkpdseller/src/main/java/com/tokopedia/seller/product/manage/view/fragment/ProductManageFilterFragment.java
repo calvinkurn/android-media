@@ -28,7 +28,6 @@ import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivit
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
-import com.tokopedia.seller.product.manage.constant.EtalaseProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
@@ -140,7 +139,7 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_filter_manage_product, menu);
+        inflater.inflate(R.menu.menu_manage_product_filter, menu);
         for(int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());

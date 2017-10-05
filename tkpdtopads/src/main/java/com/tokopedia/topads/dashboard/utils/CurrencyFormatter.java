@@ -1,4 +1,4 @@
-package com.tokopedia.seller.myproduct.utils;
+package com.tokopedia.topads.dashboard.utils;
 
 import android.support.v4.util.Pair;
 

@@ -9,9 +9,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
+import com.tokopedia.seller.product.edit.constant.FreeReturnTypeDef;
+import com.tokopedia.seller.product.manage.constant.ProductManagePreOrderDef;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 
 /**
@@ -31,7 +31,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
     private ImageView featuredImageView;
     private TextView cashbackTextView;
     private TextView wholesaleTextView;
-    private TextView poTextView;
+    private TextView preOrderTextView;
     private ImageView freeReturnImageView;
     private ImageButton optionImageButton;
     private CheckBox checkBoxProduct;
@@ -47,7 +47,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         featuredImageView = (ImageView) layoutView.findViewById(R.id.image_view_featured);
         cashbackTextView = (TextView) layoutView.findViewById(R.id.text_view_cashback);
         wholesaleTextView = (TextView) layoutView.findViewById(R.id.text_view_wholesale);
-        poTextView = (TextView) layoutView.findViewById(R.id.text_view_po);
+        preOrderTextView = (TextView) layoutView.findViewById(R.id.text_view_pre_order);
         freeReturnImageView = (ImageView) layoutView.findViewById(R.id.image_view_free_return);
         checkBoxProduct = (CheckBox) layoutView.findViewById(R.id.check_box_product);
         optionImageButton = (ImageButton) layoutView.findViewById(R.id.image_button_option);
@@ -80,9 +80,9 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
     }
 
     public void setBackground(boolean isChecked) {
-        if(isChecked){
+        if (isChecked) {
             itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
-        }else{
+        } else {
             itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.white));
         }
     }
@@ -95,6 +95,13 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
                 productManageViewModel.getImageUrl()
         );
         titleTextView.setText(productManageViewModel.getProductName());
+
+        priceTextView.setText(priceTextView.getContext().getString(
+                R.string.price_format_text, productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductPrice()));
+        preOrderTextView.setVisibility(
+                productManageViewModel.getProductPreorder() == ProductManagePreOrderDef.PRE_ORDER ? View.VISIBLE : View.GONE);
+        freeReturnImageView.setVisibility(
+                productManageViewModel.getProductReturnable() == FreeReturnTypeDef.TYPE_ACTIVE ? View.VISIBLE : View.GONE);
         optionImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,20 +113,22 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
     }
 
     public void bindFeaturedProduct(boolean isFeaturedProduct) {
-        if(isFeaturedProduct){
+        if (isFeaturedProduct) {
             featuredImageView.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             featuredImageView.setVisibility(View.GONE);
         }
     }
 
     public void bindActionMode(boolean isActionMode) {
-        if(isActionMode){
+        if (isActionMode) {
             checkBoxProduct.setEnabled(true);
             checkBoxProduct.setVisibility(View.VISIBLE);
-        }else{
+            optionImageButton.setVisibility(View.GONE);
+        } else {
             checkBoxProduct.setEnabled(false);
             checkBoxProduct.setVisibility(View.GONE);
+            optionImageButton.setVisibility(View.VISIBLE);
         }
     }
 
