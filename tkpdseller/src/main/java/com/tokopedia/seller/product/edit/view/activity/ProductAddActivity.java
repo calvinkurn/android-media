@@ -448,6 +448,11 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     }
 
     @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
     public String getScreenName() {
         return AppScreen.SCREEN_ADD_PRODUCT;
     }

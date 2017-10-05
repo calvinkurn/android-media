@@ -1,12 +1,9 @@
 package com.tokopedia.seller.product.variant.view.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,11 +42,8 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         productVariantByCatModel = getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
-
         super.onCreate(savedInstanceState);
-
         toolbar.setTitle(getString(R.string.product_variant_option_x, productVariantByCatModel.getName()) );
-        toolbar.setNavigationIcon(R.drawable.ic_close_24dp);
         updateBottomSheetInfo();
     }
 
@@ -218,7 +212,12 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    protected boolean isShowCloseButton() {
+        return true;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 }
