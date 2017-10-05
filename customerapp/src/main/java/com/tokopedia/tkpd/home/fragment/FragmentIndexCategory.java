@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -166,6 +167,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private SnackbarRetry messageSnackbar;
     private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
     private BottomSheetView bottomSheetDialogTokoCash;
+    private Trace trace;
 
     private DrawerTokoCash tokoCashData;
 
@@ -257,6 +259,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        trace = TrackingUtils.startTrace("beranda_trace");
         super.onCreate(savedInstanceState);
     }
 
@@ -928,6 +931,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         category.unSubscribe();
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
@@ -1166,5 +1170,12 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public String getUserId() {
         SessionHandler sessionHandler = new SessionHandler(getActivity());
         return sessionHandler.getLoginID();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if(trace!=null)
+            trace.stop();
     }
 }
