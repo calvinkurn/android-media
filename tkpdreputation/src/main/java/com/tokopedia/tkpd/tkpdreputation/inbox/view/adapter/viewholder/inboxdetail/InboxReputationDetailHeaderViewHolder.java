@@ -39,6 +39,7 @@ public class InboxReputationDetailHeaderViewHolder extends
     View deadlineLayout;
     TextView deadline;
     View lockedLayout;
+    TextView lockedText;
     TextView promptMessage;
     View favoriteButton;
     TextView favoriteText;
@@ -64,6 +65,7 @@ public class InboxReputationDetailHeaderViewHolder extends
         deadline = (TextView) itemView.findViewById(R.id.deadline_text);
         deadlineLayout = itemView.findViewById(R.id.deadline);
         lockedLayout = itemView.findViewById(R.id.locked);
+        lockedText = (TextView) itemView.findViewById(R.id.locked_text);
         promptMessage = (TextView) itemView.findViewById(R.id.prompt_text);
         favoriteButton = itemView.findViewById(R.id.favorite_button);
         favoriteText = (TextView) itemView.findViewById(R.id.favorite_text);
@@ -108,16 +110,30 @@ public class InboxReputationDetailHeaderViewHolder extends
             deadlineLayout.setVisibility(View.GONE);
         }
 
-        if (element.getReputationDataViewModel().isInserted()) {
+        if (element.getReputationDataViewModel().isAutoScored()) {
+            lockedLayout.setVisibility(View.VISIBLE);
+            lockedText.setText(R.string.review_auto_scored);
+            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            smiley.setLayoutManager(linearLayoutManager);
+            setSmiley(element, adapter);
+        } else if (element.getReputationDataViewModel().isLocked()
+                && element.getReputationDataViewModel().isInserted()) {
+            lockedLayout.setVisibility(View.VISIBLE);
+            lockedText.setText(R.string.review_is_saved);
+            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            smiley.setLayoutManager(linearLayoutManager);
+            adapter.showLockedSmiley();
+        } else if (element.getReputationDataViewModel().isLocked()) {
+            lockedLayout.setVisibility(View.VISIBLE);
+            lockedText.setText(R.string.locked_reputation);
+            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
+            smiley.setLayoutManager(linearLayoutManager);
+            adapter.showLockedSmiley();
+        } else if (element.getReputationDataViewModel().isInserted()) {
             lockedLayout.setVisibility(View.GONE);
             promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
             setSmiley(element, adapter);
-        } else if (element.getReputationDataViewModel().isLocked()) {
-            lockedLayout.setVisibility(View.VISIBLE);
-            promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
-            smiley.setLayoutManager(linearLayoutManager);
-            adapter.showLockedSmiley();
         } else {
             smiley.setLayoutManager(gridLayout);
             adapter.showAllSmiley();
@@ -204,12 +220,12 @@ public class InboxReputationDetailHeaderViewHolder extends
     private String getOpponentSmileyPromptText(InboxReputationDetailHeaderViewModel element) {
         if (element.getReputationDataViewModel().getRevieweeScore() == NO_REPUTATION)
             return element.getRole() == InboxReputationItemViewModel
-                    .ROLE_BUYER ? MainApplication.getAppContext().getString(R.string
+                    .ROLE_SELLER ? MainApplication.getAppContext().getString(R.string
                     .seller_has_not_review) : MainApplication.getAppContext().getString(R.string
                     .buyer_has_not_review);
         else
             return element.getRole() == InboxReputationItemViewModel
-                    .ROLE_BUYER ? MainApplication.getAppContext().getString(R.string
+                    .ROLE_SELLER ? MainApplication.getAppContext().getString(R.string
                     .score_from_seller) : MainApplication.getAppContext().getString(R.string
                     .score_from_buyer);
     }

@@ -103,5 +103,7 @@
     <string name="is_send">sudah dikirim</string>
     <string name="given_smiley">Nilai Reputasi telah diberikan</string>
     <string name="reply_response_send">Balasan ulasan telah diberikan</string>
+    <string name="review_auto_scored">Waktu penilaian telah habis, nilai terisi otomatis</string>
+    <string name="review_is_saved">Penilaian sudah disimpan</string>
 
 </resources>
