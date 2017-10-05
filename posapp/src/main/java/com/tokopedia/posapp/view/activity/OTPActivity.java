@@ -38,6 +38,8 @@ public class OTPActivity extends BasePresenterActivity
 
     @DeepLink(Constants.Applinks.OTP)
     private static Intent newInstance(Context context, Bundle extras) {
+        Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
+
         Intent intent = new Intent(context, OTPActivity.class);
         intent.putExtras(extras);
 

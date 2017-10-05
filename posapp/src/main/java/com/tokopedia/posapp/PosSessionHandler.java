@@ -6,6 +6,11 @@ import android.content.SharedPreferences.Editor;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.posapp.database.manager.BankDbManager;
+import com.tokopedia.posapp.database.manager.CartDbManager;
+import com.tokopedia.posapp.database.manager.EtalaseDbManager;
+import com.tokopedia.posapp.database.manager.ProductDbManager;
+import com.tokopedia.posapp.database.manager.base.PosDbOperation;
 import com.tokopedia.posapp.view.fragment.DialogPasswordFragment;
 
 /**
