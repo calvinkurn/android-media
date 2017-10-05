@@ -14,8 +14,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
@@ -51,6 +53,11 @@ import javax.inject.Inject;
 public class ProductManageFragment extends BaseSearchListFragment<ProductManagePresenter, ProductManageViewModel>
         implements ProductManageView, ProductManageListAdapter.ClickOptionCallback, BaseMultipleCheckListAdapter.CheckedCallback<ProductManageViewModel> {
 
+    private static final int CASHBACK_OPTION_3 = 1;
+    private static final int CASHBACK_OPTION_4 = 2;
+    private static final int CASHBACK_OPTION_5 = 3;
+    private static final int WITHOUT_CASHBACK_OPTION = 4;
+
     @Inject
     ProductManagePresenter productManagePresenter;
     private BottomActionView bottomActionView;
@@ -58,9 +65,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     private boolean hasNextPage;
     private String keywordFilter;
-    private
-    @SortProductOption
-    String sortProductOption;
+    private @SortProductOption String sortProductOption;
     private ProductManageFilterModel productManageFilterModel;
     private ActionMode actionMode;
 
@@ -259,12 +264,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onSuccessEditPrice() {
-
+        resetPageAndSearch();
     }
 
     @Override
     public void onSuccessDeleteProduct() {
-
+        resetPageAndSearch();
     }
 
     @Override
@@ -322,7 +327,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onSuccessSetCashback() {
-
+        resetPageAndSearch();
     }
 
     private void showActionProductDialog(ProductManageViewModel productManageViewModel) {
@@ -352,20 +357,73 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 } else if (itemId == R.id.delete_product_menu) {
                     showDialogActionDeleteProduct(productManageViewModel.getId());
                 } else if (itemId == R.id.change_price_product_menu) {
-                    showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPrice(), productManageViewModel.getProductCurrencyId());
+                    showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencyId());
                 } else if (itemId == R.id.share_product_menu) {
                     goToShareProduct(productManageViewModel);
+                } else if (itemId == R.id.set_cashback_product_menu){
+                    showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencySymbol());
+                }
+            }
+        };
+    }
+
+    private void showOptionCashback(String productId, String productPrice, String productPriceSymbol) {
+        int productPricePlain = Integer.parseInt(productPrice);
+
+        BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
+                .setMode(BottomSheetBuilder.MODE_LIST)
+                .addTitleItem(getString(R.string.product_manage_title_set_cashback))
+                .addItem(CASHBACK_OPTION_3, getString(R.string.product_manage_label_option_cashback_3, productPriceSymbol, (int) ((3/100.0f) * productPricePlain)), null)
+                .addItem(CASHBACK_OPTION_4, getString(R.string.product_manage_label_option_cashback_4, productPriceSymbol, (int) ((4/100.0f) * productPricePlain)), null)
+                .addItem(CASHBACK_OPTION_5, getString(R.string.product_manage_label_option_cashback_5, productPriceSymbol, (int) ((5/100.0f) * productPricePlain)), null)
+                .addItem(WITHOUT_CASHBACK_OPTION, getString(R.string.product_manage_label_option_without_cashback), null);
+
+        BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
+                .setItemClickListener(onOptionCashbackClicked(productId))
+                .createDialog();
+        bottomSheetDialog.show();
+    }
+
+    private BottomSheetItemClickListener onOptionCashbackClicked(final String productId) {
+        return new BottomSheetItemClickListener() {
+            @Override
+            public void onBottomSheetItemClick(MenuItem item) {
+                int itemId = item.getItemId();
+                switch (itemId){
+                    case CASHBACK_OPTION_3:
+                        productManagePresenter.setCashback(productId, "3");
+                        break;
+                    case CASHBACK_OPTION_4:
+                        productManagePresenter.setCashback(productId, "4");
+                        break;
+                    case CASHBACK_OPTION_5:
+                        productManagePresenter.setCashback(productId, "5");
+                        break;
+                    case WITHOUT_CASHBACK_OPTION:
+                        productManagePresenter.setCashback(productId, "0");
+                        break;
+                    default:
+                        break;
                 }
             }
         };
     }
 
     private void goToShareProduct(ProductManageViewModel productManageViewModel) {
-
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setName(productManageViewModel.getProductName())
+                .setDescription(productManageViewModel.getProductName())
+                .setImgUri(productManageViewModel.getImageUrl())
+                .setPrice(productManageViewModel.getProductPrice())
+                .setUri(productManageViewModel.getProductUrl())
+                .setType(ShareData.PRODUCT_TYPE)
+                .build();
+        Intent intent = ShareActivity.createIntent(getActivity(), shareData);
+        startActivity(intent);
     }
 
     private void showDialogChangeProductPrice(final String productId, String productPrice, String productCurrencyId) {
-        ProductManageEditPriceDialogFragment productManageEditPriceDialogFragment = ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId);
+        ProductManageEditPriceDialogFragment productManageEditPriceDialogFragment = ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId, false);
         productManageEditPriceDialogFragment.setListenerDialogEditPrice(new ProductManageEditPriceDialogFragment.ListenerDialogEditPrice() {
             @Override
             public void onSubmitEditPrice(String productId, String price, String priceCurrency) {

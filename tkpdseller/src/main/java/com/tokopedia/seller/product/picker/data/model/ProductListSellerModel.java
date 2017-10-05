@@ -373,6 +373,8 @@ public class ProductListSellerModel {
         @SerializedName("product_rating_desc")
         @Expose
         private String productRatingDesc;
+        private int productCashback;
+        private int productCashbackAmount;
 
         /**
          *
@@ -806,6 +808,21 @@ public class ProductListSellerModel {
             this.productRatingDesc = productRatingDesc;
         }
 
+        public void setProductCashback(int productCashback) {
+            this.productCashback = productCashback;
+        }
+
+        public void setProductCashbackAmount(int productCashbackAmount) {
+            this.productCashbackAmount = productCashbackAmount;
+        }
+
+        public int getProductCashback() {
+            return productCashback;
+        }
+
+        public int getProductCashbackAmount() {
+            return productCashbackAmount;
+        }
     }
 
     public static class Paging {

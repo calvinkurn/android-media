@@ -51,6 +51,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
     @Override
     public void setCashback(String productId, String cashback) {
+        getView().showLoadingProgress();
         sellerModuleRouter.setCashBack(productId, cashback).subscribe(getSubscriberSetCashback());
     }
 
@@ -205,12 +206,14 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
             @Override
             public void onError(Throwable e) {
                 if(isViewAttached()){
+                    getView().hideLoadingProgress();
                     getView().onErrorSetCashback();
                 }
             }
 
             @Override
             public void onNext(Boolean isSuccess) {
+                getView().hideLoadingProgress();
                 if(isSuccess){
                     getView().onSuccessSetCashback();
                 }else{

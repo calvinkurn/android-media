@@ -584,4 +584,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<Boolean> setCashBack(String productId, String cashback) {
         return Observable.just(false);
     }
+
+    @Override
+    public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
+        List<DataCashbackModel> dataCashbackModels = new ArrayList<>();
+        return Observable.just(dataCashbackModels);
+    }
 }

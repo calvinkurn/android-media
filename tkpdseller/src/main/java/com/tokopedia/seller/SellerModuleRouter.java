@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 
@@ -26,4 +28,5 @@ public interface SellerModuleRouter {
     void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList);
     void goToGMSubscribe(Activity activity);
     Observable<Boolean> setCashBack(String productId, String cashback);
+    Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds);
 }
