@@ -6,6 +6,7 @@ import android.content.Context;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
@@ -63,6 +64,8 @@ public interface RideHomeMapContract {
         void setDestinationAndProcessList(PlacePassViewModel address);
 
         PlacePassViewModel getSource();
+
+        void renderNearbyRides(NearbyRides nearbyRides);
     }
 
     interface Presenter extends CustomerPresenter<View> {

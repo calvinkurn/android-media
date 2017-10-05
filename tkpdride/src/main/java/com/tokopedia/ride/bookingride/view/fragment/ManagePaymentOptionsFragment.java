@@ -59,10 +59,6 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
         startActivity(EditDeleteCreditCardActivity.getCallingActivity(getActivity(),paymentMethodViewModel));
     }
 
-    public interface OnFragmentInteractionListener {
-        void openWebView(String url);
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

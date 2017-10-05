@@ -5,6 +5,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.ride.bookingride.di.scope.BookingRideScope;
 import com.tokopedia.ride.bookingride.domain.GetCurrentRideRequestUseCase;
 import com.tokopedia.ride.bookingride.domain.GetDistanceMatrixUseCase;
+import com.tokopedia.ride.bookingride.domain.GetNearbyCarsUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPriceEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
@@ -32,7 +33,6 @@ public class BookingRideModule {
                                                                      BookingRideRepository bookingRideRepository) {
         return new GetCurrentRideRequestUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
     }
-
 
 
     @Provides
@@ -70,16 +70,16 @@ public class BookingRideModule {
     @Provides
     @BookingRideScope
     GetProductAndEstimatedUseCase provideGetProductAndEstimatedUseCase(ThreadExecutor threadExecutor,
-                                                                    PostExecutionThread postExecutionThread,
-                                                                    BookingRideRepository bookingRideRepository) {
+                                                                       PostExecutionThread postExecutionThread,
+                                                                       BookingRideRepository bookingRideRepository) {
         return new GetProductAndEstimatedUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
     }
 
     @Provides
     @BookingRideScope
     GetPriceEstimateUseCase provideGetPriceEstimateUseCase(ThreadExecutor threadExecutor,
-                                                                 PostExecutionThread postExecutionThread,
-                                                                 BookingRideRepository bookingRideRepository) {
+                                                           PostExecutionThread postExecutionThread,
+                                                           BookingRideRepository bookingRideRepository) {
         return new GetPriceEstimateUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
     }
 
@@ -89,6 +89,14 @@ public class BookingRideModule {
                                                              PostExecutionThread postExecutionThread,
                                                              PlaceRepository placeRepository) {
         return new GetDistanceMatrixUseCase(threadExecutor, postExecutionThread, placeRepository);
+    }
+
+    @Provides
+    @BookingRideScope
+    GetNearbyCarsUseCase provideGetNearbyCarsUseCase(ThreadExecutor threadExecutor,
+                                                     PostExecutionThread postExecutionThread,
+                                                     BookingRideRepository bookingRideRepository) {
+        return new GetNearbyCarsUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
     }
 
 }

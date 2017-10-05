@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.PolyUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -46,6 +47,7 @@ import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.view.RideHomeMapContract;
 import com.tokopedia.ride.bookingride.view.RideHomeMapPresenter;
 import com.tokopedia.ride.bookingride.view.TouchableWrapperLayout;
@@ -55,6 +57,7 @@ import com.tokopedia.ride.common.animator.RouteMapAnimator;
 import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.common.ride.domain.model.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +123,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private GoogleMap googleMap;
     private OnFragmentInteractionListener interactionListener;
     private int toolBarHeightinPx;
+    private ArrayList<Marker> rideMarkerList = new ArrayList<>();
 
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
@@ -747,6 +751,42 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     @Override
     public PlacePassViewModel getSource() {
         return source;
+    }
+
+    @Override
+    public void renderNearbyRides(NearbyRides nearbyRides) {
+        if (getActivity() == null || googleMap == null || nearbyRides == null || isAlreadySelectDestination()) {
+            return;
+        }
+
+        //clear existing cars/bike
+        for (Marker marker : rideMarkerList) {
+            marker.remove();
+        }
+
+        //draw cars/bike
+        rideMarkerList.clear();
+        for (Location bike : nearbyRides.getBikes()) {
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(bike.getLatitude(), bike.getLongitude()))
+                    .icon(getCarMapIcon(R.drawable.moto_map_icon)));
+
+            rideMarkerList.add(marker);
+        }
+
+        for (Location car : nearbyRides.getCars()) {
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(car.getLatitude(), car.getLongitude()))
+                    .icon(getCarMapIcon(R.drawable.car_map_icon)));
+
+            rideMarkerList.add(marker);
+        }
+    }
+
+    private BitmapDescriptor getCarMapIcon(int resourceId) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), resourceId);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, getResources().getDimensionPixelSize(R.dimen.car_marker_width), getResources().getDimensionPixelSize(R.dimen.car_marker_height), false);
+        return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 
     public void setMarkerText(String timeEst) {

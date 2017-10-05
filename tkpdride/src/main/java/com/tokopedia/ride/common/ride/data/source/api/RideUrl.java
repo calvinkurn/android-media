@@ -29,4 +29,5 @@ public interface RideUrl {
     String CANCEL_REASONS = "/uber/cancel/reasons";
     String UPDATE_REQUEST = "/uber/request/update";
     String SEND_TIP = "/uber/tip/send";
+    String GET_NEARBY_CARS = "/uber/cars";
 }

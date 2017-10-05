@@ -1,8 +1,11 @@
 package com.tokopedia.ride.common.ride.data;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.bookingride.data.NearbyRidesDestinationMapper;
 import com.tokopedia.ride.bookingride.data.RideAddressCache;
 import com.tokopedia.ride.bookingride.data.RideAddressCacheImpl;
+import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
@@ -56,6 +59,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final PriceEstimateEntityMapper priceEstimateEntityMapper;
     private final RideHistoryWrapperMapper rideHistoryWrapperMapper;
     private final UpdateDestinationEntityMapper updateDestinationEntityMapper;
+    private final NearbyRidesDestinationMapper nearbyRidesDestinationMapper;
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory) {
         mBookingRideDataStoreFactory = bookingRideDataStoreFactory;
@@ -71,6 +75,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         priceEstimateEntityMapper = new PriceEstimateEntityMapper();
         rideHistoryWrapperMapper = new RideHistoryWrapperMapper();
         updateDestinationEntityMapper = new UpdateDestinationEntityMapper();
+        nearbyRidesDestinationMapper = new NearbyRidesDestinationMapper();
     }
 
     @Override
@@ -350,5 +355,12 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     @Override
     public Observable<String> sendTip(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore().sendTip(parameters);
+    }
+
+    @Override
+    public Observable<NearbyRides> getNearbyCars(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getNearbyCars(parameters)
+                .map(nearbyRidesDestinationMapper);
     }
 }
