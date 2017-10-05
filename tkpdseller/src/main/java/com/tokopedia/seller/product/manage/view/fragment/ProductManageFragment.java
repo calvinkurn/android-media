@@ -58,8 +58,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private static final int CASHBACK_OPTION_5 = 3;
     private static final int WITHOUT_CASHBACK_OPTION = 4;
 
-    private BottomActionView bottomActionView;
-
     @Inject
     ProductManagePresenter productManagePresenter;
     private BottomActionView bottomActionView;

@@ -41,4 +41,9 @@ public class ProductDuplicateActivity extends ProductDraftAddActivity {
         String productId = getIntent().getStringExtra(PRODUCT_ID);
         return ProductDuplicateFragment.createInstance(productId);
     }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
 }
