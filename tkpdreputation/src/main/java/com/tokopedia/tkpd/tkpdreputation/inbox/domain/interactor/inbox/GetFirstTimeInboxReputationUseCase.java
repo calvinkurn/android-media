@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudInboxReputationDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 
 import rx.Observable;
@@ -49,6 +50,7 @@ public class GetFirstTimeInboxReputationUseCase extends GetInboxReputationUseCas
         params.putString(PARAM_TIME_FILTER, DEFAULT_TIME_FILTER);
         params.putInt(PARAM_STATUS, getStatus(tab));
         params.putInt(PARAM_TAB, tab);
+        params.putBoolean(CloudInboxReputationDataSource.IS_SAVE_TO_CACHE, true);
         return params;
     }
 }

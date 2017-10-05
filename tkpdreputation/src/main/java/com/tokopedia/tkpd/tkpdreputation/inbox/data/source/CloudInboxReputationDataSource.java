@@ -20,6 +20,7 @@ import rx.functions.Action1;
  */
 
 public class CloudInboxReputationDataSource {
+    public static final String IS_SAVE_TO_CACHE = "IS_SAVE_TO_CACHE";
     private final InboxReputationMapper inboxReputationMapper;
     private final GlobalCacheManager globalCacheManager;
     private final ReputationService reputationService;
@@ -47,7 +48,8 @@ public class CloudInboxReputationDataSource {
         return new Action1<InboxReputationDomain>() {
             @Override
             public void call(InboxReputationDomain inboxReputationDomain) {
-                if (!inboxReputationDomain.getInboxReputation().isEmpty()) {
+                if (!inboxReputationDomain.getInboxReputation().isEmpty()
+                        && isRequestNotFiltered(requestParams)) {
                     globalCacheManager.setKey(GetFirstTimeInboxReputationUseCase.CACHE_REPUTATION +
                             requestParams.getParameters().get(GetInboxReputationUseCase.PARAM_TAB))
                             .setCacheDuration(GetFirstTimeInboxReputationUseCase.DURATION_CACHE)
@@ -58,5 +60,9 @@ public class CloudInboxReputationDataSource {
                 }
             }
         };
+    }
+
+    private boolean isRequestNotFiltered(RequestParams requestParams) {
+        return requestParams.getBoolean(IS_SAVE_TO_CACHE,false);
     }
 }

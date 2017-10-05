@@ -57,8 +57,6 @@ public interface InboxReputation {
         void getNextPage(int lastItemPosition, int visibleItem, String query,
                          String timeFilter, String statusFilter, int tab);
 
-        void refreshItem(String id, int tab);
-
         void getFilteredInboxReputation(String query, String timeFilter, String statusFilter, int tab);
     }
 }

@@ -348,6 +348,7 @@ public class InboxReputationDetailItemViewHolder extends
             seeReplyText.setText(MainApplication.getAppContext().getText(R.string.close_reply));
             replyArrow.setRotation(180);
             sellerReplyLayout.setVisibility(View.VISIBLE);
+            sellerReplyLayout.requestFocus();
         } else {
             seeReplyText.setText(MainApplication.getAppContext().getText(R.string.see_reply));
             replyArrow.setRotation(0);

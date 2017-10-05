@@ -69,11 +69,6 @@ public class InboxReputationPresenter
     }
 
     @Override
-    public void refreshItem(String id, int tab) {
-
-    }
-
-    @Override
     public void getFilteredInboxReputation(String query, String timeFilter, String statusFilter, int tab) {
         viewListener.showRefreshing();
         pagingHandler.resetPage();

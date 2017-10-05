@@ -79,7 +79,7 @@ public class GetInboxReputationUseCase extends UseCase<InboxReputationDomain> {
         params.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE);
         params.putInt(PARAM_PAGE, 1);
         params.putInt(PARAM_ROLE, getRole(tab));
-        params.putString(PARAM_TIME_FILTER,DEFAULT_TIME_FILTER);
+        params.putString(PARAM_TIME_FILTER, DEFAULT_TIME_FILTER);
         params.putInt(PARAM_STATUS, getStatus(tab));
         params.putInt(PARAM_TAB, tab);
         params.putString(PARAM_REPUTATION_ID, reputationId);
