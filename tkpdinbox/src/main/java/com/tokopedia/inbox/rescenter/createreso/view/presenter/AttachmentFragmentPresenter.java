@@ -160,7 +160,7 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
             return false;
         }
 
-        if (item.height < 300 || item.width < 300) {
+        if (item.isImage() && (item.height < 300 || item.width < 300)) {
             mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_min_size));
             return false;
         }
