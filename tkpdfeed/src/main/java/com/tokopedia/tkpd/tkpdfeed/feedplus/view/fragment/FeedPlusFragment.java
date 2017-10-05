@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -36,11 +37,13 @@ import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -60,7 +63,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
@@ -335,19 +337,29 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                      String imgUrl,
                                      String contentMessage) {
 
-        if (shareBottomDialog == null) {
-            shareBottomDialog = new ShareBottomDialog(
-                    FeedPlusFragment.this,
-                    callbackManager);
-        }
+        ShareData shareData = ShareData.Builder.aShareData()
+                               .setName(title)
+                                .setDescription(contentMessage)
+                                .setImgUri(imgUrl)
+                                .setUri(shareUrl)
+                                .setType(ShareData.FEED_TYPE)
+                                .build();
+               onProductShareClicked(shareData);
 
-        shareBottomDialog.setShareModel(
-                new ShareModel(shareUrl,
-                        title,
-                        imgUrl,
-                        contentMessage));
+//        if (shareBottomDialog == null) {
+//            shareBottomDialog = new ShareBottomDialog(
+//                    FeedPlusFragment.this,
+//                    callbackManager);
+//        }
+//
+//        shareBottomDialog.setShareModel(
+//                new ShareModel(shareUrl,
+//                        title,
+//                        imgUrl,
+//                        contentMessage));
+//
+//        shareBottomDialog.show();
 
-        shareBottomDialog.show();
     }
 
     private void goToProductDetail(String productId) {
@@ -843,5 +855,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
         startActivity(TopPicksWebView.newInstance(getActivity(), TkpdBaseURL.URL_TOPPICKS));
         UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOPPICKS_SEE_ALL);
     }
-
+    private void onProductShareClicked(@NonNull ShareData data) {
+                Intent intent = new Intent(getActivity(), ShareActivity.class);
+                intent.putExtra(ShareData.TAG, data);
+                startActivity(intent);
+            }
 }

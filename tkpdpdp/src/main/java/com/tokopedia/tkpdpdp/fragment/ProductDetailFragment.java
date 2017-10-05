@@ -752,6 +752,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         .setPrice(productData.getInfo().getProductPrice())
                         .setUri(productData.getInfo().getProductUrl())
                         .setType(ShareData.PRODUCT_TYPE)
+                        .setId(productData.getInfo().getProductId().toString())
                         .build();
                 onProductShareClicked(shareData);
             }

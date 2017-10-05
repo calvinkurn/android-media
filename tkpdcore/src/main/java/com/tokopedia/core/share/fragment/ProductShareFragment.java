@@ -386,7 +386,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void showDialogShareFb() {
+    public void showDialogShareFb(String shortUrl) {
         shareDialog = new ShareDialog(this);
         callbackManager = CallbackManager.Factory.create();
         shareDialog.registerCallback(callbackManager, new
@@ -411,14 +411,14 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                 });
 
         if (ShareDialog.canShow(ShareLinkContent.class)) {
-            if (shareData != null && !TextUtils.isEmpty(shareData.getUri())) {
+            if (shareData != null && !TextUtils.isEmpty(shortUrl)) {
                 ShareLinkContent.Builder linkBuilder = new ShareLinkContent.Builder()
-                        .setContentUrl(Uri.parse(shareData.getUri()));
+                        .setContentUrl(Uri.parse(shortUrl));
                 if (!TextUtils.isEmpty(shareData.getName())) {
                     linkBuilder.setContentTitle(shareData.getName());
                 }
-                if (!TextUtils.isEmpty(shareData.getTextContent())) {
-                    linkBuilder.setContentDescription(shareData.getTextContent());
+                if (!TextUtils.isEmpty(shareData.getTextContent(getActivity()))) {
+                    linkBuilder.setContentDescription(shareData.getTextContent(getActivity()));
                 }
                 if (!TextUtils.isEmpty(shareData.getDescription())) {
                     linkBuilder.setQuote(shareData.getDescription());

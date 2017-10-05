@@ -20,8 +20,9 @@ public class RemoteConfigFetcher {
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private Activity activity;
-    private static final String SHOW_HIDE_APP_SHARE_BUTTON_KEY = "mainapp_show_app_share_button";
-    private static final String APP_SHARE_DESCRIPTION_KEY = "app_share_description";
+    private static final String SHOW_HIDE_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
+    private static final String APP_SHARE_DESCRIPTION = "app_share_description";
+    private static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
 
 
     public RemoteConfigFetcher(Activity activity) {
@@ -52,8 +53,9 @@ public class RemoteConfigFetcher {
 
     private void saveFetchedDataToCache() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(activity, TkpdCache.FIREBASE_REMOTE_CONFIG);
-        localCacheHandler.putBoolean(TkpdCache.Key.SHOW_HIDE_APP_SHARE_BUTTON_KEY, firebaseRemoteConfig.getBoolean(SHOW_HIDE_APP_SHARE_BUTTON_KEY));
-        localCacheHandler.putString(TkpdCache.Key.APP_SHARE_DESCRIPTION_KEY, firebaseRemoteConfig.getString(APP_SHARE_DESCRIPTION_KEY));
+        localCacheHandler.putBoolean(TkpdCache.Key.SHOW_HIDE_APP_SHARE_BUTTON_KEY, firebaseRemoteConfig.getBoolean(SHOW_HIDE_APP_SHARE_BUTTON));
+        localCacheHandler.putString(TkpdCache.Key.APP_SHARE_DESCRIPTION_KEY, firebaseRemoteConfig.getString(APP_SHARE_DESCRIPTION));
+        localCacheHandler.putBoolean(TkpdCache.Key.MAINAPP_ACTIVATE_BRANCH_LINKS_KEY, firebaseRemoteConfig.getBoolean(MAINAPP_ACTIVATE_BRANCH_LINKS));
         localCacheHandler.applyEditor();
     }
 

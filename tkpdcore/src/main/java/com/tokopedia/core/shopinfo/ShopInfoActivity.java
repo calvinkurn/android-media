@@ -755,6 +755,7 @@ public class ShopInfoActivity extends BaseActivity
                         .setName(getString(R.string.message_share_shop))
                         .setTextContent(compileShare())
                         .setUri(shopModel.info.shopUrl)
+                        .setId(shopModel.info.shopId)
                         .build();
                 shareIntent.putExtra(ShareData.TAG, shareData);
                 startActivity(shareIntent);
