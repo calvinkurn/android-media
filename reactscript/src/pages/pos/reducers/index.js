@@ -22,6 +22,7 @@ import {
   MAKE_PAYMENT_FUlFILLED,
   FETCH_SHOP_NAME,
   FETCH_SHOP_ID,
+  PAYMENT_CHECKOUT_TO_NATIVE,
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
 import { icons } from '../components/icon/index'
@@ -253,6 +254,46 @@ const cart = (state = {
       return state
   }
 }
+
+
+// ============= Checkout ============= //
+const checkout = (state = {
+  isFetchingParamsCheckout: false,
+  showLoadingPage: false,
+  data: [],
+  status_msg: ''
+}, action) => {
+  switch (action.type) {
+    case `${PAYMENT_CHECKOUT_TO_NATIVE}_${PENDING}`:
+      return {
+        ...state,
+        isFetchingParamsCheckout: true,
+        showLoadingPage: true,
+        status_msg: 'PENDING'
+      }
+    case `${PAYMENT_CHECKOUT_TO_NATIVE}_${FULFILLED}`:
+      return {
+        ...state,
+        isFetchingParamsCheckout: false,
+        showLoadingPage: false,
+        data: action.payload,
+        status_msg: 'SUCCESS'
+      }
+    case `${PAYMENT_CHECKOUT_TO_NATIVE}_${REJECTED}`:
+      return {
+        ...state,
+        isFetchingParamsCheckout: false,
+        showLoadingPage: false,
+        data: action.payload,
+        status_msg: 'REJECTED'
+      }
+    
+    default:
+      return state
+  }
+}
+// ============= Checkout ============= //
+
 
 const payment = (state = {
   items: [],
@@ -490,6 +531,7 @@ const rootReducer = combineReducers({
   etalase,
   cart,
   payment,
+  checkout,
   search,
   paymentInvoice,
   transactionHistory,

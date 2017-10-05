@@ -123,22 +123,22 @@ const fetchCart = () => {
 }
 
 
-// ===================== Make Payment 1 ===================== //
-export const MAKE_PAYMENT_TO_NATIVE = 'MAKE_PAYMENT_TO_NATIVE'
-export const makePaymentToNative = () => {
+// ===================== Make Payment ===================== //
+export const PAYMENT_CHECKOUT_TO_NATIVE = 'PAYMENT_CHECKOUT_TO_NATIVE'
+export const PaymentCheckoutToNative = () => {
   return {
-    type: MAKE_PAYMENT_TO_NATIVE,
+    type: PAYMENT_CHECKOUT_TO_NATIVE,
     payload: doPayment()
   }
 }
 
 const doPayment = async () => {
-  const env = await getEnv()
-  const api_url = await getBaseAPI(env)
   const user_id = await getUserId()
   const addr_id = await getAddrId()
   const shop_id = await getShopId()
-  const cart = await getCart()
+  const env = await getEnv()
+  const api_url = await getBaseAPI(env)
+  const local_cart = await getCart()
 
   const data_payment = {
     base_api_url_payment: api_url.api_url_payment,
@@ -149,21 +149,17 @@ const doPayment = async () => {
     addr_id: parseInt(addr_id),
     client_id: '',
     shop_id: parseInt(shop_id),
-    cart: cart.objData
+    cart: local_cart
   }
+  // console.log(data_payment)
 
   const paymentToNative_getParams = await makePaymentToNativeStepOne(data_payment)
-  const signature = await getSignature(paymentToNative_getParams, api_url.api_url_scrooge)
-  const queryParamsToJson = await getJsonFromQueryParams(paymentToNative_getParams.data.query_string)
+  // console.log(paymentToNative_getParams)  
+  
+  const paymentToNative_secondStep = await makePaymentToNativeStepTwo(paymentToNative_getParams, data_payment, local_cart)
+  // console.log(paymentToNative_secondStep)
 
-  const amountFromParams = paymentToNative_getParams.data.parameter.amount
-  const paymentToNative_secondStep = await makePaymentToNativeStepTwo(amountFromParams, queryParamsToJson, data_payment, cart)
-
-
-  // console.log(paymentToNative_getParams)
-  // console.log(signature)
-  // console.log(queryParamsToJson)
-
+  return paymentToNative_secondStep
 }
 
 const getUserId = () => {
@@ -186,7 +182,6 @@ const getShopId = () => {
 
 const getCart = async () => {
   let objData = []
-  let itemsData = []
   const cart = await fetchCart()
   
   cart.list.map((data) => {
@@ -194,15 +189,9 @@ const getCart = async () => {
       product_id: data.product_id,
       quantity: data.quantity
     })
-
-    itemsData.push({
-      product_name: data.product.product_name,
-      quantity: data.quantity,
-      price: data.product.product_price
-    })
   })
 
-  return { objData, itemsData }
+  return objData
 }
 
 const getEnv = () => {
@@ -245,81 +234,48 @@ const makePaymentToNativeStepOne = (data_payment) => {
   return NetworkModule.getResponseJson(`${data_payment.base_api_url_payment}/o2o/get_payment_params`, `POST`, JSON.stringify(data), true)
     .then(response => {
       const jsonResponse = JSON.parse(response)
-      return jsonResponse
+      let itemsData = []
+
+      jsonResponse.data.parameter.items.map((res) => {
+        itemsData.push({ 
+          id: res.id,
+          name: res.name,
+          price: res.price,
+          quantity: res.quantity
+        })
+      })
+      return { jsonResponse, itemsData}
     })
     .catch(err => { console.log(err) })
 }
-// ===================== Make Payment 1 ===================== //
+// ===================== Make Payment ===================== //
 
 
+// ===================== Make Payment 2 ===================== //
+const makePaymentToNativeStepTwo = (paymentToNative_getParams, data_payment, local_cart) => {
+  let data_items = ''
+  paymentToNative_getParams.itemsData.map((res) => {
+    data_items += `items[name]=${encodeURIComponent(res.name)}&items[quantity]=${encodeURIComponent(res.quantity)}&items[price]=${encodeURIComponent(res.price)}&`
+  })
+  
+  const data_length = data_items.length
+  const data_cleaned = data_items.substr(0, data_length - 1)
+  const dataParams = paymentToNative_getParams.jsonResponse.data.parameter
+  const data_qry_params = `merchant_code=${encodeURIComponent(dataParams.merchant_code)}&profile_code=${encodeURIComponent(dataParams.profile_code)}&` +
+      `transaction_id=${encodeURIComponent(dataParams.transaction_id)}&transaction_date=${encodeURIComponent(dataParams.transaction_date)}&` +
+      `currency=${encodeURIComponent(dataParams.currency)}&amount=${encodeURIComponent(dataParams.amount)}&customer_name=${encodeURIComponent(dataParams.customer_name)}&` + 
+      `customer_email=${encodeURIComponent(dataParams.customer_email)}&user_defined_value=${encodeURIComponent(dataParams.user_defined_value)}&` +
+      `payment_metadata=${encodeURIComponent(dataParams.payment_meta)}&signature=${encodeURIComponent(dataParams.signature)}&`
+  const query_params = data_qry_params + '' + data_cleaned
 
-// ===================== Get signature ===================== //
-const getSignature = (data, base_api_url_scrooge) => {
-  return UtilModule.generateHmac(JSON.stringify(data.data.parameter), `${base_api_url_scrooge}/v1/api/payment/`)
-    .then(res => { return res })
-    .catch(err => { console.log(err) })
-}
-// ===================== Get signature ===================== //
-
-
-// ===================== Convert Query Params to JSON ===================== //
-const getJsonFromQueryParams = (data) => {
-  return UtilModule.convertParamToJson(JSON.stringify(data))
+  return NetworkModule.getResponseParam(`${data_payment.base_api_url_scrooge}/v1/api/payment`, `POST`, query_params, false)
     .then(res => {
       const jsonResponse = JSON.parse(res)
       return jsonResponse
     })
     .catch(err => { console.log(err) })
 }
-// ===================== Convert Query Params to JSON ===================== //
-
-
 // ===================== Make Payment 2 ===================== //
-const makePaymentToNativeStepTwo = (amountFromParams, queryParamsToJson, data_payment, cart) => {
-  console.log(queryParamsToJson)
-  console.log(data_payment) 
-  console.log(cart) 
-
-  let data_items = []
-  cart.itemsData.map((data, index) => {
-    // console.log(data)
-    data_items.push({
-      'items[name]': data.product_name,
-      'items[quantity]': data.quantity,
-      'items[price]': data.price
-    })
-  })
-  console.log(data_items)
-  console.log(JSON.stringify(data_items))
-
-  const data = {
-    merchant_code: queryParamsToJson.merchant_code,
-    profile_code: queryParamsToJson.profile_code,
-    transaction_id: queryParamsToJson.transaction_id,
-    transaction_date: queryParamsToJson.transaction_date,
-    currency: queryParamsToJson.currency,
-    amount: amountFromParams,
-    customer_name: queryParamsToJson.customer_name,
-    customer_email: queryParamsToJson.customer_email,
-    user_defined_value: queryParamsToJson.user_defined_value,
-    payment_metadata: queryParamsToJson.payment_metadata,
-    signature: queryParamsToJson.signature
-  }
-  const stringData = JSON.stringify(data)
-  console.log(data)
-  console.log(stringData)
-
-  // return NetworkModule.getResponse(`${data_payment.base_api_url_scrooge}/v1/api/payment/`, `POST`, JSON.stringify(data), false)
-  //   .then(res => {
-  //     console.log(res)
-  //   })
-  //   .catch(err => { 
-  //     console.log(err) 
-  //   })
-}
-// ===================== Make Payment 2 ===================== //
-
-
 
 
 
