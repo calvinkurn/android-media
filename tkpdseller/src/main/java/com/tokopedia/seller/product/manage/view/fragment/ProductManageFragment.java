@@ -458,11 +458,4 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         Intent intent = ProductEditActivity.createInstance(getActivity(), productId);
         startActivity(intent);
     }
-
-    @Override
-    public void onItemChecked(ProductManageViewModel productManageViewModel, boolean checked) {
-        if (actionMode != null) {
-            actionMode.setTitle(String.valueOf(((ProductManageListAdapter) adapter).getTotalChecked()));
-        }
-    }
 }
