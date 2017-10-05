@@ -27,7 +27,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDeta
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.LikeDislikeViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReviewResponseViewModel;
 
 import java.text.ParseException;
@@ -68,10 +67,9 @@ public class InboxReputationDetailItemViewHolder extends
     Context context;
     ImageUploadAdapter adapter;
 
-    View helpfulLayout;
-    TextView helpfulText;
+    View replyReviewLayout;
+    View seeReplyLayout;
     TextView seeReplyText;
-    ImageView helpfulIcon;
     ImageView replyArrow;
 
     View sellerReplyLayout;
@@ -107,12 +105,12 @@ public class InboxReputationDetailItemViewHolder extends
                 LinearLayoutManager.HORIZONTAL, false));
         reviewAttachment.setAdapter(adapter);
 
-        helpfulLayout = itemView.findViewById(R.id.review_detail_helpful_layout);
-        helpfulText = (TextView) helpfulLayout.findViewById(R.id.helpful_text);
-        seeReplyText = (TextView) helpfulLayout.findViewById(R.id.see_reply_button);
-        replyArrow = (ImageView) helpfulLayout.findViewById(R.id.reply_chevron);
-
         sellerReplyLayout = itemView.findViewById(R.id.seller_reply_layout);
+        seeReplyLayout = itemView.findViewById(R.id.see_reply_layout);
+        seeReplyText = (TextView) seeReplyLayout.findViewById(R.id.see_reply_button);
+        replyArrow = (ImageView) seeReplyLayout.findViewById(R.id.reply_chevron);
+
+        replyReviewLayout = itemView.findViewById(R.id.reply_review_layout);
         sellerName = (TextView) itemView.findViewById(R.id.seller_reply_name);
         sellerReplyTime = (TextView) itemView.findViewById(R.id.seller_reply_time);
         sellerReply = (TextView) itemView.findViewById(R.id.seller_reply);
@@ -121,7 +119,6 @@ public class InboxReputationDetailItemViewHolder extends
         sellerAddReplyLayout = itemView.findViewById(R.id.seller_add_reply_layout);
         sellerAddReplyEditText = (EditText) itemView.findViewById(R.id.seller_reply_edit_text);
         sendReplyButton = (ImageView) itemView.findViewById(R.id.send_button);
-        helpfulIcon = (ImageView) itemView.findViewById(R.id.helpful_icon);
 
         sellerAddReplyEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -205,13 +202,13 @@ public class InboxReputationDetailItemViewHolder extends
 
         if (!element.isReviewHasReviewed()) {
             viewReview.setVisibility(View.GONE);
-            helpfulLayout.setVisibility(View.GONE);
+            seeReplyLayout.setVisibility(View.GONE);
             emptyReviewText.setVisibility(View.VISIBLE);
             emptyReviewText.setText(R.string.not_reviewed);
         } else if (element.isReviewHasReviewed() && element.isReviewSkipped()) {
             emptyReviewText.setVisibility(View.VISIBLE);
             viewReview.setVisibility(View.GONE);
-            helpfulLayout.setVisibility(View.GONE);
+            seeReplyLayout.setVisibility(View.GONE);
             emptyReviewText.setVisibility(View.VISIBLE);
             emptyReviewText.setText(R.string.review_is_skipped);
         } else {
@@ -243,8 +240,6 @@ public class InboxReputationDetailItemViewHolder extends
                 }
             });
             reviewOverflow.setOnClickListener(onReviewOverflowClicked(element));
-
-            setHelpful(element);
 
             if (element.getReviewResponseViewModel() != null
                     && !TextUtils.isEmpty(element.getReviewResponseViewModel().getResponseMessage())) {
@@ -292,7 +287,7 @@ public class InboxReputationDetailItemViewHolder extends
 
     private void setSellerReply(final InboxReputationDetailItemViewModel element) {
         sellerAddReplyLayout.setVisibility(View.GONE);
-        helpfulLayout.setVisibility(View.VISIBLE);
+        seeReplyLayout.setVisibility(View.VISIBLE);
         seeReplyText.setVisibility(View.VISIBLE);
         replyArrow.setVisibility(View.VISIBLE);
 
@@ -315,7 +310,7 @@ public class InboxReputationDetailItemViewHolder extends
         sellerReplyTime.setText(getFormattedTime(reviewResponseViewModel.getResponseCreateTime()));
         sellerReply.setText(MethodChecker.fromHtml(reviewResponseViewModel.getResponseMessage()));
         if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
-            helpfulLayout.setVisibility(View.VISIBLE);
+            seeReplyLayout.setVisibility(View.VISIBLE);
             replyOverflow.setVisibility(View.VISIBLE);
             replyOverflow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -350,12 +345,12 @@ public class InboxReputationDetailItemViewHolder extends
         if (isReplyOpened) {
             seeReplyText.setText(MainApplication.getAppContext().getText(R.string.close_reply));
             replyArrow.setRotation(180);
-            sellerReplyLayout.setVisibility(View.VISIBLE);
+            replyReviewLayout.setVisibility(View.VISIBLE);
             viewListener.onSmoothScrollToReplyView(getAdapterPosition());
         } else {
             seeReplyText.setText(MainApplication.getAppContext().getText(R.string.see_reply));
             replyArrow.setRotation(0);
-            sellerReplyLayout.setVisibility(View.GONE);
+            replyReviewLayout.setVisibility(View.GONE);
         }
 
     }
@@ -449,68 +444,5 @@ public class InboxReputationDetailItemViewHolder extends
 
             }
         };
-    }
-
-    public void setHelpful(final InboxReputationDetailItemViewModel element) {
-
-        final LikeDislikeViewModel likeDislike = element.getLikeDislikeViewModel();
-        String helpfulString = "";
-
-        if (likeDislike != null
-                && likeDislike.getTotalLike() == 1
-                && likeDislike.getLikeStatus() == InboxReputationDetailItemViewModel.IS_LIKED
-                && element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
-            setHelpfulVisible();
-            ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
-                    .ic_thumbsup_active);
-            helpfulString += MainApplication.getAppContext().getString(R.string.you_got_helped);
-        } else if (likeDislike != null
-                && likeDislike.getTotalLike() > 1
-                && likeDislike.getLikeStatus() == InboxReputationDetailItemViewModel.IS_LIKED
-                && element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
-            setHelpfulVisible();
-            ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
-                    .ic_thumbsup_active);
-            helpfulString += MainApplication.getAppContext().getString(R.string.You_and)
-                    + " " + likeDislike.getTotalLike() + " " + MainApplication.getAppContext()
-                    .getString(R.string.people_helped);
-        } else if (likeDislike != null
-                && likeDislike.getTotalLike() != 0
-                && likeDislike.getLikeStatus() != InboxReputationDetailItemViewModel.IS_LIKED) {
-            setHelpfulVisible();
-            ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
-                    .ic_thumbsup);
-            helpfulString += likeDislike.getTotalDislike() + " " + MainApplication.getAppContext()
-                    .getString(R.string.people_helped);
-        } else if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
-            setHelpfulVisible();
-            ImageHandler.loadImageWithIdWithoutPlaceholder(helpfulIcon, R.drawable
-                    .ic_thumbsup);
-            helpfulString += MainApplication.getAppContext().getString(R.string
-                    .helpful_question);
-        } else {
-            helpfulIcon.setVisibility(View.GONE);
-            helpfulText.setVisibility(View.GONE);
-            helpfulLayout.setVisibility(View.GONE);
-        }
-
-        helpfulText.setText(helpfulString);
-        helpfulIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onLikeReview(getAdapterPosition(),
-                        element.getReviewId(),
-                        likeDislike.getLikeStatus(),
-                        element.getProductId(),
-                        String.valueOf(element.getShopId()));
-            }
-        });
-
-    }
-
-    private void setHelpfulVisible() {
-        helpfulIcon.setVisibility(View.VISIBLE);
-        helpfulText.setVisibility(View.VISIBLE);
-        helpfulLayout.setVisibility(View.VISIBLE);
     }
 }

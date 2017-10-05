@@ -91,12 +91,6 @@
     </RelativeLayout>
 
     <include
-        android:id="@+id/review_detail_helpful_layout"
-        layout="@layout/review_detail_helpful_layout"
-        android:visibility="gone"
-        tools:visibility="visible"/>
-
-    <include
         android:id="@+id/seller_reply_layout"
         layout="@layout/seller_reply_layout"
         android:visibility="gone"

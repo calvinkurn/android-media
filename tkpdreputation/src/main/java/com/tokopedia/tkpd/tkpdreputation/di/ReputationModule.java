@@ -177,15 +177,12 @@ public class ReputationModule {
                                            PostExecutionThread postExecutionThread,
                                            GetInboxReputationUseCase getInboxReputationUseCase,
                                            GetReviewUseCase getReviewUseCase,
-                                           GetLikeDislikeReviewUseCase
-                                                   getLikeDislikeReviewUseCase,
                                            CheckShopFavoritedUseCase checkShopFavoritedUseCase) {
         return new GetInboxReputationDetailUseCase(
                 threadExecutor,
                 postExecutionThread,
                 getInboxReputationUseCase,
                 getReviewUseCase,
-                getLikeDislikeReviewUseCase,
                 checkShopFavoritedUseCase);
     }
 

@@ -7,8 +7,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdet
 
 import java.util.ArrayList;
 
-import static com.tokopedia.core.database.model.ProductDB_Table.productUrl;
-
 /**
  * @author by nisie on 8/19/17.
  */
@@ -24,7 +22,6 @@ public class InboxReputationDetailItemViewModel implements
     private final int shopId;
     private final ReviewResponseViewModel reviewResponseViewModel;
     private final int reputationId;
-    private final LikeDislikeViewModel likeDislikeViewModel;
     private final boolean reviewIsEdited;
     String productId;
     String productName;
@@ -56,8 +53,6 @@ public class InboxReputationDetailItemViewModel implements
                                               int tab,
                                               @Nullable ReviewResponseViewModel
                                                       reviewResponseViewModel,
-                                              @Nullable LikeDislikeViewModel
-                                              likeDislikeViewModel,
                                               boolean reviewIsAnonymous,
                                               boolean isProductDeleted,
                                               boolean reviewIsEdited,
@@ -80,7 +75,6 @@ public class InboxReputationDetailItemViewModel implements
         this.shopId = shopId;
         this.tab = tab;
         this.reviewResponseViewModel = reviewResponseViewModel;
-        this.likeDislikeViewModel = likeDislikeViewModel;
         this.reviewIsAnonymous = reviewIsAnonymous;
         this.isProductDeleted = isProductDeleted;
         this.reviewIsEdited = reviewIsEdited;
@@ -166,10 +160,6 @@ public class InboxReputationDetailItemViewModel implements
 
     public void setProductUrl(String productUrl) {
         this.productUrl = productUrl;
-    }
-
-    public LikeDislikeViewModel getLikeDislikeViewModel() {
-        return likeDislikeViewModel;
     }
 
     public boolean isReviewIsAnonymous() {

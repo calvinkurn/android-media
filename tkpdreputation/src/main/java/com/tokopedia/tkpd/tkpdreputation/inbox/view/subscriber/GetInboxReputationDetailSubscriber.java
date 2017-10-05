@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeListDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationItemDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationBadgeDomain;
@@ -24,7 +23,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationVie
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.LikeDislikeViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReputationBadgeViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReviewResponseViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeCustomerViewModel;
@@ -112,25 +110,12 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                 convertToReviewResponseViewModel(inboxDomain.getShopData(),
                         detailDomain.getReviewData()
                                 .getReviewResponse()),
-                convertToLikeDislikeViewModel(detailDomain.getLikeDislikeDomain()),
                 detailDomain.getReviewData().isReviewAnonymity(),
                 detailDomain.getProductData().getProductStatus() == PRODUCT_IS_DELETED,
                 !TextUtils.isEmpty(detailDomain.getReviewData().getReviewUpdateTime()
                         .getDateTimeFmt1()),
                 inboxDomain.getShopData().getShopName()
         );
-    }
-
-    private LikeDislikeViewModel convertToLikeDislikeViewModel(@Nullable LikeDislikeListDomain
-                                                                       likeDislikeDomain) {
-        if (likeDislikeDomain != null)
-            return new LikeDislikeViewModel(
-                    likeDislikeDomain.getReviewId(),
-                    likeDislikeDomain.getTotalLike(),
-                    likeDislikeDomain.getTotalDislike(),
-                    likeDislikeDomain.getLikeStatus())
-                    ;
-        else return null;
     }
 
     private ReviewResponseViewModel convertToReviewResponseViewModel(@Nullable ShopDataDomain shopData,

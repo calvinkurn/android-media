@@ -15,7 +15,6 @@ public class ReviewItemDomain {
     private boolean reviewIsSkipped;
     private boolean reviewIsEditable;
     private ReviewDataDomain reviewData;
-    private LikeDislikeListDomain likeDislikeDomain;
 
     public ReviewItemDomain(ProductDataDomain productData, int reviewInboxId,
                             int reviewId, boolean reviewHasReviewed,
