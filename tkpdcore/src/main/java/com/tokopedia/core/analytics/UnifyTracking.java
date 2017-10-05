@@ -1,12 +1,12 @@
 package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventType;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
@@ -1542,6 +1542,7 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventMoRegister(String name, String mobileNo) {
+        CommonUtils.dumper("GAv4 moengage action " + name + " " + mobileNo);
         getMoEngine().sendRegisterEvent(name, mobileNo);
     }
 
@@ -2410,35 +2411,6 @@ public class UnifyTracking extends TrackingUtils {
         eventTopAdsProduct(AppEventTracking.EventLabel.KEYWORD);
     }
 
-    public static void eventSellerClickDashboard(String eventCategory, String eventLabel) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_DASHBOARD,
-                eventCategory,
-                AppEventTracking.Action.CLICK,
-                eventLabel
-        ).getEvent());
-    }
-
-    public static void eventSellerClickFabDashboard() {
-        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD, AppEventTracking.EventLabel.FAB_DASHBOARD);
-    }
-
-    public static void eventSellerClickAddProductDashboard() {
-        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD_FAB, AppEventTracking.EventLabel.ADD_PRODUCT);
-    }
-
-    public static void eventSellerClickManageProductDashboard() {
-        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD_FAB, AppEventTracking.EventLabel.MANAGE_PRODUCT);
-    }
-
-    public static void eventSellerClickEtalaseDashboard() {
-        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD_FAB, AppEventTracking.EventLabel.ETALASE);
-    }
-
-    public static void eventSellerClickSettingDashboard() {
-        eventSellerClickDashboard(AppEventTracking.Category.DASHBOARD_FAB, AppEventTracking.EventLabel.SETTING);
-    }
-
     public static void eventCheckoutGoldMerchant(String eventCategory, String eventLabel) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_GOLD_MERCHANT,
@@ -2504,8 +2476,8 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventOpportunityCustom(String event, String category,
-                                        String action, String label,
-                                        HashMap<String, String> customDimension) {
+                                              String action, String label,
+                                              HashMap<String, String> customDimension) {
         sendGTMEvent(new EventTracking(
                 event,
                 category,
@@ -2514,5 +2486,61 @@ public class UnifyTracking extends TrackingUtils {
                 .setCustomDimension(customDimension)
                 .getEvent()
         );
+    }
+
+    public static void eventSellerHomeDashboardClick(String main, String item) {
+        sendGTMEvent(new EventTracking(
+                        AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
+                        AppEventTracking.Category.DASHBOARD,
+                        AppEventTracking.Action.CLICK + " " + main,
+                        item)
+                        .setUserId()
+                        .getEvent());
+    }
+
+    public static void eventAppShare() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_APP_SHARE_REFERRAL,
+                AppEventTracking.Category.REFERRAL,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.APP_SHARE_LABEL
+        ).getEvent());
+    }
+
+    public static void eventFeaturedProduct(String eventLabel) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SHOP_MANAGE,
+                AppEventTracking.Category.FEATURED_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventClickMenuFeaturedProduct() {
+        eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
+    }
+
+    public static void eventClickAddFeaturedProduct() {
+        eventFeaturedProduct(AppEventTracking.EventLabel.ADD_FEATURED_PRODUCT);
+    }
+
+    public static void eventTickErrorFeaturedProduct() {
+        eventFeaturedProduct(AppEventTracking.EventLabel.TICK_ERROR);
+    }
+
+    public static void eventSavePickFeaturedProduct(String counterProduct) {
+        eventFeaturedProduct(AppEventTracking.EventLabel.SAVE_FEATURED_PRODUCT_PICKER + counterProduct);
+    }
+
+    public static void eventSortFeaturedProductChange() {
+        eventFeaturedProduct(AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT_CHANGE);
+    }
+
+    public static void eventSortFeaturedProductNotChange() {
+        eventFeaturedProduct(AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT_NO_CHANGE);
+    }
+
+    public static void eventDeleteFeaturedProduct() {
+        eventFeaturedProduct(AppEventTracking.EventLabel.DELETE_FEATURED_PRODUCT);
     }
 }

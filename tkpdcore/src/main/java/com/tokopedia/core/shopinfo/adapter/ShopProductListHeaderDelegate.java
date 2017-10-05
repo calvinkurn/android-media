@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.R;
+import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseAdapterModel;
 import com.tokopedia.core.app.MainApplication;
 
@@ -99,7 +100,7 @@ public class ShopProductListHeaderDelegate {
         if(hasSelection(spinnerSelectedPos))
             vholder.etalase.setSelection(spinnerSelectedPos);
 
-        if (featuredProductAdapter.getItemCount() > 0) {
+        if (featuredProductAdapter.getItemCount() > 0 && isAllEtalaseSelected()) {
             vholder.featuredProductTitle.setVisibility(View.VISIBLE);
             vholder.featuredProductList.setVisibility(View.VISIBLE);
             vholder.productSectionTitle.setVisibility(View.VISIBLE);
@@ -119,6 +120,12 @@ public class ShopProductListHeaderDelegate {
         if (vholder.featuredProductList.getAdapter() == null) {
             vholder.featuredProductList.setAdapter(featuredProductAdapter);
         }
+    }
+
+    private boolean isAllEtalaseSelected() {
+        return etalaseAdapter != null &&
+                etalaseAdapter.getCount() > spinnerLastPos &&
+                GetShopProductParam.DEFAULT_ALL_ETALASE_ID.equals(etalaseAdapter.getItem(spinnerLastPos).getEtalaseId());
     }
 
     private boolean hasSelection(int spinnerSelectedPos) {
