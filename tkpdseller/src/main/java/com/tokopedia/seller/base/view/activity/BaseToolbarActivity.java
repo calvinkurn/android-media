@@ -10,11 +10,13 @@ import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.utils.MenuTintUtils;
 
 /**
  * Created by nathan on 7/11/17.
@@ -22,6 +24,7 @@ import com.tokopedia.seller.R;
 
 abstract class BaseToolbarActivity extends BaseActivity {
 
+    private final static int TEXT_COLOR_BACKGROUND_WHITE = R.color.font_black_primary_70;
     protected Toolbar toolbar;
 
     protected abstract void setupFragment(Bundle savedInstanceState);
@@ -55,7 +58,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
         }
-        int textColor = ContextCompat.getColor(this, R.color.font_black_primary_70);
+        int textColor = ContextCompat.getColor(this, TEXT_COLOR_BACKGROUND_WHITE);
         toolbar.setTitleTextColor(textColor);
         toolbar.setSubtitleTextColor(textColor);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.white)));
@@ -86,6 +89,18 @@ abstract class BaseToolbarActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle(this.getTitle());
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        updateOptionMenuColor(menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public void updateOptionMenuColor(Menu menu) {
+        if (isToolbarWhite()) {
+            MenuTintUtils.tintAllIcons(menu, TEXT_COLOR_BACKGROUND_WHITE);
         }
     }
 
