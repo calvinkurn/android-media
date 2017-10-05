@@ -41,7 +41,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.customView.RechargeEditText;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
@@ -76,6 +75,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.model.mapper.LastOrderMapper;
@@ -919,7 +919,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.wrapperScrollview.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (view instanceof RechargeEditText) {
+                if (view instanceof WidgetClientNumberView) {
                     view.requestFocusFromTouch();
                 } else {
                     hideKeyboard();
