@@ -404,4 +404,14 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         selectedOperatorId = String.valueOf(selectedOperator.operatorId);
         widgetClientNumberView.setText(lastClientNumberTyped);
     }
+
+    @Override
+    public void renderErrorProduct(String message) {
+        showSnackbarErrorMessage(message);
+    }
+
+    @Override
+    public void renderDefaultError() {
+
+    }
 }

@@ -28,5 +28,7 @@ public interface IDigitalWidgetStyle2View extends BaseDigitalWidgetView {
 
     void renderOperator(RechargeOperatorModel rechargeOperatorModel);
 
-    void renderErrorMessage(String message);
+    void renderErrorProduct(String message);
+
+    void renderDefaultError();
 }

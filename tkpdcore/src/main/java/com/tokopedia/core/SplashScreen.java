@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.CommonUtils;
@@ -49,6 +50,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     DownloadResultReceiver mReceiver;
 	String id = null;
     protected SessionHandler sessionHandler;
+    protected View decorView;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,14 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         sessionHandler = new SessionHandler(this);
         resetAllDatabaseFlag();
         initPermissionReactNativeDev();
+        decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
     }
 
     @Override
@@ -208,5 +218,18 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         }
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
 }

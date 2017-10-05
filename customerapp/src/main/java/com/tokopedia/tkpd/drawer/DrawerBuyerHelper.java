@@ -39,6 +39,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
@@ -158,6 +159,15 @@ public class DrawerBuyerHelper extends DrawerHelper
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
                 true));
+
+        if (isAppshareButtonShow()) {
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
+                    R.drawable.share_ke_teman,
+                    TkpdState.DrawerPosition.APPSHARE,
+                    true, true));
+
+        }
+
         data.add(new DrawerItem(context.getString(R.string.drawer_title_activity_contact_us),
                 R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
@@ -550,5 +560,11 @@ public class DrawerBuyerHelper extends DrawerHelper
         intent.putExtras(ShopInfoActivity.createBundle(sessionHandler.getShopID(), ""));
         context.startActivity(intent);
         sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
+    }
+
+    private boolean isAppshareButtonShow() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.FIREBASE_REMOTE_CONFIG);
+        return localCacheHandler.getBoolean(TkpdCache.Key.SHOW_HIDE_APP_SHARE_BUTTON_KEY, true);
+
     }
 }

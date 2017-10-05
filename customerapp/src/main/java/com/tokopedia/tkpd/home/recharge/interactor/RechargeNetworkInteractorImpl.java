@@ -29,6 +29,26 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
     }
 
     @Override
+    public void getRecentNumbers(Subscriber<Boolean> subscriber, Map<String, String> params) {
+        compositeSubscription.add(
+                repository.storeObservableRecentDataNetwork(params)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber));
+    }
+
+    @Override
+    public void getLastOrder(Subscriber<LastOrder> subscriber, Map<String, String> params) {
+        compositeSubscription.add(
+                repository.getObservableLastOrderNetwork(params)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber));
+    }
+
+    @Override
     public void getCategoryData(Subscriber<CategoryData> subscriber) {
         compositeSubscription.add(
                 repository.getObservableCategoryData()

@@ -24,6 +24,8 @@ import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteNumber;
 import com.tokopedia.digital.widget.data.mapper.IFavoriteNumberMapper;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
+import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
+import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,10 +70,21 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                     public Boolean call(CategoryData categoryData) {
                         return categoryData != null &&
                                 categoryData.getData() != null &&
-                                !categoryData.getData().isEmpty();
+                                !categoryData.getData().isEmpty()
+                                && isCategoryDataNotCorrupt(categoryData);
                     }
                 });
     }
+
+    private boolean isCategoryDataNotCorrupt(CategoryData categoryData) {
+        for (Category data : categoryData.getData()) {
+            if (data.getAttributes() == null || data.getAttributes().getClientNumber() == null
+                    || data.getAttributes().getClientNumber().getOperatorStyle() == null)
+                return false;
+        }
+        return true;
+    }
+
 
     private Observable<CategoryData> getObservableCategoryDataDB() {
         return Observable.just(new GlobalCacheManager())
@@ -312,7 +325,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                     managerStatus.store();
                 } else if (currentStatusString != null && currentStatusString.equals(statusString)
                         && !isInitialGetStatus) {
-                    throw new RuntimeException("Is no need to reload widget");
+                    throw new WidgetRuntimeException("Is no need to reload widget");
                 } else if (currentStatusString == null) {
                     GlobalCacheManager managerStatus = new GlobalCacheManager();
                     managerStatus.setKey(KEY_STATUS_CURRENT);

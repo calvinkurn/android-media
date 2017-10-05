@@ -47,8 +47,8 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
         for (Option option : filter.getOptions()) {
             if (Option.KEY_PRICE_MIN_MAX_RANGE.equals(option.getKey())) {
-                minBound = Integer.parseInt(option.getValMin());
-                maxBound = Integer.parseInt(option.getValMax());
+                minBound = TextUtils.isEmpty(option.getValMin()) ? 0 : Integer.parseInt(option.getValMin());
+                maxBound = TextUtils.isEmpty(option.getValMax()) ? 0 : Integer.parseInt(option.getValMax());
             }
 
             if (Option.KEY_PRICE_MIN.equals(option.getKey())) {

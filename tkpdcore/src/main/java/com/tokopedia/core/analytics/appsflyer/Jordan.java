@@ -11,8 +11,10 @@ import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.ILocalyticsContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
+import com.tokopedia.core.analytics.container.IPerformanceMonitoring;
 import com.tokopedia.core.analytics.container.LocalyticsContainer;
 import com.tokopedia.core.analytics.container.MoEngageContainer;
+import com.tokopedia.core.analytics.container.PerfMonContainer;
 
 /**
  * Created by Hafizh Herdi on 2/11/2016.
@@ -63,6 +65,10 @@ public class Jordan {
 
     public IMoengageContainer getMoEngageContainer() {
         return MoEngageContainer.getMoEngageContainer(context);
+    }
+
+    public IPerformanceMonitoring getFirebasePerformanceContainer(String traceName) {
+        return PerfMonContainer.initTraceInstance(traceName);
     }
 
     public static final String AF_SCREEN_HOME_HOTLIST = "home_hotlist";

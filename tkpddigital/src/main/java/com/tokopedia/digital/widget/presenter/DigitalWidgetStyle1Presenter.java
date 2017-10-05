@@ -10,6 +10,7 @@ import com.tokopedia.core.database.recharge.recentOrder.LastOrderEntity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.product.model.OrderClientNumber;
+import com.tokopedia.digital.R;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle1View;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
@@ -28,6 +29,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
     private final IDigitalWidgetInteractor widgetInteractor;
 
     private final IDigitalWidgetStyle1View view;
+    private Context context;
 
     private Context context;
 
@@ -38,6 +40,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
         this.context = context;
         this.widgetInteractor = widgetInteractor;
         this.view = view;
+        this.context = context;
     }
 
     @Override
@@ -59,6 +62,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             @Override
             public void onError(Throwable e) {
                 Log.d("DigitalWidgetStyle1Presenter", "onError: " + e.getMessage());
+                view.renderDefaultError();
             }
 
             @Override
@@ -138,6 +142,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                view.renderDefaultError();
             }
 
             @Override
@@ -157,7 +162,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.renderEmptyProduct("Product List is Empty");
+                view.renderEmptyProduct(context.getString(R.string.error_message_product));
             }
 
             @Override
@@ -166,7 +171,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                     processOperatorById(products);
                     view.renderDataProducts(products);
                 } else {
-                    view.renderEmptyProduct("Product List is Empty");
+                    view.renderEmptyProduct(context.getString(R.string.error_message_product));
                 }
             }
         };
@@ -182,7 +187,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.renderEmptyOperator("Empty operator");
+                view.renderEmptyOperator(context.getString(R.string.error_message_operator));
             }
 
             @Override
@@ -190,7 +195,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                 if (rechargeOperatorModel != null)
                     view.renderDataOperator(rechargeOperatorModel);
                 else
-                    view.renderEmptyOperator("Empty operator");
+                    view.renderEmptyOperator(context.getString(R.string.error_message_operator));
             }
         };
     }
@@ -205,7 +210,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.renderEmptyProduct("Product List is Empty");
+                view.renderEmptyProduct(context.getString(R.string.error_message_product));
             }
 
             @Override
@@ -213,7 +218,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                 if (!products.isEmpty()) {
                     processOperatorById(products);
                 } else {
-                    view.renderEmptyProduct("Product List is Empty");
+                    view.renderEmptyProduct(context.getString(R.string.error_message_product));
                 }
             }
         };
@@ -228,7 +233,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                view.renderErrorProduct(context.getString(R.string.error_message_not_found_product));
             }
 
             @Override
