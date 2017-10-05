@@ -5,14 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -96,7 +93,7 @@ public class ProductListActivity extends ReactDrawerPresenterActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_product_list, menu);
+        getMenuInflater().inflate(R.menu.menu_product_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

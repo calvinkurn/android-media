@@ -17,9 +17,6 @@ import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by Herdi_WORK on 07.09.17.
  */
@@ -58,10 +55,11 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tvName = (TextView) itemView.findViewById(R.id.tv_name);
-            tvOnline = (TextView) itemView.findViewById(R.id.tv_online);
-            tvOutlet = (TextView) itemView.findViewById(R.id.tv_outlet);
+            tvName = itemView.findViewById(R.id.tv_name);
+            tvOnline = itemView.findViewById(R.id.tv_online);
+            tvOutlet = itemView.findViewById(R.id.tv_outlet);
             ivOnline = itemView.findViewById(R.id.iv_online);
+            ivAvatar = itemView.findViewById(R.id.iv_avatar);
         }
     }
 
@@ -78,6 +76,7 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
         holder.ivOnline.setVisibility(View.VISIBLE);
         holder.tvOnline.setText("Online");
         holder.tvOutlet.setText(PosSessionHandler.getOutletName(context));
+        holder.ivAvatar.setImageResource(R.drawable.qc_launcher);
     }
 
     @Override
