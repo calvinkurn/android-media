@@ -307,17 +307,8 @@ public class Login extends BaseActivity implements SessionView
 
     }
 
+
     private void setToolbarColor() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View view = getWindow().getDecorView();
-            int flags = view.getSystemUiVisibility();
-
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
-
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.white)));
