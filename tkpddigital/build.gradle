@@ -33,6 +33,11 @@ def getTkpdPayment() {
             rootProject.ext.tkpdDependencies.payment : project(':tkpdpayment');
 }
 
+def getTkpdDesign() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
@@ -131,4 +136,8 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    compile(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
 }

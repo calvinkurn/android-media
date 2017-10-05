@@ -19,4 +19,5 @@ public abstract class ProductDraftListPresenter extends BaseDaggerPresenter<Prod
     public abstract void fetchAllDraftData();
     public abstract void deleteProductDraft(long draftId);
     public abstract void saveInstagramToDraft(Context context, ArrayList<String> localPathList, ArrayList<String> instagramDescList);
+    public abstract void clearAllDraftData();
 }

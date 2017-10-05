@@ -26,6 +26,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -51,7 +52,7 @@ public class FragmentBannerWebView extends Fragment {
     private static final String LOGIN_TYPE = "login_type";
     private static final String QUERY_PARAM_PLUS = "plus";
     private static final int LOGIN_GPLUS = 123453;
-
+    private boolean isAlreadyFirstRedirect;
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -132,9 +133,8 @@ public class FragmentBannerWebView extends Fragment {
             }
         if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
                 FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
-
-            if (((Uri.parse(url).getHost().contains("www.tokopedia.com"))
-                    || Uri.parse(url).getHost().contains("m.tokopedia.com"))
+            if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
+                    || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
                     && !url.endsWith(".pl")) {
                 switch ((DeepLinkChecker.getDeepLinkType(url))) {
                     case DeepLinkChecker.CATEGORY:

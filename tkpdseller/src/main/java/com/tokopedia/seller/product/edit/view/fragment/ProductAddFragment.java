@@ -28,7 +28,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -62,6 +62,7 @@ import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
+import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 
 import java.util.ArrayList;
@@ -206,7 +207,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     private void saveAndAddDraft(boolean isUploading) {
         UploadProductInputViewModel viewModel = collectDataFromView();
-        sendAnalyticsAddMore(viewModel);
+        if (isUploading) {
+            sendAnalyticsAddMore(viewModel);
+        }
         presenter.saveDraftAndAdd(viewModel, isUploading);
     }
 
@@ -227,13 +230,21 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     public void saveDraft(boolean isUploading) {
         UploadProductInputViewModel viewModel = collectDataFromView();
-        sendAnalyticsAdd(viewModel);
+        if (isUploading) {
+            sendAnalyticsAdd(viewModel);
+        }
         presenter.saveDraft(viewModel, isUploading);
     }
 
     private void sendAnalyticsAdd(UploadProductInputViewModel viewModel) {
         if(getStatusUpload() == ProductStatus.ADD) {
             UnifyTracking.eventAddProductAdd(
+                    AnalyticsMapper.mapViewToAnalytic(viewModel,
+                            Integer.parseInt(getString(R.string.product_free_return_values_active)),
+                            productAdditionalInfoViewHolder.isShare()
+                    ));
+        } else if(getStatusUpload() == ProductStatus.EDIT){
+            UnifyTracking.eventAddProductEdit(
                     AnalyticsMapper.mapViewToAnalytic(viewModel,
                             Integer.parseInt(getString(R.string.product_free_return_values_active)),
                             productAdditionalInfoViewHolder.isShare()
@@ -360,7 +371,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     public void goToGoldMerchantPage() {
-        startActivity(new Intent(getActivity(), GmSubscribeHomeActivity.class));
+        if (getActivity().getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
+        }
     }
 
     private void updateProductScoring() {
@@ -580,7 +593,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void startProductVariantActivity(ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
-                                            ProductVariantDataSubmit productVariantDataSubmit) {
+                                            ProductVariantDataSubmit productVariantDataSubmit,
+                                            ArrayList<ProductVariantOptionSubmit> productVariantOptionSubmitArrayList) {
         if (productVariantByCatModelList == null || productVariantByCatModelList.size() == 0) {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
@@ -596,6 +610,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 productVariantByCatModelList.size() > 0) {
             intent.putExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantDataSubmit);
         }
+        intent.putExtra(ProductVariantConstant.EXTRA_OLD_PRODUCT_OPTION_SUBMIT_LV1_LIST, productVariantOptionSubmitArrayList);
         startActivityForResult(intent, ProductAdditionalInfoViewHolder.REQUEST_CODE_VARIANT);
     }
 
@@ -775,7 +790,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @ProductStatus
-    protected int getStatusUpload() {
+    public int getStatusUpload() {
         return ProductStatus.ADD;
     }
 

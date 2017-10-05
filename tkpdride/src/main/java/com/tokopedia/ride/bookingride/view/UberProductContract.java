@@ -47,6 +47,9 @@ public interface UberProductContract {
 
         Context getActivity();
 
+        void showFareListHeader();
+
+        void hideFareListHeader();
     }
 
     interface Presenter extends CustomerPresenter<View> {

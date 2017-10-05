@@ -18,14 +18,13 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPas
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 import com.tokopedia.digital.product.fragment.DigitalProductFragment;
 
 /**
  * @author anggaprasetiyo on 4/25/17.
  */
 
-public class DigitalProductActivity extends BaseDigitalPresenterActivity
+public class DigitalProductActivity extends BasePresenterActivity
         implements DigitalProductFragment.ActionListener {
     public static final String EXTRA_CATEGORY_PASS_DATA = "EXTRA_CATEGORY_PASS_DATA";
     private static final String EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR";
@@ -139,6 +138,6 @@ public class DigitalProductActivity extends BaseDigitalPresenterActivity
 
     @Override
     protected boolean isLightToolbarThemes() {
-        return false;
+        return true;
     }
 }

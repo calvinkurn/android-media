@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.RadioButton;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.category.view.model.CategoryViewModel;
+import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 
 /**
  * @author sebastianuskh on 4/4/17.

@@ -13,7 +13,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 
 import butterknife.BindView;
 
@@ -21,7 +20,7 @@ import butterknife.BindView;
  * Created by nabillasabbaha on 7/25/17.
  */
 
-public class SuccessActivateTokoCashActivity extends BaseDigitalPresenterActivity {
+public class SuccessActivateTokoCashActivity extends BasePresenterActivity {
 
     @BindView(R2.id.desc_success)
     TextView descSuccess;
@@ -93,6 +92,6 @@ public class SuccessActivateTokoCashActivity extends BaseDigitalPresenterActivit
 
     @Override
     protected boolean isLightToolbarThemes() {
-        return false;
+        return true;
     }
 }

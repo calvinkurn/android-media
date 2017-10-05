@@ -7,6 +7,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
+import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
@@ -102,5 +103,14 @@ public class PaymentTracking extends TrackingUtils {
                 .eventCheckout(checkout)
                 .sendScreen(AppScreen.SCREEN_CART_SUMMARY_CHECKOUT)
                 .clearCheckoutDataLayer();
+    }
+
+
+    public static void eventPromoImpression(Promotion promotion) {
+        getGTMEngine().eventBannerImpression(promotion);
+    }
+
+    public static void eventPromoClick(Promotion promotion) {
+        getGTMEngine().eventBannerClick(promotion);
     }
 }

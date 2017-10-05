@@ -10,11 +10,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -41,19 +44,17 @@ import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
+import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
 import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListView;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
-import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
-import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
-import com.tokopedia.seller.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,7 @@ import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQ
 
 @RuntimePermissions
 public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, ProductDraftViewModel>
-        implements TopAdsEmptyAdDataBinder.Callback, ProductDraftListView {
+        implements ProductEmptyDataBinder.Callback, ProductDraftListView {
 
     private FabSpeedDial fabAdd;
 
@@ -84,9 +85,16 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     private BroadcastReceiver draftBroadCastReceiver;
     private TkpdProgressDialog progressDialog;
+    private MenuItem menuDelete;
 
     public static ProductDraftListFragment newInstance() {
         return new ProductDraftListFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -116,7 +124,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                                 }
                                 UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.DELETE_DRAFT);
                             }
-                        }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
                                 // no op
                             }
@@ -142,6 +150,44 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 .build()
                 .inject(this);
         productDraftListPresenter.attachView(this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_draft_list,menu);
+        menuDelete = menu.findItem(R.id.menu_delete);
+        menuDelete.setVisible(totalItem > 0);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onSearchLoaded(@NonNull List<ProductDraftViewModel> list, int totalItem) {
+        super.onSearchLoaded(list, totalItem);
+        menuDelete.setVisible(totalItem > 0);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_delete) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext(), R.style.AppCompatAlertDialogStyle)
+                    .setMessage(getString(R.string.product_draft_delete_all_draft_dialog_message))
+                    .setPositiveButton(getString(R.string.label_delete), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            productDraftListPresenter.clearAllDraftData();
+                        }
+                    }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            // no op, just dismiss
+                        }
+                    });
+            AlertDialog dialog = alertDialogBuilder.create();
+            dialog.show();
+
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -410,11 +456,16 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
+        try {
+            ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                if (serviceClass.getName().equals(service.service.getClassName())) {
+                    return true;
+                }
             }
+        }
+        catch (Exception e) {
+            return true;
         }
         return false;
     }
@@ -480,5 +531,16 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     public void onSaveInstagramResolutionError(int position, String localPath) {
         CommonUtils.UniversalToast(getActivity(),
                 getString(R.string.product_instagram_draft_error_save_resolution, position));
+    }
+
+    @Override
+    public void onSuccessDeleteAllDraft() {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(),getString(R.string.product_draft_success_delete_draft));
+        resetPageAndSearch();
+    }
+
+    @Override
+    public void onErrorDeleteAllDraft() {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(),getString(R.string.product_draft_error_delete_draft));
     }
 }

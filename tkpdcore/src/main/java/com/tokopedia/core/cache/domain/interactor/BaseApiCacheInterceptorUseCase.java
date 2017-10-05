@@ -1,8 +1,8 @@
 package com.tokopedia.core.cache.domain.interactor;
 
 import android.net.Uri;
-import android.util.Log;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -25,7 +25,6 @@ public abstract class BaseApiCacheInterceptorUseCase<E> extends UseCase<E> {
 
     public static final String METHOD = "METHOD";
     public static final String FULL_URL = "FULL_URL";
-    private static final String TAG = "BaseApiCacheInterceptor";
     protected final ApiCacheRepository apiCacheRepository;
     protected String method;
     protected String url;
@@ -77,7 +76,7 @@ public abstract class BaseApiCacheInterceptorUseCase<E> extends UseCase<E> {
             UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(uri2);
             queryString.remove("hash");
             queryString.remove("device_time");
-            Log.d(TAG, "sample : " + queryString);
+            CommonUtils.dumper("sample : " + queryString);
             cacheApiData.setRequestParam(((queryString != null) ? "?" + queryString.toString().trim() : ""));
         } catch (URISyntaxException e) {
             e.printStackTrace();

@@ -14,14 +14,13 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 import com.tokopedia.digital.widget.fragment.DigitalCategoryListFragment;
 
 /**
  * @author anggaprasetiyo on 7/3/17.
  */
 
-public class DigitalCategoryListActivity extends BaseDigitalPresenterActivity {
+public class DigitalCategoryListActivity extends BasePresenterActivity {
 
     @Override
     public String getScreenName() {
@@ -107,6 +106,6 @@ public class DigitalCategoryListActivity extends BaseDigitalPresenterActivity {
 
     @Override
     protected boolean isLightToolbarThemes() {
-        return false;
+        return true;
     }
 }

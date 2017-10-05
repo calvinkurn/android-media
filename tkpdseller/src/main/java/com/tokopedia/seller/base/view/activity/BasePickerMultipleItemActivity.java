@@ -10,9 +10,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.ItemPickerType;
 import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;
@@ -43,6 +45,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     private ImageView arrowImageView;
     private View footerView;
     private View containerListView;
+    protected Button submitButton;
     private int maxItemSelection;
 
     private BottomSheetBehavior bottomSheetBehavior;
@@ -77,7 +80,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
         bottomSheetTitleTextView = (TextView) findViewById(R.id.text_view_bottom_sheet_title);
         bottomSheetContentTextView = (TextView) findViewById(R.id.text_view_bottom_sheet_content);
         arrowImageView = (ImageView) findViewById(R.id.image_view_arrow);
-        View submitButton = findViewById(R.id.button_submit);
+        submitButton = (Button) findViewById(R.id.button_submit);
         bottomSheetHeaderView = findViewById(R.id.layout_bottom_sheet_header);
         bottomSheetHeaderView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +129,7 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     }
 
     protected void expandBottomSheet() {
+        CommonUtils.hideKeyboard(this, getWindow().getDecorView());
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
@@ -203,12 +207,12 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
     public void showFooterAndInfo(boolean show) {
         bottomSheetContainerView.setVisibility(show ? View.VISIBLE : View.GONE);
         footerView.setVisibility(show ? View.VISIBLE : View.GONE);
+        int containerBottomMargin = (int) getResources().getDimension(R.dimen.base_picker_multiple_item_footer_height);
         if (!show) {
-            int containerBottomMargin = 0;
-            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) containerListView.getLayoutParams();
-            p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, containerBottomMargin);
-            containerListView.requestLayout();
-        } else {
+            containerBottomMargin = 0;
+        }
+        updateContainerListBottomMargin(containerBottomMargin);
+        if (show) {
             showBottomSheetInfo(true);
         }
     }
@@ -221,12 +225,18 @@ public abstract class BasePickerMultipleItemActivity<T extends ItemPickerType> e
             containerBottomMargin += getResources().getDimension(R.dimen.base_picker_multiple_item_bottom_sheet_header_height) -
                     getResources().getDimension(R.dimen.base_picker_multiple_item_bottom_sheet_header_shadow_height);
         }
+        updateContainerListBottomMargin(containerBottomMargin);
         if (bottomSheetBehavior.getPeekHeight() == peekHeight) {
             return;
         }
         bottomSheetBehavior.setPeekHeight(peekHeight);
+    }
+
+    private void updateContainerListBottomMargin(int containerBottomMargin) {
         ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) containerListView.getLayoutParams();
-        p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, containerBottomMargin);
-        containerListView.requestLayout();
+        if (p.bottomMargin != containerBottomMargin) {
+            p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, containerBottomMargin);
+            containerListView.requestLayout();
+        }
     }
 }

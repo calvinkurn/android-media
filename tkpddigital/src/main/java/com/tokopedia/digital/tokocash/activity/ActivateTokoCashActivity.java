@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 import com.tokopedia.digital.tokocash.fragment.ActivateTokoCashFragment;
 import com.tokopedia.digital.tokocash.fragment.RequestOTPWalletFragment;
 
@@ -15,7 +15,7 @@ import com.tokopedia.digital.tokocash.fragment.RequestOTPWalletFragment;
  * Created by nabillasabbaha on 7/24/17.
  */
 
-public class ActivateTokoCashActivity extends BaseDigitalPresenterActivity
+public class ActivateTokoCashActivity extends BasePresenterActivity
         implements ActivateTokoCashFragment.ActionListener, RequestOTPWalletFragment.ActionListener {
 
     public static Intent newInstance(Context context) {
@@ -96,6 +96,6 @@ public class ActivateTokoCashActivity extends BaseDigitalPresenterActivity
 
     @Override
     protected boolean isLightToolbarThemes() {
-        return false;
+        return true;
     }
 }

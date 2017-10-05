@@ -12,12 +12,13 @@
         android:visibility="gone"
         app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
-        app:content="@string/product_label_choose" />
+        app:content="@string/product_label_choose"
+        app:weighted="true"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@drawable/line_separator_medium"/>
+        android:background="@drawable/bg_line_separator"/>
 
     <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/label_view_variant_level_two"
@@ -26,7 +27,8 @@
         android:visibility="gone"
         app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
-        app:content="@string/product_label_choose" />
+        app:content="@string/product_label_choose"
+        app:weighted="true"/>
 
     <LinearLayout
         android:id="@+id/linear_layout_variant_list"

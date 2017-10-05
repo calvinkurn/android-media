@@ -2,7 +2,6 @@ package com.tokopedia.seller.common.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
@@ -41,6 +40,7 @@ public class LabelView extends BaseCustomView {
     private float textSize;
 
     private boolean enabled;
+    private boolean weighted;
 
     public LabelView(Context context) {
         super(context);
@@ -58,7 +58,6 @@ public class LabelView extends BaseCustomView {
     }
 
     private void init(AttributeSet attrs) {
-        init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
         try {
             titleText = styledAttributes.getString(R.styleable.LabelView_title);
@@ -71,13 +70,20 @@ public class LabelView extends BaseCustomView {
             maxLines = styledAttributes.getInt(R.styleable.LabelView_content_max_lines, 1);
             textSize = styledAttributes.getDimension(R.styleable.LabelView_lv_font_size,
                     getResources().getDimension(com.tokopedia.design.R.dimen.font_subheading));
+            weighted = styledAttributes.getBoolean(R.styleable.LabelView_weighted, false);
         } finally {
             styledAttributes.recycle();
         }
+        init();
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.item_detail_topads_layout, this);
+        View view;
+        if (weighted) {
+            view = inflate(getContext(), R.layout.widget_label_view_weighted, this);
+        } else {
+            view = inflate(getContext(), R.layout.widget_label_view, this);
+        }
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         contentTextView = (TextView) view.findViewById(R.id.content_text_view);
         arrow = (ImageView) view.findViewById(R.id.arrow_left);

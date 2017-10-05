@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:orientation="vertical"
-              android:padding="@dimen/padding_detail">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_detail">
 
     <TextView
         android:id="@+id/tv_title_category"
@@ -16,52 +16,65 @@
         android:paddingLeft="@dimen/padding_vvs"
         android:paddingRight="@null"
         android:paddingStart="@dimen/padding_vvs"
-        tools:text="Beli Pulsa"/>
+        tools:text="Beli Pulsa" />
 
     <LinearLayout
         android:id="@+id/holder_client_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <LinearLayout
         android:id="@+id/holder_chooser_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <LinearLayout
         android:id="@+id/holder_additional_info_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <LinearLayout
         android:id="@+id/holder_price_info_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
-    <CheckBox
-        android:id="@+id/cb_instant_checkout"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="start"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
+    <RelativeLayout
+        android:id="@+id/layout_checkout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/digital_padding_16"
-        android:layout_weight="0.60"
-        android:text="@string/label_instant_payment_digital"
-        android:textColor="@color/checkbox_text"
-        android:textSize="@dimen/fontvs"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible">
+
+        <CheckBox
+            android:id="@+id/cb_instant_checkout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="@string/label_instant_payment_digital"
+            android:textColor="@color/checkbox_text"
+            android:textSize="@dimen/fontvs" />
+
+        <ImageView
+            android:id="@+id/tooltip_instant_checkout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_toRightOf="@+id/cb_instant_checkout"
+            android:layout_centerVertical="true"
+            android:src="@drawable/info_icon" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/btn_buy_digital"
         style="@style/DigitalButtonBuy"
         android:layout_marginBottom="@dimen/padding_med"
         android:layout_marginTop="@dimen/digital_padding_28"
-        android:text="@string/label_btn_buy_digital"/>
+        android:text="@string/label_btn_buy_digital" />
 
 </LinearLayout>

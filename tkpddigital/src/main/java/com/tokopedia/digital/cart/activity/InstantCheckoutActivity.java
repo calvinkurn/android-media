@@ -264,4 +264,9 @@ public class InstantCheckoutActivity extends BaseDigitalPresenterActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         finish();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

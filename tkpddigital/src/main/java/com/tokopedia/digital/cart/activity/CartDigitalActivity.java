@@ -19,14 +19,13 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 import com.tokopedia.digital.cart.fragment.CartDigitalFragment;
 
 /**
  * @author anggaprasetiyo on 2/21/17.
  */
 
-public class CartDigitalActivity extends BaseDigitalPresenterActivity implements
+public class CartDigitalActivity extends BasePresenterActivity implements
         CartDigitalFragment.ActionListener {
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
     private DigitalCheckoutPassData passData;
@@ -143,6 +142,6 @@ public class CartDigitalActivity extends BaseDigitalPresenterActivity implements
 
     @Override
     protected boolean isLightToolbarThemes() {
-        return false;
+        return true;
     }
 }
