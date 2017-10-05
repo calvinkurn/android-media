@@ -66,17 +66,36 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
     }
 
     @Override
-    public Observable<String> getResponse(String url, String method, String params, Boolean isAuth) throws UnknownMethodException {
+    public Observable<String> getResponseJson(String url, String method, String params, Boolean isAuth) throws UnknownMethodException {
         switch(method) {
             case ReactConst.POST:
                 if (isAuth) {
-                    return reactNetworkAuthFactory.createReactNetworkDataSource().post(url, params);
+                    return reactNetworkAuthFactory.createReactNetworkDataSource().postJson(url, params);
                 }
-                else return reactNetworkFactory.createReactNetworkDataSource().post(url, params);
+                else return reactNetworkFactory.createReactNetworkDataSource().postJson(url, params);
             default:
                 throw new UnknownMethodException();
         }
     }
+
+    @Override
+    public Observable<String> getResponseParam(String url, String method, String params, Boolean isAuth) throws UnknownMethodException {
+        switch(method) {
+            case ReactConst.GET:
+                if (isAuth) {
+                    return reactNetworkAuthFactory.createReactNetworkDataSource().getParam(url, params);
+                }
+                else return reactNetworkFactory.createReactNetworkDataSource().getParam(url, params);
+            case ReactConst.POST:
+                if (isAuth) {
+                    return reactNetworkAuthFactory.createReactNetworkDataSource().postParam(url, params);
+                }
+                else return reactNetworkFactory.createReactNetworkDataSource().postParam(url, params);
+            default:
+                throw new UnknownMethodException();
+        }
+    }
+
 
     private Boolean isWSV4(String url) {
         return url.contains("ws.tokopedia.com");

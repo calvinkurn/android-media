@@ -86,8 +86,8 @@ public class DrawerPosHelper extends DrawerHelper
                     true));
         }
 
-        shopLayout.setVisibility(View.VISIBLE);
-        footerShadow.setVisibility(View.VISIBLE);
+        shopLayout.setVisibility(View.GONE);
+        footerShadow.setVisibility(View.GONE);
         return data;
     }
 

@@ -19,7 +19,6 @@ import java.util.Iterator;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -89,7 +88,7 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         try {
             CommonUtils.dumper(url + " " + request);
             Subscription subscribe = reactNetworkRepository
-                    .getResponse(url, method, request, isAuth)
+                    .getResponseJson(url, method, request, isAuth)
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(new Subscriber<String>() {
                         @Override
@@ -114,6 +113,40 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         } catch (UnknownMethodException e) {
             promise.reject(e);
         } catch (Exception e){
+            promise.reject(e);
+        }
+    }
+
+    @ReactMethod
+    public void getResponseParam(String url, String method, String request, Boolean isAuth, final Promise promise) {
+        try {
+            CommonUtils.dumper(url + " " + request);
+            Subscription subscribe = reactNetworkRepository
+                    .getResponseParam(url, method, request, isAuth)
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(new Subscriber<String>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            promise.reject(e);
+                        }
+
+                        @Override
+                        public void onNext(String s) {
+                            if(getCurrentActivity() != null) {
+                                promise.resolve(s);
+                            } else {
+                                promise.resolve("");
+                            }
+                        }
+                    });
+        } catch (UnknownMethodException e) {
+            promise.reject(e);
+        } catch (Exception e) {
             promise.reject(e);
         }
     }

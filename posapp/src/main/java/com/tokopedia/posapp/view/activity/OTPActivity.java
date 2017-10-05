@@ -37,7 +37,7 @@ public class OTPActivity extends BasePresenterActivity
     private ProgressBar progressBar;
 
     @DeepLink(Constants.Applinks.OTP)
-    private Intent newInstance(Context context, Bundle extras) {
+    private static Intent newInstance(Context context, Bundle extras) {
         Intent intent = new Intent(context, OTPActivity.class);
         intent.putExtras(extras);
 
@@ -87,7 +87,7 @@ public class OTPActivity extends BasePresenterActivity
         scroogeWebView.setWebViewClient(new OTPWebViewClient());
         scroogeWebView.setWebChromeClient(new OTPWebViewChromeClient());
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
-        scroogeWebView.postUrl(url, );
+//        scroogeWebView.postUrl(url, );
     }
 
     @Override
