@@ -4,7 +4,6 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.CheckShopFavoritedUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail.SendReplyReviewUseCase;
@@ -13,7 +12,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDeta
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.DeleteReviewResponseSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.FavoriteShopSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetInboxReputationDetailSubscriber;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.LikeDislikeReviewSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.RefreshInboxReputationDetailSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.ReplyReviewSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SendSmileySubscriber;
@@ -35,14 +33,12 @@ public class InboxReputationDetailPresenter
     private final FavoriteShopUseCase favoriteShopUseCase;
     private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
     private final SendReplyReviewUseCase sendReplyReviewUseCase;
-    private final LikeDislikeReviewUseCase likeDislikeReviewUseCase;
     private InboxReputationDetail.View viewListener;
 
     @Inject
     InboxReputationDetailPresenter(
             GetInboxReputationDetailUseCase getInboxReputationDetailUseCase,
             SendSmileyReputationUseCase sendSmileyReputationUseCase,
-            CheckShopFavoritedUseCase checkShopFavoritedUseCase,
             FavoriteShopUseCase favoriteShopUseCase,
             DeleteReviewResponseUseCase deleteReviewResponseUseCase,
             SendReplyReviewUseCase sendReplyReviewUseCase,
@@ -53,7 +49,6 @@ public class InboxReputationDetailPresenter
         this.favoriteShopUseCase = favoriteShopUseCase;
         this.deleteReviewResponseUseCase = deleteReviewResponseUseCase;
         this.sendReplyReviewUseCase = sendReplyReviewUseCase;
-        this.likeDislikeReviewUseCase = likeDislikeReviewUseCase;
         this.sessionHandler = sessionHandler;
     }
 
@@ -71,7 +66,6 @@ public class InboxReputationDetailPresenter
         favoriteShopUseCase.unsubscribe();
         deleteReviewResponseUseCase.unsubscribe();
         sendReplyReviewUseCase.unsubscribe();
-        likeDislikeReviewUseCase.unsubscribe();
     }
 
     @Override
@@ -134,21 +128,6 @@ public class InboxReputationDetailPresenter
                         tab),
                 new RefreshInboxReputationDetailSubscriber(viewListener));
     }
-
-    public void likeDislikeReview(int adapterPosition, String reviewId, int formerLikeStatus, String productId, String shopId) {
-        viewListener.showLoadingDialog();
-        likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.getParam(
-                reviewId, getNewLikeStatus(formerLikeStatus), productId, shopId
-        ), new LikeDislikeReviewSubscriber(viewListener, adapterPosition));
-    }
-
-    private int getNewLikeStatus(int formerLikeStatus) {
-        if (formerLikeStatus == LikeDislikeReviewUseCase.STATUS_LIKE)
-            return LikeDislikeReviewUseCase.STATUS_RESET;
-        else
-            return LikeDislikeReviewUseCase.STATUS_LIKE;
-    }
-
 
 }
 
