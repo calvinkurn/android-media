@@ -282,7 +282,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                     }
 
                     if (view.checkHasFilterAttrIsNull(PAGER_THREE_TAB_PRODUCT_POSITION)) {
-                        fetchDynamicAttribute(source);
+                        fetchDynamicAttribute(source, p.q);
                     }
 
                     if(source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)){
@@ -299,11 +299,9 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
         }
     }
 
-    private void fetchDynamicAttribute(String source) {
+    private void fetchDynamicAttribute(String source, String query) {
 
-        String query = browseProductActivityModel.getQ();
-        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT.equals(source)
-                || BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY.equals(source)) {
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY.equals(source)) {
             query = "";
         }
 
