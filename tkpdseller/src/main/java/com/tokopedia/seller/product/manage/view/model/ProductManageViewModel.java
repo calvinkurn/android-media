@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.seller.base.view.adapter.ItemIdType;
-import com.tokopedia.seller.base.view.adapter.ItemType;
 
 /**
  * Created by zulfikarrahman on 9/22/17.
@@ -21,10 +20,37 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
     private String productStatus;
     private String productCurrencyId;
     private String productUrl;
+    private String productCurrencySymbol;
+    private int productReturnable;
+    private int productPreorder;
 
     @Override
     public int getType() {
         return TYPE;
+    }
+
+    public String getProductCurrencySymbol() {
+        return productCurrencySymbol;
+    }
+
+    public void setProductCurrencySymbol(String productCurrencySymbol) {
+        this.productCurrencySymbol = productCurrencySymbol;
+    }
+
+    public int getProductReturnable() {
+        return productReturnable;
+    }
+
+    public void setProductReturnable(int productReturnable) {
+        this.productReturnable = productReturnable;
+    }
+
+    public int getProductPreorder() {
+        return productPreorder;
+    }
+
+    public void setProductPreorder(int productPreorder) {
+        this.productPreorder = productPreorder;
     }
 
     public String getProductPrice() {
@@ -117,6 +143,9 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         dest.writeString(this.productStatus);
         dest.writeString(this.productCurrencyId);
         dest.writeString(this.productUrl);
+        dest.writeString(this.productCurrencySymbol);
+        dest.writeInt(this.productReturnable);
+        dest.writeInt(this.productPreorder);
     }
 
     protected ProductManageViewModel(Parcel in) {
@@ -127,6 +156,9 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productStatus = in.readString();
         this.productCurrencyId = in.readString();
         this.productUrl = in.readString();
+        this.productCurrencySymbol = in.readString();
+        this.productReturnable = in.readInt();
+        this.productPreorder = in.readInt();
     }
 
     public static final Creator<ProductManageViewModel> CREATOR = new Creator<ProductManageViewModel>() {

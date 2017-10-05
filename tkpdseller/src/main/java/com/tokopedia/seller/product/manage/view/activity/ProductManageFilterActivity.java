@@ -35,8 +35,7 @@ public class ProductManageFilterActivity extends BaseSimpleActivity {
     }
 
     @Override
-    protected void setToolbarColorWhite() {
-        super.setToolbarColorWhite();
-        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close));
+    protected boolean isShowCloseButton() {
+        return true;
     }
 }

@@ -45,6 +45,7 @@ import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.gm.GMModuleRouter;
+import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
@@ -64,13 +65,13 @@ import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
-import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
-import com.tokopedia.seller.product.manage.view.activity.ManageProductActivity;
+import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
+import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
@@ -170,7 +171,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, ManageProductActivity.class);
+        Intent intent = new Intent(context, ProductManageActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -191,7 +192,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void clearEtalaseCache() {
-        AddProductPresenterImpl.clearEtalaseCache(getApplicationContext());
+        EtalaseUtils.clearEtalaseCache(getApplicationContext());
     }
 
     @Override
@@ -201,8 +202,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void resetAddProductCache(Context context) {
-        AddProductPresenterImpl.clearEtalaseCache(context);
-        AddProductPresenterImpl.clearDepartementCache(context);
+        EtalaseUtils.clearEtalaseCache(context);
+        EtalaseUtils.clearDepartementCache(context);
     }
 
     @Override
@@ -545,7 +546,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Observable<GMFeaturedProductDomainModel> getFeaturedProduct() {
         GMFeaturedProductGetListUseCase gmFeaturedProductGetListUseCase = getGMComponent().getFeaturedProductGetListUseCase();
-        return gmFeaturedProductGetListUseCase.getExecuteObservable(RequestParams.EMPTY);
+        return gmFeaturedProductGetListUseCase.getExecuteObservableAsync(RequestParams.EMPTY);
     }
 
     @Override
@@ -564,5 +565,11 @@ public abstract class SellerRouterApplication extends MainApplication
     public void goToGMSubscribe(Activity activity) {
         Intent intent = new Intent(activity, GmSubscribeHomeActivity.class);
         activity.startActivity(intent);
+    }
+
+    @Override
+    public Observable<Boolean> setCashBack(String productId, String cashback) {
+        SetCashbackUseCase setCashbackUseCase = getGMComponent().getSetCashbackUseCase();
+        return setCashbackUseCase.getExecuteObservableAsync(SetCashbackUseCase.createRequestParams(productId, cashback));
     }
 }

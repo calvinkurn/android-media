@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:padding="@dimen/padding_detail">
+    android:background="@android:color/white"
+    android:padding="@dimen/margin_sm">
 
     <TextView
-        android:id="@+id/title_sort"
-        android:layout_toLeftOf="@+id/image_checklist"
-        style="@style/TextView.Body1.BlackSecondary"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true" />
+        android:id="@+id/text_view_title"
+        style="@style/TextView.Subheading.BlackSecondary"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        tools:text="@string/app_id" />
 
     <ImageView
-        android:id="@+id/image_checklist"
-        android:layout_width="@dimen/image_width_s"
-        android:layout_height="@dimen/image_width_s"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
+        android:id="@+id/image_view_check"
+        android:layout_width="@dimen/image_width_xs"
+        android:layout_height="@dimen/image_width_xs"
         android:src="@drawable/ic_check_green_24dp" />
-</RelativeLayout>
+</LinearLayout>

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.myproduct.presenter;
+package com.tokopedia.seller.product.etalase.utils;
 
 import android.content.Context;
 
@@ -9,7 +9,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
  * <p>
  * migrate retrofit 2 by Angga.Prasetiyo
  */
-public class AddProductPresenterImpl {
+public class EtalaseUtils {
 
     public static final String FETCH_DEP_PARENT = "fetch_dep_parent";
     public static final String FETCH_DEP_CHILD = "fetch_dep_child";
@@ -39,7 +39,7 @@ public class AddProductPresenterImpl {
     }
 
     public static void clearDepartementCache(Context context) {
-        LocalCacheHandler.clearCache(context, AddProductPresenterImpl.FETCH_DEP_CHILD);
-        LocalCacheHandler.clearCache(context, AddProductPresenterImpl.FETCH_DEP_PARENT);
+        LocalCacheHandler.clearCache(context, EtalaseUtils.FETCH_DEP_CHILD);
+        LocalCacheHandler.clearCache(context, EtalaseUtils.FETCH_DEP_PARENT);
     }
 }
