@@ -218,9 +218,11 @@ public class InboxReputationDetailItemViewHolder extends
             emptyReviewText.setVisibility(View.GONE);
             viewReview.setVisibility(View.VISIBLE);
             giveReview.setVisibility(View.GONE);
+
             reviewerName.setText(MethodChecker.fromHtml(getReviewerNameText(element
                     .getReviewerName())));
             String time;
+
             if (element.isReviewIsEdited()) {
                 time = getFormattedTime(element.getReviewTime()) +
                         MainApplication.getAppContext().getString(R.string.edited);
@@ -247,16 +249,16 @@ public class InboxReputationDetailItemViewHolder extends
             if (element.getReviewResponseViewModel() != null
                     && !TextUtils.isEmpty(element.getReviewResponseViewModel().getResponseMessage())) {
                 setSellerReply(element);
-            } else if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
-                seeReplyText.setVisibility(View.GONE);
-                replyArrow.setVisibility(View.GONE);
-                sellerReplyLayout.setVisibility(View.GONE);
-                sellerAddReplyLayout.setVisibility(View.VISIBLE);
             } else {
                 seeReplyText.setVisibility(View.GONE);
                 replyArrow.setVisibility(View.GONE);
                 sellerReplyLayout.setVisibility(View.GONE);
-                sellerAddReplyLayout.setVisibility(View.GONE);
+
+                if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+                    sellerAddReplyLayout.setVisibility(View.VISIBLE);
+                } else {
+                    sellerAddReplyLayout.setVisibility(View.GONE);
+                }
             }
 
 
