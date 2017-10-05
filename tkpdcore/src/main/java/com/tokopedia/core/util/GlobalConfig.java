@@ -20,6 +20,7 @@ public class GlobalConfig {
     public static String PACKAGE_APPLICATION = PACKAGE_CONSUMER_APP;
     public static Boolean DEBUG = false;
     public static boolean ENABLE_DISTRIBUTION = false;
+    public static String FLAVOR = "";
 
     public static boolean isSellerApp(){
         return APPLICATION_TYPE == SELLER_APPLICATION;

@@ -2,39 +2,42 @@ package com.tokopedia.posapp.view.fragment;
 
 import android.os.Bundle;
 
-import com.tokopedia.core.app.ReactNativeFragmentV2;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.posapp.react.ReactConst;
+import com.tokopedia.posapp.react.PosReactConst;
 
 /**
  * Created by okasurya on 8/24/17.
  */
 
-public class ProductListFragment extends ReactNativeFragmentV2 {
+public class ProductListFragment extends ReactNativeFragment {
 
     public static final String SHOP_ID = "SHOP_ID";
     public static final String ETALASE_ID = "ETALASE_ID";
+    private static final String USER_ID = "USER_ID";
 
     public static ProductListFragment newInstance(String shopId, String etalaseId) {
         Bundle args = new Bundle();
         args.putString(SHOP_ID, shopId);
         args.putString(ETALASE_ID, etalaseId);
+        args.putString(PosReactConst.Screen.PARAM_POS_PAGE, PosReactConst.Page.PRODUCT_LIST);
         ProductListFragment fragment = new ProductListFragment();
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
-    protected String getScreenName() {
-        return null;
+    public String getModuleName() {
+        return ReactConst.MAIN_MODULE;
     }
 
     @Override
-    public String getReactScreenName() {
-        return ReactConst.Screen.POS_O2O;
-    }
-
-    @Override
-    public String getUserId() {
-        return SessionHandler.getLoginID(getContext());
+    protected Bundle getInitialBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putAll(getArguments());
+        bundle.putString(ReactConst.KEY_SCREEN, PosReactConst.Screen.MAIN_POS_O2O);
+        bundle.putString(USER_ID, SessionHandler.getLoginID(getActivity()));
+        return bundle;
     }
 }

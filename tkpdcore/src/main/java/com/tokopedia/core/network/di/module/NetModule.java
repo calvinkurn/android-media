@@ -8,6 +8,8 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
+import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardOkHttp;
+import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardRetrofit;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
@@ -165,5 +167,16 @@ public class NetModule {
     public Retrofit provideUploadWsV4Retrofit(@UploadWsV4Auth OkHttpClient okHttpClient,
                                               Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
+    }
+
+    @ScroogeCreditCardRetrofit
+    @ApplicationScope
+    @Provides
+    public Retrofit provideScroogeCreditCardRetrofit(@ScroogeCreditCardOkHttp OkHttpClient okHttpClient,
+                                                     Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder
+                .baseUrl(TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN)
+                .client(okHttpClient)
+                .build();
     }
 }

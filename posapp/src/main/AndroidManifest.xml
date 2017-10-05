@@ -21,6 +21,10 @@
             android:name=".view.service.CacheService"
             android:exported="false" />
 
+        <service
+            android:name=".view.service.SchedulerService"
+            android:exported="false" />
+
         <receiver
             android:name=".view.service.StartUpReceiver"
             android:enabled="true"
@@ -30,13 +34,17 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".PosAppSplashScreen">
+        <activity android:name=".PosAppSplashScreen"
+            android:theme="@style/Theme.Tokopedia3.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".deeplink.DeeplinkHandlerActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.LoginActivity"
             android:screenOrientation="portrait" />
@@ -50,13 +58,32 @@
             android:name=".view.activity.InstallmentSimulationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.PaymentActivity"
+            android:name=".view.activity.ScanCreditCardActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.CardDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.ProductListActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".view.activity.LocalCartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.PaymentActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.PaymentProcessingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.TransactionHistoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.ReactInstallmentActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.OTPActivity"
             android:screenOrientation="portrait" />
     </application>
 

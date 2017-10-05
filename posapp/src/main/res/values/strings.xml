@@ -32,4 +32,9 @@
     <string name="cardscan_valid_label">Masa Berlaku</string>
     <string name="cardscan_cvv_message">Silahkan masukkan nomor CVV anda</string>
     <string name="cardscan_pay_label">Bayar</string>
+
+    <string name="cart_title">Keranjang Belanja</string>
+    <string name="password_dialog_message">Masukkan Password</string>
+    <string name="password_action_cancel">Batal</string>
+    <string name="password_action_continue">Lanjut</string>
 </resources>

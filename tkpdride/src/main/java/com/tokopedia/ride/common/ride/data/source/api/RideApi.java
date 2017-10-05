@@ -14,6 +14,8 @@ import com.tokopedia.ride.common.ride.data.entity.RideHistoryResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
+import com.tokopedia.ride.common.ride.data.entity.TipListEntity;
+import com.tokopedia.ride.common.ride.data.entity.UpdateDestinationEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -88,4 +90,12 @@ public interface RideApi {
 
     @GET(RideUrl.CANCEL_REASONS)
     Observable<CancelReasonsResponseEntity> cancelReasons(@QueryMap TKPDMapParam<String, Object> parameters);
+
+    @POST(RideUrl.UPDATE_REQUEST)
+    @FormUrlEncoded
+    Observable<UpdateDestinationEntity> updateRequest(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @POST(RideUrl.SEND_TIP)
+    @FormUrlEncoded
+    Observable<String> sendTip(@FieldMap TKPDMapParam<String, Object> parameters);
 }

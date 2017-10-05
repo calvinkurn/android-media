@@ -68,8 +68,10 @@ public class CloudProfileSource {
                     analyticsCacheHandler.setUserDataCache(profileModel.getProfileData());
 
                     if (profileModel.getProfileData().getShopInfo() != null &&
-                            profileModel.getProfileData().getShopInfo().getShopId() != null)
+                            profileModel.getProfileData().getShopInfo().getShopId() != null) {
                         sessionHandler.setShopId(profileModel.getProfileData().getShopInfo().getShopId());
+                        sessionHandler.setShopName(profileModel.getProfileData().getShopInfo().getShopName());
+                    }
                 }
             }
         };

@@ -1,7 +1,7 @@
 package com.tokopedia.posapp.data.repository;
 
 import com.tokopedia.posapp.data.factory.CartFactory;
-import com.tokopedia.posapp.domain.model.cart.AddToCartStatusDomain;
+import com.tokopedia.posapp.domain.model.cart.ATCStatusDomain;
 import com.tokopedia.posapp.domain.model.cart.CartDomain;
 
 import rx.Observable;
@@ -18,7 +18,27 @@ public class CartRepositoryImpl implements CartRepository {
     }
 
     @Override
-    public Observable<AddToCartStatusDomain> addToCart(CartDomain cartDomain) {
-        return cartFactory.local().addToCart(cartDomain);
+    public Observable<ATCStatusDomain> storeCartProduct(CartDomain cartDomain) {
+        return cartFactory.local().storeCartProduct(cartDomain);
+    }
+
+    @Override
+    public Observable<ATCStatusDomain> updateCartProduct(CartDomain cartDomain) {
+        return cartFactory.local().updateCartProduct(cartDomain);
+    }
+
+    @Override
+    public Observable<ATCStatusDomain> deleteCartProduct(CartDomain cartDomain) {
+        return cartFactory.local().deleteCartProduct(cartDomain);
+    }
+
+    @Override
+    public Observable<ATCStatusDomain> deleteCart() {
+        return cartFactory.local().deleteCart();
+    }
+
+    @Override
+    public Observable<CartDomain> getCartProduct(int productId) {
+        return cartFactory.local().getCartProduct(productId);
     }
 }

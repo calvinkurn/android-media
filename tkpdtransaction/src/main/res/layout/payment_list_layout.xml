@@ -77,7 +77,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/quick_payment"
-                        android:textSize="@dimen/text_size_l_medium" />
+                        android:textSize="@dimen/text_size_l_medium"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 
@@ -91,7 +92,8 @@
                     android:id="@+id/bca_one_click_register_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/add_bca_one_click_layout"

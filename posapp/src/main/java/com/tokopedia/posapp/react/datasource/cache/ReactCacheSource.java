@@ -8,6 +8,14 @@ import rx.Observable;
 
 public interface ReactCacheSource {
     Observable<String> getData(String id);
-    Observable<String> getListData(int offset, int limit);
-    Observable<String> getAllData();
+
+    Observable<String> getDataList(int offset, int limit);
+
+    Observable<String> getDataAll();
+
+    Observable<String> deleteAll();
+
+    Observable<String> deleteItem(String id);
+
+    Observable<String> update(String data);
 }

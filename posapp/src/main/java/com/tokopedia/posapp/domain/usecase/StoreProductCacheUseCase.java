@@ -1,14 +1,12 @@
 package com.tokopedia.posapp.domain.usecase;
 
-import com.tokopedia.core.base.domain.DefaultParams;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.shopinfo.models.productmodel.ProductResponseData;
 import com.tokopedia.posapp.base.domain.UseCaseWithParams;
-import com.tokopedia.posapp.data.repository.ShopRepository;
-import com.tokopedia.posapp.database.ProductSavedResult;
-import com.tokopedia.posapp.domain.model.shop.ShopDomain;
-import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
+import com.tokopedia.posapp.data.repository.ProductRepository;
+import com.tokopedia.posapp.domain.model.DataStatus;
+import com.tokopedia.posapp.domain.model.shop.ProductListDomain;
 
 import rx.Observable;
 
@@ -16,18 +14,18 @@ import rx.Observable;
  * Created by okasurya on 8/29/17.
  */
 
-public class StoreProductCacheUseCase extends UseCaseWithParams<ShopProductListDomain, ProductSavedResult> {
-    ShopRepository shopRepository;
+public class StoreProductCacheUseCase extends UseCaseWithParams<ProductListDomain, DataStatus> {
+    ProductRepository productRepository;
 
     public StoreProductCacheUseCase(ThreadExecutor threadExecutor,
-                          PostExecutionThread postExecutionThread,
-                          ShopRepository shopRepository) {
+                                    PostExecutionThread postExecutionThread,
+                                    ProductRepository productRepository) {
         super(threadExecutor, postExecutionThread);
-        this.shopRepository = shopRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
-    public Observable<ProductSavedResult> createObservable(ShopProductListDomain shopProductListDomain) {
-        return shopRepository.storeProductToCache(shopProductListDomain);
+    public Observable<DataStatus> createObservable(ProductListDomain productListDomain) {
+        return productRepository.storeProductToCache(productListDomain);
     }
 }

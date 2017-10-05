@@ -3,10 +3,13 @@ package com.tokopedia.posapp;
 import android.content.Intent;
 
 import com.tokopedia.core.SplashScreen;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.view.activity.LoginActivity;
 import com.tokopedia.posapp.view.activity.OutletActivity;
+import com.tokopedia.posapp.view.activity.ProductListActivity;
 import com.tokopedia.posapp.view.service.CacheService;
+import com.tokopedia.posapp.view.service.SchedulerService;
 
 /**
  * Created by okasurya on 7/28/17.
@@ -15,12 +18,13 @@ import com.tokopedia.posapp.view.service.CacheService;
 public class PosAppSplashScreen extends SplashScreen {
     @Override
     public void finishSplashScreen() {
+        Intent intent;
         if(!SessionHandler.isV4Login(this)) {
-            startActivity(LoginActivity.getPosLoginIntent(this));
+           intent = LoginActivity.getPosLoginIntent(this);
         } else {
-            startActivity(new Intent(this, OutletActivity.class));
-            startService(CacheService.getServiceIntent(this));
+            intent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
         }
+        startActivity(intent);
         finish();
     }
 }

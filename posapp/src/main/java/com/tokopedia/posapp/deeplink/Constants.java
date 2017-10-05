@@ -6,6 +6,12 @@ package com.tokopedia.posapp.deeplink;
 
 public interface Constants {
     interface Applinks {
-        String PRODUCT_INFO = "tokopedia://product/{productId}";
+        String PRODUCT_INFO = "posapp://product/{productId}";
+        String PRODUCT_LIST = "posapp://product";
+        String CREDIT_CARD_INSTALLMENT = "posapp://installment";
+        String PAYMENT_CHECKOUT = "posapp://payment/checkout";
+        String PAYMENT_SCAN_CC = "posapp://payment/scan";
+        String PAYMENT_PROCESSING = "posapp://payment/process";
+        String OTP = "posapp://payment/otp";
     }
 }

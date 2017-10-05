@@ -23,6 +23,7 @@ import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.di.qualifier.AccountsQualifier;
 import com.tokopedia.core.network.di.qualifier.AceAuth;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
@@ -32,6 +33,7 @@ import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
+import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardRetrofit;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
@@ -84,6 +86,7 @@ public interface AppComponent {
     Retrofit mojitoRetrofit();
 
     @HadesQualifier
+
     Retrofit hadesRetrofit();
 
     @YoutubeQualifier
@@ -101,6 +104,9 @@ public interface AppComponent {
     @CartQualifier
     Retrofit cartRetrofit();
 
+    @AccountsQualifier
+    Retrofit accountRetrofit();
+
     Retrofit.Builder retrofitBuilder();
 
     Gson gson();
@@ -113,6 +119,9 @@ public interface AppComponent {
 
     @WsV4QualifierWithErrorHander
     Retrofit baseDomainWithErrorHandlerRetrofit();
+
+    @ScroogeCreditCardRetrofit
+    Retrofit scroogeCreditCardRetrofit();
 
     ThreadExecutor threadExecutor();
 

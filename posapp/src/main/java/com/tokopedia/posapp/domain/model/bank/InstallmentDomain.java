@@ -6,10 +6,10 @@ package com.tokopedia.posapp.domain.model.bank;
 
 public class InstallmentDomain {
     private int term;
-    private float feeValue;
+    private double feeValue;
     private String feeType;
-    private float interest;
-    private float minimumAmount;
+    private double interest;
+    private double minimumAmount;
 
     public int getTerm() {
         return term;
@@ -19,11 +19,11 @@ public class InstallmentDomain {
         this.term = term;
     }
 
-    public float getFeeValue() {
+    public double getFeeValue() {
         return feeValue;
     }
 
-    public void setFeeValue(float feeValue) {
+    public void setFeeValue(double feeValue) {
         this.feeValue = feeValue;
     }
 
@@ -35,19 +35,19 @@ public class InstallmentDomain {
         this.feeType = feeType;
     }
 
-    public float getInterest() {
+    public double getInterest() {
         return interest;
     }
 
-    public void setInterest(float interest) {
+    public void setInterest(double interest) {
         this.interest = interest;
     }
 
-    public float getMinimumAmount() {
+    public double getMinimumAmount() {
         return minimumAmount;
     }
 
-    public void setMinimumAmount(float minimumAmount) {
+    public void setMinimumAmount(double minimumAmount) {
         this.minimumAmount = minimumAmount;
     }
 }

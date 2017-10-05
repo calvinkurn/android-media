@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, Image, FlatList, StyleSheet, Dimensions } from 'react-native'
-import { icons } from '../../../icons/index'
+//import { icons } from '../../../icons/index'
 
 const { width } = Dimensions.get('window')
 
@@ -25,14 +25,15 @@ const OfficialStoreIntro = () => {
   return (
     <View style={styles.osIntro}>
       <View style={styles.osIntroInner}>
-        <Image source={ icons.icon_usp } style={styles.osIntroImage}/>
+        <Image source={{ uri : 'https://ecs7.tokopedia.net/img/android_offstore/icon-usp.png' }} style={styles.osIntroImage}/>
         <View style={styles.osIntroTextWrap}>
+
           <Text style={styles.uspHeadingTitle}>{'Official Store Tokopedia'.toUpperCase()}</Text>
           <View style={styles.uspTextInner} onLayout={this.getWidthofView}>
           {
             uspText.map((usp, idx) => (
               <View key={idx} style={styles.uspText}>
-                <Image source={icons.icon_gcheck} style={{width: 10, height: 15, resizeMode: 'contain', marginRight: 5, marginLeft: 5}}/>
+                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_offstore/icon-gcheck.png' }} style={{width: 10, height: 15, resizeMode: 'contain', marginRight: 5, marginLeft: 5}}/>
                 <Text numberOfLines={2} style={styles.uspTextContent}>{usp}</Text>
               </View>
             ))

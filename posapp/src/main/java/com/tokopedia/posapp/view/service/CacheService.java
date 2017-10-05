@@ -7,8 +7,6 @@ import android.content.Context;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.posapp.domain.usecase.GetProductListUseCase;
-import com.tokopedia.posapp.domain.usecase.StoreProductCacheUseCase;
 import com.tokopedia.posapp.view.Cache;
 import com.tokopedia.posapp.view.presenter.CachePresenter;
 import com.tokopedia.posapp.di.component.DaggerPosCacheComponent;
@@ -19,13 +17,10 @@ import javax.inject.Inject;
  * @author okasurya on 8/28/2017
  */
 public class CacheService extends IntentService implements Cache.CallbackListener {
-    private static final String ACTION_START = "com.tokopedia.posapp.view.service.action.START";
+    private static final String ACTION_START = "com.tokopedia.posapp.view.CacheService.action.START";
 
     @Inject
     CachePresenter presenter;
-
-    GetProductListUseCase getProductListUseCase;
-    StoreProductCacheUseCase storeProductCacheUseCase;
 
     public CacheService() {
         super("CacheService");

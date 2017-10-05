@@ -26,4 +26,12 @@ public abstract class BaseSearchListFragment<P, T extends ItemType> extends Base
         searchInputView = (SearchInputView) view.findViewById(R.id.search_input_view);
         searchInputView.setListener(this);
     }
+
+    protected void showSearchView(boolean isVisible) {
+        if(isVisible) {
+            searchInputView.setVisibility(View.VISIBLE);
+        }else{
+            searchInputView.setVisibility(View.GONE);
+        }
+    }
 }

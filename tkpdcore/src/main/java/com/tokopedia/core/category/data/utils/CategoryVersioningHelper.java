@@ -31,7 +31,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by sebastianuskh on 3/9/17.
  */
-
+@Deprecated
 public class CategoryVersioningHelper {
     public static Subscription checkVersionCategory(Context context, final CategoryVersioningHelperListener listener) {
         HadesCategoryApi api = createHadesApi();

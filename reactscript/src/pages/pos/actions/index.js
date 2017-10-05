@@ -1,26 +1,76 @@
 import axios from 'axios'
+import {
+  PosCacheModule,
+  NetworkModule,
+  SessionModule,
+  PaymentModule,
+  UtilModule
+} from 'NativeModules'
+import { 
+  BASE_API_URL_PAYMENT,
+  BASE_API_URL_SCROOGE,
+  BASE_API_URL_PCIDSS
+} from '../lib/api.js'
 
-// Product list action and action creators
+
+
+// ===================== Product List ======================= //
 export const FETCH_PRODUCTS = 'FETCH_PRODUCTS'
-export const fetchProducts = (shopId, start, rows, etalaseId) => {
-  const eId = +etalaseId || 0
-  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=${rows}&shop_id=${shopId}&start=${start}`
-
-  if (eId) {
-    url += `&etalase=${eId}`
-  }
-
+export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryText) => {
   return {
     type: FETCH_PRODUCTS,
-    payload: axios.get(url)
+    payload: PosCacheModule.getDataAll("PRODUCT")
+      .then(response => {
+        const jsonResponse = JSON.parse(response)
+        return jsonResponse;
+      })
+      .catch(error => {})
   }
 }
+
+// ==================== Search Product ==================== //
+export const SEARCH_PRODUCT = 'SEARCH_PRODUCT'
+export const searchProduct = (product, etalaseId) => {
+  return {
+    type: SEARCH_PRODUCT,
+    payload: ProductDiscoveryModule.search(`{ product: ${product}, etalase_id: ${etalaseId} }`)
+                .then(res => {
+                  const jsonResponse = JSON.parse(res)
+                  console.log(jsonResponse)
+                  return jsonResponse
+                })
+                .catch(err => {})
+  }
+}
+
+
+export const FETCH_SHOP_NAME = 'FETCH_SHOP_NAME'
+export const fetchShopName = () => ({
+  type: FETCH_SHOP_NAME,
+  payload: SessionModule.getShopName()
+    .then(res => {
+      return res
+    })
+    .catch(err => console.log(err))
+})
+
+export const FETCH_SHOP_ID = 'FETCH_SHOP_ID'
+export const fetchShopId = () => ({
+  type: FETCH_SHOP_ID,
+  payload: SessionModule.getShopId()
+})
 
 export const FETCH_ETALASE = 'FETCH_ETALASE'
 export const fetchEtalase = (shopId) => ({
   type: FETCH_ETALASE,
-  payload: axios.get(`https://tome.tokopedia.com/v1/web-service/shop/get_etalase?shop_id=${shopId}`)
+  payload: PosCacheModule.getDataAll("ETALASE")
+    .then(res => {
+      const jsonResponse = JSON.parse(res)
+      return jsonResponse
+    })
+    .catch(err => console.log(err))
 })
+
 
 export const PULL_TO_REFRESH = 'PULL_TO_REFRESH'
 export const pullToRefresh = () => {
@@ -44,45 +94,302 @@ export const resetProductList = () => {
   }
 }
 
-// Cart actions and action creators
-export const ADD_TO_CART = 'ADD_TO_CART'
-export const addToCart = (item) => {
+// // Cart actions and action creators
+// export const ADD_TO_CART = 'ADD_TO_CART'
+// export const addToCart = (item) => {
+//   return {
+//     type: ADD_TO_CART,
+//     payload: item,
+//   }
+// }
+
+// ====================== Yogie - 18 September 2017 ===================== //
+// Fetch Cart From Local Native Cache
+export const FETCH_CART_FROM_CACHE = 'FETCH_CART_FROM_CACHE'
+export const fetchCartFromCache = () => {
   return {
-    type: ADD_TO_CART,
-    payload: item,
+    type: FETCH_CART_FROM_CACHE,
+    payload: fetchCart()
   }
 }
 
+const fetchCart = () => {
+  return PosCacheModule.getDataAll('CART')
+    .then(response => {
+      const jsonResponse = JSON.parse(response)
+      return jsonResponse.data;
+    })
+    .catch(error => console.log(error))
+}
+
+
+// ===================== Make Payment 1 ===================== //
+export const MAKE_PAYMENT_TO_NATIVE = 'MAKE_PAYMENT_TO_NATIVE'
+export const makePaymentToNative = () => {
+  return {
+    type: MAKE_PAYMENT_TO_NATIVE,
+    payload: doPayment()
+  }
+}
+
+const doPayment = async () => {
+  const env = await getEnv()
+  const api_url = await getBaseAPI(env)
+  const user_id = await getUserId()
+  const addr_id = await getAddrId()
+  const shop_id = await getShopId()
+  const cart = await getCart()
+
+  const data_payment = {
+    base_api_url_payment: api_url.api_url_payment,
+    base_api_url_scrooge: api_url.api_url_scrooge,
+    base_api_url_pcidss: api_url.api_url_pcidss,
+    user_id: parseInt(user_id),
+    os_type: '1',
+    addr_id: parseInt(addr_id),
+    client_id: '',
+    shop_id: parseInt(shop_id),
+    cart: cart.objData
+  }
+
+  const paymentToNative_getParams = await makePaymentToNativeStepOne(data_payment)
+  const signature = await getSignature(paymentToNative_getParams, api_url.api_url_scrooge)
+  const queryParamsToJson = await getJsonFromQueryParams(paymentToNative_getParams.data.query_string)
+
+  const amountFromParams = paymentToNative_getParams.data.parameter.amount
+  const paymentToNative_secondStep = await makePaymentToNativeStepTwo(amountFromParams, queryParamsToJson, data_payment, cart)
+
+
+  // console.log(paymentToNative_getParams)
+  // console.log(signature)
+  // console.log(queryParamsToJson)
+
+}
+
+const getUserId = () => {
+  return SessionModule.getUserId()
+    .then(res => { return res })
+    .catch(err => console.log(err))
+}
+
+const getAddrId = () => {
+  return SessionModule.getAddrId()
+    .then(res => { return res })
+    .catch(err => console.log(err))
+}
+
+const getShopId = () => {
+  return SessionModule.getShopId()
+    .then(res => { return res })
+    .catch(err => console.log(err))
+}
+
+const getCart = async () => {
+  let objData = []
+  let itemsData = []
+  const cart = await fetchCart()
+  
+  cart.list.map((data) => {
+    objData.push({
+      product_id: data.product_id,
+      quantity: data.quantity
+    })
+
+    itemsData.push({
+      product_name: data.product.product_name,
+      quantity: data.quantity,
+      price: data.product.product_price
+    })
+  })
+
+  return { objData, itemsData }
+}
+
+const getEnv = () => {
+  return SessionModule.getEnv()
+    .then(res => { return res })
+    .catch(err => console.log(err))
+}
+
+const getBaseAPI = (env) => {
+  let data_api = {}
+
+  if (env === 'production'){
+    const data_api = {
+      api_url_payment: `${BASE_API_URL_PAYMENT.PRODUCTION}`,
+      api_url_scrooge: `${BASE_API_URL_SCROOGE.PRODUCTION}`,
+      api_url_pcidss: `${BASE_API_URL_PCIDSS.PRODUCTION}`
+    }
+    return data_api
+
+  } else {
+    const data_api = {
+      api_url_payment: `${BASE_API_URL_PAYMENT.STAGING}`,
+      api_url_scrooge: `${BASE_API_URL_SCROOGE.STAGING}`,
+      api_url_pcidss: `${BASE_API_URL_PCIDSS.STAGING}`
+    }
+    return data_api
+  }
+}
+
+const makePaymentToNativeStepOne = (data_payment) => {
+  const data = {
+    user_id: data_payment.user_id,
+    os_type: data_payment.os_type,
+    addr_id: data_payment.addr_id,
+    client_id: data_payment.client_id,
+    shop_id: data_payment.shop_id,
+    cart: data_payment.cart
+  }
+
+  return NetworkModule.getResponseJson(`${data_payment.base_api_url_payment}/o2o/get_payment_params`, `POST`, JSON.stringify(data), true)
+    .then(response => {
+      const jsonResponse = JSON.parse(response)
+      return jsonResponse
+    })
+    .catch(err => { console.log(err) })
+}
+// ===================== Make Payment 1 ===================== //
+
+
+
+// ===================== Get signature ===================== //
+const getSignature = (data, base_api_url_scrooge) => {
+  return UtilModule.generateHmac(JSON.stringify(data.data.parameter), `${base_api_url_scrooge}/v1/api/payment/`)
+    .then(res => { return res })
+    .catch(err => { console.log(err) })
+}
+// ===================== Get signature ===================== //
+
+
+// ===================== Convert Query Params to JSON ===================== //
+const getJsonFromQueryParams = (data) => {
+  return UtilModule.convertParamToJson(JSON.stringify(data))
+    .then(res => {
+      const jsonResponse = JSON.parse(res)
+      return jsonResponse
+    })
+    .catch(err => { console.log(err) })
+}
+// ===================== Convert Query Params to JSON ===================== //
+
+
+// ===================== Make Payment 2 ===================== //
+const makePaymentToNativeStepTwo = (amountFromParams, queryParamsToJson, data_payment, cart) => {
+  console.log(queryParamsToJson)
+  console.log(data_payment) 
+  console.log(cart) 
+
+  let data_items = []
+  cart.itemsData.map((data, index) => {
+    // console.log(data)
+    data_items.push({
+      'items[name]': data.product_name,
+      'items[quantity]': data.quantity,
+      'items[price]': data.price
+    })
+  })
+  console.log(data_items)
+  console.log(JSON.stringify(data_items))
+
+  const data = {
+    merchant_code: queryParamsToJson.merchant_code,
+    profile_code: queryParamsToJson.profile_code,
+    transaction_id: queryParamsToJson.transaction_id,
+    transaction_date: queryParamsToJson.transaction_date,
+    currency: queryParamsToJson.currency,
+    amount: amountFromParams,
+    customer_name: queryParamsToJson.customer_name,
+    customer_email: queryParamsToJson.customer_email,
+    user_defined_value: queryParamsToJson.user_defined_value,
+    payment_metadata: queryParamsToJson.payment_metadata,
+    signature: queryParamsToJson.signature
+  }
+  const stringData = JSON.stringify(data)
+  console.log(data)
+  console.log(stringData)
+
+  // return NetworkModule.getResponse(`${data_payment.base_api_url_scrooge}/v1/api/payment/`, `POST`, JSON.stringify(data), false)
+  //   .then(res => {
+  //     console.log(res)
+  //   })
+  //   .catch(err => { 
+  //     console.log(err) 
+  //   })
+}
+// ===================== Make Payment 2 ===================== //
+
+
+
+
+
+
+//  ==================== Remove 1 item inside Cart ===================== //
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
-export const removeFromCart = (id) => {
+export const removeFromCart = (pid) => {
   return {
     type: REMOVE_FROM_CART,
-    payload: { id }
+    payload: PosCacheModule.deleteItem('CART', pid.toString())
+      .then(response => {
+        const jsonResponse = JSON.parse(response)
+        console.log(response)
+        if (jsonResponse.data.status) {
+          return { pid }
+        }
+      })
+      .catch(error => console.log(error))
   }
 }
 
+//  ==================== Increment Quantity inside Cart ===================== //
 export const INCREMENT_QTY = 'INCREMENT_QTY'
-export const incrementQty = (id) => {
+export const incrementQty = (id, pid, qty) => {
+  const quantity = qty + 1
+
   return {
     type: INCREMENT_QTY,
-    payload: { id }
+    payload: PosCacheModule.update('CART', `{id:${id}, product_id:${pid}, quantity:${quantity}}`)
+      .then(response => {
+        const jsonResponse = JSON.parse(response)
+        if (jsonResponse.data.status) {
+          return { id, pid, quantity }
+        }
+      })
+      .catch(error => console.log(error))
   }
 }
 
+//  ==================== Decrement Quantity inside Cart ===================== //
 export const DECREMENT_QTY = 'DECREMENT_QTY'
-export const decrementQty = (id) => {
+export const decrementQty = (id, pid, qty) => {
+  const quantity = qty - 1
+
   return {
     type: DECREMENT_QTY,
-    payload: { id }
+    payload: PosCacheModule.update('CART', `{id:${id}, product_id:${pid}, quantity:${quantity}}`)
+      .then(response => {
+        const jsonResponse = JSON.parse(response)
+        if (jsonResponse.data.status) {
+          return { id, pid, quantity }
+        }
+      })
+      .catch(error => console.log(error))
   }
 }
 
+
+//  ==================== Clear all Data inside Cart ===================== //
 export const CLEAR_CART = 'CLEAR_CART'
 export const clearCart = () => {
   return {
     type: CLEAR_CART,
+    payload: PosCacheModule.deleteAll('CART')
+      .then(response => { })
+      .catch(error => console.log(error))
   }
 }
+
+
 
 export const BANK_SELECTED = 'BANK_SELECTED'
 export const selectBank = (id) => {
@@ -92,28 +399,43 @@ export const selectBank = (id) => {
   }
 }
 
+//  ==================== Fetch data Bank from Cache ===================== //
 export const FETCH_BANK_FUlFILLED = 'FETCH_BANK_FUlFILLED'
 export const getBankList = () => {
   return {
     type: FETCH_BANK_FUlFILLED,
+    payload: fetchBankData()
   }
 }
 
+const fetchBankData = () => {
+  return PosCacheModule.getDataAll('BANK')
+    .then(response => {
+      const jsonResponse = JSON.parse(response)
+      console.log(jsonResponse.data.list)
+      if (jsonResponse.data) return jsonResponse.data.list
+    })
+    .catch(err => console.log(err))
+}
+
+//  ==================== Fetch data Installment from Cache ===================== //
+export const FETCH_EMI_FUlFILLED = 'FETCH_EMI_FUlFILLED'
+export const getEmiList = () => {
+  return {
+    type: FETCH_EMI_FUlFILLED,
+    payload: fetchBankData()
+  }
+}
 
 export const SELECT_PAYMENT_OPTIONS = 'SELECT_PAYMENT_OPTIONS'
 export const selectPaymentOptions = (option, value) => {
   return {
     type: SELECT_PAYMENT_OPTIONS,
-    payload: {option: option, value: value}
+    payload: { option: option, value: value }
   }
 }
 
-export const FETCH_EMI_FUlFILLED = 'FETCH_EMI_FUlFILLED'
-export const getEmiList = () => {
-  return {
-    type: FETCH_EMI_FUlFILLED,
-  }
-}
+
 
 export const EMI_SELECTED = 'EMI_SELECTED'
 export const selectEmi = (id) => {
@@ -123,7 +445,36 @@ export const selectEmi = (id) => {
   }
 }
 
-//Search actions
+
+//  ==================== Make Payment to Native ===================== //
+export const MAKE_PAYMENT = 'MAKE_PAYMENT'
+export const makePayment = (total_amount, installment_term, cc_no, expiry_date, cvv) => {
+  const data = { total_amount, installment_term, cc_no, expiry_date, cvv }
+
+  return {
+    type: MAKE_PAYMENT,
+    payload: postDataToNative(data)
+  }
+}
+
+const postDataToNative = (data) => {
+  return PaymentModule.pay(`{ 
+    total_amount: ${data.total_amount},
+    installment_term: ${data.installment_term},
+    cc_no: ${data.cc_no},
+    expiry_date: ${data.expiry_date},
+    cvv: ${data.cvv}
+  }`).then(response => {
+      console.log(response)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+
+
+// Search actions
 export const ON_SEARCH_QUERY_TYPE = 'ON_SEARCH_QUERY_TYPE'
 export const onSearchQueryType = (queryText) => {
   return {
@@ -133,13 +484,18 @@ export const onSearchQueryType = (queryText) => {
 }
 
 export const FETCH_SEARCH_PRODUCT = 'FETCH_SEARCH_PRODUCT'
-export const fetchSearchProduct = (query) => {
-  console.log(query)
-  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=1987772&start=0&q=${query}`
+export const fetchSearchProduct = (eId, queryText, shopId) => {
+  const text = queryText.replace(' ', '+')
+  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=${shopId}&start=0&q=${text}`
+
+  const etalaseId = +eId || 0
+  if (etalaseId) {
+    url += `&etalase=${etalaseId}`
+  }
   return {
     type: FETCH_SEARCH_PRODUCT,
     payload: axios.get(url),
-    queryText: query,
+    queryText: queryText,
   }
 }
 
@@ -154,5 +510,35 @@ export const CLEAR_SEARCH_RESULTS = 'CLEAR_SEARCH_RESULTS'
 export const clearSearchResults = () => {
   return {
     type: CLEAR_SEARCH_RESULTS,
+  }
+}
+
+export const SET_SEARCH_TEXT = 'SET_SEARCH_TEXT'
+export const setSearchText = (q) => {
+  return {
+    type: SET_SEARCH_TEXT,
+    payload: q,
+  }
+}
+
+export const ON_SUBMIT_FETCH_SEARCH_PRODUCT = 'ON_SUBMIT_FETCH_SEARCH_PRODUCT'
+export const onSubmitFetchSearchProduct = (queryText, eId, shopId) => {
+  const text = queryText.replace(' ', '+')
+  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=25&shop_id=${shopId}&start=0&q=${text}`
+  const etalaseId = +eId || 0
+  if (etalaseId) {
+    url += `&etalase=${etalaseId}`
+  }
+  return {
+    type: ON_SUBMIT_FETCH_SEARCH_PRODUCT,
+    payload: axios.get(url),
+    queryText: queryText,
+  }
+}
+
+export const FETCH_TRANSACTION_HISTORY = 'FETCH_TRANSACTION_HISTORY'
+export const getTransactionHistory = () => {
+  return {
+    type: FETCH_TRANSACTION_HISTORY,
   }
 }

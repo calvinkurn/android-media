@@ -53,11 +53,11 @@ public class InstallmentSimulationActivity extends TActivity {
     private void setToolbar() {
         topBarTitle.setText(getString(R.string.simulation_page_title));
         findViewById(R.id.simple_top_bar_close_button)
-            .setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
     }
 }

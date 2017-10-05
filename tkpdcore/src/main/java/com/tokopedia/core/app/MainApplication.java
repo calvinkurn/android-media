@@ -13,9 +13,6 @@ import android.os.Build;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.react.ReactApplication;
-import com.facebook.react.ReactNativeHost;
-import com.facebook.soloader.SoLoader;
 import com.facebook.stetho.Stetho;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
@@ -33,17 +30,13 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.module.NetModule;
-import com.tokopedia.core.react.ReactNativeHostFactory;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,8 +49,7 @@ import rx.Subscriber;
  *
  * @author Trey Robinson
  */
-public class MainApplication extends TkpdMultiDexApplication implements ReactApplication {
-
+public abstract class MainApplication extends TkpdMultiDexApplication{
 
 	public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
@@ -75,13 +67,18 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
 	private static int currActivityState;
 	private static String currActivityName;
     private static IntentService RunningService;
-
     @Inject
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
     private LocationUtils locationUtils;
-
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
+
+    /**
+     * Get list of white list
+     *
+     * @return
+     */
+    protected abstract List<CacheApiWhiteListDomain> getWhiteList();
 
     public static MainApplication getInstance() {
         return instance;
@@ -270,7 +267,6 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
         initializeAnalytics();
         initANRWatchDogs();
         initStetho();
-        initReact();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -293,12 +289,10 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
         addToWhiteList();
     }
 
-    private void initReact() {
-        SoLoader.init(this, false);
-    }
+
 
     public void addToWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getAddedWhiteList();
+        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getWhiteList();
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
         cacheApiWhiteListUseCase.execute(requestParams, new Subscriber<Boolean>() {
@@ -317,14 +311,6 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
                 Log.i(TAG, aBoolean.toString());
             }
         });
-    }
-
-    protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhitelists = new ArrayList<>();
-        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/deposit/" + TkpdBaseURL.Transaction.PATH_GET_DEPOSIT, 30));
-        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.MOJITO_DOMAIN, TkpdBaseURL.Home.PATH_API_V1_ANNOUNCEMENT_TICKER, 60));
-        cacheApiWhitelists.add(ApiCacheDataSource.from2(TkpdBaseURL.BASE_DOMAIN, "/v4/notification/" + TkpdBaseURL.User.PATH_GET_NOTIFICATION, 30));
-        return cacheApiWhitelists;
     }
 
     @Override
@@ -405,10 +391,5 @@ public class MainApplication extends TkpdMultiDexApplication implements ReactApp
 
     public void initStetho() {
         if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
-    }
-
-    @Override
-    public ReactNativeHost getReactNativeHost() {
-        return ReactNativeHostFactory.init(this);
     }
 }

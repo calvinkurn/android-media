@@ -2,15 +2,18 @@ package com.tokopedia.posapp.view.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
@@ -18,6 +21,7 @@ import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -26,11 +30,12 @@ import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.di.component.DaggerProductComponent;
 import com.tokopedia.posapp.view.AddToCart;
 import com.tokopedia.posapp.view.Product;
-import com.tokopedia.posapp.view.activity.InstallmentSimulationActivity;
+import com.tokopedia.posapp.view.activity.LocalCartActivity;
+import com.tokopedia.posapp.view.activity.ReactInstallmentActivity;
 import com.tokopedia.posapp.view.presenter.AddToCartPresenter;
 import com.tokopedia.posapp.view.presenter.ProductPresenter;
-import com.tokopedia.posapp.view.widget.InstallmentSimulationView;
 import com.tokopedia.posapp.view.widget.HeaderInfoView;
+import com.tokopedia.posapp.view.widget.InstallmentSimulationView;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.customview.PictureView;
@@ -86,6 +91,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         initView(parentView);
         initListener();
         productPresenter.attachView(this);
+        addToCartPresenter.attachView(this);
         return parentView;
     }
 
@@ -106,7 +112,14 @@ public class ProductDetailFragment extends BaseDaggerFragment
         buttonAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addToCartPresenter.add(productPass.getProductId(), headerInfoView.getProductQuantity());
+                addToCartPresenter.add(Integer.parseInt(productPass.getProductId()), headerInfoView.getProductQuantity());
+            }
+        });
+
+        buttonBuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addToCartPresenter.addAndCheckout(Integer.parseInt(productPass.getProductId()), headerInfoView.getProductQuantity());
             }
         });
     }
@@ -114,7 +127,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(productPass!=null) {
+        if (productPass != null) {
             productPresenter.getProduct(productPass);
         }
     }
@@ -151,12 +164,40 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorAddToCart(String message) {
-
+        CommonUtils.dumper(message);
     }
 
     @Override
     public void onSuccessAddToCart(String message) {
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle("Tambah ke Keranjang")
+                .setMessage("Produk berhasil dimasukkan ke Keranjang Belanja")
+                .setPositiveButton("Bayar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        goToPaymentCheckout();
+                    }
+                })
+                .setNegativeButton("Lanjut Berbelanja", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setCancelable(true)
+                .create();
 
+        dialog.show();
+    }
+
+    @Override
+    public void onSuccessATCPayment(String message) {
+        goToPaymentCheckout();
+    }
+
+    private void goToPaymentCheckout() {
+        startActivity(new Intent(getContext(), LocalCartActivity.class));
+        getActivity().finish();
     }
 
     @Override
@@ -281,10 +322,10 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onInstallmentClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(context, InstallmentSimulationActivity.class);
+        Intent intent = new Intent(context, ReactInstallmentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(0,0);
+        getActivity().overridePendingTransition(0, 0);
     }
 
     @Override
@@ -292,7 +333,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         Intent intent = new Intent(context, DescriptionActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(0,0);
+        getActivity().overridePendingTransition(0, 0);
     }
 
     @Override
@@ -343,7 +384,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onProductShopMessageClicked(@NonNull Bundle bundle) {
+    public void onProductShopMessageClicked(@NonNull Intent intent) {
 
     }
 
@@ -459,6 +500,16 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void showSuccessWishlistSnackBar() {
+
+    }
+
+    @Override
+    public void showPromoWidget(PromoAttributes promoAttributes) {
+
+    }
+
+    @Override
+    public void onPromoWidgetCopied() {
 
     }
 

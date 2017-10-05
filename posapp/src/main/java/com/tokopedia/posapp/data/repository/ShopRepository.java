@@ -1,10 +1,7 @@
 package com.tokopedia.posapp.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
-import com.tokopedia.posapp.database.ProductSavedResult;
 import com.tokopedia.posapp.domain.model.shop.ShopDomain;
-import com.tokopedia.posapp.domain.model.shop.ShopProductListDomain;
 
 import rx.Observable;
 
@@ -14,8 +11,4 @@ import rx.Observable;
 
 public interface ShopRepository {
     Observable<ShopDomain> getShop(RequestParams requestParams);
-
-    Observable<ShopProductListDomain> getShopProduct(RequestParams requestParams);
-
-    Observable<ProductSavedResult> storeProductToCache(ShopProductListDomain productModel);
 }

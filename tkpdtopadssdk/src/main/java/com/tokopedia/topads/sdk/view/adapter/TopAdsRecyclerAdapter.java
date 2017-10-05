@@ -164,6 +164,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setEndlessScrollListenerVisibleThreshold(int threshold) {
         this.endlessScrollListener.setVisibleThreshold(threshold);
+        this.itemTreshold = threshold;
     }
 
     public void unsetEndlessScrollListener() {

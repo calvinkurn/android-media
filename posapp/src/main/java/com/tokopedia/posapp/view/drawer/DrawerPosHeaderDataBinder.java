@@ -9,9 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.R2;
+import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
+import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 
 /**
@@ -68,11 +71,11 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
 
     @Override
     public void bindViewHolder(DrawerPosHeaderDataBinder.ViewHolder holder, int position) {
-        holder.tvName.setText("POS MAN");
+        holder.tvName.setText(PosSessionHandler.getShopName(context));
         holder.tvOnline.setVisibility(View.VISIBLE);
         holder.ivOnline.setVisibility(View.VISIBLE);
         holder.tvOnline.setText("Online");
-        holder.tvOutlet.setText("Outlet Sendangguwo");
+        holder.tvOutlet.setText(PosSessionHandler.getOutletName(context));
     }
 
     @Override

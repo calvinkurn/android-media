@@ -1,19 +1,49 @@
 package com.tokopedia.posapp.view.activity;
 
+import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuItem;
 
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.drawer2.di.DrawerInjector;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.base.activity.ReactDrawerPresenterActivity;
+import com.tokopedia.posapp.deeplink.Constants;
 import com.tokopedia.posapp.view.fragment.ProductListFragment;
 
 /**
  * Created by okasurya on 8/24/17.
  */
 
-public class ProductListActivity extends BasePresenterActivity {
+public class ProductListActivity extends ReactDrawerPresenterActivity {
+    LocalCacheHandler drawerCache;
+    DrawerHelper drawerHelper;
+
+    @DeepLink(Constants.Applinks.PRODUCT_LIST)
+    public static Intent getApplinkIntent(Context context, Bundle extras) {
+        Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
+        Intent intent = new Intent(context, ProductListActivity.class)
+                .setData(uri);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initDrawer();
+    }
+
     @Override
     protected void setupURIPass(Uri data) {
 
@@ -37,20 +67,16 @@ public class ProductListActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
         ProductListFragment fragment = ProductListFragment.newInstance(SessionHandler.getShopID(this), "etalase");
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (getSupportFragmentManager().findFragmentByTag(
-                ProductListFragment.class.getSimpleName()) == null) {
-            fragmentTransaction.replace(R.id.container,
-                    fragment,
-                    fragment.getClass().getSimpleName());
-        } else {
-            fragmentTransaction.replace(R.id.container,
-                    getSupportFragmentManager().findFragmentByTag(
-                            ProductListFragment.class.getSimpleName()));
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        if (getFragmentManager().findFragmentById(R.id.container) == null) {
+            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
-
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected int setDrawerPosition() {
+        return 0;
     }
 
     @Override
@@ -66,5 +92,32 @@ public class ProductListActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_product_list, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_credit_card) {
+            startActivity(new Intent(this, ReactInstallmentActivity.class));
+            return true;
+        } else if(item.getItemId() == R.id.action_cart) {
+            startActivity(new Intent(this, LocalCartActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void initDrawer() {
+        sessionHandler = new SessionHandler(this);
+        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        drawerHelper = DrawerInjector.getDrawerHelper(this, sessionHandler, drawerCache);
+        drawerHelper.initDrawer(this);
+        drawerHelper.setEnabled(true);
+        drawerHelper.setSelectedPosition(0);
     }
 }

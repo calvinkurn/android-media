@@ -15,5 +15,5 @@ import rx.Observable;
 
 public interface AceApi {
     @GET("v1/web-service/shop/get_shop_product")
-    Observable<Response<TkpdResponse>> getShopProduct(@QueryMap Map<String, String> params);
+    Observable<Response<TkpdResponse>> getProductList(@QueryMap Map<String, String> params);
 }

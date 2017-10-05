@@ -23,6 +23,7 @@ import com.tokopedia.core.util.SessionHandler;
  * all the router will moved to the each module's router
  */
 public interface TkpdCoreRouter {
+    String EXTRAS = "extras";
 
     void startInstopedActivity(Context context);
 
@@ -51,6 +52,8 @@ public interface TkpdCoreRouter {
     void actionAppLink(Context context, String linkUrl);
 
     void actionApplink(Activity activity, String linkUrl);
+
+    void actionApplink(Activity activity, String linkUrl, String extras);
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 

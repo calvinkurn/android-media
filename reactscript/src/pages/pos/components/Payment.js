@@ -1,27 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text,TextInput, View, KeyboardAvoidingView, Button, Image, ScrollView, Picker, Dimensions} from 'react-native';
-import {selectPaymentOptions} from '../actions/index';
+import { StyleSheet, TextInput, TouchableNativeFeedback, View, KeyboardAvoidingView, Button, Image, ScrollView, Picker, Dimensions } from 'react-native'
+import { selectPaymentOptions, makePayment } from '../actions/index'
 import { ccFormat, getCardType } from '../lib/utility'
-
+import { NavigationModule } from 'NativeModules'
+import { Text } from '../common/TKPText'
 class payment extends Component {
 
-  constructor (props) {
+  constructor(props) {
 
-    super (props);
+    super(props);
 
     this.state = {
-     months : [1, 2, 3, 4, 5, 6,7, 8, 9, 10, 11, 12],
-     years: () => {
-        let arr = []; 
+      months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      years: () => {
+        let arr = [];
         let d = new Date();
         let n = d.getFullYear();
-        for (let i = 0; i<=10; i++) { 
-          arr.push(i+n);
+        for (let i = 0; i <= 10; i++) {
+          arr.push(i + n);
         }
         return arr;
       },
-      errorMessage : {
+      errorMessage: {
         ccNum: '',
         cvv: '',
         date: ''
@@ -30,106 +31,161 @@ class payment extends Component {
   }
 
 
+  componentWillMount(){
+    console.log(this.props)
+    console.log(this.props.navigation.state.params)
+  }
+
+
   _handleButtonPress = () => {
 
     const errorMessage = {
-        ccNum: '',
-        cvv: '',
-        date: ''
-      };
+      ccNum: '',
+      cvv: '',
+      date: ''
+    };
 
     if (!this.props.ccNum ||
       !this.props.ccNum.trim() ||
       this.props.ccNum.length < 19 ||
       getCardType(this.props.ccNum) === "") {
       errorMessage.ccNum = 'Nomor kartu kredit tidak valid'
+    } else if(!this.props.navigation.state.params.selectedBankData.validate_bin.find((value) => {
+            return this.props.ccNum.replace(' ', '').startsWith(value);
+      }))  {
+      errorMessage.ccNum = 'Nomor kartu kredit tidak sesuai dengan bank yang dipilih ' + this.props.navigation.state.params.selectBank;
+    } else if(!this.props.navigation.state.params.selectedBankData.installment_bin.find((value) => {
+               return this.props.ccNum.replace(' ', '').startsWith(value);
+         }))  {
+         errorMessage.ccNum = 'Nomor kartu kredit tidak boleh mengambil cicilan';
     }
 
-    if (!this.props.mon || !this.props.year)  {
+    if (!this.props.mon || !this.props.year) {
       errorMessage.date = 'Masukan tanggal'
     }
 
-    if (!this.props.cvv || this.props.cvv.length < 3)  {
+    if (!this.props.cvv || this.props.cvv.length < 3) {
       errorMessage.cvv = 'CVV tidak valid'
     }
 
     this.setState({
       errorMessage
     });
+    
+    if (errorMessage.ccNum == '' && errorMessage.cvv == '' && errorMessage.date == '') {
+      //this.props.navigation.navigate('PaymentProcessing', {})
+          this.props.dispatch(makePayment(this.props.navigation.state.params.total_payment, this.props.navigation.state.params.selectedEmiId,
+            this.props.ccNum, this.props.mon+ '/' + this.props.year, this.props.cvv));
+       NavigationModule.navigate('posapp://payment/process', '')
+    }
   };
 
   _cardType = () => {
     const cardType = getCardType(this.props.ccNum);
-    switch(cardType) {
+    switch (cardType) {
       case 'MASTER':
-        return ( <Image source={require('./img/Logo-MasterCard.png')}
-                style={styles.cardLogo} />);
+      return ( <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-MasterCard.png' }}
+          style={styles.cardLogo} resizeMode={'contain'} />);
       case 'VISA':
-        return ( <Image source={require('./img/Logo-Visa.png')}
-                style={styles.cardLogo} />);
+      return ( <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-Visa.png' }}
+          style={styles.cardLogo} resizeMode={'contain'} />);
       case 'JCB':
-        return (<Image source={require('./img/Logo-JCB.png')}
-                style={styles.cardLogo} />);
+      return (<Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-JCB.png' }}
+          style={styles.cardLogo} resizeMode={'contain'} />);
     }
-
-    return <View/>;
   };
 
   static navigationOptions = {
-    title: 'Payment Page',
+    title: 'Pembayaran',
+    headerTintColor: '#FFF',
+    headerStyle: {
+        backgroundColor: '#42B549'
+    }
+    // headerMode: 'none'
   };
+
+  _getCreditCardType() {
+
+  }
 
   render() {
     console.log(this.state)
-    let years = this.state.years().map( (i) => {
-        return <Picker.Item key={i} value={i} label={i.toString()} />
+    let years = this.state.years().map((i) => {
+      return <Picker.Item key={i} value={i} label={i.toString()} />
     });
 
-  let months = this.state.months.map( (i) => {
-        return <Picker.Item key={i} value={i} label={i.toString()} />
+    let months = this.state.months.map((i) => {
+      return <Picker.Item key={i} value={i} label={i.toString()} />
     });
 
 
 
     return (
       <View style={styles.mainContainers} >
-        <View style={styles.header} />
+        {/* <View style={styles.header} /> */}
         <ScrollView>
 
-        <View style={styles.containers} >
+          <View style={styles.containers} >
 
-          <View style={[styles.row, styles.row1]} >
-            <Text style={styles.row1Text}>
-              Total Pembayaran
+            <View style={[styles.row, styles.row1]} >
+              <Text style={styles.row1Text}>
+                Total Pembayaran
             </Text>
-            <Text style={styles.row1Text}>
-              Rp 34.697.000
+              <Text style={styles.row1Text}>
+                Rp {this.props.navigation.state.params.total_payment}
             </Text>
-          </View>
+            </View>
 
-          <View style={[styles.row, styles.row2]} >
-            <View style={{flex:0.5, padding: 15}}>
-              <Text style={styles.row2Text}>
-                Kartu Kredit
+            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', paddingBottom: 0, paddingHorizontal: 20 }} >
+              <View style={{ flex: 0.5 }}>
+                <Text style={styles.row2Text}>
+                  Kartu Kredit
               </Text>
+              </View>
+              <View style={{ flex: 0.5, alignItems: 'flex-end' }}>
+              <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/secure-guarantee.png' }} style={{width:75,height:55}} resizeMode={'contain'}/>
+              </View>
             </View>
-            <View  style={{flex:0.5, borderColor:'black',flexDirection:'row', justifyContent:'flex-end'}}>
-              <Image source={require('./img/secure-guarantee.png')}
-                style={styles.secureImage} />
-            </View>
-          </View>
 
-          <View style={[styles.row, styles.row4]} >
-           <View style={{flex:0.5, paddingLeft: 15}}>
-              <Text style={styles.row4Text}>
-                Nomor kartu kredit
+            <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#fff', paddingBottom: 0, paddingHorizontal: 20 }} >
+              <View style={{ flex: 0.5, justifyContent: 'flex-end', borderBottomWidth: 2, borderBottomColor: '#F0F0F0' }}>
+                <Text style={[styles.row4Text]}>
+                  Nomor kartu kredit
               </Text>
-            </View>
-          </View>
-
-          <View style={[styles.row, styles.row5]} >
-           <View style={{flex:0.5, paddingLeft: 10}}>
+                <TextInput
+                  underlineColorAndroid={'transparent'}
+                  style={{ fontSize: 16, paddingLeft: 0, paddingVertical: 0 }}
+                  placeholder="Contoh : 1234567890"
+                  placeholderTextColor="#00000061"
+                  keyboardType="numeric"
+                  value={ccFormat(this.props.ccNum)}
+                  maxLength={19}
+                  onChangeText={(text) => this.props.dispatch(selectPaymentOptions('ccNum', text))}
+                />
+              </View>
+              <View style={{ flex: 0.5, height: 60, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end', borderBottomWidth: 2, borderBottomColor: '#F0F0F0' }}>
+                {
+                  (getCardType(this.props.ccNum) === 'MASTER') ?
+                  <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-MasterCard.png' }} style={{width:60,height:60,flex:0.2}} resizeMode={'contain'} />
+                    :
+                    (getCardType(this.props.ccNum) === 'VISA') ?
+                    <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-Visa.png' }} style={{width:60,height:60,flex:0.2}}  resizeMode={'contain'} />
+                      :
+                      (getCardType(this.props.ccNum) === 'JCB') ?
+                      <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-JCB.png' }} style={{width:60,height:60,flex:0.2}}  resizeMode={'contain'} />
+                        :
+                        (
+                          <View style={{ flexDirection: 'row', marginRight: -10 }}>
+                            <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-MasterCard.png' }} style={styles.cardLogo} resizeMode={'contain'} />
+                            <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-Visa.png' }} style={styles.cardLogo}  resizeMode={'contain'} />
+                            <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-JCB.png' }} style={styles.cardLogo}  resizeMode={'contain'} />
+                          </View>
+                        )
+                }
+              </View>
+              {/*<View style={{flex:1, paddingLeft: 10}}>
               <TextInput
+                underlineColorAndroid={'transparent'}
                 style={{fontSize:17}}
                 placeholder="Contoh : 1234567890"
                 placeholderTextColor = "#C6C6C6"
@@ -139,31 +195,90 @@ class payment extends Component {
                 onChangeText={(text) => this.props.dispatch(selectPaymentOptions('ccNum', text))}
               />
             </View>
+            <View  style={{flex:1, borderColor:'black', flexDirection:'row', justifyContent:'center'}}>
+              <Image source={require('./img/Logo-MasterCard.png')} style={styles.cardLogo} />
+              <Image source={require('./img/Logo-JCB.png')}  style={styles.cardLogo} />
+              <Image source={require('./img/Logo-Visa.png')}  style={styles.cardLogo} />
+            </View>*/}
+            </View>
 
-            <View  style={{flex:0.4, borderColor:'black', flexDirection:'row', justifyContent:'center'}}>{this._cardType()}</View>
-          </View>
-
-          <View style={[styles.row, styles.row6]} >
-          <View style={{flex:0.5, paddingLeft: 15}}>
-              <Text style={styles.row4Text}>
-                Masukan nomor kartu kredit
-              </Text>
-              <Text style={styles.row4Text, styles.errorText}>
+            <View style={[styles.row, styles.row6]} >
+              <View style={{ flex: 0.5, paddingLeft: 20 }}>
+                <Text style={[styles.row4Text, styles.errorText]}>
                {this.state.errorMessage.ccNum}
+              </Text>
+              <Text style={[styles.row4Text, {color: '#00000061'}]}>
+                Masukan nomor kartu kredit
               </Text>
             </View>
           </View>
 
+          <View style={{ backgroundColor: '#fff', flexDirection: 'row', paddingTop: 25 }}>
+            <View style={{ flex: 0.4, marginLeft: 20 }}>
+              <Text style={styles.row4Text}>
+                Masa Berlaku
+              </Text>
+              <View style={{ flexDirection: 'row', marginLeft: -3 }}>
+                <View style={{ borderBottomWidth: 2.5, borderBottomColor: '#F0F0F0', marginRight: 20 }}>
+                  <Picker style={{ width: width * .15 }}
+                    selectedValue={this.props.mon}
+                    onValueChange={(itemValue, itemIndex) => this.props.dispatch(selectPaymentOptions('mon', itemValue))}>
+                    <Picker.Item label="mm" value="" />
+                    {months}
+                  </Picker>
+                </View>
+                <View style={{ borderBottomWidth: 2.5, borderBottomColor: '#F0F0F0' }}>
+                  <Picker style={{ width: width * .15 }}
+                    selectedValue={this.props.year}
+                    onValueChange={(itemValue, itemIndex) => this.props.dispatch(selectPaymentOptions('year', itemValue))}>
+                    <Picker.Item label="YY" value="" />
+                    {years}
+                  </Picker>
+                </View>
+              </View>
+            </View>
+            <View style={{ flex: 0.275, marginRight: 15, borderBottomWidth: 2, borderBottomColor: '#F0F0F0', marginBottom: 1 }}>
+              <Text style={styles.row4Text}>
+                CVV
+              </Text>
+              <View style={{ flex: 1, backgroundColor: 'white', flexDirection: 'row', alignItems: 'center' }}>
+                <TextInput
+                  underlineColorAndroid={'transparent'}
+                  style={{ fontSize: 16, width: 150, marginBottom: -2, paddingBottom: 0, paddingLeft: 0 }}
+                  placeholder="Contoh : 123"
+                  secureTextEntry={true}
+                  placeholderTextColor="#00000061"
+                  keyboardType="numeric"
+                  maxLength={3}
+                  onChangeText={(text) => this.props.dispatch(selectPaymentOptions('cvv', text))}
+                />
+                <View style={{ flex: 1, marginBottom: -5 }}>
+                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/cvv-icon.png' }} style={styles.cvvLogo} resizeMode={'contain'}/>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View style={{ flexDirection: 'row', backgroundColor: 'white', paddingHorizontal: 20, paddingBottom: 25 }}>
+            <View style={{ flex: 0.4 }} />
+            <View style={{ flex: 0.27 }}>
+              <Text style={styles.errorText}>
+                {this.state.errorMessage.date}
+              </Text>
+              <Text style={[styles.row4Text, {color: '#00000061'}]}>
+                Masukan CVV
+              </Text>
+            </View>
+          </View>
+          {/*
           <View style={[styles.row, styles.row7]} >
             <View style={{flex:0.6, flexDirection:'row',}}>
-
               <Picker  style={{width:width*.15, marginLeft: 5}}
                 selectedValue={this.props.mon}
                 onValueChange={(itemValue, itemIndex) => this.props.dispatch(selectPaymentOptions('mon', itemValue))}>
                 <Picker.Item label="mm" value="" />
                 {months}
               </Picker>
-
               <Picker  style={{width:width*.15}}
                 selectedValue={this.props.year}
                   onValueChange={(itemValue, itemIndex) => this.props.dispatch(selectPaymentOptions('year', itemValue))}>
@@ -173,6 +288,7 @@ class payment extends Component {
             </View>
             <View style={{flex:0.5, flexDirection:'row'}}>
               <TextInput
+                underlineColorAndroid={'transparent'}
                 style={{width:100, height:50, fontSize:17}}
                 placeholder="Contoh : 123"
                 secureTextEntry={true}
@@ -184,9 +300,7 @@ class payment extends Component {
               <Image source={require('./img/cvv-icon.png')}
                 style={styles.cvvLogo} />
             </View>
-
           </View>
-
           <View style={[styles.row, styles.row8]} >
             <View style={{flex:0.6, flexDirection:'row',paddingLeft: 15}}>
               <Text style={styles.row4Text, styles.errorText}>
@@ -199,7 +313,6 @@ class payment extends Component {
               </Text>
             </View>
           </View>
-
             <View style={[styles.row, styles.row8, styles.row9]} >
              <View style={{flex:0.6, flexDirection:'row',paddingLeft: 15}}>
             </View>
@@ -208,23 +321,40 @@ class payment extends Component {
                {this.state.errorMessage.cvv}
               </Text>
             </View>
-               
-          </View>
+          </View>*/}
+
           <View style={styles.buttonContainer}>
-            <Button
+            {/*<Button
               title="Bayar"
               color='#FF5722'
               onPress={this._handleButtonPress}
-            />
+            />*/}
+            <TouchableNativeFeedback
+              onPress={this._handleButtonPress}
+              background={TouchableNativeFeedback.SelectableBackground()}
+            >
+              <View style={{
+                flex: 1,
+                height: 52,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: '#FF5722',
+                borderRadius: 3
+              }}>
+                <Text style={{ color: '#fff', fontSize: 16 }}>
+                  Bayar
+                  </Text>
+              </View>
+            </TouchableNativeFeedback>
           </View>
         </View>
         </ScrollView>
-      </View>
+      </View >
     )
   }
 }
 
-let {height, width} = Dimensions.get('window');
+let { height, width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   header: {
@@ -235,7 +365,7 @@ const styles = StyleSheet.create({
   mainContainers: {
     flex: 1,
     alignItems: 'stretch',
-    backgroundColor:'#F4F4F4'
+    backgroundColor: '#F4F4F4'
   },
   containers: {
     flex: 2,
@@ -250,74 +380,74 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#F0F0F0'
   },
-  row1:{
-    padding:15,
+  row1: {
+    padding: 15,
   },
-  row1Text : {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: '#363636',
+  row1Text: {
+    fontSize: 16,
+    color: '#000000b3',
+  },
+  row2Text: {
+    fontSize: 14,
+    color: '#000000b3'
   },
   row2: {
     height: 80,
     padding: 0,
-    borderBottomWidth:0
+    borderBottomWidth: 0
   },
   row3: {
     height: 70
   },
   row4: {
-    height:15,
-    borderBottomWidth:0
+    height: 15,
+    borderBottomWidth: 0
   },
   row5: {
-    height:40
+    height: 40
   },
   row6: {
-    borderBottomWidth:0,
-    height:40
+    borderBottomWidth: 0,
+    height: 40
   },
   row7: {
     height: 50,
-    flexDirection:'row', justifyContent:'center'
+    flexDirection: 'row', justifyContent: 'center'
   },
   row8: {
     height: 25,
-    borderBottomWidth:0,
-    flexDirection:'row', justifyContent:'center'
+    borderBottomWidth: 0,
+    flexDirection: 'row', justifyContent: 'center'
   },
   row9: {
     height: 30,
   },
   row7: {
     height: 50,
-    flexDirection:'row', justifyContent:'center'
+    flexDirection: 'row', justifyContent: 'center'
   },
   buttonContainer: {
     marginTop: 20,
     borderRadius: 5
   },
   secureImage: {
-    flex:0.6,
-    resizeMode: 'contain'
+    flex: 0.6
   },
-  row4Text : {
-    fontSize:13,
-    color: '#C6C6C6'
+  row4Text: {
+    fontSize: 12,
+    color: '#0000008a'
   },
   cardLogo: {
-    flex:1,
-    resizeMode: 'contain',
-    height:45,
-    width:45
+    height: 55,
+    width: 55
   },
   cvvLogo: {
-    flex:0.5,
+    flex: 0.5,
     resizeMode: 'contain',
-    height:45,
-    width:45,
+    height: 45,
+    width: 45,
   },
-  errorText : {
+  errorText: {
     color: '#D50000'
   }
 })

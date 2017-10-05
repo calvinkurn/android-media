@@ -4,34 +4,29 @@ import React, { Component } from 'react';
 import codePush from "react-native-code-push";
 import {
   AppRegistry,
+  ActivityIndicator,
   StyleSheet,
   Text,
   AppState,
-  AsyncStorage,
+  UIManager,
   View
 } from 'react-native';
-import { NavigationModule, NetworkModule } from 'NativeModules';
-import { HotList_ } from './src/configs/router';
 import OfficialStore from './src/pages/official-store/setup'
+import POS from './src/pages/pos/setup'
 
 
-// let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+//let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_START };
+UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 class Home extends Component {
-  // componentWillMount() {
-  //   console.log(this.props)
-  // }
-  
   render(){
-    if (this.props.Screen == 'HotList'){
-      return <HotList_ />
-    } else if (this.props.Screen == 'official-store'){
-      return <OfficialStore Screen={this.props.Screen}  />
-    } else if(this.props.Screen == 'pos') {
-      return <Pos data={ this.props } />
+    if (this.props.Screen === 'official-store'){
+      return <OfficialStore />
+    } else if(this.props.Screen === 'pos') {
+      return <POS data={ this.props } />
     } else {
-      return(
-        <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
+      return (
+        <View style={{ marginTop:20, marginBottom:20, justifyContent:'center', alignItems:'center', flex:1}}>
           <ActivityIndicator size="large" />
         </View>
       )
@@ -50,7 +45,7 @@ const styles = StyleSheet.create({
   },
 });
 
-// Home = codePush({ checkFrequency: codePush.CheckFrequency.ON_APP_RESUME, installMode: codePush.InstallMode.ON_NEXT_RESUME })(Home);
+//Home = codePush(Home);
 module.exports = Home;
 AppRegistry.registerComponent('MAIN', () => Home);
 

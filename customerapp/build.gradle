@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
 apply from: "../buildconfig/reactnative/react.gradle"
@@ -250,6 +251,7 @@ dependencies {
     compile project(':tkpddigital')
     compile project(':tkpdpdp')
     compile project(':tkpdfeed')
+    compile project(':tkpdreactnative')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

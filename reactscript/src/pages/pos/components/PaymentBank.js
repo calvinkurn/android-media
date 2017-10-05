@@ -1,196 +1,326 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text,TextInput, View, KeyboardAvoidingView, Button, Image, ScrollView, Picker,
-  Dimensions, TouchableOpacity, TouchableWithoutFeedback, ListView} from 'react-native';
-import PopupDialog, {DialogTitle} from 'react-native-popup-dialog';
+import {
+  StyleSheet, TextInput, View, KeyboardAvoidingView, Button, Image, ScrollView, Picker,
+  Dimensions, TouchableOpacity, TouchableWithoutFeedback, TouchableNativeFeedback, ListView
+} from 'react-native';
+import PopupDialog, { DialogTitle } from 'react-native-popup-dialog';
 import { StackNavigator } from 'react-navigation';
-import {getBankList, selectBank, getEmiList, selectEmi } from '../actions/index';
-
+import { getBankList, selectBank, getEmiList, selectEmi, makePayment } from '../actions/index';
+import { Text } from '../common/TKPText'
+import { NavigationModule } from 'NativeModules'
 
 class PaymentBank extends Component {
 
-  constructor (props) {
+  constructor(props) {
 
-    super (props);
+    super(props);
+
+    const dsEmi = new ListView.DataSource({
+          rowHasChanged: (r1, r2) => r1 !== r2 });
 
     this.state = {
-      selectedBank : <View style={{height:0}} />
+      selectedBank: null,
+      selectIdBank: null,
+      selectedEmiId: null,
+      selectedBankData: {},
+      otherBank: null,
+      paymentMethod: null,
+      emiList: dsEmi.cloneWithRows([{
+        term: 0,
+        text: "Tanpa Cicilan",
+        available: false
+      }]),
+      dsEmi: dsEmi
     };
   }
 
   componentDidMount() {
+    console.log(this.props)
+    console.log(this.props.screenProps.total_payment)
     this.props.dispatch(getBankList());
-    this.props.dispatch(getEmiList());
   }
 
   _handleButtonPress = () => {
+    const selected_installment = !this.state.selectedEmiId ? 0 : (this.state.selectedEmiId);
+     const selectedBankData = !this.state.selectedBankData ? {} : this.state.selectedBankData;
 
+    if (this.state.paymentMethod === 'SCAN'){
+      NavigationModule.navigate("posapp://payment/scan/3/6", "")
+    } else {
+      // console.log(this.state.selectedBank, this.state.selectIdBank, this.state.selectedEmiId)
+      this.props.navigation.navigate('Payment', {
+        selectBank: this.state.selectedBank,
+        selectIdBank: this.state.selectIdBank,
+        selectedEmiId: selected_installment,
+        selectedBankData: selectedBankData,
+        total_payment: this.props.screenProps.total_payment
+      })
+    }
   };
 
   _renderPopRow(rowData: string, sectionID: number, rowID: number) {
-    return (
+    if (rowID > 10) {
+      return (
         <TouchableWithoutFeedback onPress={this._onPressPopupRow.bind(this, rowID, rowData)}>
           <View style={styles.popupRow}>
             <View style={styles.popupCol}>
-              <Image  style={styles.popupImage} source={rowData.bankImage}/>
+              <Image style={styles.popupImage} source={{uri: rowData.bank_logo}} />
             </View>
             <View style={styles.popupCol}>
-              <Text style={styles.popupText} > { rowData.bankName } </Text>
+              <Text style={styles.popupText} > {rowData.bank_name} </Text>
             </View>
           </View>
         </TouchableWithoutFeedback>
-    );
+      );
+    }
+
+    return (null);
   }
 
 
   _renderEmiRow(rowData: string, sectionID: number, rowID: number) {
 
-    if (rowData.available === true) {
+    if (rowData.available === false) {
       return (
-          <TouchableWithoutFeedback onPress={this._onPressEmiRow.bind(this, rowID, rowData)}>
-            <View style={[styles.emiBox, (rowData.isSelected ? styles.selectedBorder : '')]}>
-              <Text style={styles.emiText} >
-               {rowData.text}
-              </Text>
-            </View>
-          </TouchableWithoutFeedback>
-      );
-    }
-
-    return (
-        <View style={[styles.emiBox, styles.disabledText]}>
+      <TouchableWithoutFeedback onPress={this._onPressEmiRow.bind(this, rowID, rowData)}>
+        <View style={[styles.emiBox, { marginRight: 10, height: 80 }, this.state.selectedEmiId === rowData.term ? styles.selectedBorder : {}]}>
           <Text style={styles.emiText} >
-           {rowData.text}
+              {rowData.text}
           </Text>
         </View>
+      </TouchableWithoutFeedback>
       );
+   }
 
+   return (
+      <TouchableWithoutFeedback onPress={this._onPressEmiRow.bind(this, rowID, rowData)}>
+        <View style={[styles.emiBox, { marginRight: 10, height: 80 }, this.state.selectedEmiId === rowData.term ? styles.selectedBorder : {}]}>
+          <Text style={styles.emiText} >
+            {rowData.term} Bulan
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
+    );
   }
 
   _renderBankLogo(rowData: string, sectionID: number, rowID: number) {
-    if (rowData.id < 10) {
+    if (rowID <= 10) {
       return (
-          <TouchableWithoutFeedback onPress={this._onPressLogo.bind(this, rowID, rowData)}>
-            <View style={[styles.logoBox, (rowData.isSelected ? styles.selectedBorder : '')]}>
-              <Image source={rowData.bankImage}
-                     style={styles.cardLogo} />
-            </View>
-          </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={this._onPressLogo.bind(this, rowID, rowData)}>
+          <View style={[styles.logoBox, { marginTop: 10, height: 80 }, (rowData.isSelected ? styles.selectedBorder : '')]}>
+            <Image source={{uri: rowData.bank_logo}}
+              style={styles.cardLogo} />
+          </View>
+        </TouchableWithoutFeedback>
       );
-    } else if (rowData.id < 11) {
+    } else if (rowID <= 11) {
       return (
-          <TouchableOpacity style={styles.logoBox} onPress={() => {this.popupDialog.show()} } >
-            <Text style={{fontSize:10}} >
-              Bank
+        <TouchableOpacity style={[styles.logoBox, { marginTop: 10, height: 80 }]} onPress={() => { this.popupDialog.show() }} >
+          <Text style={{ fontSize: 13, color: '#0000008a' }} >
+            Bank
             </Text>
-            <Text style={{fontSize:10}}>
-              Lainnya
+          <Text style={{ fontSize: 13, color: '#0000008a' }}>
+            Lainnya
             </Text>
-          </TouchableOpacity>
+        </TouchableOpacity>
       );
-    } else if (rowData.id < 99) {
-       return (<View style={[styles.logoBox, styles.noBorder]}>
-    </View>);
+    } else if (rowID < 99) {
+      return (<View style={[styles.logoBox, styles.noBorder]}>
+      </View>);
     }
 
-    return (<View style={{height:0}} />);
+    return (<View style={{ height: 0 }} />);
   }
 
   _onPressPopupRow(rowID, rowData) {
-   this.props.dispatch(selectBank(rowData.id));
+    let emiList = this.state.dsEmi.cloneWithRows([{
+      term: 0,
+      text: "Tanpa Cicilan",
+      available: false
+    }]);
 
-    if (rowData.id > 9) {
-      this.setState({
-        selectedBank: ( <View style={[styles.row, styles.selectedBankRow]} >
-          <View style={[styles.logoBox, styles.selectedBorder]}>
-            <Image source={rowData.bankImage}
-                   style={styles.cardLogo} />
-          </View>
-        </View>)
-      });
-    } else if (rowData.id <= 9) {
-      this.setState({
-        selectedBank:(<View style={{height:0}} />)
-      });
+    if (rowData.allow_installment) {
+     emiList = this.state.dsEmi.cloneWithRows([...[{
+          text: "Tanpa Cicilan",
+          available: false
+        }], ...rowData.installment_list]);
     }
-    this.popupDialog.dismiss();
+
+    this.setState({
+      selectedBank: rowData.bank_name,
+      otherBank: rowData.bank_logo,
+      selectedEmiId: null,
+      selectedBankData:rowData,
+      emiList: emiList
+    }, () => {
+      this.props.dispatch(selectBank(rowData.bank_id));
+      this.popupDialog.dismiss();
+    });
   }
 
   _onPressLogo(rowID, rowData) {
     if (!rowData.isSelected) {
-      this.props.dispatch(selectBank(rowData.id));
+      let emiList = this.state.dsEmi.cloneWithRows([{
+        text: "Tanpa Cicilan",
+        available: false
+      }]);
+      
+      if (rowData.allow_installment) {
+         emiList = this.state.dsEmi.cloneWithRows([...[{
+              text: "Tanpa Cicilan",
+              available: false
+            }], ...rowData.installment_list]);
+      }
+      
+      this.props.dispatch(selectBank(rowData.bank_id));
+
       this.setState({
-        selectedBank:(<View style={{height:0}} />)
-        });
+        selectedBank: rowData.bank_name,
+        selectIdBank: rowData.bank_id,
+        otherBank: null,
+        selectedEmiId: null,
+        selectedBankData:rowData,
+        emiList: emiList
+      });
     }
   }
 
   _onPressEmiRow(rowID, rowData) {
-    if (!rowData.isSelected) {
-      this.props.dispatch(selectEmi(rowData.id));
-    }
+   this.setState({
+    selectedEmiId: rowData.term
+   });
   }
 
 
   static navigationOptions = {
-    title: 'Bank Selection Page',
+    title: 'Pembayaran',
+    headerTintColor: '#FFF',
+    headerStyle: {
+        backgroundColor: '#42B549'
+    },
+    headerLeft: <TouchableOpacity><Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/arrow_back.png' }}
+                style={{ width: 15, height: 15, marginLeft: 20 }} /></TouchableOpacity>
   };
+
+
+  _choosePaymentMethod(paymentMethod) {
+    this.setState({
+      paymentMethod
+    })
+  }
 
   render() {
     return (
-        <View style={styles.mainContainers} >
-          <View style={styles.header}>
-            <Button
-                title="Go to Payment page ->"
-                color="#42B549"
-                onPress={() =>
-                    this.props.navigation.navigate('Payment', {})
-                }
-            />
-            < /View>
+      <View style={styles.mainContainers} >
+        {/* <View style={styles.header}>
+          <Button
+            title="Go to Payment page ->"
+            color="#42B549"
+            onPress={() =>
+              this.props.navigation.navigate('Payment', {})
+            }
+          />
+        </View> */}
             <ScrollView>
-              <View style={styles.containers} >
-                <View style={[styles.row, styles.row1]} >
-                  <Text>
-                    Total Pembayaran
+            <View style={styles.containers} >
+              <View style={[styles.row, styles.row1]} >
+                <Text style={[styles.font16, styles.fontColor70]}>
+                  Total Pembayaran
                   </Text>
+                <Text style={[styles.font16, styles.fontColor70]}>
+                  Rp {this.props.screenProps.total_payment}
+                  </Text>
+              </View>
+
+              <View style={[styles.row, styles.row2]} >
+                <Text style={[styles.font13, styles.fontColor70]}>
+                  Minimum Purchase Rp 500.000
+                  </Text>
+              </View>
+
+              <View style={[styles.row, styles.row3]} >
+                <Text style={[styles.font14, styles.fontColor70]}>
+                  Pilih Bank
+                  </Text>
+              </View>
+
+              <ListView
+                contentContainerStyle={[{ flexDirection: 'row', backgroundColor: '#fff', borderBottomWidth: 0, flexWrap: 'wrap', paddingLeft: 10, paddingTop: 10, paddingBottom: 10 }]}
+                dataSource={this.props.bankList}
+                enableEmptySections={true}
+                initialListSize={12}
+                renderRow={this._renderBankLogo.bind(this)} />
+              {
+                this.state.otherBank ?
+                  (
+                    <View style={{ backgroundColor: '#fff', paddingHorizontal: 10 }}>
+                      <View style={[styles.logoBox, { marginTop: 10, height: 80 }, styles.selectedBorder]}>
+                        <Image source={{uri: this.state.otherBank}} style={styles.cardLogo} />
+                      </View>
+                    </View>
+                  ) :
+                  null
+              }
+
+              {
+                (this.state.selectedBank === null) ? null :
+                  (
+                    <View style={{ alignItems: 'flex-end', paddingHorizontal: 15, backgroundColor: '#fff' }}>
+                      <Text>
+                        Anda memilih {this.state.selectedBank}
+                      </Text>
+                    </View>
+                  )
+              }
+
+
+              <View style={[styles.row, styles.row3]} >
+                <Text style={[styles.font14, styles.fontColor70]}>
+                  Cicilan Kartu Kredit Bunga 0%
+                  </Text>
+              </View>
+
+              <ListView
+                contentContainerStyle={{ paddingTop: 20, flexDirection: 'row', backgroundColor: '#fff', paddingLeft: 15 }}
+                dataSource={this.state.emiList}
+                enableEmptySections={true}
+                renderRow={this._renderEmiRow.bind(this)} />
+
+              <View style={{ paddingTop: 10, backgroundColor: 'white', borderBottomWidth: 1, borderColor: '#F0F0F0' }}>
+                <Text style={[styles.font14, styles.fontColor70, { marginLeft: 15 }]}>
+                  Pilih Metode Pembayaran
+                  </Text>
+                <View style={{ paddingVertical: 20, flexDirection: 'row', marginLeft: 15 }}>
+                  <TouchableWithoutFeedback onPress={this._choosePaymentMethod.bind(this, 'SCAN')}>
+                    <View style={[styles.paymentMethod, { marginRight: 10 }, (this.state.paymentMethod === 'SCAN') ? styles.paymentSelected : {}]}>
+                      <Text style={[styles.emiText, {fontSize: 14}]}>
+                        Scan Kartu Kredit
+                        </Text>
+                    </View>
+                  </TouchableWithoutFeedback>
+
+                  <TouchableWithoutFeedback onPress={this._choosePaymentMethod.bind(this, 'ONLINE')}>
+                    <View style={[styles.paymentMethod, (this.state.paymentMethod === 'ONLINE') ? styles.paymentSelected : {}]}>
+                      <Text style={[styles.emiText, {fontSize: 14}]}>
+                        Pembayaran Online
+                        </Text>
+                    </View>
+                  </TouchableWithoutFeedback>
+                </View>
+              </View>
+
+              {this.props.screenProps.total_payment && this.state.selectedEmiId && 
+              <View style={[styles.row, styles.row1]}>
+                <Text style={[styles.font20, styles.fontColor70]}>Nominal</Text>
+                <Text style={[styles.font20, styles.fontColor70]}>
+                  Rp {this.props.screenProps.total_payment / this.state.selectedEmiId}/ bulan</Text>
+              </View>}
+              {/*<View style={[styles.row, styles.row3]} >
                   <Text style={styles.row1Text}>
-                    Rp 34.697.000
+                    Pilih Metode Pembayaran
                   </Text>
                 </View>
-
-                <View style={[styles.row, styles.row2]} >
-                  <Text style={styles.row2Text}>
-                    Minimum Purchase Rp 500.000
-                  </Text>
-                </View>
-
-                <View style={[styles.row, styles.row3]} >
-                  <Text style={styles.row1Text}>
-                    Pilih Bank
-                  </Text>
-                </View>
-                <ListView
-                    contentContainerStyle={[styles.row, styles.row4]}
-                    dataSource = { this.props.bankList }
-                    enableEmptySections={true}
-                    initialListSize = {12}
-                    renderRow = {this._renderBankLogo.bind(this)} />
-
-                {this.state.selectedBank}
-                <View style={[styles.row, styles.row3]} >
-                  <Text style={styles.row1Text}>
-                    Cicilan Kartu Kredit Bunga 0%
-                  </Text>
-                </View>
-
-
-                <ListView
-                    contentContainerStyle={[styles.row, styles.row5]}
-                    dataSource = { this.props.emiList }
-                    enableEmptySections={true}
-                    renderRow = {this._renderEmiRow.bind(this)} />
-
                 <View style={[styles.row, styles.row1]} >
                   <Text>
                     Nominal
@@ -198,43 +328,59 @@ class PaymentBank extends Component {
                   <Text style={styles.row1Text}>
                     Rp 2.266.334/bulan
                   </Text>
-                </View>
+                </View>*/}
 
-                <View style={styles.buttonContainer}>
-                  <Button
-                      onPress = {this._handleButtonPress}
-                      title="Bayar"
-                      color='#FF5722'
-                  />
-                </View>
+              <View style={styles.buttonContainer}>
+                {/*<Button
+                    style={{height:52}}
+                    onPress = {this._handleButtonPress}
+                    title="Bayar"
+                    color='#FF5722'
+                  />*/}
+                <TouchableNativeFeedback
+                  onPress={this._handleButtonPress}
+                  background={TouchableNativeFeedback.SelectableBackground()}
+                >
+                  <View style={{
+                    flex: 1,
+                    height: 52,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#FF5722',
+                    borderRadius: 3
+                  }}>
+                    <Text style={{ color: '#fff', fontSize: 16 }}>Bayar</Text>
+                  </View>
+                </TouchableNativeFeedback>
               </View>
-            </ScrollView>
+            </View>
+          </ScrollView>
 
 
-            <PopupDialog
-                ref={(popupDialog) => { this.popupDialog = popupDialog; }}
-                width = {width*.85}
-                height= {height*.40}
-                dialogTitle={<DialogTitle title="Pilih Bank" titleAlign="left"/>} >
+          <PopupDialog
+            ref={(popupDialog) => { this.popupDialog = popupDialog; }}
+            width={width * .85}
+            height={height * .40}
+            dialogTitle={<DialogTitle title="Pilih Bank" titleAlign="left" />} >
 
-              <ListView
-                  style={{marginBottom: 10}}
-                  enableEmptySections={true}
-                  dataSource = { this.props.bankList }
-                  renderRow = {this._renderPopRow.bind(this)}
-              />
+            <ListView
+              style={{ marginBottom: 10 }}
+              enableEmptySections={true}
+              dataSource={this.props.bankList}
+              renderRow={this._renderPopRow.bind(this)}
+            />
 
 
-            </PopupDialog>
-          </View>
-          )
+          </PopupDialog>
+        </View>
+        )
           }
           }
 
           let {height, width} = Dimensions.get('window');
 
 
-          const styles = StyleSheet.create({
+        const styles = StyleSheet.create({
           header: {
           height: 60,
           backgroundColor: '#42B549',
@@ -246,17 +392,29 @@ class PaymentBank extends Component {
           alignItems: 'stretch',
           backgroundColor:'#F4F4F4'
         },
-          containers: {
+        containers: {
           flex: 1,
           alignItems: 'stretch',
           margin: 20,
         },
-          row: {
+        paymentMethod:{
+          borderRadius:3,
+          width:150,
+          height:80,
+          borderWidth:1,
+          borderColor:'#F0F0F0',
+          alignItems:'center',
+          justifyContent:'center',
+        },
+        paymentSelected:{
+          borderColor:'#42b549'
+        },
+        row: {
           backgroundColor: '#FFFFFF',
           flexDirection: 'row',
           justifyContent: 'space-between',
           borderBottomWidth: 1,
-          borderColor: '#F0F0F0'
+          borderColor: '#F0F0F0',
         },
           row1:{
           padding:15,
@@ -318,25 +476,27 @@ class PaymentBank extends Component {
           height: 50,
           flexDirection:'row', justifyContent:'center'
         },
-          logoBox: {
+        logoBox: {
           borderWidth:1,
           borderRadius:2,
-          width: width *.13,
+          width: (width-(60+(10*6)))/6,
           marginTop: height * .015,
           justifyContent: 'center',
           borderColor:'#F0F0F0',
-          alignItems: 'center'
-
+          alignItems: 'center',
+          marginHorizontal:5
         },
-          emiBox: {
+        emiBox: {
           borderWidth:1,
           borderRadius:2,
-          width: width *.13,
+          //width: width *.13,
+          width: (width-(60+(10*6)))/6,
           justifyContent: 'center',
           borderColor:'#F0F0F0',
         },
           emiText : {
-          fontSize:10,
+          fontSize:13,
+          color: '#0000008a',
           textAlign:'center'
         },
           noBorder : {
@@ -361,25 +521,45 @@ class PaymentBank extends Component {
           marginTop: width*.03
         },
           popupImage : {
-          width: width *.12,
-          height: width*.05
+          width: 100,
+          height: 30
         },
           popupText : {
           marginTop: width*.015, fontSize:15
-        }
+        },
+          fon13 : {
+          fontSize: 13
+        },
+        fon14 : {
+          fontSize: 14
+        },
+        fon16 : {
+          fontSize: 16
+        },
+        font20 : {
+          fontSize: 20
+        },
+        fontColor70: {
+          color: '#000000b3'
+        },
+        fontColor54: {
+          color: '#0000008a'
+        },
+        fontColorcc: {
+          color: '#000000cc'
+        },
         });
 
 const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2 });
+          rowHasChanged: (r1, r2) => r1 !== r2 });
 
 const mapStateToProps = state => {
   const bankList = ds.cloneWithRows(state.payment.items);
-  const emiList = ds.cloneWithRows(state.payment.emiList);
+  //state.payment.emiList
 
   return {
-     ...state.payment,
-    bankList,
-    emiList
+          ...state.payment,
+        bankList
   }
 }
 

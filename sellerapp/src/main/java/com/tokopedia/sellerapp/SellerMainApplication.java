@@ -14,14 +14,19 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.TkpdGMGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
+import com.tokopedia.sellerapp.utils.WhitelistUtils;
+
+import java.util.List;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -53,39 +58,38 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        return handleClick(screenName,extras,deepLinkUri);
+        return handleClick(screenName, extras, deepLinkUri);
     }
 
     @Override
     public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        return handleClick(screenName,extras,deepLinkUri);
+        return handleClick(screenName, extras, deepLinkUri);
     }
 
-    private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri){
+    private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
 
-        CommonUtils.dumper("FCM moengage SELLER clicked "+deepLinkUri.toString());
+        CommonUtils.dumper("FCM moengage SELLER clicked " + deepLinkUri.toString());
 
-        if(deepLinkUri!=null){
+        if (deepLinkUri != null) {
 
-            if(deepLinkUri.getScheme().equals(Constants.Schemes.HTTP)||deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS))
-            {
+            if (deepLinkUri.getScheme().equals(Constants.Schemes.HTTP) || deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS)) {
                 Intent intent = new Intent(this, DeepLinkActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
 
-            }else if(deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)){
+            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)) {
                 Intent intent = new Intent(this, DeepLinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
 
-            }else{
+            } else {
                 CommonUtils.dumper("FCM entered no one");
             }
 
             return true;
-        }else{
+        } else {
             return false;
         }
 
@@ -144,5 +148,13 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
                 .build());
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(TkpdGMGeneratedDatabaseHolder.class)
+                .build());
+    }
+
+    @Override
+    protected List<CacheApiWhiteListDomain> getWhiteList() {
+        return WhitelistUtils.getWhiteList();
     }
 }

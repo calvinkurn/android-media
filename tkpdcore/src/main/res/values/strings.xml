@@ -4,8 +4,8 @@
     <item name="group_pos" type="id" />
     <item name="child_pos" type="id" />
 
-    <string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>
-    <!--<string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>-->
+    <!--<string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>-->
+    <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
     <string name="app_id">126665634029576</string>
     <string name="app_name">Tokopedia</string>
     <string name="action_settings">Pengaturan</string>
@@ -302,7 +302,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_weight">Berat</string>
     <string name="title_insurance">Asuransi</string>
     <string name="title_condition">Kondisi</string>
-    <string name="title_success_rate">Transaksi Sukses</string>
+    <string name="title_success_rate">Transaksi Berhasil</string>
     <string name="title_category">Kategori</string>
     <string name="title_etalase">Etalase</string>
     <string name="title_catalog">Katalog</string>
@@ -314,7 +314,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_speed">Kecepatan</string>
     <string name="title_accuracy">Akurasi</string>
     <string name="title_service">Pelayanan</string>
-    <string name="title_last_update_price">Last Update Price :</string>
+    <string name="title_last_update_price">Perubahan Harga Terakhir :</string>
     <string name="message_add_new_talk">Berhasil menambahkan Diskusi Produk</string>
     <string name="title_sending">Sedang mengirim...</string>
     <string name="title_dialog_delete">Apakah Anda ingin menghapus tkpd ini ?</string>
@@ -326,7 +326,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="message_prod_depository">Produk ini disimpan di gudang.</string>
     <string name="message_prod_depository_2">Produk ini tidak dapat dibeli sementara. Mohon hubungi pemilik Toko untuk lebih lanjut.</string>
     <string name="message_shop_moderated">Toko ini sedang dimoderasi</string>
-    <string name="title_buy">BELI</string>
+    <string name="title_buy">Beli</string>
     <string name="title_promo_topads">Promo TopAds</string>
     <string name="title_pre_order">PREORDER</string>
     <string name="title_total_prod">Total Produk : </string>
@@ -343,7 +343,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="promo_dink_success">Promo pada produk %1$s telah berhasil!</string>
     <string name="toast_promo_error1">Anda belum dapat menggunakan fitur promo pada saat ini. Fitur Promo berlaku 60 menit sekali untuk masing-masing toko.</string>
     <string name="toast_promo_error2">Yuk, pakai TopAds untuk Promo tanpa batas waktu!</string>
-    <string name="toast_promo_error_cache">Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
+    <string name="toast_promo_error_cache">Fitur Promo berlaku setiap 60 menit sekali\nuntuk masing-masing toko.</string>
     <string name="dink_expired">Berlaku sampai %1$s</string>
     <string name="learn_topads">Pelajari TopAds</string>
     <string name="toast_success_promo1">Promo pada produk</string>
@@ -824,7 +824,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_activity_fragment_shop_detail">Detil Toko</string>
     <string name="title_activity_shop_location">Lokasi Toko</string>
     <string name="title_activity_shop_statistic">Detil Toko</string>
-    <string name="title_activity_manage_shop">ATUR TOKO</string>
+    <string name="title_activity_manage_shop">Atur Toko</string>
     <string name="title_activity_manage_general_desc">ATUR APLIKASI</string>
     <string name="title_activity_manage_general_about">TENTANG KAMI</string>
     <string name="title_activity_manage_shop_notes">Catatan Toko</string>
@@ -2059,5 +2059,7 @@ di Tokopedia Sekarang!</string>
     <string name="string_notreceived_check_courier">Tanya Kurir</string>
     <string name="shop_product_list_header_product_title">Produk</string>
     <string name="shop_product_list_header_featured_product_title">Produk Unggulan</string>
+    <string name="cari_produk_atau_toko">Cari produk atau toko</string>
+    <string name="search_shop_info_hint">Cari produk di toko ini</string>
 
 </resources>

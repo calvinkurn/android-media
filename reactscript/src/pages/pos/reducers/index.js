@@ -13,9 +13,40 @@ import {
   CLEAR_CART,
   FETCH_SEARCH_PRODUCT,
   CLEAR_SEARCH_RESULTS,
-  ON_SEARCH_QUERY_TYPE
+  ON_SEARCH_QUERY_TYPE,
+  SET_SEARCH_TEXT,
+  ON_SUBMIT_FETCH_SEARCH_PRODUCT,
+  FETCH_CART_FROM_CACHE,
+  FETCH_BANK_FUlFILLED,
+  FETCH_EMI_FUlFILLED,
+  MAKE_PAYMENT_FUlFILLED,
+  FETCH_SHOP_NAME,
+  FETCH_SHOP_ID,
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
+import { icons } from '../components/icon/index'
+
+
+
+const shop = (state = {
+  shopName: '',
+  shopId: 0,
+}, action) => {
+  switch (action.type) {
+    case `${FETCH_SHOP_NAME}_${FULFILLED}`:
+      return {
+        shopName: action.payload
+      }
+    case `${FETCH_SHOP_ID}_${FULFILLED}`:
+      return {
+        ...state,
+        shopId: action.payload
+      }
+    default:
+      return state
+  }
+}
+
 
 const products = (state = {
   items: [],
@@ -25,7 +56,7 @@ const products = (state = {
   },
   isFetching: false,
   refreshing: false,
-  canLoadMore: false,
+  canLoadMore: false
 }, action) => {
   switch (action.type) {
     case `${FETCH_PRODUCTS}_${PENDING}`:
@@ -34,9 +65,9 @@ const products = (state = {
         isFetching: true,
       }
     case `${FETCH_PRODUCTS}_${FULFILLED}`:
-      const products = action.payload.data.data.products || []
+      const products = action.payload.data.list || []
       const items = [...state.items, ...products]
-      const nextUrl = action.payload.data.data.paging.uri_next
+      const nextUrl = action.payload.data.paging.uri_next
       const pagination = {
         ...state.pagination,
         start: items.length
@@ -73,6 +104,12 @@ const products = (state = {
           rows: 25,
         },
       }
+    case `${ON_SUBMIT_FETCH_SEARCH_PRODUCT}_${FULFILLED}`:
+      console.log(ON_SUBMIT_FETCH_SEARCH_PRODUCT)
+      return {
+        ...state,
+        items: action.payload.data.data.products
+      }
     default:
       return state
   }
@@ -81,8 +118,8 @@ const products = (state = {
 const etalase = (state = {
   items: [{
     id: '0',
-    name: 'All Products',
-    alias: 'all_products'
+    name: 'Semua Etalase',
+    alias: 'semua_etalase'
   }],
   selected: '0'
 }, action) => {
@@ -90,18 +127,19 @@ const etalase = (state = {
     case `${FETCH_ETALASE}_${PENDING}`:
       return state
     case `${FETCH_ETALASE}_${FULFILLED}`:
-      const etalases = action.payload.data.data.map(e => ({
-        id: e.menu_id,
-        name: e.menu_name,
-        alias: e.menu_alias,
+      const data = action.payload.data.list || []
+      const etalases = data.map(e => ({
+        id: e.etalaseId,
+        name: e.etalaseName,
+        alias: e.etalaseAlias,
       }))
 
       return {
         ...state,
         items: [{
           id: '0',
-          name: 'All Products',
-          alias: 'all_products'
+          name: 'Semua Etalase',
+          alias: 'semua_etalase'
         }, ...etalases],
       }
     case `${FETCH_ETALASE}_${REJECTED}`:
@@ -117,28 +155,44 @@ const etalase = (state = {
 }
 
 const cart = (state = {
-  items: [{
-    id: 160551106,
-    price: 40,
-    name: 'LEBIH HEMAT - Lovana Bodylotion Milky Cupcake 250ml',
-    qty: 1,
-    imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/3/17/17437275/17437275_1878b3d2-ce9c-4ab3-b345-64da204ec935.jpg',
-  }, {
-    id: 160533448,
-    price: 40,
-    name: 'Happy Urang Aring 55ml',
-    qty: 1,
-    imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/4/28/160533448/160533448_8ee45562-709b-4da1-8505-355282ac5459_1000_1000.jpg',
-  }, {
-    id: 193938857,
-    price: 40,
-    name: 'Oh Man! Baby Pomade Nutri Green 45gr',
-    qty: 1,
-    imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/8/10/193938857/193938857_022ba5db-40b1-4ca2-b460-aed833272f5b_1000_1000.jpg',
-  },],
-  totalPrice: 120
+  items: [],
+  totalPrice: 0,
+  isFetching: false,
 }, action) => {
   switch (action.type) {
+    case `${FETCH_CART_FROM_CACHE}_${PENDING}`:
+      return {
+        ...state,
+        isFetching: true,
+      }
+    case `${FETCH_CART_FROM_CACHE}_${FULFILLED}`:
+      const cartItems = action.payload.list
+      const getTotalPrice = () => {
+        let total_price = 0
+
+        action.payload.list.map(res => {
+          let price_per_item = res.product.product_price_unformatted * res.quantity
+          total_price = total_price + price_per_item
+        })
+        return total_price
+      }
+
+      return {
+        items: cartItems || [],
+        totalPrice: getTotalPrice(),
+        isFetching: false,
+      }
+
+    // case ADD_TO_CART:
+    //   return {
+    //     items: [...state.items, action.payload.item],
+    //     totalPrice: state.totalPrice + action.payload.item.price
+    //   }
+    case `${FETCH_CART_FROM_CACHE}_${REJECTED}`:
+      return {
+        ...state,
+        isFetching: false,
+      }
     case ADD_TO_CART:
 
       return {
@@ -146,48 +200,51 @@ const cart = (state = {
         totalPrice: state.totalPrice + action.payload.item.price
       }
 
-    case REMOVE_FROM_CART:
-      const ItemToBeRemoved = state.items.filter(i => i.id === action.payload.id)
+    case `${REMOVE_FROM_CART}_${FULFILLED}`:
+      console.log(action.payload)
+    const ItemToBeRemoved = state.items.filter(i => i.product_id === action.payload.pid)
 
-      return {
-        items: state.items.filter(i => action.payload.id !== i.id),
-        totalPrice: state.totalPrice - (ItemToBeRemoved[0].price * ItemToBeRemoved[0].qty)
-      }
+    return {
+      items: state.items.filter(i => action.payload.pid !== i.product_id),
+      totalPrice: state.totalPrice - (ItemToBeRemoved[0].product.product_price_unformatted * ItemToBeRemoved[0].quantity)
+    }
 
-    case INCREMENT_QTY:
-      const itemQtyToBeIncr = state.items.filter(i => i.id === action.payload.id)
+    case `${INCREMENT_QTY}_${FULFILLED}`:
+      const itemQtyToBeIncr = state.items.filter(i => i.product_id === action.payload.pid)
       return {
+        ...state,
         items: state.items.map(b => {
-          if (action.payload.id === b.id) {
+          if (action.payload.pid === b.product_id) {
             return Object.assign({}, b, {
-              qty: b.qty + 1
+              quantity: action.payload.quantity
             })
           } else {
             return b
           }
         }),
-        totalPrice: state.totalPrice + itemQtyToBeIncr[0].price
+        totalPrice: state.totalPrice + itemQtyToBeIncr[0].product.product_price_unformatted
       }
 
-    case DECREMENT_QTY:
-      const itemQtyToBeDecr = state.items.filter(i => i.id === action.payload.id)
-      if (itemQtyToBeDecr[0].qty === 1) {
-        return state
-      }
-      return {
-        items: state.items.map(b => {
-          if (action.payload.id === b.id) {
-            return Object.assign({}, b, {
-              qty: b.qty - 1
-            })
-          } else {
-            return b
-          }
-        }),
-        totalPrice: state.totalPrice - itemQtyToBeDecr[0].price
-      }
+    case `${DECREMENT_QTY}_${FULFILLED}`:
+    const itemQtyToBeDecr = state.items.filter(i => i.product_id === action.payload.pid)
+    if (itemQtyToBeDecr[0].quantity === 1) {
+      return state
+    }
 
-    case CLEAR_CART:
+    return {
+      items: state.items.map(b => {
+        if (action.payload.pid === b.product_id) {
+          return Object.assign({}, b, {
+            quantity: action.payload.quantity
+          })
+        } else {
+          return b
+        }
+      }),
+      totalPrice: state.totalPrice - itemQtyToBeDecr[0].product.product_price_unformatted
+    }
+
+    case `${CLEAR_CART}_${FULFILLED}`:
       return {
         items: [],
         totalPrice: 0
@@ -207,27 +264,61 @@ const payment = (state = {
   cardType: ''
 }, action) => {
   switch (action.type) {
-    case 'FETCH_BANK_FUlFILLED':
-      //const data  = action.payload.data
-      //TODO: update with API on future
-      const data = bankData;
+    case `${FETCH_BANK_FUlFILLED}_${PENDING}`:
       return {
         ...state,
-        items: data
+        isFetching: true,
       }
-      break;
-    case 'FETCH_EMI_FUlFILLED':
+    case `${FETCH_BANK_FUlFILLED}_${REJECTED}`:
+      return {
+        ...state, 
+        isFetching: false
+      }
+    case `${FETCH_BANK_FUlFILLED}_${FULFILLED}`:
       return {
         ...state,
-        emiList: emiData
+        items: action.payload
       }
       break;
+    case `${FETCH_EMI_FUlFILLED}_${PENDING}`:
+      return {
+        ...state,
+        isFetching: true,
+      }
+    case `${FETCH_EMI_FUlFILLED}_${REJECTED}`:
+      return {
+        ...state, 
+        isFetching: false
+      }
+    case `${FETCH_EMI_FUlFILLED}_${FULFILLED}`:
+     // const data =  action.payload.data.data.list;
+      return {
+        ...state,
+        emiList: action.payload.data.data.list
+      }
+      break;
+
+    case `${MAKE_PAYMENT_FUlFILLED}_${FULFILLED}`:
+      return {
+        ...state
+      }
+      break;
+    case `${MAKE_PAYMENT_FUlFILLED}_${PENDING}`:
+      return {
+        ...state,
+        isFetching: true,
+      }
+    case `${MAKE_PAYMENT_FUlFILLED}_${REJECTED}`:
+      return {
+        ...state,
+        isFetching: false
+      }
     case 'BANK_SELECTED':
-      const bankId = action.payload
+      const bank_id = action.payload
       const newData = {
         items: state.items.map(i => {
           i.isSelected = false;
-          if (i.id === bankId) {
+          if (i.bank_id === bank_id) {
             i.isSelected = true;
           }
           return i
@@ -266,7 +357,8 @@ const payment = (state = {
 
 const search = (state = {
   items: [],
-  query: ''
+  query: '',
+  isFetching: false,
 }, action) => {
   switch (action.type) {
     case ON_SEARCH_QUERY_TYPE:
@@ -275,26 +367,123 @@ const search = (state = {
         query: action.payload,
       }
     case `${FETCH_SEARCH_PRODUCT}_${PENDING}`:
-      return state
+      return {
+        ...state,
+        isFetching: true,
+      }
     case `${FETCH_SEARCH_PRODUCT}_${FULFILLED}`:
       return {
         ...state,
         items: action.payload.data.data.products.map(p => ({
           id: p.id,
           text: p.name
-        }))
+        })),
+        isFetching: false,
       }
     case `${FETCH_SEARCH_PRODUCT}_${REJECTED}`:
-      return state
+      return {
+        ...state,
+        isFetching: false,
+      }
     case CLEAR_SEARCH_RESULTS:
       return {
         items: [],
         query: '',
       }
+    case SET_SEARCH_TEXT:
+      console.log(action.payload)
+      return {
+        ...state,
+        query: action.payload
+      }
     default:
       return state
   }
 }
+
+const paymentInvoice = (state = {
+  items: [{
+    id: 160551106,
+    price: "Rp 20.998.000",
+    name: 'Oh Man! Baby Pomade Nutri Green 45gr',
+    qty: 2,
+    imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/8/10/193938857/193938857_022ba5db-40b1-4ca2-b460-aed833272f5b_1000_1000.jpg',
+  }, {
+    id: 160533448,
+    price: "Rp 13.699.000",
+    name: 'Happy Urang Aring 55ml',
+    qty: 1,
+    imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/4/28/160533448/160533448_8ee45562-709b-4da1-8505-355282ac5459_1000_1000.jpg',
+  }],
+  totalPrice: "Rp 34.697.000"
+}, action) => {
+  return state;
+}
+
+const transactionHistory = (state = {
+  items: []
+}, action) => {
+
+  switch (action.type) {
+    case 'FETCH_TRANSACTION_HISTORY':
+      const data = [{
+        orderName: "OkeShop Carrefour Kasablanca",
+        orderId: "IVR/20170609/XVII/VI/13461162",
+        time: '13 Jul 2017, 12:12 WIB',
+        totalPrice: "Rp 34.697.000",
+        status: "Berhasil",
+        isCompleted: false,
+        products: [
+          {
+            id: 160551106,
+            price: "Rp 20.998.000",
+            name: 'Oh Man! Baby Pomade Nutri Green 45gr',
+            qty: 2,
+            imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/8/10/193938857/193938857_022ba5db-40b1-4ca2-b460-aed833272f5b_1000_1000.jpg',
+          },
+          {
+            id: 160533448,
+            price: "Rp 13.699.000",
+            name: 'Happy Urang Aring 55ml',
+            qty: 1,
+            imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/4/28/160533448/160533448_8ee45562-709b-4da1-8505-355282ac5459_1000_1000.jpg',
+          }
+        ]
+      },
+      {
+        orderName: "OkeShop Carrefour Kasablanca",
+        orderId: "IVR/20170609/XVII/VI/13461163",
+        time: '13 Jul 2017, 12:12 WIB',
+        totalPrice: "Rp 34.697.000",
+        status: "Berhasil",
+        isCompleted: true,
+        products: [
+          {
+            id: 160551106,
+            price: "Rp 20.998.000",
+            name: 'Oh Man! Baby Pomade Nutri Green 45grsss  ',
+            qty: 2,
+            imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/8/10/193938857/193938857_022ba5db-40b1-4ca2-b460-aed833272f5b_1000_1000.jpg',
+          },
+          {
+            id: 160533448,
+            price: "Rp 13.699.000",
+            name: 'Happy Urang Aring 55ml',
+            qty: 1,
+            imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/4/28/160533448/160533448_8ee45562-709b-4da1-8505-355282ac5459_1000_1000.jpg',
+          }
+        ]
+      }];
+      return {
+        ...state,
+        items: data
+      }
+      break;
+  }
+
+  return state;
+}
+
 
 const rootReducer = combineReducers({
   products,
@@ -302,6 +491,9 @@ const rootReducer = combineReducers({
   cart,
   payment,
   search,
+  paymentInvoice,
+  transactionHistory,
+  shop
 })
 
 export default rootReducer

@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import CartItemList from '../components/CartItemList'
+import CartItemList from '../components/cart/CartItemList'
 import {
   removeFromCart,
   incrementQty,
   decrementQty,
   clearCart,
+  fetchCartFromCache
 } from '../actions/index'
 
 const mapStateToProps = (state, ownProps) => {
@@ -14,11 +15,15 @@ const mapStateToProps = (state, ownProps) => {
     visible: ownProps.visible,
     onBackPress: ownProps.onBackPress,
     totalPrice: state.cart.totalPrice,
+    isFetching: state.cart.isFetching
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    fetchCartList: () => {
+      dispatch(fetchCartFromCache())
+    },
     onItemClick: (id) => {
     },
     onRemoveFromCart: (id) => {
@@ -27,11 +32,11 @@ const mapDispatchToProps = (dispatch) => {
     onRemoveAllFromCart: () => {
       dispatch(clearCart())
     },
-    onIncrQty: (id) => {
-      dispatch(incrementQty(id))
+    onIncrQty: (id, pid, qty) => {
+      dispatch(incrementQty(id, pid, qty))
     },
-    onDecrQty: (id) => {
-      dispatch(decrementQty(id))
+    onDecrQty: (id, pid, qty) => {
+      dispatch(decrementQty(id, pid, qty))
     },
 
   }

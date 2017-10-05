@@ -1,28 +1,32 @@
 import React, { Component } from 'react'
-import { Provider } from 'react-redux'
-import store from './store/Store'
-import PaymentBank from './components/PaymentBank'
-import Payment from './components/Payment'
-import PaymentProcessing from './components/PaymentProcessing'
-import POS from './components/POS'
-import { StackNavigator } from 'react-navigation';
-
-// TODO: FOR UI testing purpose
-const App = StackNavigator({
-  BankSelection : { screen: PaymentBank },
-  Payment: { screen: Payment },
-  PaymentProcessing: {screen: PaymentProcessing}
-});
-
+// import { View, Text } from 'react-native'
+import Setup_pos from './setup_pos'
+import Setup_payment from './setup_payment'
+import Setup_cart from './setup_cart'
+import Setup_processing from './setup_processing'
+import Setup_history from './setup_history'
+import DetailCicilan from './setup_cicilan'
 
 class Root extends Component {
+  componentWillMount() {
+    console.log(this.props)
+  }
+
   render() {
-    return (
-      <Provider store={store}>
-        {this.props.data.POS_PAGE === 'POS' && <POS />}
-        {this.props.data.POS_PAGE === 'PAYMENT' && <APP />}
-      </Provider>
-    )
+    const { POS_PAGE } = this.props.data
+    if (POS_PAGE === 'POS'){
+      return <Setup_pos />
+    } else if (POS_PAGE === 'PAYMENT'){
+      return <Setup_payment data={this.props.data} />
+    } else if (POS_PAGE === 'LOCAL_CART'){
+      return <Setup_cart />
+    } else if (POS_PAGE === 'PROCESSING'){
+      return <Setup_processing />
+    } else if (POS_PAGE === 'HISTORY'){
+      return <Setup_history />
+    } else if (POS_PAGE === 'CICILAN'){
+      return <DetailCicilan />
+    }
   }
 }
 export default Root

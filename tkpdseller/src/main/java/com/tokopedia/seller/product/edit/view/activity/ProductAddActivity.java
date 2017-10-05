@@ -22,6 +22,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -40,6 +41,7 @@ import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
+import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
@@ -249,18 +251,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                     .setData(uri.build())
                     .putExtras(extras);
         } else {
-            Intent launchIntent = context.getPackageManager()
-                    .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-            if (launchIntent == null) {
-                launchIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
-                );
-            } else {
-                launchIntent = new Intent(Intent.ACTION_VIEW);
-                launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
-                launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-            }
-            return launchIntent;
+            return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
         }
     }
 
@@ -277,12 +268,12 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         if (hasDataAdded()) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                     .setMessage(getString(getCancelMessageRes()))
-                    .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(R.string.label_exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             ProductAddActivity.super.onBackPressed();
                         }
-                    }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
                             // no op, just dismiss
                         }
@@ -412,19 +403,28 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     }
 
     public void startUploadProduct(long productId) {
-        startService(UploadProductService.getIntent(this, productId));
+        startUploadProductService(productId);
         finish();
     }
 
+    private void startUploadProductService(long productId){
+        ProductAddFragment productAddFragment = getProductAddFragment();
+        boolean isAdd = true;
+        if (productAddFragment!= null) {
+            isAdd = productAddFragment.getStatusUpload() == ProductStatus.ADD;
+        }
+        startService(UploadProductService.getIntent(this, productId, isAdd));
+    }
+
     public void startUploadProductWithShare(long productId) {
-        startService(UploadProductService.getIntent(this, productId));
+        startUploadProductService(productId);
         startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
         finish();
     }
 
     @Override
     public void startUploadProductAndAdd(Long productId) {
-        startService(UploadProductService.getIntent(this, productId));
+        startUploadProductService(productId);
         start(this);
         finish();
     }
@@ -437,7 +437,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
 
     @Override
     public void startUploadProductAndAddWithShare(Long productId) {
-        startService(UploadProductService.getIntent(this, productId));
+        startUploadProductService(productId);
         start(this);
         startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
         finish();

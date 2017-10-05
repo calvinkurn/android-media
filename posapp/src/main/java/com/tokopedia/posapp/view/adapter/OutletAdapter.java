@@ -62,7 +62,7 @@ public class OutletAdapter extends RecyclerView.Adapter<OutletAdapter.ViewHolder
         holder.cardOutlet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewListener.onOutletClicked(outletList.get(position).getOutletId());
+                viewListener.onOutletClicked(outletList.get(position));
             }
         });
     }

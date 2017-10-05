@@ -75,6 +75,7 @@ public class AuthUtil {
         public static final String KEY_KEROPPI = "Keroppi";
         public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
         public static String KEY_CREDIT_CARD_VAULT = "AdKc1ag2NmYgRUF97eQQ8J";
+        public static final String KEY_PAYMENT = "PdsU23He0aJ828P1st8";
     }
 
     public static Map<String, String> generateHeadersWithXUserId(
@@ -421,7 +422,7 @@ public class AuthUtil {
         return params;
     }
 
-    private static String calculateRFC2104HMAC(String authString, String authKey) {
+    public static String calculateRFC2104HMAC(String authString, String authKey) {
         try {
             SecretKeySpec signingKey = new SecretKeySpec(authKey.getBytes(), MAC_ALGORITHM);
             Mac mac = Mac.getInstance(MAC_ALGORITHM);

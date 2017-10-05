@@ -1,18 +1,20 @@
 import React, { Component } from 'react'
 import {
   StyleSheet,
-  Text,
+  // Text,
   View,
-  DrawerLayoutAndroid,
-  ToolbarAndroid,
-  Dimensions,
-  TextInput,
-  Modal,
+  // DrawerLayoutAndroid,
+  // ToolbarAndroid,
+  // Dimensions,
+  // TextInput,
+  // TouchableNativeFeedback,
+  // TouchableWithoutFeedback
 } from 'react-native'
 import VisibleProductList from '../containers/VisibleProductList'
-import Ticker from '../components/Ticker'
+import Ticker from '../components/product/Ticker'
 import CartContainer from '../containers/CartContainer'
 import SearchContainer from '../containers/SearchContainer'
+// import PasswordPopup from './PasswordPopup'
 
 export default class POS extends Component {
   constructor() {
@@ -40,66 +42,21 @@ export default class POS extends Component {
   }
 
   render() {
-    const navigationView = (
-      <View style={{ flex: 1, backgroundColor: '#fff' }}>
-        <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
-      </View>)
-
     return (
-      <DrawerLayoutAndroid
-        drawerWidth={Dimensions.get('window').width / 2}
-        drawerPosition={DrawerLayoutAndroid.positions.Left}
-        ref={(drawer) => { this.drawerPane = drawer; }}
-        renderNavigationView={() => navigationView}>
         <View style={styles.container}>
-          <CartContainer
-            visible={this.state.cartOpen}
-            onBackPress={() => { this.setState({ cartOpen: false }) }} />
-          <SearchContainer
-            visible={this.state.searchOpen}
-            onBackPress={() => { this.setState({ searchOpen: false }) }} />
-          <ToolbarAndroid style={{ width: '100%', height: 60, backgroundColor: '#42b549' }}
-            navIcon={require('./img/icon-burgermenu.png')}
-            onIconClicked={this.onIconClick}
-            actions={[
-              {
-                title: 'Credit Card',
-                icon: require('./img/icon-CreditCards-Info.png'),
-                show: 'always'
-              },
-              {
-                title: 'Cart',
-                icon: require('./img/icon-Cart.png'),
-                show: 'always'
-              },]}
-            onActionSelected={this.onActionSelected}>
-            <TextInput
-              style={{
-                borderWidth: 1,
-                backgroundColor: 'white',
-                borderRadius: 3,
-                width: 350,
-                borderColor: 'white'
-              }}
-              tintColor='red'
-              caretHidden={false}
-              placeholder='tokopedia                                                                    '
-              underlineColorAndroid='transparent'
-            />
-          </ToolbarAndroid>
           <Ticker />
           <VisibleProductList />
+          {/* <PasswordPopup
+            navigation={this.props.navigation}
+            ref={(passwordPopup) => { this.passwordPopup = passwordPopup; }} /> */}
         </View>
-      </DrawerLayoutAndroid>
-
     )
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f1f1f1',
     alignItems: 'center',
-  },
+  }
 })

@@ -160,8 +160,15 @@ android {
         resConfigs "en", "id"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
-        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        // exclude 64bit lib for react-native support
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+        packagingOptions {
+            exclude "lib/arm64-v8a/libgnustl_shared.so"
+        }
     }
 
 
@@ -226,7 +233,8 @@ dependencies {
         }
         compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
-    compile project(':tkpdseller')
+    compile project(':tkpdtopads')
+    compile project(':tkpdgm')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpddigital')
