@@ -9,6 +9,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,13 +35,16 @@ public class GetCashbackUseCase extends UseCase<List<DataCashbackModel>> {
 
     @Override
     public Observable<List<DataCashbackModel>> createObservable(RequestParams requestParams) {
-        return cashbackRepository.getCashbackList(requestParams.getString(PRODUCT_IDS, ""), shopInfoRepository.getShopId());
+        return cashbackRepository.getCashbackList(requestParams.getListLong(PRODUCT_IDS, new ArrayList<Long>()), shopInfoRepository.getShopId());
     }
 
     public static RequestParams createRequestParams(List<String> productIds){
         RequestParams requestParams = RequestParams.create();
-        String productIdsJoin = TextUtils.join(",", productIds);
-        requestParams.putString(PRODUCT_IDS, productIdsJoin);
+        List<Long> productIdsLong = new ArrayList<>();
+        for(String productId : productIds){
+            productIdsLong.add(Long.parseLong(productId));
+        }
+        requestParams.putListLong(PRODUCT_IDS, productIdsLong);
         return requestParams;
     }
 }

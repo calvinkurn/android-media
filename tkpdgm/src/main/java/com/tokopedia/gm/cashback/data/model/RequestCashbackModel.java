@@ -8,11 +8,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class RequestCashbackModel {
     @SerializedName("product_id")
-    private String product_id;
+    private Long product_id;
     @SerializedName("cashback")
-    private String cashback;
+    private int cashback;
 
-    public RequestCashbackModel(String product_id, String cashback) {
+    public RequestCashbackModel(Long product_id, int cashback) {
         this.product_id = product_id;
         this.cashback = cashback;
     }

@@ -17,14 +17,14 @@ public class RequestGetCashbackModel {
     }
 
     public static class DataRequestGetCashback {
-        @SerializedName("product_id")
-        private String product_id;
+        @SerializedName("product_ids")
+        private List<Long> product_id;
         @SerializedName("shop_id")
-        private String cashback;
+        private long shopId;
 
-        public DataRequestGetCashback(String product_id, String cashback) {
+        public DataRequestGetCashback(List<Long> product_id, long shopId) {
             this.product_id = product_id;
-            this.cashback = cashback;
+            this.shopId = shopId;
         }
     }
 }
