@@ -78,6 +78,7 @@ public class WidgetClientNumberView extends LinearLayout {
         actionView();
     }
 
+    @SuppressWarnings("deprecation")
     private void initContactAndClearButtonBg() {
         Glide.with(getContext()).load(R.drawable.ic_clear_widget).asBitmap().into(
                 new SimpleTarget<Bitmap>() {
