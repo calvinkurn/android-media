@@ -88,6 +88,8 @@ public interface InboxReputationDetail {
         void onSuccessLikeDislikeReview(int adapterPosition, int likeStatus, int totalLike);
 
         void onGoToProductDetail(String productId);
+
+        void onSmoothScrollToReplyView(int adapterPosition);
     }
 
     interface Presenter extends CustomerPresenter<View> {

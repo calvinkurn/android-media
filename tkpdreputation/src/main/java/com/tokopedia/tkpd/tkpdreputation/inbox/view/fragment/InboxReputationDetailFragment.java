@@ -468,6 +468,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onSmoothScrollToReplyView(int adapterPosition) {
+        listProduct.smoothScrollToPosition();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, passModel);
