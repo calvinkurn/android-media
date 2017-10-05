@@ -498,13 +498,11 @@ public class InboxReputationDetailItemViewHolder extends
         helpfulIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
-                    viewListener.onLikeReview(getAdapterPosition(),
-                            element.getReviewId(),
-                            likeDislike.getLikeStatus(),
-                            element.getProductId(),
-                            String.valueOf(element.getShopId()));
-                }
+                viewListener.onLikeReview(getAdapterPosition(),
+                        element.getReviewId(),
+                        likeDislike.getLikeStatus(),
+                        element.getProductId(),
+                        String.valueOf(element.getShopId()));
             }
         });
 

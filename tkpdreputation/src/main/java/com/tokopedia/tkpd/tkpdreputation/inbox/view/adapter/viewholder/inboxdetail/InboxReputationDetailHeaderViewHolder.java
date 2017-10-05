@@ -240,13 +240,13 @@ public class InboxReputationDetailHeaderViewHolder extends
                     element.getRevieweeBadgeCustomerViewModel().getPositive(),
                     element.getRevieweeBadgeCustomerViewModel().getNeutral(),
                     element.getRevieweeBadgeCustomerViewModel().getNegative(),
-                    element.getRevieweeBadgeCustomerViewModel().getNoReputation());
+                    element.getRevieweeBadgeCustomerViewModel().getNoReputation(), true);
         } else {
             reputationView.setSeller(
                     element.getRevieweeBadgeSellerViewModel().getReputationBadge().getSet(),
                     element.getRevieweeBadgeSellerViewModel().getReputationBadge().getLevel(),
-                    String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore())
-            );
+                    String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()),
+                    true);
 
         }
     }

@@ -105,12 +105,14 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
                     element.getRevieweeBadgeCustomerViewModel().getPositive(),
                     element.getRevieweeBadgeCustomerViewModel().getNeutral(),
                     element.getRevieweeBadgeCustomerViewModel().getNegative(),
-                    element.getRevieweeBadgeCustomerViewModel().getNoReputation());
+                    element.getRevieweeBadgeCustomerViewModel().getNoReputation(),
+                    false);
         } else {
             reputation.setSeller(
                     element.getRevieweeBadgeSellerViewModel().getReputationBadge().getSet(),
                     element.getRevieweeBadgeSellerViewModel().getReputationBadge().getLevel(),
-                    String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()));
+                    String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()),
+                    false);
         }
     }
 

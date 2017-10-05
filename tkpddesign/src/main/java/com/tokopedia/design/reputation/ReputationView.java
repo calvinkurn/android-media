@@ -75,7 +75,9 @@ public class ReputationView extends BaseCustomView {
         requestLayout();
     }
 
-    public void setBuyer(String text, final int positive, final int neutral, final int negative, int noReputation) {
+    public void setBuyer(String text, final int positive,
+                         final int neutral, final int negative,
+                         int noReputation, boolean isClickable) {
         viewType = ROLE_BUYER;
         init();
         if (noReputation == 1) {
@@ -85,19 +87,22 @@ public class ReputationView extends BaseCustomView {
         } else {
             setIcon(getResources().getDrawable(R.drawable.ic_smiley_good));
             setTitleText(text);
-            if (layout != null)
+            if (layout != null && isClickable)
                 layout.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (getContext() != null) {
                             dialog = new BottomSheetDialog(getContext());
                             dialog.setContentView(R.layout.buyer_reputation_bottom_sheet_dialog);
-                            TextView positive = (TextView) dialog.findViewById(R.id.score_good);
-                            if (positive != null) positive.setText(String.valueOf(positive));
-                            TextView neutral = (TextView) dialog.findViewById(R.id.score_netral);
-                            if (neutral != null) neutral.setText(String.valueOf(neutral));
-                            TextView negative = (TextView) dialog.findViewById(R.id.score_bad);
-                            if (negative != null) negative.setText(String.valueOf(negative));
+                            TextView positiveText = (TextView) dialog.findViewById(R.id.score_good);
+                            if (positiveText != null)
+                                positiveText.setText(String.valueOf(positive));
+                            TextView neutralText = (TextView) dialog.findViewById(R.id
+                                    .score_netral);
+                            if (neutralText != null) neutralText.setText(String.valueOf(neutral));
+                            TextView negativeText = (TextView) dialog.findViewById(R.id.score_bad);
+                            if (negativeText != null)
+                                negativeText.setText(String.valueOf(negative));
                             Button closeButton = (Button) dialog.findViewById(R.id.close_button);
                             if (closeButton != null)
                                 closeButton.setOnClickListener(new OnClickListener() {
@@ -119,7 +124,8 @@ public class ReputationView extends BaseCustomView {
             iconView.setImageDrawable(drawable);
     }
 
-    public void setSeller(final int typeMedal, final int levelMedal, final String reputationPoints) {
+    public void setSeller(final int typeMedal, final int levelMedal, final String
+            reputationPoints, final boolean isClickable) {
         viewType = ROLE_SELLER;
         init();
         ReputationBadgeUtils.setReputationMedals(getContext(), layout, typeMedal, levelMedal,
@@ -127,7 +133,7 @@ public class ReputationView extends BaseCustomView {
 
                     @Override
                     public void onClick(View v) {
-                        if (getContext() != null) {
+                        if (getContext() != null && isClickable) {
                             dialog = new BottomSheetDialog(getContext());
                             dialog.setContentView(R.layout.seller_reputation_bottom_sheet_dialog);
                             TextView point = (TextView) dialog.findViewById(R.id.reputation_point);

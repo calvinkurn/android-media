@@ -3,7 +3,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:layout_margin="@dimen/price_range_separator_margin"
+              android:padding="@dimen/price_range_separator_margin"
               android:orientation="vertical">
 
     <TextView
