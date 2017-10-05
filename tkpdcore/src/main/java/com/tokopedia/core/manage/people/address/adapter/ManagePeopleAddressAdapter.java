@@ -62,6 +62,9 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
         @BindView(R2.id.label_no_location)
         View noLocationLabel;
 
+        @BindView(R2.id.view_bottom)
+        View bottomView;
+
         GoogleMap googleMap;
 
         public MPAddressViewHolder(View itemView) {
@@ -149,6 +152,12 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
             viewHolder.noLocationLabel.setVisibility(View.VISIBLE);
         } else {
             viewHolder.noLocationLabel.setVisibility(View.INVISIBLE);
+        }
+
+        if (position == list.size() - 1) {
+            viewHolder.bottomView.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.bottomView.setVisibility(View.GONE);
         }
     }
 

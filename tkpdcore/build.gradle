@@ -179,6 +179,9 @@ dependencies {
         exclude group: 'com.android.support'
     }
     compile rootProject.ext.debugToolsDependencies.stetho
+    compile(rootProject.ext.analyticsDependencies.branch) {
+        exclude module: 'answers-shim'
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'

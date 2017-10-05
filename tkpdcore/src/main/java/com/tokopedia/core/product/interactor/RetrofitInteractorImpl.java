@@ -860,7 +860,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 new Func1<Response<PromoWidgetResponse>, DataPromoWidget>() {
                     @Override
                     public DataPromoWidget call(Response<PromoWidgetResponse> promoWidgetRespone) {
-                        if (!promoWidgetRespone.body().getData().getPromoWidgetList().isEmpty()) {
+                        if (promoWidgetRespone.body().getData()!=null) {
                             return promoWidgetRespone.body().getData();
                         }
                         return null;

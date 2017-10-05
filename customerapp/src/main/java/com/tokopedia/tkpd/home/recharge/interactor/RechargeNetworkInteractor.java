@@ -14,7 +14,7 @@ import rx.Subscriber;
  */
 public interface RechargeNetworkInteractor {
 
-    void getRecentNumbers(Map<String, String> param);
+    void getRecentNumbers(Subscriber<Boolean> subscriber, Map<String, String> param);
 
     void getLastOrder(Subscriber<LastOrder> subscriber, Map<String, String> param);
 
