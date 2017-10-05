@@ -330,6 +330,21 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         resetPageAndSearch();
     }
 
+    @Override
+    public void onErrorMultipleDeleteProduct(int countOfSuccess, int countOfError) {
+        resetPageAndSearch();
+    }
+
+    @Override
+    public void onSuccessMultipleDeleteProduct(int countOfSuccess, int countOfError) {
+        resetPageAndSearch();
+    }
+
+    @Override
+    public void onErrorMultipleDeleteProduct(Throwable e) {
+
+    }
+
     private void showActionProductDialog(ProductManageViewModel productManageViewModel) {
         CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
 
@@ -368,7 +383,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void showOptionCashback(String productId, String productPrice, String productPriceSymbol) {
-        int productPricePlain = Integer.parseInt(productPrice);
+        double productPricePlain = Double.parseDouble(productPrice);
 
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
