@@ -21,10 +21,12 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.compoundview.WidgetOperatorChooserView;
 import com.tokopedia.digital.widget.compoundview.WidgetProductChooserView;
 import com.tokopedia.digital.widget.compoundview.WidgetWrapperBuyView;
+import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.interactor.DigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle2View;
@@ -75,9 +77,9 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void initialVariable() {
         DigitalWidgetInteractor interactor = new DigitalWidgetInteractor(new CompositeSubscription(),
-                new DigitalWidgetRepository(new RechargeService(), new DigitalEndpointService()));
+                new DigitalWidgetRepository(new RechargeService(), new DigitalEndpointService(), new FavoriteNumberListDataMapper()));
         presenter = new DigitalWidgetStyle2Presenter(getActivity(), interactor, this);
-        presenter.fetchRecentNumber(category.getId());
+        presenter.fetchNumberList(String.valueOf(category.getId()));
 
         lastClientNumberTyped = presenter.getLastClientNumberTyped(String.valueOf(category.getId()));
         lastOperatorSelected = presenter.getLastOperatorSelected(String.valueOf(category.getId()));
@@ -110,7 +112,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
             setRechargeEditTextCallback(widgetClientNumberView);
             setRechargeEditTextTouchCallback(widgetClientNumberView);
-            initClientNumber();
+//            initClientNumber();
         }
     }
 
@@ -258,30 +260,30 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
         };
     }
 
-    private void renderLastOrder() {
-        if (presenter != null) {
-            lastOrder = presenter.getLastOrderFromCache();
-            if (lastOrder != null && lastOrder.getData() != null && category != null) {
-                if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
-                    widgetClientNumberView.setText(lastOrder.getData().getAttributes().getClient_number());
-                }
-            }
-        }
-    }
+//    private void renderLastOrder() {
+//        if (presenter != null) {
+//            lastOrder = presenter.getLastOrderFromCache();
+//            if (lastOrder != null && lastOrder.getData() != null && category != null) {
+//                if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
+//                    widgetClientNumberView.setText(lastOrder.getData().getAttributes().getClient_number());
+//                }
+//            }
+//        }
+//    }
 
-    private void initClientNumber() {
-        if (sessionHandler.isV4Login(getActivity())
-                && presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())) {
-            renderLastOrder();
-        } else if (sessionHandler.isV4Login(getActivity())
-                && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
-                && !TextUtils.isEmpty(lastClientNumberTyped)) {
-            presenter.getOperatorById(lastOperatorSelected);
-        } else if (!sessionHandler.isV4Login(getActivity())
-                && !TextUtils.isEmpty(lastClientNumberTyped)) {
-            presenter.getOperatorById(lastOperatorSelected);
-        }
-    }
+//    private void initClientNumber() {
+//        if (sessionHandler.isV4Login(getActivity())
+//                && presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())) {
+//            renderLastOrder();
+//        } else if (sessionHandler.isV4Login(getActivity())
+//                && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
+//                && !TextUtils.isEmpty(lastClientNumberTyped)) {
+//            presenter.getOperatorById(lastOperatorSelected);
+//        } else if (!sessionHandler.isV4Login(getActivity())
+//                && !TextUtils.isEmpty(lastClientNumberTyped)) {
+//            presenter.getOperatorById(lastOperatorSelected);
+//        }
+//    }
 
     @Override
     public int getLayout() {
@@ -391,9 +393,52 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     @Override
-    public void renderDataRecent(List<String> results) {
+    public void renderNumberList(List<OrderClientNumber> results) {
         if (sessionHandler.isV4Login(getActivity())) {
             widgetClientNumberView.setDropdownAutoComplete(results);
         }
     }
+
+    @Override
+    public void renderLastOrder(LastOrder lastOrder) {
+        if (presenter != null) {
+            this.lastOrder = lastOrder;
+            if (lastOrder != null && lastOrder.getData() != null && category != null) {
+                if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
+                    widgetClientNumberView.setText(lastOrder.getData().getAttributes().getClient_number());
+                }
+            }
+        }
+    }
+
+//    @Override
+//    public void renderLastOrderFromApi(OrderClientNumber lastOrder) {
+//        if (presenter != null) {
+//            if (lastOrder != null) {
+//                widgetClientNumberView.setText(lastOrder.getClientNumber());
+//                if (lastOrder.getLastProduct() != null) {
+//                    presenter.fetchDefaultProduct(String.valueOf(category.getId()), lastOrder.getOperatorId(), lastOrder.getLastProduct());
+//                }
+//            }
+//        }
+//    }
+
+//    @Override
+//    public void renderLastOrderFromCache(LastOrder lastOrder) {
+//        if (lastOrder != null && lastOrder.getData() != null && category != null) {
+//            if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
+//                widgetClientNumberView.setText(lastOrder.getData().getAttributes().getClient_number());
+//            }
+//        }
+//    }
+
+//    @Override
+//    public void renderLastOrder(OrderClientNumber lastOrder) {
+//        if (presenter != null) {
+//            if (lastOrder != null) {
+//                widgetClientNumberView.setText(lastOrder.getClientNumber());
+//            }
+//        }
+//    }
+
 }

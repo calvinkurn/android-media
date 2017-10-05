@@ -3,6 +3,7 @@ package com.tokopedia.digital.widget.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -21,9 +22,11 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.compoundview.WidgetProductChooserView;
 import com.tokopedia.digital.widget.compoundview.WidgetWrapperBuyView;
+import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.interactor.DigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle1View;
@@ -52,9 +55,11 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     private WidgetClientNumberView widgetClientNumberView;
     private WidgetWrapperBuyView widgetWrapperBuyView;
     private WidgetProductChooserView widgetProductChooserView;
+
     private RechargeOperatorModel selectedOperator;
     private LastOrder lastOrder;
     private Product selectedProduct;
+
     private String selectedOperatorId;
     private int minLengthDefaultOperator;
     private boolean showPrice = true;
@@ -72,9 +77,9 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void initialVariable() {
         DigitalWidgetInteractor interactor = new DigitalWidgetInteractor(new CompositeSubscription(),
-                new DigitalWidgetRepository(new RechargeService(), new DigitalEndpointService()));
+                new DigitalWidgetRepository(new RechargeService(), new DigitalEndpointService(), new FavoriteNumberListDataMapper()));
         presenter = new DigitalWidgetStyle1Presenter(getActivity(), interactor, this);
-        presenter.fetchRecentNumber(category.getId());
+        presenter.fetchNumberList(String.valueOf(category.getId()));
 
         sessionHandler = new SessionHandler(getActivity());
         lastClientNumberTyped = presenter.getLastClientNumberTyped(String.valueOf(category.getId()));
@@ -106,7 +111,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             widgetClientNumberView.setHint(clientNumber.getPlaceholder());
             widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
             holderWidgetClientNumber.addView(widgetClientNumberView);
-            initClientNumber();
+//            initClientNumber();
         } else {
             selectedOperatorId = category.getAttributes().getDefaultOperatorId();
             presenter.validateOperatorWithProducts(category.getId(), selectedOperatorId);
@@ -271,24 +276,10 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         };
     }
 
-    private void renderLastOrder() {
-        if (presenter != null) {
-            lastOrder = presenter.getLastOrderFromCache();
-            if (lastOrder != null && lastOrder.getData() != null && category != null) {
-                if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
-                    widgetClientNumberView.setText(lastOrder.getData().getAttributes().getClient_number());
-                }
-            }
-        }
-    }
-
     private void initClientNumber() {
         String defaultPhoneNumber = sessionHandler.getPhoneNumber();
 
         if (sessionHandler.isV4Login(getActivity())
-                && presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())) {
-            renderLastOrder();
-        } else if (sessionHandler.isV4Login(getActivity())
                 && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
             renderLastTypeClientNumber();
@@ -383,9 +374,27 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     @Override
-    public void renderDataRecent(List<String> results) {
+    public void renderNumberList(List<OrderClientNumber> results) {
         if (sessionHandler.isV4Login(getActivity())) {
+            for (OrderClientNumber orderClientNumber : results) {
+                Log.d("WidgetStyle1RechargeFragment",
+                        orderClientNumber.getCategoryId() + " " +
+                                orderClientNumber.getName() + " " +
+                                orderClientNumber.getLastUpdated());
+            }
             widgetClientNumberView.setDropdownAutoComplete(results);
+        }
+    }
+
+    @Override
+    public void renderLastOrder(LastOrder lastOrder) {
+        if (presenter != null) {
+            this.lastOrder = lastOrder;
+            if (lastOrder != null && lastOrder.getData() != null && category != null) {
+                if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
+                    widgetClientNumberView.setText(lastOrder.getData().getAttributes().getClient_number());
+                }
+            }
         }
     }
 

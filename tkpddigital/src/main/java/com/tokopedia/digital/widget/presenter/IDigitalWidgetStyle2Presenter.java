@@ -6,7 +6,7 @@ package com.tokopedia.digital.widget.presenter;
 
 public interface IDigitalWidgetStyle2Presenter {
 
-    void fetchRecentNumber(int categoryId);
+    void fetchNumberList(String categoryId);
 
     void getOperatorById(String operatorId);
 

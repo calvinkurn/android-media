@@ -2,6 +2,7 @@ package com.tokopedia.digital.widget.listener;
 
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.product.Product;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Created by nabillasabbaha on 8/8/17.
  */
 
-public interface IDigitalWidgetStyle2View {
+public interface IDigitalWidgetStyle2View extends BaseDigitalWidgetView {
 
     void renderDataProducts(List<Product> products);
 
@@ -19,7 +20,9 @@ public interface IDigitalWidgetStyle2View {
 
     void renderEmptyOperators(String message);
 
-    void renderDataRecent(List<String> results);
+//    void renderDataRecent(List<String> results);
+
+//    void renderNumberList(List<OrderClientNumber> results);
 
     void renderProduct(Product product);
 

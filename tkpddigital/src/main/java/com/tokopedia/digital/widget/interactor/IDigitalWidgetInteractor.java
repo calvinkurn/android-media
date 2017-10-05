@@ -2,6 +2,10 @@ package com.tokopedia.digital.widget.interactor;
 
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.product.Product;
+import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.product.model.OrderClientNumber;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.List;
 
@@ -23,7 +27,11 @@ public interface IDigitalWidgetInteractor {
 
     void getProductById(Subscriber<Product> subscriber, String categoryId, String operatorId, String productId);
 
-    void getRecentData(Subscriber<List<String>> subscriber, int categoryId);
+    void getNumberList(Subscriber<DigitalNumberList> subscriber,
+                       TKPDMapParam<String, String> param);
+
+    void getLastOrderByCategoryId(Subscriber<LastOrder> subscriber, int categoryId);
 
     void onDestroy();
+
 }

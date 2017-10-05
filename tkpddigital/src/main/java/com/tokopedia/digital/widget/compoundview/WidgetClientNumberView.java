@@ -27,6 +27,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.ClientNumber;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.adapter.AutoCompleteTVAdapter;
 
 import java.util.ArrayList;
@@ -54,9 +55,14 @@ public class WidgetClientNumberView extends LinearLayout {
     @BindView(R2.id.btn_phone_book)
     Button btnPhoneBook;
 
+    private List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
+
     private RechargeEditTextListener rechargeEditTextListener;
     private OnButtonPickerListener buttonPickerListener;
 
+    private AutoCompleteTVAdapter adapter;
+
+    private int oldCount;
 
     public WidgetClientNumberView(Context context) {
         super(context);
@@ -168,26 +174,55 @@ public class WidgetClientNumberView extends LinearLayout {
                 .into(this.imgOperator);
     }
 
-    public void setDropdownAutoComplete(List<String> numberList) {
-//        String[] numberAutoCompleteList = new String[numberList.size()];
-//        numberAutoCompleteList = numberList.toArray(numberAutoCompleteList);
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-//                getContext(), R.layout.simple_spinner_tv_res, numberAutoCompleteList);
-        List<ClientNumber> clientNumbers = new ArrayList<>();
-        ClientNumber clientNumber1 = new ClientNumber();
-        clientNumber1.setName("Rizky");
-        clientNumber1.setText("081322867354");
-        clientNumbers.add(clientNumber1);
-//        ClientNumber clientNumber1 = new ClientNumber();
-//        clientNumbers[1] = clientNumber1;
-        AutoCompleteTVAdapter adapter = new AutoCompleteTVAdapter(getContext(),
-                R.layout.item_autocomplete, clientNumbers);
+    public void setDropdownAutoComplete(List<OrderClientNumber> numberList) {
+        adapter = new AutoCompleteTVAdapter(getContext(),
+                R.layout.item_autocomplete, numberList);
 
-        pulsaAutocompleteView.setAdapter(adapter);
-        pulsaAutocompleteView.setThreshold(1);
+        this.pulsaAutocompleteView.setAdapter(adapter);
+        this.pulsaAutocompleteView.setThreshold(1);
+    }
+
+    private List<OrderClientNumber> generateDummyOrderClientNumbers() {
+        List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
+        orderClientNumbers.add(new OrderClientNumber.Builder()
+                .clientNumber("081322867354")
+                .name("Rizky Fadillah")
+                .build());
+        orderClientNumbers.add(new OrderClientNumber.Builder()
+                .clientNumber("085322678936")
+                .name("Sarah Nurlaila")
+                .build());
+        orderClientNumbers.add(new OrderClientNumber.Builder()
+                .clientNumber("081311109877")
+                .name("Mentari")
+                .build());
+        orderClientNumbers.add(new OrderClientNumber.Builder()
+                .clientNumber("089899237788")
+                .name("Benny M Fazrido")
+                .build());
+        orderClientNumbers.add(new OrderClientNumber.Builder()
+                .clientNumber("081899762254")
+                .name("Cristiano Ronaldo")
+                .build());
+        orderClientNumbers.add(new OrderClientNumber.Builder()
+                .clientNumber("083111776688")
+                .build());
+        orderClientNumbers.add(new OrderClientNumber.Builder()
+                .clientNumber("081899880099")
+                .build());
+        orderClientNumbers.add(new OrderClientNumber.Builder()
+                .clientNumber("081266778899")
+                .build());
+        return orderClientNumbers;
     }
 
     private void actionView() {
+        adapter = new AutoCompleteTVAdapter(getContext(),
+                R.layout.item_autocomplete, orderClientNumbers);
+
+        this.pulsaAutocompleteView.setAdapter(adapter);
+        this.pulsaAutocompleteView.setThreshold(1);
+
         this.pulsaAutocompleteView.setOnFocusChangeListener(getFocusChangeListener());
         this.pulsaAutocompleteView.addTextChangedListener(getTextChangedListener());
         this.btnClear.setOnClickListener(getClickClearButtonListener());

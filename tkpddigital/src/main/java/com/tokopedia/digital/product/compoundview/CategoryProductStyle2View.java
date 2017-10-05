@@ -316,6 +316,11 @@ public class CategoryProductStyle2View extends
                 clearHolder(holderAdditionalInfoProduct);
                 clearHolder(holderPriceInfoProduct);
             }
+
+            @Override
+            public void onClientNumberHasFocus(String clientNumber) {
+                actionListener.onClientNumberClicked(clientNumber, historyClientNumber.getRecentClientNumberList());
+            }
         };
     }
 

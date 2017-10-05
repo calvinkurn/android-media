@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.home.recharge.interactor;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.database.recharge.status.Status;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 
 import java.util.Map;
@@ -25,26 +26,6 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
     public RechargeNetworkInteractorImpl(DigitalWidgetRepository repository) {
         compositeSubscription = new CompositeSubscription();
         this.repository = repository;
-    }
-
-    @Override
-    public void getRecentNumbers(Map<String, String> params) {
-        compositeSubscription.add(
-                repository.storeObservableRecentDataNetwork(params)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe());
-    }
-
-    @Override
-    public void getLastOrder(Subscriber<LastOrder> subscriber, Map<String, String> params) {
-        compositeSubscription.add(
-                repository.getObservableLastOrderNetwork(params)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber));
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
@@ -53,17 +54,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
         rechargeNetworkInteractor.getStatusResume(getStatusSubscriber());
     }
 
-    @Override
-    public void fetchRecentNumberList() {
-        rechargeNetworkInteractor.getRecentNumbers(AuthUtil.generateParams(activity));
-    }
-
-    @Override
-    public void fetchLastOrder() {
-        rechargeNetworkInteractor.getLastOrder(getLastOrderSubscriber(),
-                AuthUtil.generateParams(activity));
-    }
-
     private Subscriber<Status> getStatusSubscriber() {
         return new Subscriber<Status>() {
             @Override
@@ -81,7 +71,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
                 SessionHandler sessionHandler = new SessionHandler(activity);
                 if (status != null) {
                     if (sessionHandler.isV4Login(activity)) {
-                        fetchRecentNumberList();
                     }
                     if (status.getData().getAttributes().getIsMaintenance() || !isVersionMatch(status)) {
                         view.failedRenderDataRechargeCategory();
@@ -109,32 +98,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
             public void onNext(CategoryData data) {
                 categoryData = data;
                 finishPrepareRechargeModule();
-            }
-        };
-    }
-
-    private Subscriber<LastOrder> getLastOrderSubscriber() {
-        return new Subscriber<LastOrder>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                onNetworkError();
-            }
-
-            @Override
-            public void onNext(LastOrder lastOrder) {
-                if (lastOrder != null) {
-                    cacheHandler.putString(TkpdCache.Key.DIGITAL_LAST_ORDER,
-                            CacheUtil.convertModelToString(lastOrder, LastOrder.class));
-                    cacheHandler.applyEditor();
-                } else {
-                    onNetworkError();
-                }
             }
         };
     }

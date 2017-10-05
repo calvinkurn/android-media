@@ -24,6 +24,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
@@ -98,7 +99,7 @@ public class RechargeCategoryFragment extends
                 new RechargeCategoryPresenterImpl(getActivity(), this,
                         new RechargeNetworkInteractorImpl(
                                 new DigitalWidgetRepository(
-                                        new RechargeService(), new DigitalEndpointService())));
+                                        new RechargeService(), new DigitalEndpointService(), new FavoriteNumberListDataMapper())));
 
         showFetchDataLoading();
         rechargeCategoryPresenter.fecthDataRechargeCategory();

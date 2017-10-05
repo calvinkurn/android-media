@@ -9,9 +9,11 @@ import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 
 public interface IBaseDigitalWidgetPresenter {
 
+//    void fetchNumberList(String categoryId);
+
     boolean isAlreadyHaveLastOrderOnCache();
 
-    LastOrder getLastOrderFromCache();
+//    LastOrder getLastOrderFromCache();
 
     void storeLastInstantCheckoutUsed(String categoryId, boolean checked);
 

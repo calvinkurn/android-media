@@ -319,6 +319,11 @@ public class CategoryProductStyle3View extends
                 clearHolder(holderPriceInfoProduct);
                 clientNumberInputView.disableImageOperator();
             }
+
+            @Override
+            public void onClientNumberHasFocus(String clientNumber) {
+                actionListener.onClientNumberClicked(clientNumber, historyClientNumber.getRecentClientNumberList());
+            }
         };
     }
 

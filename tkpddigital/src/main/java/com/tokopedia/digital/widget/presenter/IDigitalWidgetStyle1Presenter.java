@@ -1,12 +1,14 @@
 package com.tokopedia.digital.widget.presenter;
 
+import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
+
 /**
  * Created by nabillasabbaha on 7/21/17.
  */
 
 public interface IDigitalWidgetStyle1Presenter {
 
-    void fetchRecentNumber(int categoryId);
+    void fetchNumberList(String categoryId);
 
     void getOperatorById(String operatorId);
 

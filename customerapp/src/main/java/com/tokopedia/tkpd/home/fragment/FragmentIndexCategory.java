@@ -83,6 +83,7 @@ import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
@@ -401,7 +402,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this,
                 new RechargeNetworkInteractorImpl(
                         new DigitalWidgetRepository(
-                                new RechargeService(), new DigitalEndpointService())));
+                                new RechargeService(), new DigitalEndpointService(), new FavoriteNumberListDataMapper())));
 
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
@@ -473,9 +474,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onResume() {
         rechargeCategoryPresenter.fetchStatusDigitalProductData();
-        if (SessionHandler.isV4Login(getActivity())) {
-            rechargeCategoryPresenter.fetchLastOrder();
-        }
+//        if (SessionHandler.isV4Login(getActivity())) {
+//            rechargeCategoryPresenter.fetchLastOrder();
+//        }
         super.onResume();
     }
 
@@ -961,7 +962,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         addChildTablayout(rechargeCategory, newRechargePositions);
         getPositionFlagNewRecharge(newRechargePositions);
 
-
         if (rechargeCategory.getData().size() == 1)
             holder.tabLayoutRecharge.setTabMode(TabLayout.MODE_SCROLLABLE);
         else {
@@ -994,7 +994,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
 
     }
-
 
     @Override
     public void failedRenderDataRechargeCategory() {

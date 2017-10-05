@@ -42,6 +42,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
+import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -58,6 +59,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalChooserActivity;
+import com.tokopedia.digital.product.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.adapter.BannerAdapter;
@@ -85,6 +87,7 @@ import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.model.PulsaBalance;
 import com.tokopedia.digital.product.presenter.IProductDigitalPresenter;
@@ -94,6 +97,9 @@ import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
+import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.domain.IDigitalWidgetRepository;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -255,16 +261,17 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         IProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
+        IDigitalWidgetRepository digitalWidgetRepository =
+                new DigitalWidgetRepository(new RechargeService(), digitalEndpointService, new FavoriteNumberListDataMapper());
         IDigitalCategoryRepository digitalCategoryRepository =
                 new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
         ILastOrderNumberRepository lastOrderNumberRepository =
                 new LastOrderNumberRepository(digitalEndpointService, productDigitalMapper);
         IUssdCheckBalanceRepository ussdCheckBalanceRepository = new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper);
 
-
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
-                        compositeSubscription, digitalCategoryRepository,
+                        compositeSubscription, digitalWidgetRepository, digitalCategoryRepository,
                         lastOrderNumberRepository, cacheHandlerLastInputClientNumber, ussdCheckBalanceRepository
                 );
         presenter = new ProductDigitalPresenter(this, productDigitalInteractor);
@@ -766,6 +773,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
         );
         cacheHandlerRecentInstantCheckoutUsed.applyEditor();
+    }
+
+    @Override
+    public void onClientNumberClicked(String clientNumber, List<OrderClientNumber> numberList) {
+        startActivityForResult(
+                DigitalSearchNumberActivity.newInstance(
+                        getActivity(), categoryId, clientNumber, numberList
+                ),
+                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
+        );
     }
 
     @Override

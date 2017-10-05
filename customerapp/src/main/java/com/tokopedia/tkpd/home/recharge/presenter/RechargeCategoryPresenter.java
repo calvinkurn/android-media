@@ -10,9 +10,7 @@ public interface RechargeCategoryPresenter {
 
     void fetchStatusDigitalProductData();
 
-    void fetchRecentNumberList();
-
-    void fetchLastOrder();
+//    void fetchLastOrder();
 
     void onDestroy();
 }

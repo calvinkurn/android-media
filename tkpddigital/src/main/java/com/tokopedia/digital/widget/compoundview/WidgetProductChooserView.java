@@ -97,7 +97,6 @@ public class WidgetProductChooserView extends LinearLayout {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 listener.initDataView(products.get(i));
                 checkStockProduct(products.get(i));
-
             }
 
             @Override

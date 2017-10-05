@@ -1,12 +1,14 @@
 package com.tokopedia.core.network.apiservices.recharge.apis;
 
 import com.tokopedia.core.database.model.category.CategoryData;
+import com.tokopedia.core.database.recharge.numberList.NumberList;
 import com.tokopedia.core.database.recharge.operator.OperatorData;
 import com.tokopedia.core.database.recharge.product.ProductData;
 import com.tokopedia.core.database.recharge.recentNumber.RecentData;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 
 import java.util.Map;
 
@@ -32,9 +34,4 @@ public interface RechargeApi {
     @GET(TkpdBaseURL.Recharge.PATH_STATUS)
     Observable<Response<Status>> getStatus();
 
-    @GET(TkpdBaseURL.Recharge.PATH_RECENT_NUMBER)
-    Observable<Response<RecentData>> getRecentNumbers(@QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.Recharge.PATH_LAST_ORDER)
-    Observable<Response<LastOrder>> getLastOrder(@QueryMap Map<String, String> params);
 }

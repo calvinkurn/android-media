@@ -1,27 +1,34 @@
 package com.tokopedia.digital.widget.domain;
 
-import com.google.gson.Gson;
+import android.util.Log;
+
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.database.manager.RechargeRecentDataManager;
+import com.tokopedia.core.database.manager.RechargeNumberListManager;
+import com.tokopedia.core.database.model.RechargeNumberListModelDB;
 import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.database.recharge.operator.Operator;
 import com.tokopedia.core.database.recharge.operator.OperatorData;
 import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.database.recharge.product.ProductData;
-import com.tokopedia.core.database.recharge.recentNumber.RecentData;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
+import com.tokopedia.core.database.recharge.recentOrder.LastOrderEntity;
 import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.product.model.OrderClientNumber;
+import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteNumber;
+import com.tokopedia.digital.widget.data.mapper.IFavoriteNumberMapper;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -43,11 +50,14 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
 
     private final RechargeService rechargeService;
     private final DigitalEndpointService digitalEndpointService;
+    private final IFavoriteNumberMapper favoriteNumberMapper;
 
     public DigitalWidgetRepository(RechargeService rechargeService,
-                                   DigitalEndpointService digitalEndpointService) {
+                                   DigitalEndpointService digitalEndpointService,
+                                   IFavoriteNumberMapper favoriteNumberMapper) {
         this.rechargeService = rechargeService;
         this.digitalEndpointService = digitalEndpointService;
+        this.favoriteNumberMapper = favoriteNumberMapper;
     }
 
     @Override
@@ -62,7 +72,6 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                     }
                 });
     }
-
 
     private Observable<CategoryData> getObservableCategoryDataDB() {
         return Observable.just(new GlobalCacheManager())
@@ -240,7 +249,6 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                 .doOnNext(validateStatus(true));
     }
 
-
     private Observable<Status> getObservableStatusDB() {
         return Observable.just(true)
                 .map(new Func1<Boolean, Status>() {
@@ -328,46 +336,128 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     @Override
-    public Observable<List<String>> getObservableRecentData(final int categoryId) {
-        List<String> recentDataList = new RechargeRecentDataManager()
-                .getListDataByCategory(categoryId);
-        return Observable.just(recentDataList);
-    }
+    public Observable<DigitalNumberList> getObservableNumberList(TKPDMapParam<String, String> param) {
+//        List<OrderClientNumber> dummyNumbers = new ArrayList<>();
+//        dummyNumbers.add(new OrderClientNumber.Builder()
+//                .clientNumber("08188812671")
+//                .name("Zidane")
+//                .lastUpdated("201710041400")
+//                .categoryId("1")
+//                .build());
+//        dummyNumbers.add(new OrderClientNumber.Builder()
+//                .clientNumber("081322867354")
+//                .name("Rizky Fadillah")
+//                .lastUpdated("201710041200")
+//                .categoryId("1")
+//                .build());
+//        dummyNumbers.add(new OrderClientNumber.Builder()
+//                .clientNumber("085611567785")
+//                .name("Ronaldo")
+//                .lastUpdated("201710041300")
+//                .categoryId("1")
+//                .build());
+//        dummyNumbers.add(new OrderClientNumber.Builder()
+//                .clientNumber("08111111111")
+//                .lastProduct("118")
+//                .lastUpdated("201710041000")
+//                .categoryId("1")
+//                .operatorId("12")
+//                .build());
 
-    @Override
-    public Observable<Boolean> storeObservableRecentDataNetwork(Map<String, String> params) {
-        return digitalEndpointService.getApi().getRecentNumber(MapNulRemover.removeNull(params))
-                .map(new Func1<Response<TkpdDigitalResponse>, RecentData>() {
+//        Observable<List<OrderClientNumber>> observableDummyNumbers = Observable.just(dummyNumbers);
+
+        return digitalEndpointService.getApi().getNumberList(param)
+                .map(getFuncTransformNumberList())
+//        return observableDummyNumbers
+                .flatMap(new Func1<List<OrderClientNumber>, Observable<DigitalNumberList>>() {
                     @Override
-                    public RecentData call(Response<TkpdDigitalResponse> recentNumberResponse) {
-                        return new Gson().fromJson(
-                                recentNumberResponse.body().getStrResponse(), RecentData.class);
-                    }
-                })
-                .map(new Func1<RecentData, Boolean>() {
-                    @Override
-                    public Boolean call(RecentData productData) {
-                        RechargeRecentDataManager dbManager = new RechargeRecentDataManager();
-                        if (productData != null && productData.getData() != null)
-                            dbManager.bulkInsert(productData.getData());
-                        return true;
+                    public Observable<DigitalNumberList> call(final List<OrderClientNumber> orderClientNumbers) {
+                        final List<OrderClientNumber> originalClientNumbers = new ArrayList<>();
+                        originalClientNumbers.addAll(orderClientNumbers);
+
+                        return Observable.just(orderClientNumbers)
+                                .flatMapIterable(getSortedNumberList())
+                                .first(getLastOrder())
+                                .flatMap(new Func1<OrderClientNumber, Observable<OrderClientNumber>>() {
+                                    @Override
+                                    public Observable<OrderClientNumber> call(OrderClientNumber orderClientNumber) {
+                                        if (orderClientNumber == null) {
+                                            return Observable.just(originalClientNumbers)
+                                                    .flatMapIterable(getSortedNumberList())
+                                                    .first();
+                                        } else {
+                                            return Observable.just(orderClientNumber);
+                                        }
+                                    }
+                                })
+                                .map(new Func1<OrderClientNumber, DigitalNumberList>() {
+                                    @Override
+                                    public DigitalNumberList call(OrderClientNumber orderClientNumber) {
+                                        return new DigitalNumberList(originalClientNumbers, orderClientNumber);
+                                    }
+                                });
                     }
                 });
     }
 
-    @Override
-    public Observable<LastOrder> getObservableLastOrderNetwork(Map<String, String> params) {
-        return digitalEndpointService.getApi().getLastOrder(MapNulRemover.removeNull(params))
-                .map(new Func1<Response<TkpdDigitalResponse>, LastOrder>() {
+    private Func1<OrderClientNumber, Boolean> getLastOrder() {
+        return new Func1<OrderClientNumber, Boolean>() {
+            @Override
+            public Boolean call(OrderClientNumber orderClientNumber) {
+                return orderClientNumber.getLastProduct() != null;
+            }
+        };
+    }
+
+    private Func1<List<OrderClientNumber>, List<OrderClientNumber>> getSortedNumberList() {
+        return new Func1<List<OrderClientNumber>, List<OrderClientNumber>>() {
+            @Override
+            public List<OrderClientNumber> call(List<OrderClientNumber> orderClientNumbers) {
+                Collections.sort(orderClientNumbers, new Comparator<OrderClientNumber>() {
                     @Override
-                    public LastOrder call(Response<TkpdDigitalResponse> recentNumberResponse) {
-                        if (recentNumberResponse.isSuccessful()) {
-                            return new Gson().fromJson(
-                                    recentNumberResponse.body().getStrResponse(), LastOrder.class);
-                        } else {
-                            return null;
-                        }
+                    public int compare(OrderClientNumber o1, OrderClientNumber o2) {
+                        return o2.getLastUpdated().compareTo(o1.getLastUpdated());
                     }
                 });
+                return orderClientNumbers;
+            }
+        };
     }
+
+    private Func1<Response<TkpdDigitalResponse>, List<OrderClientNumber>> getFuncTransformNumberList() {
+        return new Func1<Response<TkpdDigitalResponse>, List<OrderClientNumber>>() {
+            @Override
+            public List<OrderClientNumber> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                List<ResponseFavoriteNumber> responseFavoriteNumbers = tkpdDigitalResponseResponse
+                        .body().convertDataList(ResponseFavoriteNumber[].class);
+                return favoriteNumberMapper
+                        .transformDigitalFavoriteNumberItemDataList(responseFavoriteNumbers);
+            }
+        };
+    }
+
+    @Override
+    public Observable<LastOrder> getObservableLastOrderFromDBByCategoryId(int categoryId) {
+        RechargeNumberListModelDB db = new RechargeNumberListManager()
+                .getLastOrderById(categoryId);
+
+        LastOrder lastOrder = new LastOrder();
+        LastOrderEntity data = new LastOrderEntity();
+        LastOrderEntity.AttributesBean attributesBean = new LastOrderEntity.AttributesBean();
+        attributesBean.setCategory_id(db.categoryId);
+        attributesBean.setClient_number(db.clientNumber);
+        data.setAttributes(attributesBean);
+        lastOrder.setData(data);
+
+        return Observable.just(lastOrder);
+    }
+
+    @Override
+    public Observable<Boolean> hasLastOrder(int categoryId) {
+        RechargeNumberListModelDB db = new RechargeNumberListManager()
+                .getLastOrderById(categoryId);
+
+        return Observable.just(db == null);
+    }
+
 }

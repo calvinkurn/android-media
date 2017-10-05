@@ -98,18 +98,26 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     @Override
     public void processGetCategoryAndBannerData() {
         String categoryId = view.getCategoryId();
+
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
         if (GlobalConfig.isSellerApp()) {
             paramQueryCategory.put(PARAM_IS_RESELLER, "1");
         }
+
         TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
         paramQueryBanner.put("category_id", categoryId);
+
+        TKPDMapParam<String, String> paramQueryNumberList = new TKPDMapParam<>();
+        paramQueryNumberList.put("category_id", categoryId);
+        paramQueryNumberList.put("sort", "label");
+
         view.showInitialProgressLoading();
+
         productDigitalInteractor.getCategoryAndBanner(
                 view.getCategoryId(),
                 view.getGeneratedAuthParamNetwork(paramQueryCategory),
                 view.getGeneratedAuthParamNetwork(paramQueryBanner),
-                view.getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
+                view.getGeneratedAuthParamNetwork(paramQueryNumberList),
                 view.getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
                 getSubscriberProductDigitalData()
         );

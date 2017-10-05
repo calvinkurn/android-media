@@ -1,9 +1,16 @@
 package com.tokopedia.digital.widget.interactor;
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.database.model.RechargeNumberListModelDB;
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.operator.Operator;
 import com.tokopedia.core.database.recharge.product.Product;
+import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -231,9 +238,22 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     }
 
     @Override
-    public void getRecentData(Subscriber<List<String>> subscriber, final int categoryId) {
+    public void getNumberList(Subscriber<DigitalNumberList> subscriber,
+                              TKPDMapParam<String, String> param) {
+        if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
+            compositeSubscription.add(
+                    digitalWidgetRepository.getObservableNumberList(param)
+                            .subscribeOn(Schedulers.newThread())
+                            .unsubscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(subscriber));
+        }
+    }
+
+    @Override
+    public void getLastOrderByCategoryId(Subscriber<LastOrder> subscriber, int categoryId) {
         compositeSubscription.add(
-                digitalWidgetRepository.getObservableRecentData(categoryId)
+                digitalWidgetRepository.getObservableLastOrderFromDBByCategoryId(categoryId)
                         .subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
