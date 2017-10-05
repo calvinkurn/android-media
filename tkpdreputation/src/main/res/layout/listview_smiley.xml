@@ -14,8 +14,8 @@
         android:id="@+id/smiley"
         android:layout_width="@dimen/smiley_size"
         android:layout_height="@dimen/smiley_size"
-        android:padding="@dimen/padding_vs"
         tools:src="@drawable/ic_lock"/>
+
 
     <TextView
         android:id="@+id/smiley_name"

@@ -83,7 +83,7 @@
     <string name="menu_delete">Hapus</string>
     <string name="menu_share">Bagikan</string>
     <string name="helpful_question">Terbantu?</string>
-    <string name="people_helped">Orang lainnya terbantu dengan ulasan ini</string>
+    <string name="people_helped">Orang lainnya terbantu</string>
     <string name="change">Ubah</string>
     <string name="You_and">Anda dan </string>
     <string name="inbox_reputation_empty_title">Ulasan anda masih kosong</string>
@@ -91,7 +91,7 @@
     <string name="inbox_reputation_search_empty_title">Hasil Pencarian tidak ditemukan</string>
     <string name="inbox_reputation_search_empty_button">Lihat Semua Ulasan</string>
     <string name="not_reviewed">Belum diulas</string>
-    <string name="you_got_helped">Anda terbantu dengan ulasan ini</string>
+    <string name="you_got_helped">Anda terbantu</string>
     <string name="edited">(diubah)</string>
     <string name="buyer_has_not_review">Pembeli belum menilai</string>
     <string name="score_from_buyer">Penilaian dari Pembeli</string>
@@ -100,5 +100,8 @@
     <string name="review_for">Ulasan untuk</string>
     <string name="is_done">sudah selesai</string>
     <string name="is_edited">telah diubah</string>
+    <string name="is_send">sudah dikirim</string>
+    <string name="given_smiley">Nilai Reputasi telah diberikan</string>
+    <string name="reply_response_send">Balasan ulasan telah diberikan</string>
 
 </resources>

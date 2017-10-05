@@ -85,7 +85,6 @@
     <dimen name="alphabetical_section_header_padding">16dp</dimen>
 
     <dimen name="medal_size">20dp</dimen>
-    <dimen name="smiley_size">35dp</dimen>
-    <dimen name="font_small">14sp</dimen>
+    <dimen name="smiley_size">24dp</dimen>
     <dimen name="reputation_view_smiley">14dp</dimen>
 </resources>

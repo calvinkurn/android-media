@@ -360,6 +360,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             adapter.getList().add(0, header);
             adapter.notifyItemChanged(0);
             getActivity().setResult(Activity.RESULT_OK);
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.given_smiley));
         }
     }
 
@@ -412,6 +413,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessReplyReview() {
         refreshPage();
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.reply_response_send));
     }
 
     @Override
@@ -540,7 +542,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             NetworkErrorHelper.showSnackbar(getActivity(),
                     getString(R.string.review_for) + " " + data.getExtras().getString
                             (InboxReputationFormActivity.ARGS_REVIEWEE_NAME, "")
-                            + " " + getString(R.string.is_done));
+                            + " " + getString(R.string.is_send));
         } else if (requestCode == REQUEST_GIVE_REVIEW && resultCode ==
                 InboxReputationFormFragment.RESULT_CODE_SKIP) {
             refreshPage();

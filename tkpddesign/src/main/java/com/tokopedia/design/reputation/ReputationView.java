@@ -5,18 +5,18 @@ package com.tokopedia.design.reputation;
  */
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.support.design.widget.BottomSheetDialog;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.card.ToolTipUtils;
 
 ;
 
@@ -33,6 +33,7 @@ public class ReputationView extends BaseCustomView {
     private ImageView iconView;
     private int viewType;
     private LinearLayout layout;
+    private BottomSheetDialog dialog;
 
     public ReputationView(Context context) {
         super(context);
@@ -88,31 +89,29 @@ public class ReputationView extends BaseCustomView {
                 layout.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ToolTipUtils.showToolTip(setViewToolTip(positive, neutral, negative), v);
+                        if (getContext() != null) {
+                            dialog = new BottomSheetDialog(getContext());
+                            dialog.setContentView(R.layout.buyer_reputation_bottom_sheet_dialog);
+                            TextView positive = (TextView) dialog.findViewById(R.id.score_good);
+                            if (positive != null) positive.setText(String.valueOf(positive));
+                            TextView neutral = (TextView) dialog.findViewById(R.id.score_netral);
+                            if (neutral != null) neutral.setText(String.valueOf(neutral));
+                            TextView negative = (TextView) dialog.findViewById(R.id.score_bad);
+                            if (negative != null) negative.setText(String.valueOf(negative));
+                            Button closeButton = (Button) dialog.findViewById(R.id.close_button);
+                            if (closeButton != null)
+                                closeButton.setOnClickListener(new OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            dialog.show();
+                        }
                     }
 
                 });
         }
-    }
-
-    private View setViewToolTip(final int positive, final int neutral, final int negative) {
-        return ToolTipUtils.setToolTip(getContext(), R.layout.tooltip_reputation,
-                new ToolTipUtils.ToolTipListener() {
-                    @Override
-                    public void setView(View view) {
-                        TextView smile = (TextView) view.findViewById(R.id.text_smile);
-                        TextView netral = (TextView) view.findViewById(R.id.text_netral);
-                        TextView bad = (TextView) view.findViewById(R.id.text_bad);
-                        smile.setText(String.valueOf(positive));
-                        netral.setText(String.valueOf(neutral));
-                        bad.setText(String.valueOf(negative));
-                    }
-
-                    @Override
-                    public void setListener() {
-
-                    }
-                });
     }
 
     private void setIcon(Drawable drawable) {
@@ -120,16 +119,45 @@ public class ReputationView extends BaseCustomView {
             iconView.setImageDrawable(drawable);
     }
 
-    public void setSeller(int typeMedal, int levelMedal, String reputationPoints) {
+    public void setSeller(final int typeMedal, final int levelMedal, final String reputationPoints) {
         viewType = ROLE_SELLER;
         init();
-        ReputationBadgeUtils.setReputationMedals(getContext(), layout, typeMedal, levelMedal, reputationPoints);
+        ReputationBadgeUtils.setReputationMedals(getContext(), layout, typeMedal, levelMedal,
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        if (getContext() != null) {
+                            dialog = new BottomSheetDialog(getContext());
+                            dialog.setContentView(R.layout.seller_reputation_bottom_sheet_dialog);
+                            TextView point = (TextView) dialog.findViewById(R.id.reputation_point);
+                            if (point != null) point.setText(String.valueOf(reputationPoints) +
+                                    " " + getContext().getString(R.string.point));
+                            LinearLayout sellerReputation = (LinearLayout) dialog.findViewById(R.id
+                                    .seller_reputation);
+                            ReputationBadgeUtils.setReputationMedals(getContext(),
+                                    sellerReputation, typeMedal, levelMedal,
+                                    null);
+                            Button closeButton = (Button) dialog.findViewById(R.id.close_button);
+                            if (closeButton != null)
+                                closeButton.setOnClickListener(new OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            dialog.show();
+                        }
+                    }
+                });
     }
 
     private void setTitleText(String text) {
         if (!TextUtils.isEmpty(text) && percent != null) {
             percent.setVisibility(VISIBLE);
             percent.setText(text);
+        } else if (percent != null) {
+            percent.setVisibility(GONE);
         }
     }
 }

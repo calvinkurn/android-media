@@ -3,6 +3,7 @@ package com.tokopedia.design.reputation;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -36,12 +37,12 @@ public class ReputationBadgeUtils {
     private static boolean isDialogHidden = false;
 
     public static void setReputationMedalsWithoutDialog(Context context, LinearLayout layout, int typeMedal,
-                                                        int levelMedal, String reputationPoints){
+                                                        int levelMedal, String reputationPoints) {
         int medalType = getTypeMedal(typeMedal);
 
         layout.removeAllViews();
         layout.setOrientation(LinearLayout.HORIZONTAL);
-        if(typeMedal == MEDAL_TYPE_0) {
+        if (typeMedal == MEDAL_TYPE_0) {
             createDefaultMedal(context, layout);
         } else {
             createMedalBasedOnTypeWithoutDialog(context, layout, medalType, levelMedal, reputationPoints);
@@ -49,21 +50,23 @@ public class ReputationBadgeUtils {
     }
 
     private static void createMedalBasedOnTypeWithoutDialog(Context context, LinearLayout layout, int medalType, int levelMedal, String reputationPoints) {
-        for( int i = 1 ; i <= levelMedal ; i++){
+        for (int i = 1; i <= levelMedal; i++) {
             View medal = createMedal(context, medalType);
             layout.addView(medal);
         }
     }
 
-    public static void setReputationMedals(Context context, LinearLayout layout, int typeMedal, int levelMedal, String reputationPoints) {
+    public static void setReputationMedals(Context context, LinearLayout layout, int typeMedal,
+                                           int levelMedal,
+                                           @Nullable View.OnClickListener onClickListener) {
         int medalType = getTypeMedal(typeMedal);
 
         layout.removeAllViews();
         layout.setOrientation(LinearLayout.HORIZONTAL);
-        if(typeMedal == MEDAL_TYPE_0) {
+        if (typeMedal == MEDAL_TYPE_0) {
             createDefaultMedal(context, layout);
         } else {
-            createMedalBasedOnType(context, layout, medalType, levelMedal, reputationPoints);
+            createMedalBasedOnType(context, layout, medalType, levelMedal, onClickListener);
         }
     }
 
@@ -72,25 +75,27 @@ public class ReputationBadgeUtils {
         layout.addView(medal);
     }
 
-    private static void createMedalBasedOnType(Context context, LinearLayout layout, int medalType, int levelMedal, String reputationPoints) {
-        for( int i = 1 ; i <= levelMedal ; i++){
+    private static void createMedalBasedOnType(Context context, LinearLayout layout, int medalType,
+                                               int levelMedal,
+                                               @Nullable View.OnClickListener onClickListener) {
+        for (int i = 1; i <= levelMedal; i++) {
             View medal = createMedal(context, medalType);
             layout.addView(medal);
-            if(i == levelMedal) {
-                layout.setOnClickListener(onReputationClick(context, reputationPoints, medal));
+            if (i == levelMedal && onClickListener != null) {
+                layout.setOnClickListener(onClickListener);
             }
         }
     }
 
-    private static int getTypeMedal(int type){
-        if(type == MEDAL_TYPE_1) return MEDAL_BRONZE;
-        if(type == MEDAL_TYPE_2) return MEDAL_SILVER;
-        if(type == MEDAL_TYPE_3) return MEDAL_GOLD;
-        if(type == MEDAL_TYPE_4) return MEDAL_DIAMOND;
+    private static int getTypeMedal(int type) {
+        if (type == MEDAL_TYPE_1) return MEDAL_BRONZE;
+        if (type == MEDAL_TYPE_2) return MEDAL_SILVER;
+        if (type == MEDAL_TYPE_3) return MEDAL_GOLD;
+        if (type == MEDAL_TYPE_4) return MEDAL_DIAMOND;
         return MEDAL_NONE;
     }
 
-    private static ImageView createMedal(Context context, int medalType){
+    private static ImageView createMedal(Context context, int medalType) {
         ImageView medal = new ImageView(context);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
                 context.getResources().getDimensionPixelSize(SIZE),
@@ -102,12 +107,12 @@ public class ReputationBadgeUtils {
         return medal;
     }
 
-    private static View.OnClickListener onReputationClick(final Context context, final String reputationPoint, final View anchor){
+    private static View.OnClickListener onReputationClick(final Context context, final String reputationPoint, final View anchor) {
         return new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 View popup = View.inflate(context, R.layout.popup_reputation, null);
-                TextView point = (TextView)popup.findViewById(R.id.point);
+                TextView point = (TextView) popup.findViewById(R.id.point);
                 point.setText(reputationPoint + " Poin");
                 final PopupWindow popWindow = new PopupWindow(popup, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
                 popWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
