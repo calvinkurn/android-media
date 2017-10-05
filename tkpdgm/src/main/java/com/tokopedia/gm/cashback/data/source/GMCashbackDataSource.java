@@ -27,7 +27,7 @@ public class GMCashbackDataSource {
     }
 
     public Observable<Boolean> setCashback(String product_id, String cashback) {
-        return gmCashbackDataSourceCloud.setCashback(new RequestCashbackModel(product_id, cashback))
+        return gmCashbackDataSourceCloud.setCashback(new RequestCashbackModel(Long.parseLong(product_id), Integer.parseInt(cashback)))
                 .map(new SimpleDataResponseMapper<String>())
                 .map(new Func1<String, Boolean>() {
                     @Override
@@ -41,8 +41,8 @@ public class GMCashbackDataSource {
                 });
     }
 
-    public Observable<List<DataCashbackModel>> getCashbackList(String productIds, String shopId) {
-        RequestGetCashbackModel.DataRequestGetCashback dataRequestGetCashback = new RequestGetCashbackModel.DataRequestGetCashback(productIds, shopId);
+    public Observable<List<DataCashbackModel>> getCashbackList(List<Long> productIds, String shopId) {
+        RequestGetCashbackModel.DataRequestGetCashback dataRequestGetCashback = new RequestGetCashbackModel.DataRequestGetCashback(productIds, Long.parseLong(shopId));
         List<RequestGetCashbackModel.DataRequestGetCashback> requestGetCashbackModelList = new ArrayList<>();
         requestGetCashbackModelList.add(dataRequestGetCashback);
         RequestGetCashbackModel requestGetCashbackModel = new RequestGetCashbackModel(requestGetCashbackModelList);

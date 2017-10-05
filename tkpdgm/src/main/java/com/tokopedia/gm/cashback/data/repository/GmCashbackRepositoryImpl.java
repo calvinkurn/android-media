@@ -25,7 +25,7 @@ public class GmCashbackRepositoryImpl implements GMCashbackRepository {
     }
 
     @Override
-    public Observable<List<DataCashbackModel>> getCashbackList(String productIds, String shopId) {
+    public Observable<List<DataCashbackModel>> getCashbackList(List<Long> productIds, String shopId) {
         return gmCashbackDataSource.getCashbackList(productIds, shopId);
     }
 }
