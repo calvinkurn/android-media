@@ -1994,6 +1994,7 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_inbox">Kotak Masuk</string>
     <string name="drawer_title_product">Produk</string>
     <string name="drawer_title_gold_merchant">Gold Merchant</string>
+    <string name="drawer_title_featured_product">Produk Unggulan</string>
     <string name="drawer_title_setting">Pengaturan</string>
     <string name="drawer_title_statistic">Statistik</string>
     <string name="drawer_title_mitra_toppers">Mitra Toppers</string>

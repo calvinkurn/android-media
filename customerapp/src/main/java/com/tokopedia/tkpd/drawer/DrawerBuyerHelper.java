@@ -146,10 +146,15 @@ public class DrawerBuyerHelper extends DrawerHelper
                 && !SessionHandler.getShopID(context).equals("")) {
             data.add(getSellerMenu());
             data.add(getProductMenu());
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
-                    R.drawable.ic_goldmerchant_drawer,
-                    TkpdState.DrawerPosition.GOLD_MERCHANT,
-                    false));
+//            data.add(new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
+//                    R.drawable.ic_goldmerchant_drawer,
+//                    TkpdState.DrawerPosition.GOLD_MERCHANT,
+//                    false));
+//            data.add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
+//                    R.drawable.ic_goldmerchant_drawer,
+//                    TkpdState.DrawerPosition.FEATURED_PRODUCT,
+//                    false, true));
+            data.add(getGoldMerchantMenu());
             data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                     R.drawable.ic_top_ads,
                     TkpdState.DrawerPosition.SELLER_TOP_ADS,
@@ -182,6 +187,17 @@ public class DrawerBuyerHelper extends DrawerHelper
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
+    }
+
+    private DrawerItem getGoldMerchantMenu(){
+        DrawerGroup menu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
+                R.drawable.ic_goldmerchant_drawer,
+                TkpdState.DrawerPosition.GOLD_MERCHANT,
+                drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
+                0);
+        menu.add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
+                TkpdState.DrawerPosition.FEATURED_PRODUCT, true));
+        return menu;
     }
 
     private DrawerItem getProductMenu() {
@@ -459,6 +475,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                         ((TkpdCoreRouter) context.getApplication()).goToDraftProductList(context);
                     }
                     break;
+                case TkpdState.DrawerPosition.FEATURED_PRODUCT:
                 case TkpdState.DrawerPosition.GOLD_MERCHANT:
                     Intent launchIntent = context.getPackageManager()
                             .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
