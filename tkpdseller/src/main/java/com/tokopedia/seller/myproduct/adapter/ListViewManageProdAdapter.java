@@ -38,17 +38,19 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.myproduct.model.ActResponseModelData;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.Pair;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.myproduct.ManageProduct;
-import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.model.EditPriceParam;
 import com.tokopedia.seller.myproduct.model.ManageProductModel;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractorImpl;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.Pair;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -463,7 +465,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
             public void onClick(View arg0) {
                 if (!multiselect) {
                     boolean isEdit = true;
-                    Intent intent = ProductActivity.moveToEditFragment(activity, isEdit, ProductID);
+                    Intent intent = new Intent(activity, ProductAddActivity.class);
                     activity.startActivityForResult(intent, 1);
                 }
 
@@ -489,7 +491,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
             public void onClick(View v) {
                 if (!multiselect) {
                     boolean isEdit = true;
-                    Intent intent = ProductActivity.moveToEditFragment(activity, isEdit, ProductID);
+                    Intent intent = ProductDuplicateActivity.createInstance(activity, manageProductModels.get(position).getProdID());
                     activity.startActivityForResult(intent, 1);
                 }
             }
@@ -536,12 +538,12 @@ public class ListViewManageProdAdapter extends BaseAdapter
                 boolean isCopy;
                 if (item.getItemId() == R.id.action_edit) {
                     isEdit = true;
-                    intent = ProductActivity.moveToEditFragment(activity, isEdit, ProductID);
+                    intent = ProductEditActivity.createInstance(activity, ProductID);
                     activity.startActivityForResult(intent, 1);
                     return true;
                 } else if (item.getItemId() == R.id.action_copy) {
                     isCopy = true;
-                    intent = ProductActivity.moveToCopyFragment(activity, isCopy, ProductID);
+                    intent = ProductDuplicateActivity.createInstance(activity, manageProductModels.get(position).getProdID());
                     activity.startActivityForResult(intent, 1);
 
                     // analytic below : https://phab.tokopedia.com/T18496

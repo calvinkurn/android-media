@@ -2,6 +2,7 @@ package com.tokopedia.core.shopinfo.facades;
 
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -11,6 +12,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ActionService;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 
+import java.net.UnknownHostException;
 import java.util.Map;
 
 import retrofit2.Response;
@@ -74,18 +76,23 @@ public class ActionShopInfoRetrofit {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                onActionToggleFavListener.onFailure(context.getString(R.string.msg_network_error));
             }
 
             @Override
             public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
-                tkpdResponseResponse.body().getStringData();
                 if (tkpdResponseResponse.isSuccessful())
                     if (!tkpdResponseResponse.body().isError()) {
                         onActionToggleFavListener.onSuccess();
                     } else {
-                        if (tkpdResponseResponse.body().isNullData())
+                        String errorMessage = tkpdResponseResponse.body().getErrorMessages().toString();
+                        if (!TextUtils.isEmpty(errorMessage)) {
+                            onActionToggleFavListener.onFailure(errorMessage);
+                        } else if (tkpdResponseResponse.body().isNullData()) {
                             onActionToggleFavListener.onFailure(context.getString(R.string.default_request_error_null_data));
-                        else onActionToggleFavListener.onFailure(tkpdResponseResponse.body().getErrorMessages().toString());
+                        } else {
+                            onActionToggleFavListener.onFailure(context.getString(R.string.default_request_error_unknown_short));
+                        }
                     }
                 else {
                     onResponseError(tkpdResponseResponse.code());

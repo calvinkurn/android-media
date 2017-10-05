@@ -3,15 +3,21 @@ package com.tokopedia.session.session.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.localytics.android.Customer;
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.util.AppEventTracking;
+import com.tokopedia.core.analytics.AppEventTracking;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +49,7 @@ public class SessionImpl implements Session {
 
     @Override
     public void finishTo() {
-        switch (finishTo){
+         switch (finishTo){
             case SessionView.MOVE_TO_CART_TYPE:
             case SessionView.HOME:
             case SessionView.SELLER_HOME:
@@ -165,6 +171,7 @@ public class SessionImpl implements Session {
 
     @Override
     public void sendLocalyticsEvent(Bundle bundle, int type) {
+        CommonUtils.dumper("MoEngage called login events type "+bundle.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, 0));
         if (type == DownloadService.LOGIN_ACCOUNTS_INFO ||
                 type == DownloadService.REGISTER_PASS_PHONE)
             return;
@@ -180,12 +187,19 @@ public class SessionImpl implements Session {
                 break;
             case DownloadService.LOGIN_GOOGLE:
                 sendLocalyticsLoginEvent(bundle, AppEventTracking.GTMCacheValue.GMAIL);
+                sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.GMAIL);
                 break;
             case DownloadService.LOGIN_FACEBOOK:
                 sendLocalyticsLoginEvent(bundle, AppEventTracking.GTMCacheValue.FACEBOOK);
+                sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.FACEBOOK);
                 break;
             case DownloadService.LOGIN_WEBVIEW:
                 sendLocalyticsLoginEvent(bundle, AppEventTracking.GTMCacheValue.WEBVIEW);
+                sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.WEBVIEW);
+                break;
+            case DownloadService.LOGIN_ACCOUNTS_TOKEN:
+                sendLocalyticsLoginEvent(bundle, AppEventTracking.GTMCacheValue.EMAIL);
+                sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.EMAIL);
                 break;
         }
     }
@@ -199,6 +213,10 @@ public class SessionImpl implements Session {
                         .sendNotificationCallback(intent);
             }
         }
+    }
+
+    private void sendMoEngageLoginEvent(Bundle bundle, String label){
+        TrackingUtils.setMoEUserAttributes(bundle,label);
     }
 
     private void sendLocalyticsLoginEvent(Bundle bundle, String label){
@@ -224,7 +242,7 @@ public class SessionImpl implements Session {
 
     private void sendLocalyticsRegisterEvent(Bundle bundle, String label){
 
-        Map<String, String> attributesLogin = new HashMap<String, String>();
+        Map<String, String> attributesLogin = new HashMap<>();
         Jordan.init(context).getLocalyticsContainer().sendEventRegister(
                 new Customer.Builder()
                         .setCustomerId(
@@ -241,5 +259,20 @@ public class SessionImpl implements Session {
                 , label,
                 attributesLogin
         );
+
+        TrackingUtils.setMoEngageUser(new CustomerWrapper.Builder()
+                .setCustomerId(
+                        bundle.getString(com.tokopedia.core.analytics.AppEventTracking.USER_ID_KEY,
+                                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
+                )
+                .setFirstName(
+                        bundle.getString(com.tokopedia.core.analytics.AppEventTracking.FULLNAME_KEY,
+                                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
+                )
+                .setEmailAddress(
+                        bundle.getString(com.tokopedia.core.analytics.AppEventTracking.EMAIL_KEY,
+                                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
+                )
+                .build());
     }
 }

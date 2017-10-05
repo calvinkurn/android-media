@@ -1,6 +1,7 @@
 package com.tokopedia.core.gcm.model;
 
 import android.content.Intent;
+import android.support.v4.app.TaskStackBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class ApplinkNotificationPass {
     private String ticker;
     private String applink;
     private String imageUrl;
+    private String bannerUrl;
     private Intent intent;
     private int notificationId;
     private List<String> contents;
@@ -22,6 +24,7 @@ public class ApplinkNotificationPass {
     private String category;
     private String group;
     private boolean multiSender;
+    private TaskStackBuilder taskStackBuilder;
 
     public ApplinkNotificationPass() {
     }
@@ -31,13 +34,15 @@ public class ApplinkNotificationPass {
                                    String ticker,
                                    String applink,
                                    String imageUrl,
+                                   String bannerUrl,
                                    Intent intent,
                                    int notificationId,
                                    List<String> contents,
                                    String info,
                                    String category,
                                    String group,
-                                   boolean multiSender) {
+                                   boolean multiSender,
+                                   TaskStackBuilder taskStackBuilder) {
         this.title = title;
         this.description = description;
         this.ticker = ticker;
@@ -50,6 +55,8 @@ public class ApplinkNotificationPass {
         this.category = category;
         this.group = group;
         this.multiSender = multiSender;
+        this.taskStackBuilder = taskStackBuilder;
+        this.bannerUrl = bannerUrl;
     }
 
     public String getTitle() {
@@ -148,12 +155,29 @@ public class ApplinkNotificationPass {
         this.multiSender = multiSender;
     }
 
+    public TaskStackBuilder getTaskStackBuilder() {
+        return taskStackBuilder;
+    }
+
+    public void setTaskStackBuilder(TaskStackBuilder taskStackBuilder) {
+        this.taskStackBuilder = taskStackBuilder;
+    }
+
+    public String getBannerUrl() {
+        return bannerUrl;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.bannerUrl = bannerUrl;
+    }
+
     public static class ApplinkNotificationPassBuilder {
         private String nestedTitle;
         private String nestedDescription;
         private String nestedTicker;
         private String nestedApplink;
         private String nestedImageUrl;
+        private String nestedBannerUrl;
         private Intent nestedIntent;
         private List<String> nestedContents;
         private int nestedNotificationId;
@@ -161,6 +185,7 @@ public class ApplinkNotificationPass {
         private String nestedCategory;
         private String nestedGroup;
         private boolean nestedMultipleSender;
+        private TaskStackBuilder nestedTaskStackBuilder;
 
         private ApplinkNotificationPassBuilder() {
         }
@@ -191,6 +216,11 @@ public class ApplinkNotificationPass {
 
         public ApplinkNotificationPassBuilder image(final String image) {
             this.nestedImageUrl = image;
+            return this;
+        }
+
+        public ApplinkNotificationPassBuilder banner(final String banner) {
+            this.nestedBannerUrl = banner;
             return this;
         }
 
@@ -228,6 +258,12 @@ public class ApplinkNotificationPass {
             this.nestedMultipleSender = multipleSender;
             return this;
         }
+
+        public ApplinkNotificationPassBuilder taskStackBuilder(final TaskStackBuilder taskStackBuilder) {
+            this.nestedTaskStackBuilder = taskStackBuilder;
+            return this;
+        }
+
         public ApplinkNotificationPass build() {
             return new ApplinkNotificationPass(
                     nestedTitle,
@@ -235,13 +271,15 @@ public class ApplinkNotificationPass {
                     nestedTicker,
                     nestedApplink,
                     nestedImageUrl,
+                    nestedBannerUrl,
                     nestedIntent,
                     nestedNotificationId,
                     nestedContents,
                     nestedInfo,
                     nestedCategory,
                     nestedGroup,
-                    nestedMultipleSender
+                    nestedMultipleSender,
+                    nestedTaskStackBuilder
             );
         }
     }

@@ -32,6 +32,28 @@ public class ReputationLevelUtils {
     public static final int MEDAL_TYPE_3 = 3;
     public static final int MEDAL_TYPE_4 = 4;
 
+    private static boolean isDialogHidden = false;
+
+    public static void setReputationMedalsWithoutDialog(Context context, LinearLayout layout, int typeMedal,
+                                           int levelMedal, String reputationPoints){
+        int medalType = getTypeMedal(typeMedal);
+
+        layout.removeAllViews();
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        if(typeMedal == MEDAL_TYPE_0) {
+            createDefaultMedal(context, layout);
+        } else {
+            createMedalBasedOnTypeWithoutDialog(context, layout, medalType, levelMedal, reputationPoints);
+        }
+    }
+
+    private static void createMedalBasedOnTypeWithoutDialog(Context context, LinearLayout layout, int medalType, int levelMedal, String reputationPoints) {
+        for( int i = 1 ; i <= levelMedal ; i++){
+            View medal = createMedal(context, medalType);
+            layout.addView(medal);
+        }
+    }
+
     public static void setReputationMedals(Context context, LinearLayout layout, int typeMedal, int levelMedal, String reputationPoints) {
         int medalType = getTypeMedal(typeMedal);
 

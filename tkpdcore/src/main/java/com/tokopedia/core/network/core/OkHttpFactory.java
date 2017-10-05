@@ -1,15 +1,28 @@
 package com.tokopedia.core.network.core;
 
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.DynamicTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.MsisdnInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.ResolutionInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.RideInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
-import com.tokopedia.core.network.retrofit.response.TkpdResponseError;
+import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
+import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
+import com.tokopedia.core.util.GlobalConfig;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -41,12 +54,23 @@ public class OkHttpFactory {
     }
 
     private TkpdOkHttpBuilder getDefaultClientConfig(OkHttpClient.Builder builder) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(getHttpLoggingInterceptor());
+        return new TkpdOkHttpBuilder(builder);
     }
 
     private HttpLoggingInterceptor getHttpLoggingInterceptor() {
-        return new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
+        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            loggingLevel = HttpLoggingInterceptor.Level.BODY;
+        }
+        return new HttpLoggingInterceptor().setLevel(loggingLevel);
+    }
+
+    private Interceptor getHeaderHttpLoggingInterceptor() {
+        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            loggingLevel = HttpLoggingInterceptor.Level.HEADERS;
+        }
+        return new HttpLoggingInterceptor().setLevel(loggingLevel);
     }
 
     private OkHttpRetryPolicy getOkHttpRetryPolicy() {
@@ -71,9 +95,30 @@ public class OkHttpFactory {
                 .build();
     }
 
+    public OkHttpClient buildClientDynamicAuth() {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new DynamicTkpdAuthInterceptor())
+                .addInterceptor(getHttpLoggingInterceptor())
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildClientDefaultCacheAuth(){
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new ApiCacheInterceptor())
+                .addInterceptor(new TkpdAuthInterceptor())
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
     public OkHttpClient buildClientDefaultAuth() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new ApiCacheInterceptor())
                 .addInterceptor(new TkpdAuthInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
@@ -91,10 +136,9 @@ public class OkHttpFactory {
 
     public OkHttpClient buildClientTopAdsAuth(String authorizationString) {
         return new TkpdOkHttpBuilder(builder)
-        		.addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new TopAdsAuthInterceptor(authorizationString))
-                .addInterceptor(new TkpdErrorResponseInterceptor(TkpdResponseError.class))
-                .addInterceptor(getHttpLoggingInterceptor())
+                .addInterceptor(new TkpdErrorResponseInterceptor(TopAdsResponseError.class))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
@@ -106,6 +150,7 @@ public class OkHttpFactory {
                 .addInterceptor(new AccountsInterceptor(authKey, isUsingHMAC, isUsingBothAuthorization))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
+                .addInterceptor(getHeaderHttpLoggingInterceptor())
                 .build();
     }
 
@@ -118,5 +163,223 @@ public class OkHttpFactory {
                 .build();
     }
 
+    public OkHttpClient buildClientBearerWithClientDefaultAuth() {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new TkpdBearerWithAuthTypeJsonUtInterceptor())
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildClientDigitalAuth(String authorizationString) {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new DigitalHmacAuthInterceptor(authorizationString))
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildDaggerClientAuth(FingerprintInterceptor fingerprintInterceptor,
+                                              GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
+                                              OkHttpRetryPolicy okHttpRetryPolicy,
+                                              ChuckInterceptor chuckInterceptor,
+                                              DebugInterceptor debugInterceptor,
+                                              ApiCacheInterceptor apiCacheInterceptor) {
+
+        TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(apiCacheInterceptor)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(globalTkpdAuthInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdbBuilder.addInterceptor(debugInterceptor);
+            tkpdbBuilder.addInterceptor(chuckInterceptor);
+        }
+        return tkpdbBuilder.build();
+    }
+
+    public OkHttpClient buildDaggerClientDefaultAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                     TkpdAuthInterceptor tkpdAuthInterceptor,
+                                                     OkHttpRetryPolicy okHttpRetryPolicy,
+                                                     ChuckInterceptor chuckInterceptor,
+                                                     DebugInterceptor debugInterceptor,
+                                                     ApiCacheInterceptor apiCacheInterceptor) {
+
+        TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(apiCacheInterceptor)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(tkpdAuthInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdbBuilder.addInterceptor(debugInterceptor);
+            tkpdbBuilder.addInterceptor(chuckInterceptor);
+        }
+        return tkpdbBuilder.build();
+    }
+
+    public OkHttpClient buildDaggerClientBearerAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                    StandardizedInterceptor standardizedInterceptor,
+                                                    OkHttpRetryPolicy okHttpRetryPolicy,
+                                                    ChuckInterceptor chuckInterceptor,
+                                                    DebugInterceptor debugInterceptor) {
+
+        TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(standardizedInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdbBuilder.addInterceptor(debugInterceptor);
+            tkpdbBuilder.addInterceptor(chuckInterceptor);
+        }
+        return tkpdbBuilder.build();
+    }
+
+    public OkHttpClient buildDaggerClientBearerTopAdsAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                          TopAdsAuthInterceptor topAdsAuthInterceptor,
+                                                          OkHttpRetryPolicy okHttpRetryPolicy,
+                                                          TkpdErrorResponseInterceptor errorResponseInterceptor,
+                                                          ChuckInterceptor chuckInterceptor,
+                                                          DebugInterceptor debugInterceptor) {
+
+        TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(topAdsAuthInterceptor)
+                .addInterceptor(errorResponseInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdbBuilder.addInterceptor(debugInterceptor);
+            tkpdbBuilder.addInterceptor(chuckInterceptor);
+        }
+        return tkpdbBuilder.build();
+    }
+
+    public OkHttpClient buildDaggerClientNoAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                TkpdBaseInterceptor tkpdBaseInterceptor,
+                                                OkHttpRetryPolicy okHttpRetryPolicy,
+                                                ChuckInterceptor chuckInterceptor,
+                                                DebugInterceptor debugInterceptor) {
+
+        TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(tkpdBaseInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdbBuilder.addInterceptor(debugInterceptor);
+            tkpdbBuilder.addInterceptor(chuckInterceptor);
+        }
+        return tkpdbBuilder.build();
+    }
+
+    public OkHttpClient buildDaggerClientNoAuthNoFingerPrint(TkpdBaseInterceptor tkpdBaseInterceptor,
+                                                             OkHttpRetryPolicy okHttpRetryPolicy,
+                                                             ChuckInterceptor chuckInterceptor,
+                                                             DebugInterceptor debugInterceptor) {
+
+        TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(tkpdBaseInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdbBuilder.addInterceptor(debugInterceptor);
+            tkpdbBuilder.addInterceptor(chuckInterceptor);
+        }
+        return tkpdbBuilder.build();
+    }
+
+    public OkHttpClient buildDaggerClientBearerRidehailing(RideInterceptor rideInterceptor,
+                                                           OkHttpRetryPolicy okHttpRetryPolicy,
+                                                           ChuckInterceptor chuckInterceptor,
+                                                           DebugInterceptor debugInterceptor,
+                                                           HttpLoggingInterceptor loggingInterceptor) {
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(rideInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdOkHttpBuilder.addInterceptor(debugInterceptor);
+            tkpdOkHttpBuilder.addInterceptor(chuckInterceptor);
+            tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
+        }
+        return tkpdOkHttpBuilder.build();
+    }
+
+    public OkHttpClient buildDaggerClientBearerWithClientDefaultAuth(TkpdBearerWithAuthTypeJsonUtInterceptor tkpdBearerWithAuthTypeJsonUtInterceptor,
+                                                                     OkHttpRetryPolicy okHttpRetryPolicy,
+                                                                     ChuckInterceptor chuckInterceptor,
+                                                                     DebugInterceptor debugInterceptor,
+                                                                     ApiCacheInterceptor apiCacheInterceptor) {
+
+        TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(tkpdBearerWithAuthTypeJsonUtInterceptor)
+                .addInterceptor(apiCacheInterceptor)
+                .addInterceptor(new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class))
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdbBuilder.addInterceptor(debugInterceptor);
+            tkpdbBuilder.addInterceptor(chuckInterceptor);
+        }
+        return tkpdbBuilder.build();
+    }
+
+
+    public OkHttpClient buildDaggerClientDefaultAuthWithErrorHandler(FingerprintInterceptor fingerprintInterceptor,
+                                                                     TkpdAuthInterceptor tkpdAuthInterceptor,
+                                                                     OkHttpRetryPolicy okHttpRetryPolicy,
+                                                                     ChuckInterceptor chuckInterceptor,
+                                                                     DebugInterceptor debugInterceptor,
+                                                                     Interceptor tkpdErrorHandlerInterceptor) {
+        TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(tkpdErrorHandlerInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdbBuilder.addInterceptor(debugInterceptor);
+            tkpdbBuilder.addInterceptor(chuckInterceptor);
+        }
+        return tkpdbBuilder.build();
+    }
+
+    public OkHttpClient buildDaggerClientResolutionAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                        ResolutionInterceptor resolutionInterceptor,
+                                                        OkHttpRetryPolicy okHttpRetryPolicy,
+                                                        ChuckInterceptor chuckInterceptor,
+                                                        DebugInterceptor debugInterceptor) {
+        TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(resolutionInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdbBuilder.addInterceptor(debugInterceptor);
+            tkpdbBuilder.addInterceptor(chuckInterceptor);
+        }
+        return tkpdbBuilder.build();
+    }
+
+    public OkHttpClient buildClientTokoCashAuth(String authKey) {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new MsisdnInterceptor(authKey))
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildClientCreditCardAuth() {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new CreditCardInterceptor())
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
 
 }

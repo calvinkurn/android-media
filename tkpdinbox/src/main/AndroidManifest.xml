@@ -71,6 +71,44 @@
             android:label="@string/title_video_player"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity"
+            android:label="@string/title_activity_res_center"
+            android:parentActivityName=".rescenter.inbox.activity.InboxResCenterActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.inbox.rescenter.historyawb.HistoryShippingActivity"
+            android:label="@string/title_activity_history_awb"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.inbox.rescenter.historyaddress.HistoryAddressActivity"
+            android:label="@string/title_activity_history_address"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.inbox.rescenter.historyaction.HistoryActionActivity"
+            android:label="@string/title_activity_history_action"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.inbox.rescenter.product.ListProductActivity"
+            android:label="@string/title_activity_list_product_rescenter"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.inbox.rescenter.product.ProductDetailActivity"
+            android:label="@string/title_activity_product_detail_rescenter"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".rescenter.discussion.view.activity.ResCenterDiscussionActivity"
+            android:label="@string/title_activity_rescenter_discussion"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            />
+
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->

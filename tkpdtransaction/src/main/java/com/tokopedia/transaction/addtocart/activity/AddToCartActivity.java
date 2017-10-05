@@ -13,6 +13,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.view.MenuItem;
@@ -32,10 +33,11 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -156,6 +158,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     View decreaseButton;
     @BindView(R2.id.calculate_cart_progress_bar)
     View calculateCartProgressBar;
+    @BindView(R2.id.layout_shipment_hour_atc)
+    LinearLayout shipmentHourAtcLayout;
+    @BindView(R2.id.arrow_max_hour)
+    TextView arrowMaxHour;
+    @BindView(R2.id.desc_max_hour)
+    TextView descMaxHour;
 
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
@@ -316,6 +324,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         );
         etQuantity.setEnabled(true);
         etRemark.setEnabled(true);
+        if (!TextUtils.isEmpty(productCartPass.getNotes())) {
+            etRemark.setText(productCartPass.getNotes());
+        }
         tvProductPrice.setText(data.getProductPrice());
     }
 
@@ -401,7 +412,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         tvTickerGTM.setVisibility(View.VISIBLE);
         tvTickerGTM.setAutoLinkMask(0);
         Linkify.addLinks(tvTickerGTM, Linkify.WEB_URLS);
-
     }
 
     @Override
@@ -584,7 +594,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             tvShippingPrice.setText(MessageFormat.format("{0}", ((Product)
                     parent.getAdapter().getItem(position)).getFormattedPrice()));
             tvErrorShipping.setVisibility(View.GONE);
-            if (((Product) parent.getAdapter().getItem(position)).getIsShowMap() == 1) {
+            Product product = (Product) parent.getAdapter().getItem(position);
+            if (product.getIsShowMap() == 1) {
                 viewFieldLocation.setVisibility(View.VISIBLE);
                 if (!(etValueLocation.getText().length() > 0)) {
                     Snackbar.make(
@@ -597,6 +608,13 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 renderFormAddress(orderData.getAddress());
                 viewFieldLocation.setVisibility(View.GONE);
                 clearRetryInstantCourierSnackbar();
+            }
+            if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
+                arrowMaxHour.setText(product.getMaxHoursId());
+                descMaxHour.setText(product.getDescHoursId());
+                shipmentHourAtcLayout.setVisibility(View.VISIBLE);
+            } else {
+                shipmentHourAtcLayout.setVisibility(View.GONE);
             }
         } else if (parent.getAdapter().getItem(position) instanceof Insurance) {
             orderData.setInsurance(((Insurance) parent.getAdapter().getItem(position)).isInsurance()
@@ -655,7 +673,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     }
                     break;
             }
-        } else if (resultCode == RESULT_NOT_SELECTED_DESTINATION){
+        } else if (resultCode == RESULT_NOT_SELECTED_DESTINATION) {
             renderFormAddress(
                     Destination.convertFromBundle(
                             data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
@@ -703,6 +721,21 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         if (presenter.isValidOrder(this, orderData)) {
             presenter.addToCartService(this, atcReceiver, createFinalOrderData());
             presenter.sendAppsFlyerATC(this, orderData);
+
+            processCartAnalytics(mProductDetail);
+        }
+    }
+
+    private void processCartAnalytics(ProductDetail productDetail) {
+        if (productDetail != null) {
+            com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
+            product.setCategoryName(productDetail.getProductCatName());
+            product.setCategoryId(productDetail.getProductCatId());
+            product.setName(productDetail.getProductName());
+            product.setId(productDetail.getProductId());
+            product.setPrice(productDetail.getProductPrice());
+
+            TrackingUtils.sendMoEngageAddToCart(product);
         }
     }
 
@@ -746,6 +779,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     private void quantityChangedEvent(Editable quantity) {
+        if (orderData == null) {
+            presenter.getCartFormData(this, productCartPass);
+            return;
+        }
         orderData.setQuantity(quantity.length() == 0 ?
                 0 : Integer.parseInt(etQuantity.getText().toString()));
         if (orderData.getQuantity() < orderData.getMinOrder()) {
@@ -958,7 +995,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     private void clearRetryInstantCourierSnackbar() {
-        if(snackbarRetry != null && snackbarRetry.isShown()) {
+        if (snackbarRetry != null && snackbarRetry.isShown()) {
             snackbarRetry.hideRetrySnackbar();
             btnBuy.setEnabled(true);
         }

@@ -6,11 +6,18 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
 public class ProductInfo implements Parcelable {
     private static final String TAG = ProductInfo.class.getSimpleName();
+
+    public static final String PRD_STATE_ACTIVE = "1";
+    public static final String PRD_STATE_PENDING = "-1";
+    public static final String PRD_STATE_WAREHOUSE = "3";
 
     @SerializedName("product_weight_unit")
     @Expose
@@ -86,8 +93,37 @@ public class ProductInfo implements Parcelable {
     @Expose
     private ReturnInfo returnInfo;
 
+    @SerializedName("product_installments")
+    @Expose
+    private List<ProductInstallment> productInstallments = null;
+
+    @SerializedName("wholesale_min_price")
+    @Expose
+    private String wholseSaleMinPrice;
+    @SerializedName("wholesale_min_quantity")
+    @Expose
+    private String wholeSaleMinQuantity;
+    @SerializedName("installment_min_percentage")
+    @Expose
+    private String installmentMinPercentage;
+    @SerializedName("installment_min_price")
+    @Expose
+    private String installmentMinPrice;
+
+    @SerializedName("product_price_unfmt")
+    @Expose
+    private Integer productPriceUnformatted;
+
 
     public ProductInfo() {
+    }
+
+    public List<ProductInstallment> getProductInstallments() {
+        return productInstallments;
+    }
+
+    public void setProductInstallments(List<ProductInstallment> productInstallments) {
+        this.productInstallments = productInstallments;
     }
 
     public String getProductWeightUnit() {
@@ -282,6 +318,46 @@ public class ProductInfo implements Parcelable {
         this.returnInfo = returnInfo;
     }
 
+    public String getWholseSaleMinPrice() {
+        return wholseSaleMinPrice;
+    }
+
+    public void setWholseSaleMinPrice(String wholseSaleMinPrice) {
+        this.wholseSaleMinPrice = wholseSaleMinPrice;
+    }
+
+    public String getWholeSaleMinQuantity() {
+        return wholeSaleMinQuantity;
+    }
+
+    public void setWholeSaleMinQuantity(String wholeSaleMinQuantity) {
+        this.wholeSaleMinQuantity = wholeSaleMinQuantity;
+    }
+
+    public String getInstallmentMinPercentage() {
+        return installmentMinPercentage;
+    }
+
+    public void setInstallmentMinPercentage(String installmentMinPercentage) {
+        this.installmentMinPercentage = installmentMinPercentage;
+    }
+
+    public String getInstallmentMinPrice() {
+        return installmentMinPrice;
+    }
+
+    public void setInstallmentMinPrice(String installmentMinPrice) {
+        this.installmentMinPrice = installmentMinPrice;
+    }
+
+    public Integer getProductPriceUnformatted() {
+        return productPriceUnformatted;
+    }
+
+    public void setProductPriceUnformatted(Integer productPriceUnformatted) {
+        this.productPriceUnformatted = productPriceUnformatted;
+    }
+
     protected ProductInfo(Parcel in) {
         productWeightUnit = in.readString();
         productEtalaseId = in.readString();
@@ -305,6 +381,17 @@ public class ProductInfo implements Parcelable {
         productCatalogName = in.readString();
         productCatalogUrl = in.readString();
         returnInfo = (ReturnInfo) in.readValue(ReturnInfo.class.getClassLoader());
+        if (in.readByte() == 0x01) {
+            productInstallments = new ArrayList<ProductInstallment>();
+            in.readList(productInstallments, ProductInstallment.class.getClassLoader());
+        } else {
+            productInstallments = null;
+        }
+        wholseSaleMinPrice = in.readString();
+        wholeSaleMinQuantity = in.readString();
+        installmentMinPercentage = in.readString();
+        installmentMinPrice = in.readString();
+        productPriceUnformatted = in.readByte() == 0x00 ? null : in.readInt();
     }
 
     @Override
@@ -351,6 +438,22 @@ public class ProductInfo implements Parcelable {
         dest.writeString(productCatalogName);
         dest.writeString(productCatalogUrl);
         dest.writeValue(returnInfo);
+        if (productInstallments == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(productInstallments);
+        }
+        dest.writeString(wholseSaleMinPrice);
+        dest.writeString(wholeSaleMinQuantity);
+        dest.writeString(installmentMinPercentage);
+        dest.writeString(installmentMinPrice);
+        if (productPriceUnformatted == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(productPriceUnformatted);
+        }
     }
 
     @SuppressWarnings("unused")

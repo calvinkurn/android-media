@@ -26,22 +26,22 @@ import com.facebook.FacebookSdk;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.model.ProductDB;
-import com.tokopedia.core.database.model.ProductDB_Table;
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.share.presenter.ProductSharePresenter;
 import com.tokopedia.core.share.presenter.ProductSharePresenterImpl;
 import com.tokopedia.core.var.TkpdState;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.IS_ADDING_PRODUCT;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
@@ -50,7 +50,7 @@ import butterknife.OnClick;
 public class ProductShareFragment extends BasePresenterFragment<ProductSharePresenter> {
     public static final String TAG = "ProductShareFragment";
     private static final String ARGS_SHARE_DATA = "ARGS_SHARE_DATA";
-    public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
+
 
     private ShareData shareData;
     @BindView(R2.id.text_line)
@@ -168,7 +168,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     @Override
     protected void setupArguments(Bundle arguments) {
         this.shareData = arguments.getParcelable(ARGS_SHARE_DATA);
-        this.isAdding = arguments.getBoolean(IS_ADDING_PRODUCT);
+        this.isAdding = arguments.getBoolean(ProductDetailRouter.IS_ADDING_PRODUCT);
     }
 
     @Override
@@ -185,19 +185,22 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
             if (shareData.getType() != null) {
                 switch (shareData.getType()) {
                     case ShareData.CATALOG_TYPE:
-                        tvTitle.setText("Bagikan Katalog Ini!");
+                        tvTitle.setText(R.string.product_share_catalog);
                         break;
                     case ShareData.SHOP_TYPE:
-                        tvTitle.setText("Bagikan Toko Ini!");
+                        tvTitle.setText(R.string.product_share_shop);
                         break;
                     case ShareData.HOTLIST_TYPE:
-                        tvTitle.setText("Bagikan Hotlist Ini!");
+                        tvTitle.setText(R.string.product_share_hotlist);
                         break;
                     case ShareData.DISCOVERY_TYPE:
-                        tvTitle.setText("Bagikan Pencarian Ini!");
+                        tvTitle.setText(R.string.product_share_search);
                         break;
                     case ShareData.PRODUCT_TYPE:
-                        tvTitle.setText("Bagikan Produk Ini!");
+                        tvTitle.setText(R.string.product_share_product);
+                        break;
+                    case ShareData.RIDE_TYPE:
+                        tvTitle.setText(R.string.product_share_ride_trip);
                         break;
                 }
             }
@@ -246,34 +249,24 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     }
 
     public void setData(Bundle data) {
-        final long productServerId = data.getLong(TkpdState.ProductService.PRODUCT_DB_ID, -1);
-        new android.os.Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ProductDB ProductDB = new Select()
-                        .from(ProductDB.class)
-                        .where(ProductDB_Table.productId.is((int) productServerId))
-                        .querySingle();
-                if (ProductDB!= null && ProductDB.getImages() != null)
-                    ProductDB.setPictureDBs(ProductDB.getImages());
-                if (ProductDB!= null && ProductDB.getWholeSales() != null)
-                    ProductDB.setWholesalePriceDBs(ProductDB.getWholeSales());
-                shareData = new ShareData();
-                if (ProductDB!= null && ProductDB.getNameProd() != null)
-                    shareData.setName(ProductDB.getNameProd());
-
-                        if (ProductDB!= null && ProductDB.getPictureDBs()!= null
-                                && CommonUtils.checkCollectionNotNull(ProductDB.getPictureDBs()))
-                            shareData.setImgUri(ProductDB.getPictureDBs().get(0).getPictureImageSourceUrl());
-
-                if (ProductDB!= null && ProductDB.getProductUrl() != null)
-                    shareData.setUri(ProductDB.getProductUrl());
-                if (ProductDB!= null && ProductDB.getDescProd() != null)
-                    shareData.setDescription(ProductDB.getDescProd());
-                if (ProductDB!= null)
-                    shareData.setPrice(ProductDB.getPriceProd() + "");
-            }
-        }, 100);//[END] move to manage product
+        shareData = new ShareData();
+        shareData.setType(ShareData.PRODUCT_TYPE);
+        String productName = data.getString(TkpdState.ProductService.PRODUCT_NAME);
+        if (StringUtils.isNotBlank(productName)) {
+            shareData.setName(productName);
+        }
+        String imageUri = data.getString(TkpdState.ProductService.IMAGE_URI);
+        if (StringUtils.isNotBlank(imageUri)) {
+            shareData.setImgUri(imageUri);
+        }
+        String productDescription = data.getString(TkpdState.ProductService.PRODUCT_DESCRIPTION);
+        if (StringUtils.isNotBlank(productDescription)) {
+            shareData.setDescription(productDescription);
+        }
+        String productUri = data.getString(TkpdState.ProductService.PRODUCT_URI);
+        if (StringUtils.isNotBlank(productUri)) {
+            shareData.setUri(productUri);
+        }
     }
 
     public void addingProduct(boolean isAdding) {
@@ -323,17 +316,8 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.card_share_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_close) {
-            getActivity().onBackPressed();
-            return true;
-        } else if (item.getItemId() == R.id.home) {
+        if (item.getItemId() == R.id.home) {
             getFragmentManager().popBackStack();
             return true;
         }

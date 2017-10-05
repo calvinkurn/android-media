@@ -3,14 +3,15 @@ package com.tokopedia.core.shopinfo.adapter;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,10 +26,10 @@ import com.tokopedia.core.shopinfo.models.productmodel.Label;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.var.ProductItem;
 
 import java.util.ArrayList;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -55,6 +56,12 @@ public class ProductListDelegate {
         public FlowLayout labelContainer;
         @BindView(R2.id.badges_container)
         public LinearLayout badgesContainer;
+        @BindView(R2.id.text_original_price)
+        public TextView textOriginalPrice;
+        @BindView(R2.id.text_discount)
+        public TextView textDiscount;
+        @BindString(R2.string.label_discount_percentage)
+        public String discount;
 
         public VHolder(View itemView) {
             super(itemView);
@@ -91,11 +98,26 @@ public class ProductListDelegate {
             }
         }
 
-
         setLabels(vholder, item);
         setBadge(vholder, item);
         vholder.shopName.setVisibility(View.GONE);
         vholder.location.setVisibility(View.GONE);
+
+        if (item.shopProductCampaign != null && item.shopProductCampaign.getDiscountedPrice() != null) {
+            vholder.price.setTextColor(ContextCompat.getColor(context, R.color.bright_red));
+            vholder.textOriginalPrice.setText(item.shopProductCampaign.getOriginalPriceIdr());
+            vholder.textOriginalPrice.setPaintFlags(
+                    vholder.textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+            );
+            vholder.textDiscount.setText(
+                    String.format(vholder.discount,item.shopProductCampaign.getPercentageAmount())
+            );
+            vholder.textOriginalPrice.setVisibility(View.VISIBLE);
+            vholder.textDiscount.setVisibility(View.VISIBLE);
+        } else {
+            vholder.textOriginalPrice.setVisibility(View.GONE);
+            vholder.textDiscount.setVisibility(View.GONE);
+        }
     }
 
     private void setLabels(VHolder holder, List data) {

@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.R;
@@ -42,8 +43,18 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
     public void renderPurchaseSummary(List<TxSummaryItem> summaryItemList) {
         summaryAdapter.setDataList(summaryItemList);
         summaryAdapter.notifyDataSetChanged();
-        refreshHandler.setPullEnabled(true);
         refreshHandler.finishRefresh();
+    }
+
+    @Override
+    public void showLoadingError() {
+        NetworkErrorHelper.showEmptyState(context, getView(),
+                new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                refreshHandler.startRefresh();
+            }
+        });
     }
 
     @Override
@@ -54,7 +65,6 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
     @Override
     public void onRefresh(View view) {
         presenter.getNotificationFromNetwork(getActivity());
-        refreshHandler.setPullEnabled(false);
     }
 
     public static TxSummaryFragment createInstancePurchase() {
@@ -133,21 +143,21 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
 
     @Override
     protected void initialVar() {
-
+        refreshHandler.startRefresh();
     }
 
     @Override
     protected void setActionVar() {
-        presenter.getNotificationFromNetwork(context);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (presenter == null) {
+        if (presenter == null && getActivity()!= null) {
             initialPresenter();
         }
-        if (isVisibleToUser && getActivity() != null)
+        if (isVisibleToUser && getActivity() != null) {
             presenter.getNotificationPurcase(getActivity());
+        }
         super.setUserVisibleHint(isVisibleToUser);
     }
 

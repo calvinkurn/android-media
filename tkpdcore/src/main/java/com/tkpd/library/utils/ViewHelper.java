@@ -28,7 +28,6 @@ public class ViewHelper {
     }
 
     public static void setViewSize(View view, int height ) {
-        System.out.println("HEIGHT: "+height);
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.height = height;
         view.setLayoutParams(params);

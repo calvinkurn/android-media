@@ -6,6 +6,7 @@ import com.tokopedia.transaction.addtocart.model.OrderData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shop;
+import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 
 /**
  * @author anggaprasetiyo on 11/18/16.
@@ -20,8 +21,12 @@ public class KeroppiParam {
     private static final String WEIGHT = "weight";
     private static final String TYPE = "type";
     private static final String FROM = "from";
+    private static final String CAT_ID = "cat_id";
+    private static final String ORDER_VALUE = "order_value";
     private static final String TOKEN = "token";
     private static final String UT = "ut";
+    private static final String PRODUCT_INSURANCE = "product_insurance";
+    private static final String INSURANCE = "insurance";
     private static final String APP_VERSION = "app_version";
 
     private static final String SEPARATOR = "|";
@@ -70,5 +75,42 @@ public class KeroppiParam {
     private static String generatePath(String districtID, String postalCode, String lat,
                                        String lng) {
         return districtID + SEPARATOR + postalCode + SEPARATOR + lat + CO_SEPARATOR + lng;
+    }
+
+    public static TKPDMapParam<String, String> paramsKeroCart(String token, String ut, CartItem cartItem) {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        if (cartItem.getCartShipments() != null)
+            params.put(NAMES, cartItem.getCartShipments().getShipmentCode());
+        if (cartItem.getCartShop() != null) {
+            params.put(ORIGIN, generatePath(cartItem.getCartShop().getAddressId()
+                            + "", cartItem.getCartShop().getPostalCode(),
+                    cartItem.getCartShop().getLatitude(),
+                    cartItem.getCartShop().getLongitude()));
+        }
+        if (cartItem.getCartDestination() != null) {
+            params.put(DESTINATION,
+                    generatePath(cartItem.getCartDestination().getAddressDistrictId()
+                                    + "", cartItem.getCartDestination().getAddressPostal(),
+                            cartItem.getCartDestination().getLatitude(),
+                            cartItem.getCartDestination().getLongitude()));
+        }
+
+        params.put(WEIGHT, cartItem.getCartTotalWeight());
+        params.put(TYPE, TYPE_ANDROID);
+        params.put(FROM, FROM_CLIENT);
+        params.put(TOKEN, token);
+        params.put(ORDER_VALUE, cartItem.getCartTotalProductPrice());
+        params.put(CAT_ID, cartItem.getCartCatId());
+        params.put(PRODUCT_INSURANCE, setInsurance(cartItem));
+        params.put(UT, ut);
+        params.put(INSURANCE, "1");
+
+        return params;
+    }
+
+    private static String setInsurance(CartItem cartItem) {
+        if (cartItem.getCartForceInsurance() == 1) {
+            return "1";
+        } else return "0";
     }
 }

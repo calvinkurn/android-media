@@ -9,16 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
-import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
-import com.tokopedia.core.network.entity.topPicks.Group;
-import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.tkpd.R;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -66,7 +61,7 @@ public class  TopPicksAdapter extends
         itemRowHolder.recycler_view_list.setLayoutManager(
                 new NonScrollGridLayoutManager(mContext, 2,
                         GridLayoutManager.VERTICAL, false));
-        itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(mContext));
+        itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(mContext,R.drawable.divider300));
         itemRowHolder.recycler_view_list.setAdapter(itemAdapter);
         itemRowHolder.viewAll.setOnClickListener(new View.OnClickListener() {
             @Override

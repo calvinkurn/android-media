@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.network.entity.home.Brand;
@@ -17,13 +17,13 @@ import com.tokopedia.tkpd.R;
  * Created by Herdi_WORK on 31.01.17.
  */
 
-public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecyclerViewAdapter.ItemRowHolder>{
+public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecyclerViewAdapter.ItemRowHolder> {
 
     private Brands brands;
     private OnItemClickListener clickListener;
     private final int homeMenuWidth;
 
-    public BrandsRecyclerViewAdapter(OnItemClickListener itemListener, int homeWidth){
+    public BrandsRecyclerViewAdapter(OnItemClickListener itemListener, int homeWidth) {
         clickListener = itemListener;
         brands = new Brands();
         homeMenuWidth = homeWidth;
@@ -35,7 +35,6 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     @Override
     public ItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
                 parent.getContext()).inflate(R.layout.item_brands_category, null
         );
@@ -45,15 +44,26 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     @Override
     public void onBindViewHolder(final ItemRowHolder holder, int position) {
-        holder.llWrapper.getLayoutParams().width = homeMenuWidth;
-        holder.llWrapper.getLayoutParams().height = homeMenuWidth;
-        if(position<brands.getData().size()){
+        if (brands.getData() != null && position < brands.getData().size()) {
             final Brand singleBrand = brands.getData().get(position);
-            ImageHandler.LoadImage(holder.ivBrands,singleBrand.getLogoUrl());
+
+            if (singleBrand.getIsNew() != 1) {
+                holder.labelNew.setVisibility(View.GONE);
+            } else {
+                holder.labelNew.setVisibility(View.VISIBLE);
+            }
+
+            if ((position + 1) % 3 == 0) {
+                holder.separator.setVisibility(View.GONE);
+            } else {
+                holder.separator.setVisibility(View.VISIBLE);
+            }
+
+            ImageHandler.LoadImage(holder.ivBrands, singleBrand.getLogoUrl());
             holder.ivBrands.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    clickListener.onItemClicked(singleBrand.getShopName(),singleBrand, holder.getAdapterPosition());
+                    clickListener.onItemClicked(singleBrand.getShopName(), singleBrand, holder.getAdapterPosition());
                 }
             });
         }
@@ -62,7 +72,7 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     @Override
     public int getItemCount() {
-        if(brands.getData()!=null)
+        if (brands.getData() != null)
             return brands.getData().size();
         else
             return 0;
@@ -70,12 +80,14 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
         ImageView ivBrands;
-        LinearLayout llWrapper;
+        View separator;
+        TextView labelNew;
 
         ItemRowHolder(View view) {
             super(view);
             this.ivBrands = (ImageView) view.findViewById(R.id.iv_brands);
-            this.llWrapper = (LinearLayout) view.findViewById(R.id.ll_wrapper);
+            this.separator = view.findViewById(R.id.separator);
+            this.labelNew = (TextView) view.findViewById(R.id.text_new);
         }
 
     }

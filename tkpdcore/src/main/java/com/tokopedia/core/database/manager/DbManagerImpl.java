@@ -2,44 +2,29 @@ package com.tokopedia.core.database.manager;
 
 import android.util.Log;
 
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.sql.language.Where;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.Bank_Table;
-import com.tokopedia.core.database.model.CatalogDB;
-import com.tokopedia.core.database.model.CatalogDB_Table;
-import com.tokopedia.core.database.model.CatalogItemDB;
-import com.tokopedia.core.database.model.CatalogItemDB_Table;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.City_Table;
-import com.tokopedia.core.database.model.CurrencyDB;
 import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.database.model.EtalaseDB_Table;
 import com.tokopedia.core.database.model.PictureDB;
 import com.tokopedia.core.database.model.PictureDB_Table;
-import com.tokopedia.core.database.model.ProductDB;
-import com.tokopedia.core.database.model.ProductDB_Table;
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.database.model.Province_Table;
 import com.tokopedia.core.database.model.WholesalePriceDB;
 import com.tokopedia.core.database.model.WholesalePriceDB_Table;
 import com.tokopedia.core.etalase.EtalaseVariable;
-import com.tokopedia.core.myproduct.model.CatalogDataModel;
-import com.tokopedia.core.myproduct.model.DepartmentParentModel;
 import com.tokopedia.core.myproduct.model.GetEtalaseModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.dumper;
 
 /**
@@ -59,51 +44,6 @@ public class DbManagerImpl implements DbManager{
         return dbManager;
     }
 
-    @Override
-    public void saveDepartment(DepartmentParentModel departmentParentModel, int depId) {
-        DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
-        database.beginTransaction();
-        try{
-            for (int i = 0; i < departmentParentModel.getData().getList().length; i++) {
-                DepartmentParentModel.DepartmentParent parent = departmentParentModel.getData().getList()[i];
-                CategoryDB categoryDB = new CategoryDB(
-                        parent.getDepartmentName(),
-                        Integer.parseInt(parent.getDepartmentTree()),
-                        0,
-                        depId,
-                        Integer.parseInt(parent.getDepartmentId()),
-                        parent.getDepartmentIdentifier());
-                Log.d("DbManagerImpl", "sebelum inser "+i + " "+ categoryDB);
-                categoryDB.save();
-                Log.d("DbManagerImpl", i + " "+ categoryDB);
-            }
-            database.setTransactionSuccessful();
-        }finally {
-            database.endTransaction();
-        }
-    }
-
-    @Override
-    public void saveDepartmentParent(DepartmentParentModel departmentParentModel) {
-        DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
-        database.beginTransaction();
-
-        try{
-            for (int i = 0; i < departmentParentModel.getData().getList().length; i++) {
-                DepartmentParentModel.DepartmentParent parent = departmentParentModel.getData().getList()[i];
-                new CategoryDB(
-                        parent.getDepartmentName(),
-                        Integer.parseInt(parent.getDepartmentTree()),
-                        0, 0, Integer.parseInt(parent.getDepartmentId()), parent.getDepartmentIdentifier())
-                        .save();
-            }
-            database.setTransactionSuccessful();
-        }finally {
-            database.endTransaction();
-        }
-
-    }
-
     public List<CategoryDB> getDepartmentChild(int level, int depId){
         ConditionGroup conditionGroup = ConditionGroup.clause()
                 .and(CategoryDB_Table.levelId.eq(level))
@@ -118,14 +58,6 @@ public class DbManagerImpl implements DbManager{
         List<CategoryDB> categoryDBs = new Select().from(CategoryDB.class).where(
                 CategoryDB_Table.parentId.is(0)).queryList();
         return categoryDBs;
-    }
-
-    /**
-     * @return
-     */
-    public boolean isDepartmentParentFetch(){
-        List<CategoryDB> departmentParent = getDepartmentParent();
-        return checkCollectionNotNull(departmentParent);
     }
 
     @Override
@@ -222,10 +154,6 @@ public class DbManagerImpl implements DbManager{
                 .querySingle();
     }
 
-    public List<CurrencyDB> getCurrencyDB(){
-        return new Select().from(CurrencyDB.class).queryList();
-    }
-
     public long addHargaGrosir(double min, double max, double price){
         WholesalePriceDB wholesalePriceDB = new WholesalePriceDB(min, max, price);
         wholesalePriceDB.save();
@@ -240,89 +168,6 @@ public class DbManagerImpl implements DbManager{
         new Delete().from(WholesalePriceDB.class).where(
                 WholesalePriceDB_Table.Id.is(wholeSaleAdapterModel.getbDid())).
                 execute();
-    }
-
-    @Override
-    public void saveCatalog(CatalogDataModel catalogDataModel, String productDepId, String productName) {
-        if(productDepId != null && productName != null){
-
-            CategoryDB categoryDB = DbManagerImpl.getInstance().getKategoriByDepId(Integer.parseInt(productDepId));
-
-
-
-            // store with product name, category db and catalog item db
-            CatalogDB catalogDB = new CatalogDB(productName, categoryDB);
-            catalogDB.save();
-
-            List<CatalogItemDB> catalogItemDBs = new ArrayList<>();
-
-            final DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
-            database.beginTransaction();
-            try{
-                for(int i = 0; i < catalogDataModel.getList().size(); i ++){
-                    // Trying to get the catalog item
-                    CatalogDataModel.Catalog catalogData = catalogDataModel.getList().get(i);
-                    Log.i(TAG, messageTAG + "try to get catalog data with ID = " + catalogData.getCatalogId());
-                    Where<CatalogItemDB> where = new Select().from(CatalogItemDB.class)
-                            .where(CatalogItemDB_Table.catalogId.eq(catalogData.getCatalogId()));
-                    CatalogItemDB catalogItemDB = where.querySingle();
-                    if (catalogItemDB == null){
-                        Log.i(TAG,messageTAG + "catalog id doesn't exist, creating... " );
-                        catalogItemDB = new CatalogItemDB(
-                                catalogData.getCatalogName(),
-                                catalogData.getCatalogDescription(),
-                                catalogData.getCatalogImage(),
-                                catalogData.getCatalogCountShop(),
-                                catalogData.getCatalogPrice(),
-                                catalogData.getCatalogId(),
-                                catalogData.getCatalogUri()
-                        );
-                        catalogItemDB.setCatalogDB(catalogDB);
-                        catalogItemDB.save();
-                        // save to collections
-                        catalogItemDBs.add(catalogItemDB);
-
-                    }
-
-                    Log.i(TAG, messageTAG + " Continue with creating the selector, checking if selector available.. ");
-                }
-                database.setTransactionSuccessful();
-            } finally {
-                database.endTransaction();
-            }
-        }
-    }
-
-    @Override
-    public ArrayList<CatalogDataModel.Catalog> getCatalogList(String productDepId, String productName) {
-
-        CategoryDB categoryDB = getKategoriByDepId(Integer.parseInt(productDepId));
-
-        ConditionGroup and = ConditionGroup.clause().and(CatalogDB_Table.productName.eq(productName))
-                .and(CatalogDB_Table.categoryDB.eq(categoryDB.Id));
-
-        CatalogDB catalogDB = new Select().from(CatalogDB.class).where(and).querySingle();
-        if(catalogDB == null)
-            return null;
-
-        List<CatalogItemDB> allCatalogItemDBs = catalogDB.getAllCatalogItemDBs();
-        ArrayList<CatalogDataModel.Catalog> catalogs = new ArrayList<>();
-        for (CatalogItemDB cat : catalogDB.getAllCatalogItemDBs()){
-            catalogs.add(new CatalogDataModel.Catalog(cat));
-        }
-        return catalogs;
-    }
-
-    public void removePictureWithId(long imageDbId){
-        new Delete()
-                .from(PictureDB.class)
-                .where(PictureDB_Table.Id.is(imageDbId))
-                .execute();
-    }
-
-    @Override
-    public ProductDB getProductDb(long productDb) {
-        return new Select().from(ProductDB.class).where(ProductDB_Table.Id.is(productDb)).querySingle();
     }
 
     public CategoryDB getCategoryDb(String identifier){
@@ -354,27 +199,6 @@ public class DbManagerImpl implements DbManager{
         return wholesalePriceDBs;
     }
 
-    @Override
-    public List<EtalaseDB> removeEtalaseDb(int etalaseId) {
-        List<EtalaseDB> etalaseDBs = new Select()
-                .from(EtalaseDB.class)
-                .where(EtalaseDB_Table.etalaseId.is(etalaseId))
-                .queryList();
-        for (EtalaseDB etalaseDB : etalaseDBs) {
-            etalaseDB.delete();
-        }
-
-        return etalaseDBs;
-    }
-
-    @Override
-    public List<Bank> getBankBasedOnText(String query) {
-        return new Select()
-                .from(Bank.class)
-                .where(Bank_Table.bank_name.like("%"+query+"%"))
-                .queryList();
-    }
-
     public Province getProvinceFromProvinceId(String provinceId){
         return new Select()
                 .from(Province.class)
@@ -387,5 +211,13 @@ public class DbManagerImpl implements DbManager{
                 .from(City.class)
                 .where(City_Table.cityId.eq(cityId))
                 .querySingle();
+    }
+
+    @Override
+    public List<Bank> getBankBasedOnText(String query) {
+        return new Select()
+                .from(Bank.class)
+                .where(Bank_Table.bank_name.like("%" + query + "%"))
+                .queryList();
     }
 }

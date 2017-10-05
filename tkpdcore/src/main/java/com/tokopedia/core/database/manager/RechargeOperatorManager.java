@@ -123,8 +123,8 @@ public class RechargeOperatorManager  implements DbFlowOperation<RechargeOperato
                                 operator.getAttributes().getMinimumLength(),
                                 operator.getAttributes().getMaximumLength(),
                                 operator.getAttributes().getRule().getProductText(),
-                                operator.getAttributes().getRule().getShowProduct(),
-                                operator.getAttributes().getRule().getShowPrice(),
+                                operator.getAttributes().getRule().isShowProduct(),
+                                operator.getAttributes().getRule().isShowPrice(),
                                 operator.getAttributes().getWeight()
                         );
                     }
@@ -138,8 +138,8 @@ public class RechargeOperatorManager  implements DbFlowOperation<RechargeOperato
                             operator.getAttributes().getMinimumLength(),
                             operator.getAttributes().getMaximumLength(),
                             operator.getAttributes().getRule().getProductText(),
-                            operator.getAttributes().getRule().getShowProduct(),
-                            operator.getAttributes().getRule().getShowPrice(),
+                            operator.getAttributes().getRule().isShowProduct(),
+                            operator.getAttributes().getRule().isShowPrice(),
                             operator.getAttributes().getWeight()
                     );
                 }

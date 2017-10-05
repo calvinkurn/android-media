@@ -13,6 +13,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,11 +23,13 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
@@ -34,7 +37,6 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.presenter.WishListView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,8 +112,10 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
+
     private ViewHolder createProductView(ViewGroup viewGroup) {
-        View itemLayoutView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listview_product_item, null);
+        View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.listview_product_item, null);
         ViewHolder viewHolder = new ViewHolder(itemLayoutView);
         return viewHolder;
     }
@@ -127,6 +131,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 break;
             case TkpdState.RecyclerView.VIEW_WISHLIST:
                 bindWishlistViewHolder((ViewHolder) viewHolder, position);
+                break;
             default:
                 super.onBindViewHolder(viewHolder, position);
         }
@@ -197,7 +202,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.shopName.setText(Html.fromHtml(product.shop));
         viewHolder.location.setText(product.getShopLocation());
         setProductImage(viewHolder, product.getImgUri());
-        if(product.labels == null) {
+        if (product.labels == null) {
             product.labels = new ArrayList<Label>();
             if (product.preorder != null && product.preorder.equals("1")) {
                 Label label = new Label();
@@ -212,14 +217,14 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 product.labels.add(label);
             }
         }
-        if(product.badges == null){
+        if (product.badges == null) {
             product.badges = new ArrayList<>();
-            if(product.isGold!=null && product.isGold.equals("1")){
+            if (product.isGold != null && product.isGold.equals("1")) {
                 Badge badge = new Badge();
                 badge.setImageUrl("https://ecs7.tokopedia.net/img/gold-active-large.png");
                 product.badges.add(badge);
             }
-            if(product.luckyShop!=null && !product.luckyShop.isEmpty()){
+            if (product.luckyShop != null && !product.luckyShop.isEmpty()) {
                 Badge badge = new Badge();
                 badge.setImageUrl(product.luckyShop);
                 product.badges.add(badge);
@@ -230,7 +235,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
 
         if (product.getIsWishlist()) {
             viewHolder.wishlistContent.setVisibility(View.VISIBLE);
-            viewHolder.deleteWishlistBut.setOnClickListener(onDeleteWishlistClicked(product.getId()));
+            viewHolder.deleteWishlistBut.setOnClickListener(onDeleteWishlistClicked(product.getId(), position));
 
             if (product.getIsAvailable()) {
                 setBuyButtonAvailable(viewHolder.buyWishlistBut);
@@ -248,12 +253,13 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(data.get(position) instanceof ProductItem) {
+                if (data.get(position) instanceof ProductItem) {
                     ProductItem product = (ProductItem) data.get(position);
                     UnifyTracking.eventWishlistView(product.getName());
 
                     Bundle bundle = new Bundle();
-                    Intent intent = new Intent(context, ProductInfoActivity.class);
+                    Intent intent
+                            = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
                     bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data.get(position));
                     intent.putExtras(bundle);
                     context.startActivity(intent);
@@ -293,14 +299,14 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
 
-    private void setLabels(ViewHolder holder, ProductItem data){
+    private void setLabels(ViewHolder holder, ProductItem data) {
         holder.labelContainer.removeAllViews();
-        if(data.getLabels() != null){
+        if (data.getLabels() != null) {
             for (Label label : data.getLabels()) {
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());
-                if(!label.getColor().toLowerCase().equals("#ffffff")){
+                if (!label.getColor().toLowerCase().equals(context.getString(R.color.white))) {
                     labelText.setBackgroundResource(R.drawable.bg_label);
                     labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
                     ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
@@ -351,14 +357,12 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 }
             }
         }
-
         if (isLastItemPosition(position) || data.size() == 0) {
             return super.getItemViewType(position);
         }
         if (isRightMostProduct(position)) {
             return TkpdState.RecyclerView.VIEW_PRODUCT_RIGHT;
         }
-
         return TkpdState.RecyclerView.VIEW_PRODUCT;
     }
 
@@ -366,12 +370,12 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         return (position + 1) % 2 == 0;
     }
 
-    private View.OnClickListener onDeleteWishlistClicked(final String productId) {
+    private View.OnClickListener onDeleteWishlistClicked(final String productId, final int position) {
         return new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (wishlistView != null) wishlistView.displayDeleteWishlistDialog(productId);
+                if (wishlistView != null) wishlistView.displayDeleteWishlistDialog(productId, position);
             }
         };
     }

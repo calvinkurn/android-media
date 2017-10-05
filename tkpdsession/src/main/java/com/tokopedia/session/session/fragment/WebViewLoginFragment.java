@@ -43,14 +43,13 @@ public class WebViewLoginFragment extends DialogFragment {
     String url;
 
 
-    public static WebViewLoginFragment createInstance(String url){
+    public static WebViewLoginFragment createInstance(String url) {
         WebViewLoginFragment fragment = new WebViewLoginFragment();
         fragment.url = url;
         return fragment;
     }
 
-    public WebViewLoginFragment()
-    {
+    public WebViewLoginFragment() {
     }
 
     private TkpdWebView webViewOauth;
@@ -103,13 +102,13 @@ public class WebViewLoginFragment extends DialogFragment {
 
     }
 
-    private class AuthWebClient extends WebViewClient{
+    private class AuthWebClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             //check if the login was successful and the access token returned
             //this test depend of your API
-            parseUrl(url);
-            return false;
+            return parseUrl(url);
+
         }
 
         @Override
@@ -130,34 +129,37 @@ public class WebViewLoginFragment extends DialogFragment {
             Bundle bundle = new Bundle();
             bundle.putString("error", String.valueOf(error));
             Intent intent = new Intent();
-            intent.putExtra("bundle",bundle);
+            intent.putExtra("bundle", bundle);
 //            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
             dismiss();
-            SnackbarManager.make(getActivity(),getResources().getString(R.string.msg_network_error),Snackbar.LENGTH_SHORT).show();
+            if (getActivity() != null)
+                SnackbarManager.make(getActivity(), getResources().getString(R.string.msg_network_error), Snackbar.LENGTH_SHORT).show();
         }
     }
 
-    private void parseUrl(String url) {
-        Log.d("steven check " , url);
+    private boolean parseUrl(String url) {
+        Log.d("steven check ", url);
         Uri uri = Uri.parse(url);
         String protocol = uri.getScheme();
         String server = uri.getAuthority();
         String path = uri.getPath();
         Set<String> args = uri.getQueryParameterNames();
-        if(server.startsWith("accounts")&& server.endsWith("tokopedia.com") &&
-                (path.contains("code")||path.contains("error") || path.contains("activation-social"))){
+        if (server.startsWith("accounts") && server.endsWith("tokopedia.com") &&
+                (path.contains("code") || path.contains("error") || path.contains("activation-social"))) {
             Bundle bundle = new Bundle();
-            bundle.putString("server",server);
-            bundle.putString("path",path);
-            for(String arg : args){
+            bundle.putString("server", server);
+            bundle.putString("path", path);
+            for (String arg : args) {
                 String limit = uri.getQueryParameter(arg);
-                bundle.putString(arg,limit);
+                bundle.putString(arg, limit);
             }
             Intent intent = new Intent();
-            intent.putExtra("bundle",bundle);
+            intent.putExtra("bundle", bundle);
             getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
             dismiss();
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -186,8 +188,9 @@ public class WebViewLoginFragment extends DialogFragment {
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
-//        KeyboardHandler.hideSoftKeyboard(getActivity());
+        if (getTargetFragment().isVisible()) {
+            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
+        }
         super.onDismiss(dialog);
     }
 }

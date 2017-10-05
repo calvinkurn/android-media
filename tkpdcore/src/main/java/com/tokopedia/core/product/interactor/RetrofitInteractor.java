@@ -7,9 +7,14 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
+import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
-import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
 import java.util.List;
 import java.util.Map;
@@ -56,6 +61,23 @@ public interface RetrofitInteractor {
     void unSubscribeObservable();
 
     void downloadReportType(Context context, Integer productId, ReportProductDialogView viewListener);
+
+    void getProductCampaign(@NonNull Context context, @NonNull String productId,
+                            @NonNull ProductCampaignListener listener);
+
+    void getPromo(@NonNull Context context, @NonNull String targetType, @NonNull String userId,
+                              @NonNull PromoListener listener);
+
+    void getMostHelpfulReview(@NonNull Context context, @NonNull String productId,
+                            @NonNull MostHelpfulListener listener);
+
+    void getProductDiscussion(@NonNull Context context, @NonNull String productId, @NonNull String shopId,
+                              @NonNull DiscussionListener listener);
+
+    void getProductTalkComment(@NonNull Context context, @NonNull String talkId, @NonNull String shopId,
+                              @NonNull DiscussionListener listener);
+
+    void checkPromoAds(String shopId, int itemId, String userId, CheckPromoAdsListener listener);
 
     interface ProductDetailListener {
 
@@ -139,5 +161,39 @@ public interface RetrofitInteractor {
         void onSuccess(@NonNull VideoData data);
 
         void onError();
+    }
+
+    interface ProductCampaignListener {
+
+        void onSucccess(ProductCampaign productCampaign);
+
+        void onError(String error);
+    }
+
+    interface PromoListener {
+
+        void onSucccess(DataPromoWidget dataPromoWidget);
+
+        void onError(String error);
+    }
+
+    interface MostHelpfulListener {
+
+        void onSucccess(List<Review> reviews);
+
+        void onError(String error);
+    }
+
+    interface DiscussionListener {
+
+        void onSucccess(LatestTalkViewModel discussion);
+
+        void onError(String error);
+    }
+
+    interface CheckPromoAdsListener {
+        void onSuccess(String adsId);
+
+        void onError(String error);
     }
 }

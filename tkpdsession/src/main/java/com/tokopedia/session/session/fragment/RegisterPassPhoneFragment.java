@@ -62,6 +62,7 @@ import butterknife.OnClick;
 public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> implements RegisterThirdView {
     public static final String messageTAG = "RegisterPassPhoneFragment : ";
     public static final String DEFAULT_GENDER = "1";
+    private static final String CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED";
     private List<String> allowedFieldList;
 
     public static Fragment newInstance(CreatePasswordModel createPasswordModel, List<String> createPasswordList, Bundle bundle) {
@@ -201,6 +202,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
                 showProgress(false);
                 if (new SessionHandler(getActivity()).isV4Login()) {// go back to home
                     if (getActivity() != null && getActivity() instanceof SessionView) {
+                        SessionHandler.setPhoneNumber(vPhoneNumber.getText().toString());
                         ((SessionView) getActivity()).destroy();
                     }
                 }
@@ -259,7 +261,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     public void setData(HashMap<String, Object> data) {
         if (data.containsKey(RegisterThird.FULLNAME)) {
             String name = (String) data.get(RegisterThird.FULLNAME);
-            vName.setText(name);
+            vName.setText(name.contains(CHARACTER_NOT_ALLOWED)? "" : name);
         } else if (data.containsKey(RegisterThird.GENDER)) {
             Log.d(TAG, messageTAG + " gender : " + (int) data.get(RegisterThird.GENDER));
         } else if (data.containsKey(RegisterThird.EMAIL)) {

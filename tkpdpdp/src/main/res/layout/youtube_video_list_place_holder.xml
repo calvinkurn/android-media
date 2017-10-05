@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_wrapper"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/padding_small"
+    android:paddingTop="@dimen/padding_small">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_small"
+        android:text="@string/title_desc"
+        android:textColor="@color/black_70"
+        android:textStyle="bold" />
+
+    <com.tokopedia.tkpdpdp.customview.ProductVideoHorizontalScroll
+        android:id="@+id/product_video_horizontal_scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/tv_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:paddingRight="@dimen/margin_small"
+        android:paddingTop="@dimen/margin_small">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.tkpdpdp.customview.DescriptionTextView
+                android:id="@+id/tv_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descriptions"
+                android:textColor="@color/black_54"
+                android:textIsSelectable="false"
+                android:longClickable="false"
+                android:textSize="@dimen/fontm"
+                android:autoLink="all" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

@@ -20,7 +20,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
  */
 
 public class VerificationNotification extends BasePromoNotification {
-    protected VerificationNotification(Context context) {
+    public VerificationNotification(Context context) {
         super(context);
     }
 

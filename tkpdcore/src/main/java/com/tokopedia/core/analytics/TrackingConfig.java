@@ -12,6 +12,7 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IGTMContainer;
 import com.tokopedia.core.analytics.container.ILocalyticsContainer;
+import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.SessionHandler;
@@ -25,7 +26,8 @@ public abstract class TrackingConfig {
     public enum AnalyticsKind {
         GTM,
         APPSFLYER,
-        LOCALYTICS
+        LOCALYTICS,
+        MOENGAGE
     }
 
     /**
@@ -50,6 +52,14 @@ public abstract class TrackingConfig {
      */
     static ILocalyticsContainer getLocaEngine(){
         return Jordan.init(MainApplication.getAppContext()).getLocalyticsContainer();
+    }
+
+    /**
+     * Get MoEngage Engine Instance
+     * @return MoEngage Instance
+     */
+    static IMoengageContainer getMoEngine(){
+        return Jordan.init(MainApplication.getAppContext()).getMoEngageContainer();
     }
 
     /**
@@ -109,6 +119,9 @@ public abstract class TrackingConfig {
                         return builder;
                     }
                 });
+                break;
+            case MOENGAGE:
+                Jordan.init(MainApplication.getAppContext()).getMoEngageContainer().initialize();
                 break;
         }
     }

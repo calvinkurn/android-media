@@ -8,7 +8,7 @@ import com.tokopedia.core.session.base.BaseImpl;
 import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
-import com.tokopedia.session.session.fragment.RegisterInitialFragment;
+import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
 
 import java.util.List;
 

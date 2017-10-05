@@ -51,8 +51,11 @@ import butterknife.BindView;
 
 /**
  * @author anggaprasetiyo on 12/8/16.
+ *         Do not use!
+ *         Please
+ * @see com.tokopedia.payment.activity.TopPayActivity
  */
-
+@Deprecated
 public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> implements ITopPayView,
         TopPayBroadcastReceiver.ActionTopPayThanksListener {
     private static final String TAG = TopPayActivity.class.getSimpleName();
@@ -339,6 +342,7 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Log.d(TAG, "REDIRECT URL = " + url);
             view.invalidate();
             if (url.contains(topPayParameterData.getCallbackUrlPath())) {
                 view.stopLoading();

@@ -33,7 +33,7 @@ import com.tokopedia.core.inboxreputation.presenter.InboxReputationFormResponseF
 import com.tokopedia.core.inboxreputation.presenter.InboxReputationFormResponseFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.ToolTipUtils;
 
@@ -189,7 +189,10 @@ public class InboxReputationFormResponseFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = ProductInfoActivity.createInstance(context, inboxReputationDetail.getProductId());
+                Intent intent = ProductDetailRouter
+                        .createInstanceProductDetailInfoActivity(
+                                context, inboxReputationDetail.getProductId());
+
                 context.startActivity(intent);
             }
         };

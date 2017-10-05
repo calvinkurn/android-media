@@ -5,138 +5,12 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="TextView" parent="@style/TextAppearance.AppCompat">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="TextView.TopAds">
-        <item name="android:ellipsize">end</item>
-        <item name="android:textSize">@dimen/font_medium</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:textColor">@color/black_seventy_percent</item>
-    </style>
-
-    <style name="TextView.TopAds.Headline">
-        <item name="android:textSize">@dimen/text_size_xxxlarge</item>
-        <item name="android:textColor">@color/font_top_ads_green</item>
-        <item name="android:text">@string/top_ads_statistic_info_default_value</item>
-    </style>
-
-    <style name="TextView.TopAds.Caption1">
-        <item name="android:textSize">@dimen/text_size_small</item>
-        <item name="android:textColor">@color/font_top_ads_black_54</item>
-    </style>
-
-    <style name="TextView.TopAds.Title">
-        <item name="android:textSize">@dimen/font_medium</item>
-    </style>
-
-    <style name="TextView.TopAds.Title.Bold">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TextView.TopAds.Title.Green">
-        <item name="android:textColor">@color/font_top_ads_green</item>
-    </style>
-
-    <style name="TextView.TopAds.Title.Gray">
-        <item name="android:textColor">@color/font_top_ads_black_54</item>
-    </style>
-
-    <style name="TextView.TopAds.Title.Black">
-        <item name="android:textColor">@color/font_top_ads_black_70</item>
-    </style>
-
-    <style name="TextView.TopAds.Body">
-        <item name="android:textSize">@dimen/font_small</item>
-    </style>
-
-    <style name="TextView.TopAds.Body.Gray">
-        <item name="android:textColor">@color/font_top_ads_black_54</item>
-    </style>
-
-    <style name="TextView.TopAds.Body.Black">
-        <item name="android:textColor">@color/font_top_ads_black_70</item>
-    </style>
-
-    <style name="TextView.TopAds.Body.Black.Bold">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TextView.TopAds.Body.Green">
-        <item name="android:textColor">@color/font_top_ads_green</item>
-    </style>
-
-    <style name="TextView.TopAds.Body.Promoted">
-        <item name="android:textSize">@dimen/text_size_small</item>
-        <item name="android:textColor">@color/blue_link</item>
-    </style>
-
-    <style name="TextView.infoInputType">
-        <item name="android:textColor">@color/black_fifty_four_percent</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="EditText" parent="Widget.AppCompat.EditText">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@drawable/color_state_topads_disable_text</item>
-    </style>
-
     <style name="EditText.Date">
         <item name="android:editable">false</item>
         <item name="android:focusable">false</item>
         <item name="android:focusableInTouchMode">false</item>
         <item name="android:inputType">none</item>
         <item name="android:textColor">@color/green_200</item>
-    </style>
-
-
-    <style name="EditText.Currency">
-        <item name="android:inputType">number</item>
-    </style>
-
-    <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/font_medium</item>
-        <item name="android:padding">12dp</item>`
-    </style>
-
-    <style name="TopAdsRadioButton" parent="@style/RadioButton">
-        <item name="android:button">@drawable/top_ads_set_date_radio_button</item>
-        <item name="android:textColor">@color/font_top_ads_black_70</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="Button.TopAds" parent="Widget.AppCompat.Button">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:maxHeight">52dp</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/font_medium</item>
-        <item name="android:background">@drawable/bg_button_orange</item>
-    </style>
-
-    <style name="Button.TopAds.Submit">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:maxHeight">52dp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/font_medium</item>
-        <item name="android:background">@drawable/bg_button_orange</item>
-        <item name="android:layout_marginLeft">5dp</item>
-        <item name="android:layout_marginRight">5dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
-        <item name="android:layout_marginTop">5dp</item>
-    </style>
-
-    <style name="Button.TopAds.Submit.Green">
-        <item name="android:background">@drawable/bg_button_green_selection</item>
-        <item name="android:textColor">@color/text_submit_button</item>
     </style>
 
     <style name="ImageViewStatus">
@@ -154,45 +28,64 @@
         <item name="layout_anchorGravity">bottom|right|end</item>
     </style>
 
-    <style name="FabSpeedDial">
-        <item name="android:id">@id/fab_speed_dial</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="fabBackgroundTint">@color/green_500</item>
-        <item name="fabGravity">bottom_end</item>
-        <item name="miniFabBackgroundTint">@color/mini_fab_title_background_tint</item>
-        <item name="miniFabDrawableTint">@android:color/white</item>
-        <item name="miniFabTitleTextColor">@android:color/white</item>
-        <item name="touchGuardDrawable">@drawable/background_blur</item>
-    </style>
-
-    <style name="LabelLayoutWithBorder" parent="LabelLayout">
-        <item name="android:background">@drawable/border_background_view_topads</item>
-    </style>
-
-    <style name="LabelLayoutWithoutBorder" parent="LabelLayout">
-        <item name="android:background">@color/white</item>
-    </style>
-
     <style name="LabelLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
-        <item name="android:paddingTop">@dimen/top_ads_dashboard_padding_cards</item>
-        <item name="android:paddingLeft">@dimen/top_ads_dashboard_padding_cards</item>
-        <item name="android:paddingRight">@dimen/top_ads_dashboard_padding_cards</item>
-        <item name="android:paddingBottom">@dimen/top_ads_dashboard_padding_cards</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:paddingTop">@dimen/margin_sm</item>
+        <item name="android:paddingLeft">@dimen/margin_sm</item>
+        <item name="android:paddingRight">@dimen/margin_sm</item>
+        <item name="android:paddingBottom">@dimen/margin_sm</item>
+    </style>
+
+    <style name="LabelLayout.Border">
+        <item name="android:background">@drawable/border_background_view_topads</item>
+    </style>
+
+    <style name="LabelLayout.BorderBottom">
+        <item name="android:background">@drawable/border_background_bottom</item>
+    </style>
+
+    <style name="LabelLayout.BorderTop">
+        <item name="android:background">@drawable/border_background_top</item>
+    </style>
+
+    <style name="BaseCardViewLayoutMatchParent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">-2dp</item>
+        <item name="android:layout_marginRight">-2dp</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="cardElevation">1dp</item>
+        <item name="cardPreventCornerOverlap">false</item>
+    </style>
+
+    <style name="CardViewLayoutMatchParent" parent="BaseCardViewLayoutMatchParent">
+        <item name="android:layout_marginLeft">-2dp</item>
+        <item name="android:layout_marginRight">-2dp</item>
+    </style>
+
+    <style name="LabelLayout.InnerExpandable">
+        <item name="android:paddingLeft">@dimen/product_inner_expandable_padding</item>
+        <item name="android:paddingRight">@dimen/product_inner_expandable_padding</item>
+        <item name="android:paddingTop">@dimen/product_inner_expandable_padding</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <style name="LabelLayout.NoPadding">
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
     </style>
 
     <style name="ColorSwitchCompat">
         <item name="colorControlActivated">@color/tkpd_main_green</item>
     </style>
 
-    <style name="TopAdsProgressBar" parent="android:Widget.ProgressBar.Horizontal">
-        <item name="android:indeterminateOnly">false</item>
-        <item name="android:progressDrawable">@drawable/top_ads_progressbar</item>
-        <item name="android:minHeight">3dip</item>
-        <item name="android:maxHeight">3dip</item>
+    <style name="WhiteCheck">
+        <item name="colorAccent">@color/tkpd_main_green</item>
     </style>
 
     <style name="TabBar">
@@ -203,203 +96,48 @@
         <item name="tabSelectedTextColor">@color/white</item>
     </style>
 
-    <style name="EditText.GreenHighlight">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColorHighlight">@color/font_top_ads_green</item>
-        <item name="android:textColor">@drawable/color_state_topads_disable_text</item>
-    </style>
-
-    <style name="TopAdsRadioExpandView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">16dp</item>
-    </style>
-
-    <style name="TextInputLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin_offset
-        </item> <!-- this is to cater the inner margin android textInputlayout have in default -->
-        <item name="android:layout_marginRight">@dimen/top_ads_textinput_margin_offset</item>
-        <item name="android:layout_marginBottom">@dimen/top_ads_textinput_margin_offset</item>
-        <item name="android:theme">@style/TextInputLayoutColorLine</item>
-    </style>
-
-    <style name="TextInputLayoutColorLine">
-        <item name="textColorError">@color/design_textinput_error_color_dark</item>
-        <item name="colorControlNormal">@color/colorGray</item>
-        <item name="colorControlActivated">@color/font_top_ads_green</item>
-        <item name="colorControlHighlight">@color/font_top_ads_green</item>
-    </style>
-
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/tkpd_main_green</item>
         <item name="android:textColorPrimary">@color/colorBlack</item>
         <item name="android:background">@color/white</item>
     </style>
 
-    <style name="TextAppearence.App.TextInputLayout" parent="TextAppearance.Design.Hint">
-        <item name="android:textColor">@color/black_fifty_four_percent</item>
+    <style name="ExpandableStyle" parent="style_expandable_option_default">
+        <item name="eo_text_option_style">@style/TextView.Subheading</item>
+        <item name="eo_header_style">@style/ExpandableHeaderStyleNoPadding</item>
+        <item name="eo_switch_style">@style/ExpandableSwitchStyle</item>
     </style>
 
-    <style name="TextAppearence.App.TextInputLayout.VerySmall">
-        <item name="android:textSize">@dimen/fontvs</item>
+    <style name="ExpandableStyleNoItemPadding" parent="style_expandable_option_default">
+        <item name="eo_header_style">@style/ExpandableHeaderStylePadding</item>
+        <item name="eo_text_option_style">@style/TextView.Subheading</item>
+        <item name="eo_switch_style">@style/ExpandableSwitchStyle</item>
     </style>
 
-    <style name="TextAppearence.App.TextInputLayout.Small">
-        <item name="android:textSize">@dimen/font_small</item>
+    <style name="ExpandableHeaderStylePadding" parent="eo_header_style">
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingTop">@dimen/margin_small_sm</item>
+        <item name="android:paddingBottom">@dimen/margin_small_sm</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
-    <style name="EditText.GreenHighlight.TopAdsCustomAutoCompleteTextView">
-        <item name="android:drawableRight">@drawable/ic_close_green_14x14</item>
-        <item name="android:completionThreshold">1</item>
-        <item name="android:inputType">textNoSuggestions</item>
-        <item name="android:popupBackground">@color/white</item>
+    <style name="ExpandableHeaderStyleNoPadding" parent="eo_header_style">
+        <item name="android:paddingLeft">@dimen/no_margin</item>
+        <item name="android:paddingRight">@dimen/no_margin</item>
+        <item name="android:paddingTop">@dimen/no_margin</item>
+        <item name="android:paddingBottom">@dimen/no_margin</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
-    <style name="TopAdsCustomRadioGroup">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">vertical</item>
+    <style name="ExpandableSwitchStyle" parent="eo_switch_style">
+        <item name="theme">@style/ColorSwitchCompat</item>
     </style>
 
-    <style name="Button.TopAds.WithoutBorder">
-        <item name="android:layout_alignParentBottom">true</item>
-        <item name="android:padding">16dp</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:layout_margin">5dp</item>
-        <item name="android:background">@drawable/bg_button_green</item>
-        <item name="android:buttonStyle">?android:attr/borderlessButtonStyle</item>
+    <style name="BottomSheetBuilder.DialogStyle" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetBuilder.BottomSheetStyle</item>
     </style>
 
-    <style name="ShopOpenStepperBottomHiddenStyle" parent="MSBottomNavigation">
-        <item name="android:visibility">gone</item>
-    </style>
-
-    <style name="ShopOpenStepperTabContainerStyle" parent="MSStepTabContainer">
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="ShopOpenTabsContainerStyle" parent="MSStepTabsContainer">
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-
-    <style name="ShopOpenStepTabTitleStyle" parent="MSStepTabTitle">
-        <item name="android:layout_marginLeft">0dp</item>
-        <item name="android:layout_marginStart">0dp</item>
-    </style>
-
-    <style name="ShopOpenStepperStyle" parent="MSDefaultStepperLayoutTheme">
-        <item name="ms_bottomNavigationStyle">@style/ShopOpenStepperBottomHiddenStyle</item>
-        <item name="ms_stepTabContainerStyle">@style/ShopOpenStepperTabContainerStyle</item>
-        <item name="ms_tabsContainerStyle">@style/ShopOpenTabsContainerStyle</item>
-        <item name="ms_stepTabTitleStyle">@style/ShopOpenStepTabTitleStyle</item>
-    </style>
-
-    <style name="ShopOpenCounterTextInputStyle" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColor">@color/black_thirty_eight_percent</item>
-        <item name="android:textSize">12sp</item>
-        <!--other parameters that you want to change -->
-    </style>
-
-    <style name="ImageView">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="ImageView.ShopSettingTitleImage">
-        <item name="android:layout_width">36dp</item>
-        <item name="android:layout_height">36dp</item>
-        <item name="android:layout_marginBottom">24dp</item>
-        <item name="android:layout_marginTop">20dp</item>
-    </style>
-
-    <style name="TextView.ShopSettingTitleShop">
-        <item name="android:layout_marginBottom">16dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/black_seventy_percent</item>
-        <item name="android:textSize">18sp</item>
-    </style>
-
-    <style name="TextView.ShopSettingTitleShop.Content">
-        <item name="android:layout_marginBottom">32dp</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="TextInputLayout.ShopSetting">
-        <item name="hintTextAppearance">@style/TextAppearence.App.TextInputLayout</item>
-        <item name="counterEnabled">true</item>
-        <item name="counterMaxLength">48</item>
-        <item name="counterTextAppearance">@style/ShopOpenCounterTextInputStyle</item>
-    </style>
-
-    <style name="TextInputLayout.ShopSetting.DescShop">
-        <item name="counterMaxLength">140</item>
-    </style>
-
-    <style name="TextView.ShopSettingHint">
-        <item name="android:textSize">11sp</item>
-        <item name="android:textColor">@color/black_thirty_eight_percent</item>
-    </style>
-
-    <style name="TextView.ShopSettingHint.Logo">
-        <item name="android:layout_marginBottom">10dp</item>
-        <item name="android:layout_gravity">left</item>
-    </style>
-
-    <style name="TextView.ShopSettingHint.ErrorImagePicker">
-        <item name="android:textSize">12sp</item>
-        <item name="android:layout_marginTop">5dp</item>
-        <item name="android:textColor">@color/design_textinput_error_color_dark</item>
-    </style>
-
-    <style name="TextView.ShopSettingHint.InfoPickImageTitle">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TextView.ShopSettingHint.InfoPickImageContent">
-        <item name="android:layout_marginBottom">8dp</item>
-    </style>
-
-    <style name="TextView.ShopSettingHint.LabelBrowseImage">
-        <item name="android:textStyle">bold</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/black_seventy_percent</item>
-    </style>
-
-    <style name="EditText.ShopSetting">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/black_seventy_percent</item>
-        <item name="android:textColorHint">@color/black_thirty_eight_percent</item>
-    </style>
-
-    <style name="Button.TopAds.ShopSetting">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:background">@drawable/bg_button_green</item>
-        <item name="android:buttonStyle">?android:attr/borderlessButtonStyle</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:padding">16dp</item>
-    </style>
-
-    <style name="View">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="View.ShopSetting">
-        <item name="android:background">@drawable/rounded_corner_black_shop_open</item>
-    </style>
-
-    <style name="View.ShopSetting.ImagePicker">
-        <item name="android:layout_width">126dp</item>
-        <item name="android:layout_height">126dp</item>
     </style>
 
     <style name="View.ShopSetting.BrowseImage">

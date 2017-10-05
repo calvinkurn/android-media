@@ -7,7 +7,6 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.Settings;
 import android.provider.Telephony;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -120,19 +119,32 @@ public class MethodChecker {
 
     public static boolean isTimezoneNotAutomatic() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-           return android.provider.Settings.Global.getInt(
+            return android.provider.Settings.Global.getInt(
                     MainApplication.getAppContext().getContentResolver(),
-                    android.provider.Settings.Global.AUTO_TIME, 0) == 0 &&
-                    android.provider.Settings.Global.getInt(
-                            MainApplication.getAppContext().getContentResolver(),
-                            Settings.Global.AUTO_TIME_ZONE, 0) == 0;
+                    android.provider.Settings.Global.AUTO_TIME, 0) == 0;
         } else {
             return android.provider.Settings.System.getInt(
                     MainApplication.getAppContext().getContentResolver(),
-                    android.provider.Settings.System.AUTO_TIME, 0) == 0 &&
-                    android.provider.Settings.System.getInt(
-                            MainApplication.getAppContext().getContentResolver(),
-                            Settings.System.AUTO_TIME_ZONE, 0) == 0;
+                    android.provider.Settings.System.AUTO_TIME, 0) == 0;
         }
+    }
+
+    public static Intent getSmsIntent(Activity activity, String shareText) {
+        Intent smsIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(activity);
+            smsIntent = new Intent(Intent.ACTION_SEND);
+            smsIntent.setType("text/plain");
+            smsIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+            if (defaultSmsPackageName != null) {
+                smsIntent.setPackage(defaultSmsPackageName);
+            }
+
+        } else {
+            smsIntent = new Intent(Intent.ACTION_VIEW);
+            smsIntent.setType("vnd.android-dir/mms-sms");
+            smsIntent.putExtra("sms_body", shareText);
+        }
+        return smsIntent;
     }
 }

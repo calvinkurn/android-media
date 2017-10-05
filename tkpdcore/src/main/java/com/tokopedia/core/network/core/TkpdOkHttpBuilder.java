@@ -4,6 +4,7 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 
@@ -44,6 +45,7 @@ public class TkpdOkHttpBuilder {
             Boolean allowLogOnNotification = cache.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false);
             this.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
                     .showNotification(allowLogOnNotification));
+            this.addInterceptor(new DebugInterceptor());
         }
 
         return this;

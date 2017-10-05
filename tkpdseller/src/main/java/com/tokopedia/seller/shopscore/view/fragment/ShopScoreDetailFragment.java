@@ -108,6 +108,13 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         return parentView;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unsubscribe();
+
+    }
+
     private void setupRecyclerView(View parentView) {
         RecyclerView recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view_shop_score_detail);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -189,7 +196,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
                         mainFrame,
                         getString(R.string.error_title_shop_score_failed),
                         getString(R.string.error_subtitle_shop_score_failed),
-                        getString(R.string.retry_shop_score),
+                        getString(R.string.label_try_again),
                         R.drawable.ic_error_network,
                         retryLoadShopScore
                 );

@@ -13,6 +13,7 @@ import java.util.List;
 public interface SearchContract {
     interface View extends CustomerView {
         void showSearchResult(List<Visitable> list);
+        void showNetworkErrorMessage();
     }
 
     interface Presenter extends CustomerPresenter<View> {

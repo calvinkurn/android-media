@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.view.MenuItem;
 import android.widget.ListView;
 
@@ -14,7 +13,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
-import com.tokopedia.seller.selling.model.shopconfirmationdetail.*;
+import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -207,9 +206,9 @@ public class OrderHistoryView extends TActivity {
                 DateList.add(Status.getHistoryStatusDate());
                 String state;
                 if (State == STATE_BUYER) {
-                    state = Status.getHistoryBuyerStatus().replace("<br>", "\n").replace("<br/>", "\n");
+                    state = Status.getHistoryBuyerStatus();
                 } else {
-                    state = Status.getHistorySellerStatus().replace("<br>", "\n").replace("<br/>", "\n");
+                    state = Status.getHistorySellerStatus();
                 }
                 state = MethodChecker.fromHtml(state).toString();
                 StateList.add(state);
@@ -230,7 +229,7 @@ public class OrderHistoryView extends TActivity {
                 DateList.add(Status.getHistoryStatusDateFull());
                 String state;
                 if (State == STATE_BUYER) {
-                    state = Status.getHistoryBuyerStatus().replace("<br>", "\n").replace("<br/>", "\n");
+                    state = Status.getHistoryBuyerStatus();
                     try {
                         String strPreorder = getIntent().getExtras().getString("preorder_info");
                         if (strPreorder != null) preOrder = new JSONObject(strPreorder);
@@ -238,7 +237,7 @@ public class OrderHistoryView extends TActivity {
                         jse.printStackTrace();
                     }
                 } else {
-                    state = Status.getHistorySellerStatus().replace("<br>", "\n").replace("<br/>", "\n");
+                    state = Status.getHistorySellerStatus();
                 }
                 state = MethodChecker.fromHtml(state).toString();
                 StateList.add(state);

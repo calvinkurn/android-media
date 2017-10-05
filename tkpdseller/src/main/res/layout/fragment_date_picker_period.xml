@@ -13,7 +13,7 @@
 
     <Button
         android:id="@+id/button_submit"
-        style="@style/Button.TopAds.Submit.Green"
+        style="@style/Button.Submit.Green"
         android:text="@string/save_date"/>
 
 </LinearLayout>

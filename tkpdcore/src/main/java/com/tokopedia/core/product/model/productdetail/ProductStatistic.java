@@ -146,7 +146,7 @@ public class ProductStatistic implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ProductStatistic> CREATOR = new Parcelable.Creator<ProductStatistic>() {
+    public static final Creator<ProductStatistic> CREATOR = new Creator<ProductStatistic>() {
         @Override
         public ProductStatistic createFromParcel(Parcel in) {
             return new ProductStatistic(in);

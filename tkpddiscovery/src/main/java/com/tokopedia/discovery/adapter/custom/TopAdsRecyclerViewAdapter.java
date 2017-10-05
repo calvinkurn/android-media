@@ -2,11 +2,9 @@ package com.tokopedia.discovery.adapter.custom;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
@@ -20,16 +18,16 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.InfoTopAds;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 
 import java.util.List;
 
@@ -115,11 +113,9 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             public void onClick(View v) {
                 TopAdsUtil.clickTopAdsAction(context, item.getTopAds().getProductClickUrl());
 
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, item);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                ((PdpRouter) ((BaseActivity) context)
+                        .getApplication())
+                        .goToProductDetail(context, getProductDataToPass(item));
             }
         });
     }

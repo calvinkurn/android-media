@@ -24,6 +24,7 @@ import com.tokopedia.core.inboxreputation.adapter.viewbinder.HeaderReputationDat
 import com.tokopedia.core.inboxreputation.intentservice.InboxReviewIntentService;
 import com.tokopedia.core.inboxreputation.listener.InboxReputationDetailFragmentView;
 import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputationItem;
+import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReputationDetail;
 import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReputationDetailItem;
 import com.tokopedia.core.inboxreputation.presenter.InboxReputationDetailFragmentPresenter;
 import com.tokopedia.core.inboxreputation.presenter.InboxReputationDetailFragmentPresenterImpl;
@@ -86,7 +87,6 @@ public class
         adapter = InboxReputationDetailAdapter.createAdapter(getActivity(), presenter);
         adapter.setInboxReputation((InboxReputationItem) getArguments().getParcelable(BUNDLE_INBOX_REPUTATION));
         refreshHandler = new RefreshHandler(getActivity(), getView(), onRefresh());
-        refreshHandler.setPullEnabled(false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         listProduct.setLayoutManager(linearLayoutManager);
         listProduct.setAdapter(adapter);
@@ -208,11 +208,6 @@ public class
     }
 
     @Override
-    public void setPullEnabled(boolean isEnabled) {
-        refreshHandler.setPullEnabled(isEnabled);
-    }
-
-    @Override
     public void clearData() {
         adapter.clearList();
     }
@@ -331,7 +326,6 @@ public class
 
     @Override
     public void setActionEnabled(boolean isEnabled) {
-        refreshHandler.setPullEnabled(isEnabled);
         listProduct.setEnabled(isEnabled);
     }
 
@@ -422,6 +416,13 @@ public class
         KeyboardHandler.DropKeyboard(getActivity(),getView());
         dialog.setContent(inboxReputationDetailItem);
         dialog.show();
+    }
+
+    @Override
+    public void onSuccessGetDetail(InboxReputationDetail response) {
+        clearData();
+        adapter.setInboxReputationDetail(response);
+        setActivityResult();
     }
 
 }

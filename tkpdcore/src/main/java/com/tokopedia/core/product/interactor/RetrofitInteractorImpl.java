@@ -6,11 +6,21 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.apiservices.ace.AceSearchService;
+import com.tokopedia.core.network.apiservices.galadriel.GaladrielApi;
+import com.tokopedia.core.network.apiservices.galadriel.Galadrielservice;
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
+import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
+import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
+import com.tokopedia.core.network.apiservices.product.PromoTopAdsService;
+import com.tokopedia.core.network.apiservices.product.ReputationReviewService;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -25,7 +35,15 @@ import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.etalase.EtalaseData;
 import com.tokopedia.core.product.model.goldmerchant.ProductVideoData;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
+import com.tokopedia.core.product.model.productdetail.ProductCampaignResponse;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.MostHelpfulReviewResponse;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoWidgetResponse;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.productother.ProductOtherData;
@@ -33,7 +51,9 @@ import com.tokopedia.core.product.model.productotherace.ProductOtherAce;
 import com.tokopedia.core.product.model.productotherace.ProductOtherDataAce;
 import com.tokopedia.core.session.model.network.ReportType;
 import com.tokopedia.core.session.model.network.ReportTypeModel;
+import com.tokopedia.core.util.SessionHandler;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,6 +63,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
@@ -50,6 +72,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.core.network.retrofit.response.TkpdResponse.TOO_MANY_REQUEST;
 
 /**
  * RetrofitInteractorImpl
@@ -67,7 +91,15 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final AceSearchService aceSearchService;
     private final MojitoAuthService mojitoAuthService;
     private final GoldMerchantService goldMerchantService;
+    private final MojitoService mojitoService;
+    private final ReputationReviewService reputationReviewService;
+    private final Galadrielservice galadrielservice;
+    private final KunyitService kunyitService;
+    private final PromoTopAdsService promoTopAdsService;
     private final int SERVER_ERROR_CODE = 500;
+    private static final String ERROR_MESSAGE = "message_error";
+    private final ThreadExecutor threadExecutor;
+    private final PostExecutionThread postExecutionThread;
 
     public RetrofitInteractorImpl() {
         this.productService = new ProductService();
@@ -78,6 +110,13 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         this.aceSearchService = new AceSearchService();
         this.mojitoAuthService = new MojitoAuthService();
         this.goldMerchantService = new GoldMerchantService();
+        this.mojitoService = new MojitoService();
+        this.reputationReviewService = new ReputationReviewService();
+        this.kunyitService = new KunyitService();
+        this.threadExecutor = new JobExecutor();
+        this.postExecutionThread = new UIThread();
+        this.promoTopAdsService = new PromoTopAdsService();
+        this.galadrielservice = new Galadrielservice();
     }
 
     @Override
@@ -114,6 +153,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     } else {
                         if (response.body().getStatus().equals("REQUEST_DENIED"))
                             listener.onError("");
+                        else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                            listener.onError(response.body().getErrorMessageJoined());
+                        }
                         else if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
                     }
@@ -441,7 +483,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     public void addToWishList(@NonNull Context context, @NonNull Integer params,
                               @NonNull final AddWishListListener listener) {
         Observable<Response<TkpdResponse>> observable = mojitoAuthService.getApi()
-                .addWishlist(String.valueOf(params));
+                .addWishlist(String.valueOf(params), SessionHandler.getLoginID(context));
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
             public void onCompleted() {
@@ -464,7 +506,20 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             public void onNext(Response<TkpdResponse> response) {
                 if (response.code() == ResponseStatus.SC_CREATED) {
                     listener.onSuccess();
-                } else {
+                } else if (response.code() == ResponseStatus.SC_BAD_REQUEST) {
+                    try {
+                        String msgError = "";
+                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                        JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                msgError+=jsonArray.get(i).toString()+" ";
+                            }
+                        listener.onError(msgError);
+                    } catch (Exception e) {
+                        listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+                }
+                else {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
@@ -479,7 +534,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     public void removeFromWishList(@NonNull Context context, @NonNull Integer params,
                                    @NonNull final RemoveWishListListener listener) {
         final Observable<Response<TkpdResponse>> observable = mojitoAuthService.getApi()
-                .removeWishlist(String.valueOf(params));
+                .removeWishlist(String.valueOf(params), SessionHandler.getLoginID(context));
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
             public void onCompleted() {
@@ -576,7 +631,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
                     @Override
                     public void onNext(Response<ProductVideoData> productVideoDataResponse) {
-                        if(productVideoDataResponse.body() != null)
+                        if (productVideoDataResponse.body() != null)
                             listener.onSuccess(productVideoDataResponse.body().getData().get(0));
                     }
                 };
@@ -600,7 +655,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         Observable<Response<ProductOtherDataAce>> observable = aceSearchService.getApi()
                 .getOtherProducts(MapNulRemover.removeNull(params));
 
-        Subscriber<java.util.List<ProductOther>> subscriber = new Subscriber<List<ProductOther>>() {
+        Subscriber<List<ProductOther>> subscriber = new Subscriber<List<ProductOther>>() {
             @Override
             public void onCompleted() {
 
@@ -624,11 +679,11 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             }
         };
 
-        Func1<Response<ProductOtherDataAce>, java.util.List<ProductOther>>
+        Func1<Response<ProductOtherDataAce>, List<ProductOther>>
                 func1 = new Func1<Response<ProductOtherDataAce>, List<ProductOther>>() {
             @Override
             public List<ProductOther> call(Response<ProductOtherDataAce> response) {
-                java.util.List<ProductOther> others = new ArrayList<>();
+                List<ProductOther> others = new ArrayList<>();
                 for (ProductOtherAce data : response.body().getProductOthers()) {
                     others.add(new ProductOther(data));
                 }
@@ -734,5 +789,243 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             }
                         })
         );
+    }
+
+    @Override
+    public void getProductCampaign(@NonNull Context context, @NonNull String productId,
+                                   @NonNull final ProductCampaignListener listener) {
+        Observable<Response<ProductCampaignResponse>> observable = mojitoService
+                .getApi().getProductCampaign(productId);
+
+        Subscriber<ProductCampaign> subscriber = new Subscriber<ProductCampaign>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                listener.onError(e.getMessage());
+            }
+
+            @Override
+            public void onNext(ProductCampaign productCampaign) {
+                if(productCampaign != null) {
+                    listener.onSucccess(productCampaign);
+                }
+            }
+        };
+
+        Func1<Response<ProductCampaignResponse>, ProductCampaign> mapper =
+                new Func1<Response<ProductCampaignResponse>, ProductCampaign>() {
+                    @Override
+                    public ProductCampaign call(Response<ProductCampaignResponse> productCampaignResponse) {
+                        return productCampaignResponse.body().getData();
+                    }
+                };
+
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(mapper)
+                .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void getPromo(@NonNull Context context,
+                                     @NonNull String targetType, @NonNull String userId,
+                                     final @NonNull PromoListener listener) {
+        Observable<Response<PromoWidgetResponse>> observable = galadrielservice
+                .getApi().getPromoWidget(GaladrielApi.VALUE_PDP_WIDGET,targetType,GaladrielApi.VALUE_DEVICE,GaladrielApi.VALUE_LANG,userId);
+
+        Subscriber<DataPromoWidget> subscriber = new Subscriber<DataPromoWidget>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(DataPromoWidget promoWidget) {
+                listener.onSucccess(promoWidget);
+            }
+        };
+
+        Func1<Response<PromoWidgetResponse>, DataPromoWidget> mapper =
+                new Func1<Response<PromoWidgetResponse>, DataPromoWidget>() {
+                    @Override
+                    public DataPromoWidget call(Response<PromoWidgetResponse> promoWidgetRespone) {
+                        if (promoWidgetRespone.body().getData()!=null) {
+                            return promoWidgetRespone.body().getData();
+                        }
+                        return null;
+                    }
+                };
+
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(mapper)
+                        .subscribe(subscriber)
+        );
+
+    }
+
+    @Override
+    public void getMostHelpfulReview(@NonNull Context context,
+                                     @NonNull String productId,
+                                     final @NonNull MostHelpfulListener listener) {
+        Observable<Response<MostHelpfulReviewResponse>> observable = reputationReviewService
+                .getApi().getMostHelpfulReview(productId);
+
+        Subscriber<List<Review>> subscriber = new Subscriber<List<Review>>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(List<Review> reviews) {
+                listener.onSucccess(reviews);
+            }
+        };
+
+        Func1<Response<MostHelpfulReviewResponse>, List<Review>> mapper =
+                new Func1<Response<MostHelpfulReviewResponse>, List<Review>>() {
+                    @Override
+                    public List<Review> call(Response<MostHelpfulReviewResponse> mostHelpfulReview) {
+                        return mostHelpfulReview.body().getData().getReviews();
+                    }
+                };
+
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(mapper)
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void getProductDiscussion(@Nonnull final Context context,
+                                     @Nonnull final String productId,
+                                     @Nonnull final String shopId,
+                                     @Nonnull final DiscussionListener listener) {
+
+        Observable<Response<TkpdResponse>> observableGetProductTalk = kunyitService
+                .getApi().getProductTalk(
+                        AuthUtil.generateParams(context, NetworkParam.paramProductTalk(productId, shopId))
+                );
+
+        Subscriber<LatestTalkViewModel> subscriber = new Subscriber<LatestTalkViewModel>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "getProductDiscussion() onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(LatestTalkViewModel modelDomain) {
+                listener.onSucccess(modelDomain);
+            }
+        };
+
+        DiscussionMapper discussionMapper = new DiscussionMapper();
+
+        compositeSubscription.add(
+                observableGetProductTalk.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(discussionMapper)
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void getProductTalkComment(@Nonnull Context context,
+                                      @Nonnull String talkId,
+                                      @Nonnull String shopId,
+                                      @Nonnull final DiscussionListener listener) {
+        Observable<Response<TkpdResponse>> observableGetTalkComment =
+                kunyitService.getApi().getCommentTalk(
+                        AuthUtil.generateParams(context, NetworkParam.paramTalkComment(talkId, shopId))
+                );
+
+        Subscriber<LatestTalkViewModel> subscriber = new Subscriber<LatestTalkViewModel>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "getProductTalkComment() onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(LatestTalkViewModel modelDomain) {
+                listener.onSucccess(modelDomain);
+            }
+        };
+
+        DiscussionCommentMapper getCommentMapper = new DiscussionCommentMapper();
+
+        compositeSubscription.add(
+                observableGetTalkComment.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(getCommentMapper)
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
+    public void checkPromoAds(@NonNull String shopId, @NonNull int itemId,
+                              @NonNull String userId, final CheckPromoAdsListener listener) {
+        Observable<Response<String>> observable = promoTopAdsService.getApi()
+                .checkPromoAds(NetworkParam.paramCheckAds(shopId, String.valueOf(itemId), userId, "1"));
+        Subscriber<Response<String>> subscriber = new Subscriber<Response<String>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                listener.onError(e.getLocalizedMessage());
+            }
+
+            @Override
+            public void onNext(Response<String> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject object = new JSONObject(response.body());
+                        String adsId = object.getJSONObject("data").getString("ad_id");
+                        listener.onSuccess(adsId);
+                    } catch (JSONException e) {
+                        listener.onError(e.getLocalizedMessage());
+                    }
+                }
+            }
+        };
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
     }
 }

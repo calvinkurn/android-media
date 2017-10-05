@@ -13,9 +13,9 @@ public interface DownloadServiceConstant {
     String IS_NEED_LOGIN = "IS_NEED_LOGIN";
 
     // error
-    String MESSAGE_ERROR_FLAG ="MESSAGE_ERROR_FLAG";
+    String MESSAGE_ERROR_FLAG = "MESSAGE_ERROR_FLAG";
     String INVALID_MESSAGE_ERROR = "Terjadi kesalahan, mohon coba kembali";
-    String NETWORK_ERROR_FLAG ="NETWORK_ERROR_FLAG";
+    String NETWORK_ERROR_FLAG = "NETWORK_ERROR_FLAG";
     int INVALID_NETWORK_ERROR_FLAG = -1;
 
     // HotList input
@@ -83,6 +83,9 @@ public interface DownloadServiceConstant {
 
     String CREATE_PASSWORD_MODEL_KEY = "CREATE_PASSWORD_MODEL_KEY";
 
+    String LOGIN_TOKEN_MODEL_KEY = "LOGIN_TOKEN_MODEL_KEY";
+
+
     // type
     int INVALID_TYPE = -1;
     int HOTLIST = 0;
@@ -103,7 +106,7 @@ public interface DownloadServiceConstant {
 
     int ADD_PRODUCT = 10;
     int FETCH_DEPARTMENT = 15;
-    int SHIPPING_CITY   = 16;
+    int SHIPPING_CITY = 16;
     int LOGIN_ACCOUNTS_TOKEN = 17;
     int LOGIN_ACCOUNTS_INFO = 18;
     int LOGIN_ACCOUNTS_PROFILE = 19;
@@ -117,6 +120,8 @@ public interface DownloadServiceConstant {
 
     int REQUEST_OTP_PHONE = 27;
     int VERIFY_PHONE = 28;
+    int LOGIN_UNIQUE_CODE = 29;
+
 
     String FACEBOOK = "facebook";
     String GOOGLE = "gplus";

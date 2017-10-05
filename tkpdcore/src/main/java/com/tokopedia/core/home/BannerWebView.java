@@ -1,16 +1,25 @@
 package com.tokopedia.core.home;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.TkpdCoreWebViewActivity;
 import com.tokopedia.core.fragment.FragmentShopPreview;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
@@ -18,11 +27,33 @@ import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 /**
  * Created by Nisie on 22/10/15.
  */
-public class BannerWebView extends TActivity implements
+public class BannerWebView extends TkpdCoreWebViewActivity implements
         FragmentGeneralWebView.OnFragmentInteractionListener, DeepLinkWebViewHandleListener {
 
+    private static final String FLAG_APP = "?flag_app=1";
+    private static final java.lang.String ARGS_PROMO_ID = "promo_id";
     private FragmentBannerWebView fragment;
     public static final String EXTRA_URL = "url";
+
+    @DeepLink({Constants.Applinks.PROMO, Constants.Applinks.PROMO_CATEGORY, Constants.Applinks.PROMO_WITH_DASH})
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
+        String promoId = bundle.getString(ARGS_PROMO_ID, "");
+        String result = TkpdBaseURL.URL_PROMO;
+        if (!TextUtils.isEmpty(promoId)) {
+            result += promoId;
+        }
+        result += FLAG_APP;
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, BannerWebView.class)
+                .setData(uri.build())
+                .putExtra(BannerWebView.EXTRA_URL, result);
+    }
+
+    public static Intent getCallingIntent(Activity activity, String url){
+        Intent intent = new Intent(activity, BannerWebView.class);
+        intent.putExtra(EXTRA_URL, url);
+        return intent;
+    }
 
     @Override
     public String getScreenName() {
@@ -80,15 +111,5 @@ public class BannerWebView extends TActivity implements
         } catch (Exception e) {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -29,11 +29,13 @@ public abstract class BrowseProductParent extends BaseImpl<BrowseProductParentVi
         return null;
     }
 
-    public abstract BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly);
+    public abstract BrowseProductModel getDataForBrowseProduct();
 
     public abstract NetworkParam.Product getProductParam();
 
     public abstract List<Breadcrumb> getBreadCrumb();
 
     public abstract void fetchFromNetwork(Context context);
+
+    public abstract void getOfficialStoreBanner(String keyword);
 }

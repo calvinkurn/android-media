@@ -1,5 +1,6 @@
 package com.tokopedia.core.app;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -20,11 +21,9 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.R;
-import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.category.data.utils.CategoryVersioningHelper;
 import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
@@ -32,6 +31,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
+import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
@@ -39,12 +39,16 @@ import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.service.HadesBroadcastReceiver;
 import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -59,40 +63,41 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         HadesBroadcastReceiver.ReceiveListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
-    private static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
+    public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
+    public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
+    public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
+    private static final String TAG = "BaseActivity";
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
     protected Boolean isAllowFetchDepartmentView = false;
+    @Inject
+    protected SessionHandler sessionHandler;
+    @Inject
+    protected GCMHandler gcmHandler;
+
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
     private HadesBroadcastReceiver hadesBroadcastReceiver;
     private ErrorNetworkReceiver logoutNetworkReceiver;
-    private SessionHandler sessionHandler;
     private CategoryDatabaseManager categoryDatabaseManager;
-    private GCMHandler gcmHandler;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getApplicationComponent().inject(this);
+
 
         if (MaintenancePage.isMaintenance(this)) {
             startActivity(MaintenancePage.createIntent(this));
         }
-        sessionHandler = new SessionHandler(getBaseContext());
+
         categoryDatabaseManager = new CategoryDatabaseManager();
-        gcmHandler = new GCMHandler(this);
         hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
         Localytics.registerPush(gcmHandler.getSenderID());
-
-
-        /* clear cache if not login */
-        if (!SessionHandler.isV4Login(this)) {
-            globalCacheManager.deleteAll();
-        }
 
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
@@ -113,6 +118,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterForceLogoutReceiver();
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
         HockeyAppHelper.unregisterManager();
@@ -133,7 +139,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
         initGTM();
         sendScreenAnalytics();
-        verifyFetchDepartment();
+        verifyFetchDepartment();// this code couldn't be mocked.
 
 
         registerForceLogoutReceiver();
@@ -148,6 +154,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         CategoryVersioningHelper.checkVersionCategory(this, new CategoryVersioningHelperListener() {
             @Override
             public void doAfterChecking() {
+                if (categoryDatabaseManager == null) {
+                    categoryDatabaseManager = new CategoryDatabaseManager();
+                }
                 if (categoryDatabaseManager.isExpired(System.currentTimeMillis())) {
                     if (!HadesService.getIsHadesRunning()) {
                         fetchDepartment();
@@ -178,7 +187,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         super.onDestroy();
         unregisterHadesReceiver();
 
-        unregisterForceLogoutReceiver();
         HockeyAppHelper.unregisterManager();
 
         sessionHandler = null;
@@ -225,6 +233,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            AppWidgetUtil.sendBroadcastToAppWidget(this);
         }
     }
 
@@ -282,6 +291,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         logoutNetworkReceiver.setReceiver(this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(FORCE_LOGOUT);
+        filter.addAction(SERVER_ERROR);
+        filter.addAction(TIMEZONE_ERROR);
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutNetworkReceiver, filter);
     }
 
@@ -344,7 +355,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         } else {
-                            Intent intent = new Intent(getBaseContext(), SplashScreen.class);
+                            Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         }
@@ -369,12 +380,12 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         return null;
     }
 
-    protected AppComponent getApplicationComponent() {
-        return ((MainApplication) getApplication())
-                .getApplicationComponent(getActivityModule());
+    public AppComponent getApplicationComponent() {
+        return ((MainApplication) getApplication()).getAppComponent();
     }
 
-    protected ActivityModule getActivityModule() {
-        return new ActivityModule(this);
+    protected void setGoldMerchant(ShopModel shopModel) {
+        sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
+
 }

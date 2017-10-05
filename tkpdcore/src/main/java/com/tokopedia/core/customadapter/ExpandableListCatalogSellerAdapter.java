@@ -6,8 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +19,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 
@@ -90,12 +88,9 @@ public class ExpandableListCatalogSellerAdapter extends BaseExpandableListAdapte
 
                 @Override
                 public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    Bundle bundle = new Bundle();
-//					Intent intent = new Intent(_context, ProductDetailPresenter.class);
-                    Intent intent = new Intent(_context, ProductInfoActivity.class);
-                    bundle.putString("product_id", prodId.getText().toString());
-                    intent.putExtras(bundle);
+                    Intent intent = ProductDetailRouter
+                            .createInstanceProductDetailInfoActivity(
+                                    _context, prodId.getText().toString());
                     _context.startActivity(intent);
 
 

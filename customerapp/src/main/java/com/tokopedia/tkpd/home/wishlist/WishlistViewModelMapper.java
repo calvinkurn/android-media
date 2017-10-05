@@ -27,6 +27,7 @@ public class WishlistViewModelMapper {
     private WishlistData mappingToViewModel(DataWishlist dataWishlist) {
         WishlistData wishlistData = new WishlistData();
         wishlistData.setWishlist(mappingWishlistViewModel(dataWishlist.getWishlists()));
+        wishlistData.setPaging(dataWishlist.getPaging());
         return wishlistData;
     }
 

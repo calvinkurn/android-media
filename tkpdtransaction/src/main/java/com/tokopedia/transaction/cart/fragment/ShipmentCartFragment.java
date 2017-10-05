@@ -25,7 +25,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -384,24 +384,16 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     }
 
     private void showRetry(NetworkErrorHelper.RetryClickedListener listener, String error) {
+        View view = getView();
         NetworkErrorHelper.showEmptyState(getActivity(),
-                getActivity().getWindow().getDecorView().getRootView(),
+                view,
                 error,
                 listener);
     }
 
     @Override
     public void renderErrorEditLocationShipment(String error) {
-        showRetry(getErrorEditLocationShipmentRetryListener(), error);
-    }
-
-    private NetworkErrorHelper.RetryClickedListener getErrorEditLocationShipmentRetryListener() {
-        return new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                actionSaveLocationShipment();
-            }
-        };
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
     @Override
@@ -538,6 +530,27 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     }
 
     @Override
+    public void renderErrorEditLocationShipmentNoConnection() {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_no_connection_initial_cart_data),
+                getString(R.string.label_transaction_error_message_try_again),
+                getString(R.string.label_title_button_retry), 0,
+                getEditShipmentRetryListener()
+        );
+    }
+
+    @Override
+    public void renderErrorEditShipmentTimeout() {
+
+    }
+
+    @Override
+    public void renderEditShipmentErrorSnackbar(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && resultCode == Activity.RESULT_OK) {
@@ -553,7 +566,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
                     break;
             }
         }
-        if (resultCode == RESULT_NOT_SELECTED_DESTINATION && data != null){
+        if (resultCode == RESULT_NOT_SELECTED_DESTINATION && data != null) {
             renderResultChangeAddress(data.getExtras());
         }
     }

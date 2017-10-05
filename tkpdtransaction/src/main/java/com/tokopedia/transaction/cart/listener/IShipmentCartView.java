@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.transaction.cart.adapter.ShipmentCartAdapter;
 import com.tokopedia.transaction.cart.adapter.ShipmentPackageCartAdapter;
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
@@ -68,4 +68,10 @@ public interface IShipmentCartView {
     void renderEmptyShipmentPackageSpinner();
 
     void showSnackbar(String message);
+
+    void renderErrorEditLocationShipmentNoConnection();
+
+    void renderErrorEditShipmentTimeout();
+
+    void renderEditShipmentErrorSnackbar(String errorMessage);
 }

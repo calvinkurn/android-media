@@ -121,7 +121,7 @@ public class FragmentShopPreview extends Fragment {
             webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement DetailFragmentInteractionListener");
         }
     }
 

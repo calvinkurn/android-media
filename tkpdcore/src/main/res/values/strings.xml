@@ -4,7 +4,8 @@
     <item name="group_pos" type="id" />
     <item name="child_pos" type="id" />
 
-    <string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>
+    <!--<string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>-->
+    <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
     <string name="app_id">126665634029576</string>
     <string name="app_name">Tokopedia</string>
     <string name="action_settings">Pengaturan</string>
@@ -47,7 +48,7 @@
     <!-- <string name="prompt_password">Password</string> -->
     <string name="prompt_phone">Nomor Ponsel</string>
     <string name="prompt_confirm_password">Konfirmasi kata sandi</string>
-    <string name="title_register">Daftar Sekarang!</string>
+    <string name="title_register">Daftar Sekarang di Tokopedia</string>
     <string name="title_register_wo_u">Daftar</string>
     <string name="title_register_process">Sedang mendaftar</string>
     <string name="action_sign_in">MASUK</string>
@@ -77,7 +78,7 @@
     <string name="error_not_logged">Anda harus login untuk menggunakan fitur ini</string>
     <string name="title_forgot_password_1">Lupa kata sandi?</string>
     <string name="title_forgot_password_hint">Masukkan email login Anda dibawah ini. Kami akan mengirimkan pesan email beserta link untuk reset kata sandi Anda.</string>
-    <string name="title_reset_password">Reset Kata Sandi</string>
+    <string name="title_reset_password">Ganti Kata Sandi</string>
     <string name="title_reset_success">Kata sandi Anda akan diatur ulang</string>
     <string name="title_reset_success_hint_1">Sebuah email telah dikirim ke email kontak Anda dikaitkan dengan akun Anda,</string>
     <string name="title_reset_success_hint_2">Harap bersabar, pengiriman email dapat tertunda. \n
@@ -92,6 +93,13 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="warning_check_activation_resent_2">Pastikan untuk cek folder spam dan folder sampah sebelum melakukan kirim ulang email aktivasi.</string>
     <string name="welcome_text_1">Ini adalah aplikasi khusus untuk berjualan di Tokopedia.</string>
     <string name="welcome_text_2">Yuk mulai kelola tokomu di Tokopedia, mudah &amp; gratis!</string>
+    <string name="account_registered_title">Akun Anda Sudah Pernah Terdaftar</string>
+    <string name="account_registered_body">Anda sudah pernah melakukan pendaftaran akun tokopedia dengan email %1$s.\nSilahkan login menggunakan akun anda atau klik disini untuk mengganti kata sandi anda.</string>
+    <string name="account_registered_body_part">klik disini untuk mengganti kata sandi anda.</string>
+    <string name="forgot_password_title">Kesulitan mengakses akun Anda?</string>
+    <string name="forgot_password_body">Lupa kata sandi? Masukkan email login Anda di bawah ini. Kami akan mengirimkan pesan email beserta tautan untuk reset kata sandi anda.</string>
+
+
     <!-- Strings related to login and register -->
 
     <!-- Strings related to phone and email verification -->
@@ -106,7 +114,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_old_email">Email Terdaftar</string>
     <string name="title_new_desired_email">Masukkan Email Baru!</string>
     <string name="title_insert_new_phone_number">Masukkan Nomor Baru</string>
-    <string name="title_send_verification_code">Request</string>
+    <string name="title_send_verification_code">Request OTP</string>
     <string name="title_verification_timeout">Maaf, Telah terjadi masalah koneksi</string>
     <string name="message_verification_timeout">Silahkan coba kembali</string>
     <string name="link_change_email">Ubah Email</string>
@@ -116,7 +124,9 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
 
     <!-- Strings related to add product -->
     <string name="title_activity_add_product">Tambah Produk</string>
+    <string name="title_activity_duplicate_product">Salin Produk</string>
     <string name="title_activity_edit_product">Ubah Produk</string>
+    <string name="title_activity_draft_product">Draft Produk</string>
     <string name="submit_but">Simpan</string>
     <string name="submit_but2">Simpan dan Tambah </string>
     <string name="prompt_product_name">Nama Produk</string>
@@ -127,7 +137,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="hint_search_etalase">Cari Etalase</string>
     <string name="hint_search_status">Cari Status</string>
     <string name="error_change_primary_image">Tidak Dapat Mengubah Gambar Utama</string>
-    <string name="error_delete_primary_image">Tidak Dapat Menghapus Gambar Utama</string>
+    <string name="error_delete_primary_image">Gambar Utama tidak dapat dihapus</string>
     <string name="error_failed_add_product">Anda Gagal Menambah Produk, Silahkan Coba Lagi</string>
     <string name="upload_product_waiting">Produk Anda Sedang Diunggah Silahkan Lihat Notifikasi</string>
     <string name="maximum_instoped_limit">Batas Maksimum Untuk Mengunggah Gambar Telah Tercapai</string>
@@ -168,6 +178,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_img_delete">Hapus</string>
     <string name="title_dollar">US$</string>
     <string name="title_rupiah">Rp</string>
+    <string name="title_rupiah_empty">Rp - </string>
     <string name="error_image_resolution">Ukuran minimal gambar adalah 300x300 pixel</string>
     <string name="dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
     <string name="dialog_cancel_add_product">Perubahan yang anda lakukan tidak akan tersimpan. Lanjutkan?</string>
@@ -273,6 +284,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_prod_list">Daftar Produk</string>
     <string name="title_inbox">Kotak Masuk</string>
     <string name="title_customer_care">Layanan Pengguna</string>
+    <string name="verified_account">Verified Account</string>
+
     <!-- Strings related Navigation Drawer -->
 
 
@@ -288,16 +301,19 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_weight">Berat</string>
     <string name="title_insurance">Asuransi</string>
     <string name="title_condition">Kondisi</string>
+    <string name="title_success_rate">Transaksi Berhasil</string>
     <string name="title_category">Kategori</string>
     <string name="title_etalase">Etalase</string>
     <string name="title_catalog">Katalog</string>
     <string name="title_preorder">Preorder</string>
     <string name="title_desc">Deskripsi Produk</string>
+    <string name="title_most_helpful">Ulasan Paling Membantu</string>
+    <string name="title_all_reviews">Lihat Semua Ulasan</string>
     <string name="title_shop_info">Penjual</string>
     <string name="title_speed">Kecepatan</string>
     <string name="title_accuracy">Akurasi</string>
     <string name="title_service">Pelayanan</string>
-    <string name="title_last_update_price">Last Update Price :</string>
+    <string name="title_last_update_price">Perubahan Harga Terakhir :</string>
     <string name="message_add_new_talk">Berhasil menambahkan Diskusi Produk</string>
     <string name="title_sending">Sedang mengirim...</string>
     <string name="title_dialog_delete">Apakah Anda ingin menghapus tkpd ini ?</string>
@@ -309,26 +325,28 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="message_prod_depository">Produk ini disimpan di gudang.</string>
     <string name="message_prod_depository_2">Produk ini tidak dapat dibeli sementara. Mohon hubungi pemilik Toko untuk lebih lanjut.</string>
     <string name="message_shop_moderated">Toko ini sedang dimoderasi</string>
-    <string name="title_buy">BELI</string>
+    <string name="title_buy">Beli</string>
+    <string name="title_promo_topads">Promo TopAds</string>
     <string name="title_pre_order">PREORDER</string>
     <string name="title_total_prod">Total Produk : </string>
     <string name="title_submit">Kirim</string>
-    <string name="title_promo">Promosi</string>
+    <string name="title_promo">Promo</string>
+    <string name="title_promo_per_hour">Promo Perjam</string>
     <string name="title_promote">Promoted</string>
     <string name="title_sold_out">Gudangkan</string>
+    <string name="title_sold_out_action">Produk telah digudangkan</string>
+    <string name="title_move_etalase">Produk telah dipindahkan ke etalase</string>
     <string name="message_share_category">Klik link ini untuk menemukan produk yang baru saya temukan di Tokopedia \n</string>
     <string name="title_to_etalase">Ke etalase</string>
-    <string name="toast_promo_error1">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
-		Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\n
-		Promo masih aktif untuk produk:\n</string>
-    <string name="toast_promo_error2">Ingin bebas promosikan produk Anda ? Yuk, pakai TopAds sekarang juga!</string>
-    <string name="toast_promo_error_cache">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
-		Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\n
-        Silahkan coba kembali dalam
-		</string>
+    <string name="promo_active">Promo masih aktif untuk produk:</string>
+    <string name="promo_dink_success">Promo pada produk %1$s telah berhasil!</string>
+    <string name="toast_promo_error1">Anda belum dapat menggunakan fitur promo pada saat ini. Fitur Promo berlaku 60 menit sekali untuk masing-masing toko.</string>
+    <string name="toast_promo_error2">Yuk, pakai TopAds untuk Promo tanpa batas waktu!</string>
+    <string name="toast_promo_error_cache">Fitur Promo berlaku setiap 60 menit sekali\nuntuk masing-masing toko.</string>
+    <string name="dink_expired">Berlaku sampai %1$s</string>
+    <string name="learn_topads">Pelajari TopAds</string>
     <string name="toast_success_promo1">Promo pada produk</string>
-    <string name="toast_success_promo2">telah berhasil.
-Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi belum maksimal? Yuk,pakai TopAds untuk tingkatkan penjualan Anda!</string>
+    <string name="toast_success_promo2">Yuk, pakai TopAds untuk tingkatkan penjualan Anda!</string>
     <string name="tx_success_from">Transaksi Sukses dari </string>
     <string name="tx_title">Transaksi</string>
     <string name="title_product_video">Video Produk</string>
@@ -336,6 +354,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="error_share_product">Gagal membagikan produk</string>
     <string name="success_share_review">Sukses membagikan ulasan</string>
     <string name="error_share_review">Gagal membagikan ulasan</string>
+    <string name="download">Download</string>
     <!-- Strings related product info -->
 
 
@@ -415,7 +434,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
 
     <!-- Strings related manage prod -->
     <string name="title_edit_prod">Ubah</string>
-    <string name="title_copy_prod">Salin</string>
+    <string name="title_copy_prod">Duplikat</string>
     <string name="title_edit_price">Ganti Harga</string>
     <string name="title_sort_but">Urutkan</string>
     <string name="title_filter_but">Filter</string>
@@ -434,6 +453,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_shop_owner">Pemilik Toko</string>
     <string name="title_name">Nama</string>
     <string name="title_email">Email</string>
+    <string name="title_email_long">Alamat Email</string>
     <string name="title_phone_number">Nomor Ponsel</string>
     <string name="title_shop_location">Lokasi Toko</string>
     <string name="title_transaction_statistic">Statistik Transaksi</string>
@@ -529,7 +549,8 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_balance">Saldo</string>
     <string name="title_available_amount">Saldo Tersedia</string>
     <string name="title_total_withdrawal">Total Penarikan</string>
-    <string name="title_account_number">Nomor Rekening</string>
+    <string name="title_account_number">Nomor Kartu</string>
+    <string name="title_account_number_saldo">Nomor Rekening</string>
     <string name="title_account_name">Nama Akun</string>
     <string name="dialog_delete_fav_shop">Apakah Anda ingin menghapus Toko Favorit ini ?</string>
     <string name="dialog_delete_address">Apakah Anda ingin menghapus Alamat ini?</string>
@@ -542,7 +563,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
 
 
     <!-- Strings related to browse category -->
-    <string name="title_total_prods">produk</string>
+    <string name="title_total_prods">Produk</string>
     <string name="hint_search_categories">Cari kategori</string>
     <string name="title_shop">Toko</string>
     <string name="title_location">Lokasi</string>
@@ -552,6 +573,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_all_categories">Semua Kategori</string>
     <string name="title_categories">BERANDA</string>
     <string name="title_all_location">Semua Lokasi</string>
+    <string name="title_category_view_all">Lihat Produk Kategori Lainnya</string>
 
     <string-array name="filter_browse_catalog">
         <item>Semua Kondisi</item>
@@ -602,6 +624,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="error_sub_district">Kecamatan harus dipilih</string>
 
     <!-- Strings related to inbox -->
+    <string name="title_my_product_seller">ULASAN PEMBELI</string>
     <string name="title_my_product">PRODUK SAYA</string>
     <string name="title_inbox_message">Pesan</string>
     <string name="title_inbox_message_all">INBOX</string>
@@ -634,6 +657,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_quantity">Jumlah</string>
     <string name="title_insurance_cost">Asuransi</string>
     <string name="title_remark">Keterangan</string>
+    <string name="title_catatan_penjual">Catatan untuk Penjual</string>
     <string name="title_shipping_dest">Tujuan Pengiriman</string>
     <string name="title_choose_address">Pilih Alamat Lain</string>
     <string name="title_new_address">Tambah Alamat Baru</string>
@@ -650,7 +674,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_no_result">Tidak ada hasil</string>
     <string name="title_qty">Qty:</string>
     <string name="title_add_notes">Tambahkan Catatan</string>
-    <string name="title_edit_to_add_notes">Edit untuk tambahkan catatan</string>
+    <string name="title_edit_to_add_notes">Pilih ubah untuk tambahkan catatan</string>
     <string name="title_buy_from">Beli dari</string>
     <string name="title_total">Total</string>
     <string name="title_details_info">Informasi Detil</string>
@@ -665,7 +689,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="tittle_checkout">Pilih Metode Pembayaran</string>
     <string name="title_tokopedia_balance">Saldo Tokopedia</string>
     <string name="title_use_tokopedia_balance">Ingin gunakan saldo Tokopedia-mu ?</string>
-    <string name="title_use_promo_code">Gunakan Kode Voucher Tokopedia</string>
+    <string name="title_use_promo_code">Gunakan Kode Promo Tokopedia</string>
     <string name="title_payment_method_s">Metode Pembayaran : </string>
     <string name="title_total_invoice">Total Invoice</string>
     <string name="title_use_total_balance">Saldo Tokopedia yang digunakan</string>
@@ -690,7 +714,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_and">dan</string>
     <string name="msg_success_delete_prod">Sukses menghapus produk dari Keranjang</string>
     <string name="msg_cancel_1">Pembatalan transaksi dari </string>
-    <string name="msg_cancel_2">Toko untuk Produk</string>
+    <string name="msg_cancel_2">untuk Produk</string>
     <string name="msg_cancel_3">senilai</string>
     <string name="bca_no_alt">372 309 8781</string>
     <string name="bni_no">800 600 6009</string>
@@ -799,7 +823,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_activity_fragment_shop_detail">Detil Toko</string>
     <string name="title_activity_shop_location">Lokasi Toko</string>
     <string name="title_activity_shop_statistic">Detil Toko</string>
-    <string name="title_activity_manage_shop">ATUR TOKO</string>
+    <string name="title_activity_manage_shop">Atur Toko</string>
     <string name="title_activity_manage_general_desc">ATUR APLIKASI</string>
     <string name="title_activity_manage_general_about">TENTANG KAMI</string>
     <string name="title_activity_manage_shop_notes">Catatan Toko</string>
@@ -807,14 +831,13 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_activity_shop_detail_favorited">Yang Memfavoritkan</string>
 
     <!-- Error String -->
-    <string name="title_activity_etalase_shop_editor">Pengaturan Etalase Toko</string>
     <string name="error_max_address">Anda hanya dapat menambahkan sampai 3 alamat </string>
     <string name="error_min_3_character">Nama terlalu pendek, minimal 3 karakter.</string>
-    <string name="title_activity_payment_editor">Pembayaran</string>
+
     <string name="title_activity_manage_shop_address">Pengaturan Alamat Toko</string>
     <string name="title_activity_shop_address_form">Alamat Toko</string>
     <string name="title_activity_people">Profil</string>
-    <string name="title_activity_manage_people">ATUR PROFIL</string>
+    <string name="title_activity_manage_people">Atur Profil</string>
     <string name="title_activity_manage_privacy">Pengaturan Privasi</string>
     <string name="title_activity_manage_notification">Pengaturan Notifikasi</string>
     <string name="title_activity_manage_people_address">Pengaturan Alamat</string>
@@ -822,8 +845,8 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_activity_people_bank_form">Bank</string>
     <string name="title_activity_manage_people_profile">Pengaturan Profil</string>
     <string name="title_activity_people_favorited_shop">Toko Favorit</string>
-    <string name="title_activity_manage_people_password">Ganti kata sandi</string>
-    <string name="title_activity_activation">Email Aktivasi</string>
+    <string name="title_activity_manage_people_password">Ganti Kata Sandi</string>
+    <string name="title_activity_activation">Aktivasi akun</string>
     <string name="title_manage">Pengaturan</string>
 
     <!-- Strings related to shop transaction -->
@@ -955,7 +978,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_from_account_2">- Rekening Asal -</string>
     <string name="title_dest_account">Rekening Tujuan</string>
     <string name="title_dest_account_2">- Rekening Tujuan -</string>
-    <string name="title_account_owner">Nama Pemilik Rekening</string>
+    <string name="title_account_owner">Nama</string>
     <string name="title_bank_name">Nama Bank</string>
     <string name="title_branch">Cabang</string>
     <string name="title_add_new_bank">Tambah Akun Bank Baru</string>
@@ -972,7 +995,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_payment_confirmation">KONFIRMASI</string>
     <!-- <string name="title_payment_verification">VERIFIKASI</string> -->
-    <string name="title_payment_verification">Ubah Pembayaran</string>
+    <string name="title_payment_verification">Status Pembayaran</string>
     <string name="title_payment_status">Status Pembayaran</string>
     <string name="title_order_status">Status Pemesanan</string>
     <string name="title_receive_confirmation">Konfirmasi Penerimaan</string>
@@ -998,6 +1021,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_edit">Ubah</string>
     <string name="title_my_review">ULASAN SAYA</string>
     <string name="title_skip">Lewatkan</string>
+    <string name="title_skip_2">Lewati</string>
     <string name="hint_review">Tulis ulasan Anda</string>
     <string name="error_review_message_empty">Ulasan harus diisi</string>
     <string name="error_review_response_message_empty">Balasan harus diisi</string>
@@ -1195,8 +1219,8 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="msg_ecash_loading">Harap Tunggu, Transaksi anda sedang diproses</string>
     <string name="msg_error_ecash">Pembayaran gagal dikarenakan terjadi kesalahan, harap cek jumlah saldo anda dan cek apakah OTP anda sudah benar</string>
     <string name="msg_promo_ecash">Diskon Rp. 50.000,-\nUntuk pembelian diatas Rp. 200.000,-\nPeriode 7 Oktober - 9 November</string>
-    <string name="title_use_voucher">Penggunaan Voucher</string>
-    <string name="msg_voucher_empty">Masukkan kode voucher terlebih dahulu</string>
+    <string name="title_use_voucher">Penggunaan Kode Promo</string>
+    <string name="msg_voucher_empty">Masukkan kode promo terlebih dahulu</string>
     <string name="title_detail_order">Lihat Detail Barang</string>
     <string name="title_activity_download_invoice">Invoice</string>
     <string name="title_activity_gallery_browser">Pilih Gambar</string>
@@ -1254,6 +1278,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="success_fetch_truecaller">Sukses mendapat data dari Truecaller.</string>
     <string name="error_fetch_truecaller">Gagal mendapat data dari Truecaller.</string>
     <string name="error_user_truecaller">Mohon pastikan nomor di perangkat ini sesuai dengan nomor Tokopedia Anda.</string>
+    <string name="error_code_truecaller">Kode Error %1$d</string>
     <!-- String Buy Credit -->
     <string name="title_choose_provider">Pilih Provider</string>
     <string name="title_credit_value">Nominal Pulsa</string>
@@ -1261,6 +1286,10 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_credit_price">Harga Pulsa</string>
     <string name="title_activity_buy_credit_cart">BuyCreditCart</string>
     <!-- End of String Buy Credit -->
+    <!-- String USSD balance check -->
+    <string name="title_check_credit_balance">Cek sisa pulsa</string>
+    <string name="lable_button_check_balance">Cek Pulsa</string>
+    <!-- End of String USSD balance check -->
     <!-- strings realted to return policy -->
     <string name="instruction_type_policy">Silakan tulis kebijakan</string>
     <string name="table_policy_option">Terima Pengembalian</string>
@@ -1287,7 +1316,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="change_phone_number_restriction">Silakan melakukan ubah nomor telepon melalui desktop atau mobile browser dengan mengakses www.tokopedia.com atau m.tokopedia.com. Lalu masuk melalui halaman Profil Saya</string>
     <string name="title_activity_credit_card">Informasi Credit Card</string>
     <string name="title_activity_term_and_privacy">Kebijakan Privasi</string>
-    <string name="detail_term_and_privacy">Dengan menekan Daftar, Anda Telah Menyetujui  </string>
+    <string name="detail_term_and_privacy">Dengan mendaftar, saya menyetujui  </string>
     <string name="link_term_condition">&lt;font color=\'#5eba46\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt;</string>
     <string name="link_privacy_policy">&lt;font color=\'#5eba46\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
     <string name="privacy_pl">https://m.tokopedia.com/privacy.pl?device=android&amp;flag_app=1</string>
@@ -1307,8 +1336,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_action_add_note">Tambah Catatan</string>
     <string name="title_action_save_bank_account">Simpan Rekening Bank</string>
     <string name="title_action_save_address">Simpan Alamat</string>
-    <string name="title_action_save_shipping">Simpan Peng
-        iriman</string>
+    <string name="title_action_save_shipping">Simpan Pengiriman</string>
     <string name="title_action_save_note">Simpan Catatan</string>
     <string name="event_register">event : Successful Register</string>
     <string name="bundle_wishlist">BUNDLE_WISHLIST</string>
@@ -1424,6 +1452,8 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_loyalty_points">TopPoints terpakai</string>
     <string name="loyalty_points_info">TopPoints</string>
     <string name="toko_cash_info">TokoCash</string>
+    <string name="pending_cashback_info">Pending Cashback</string>
+    <string name="toko_cash_top_up">Top Up</string>
     <string name="toko_cash_activation">Aktivasi</string>
     <string name="msg_lucky_merchant">Anda berhasil menjadi Lucky Merchant</string>
     <string name="msg_lucky_merchant_detail">Kesempatan mendapatkan pesanan lebih banyak setiap harinya</string>
@@ -1546,7 +1576,8 @@ di Tokopedia Sekarang!</string>
     <string name="rating_title_5">Sangat bagus</string>
     <string name="subtitle_accuracy">* Nilai ketepatan produk dengan gambar</string>
     <string name="subtitle_quality">* Nilai kualitas produk</string>
-    <string name="image_description">Keterangan gambar...</string>
+    <string name="image_description">Keterangan gambar...</string>s
+    <string name="image_description_2">Deskripsi gambar</string>
     <string name="deadline_prompt">"Batas waktu penilaian "</string>
     <string name="edited">(diubah)</string>
     <string name="message_smiley_prompt_bad">Apakah anda yakin memberi nilai Tidak Puas?</string>
@@ -1687,7 +1718,7 @@ di Tokopedia Sekarang!</string>
 
 
     <!--recharge related string-->
-    <string name="instant_payment">Bayar instan dengan saldo</string>
+    <string name="instant_payment">Bayar instan</string>
     <string name="title_button_pay">Bayar</string>
     <string name="topup_saldo">Isi Saldo</string>
     <!--end recharge related string-->
@@ -1704,6 +1735,7 @@ di Tokopedia Sekarang!</string>
     <string name="filter_description">Silahkan pilih menu di sebelah kiri untuk menemukan produk yang lebih spesifik</string>
     <string name="msg_filter_invalid_amount">Harga tidak sesuai</string>
     <string name="no_catalog_selected">Tidak ada katalog</string>
+    <string name="no_use_catalog">Tanpa katalog</string>
     <string name="ibg_report_bug">Laporkan Bug</string>
     <string name="ibg_report_feedback">Kritik dan Saran</string>
     <string name="ibg_hint_bug_report">Deskripsikan bug yang anda alami</string>
@@ -1783,7 +1815,7 @@ di Tokopedia Sekarang!</string>
     <string name="error_empty_home_menu">Data Home Menu Kosong</string>
     <string name="error_home_menu">Home Menu Error</string>
     <string name="title_home">Home</string>
-    <string name="try_again">Terjadi kesalahan. Mohon coba kembali.</string>
+    <string name="toast_try_again">Terjadi kesalahan. Mohon coba kembali.</string>
 
     <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan?</string>
     <string name="need_permission_storage">Aplikasi ini membutuhkan izin untuk mengakses Media Penyimpanan. Perbolehkan?</string>
@@ -1792,6 +1824,8 @@ di Tokopedia Sekarang!</string>
     <string name="need_permission_location">Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan?</string>
     <string name="need_permission_get_accounts">Aplikasi ini membutuhkan izin untuk mengakses akun. Perbolehkan?</string>
     <string name="need_permission_SMS">Aplikasi ini membutuhkan izin membaca SMS Verifikasi untuk mempermudah verifikasi. Perbolehkan?</string>
+    <string name="need_permission_Phone">need to add message for USSD call</string>
+
 
     <string name="permission_camera_denied">Anda tidak memberikan izin akses untuk Kamera.</string>
     <string name="permission_storage_denied">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
@@ -1800,6 +1834,8 @@ di Tokopedia Sekarang!</string>
     <string name="permission_location_denied">Anda tidak memberikan izin akses untuk Lokasi.</string>
     <string name="permission_get_accounts_denied">Anda tidak memberikan izin akses untuk mengambil akun.</string>
     <string name="permission_sms_denied">Anda tidak memberikan izin akses untuk membaca sms.</string>
+    <string name="permission_phone_denied">Anda tidak memberikan izin akses untuk telepon.</string>
+
 
     <string name="permission_camera_neverask">Anda tidak memberikan izin akses untuk Kamera. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_storage_neverask">Anda tidak memberikan izin akses untuk Media Penyimpanan. Anda bisa memberikan izin melalui Pengaturan.</string>
@@ -1808,6 +1844,8 @@ di Tokopedia Sekarang!</string>
     <string name="permission_location_neverask">Anda tidak memberikan izin akses untuk Lokasi. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_get_accounts_neverask">Anda tidak memberikan izin akses untuk mengambil akun. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_sms_neverask">Anda tidak memberikan izin akses untuk membaca sms. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_phone_neverask">Anda tidak memberikan izin akses untuk telepon. Anda bisa memberikan izin melalui Pengaturan.</string>
+
 
 
     <string name="template_people_total_fav_shop">XYZ Toko Favoritku</string>
@@ -1819,6 +1857,8 @@ di Tokopedia Sekarang!</string>
     <string name="permission_contacts">Kontak</string>
     <string name="permission_location">Lokasi</string>
     <string name="permission_accounts">Akun</string>
+    <string name="permission_phone">Telepon</string>
+
 
     <string name="preorder">PO</string>
     <string name="grosir">Grosir</string>
@@ -1836,6 +1876,7 @@ di Tokopedia Sekarang!</string>
     <string name="error_max_shop_notes_content_length">Maksimal panjang catatan adalah 6000 karakter</string>
     <string name="error_max_shop_notes_title_length">Maksimal panjang judul catatan adalah 128 karakter</string>
     <string name="error_upload_image">Gagal mengunggah gambar</string>
+    <string name="error_upload_video">Gagal mengunggah video</string>
     <string name="prompt_delete_talk">Apakah anda  yakin ingin menghapus diskusi ini?</string>
     <string name="product_image">Product Image</string>
     <string name="title_delete_discussion">Hapus diskusi</string>
@@ -1891,9 +1932,13 @@ di Tokopedia Sekarang!</string>
     <string name="action_send_otp_with_call_2">Atau lewat telepon</string>
     <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan Klik disini</string>
     <string name="title_resend_otp">Kirim ulang Kode Verifikasi</string>
+    <string name="truecaller_verif">Lanjutkan dengan Truecaller</string>
 
     <string name="mark_as_read">Tandai sudah dibaca</string>
     <string name="mark_as_unread">Tandai belum dibaca</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="address_not_supported_add_to_cart">Layanan kurir tidak mendukung pengiriman dari lokasi penjual ke lokasi pembeli</string>
     <string name="finish_contact_us">Terima kasih telah menghubungi, senang bisa membantu anda.</string>
     <string name="mail_to_feedback">mailto:android.feedback@tokopedia.com</string>
@@ -1909,9 +1954,119 @@ di Tokopedia Sekarang!</string>
     <string name="see_all">Lihat Semua</string>
     <string name="search_hint">Cari produk atau Toko</string>
     <string name="title_ask_buyer_selling">Tanya Pembeli</string>
-    <string name="minute">" menit"</string>
     <string name="check_timezone">Kami mendeteksi perangkat anda tidak menggunakan waktu yang sesuai dengan zona waktu anda. Silahkan periksa pengaturan waktu anda.</string>
     <string name="action_check">Periksa</string>
     <string name="action_remember_account">Ingat saya</string>
+    <string name="label_buyer_trouble">Kendala Pembeli</string>
+    <string name="title_activity_snapshot">Snapshot</string>
+
+    <!-- Marketing Campaign Official Store START-->
+    <string name="title_discount_timer">Promo berakhir dalam:</string>
+    <string name="label_discount_timer">%1$02dd : %2$02dh : %3$02dm : %4$02ds</string>
+    <string name="label_discount_percentage">%1$d%%OFF</string>
+    <!-- Marketing Campaign Official Store END-->
+
+    <!-- String related to Official Store START -->
+    <string name="os_home_title_product">Produk</string>
+    <string name="os_view_all_product">Lihat Semua Barang</string>
+    <string name="title_official_store">Official Store</string>
+    <!-- String related to Official Store END -->
+
+    <string name="hint_search_review">Cari ulasan</string>
+    <string name="notification_dialog_content_main_app">Kami mendeteksi aplikasi Seller Tokopedia pada device anda. Untuk menghindari notifikasi ganda, kami sarankan untuk mengatur notifikasi apa yang ingin anda terima melalui Pengaturan</string>
+    <string name="notification_dialog_content_seller_app">Kami mendeteksi aplikasi utama Tokopedia pada device anda. Untuk menghindari notifikasi ganda, kami sarankan untuk mengatur notifikasi apa yang ingin anda terima melalui Pengaturan</string>
+    <string name="notification_dialog_positive_button">Pengaturan</string>
+    <string name="notification_dialog_negative_button">Batal</string>
+    <string name="wishlist_too_much_attempt_error_message">Tunggu beberapa saat lagi</string>
+
+    <string name="banner_official_store_title_text">Sudah pernah cek Official Store Tokopedia belum?</string>
+    <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
+    <string name="error_data_not_found">Data tidak ditemukan.</string>
+    <string name="title_opportunity_list">Peluang</string>
+    <string name="accept_replacement">Ambil Peluang</string>
+    <string name="add_favorite_success_message">$1 ditambahkan ke daftar favorit.</string>
+    <string name="remove_favorite_success_message">$1 dihapus dari daftar toko favorit.</string>
+
+    <string name="label_new">Baru</string>
+
+    <string name="drawer_title_home">Beranda</string>
+    <string name="drawer_title_login">Masuk</string>
+    <string name="drawer_title_register">Daftar</string>
+    <string name="drawer_title_report">Laporkan</string>
+    <string name="drawer_title_developer_option">Developer Options</string>
+    <string name="drawer_title_seller">Penjualan</string>
+    <string name="drawer_title_inbox">Kotak Masuk</string>
+    <string name="drawer_title_product">Produk</string>
+    <string name="drawer_title_gold_merchant">Gold Merchant</string>
+    <string name="drawer_title_setting">Pengaturan</string>
+    <string name="drawer_title_statistic">Statistik</string>
+    <string name="drawer_title_mitra_toppers">Mitra Toppers</string>
+    <string name="drawer_title_logout">Keluar</string>
+    <string name="drawer_title_confirm_shipping">Konfirmasi Pengiriman</string>
+    <string name="drawer_title_list_selling">Daftar Penjualan</string>
+    <string name="drawer_title_opportunity">Peluang</string>
+    <string name="drawer_title_add_product">Tambah Produk</string>
+    <string name="drawer_title_product_list">Daftar Produk</string>
+    <string name="drawer_title_draft_list">Draft Produk</string>
+    <string name="drawer_title_etalase_list">Etalase Toko</string>
+    <string name="drawer_title_draft_product">Draft Produk</string>
+    <string name="drawer_title_inbox_message">Pesan</string>
+    <string name="drawer_title_inbox_discussion">Diskusi Produk</string>
+    <string name="drawer_title_inbox_review">Ulasan</string>
+    <string name="drawer_title_resolution_center">Pusat Resolusi</string>
+    <string name="drawer_title_inbox_ticket">Layanan Pengguna</string>
+    <string name="drawer_title_top_ads">TopAds</string>
+    <string name="drawer_title_new_order">Order Baru</string>
+    <string name="drawer_title_shipping_status">Status Pengiriman</string>
+    <string name="drawer_title_activity_contact_us">Hubungi Kami</string>
+    <string name="drawer_title_help">Bantuan</string>
+    <string name="max_notif">999+</string>
+    <string name="register_text_login">Belum punya akun? Daftar</string>
+    <string name="or">Atau</string>
+    <string name="product_share_ride_trip">Bagikan Perjalanan Ini!</string>
+    <string name="product_share_product">Bagikan Produk Ini!</string>
+    <string name="product_share_search">Bagikan Pencarian Ini!</string>
+    <string name="product_share_hotlist">Bagikan Hotlist Ini!</string>
+    <string name="product_share_shop">Bagikan Toko Ini!</string>
+    <string name="product_share_catalog">Bagikan Katalog Ini!</string>
+    <string name="drawer_loading">Loading..</string>
+    <string name="album_name_all">Semua Media</string>
+    <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
+    <string name="appupdate_update">Update</string>
+    <string name="appupdate_later">Nanti</string>
+    <string name="appupdate_close">Tutup</string>
+    <string name="webview_home_navigation_text">Beranda</string>
+    <string name="webview_help_menu_text">Bantuan</string>
+    <string name="webview_toolbar_menu_text">Toolbar Menu</string>
+    <string name="title_activity_promo">Promo</string>
+    <string name="title_activity_top_picks">Top Picks</string>
+
+    <!-- finish dialog string-->
+    <string name="string_finish_title">Selesaikan Pemesanan</string>
+    <string name="string_finish_body">1. Pilih \"Selesai\" untuk menyelesaikan pemesanan\n\n2. Pilih \"Komplain\" apabila ada kendala pada pemesanan</string>
+    <string name="string_finish">Selesai</string>
+
+    <!--complain dialog string-->
+    <string name="title_complain_button">Komplain</string>
+    <string name="string_complain_body">Apakah pesanan dari toko %s berkendala?\n\n\n1. Pilih \"Sudah Sampai\" bila barang sudah diterima\n\n2. Pilih \"Belum Sampai\" bila barang belum diterima </string>
+    <string name="string_complain_button_receive">Sudah Sampai</string>
+    <string name="string_complain_button_not_receive">Belum Sampai</string>
+    <string name="string_complain_button_back">Kembali</string>
+
+    <!--complain not received dialog string-->
+    <string name="string_notreceived_title">Barang Belum Sampai</string>
+    <string name="string_notreceived_body">1. Pilih \"Refund\" untuk meminta uang kembali\n\n2. Pilih \"Cek Kurir\" untuk meminta penjual cek kurir </string>
+    <string name="string_notreceived_refund">Kembalikan Dana</string>
+    <string name="string_notreceived_check_courier">Tanya Kurir</string>
+    <string name="shop_product_list_header_product_title">Produk</string>
+    <string name="shop_product_list_header_featured_product_title">Produk Unggulan</string>
+    <string name="cari_produk_atau_toko">Cari produk atau toko</string>
+    <string name="search_shop_info_hint">Cari produk di toko ini</string>
+    <string name="drawer_title_appshare">Share ke Teman</string>
+    <string name="app_share_title">Tokopedia, Satu Aplikasi untuk Semua Kebutuhan</string>
+    <string name="app_share_contents"><![CDATA[Mudahnya beli produk idaman, pulsa, token listrik, tiket liburan, hingga bayar berbagai tagihan, semua dimulai dari aplikasi Tokopedia. Kamu juga bisa mulai & kembangkan bisnis di sini. Yuk, download sekarang!]]></string>
+    <string name="app_share_label">Share ke Temanmu, Yuk!</string>
+    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli & bayar ini itu lewat aplikasi Tokopedia]]></string>
+    <string name="app_share_btn_label">Undang Teman</string>
 
 </resources>

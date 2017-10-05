@@ -1,27 +1,25 @@
 package com.tokopedia.tkpd.home.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
@@ -31,19 +29,25 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.adapter.GridLayoutProductAdapter;
+import com.tokopedia.tkpd.home.adapter.WishListProductAdapter;
+import com.tokopedia.tkpd.home.feed.data.source.cloud.AddFavoriteShopService;
 import com.tokopedia.tkpd.home.presenter.WishList;
 import com.tokopedia.tkpd.home.presenter.WishListImpl;
 import com.tokopedia.tkpd.home.presenter.WishListView;
 import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,7 +56,9 @@ import butterknife.Unbinder;
 /**
  * Created by m.normansyah on 01/12/2015.
  */
-public class WishListFragment extends TkpdBaseV4Fragment implements WishListView, SearchView.OnQueryTextListener {
+public class WishListFragment extends TkpdBaseV4Fragment implements WishListView,
+        SearchView.OnQueryTextListener, TopAdsItemClickListener,
+        WishListProductAdapter.OnWishlistActionButtonClicked {
 
     public static final String FRAGMENT_TAG = "WishListFragment";
     private Unbinder unbinder;
@@ -71,17 +77,14 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     RecyclerView recyclerView;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
-    @BindView(R.id.main_content)
-    LinearLayout mainContent;
     @BindView(R.id.wishlist_search_edittext)
     SearchView searchEditText;
 
     GridLayoutManager layoutManager;
-    GridLayoutProductAdapter adapter;
+    WishListProductAdapter adapter;
     TkpdProgressDialog progressDialog;
     Boolean isDeleteDialogShown;
     Boolean isLoadingMore = false;
-//    ItemDecorator itemDecorator;
 
     WishList wishList;
 
@@ -94,6 +97,44 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         wishList.fetchSavedsInstance(savedInstanceState);
         wishList.initDataInstance(getActivity());
         isDeleteDialogShown = false;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onProductItemClicked(Product product) {
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onShopItemClicked(Shop shop) {
+        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onAddFavorite(int position, Data data) {
+        Shop shop = data.getShop();
+        Intent intent = new Intent(getActivity(), AddFavoriteShopService.class);
+        intent.putExtra(
+                AddFavoriteShopService.EXTRAS_SESSION_ID, SessionHandler.getLoginID(getContext()));
+        intent.putExtra(AddFavoriteShopService.EXTRAS_SHOP_ID, shop.getId());
+        intent.putExtra(AddFavoriteShopService.EXTRAS_AD_KEY, data.getAdRefKey());
+        getActivity().startService(intent);
     }
 
     @Override
@@ -129,13 +170,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void onResume() {
         super.onResume();
-        wishList.setLocalyticFlow(getActivity(), getString(R.string.home_wishlist));
-        if (wishList.isAfterRotation()) {
-            if (!wishList.isLoadedFirstPage())
-                wishList.refreshData(getActivity());
-        } else {
-            wishList.fetchDataFromCache(getActivity());
-        }
+        wishList.onResume(getActivity());
         UnifyTracking.eventViewWishlist();
     }
 
@@ -153,13 +188,30 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                wishList.refreshData(getActivity());
+                if (searchEditText.getQuery().length() > 0) {
+                    wishList.refreshDataOnSearch(searchEditText.getQuery());
+                } else {
+                    wishList.refreshData(getActivity());
+                }
             }
         });
+        searchEditText.findViewById(R.id.search_close_btn)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        clearSearchResult();
+                    }
+                });
+    }
+
+    public void clearSearchResult() {
+        searchEditText.setQuery("", false);
+        searchEditText.setIconified(true);
+        wishList.fetchDataAfterClearSearch(getActivity());
     }
 
     @Override
-    public void clearSearch() {
+    public void clearSearchView() {
         searchEditText.setQuery("", false);
         searchEditText.clearFocus();
     }
@@ -169,8 +221,13 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getLayoutManager().setAutoMeasureEnabled(true);
         recyclerView.setHasFixedSize(false);
-        recyclerView.setNestedScrollingEnabled(false);
         searchEditText.setOnQueryTextListener(this);
+        searchEditText.setSuggestionsAdapter(null);
+        searchEditText.setFocusable(false);
+        searchEditText.clearFocus();
+        searchEditText.requestFocusFromTouch();
+        TextView searchText = (TextView) searchEditText.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchText.setHintTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
         setAdapter();
     }
 
@@ -180,11 +237,16 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void displayMainContent(boolean isShow) {
+    public void displayContentList(boolean isShow) {
         if (isShow)
-            mainContent.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
         else
-            mainContent.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setSearchNotFound() {
+        adapter.setSearchNotFound();
     }
 
     @Override
@@ -196,7 +258,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void displayDeleteWishlistDialog(final String productId) {
+    public void displayDeleteWishlistDialog(final String productId, final int position) {
         if (!isDeleteDialogShown) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -204,7 +266,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             builder.setPositiveButton(R.string.title_delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    wishList.deleteWishlist(getActivity(), productId);
+                    wishList.deleteWishlist(getActivity(), productId, position);
                     isDeleteDialogShown = false;
                 }
             });
@@ -244,13 +306,14 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onSuccessDeleteWishlist() {
+    public void onSuccessDeleteWishlist(String searchTerm, int position) {
         SnackbarManager.make(getActivity(),
                 MainApplication.getAppContext().getString(R.string.msg_delete_wishlist_success),
                 Snackbar.LENGTH_SHORT)
                 .show();
         displayPull(false);
-        wishList.refreshData(getActivity());
+        adapter.notifyItemRemoved(position);
+        adapter.notifyItemRangeChanged(position, adapter.getItemCount());
     }
 
     @Override
@@ -264,10 +327,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             showLoadMoreError();
         } else {
             displayLoading(false);
-            displayMainContent(false);
+            displayContentList(false);
             NetworkErrorHelper.showEmptyState(getActivity(),
                     getView(),
                     getRetryListener());
+
         }
     }
 
@@ -296,8 +360,20 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void initAdapterWithData(List<RecyclerViewItem> data) {
-        adapter = new GridLayoutProductAdapter(getActivity(), data);
+        adapter = new WishListProductAdapter(getActivity(), data);
         adapter.setWishlistView(this);
+        adapter.setActionButtonClicked(this);
+    }
+
+    @Override
+    public void showAllWishlist() {
+        clearSearchResult();
+    }
+
+    @Override
+    public void findProduct() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     @Override
@@ -371,7 +447,9 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 if (position == wishList.getData().size()) {
                     // header column
                     return footerColumnSize;
-                } else if (position % 5 == 0 && wishList.getData().get(position).getType() == TkpdState.RecyclerViewItem.TYPE_LIST) {
+                } else if (position % 5 == 0 && wishList.getData().get(position).getType() == TkpdState.RecyclerViewItem.TYPE_LIST
+                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH
+                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_STATE) {
                     // top ads span column
                     return headerColumnSize;
                 } else {
@@ -388,6 +466,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
+    public void setEmptyState() {
+        adapter.setEmptyState();
+    }
+
+    @Override
     public boolean onQueryTextSubmit(String query) {
         wishList.searchWishlist(query);
         return false;
@@ -395,9 +478,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (newText.isEmpty()) {
-            wishList.refreshData(getActivity());
-        }
         return false;
     }
 

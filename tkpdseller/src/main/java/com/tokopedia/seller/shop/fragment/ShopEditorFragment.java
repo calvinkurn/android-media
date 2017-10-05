@@ -1,8 +1,11 @@
 package com.tokopedia.seller.shop.fragment;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -20,66 +23,129 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.shop.presenter.ShopEditorPresenter;
 import com.tokopedia.seller.shop.presenter.ShopEditorPresenterImpl;
 import com.tokopedia.seller.shop.presenter.ShopEditorView;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * Created by Toped10 on 5/19/2016.
  */
 public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implements ShopEditorView {
 
-    @BindView(R2.id.shop_name)
+    private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+
     EditText mShopNameText;
-    @BindView(R2.id.shop_slogan)
     EditText mShopSloganText;
-    @BindView(R2.id.shop_desc)
     EditText mShopDescText;
-    @BindView(R2.id.button_send)
     TextView mBtnSend;
-    @BindView(R2.id.progress_bar)
     ProgressBar progressBar;
-    @BindView(R2.id.shop_ava)
     ImageView mShopAva;
-    @BindView(R2.id.shop_editor_scrollview)
     ScrollView mShopEditor;
-    @BindView(R2.id.edit_shop_schedule)
     ImageButton editShopSchedule;
-    @BindView(R2.id.close_image)
     ImageView closeImage;
-    @BindView(R2.id.shop_status)
     TextView shopStatus;
-    @BindView(R2.id.schedule_info)
     TextView scheduleInfo;
-    @BindView(R2.id.schedule_date)
     TextView scheduleDate;
-    @BindView(R2.id.time_icon)
     ImageView timeIcon;
-    @BindView(R2.id.icon_gold_merchant)
     ImageView icon_gold_merchant;
-    @BindView(R2.id.status_gold)
     TextView status_gold;
-    @BindView(R2.id.desc_status_gold)
     TextView desc_status;
-    @BindView(R2.id.about_gm)
     TextView about_gm;
     private TkpdProgressDialog mProgressDialog;
 
-    @OnClick(R2.id.shop_ava)
-    public void uploadImage(View vuew) {
+    OnShopEditorFragmentListener onShopEditorFragmentListener;
+    public interface OnShopEditorFragmentListener{
+        void deleteCacheShopInfov2();
+    }
+
+    public void uploadImage(View view) {
         ImageGalleryEntry.moveToImageGallery((AppCompatActivity)getActivity(), 0, 1);
     }
 
-    @OnClick(R2.id.button_send)
     public void kirimData(View view) {
         presenter.sendDataShop();
+    }
+
+    void showEditShopScheduleDialog() {
+        presenter.onClickCloseShop(presenter);
+    }
+
+    void showAboutGM() {
+        if(GlobalConfig.isSellerApp()) {
+            if(getActivity().getApplication() instanceof TkpdCoreRouter){
+                ((TkpdCoreRouter) getActivity().getApplication()).goToMerchantRedirect(getActivity());
+            }
+        }else{
+            Intent launchIntent = getActivity().getPackageManager()
+                    .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+
+            if (launchIntent != null) {
+                UnifyTracking.eventGMSwitcherManageShop(AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.OPEN_APP);
+                getActivity().startActivity(launchIntent);
+            } else if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+                UnifyTracking.eventGMSwitcherManageShop(AppEventTracking.EventLabel.OPEN_GM+AppEventTracking.Category.SWITCHER);
+                ((TkpdCoreRouter) getActivity().getApplication()).goToCreateMerchantRedirect(getActivity());
+            }
+        }
+    }
+
+    @Override
+    public View onCreateView(View parentView, Bundle savedInstanceState) {
+        mShopNameText = (EditText) parentView.findViewById(R.id.shop_name);
+        mShopSloganText = (EditText) parentView.findViewById(R.id.shop_slogan);
+        mShopDescText = (EditText) parentView.findViewById(R.id.shop_desc);
+        mBtnSend = (TextView) parentView.findViewById(R.id.button_send);
+        progressBar = (ProgressBar) parentView.findViewById(R.id.progress_bar);
+        mShopAva = (ImageView) parentView.findViewById(R.id.shop_ava);
+        mShopEditor = (ScrollView) parentView.findViewById(R.id.shop_editor_scrollview);
+        editShopSchedule = (ImageButton) parentView.findViewById(R.id.edit_shop_schedule);
+        closeImage = (ImageView) parentView.findViewById(R.id.close_image);
+        shopStatus = (TextView) parentView.findViewById(R.id.shop_status);
+        scheduleInfo = (TextView) parentView.findViewById(R.id.schedule_info);
+        scheduleDate = (TextView) parentView.findViewById(R.id.schedule_date);
+        timeIcon = (ImageView) parentView.findViewById(R.id.time_icon);
+        icon_gold_merchant = (ImageView) parentView.findViewById(R.id.icon_gold_merchant);
+        status_gold = (TextView) parentView.findViewById(R.id.status_gold);
+        desc_status = (TextView) parentView.findViewById(R.id.desc_status_gold);
+        about_gm = (TextView) parentView.findViewById(R.id.about_gm);
+
+        mShopAva.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImage(v);
+            }
+        });
+
+        mBtnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                kirimData(v);
+            }
+        });
+
+        editShopSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEditShopScheduleDialog();
+            }
+        });
+
+        about_gm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAboutGM();
+            }
+        });
+
+        return super.onCreateView(parentView, savedInstanceState);
     }
 
     @Override
@@ -119,17 +185,6 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     @Override
     public void initView() {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
-    @OnClick(R2.id.edit_shop_schedule)
-    void showEditShopScheduleDialog(){
-        presenter.onClickCloseShop(presenter);
-    }
-
-    @OnClick(R2.id.about_gm)
-    void showAboutGM(){
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://gold.tokopedia.com/"));
-        startActivity(browserIntent);
     }
 
     @Override
@@ -202,6 +257,11 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     @Override
     public void loadImageAva(String url) {
         ImageHandler.LoadImage(mShopAva, url);
+    }
+
+    @Override
+    public void deleteShopCachev2() {
+        onShopEditorFragmentListener.deleteCacheShopInfov2();
     }
 
     @Override
@@ -318,5 +378,25 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
         status_gold.setText("Regular Merchant");
         desc_status.setText("Anda Belum Berlangganan Gold Merchant");
         about_gm.setText("Tentang Gold Merchant");
+    }
+
+    @TargetApi(23)
+    @Override
+    public final void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachToContext(context);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public final void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachToContext(activity);
+        }
+    }
+
+    protected void onAttachToContext(Context context) {
+        onShopEditorFragmentListener = (OnShopEditorFragmentListener) context;
     }
 }

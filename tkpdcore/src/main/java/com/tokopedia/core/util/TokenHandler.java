@@ -60,7 +60,6 @@ public class TokenHandler  {
 				}
 	            if (status==1) {
 	            	String response = jsonclient.getResponse();
-	            	System.out.println("uuid_response: " +response);
 	            	try {
 	            		JSONObject json = new JSONObject(response);
 	            		temp_json = json.getString("result");
@@ -71,7 +70,6 @@ public class TokenHandler  {
 	            	}
 	            	Long tsLong = System.currentTimeMillis()/1000;
 	            	time = tsLong.toString();
-	            	System.out.println("time : " +time);
 	            	}
 	            	if (tokenID.length() == 36) {
 	            		Editor editor = sharedPrefs.edit();
@@ -112,14 +110,12 @@ public class TokenHandler  {
  		}
         try {
         	status =  jsonclient.CompileJSON();
-        	System.out.println("status: " +status);
         } catch (Exception e) {
             e.printStackTrace();
         } 
         if (status==1) {
         	String response = jsonclient.getResponse();
         	String token = null;
-         	System.out.println("uuid_response: " +response);
          	try {
          		JSONObject json = new JSONObject(response);
         		temp_json = json.getString("result");
@@ -130,7 +126,6 @@ public class TokenHandler  {
          	}
          	Long tsLong = System.currentTimeMillis()/1000;
          	String ts = tsLong.toString();
-         	System.out.println("time: " +ts);
          	Editor editor = sharedPrefs.edit();
          	editor.putString(TIMESTAMP, ts);
          	editor.putString(TOKEN_ID, token);
@@ -186,7 +181,6 @@ public class TokenHandler  {
 	    		Long time = getTime(context);
 	    		Long curr_time = System.currentTimeMillis()/1000;
 	        	Long interval = curr_time - time;
-	        	System.out.println("interval: " +interval);
 	        	if (interval>900) {
 	        		status = TokenGenerator(context);
 	        	}else {

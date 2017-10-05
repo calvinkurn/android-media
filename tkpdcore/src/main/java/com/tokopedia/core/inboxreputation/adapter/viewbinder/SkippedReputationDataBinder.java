@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputationItem;
@@ -91,7 +91,9 @@ public class SkippedReputationDataBinder extends DataBinder<SkippedReputationDat
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = ProductInfoActivity.createInstance(context, inboxReputationDetailItem.get(position).getProductId());
+                Intent intent = ProductDetailRouter
+                        .createInstanceProductDetailInfoActivity(
+                                context, inboxReputationDetailItem.get(position).getProductId());
                 context.startActivity(intent);
             }
         };

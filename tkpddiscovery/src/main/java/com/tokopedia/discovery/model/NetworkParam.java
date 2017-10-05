@@ -59,6 +59,7 @@ public class NetworkParam {
         public String shipping;
         public boolean returnable;
         public String source;
+        public String keyword;
         public Map<String, String> extraFilter;
 
         @Override
@@ -97,6 +98,11 @@ public class NetworkParam {
         if (product.source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
             data.put(BrowseApi.DEFAULT_SC, product.sc);
             data.remove(BrowseApi.SC);
+        }
+        if (product.source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+            data.remove(BrowseApi.H);
+            data.remove(BrowseApi.Q);
+            data.remove(BrowseApi.HASHTAG);
         }
         return data;
     }

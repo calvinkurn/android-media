@@ -85,7 +85,7 @@ public class ProductOtherAce implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ProductOtherAce> CREATOR = new Parcelable.Creator<ProductOtherAce>() {
+    public static final Creator<ProductOtherAce> CREATOR = new Creator<ProductOtherAce>() {
         @Override
         public ProductOtherAce createFromParcel(Parcel in) {
             return new ProductOtherAce(in);

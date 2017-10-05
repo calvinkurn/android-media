@@ -14,6 +14,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.fragment.FragmentShopNewOrderDetailV2;
 import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -29,15 +30,11 @@ import com.tokopedia.core.service.DownloadService;
 
 import org.parceler.Parcels;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by Erry on 7/25/2016.
  */
 public class SellingDetailActivity extends TkpdActivity implements  DownloadResultReceiver.Receiver {
 
-    @BindView(R2.id.toolbar)
     Toolbar toolbar;
 
     public enum Type {
@@ -50,6 +47,11 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_SHOP_SELLING_DETAIL;
+    }
+
+    @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.SHOP;
     }
 
     private FragmentManager fragmentManager;
@@ -70,9 +72,9 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_selling_detail);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
-        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

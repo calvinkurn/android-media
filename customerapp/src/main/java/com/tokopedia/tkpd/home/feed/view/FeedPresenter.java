@@ -76,7 +76,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
             checkViewAttached();
             getView().hideRefreshLoading();
             pagingHandler.nextPage();
-            loadMoreFeedUseCase.execute(getFeedRequestParams(), new LoadMoreFeedSubcriber(isPageOdd()));
+            loadMoreFeedUseCase.execute(getFeedRequestParams(), new LoadMoreFeedSubcriber());
 
         }
 
@@ -89,12 +89,6 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         requestParams.putString(GetFeedUseCase.KEY_START, String.valueOf(getPagingIndex()));
         requestParams.putString((GetFeedUseCase.KEY_DEVICE), GetFeedUseCase.DEVICE_VALUE_DEFAULT);
         requestParams.putString(GetFeedUseCase.KEY_OB, GetFeedUseCase.OB_VALUE_DEFAULT);
-        if (isPageOdd()) {
-            requestParams.putBoolean(LoadMoreFeedUseCase.KEY_IS_INCLUDE_TOPADS, true);
-            requestParams.putString(LoadMoreFeedUseCase.KEY_TOPADS_PAGE, getView().getTopAdsPage());
-        } else {
-            requestParams.putBoolean(LoadMoreFeedUseCase.KEY_IS_INCLUDE_TOPADS, false);
-        }
         requestParams.putBoolean(GetFeedUseCase.KEY_IS_FIRST_PAGE, false);
         return requestParams;
     }
@@ -118,10 +112,6 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
                         ? pagingHandler.getPagingHandlerModel().getStartIndex()
                         : 0
                 : 0;
-    }
-
-    private boolean isPageOdd() {
-        return pagingHandler.getPage() % 2 != 0;
     }
 
     private boolean isHasHistoryProduct(DataFeed dataFeed) {
@@ -209,18 +199,14 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
 
         private void displayFeed(ProductFeedViewModel productFeedViewModel) {
             getView().showFeedDataFromCache(productFeedViewModel.getData());
+            if(productFeedViewModel.getData().size() < 2){
+                getView().showEmptyFeedAdapter();
+            }
         }
 
     }
 
     private class LoadMoreFeedSubcriber extends DefaultSubscriber<DataFeed> {
-
-        private boolean isIncludeTopAds;
-
-        LoadMoreFeedSubcriber(boolean isIncludeTopAds) {
-
-            this.isIncludeTopAds = isIncludeTopAds;
-        }
 
         @Override
         public void onCompleted() {
@@ -237,11 +223,14 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         @Override
         public void onNext(DataFeed dataFeed) {
             if (isViewAttached()) {
-                ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
-                setPagging(productFeedViewModel.getPagingHandlerModel());
-                if (isIncludeTopAds) getView().increaseTopAdsPage();
-                getView().showLoadMoreFeed(productFeedViewModel.getData());
-                doCheckLoadMore();
+                if(dataFeed.getFeed().isValid()) {
+                    ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
+                    setPagging(productFeedViewModel.getPagingHandlerModel());
+                    getView().showLoadMoreFeed(productFeedViewModel.getData());
+                    doCheckLoadMore();
+                } else {
+                    getView().showRetryLoadMore();
+                }
             }
         }
     }
@@ -267,14 +256,18 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
             if (isViewAttached()) {
                 getView().hideRefreshLoading();
                 ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
-                if (productFeedViewModel.getData().size() > 0) {
+                if (isFeedError(dataFeed)) {
+                    if (getView().isViewNotEmpty()) {
+                        getView().showContentView();
+                        getView().showMessageRefreshFailed();
+                    } else {
+                        getView().hideContentView();
+                        getView().showErrorFeed();
+                    }
+                } else {
                     setPagging(productFeedViewModel.getPagingHandlerModel());
                     validateDataFeed(dataFeed, productFeedViewModel);
                     doCheckLoadMore();
-                } else {
-                    if (!getView().isViewNotEmpty()) {
-                        showEmptyView(productFeedViewModel);
-                    }
                 }
             }
         }
@@ -326,18 +319,24 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         }
 
         private void showEmptyView(ProductFeedViewModel productFeedViewModel) {
-            if (!(getView().isViewNotEmpty())) {
-                getView().showContentView();
-                productFeedViewModel.getData().add(
-                        new HistoryProductListItem(Collections.<ProductItem>emptyList()));
+            getView().showContentView();
+            productFeedViewModel.getData().add(
+                    new HistoryProductListItem(Collections.<ProductItem>emptyList()));
 
-                productFeedViewModel.getData().add(new EmptyFeedModel());
-                displayRefreshData(productFeedViewModel);
-            }
+            productFeedViewModel.getData().add(new EmptyFeedModel());
+            displayRefreshData(productFeedViewModel);
+
         }
 
         private void displayRefreshData(ProductFeedViewModel productFeedViewModel) {
             getView().refreshFeedData(productFeedViewModel.getData());
+            if(productFeedViewModel.getData().size() < 2){
+                getView().showEmptyFeedAdapter();
+            }
+        }
+
+        private Boolean isFeedError(DataFeed dataFeed) {
+            return dataFeed.isFeedError() || dataFeed.isRecentProductError();
         }
 
     }

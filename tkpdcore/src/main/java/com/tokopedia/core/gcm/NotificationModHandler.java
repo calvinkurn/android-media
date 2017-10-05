@@ -1,13 +1,19 @@
 package com.tokopedia.core.gcm;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.ManageGeneral;
+import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -17,12 +23,15 @@ import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryAndServerIdUseCase;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryUseCase;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationUseCase;
-import com.tokopedia.core.review.var.Const;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
 import rx.Subscriber;
 
 public class NotificationModHandler {
+    public static final String PACKAGE_SELLER_APP = "com.tokopedia.sellerapp";
+    public static final String PACKAGE_CONSUMER_APP = "com.tokopedia.tkpd";
 
     private Context mContext;
     private NotificationManager mNotificationManager;
@@ -48,7 +57,7 @@ public class NotificationModHandler {
         }
     }
 
-    public static void clearCacheAllNotification() {
+    public static void clearCacheAllNotification(Context activity) {
         PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
         DeleteSavedPushNotificationUseCase deleteUseCase =
                 new DeleteSavedPushNotificationUseCase(
@@ -80,8 +89,7 @@ public class NotificationModHandler {
     public void dismissAllActivedNotifications() {
         NotificationManager notificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_ID);
-        notificationManager.cancel(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_ID);
+        notificationManager.cancelAll();
     }
 
     public static void clearCacheIfFromNotification(String category) {
@@ -194,4 +202,79 @@ public class NotificationModHandler {
         notificationManager.cancel(notificationId);
     }
 
+    public static void showDialogNotificationIfNotShowing(final Activity context) {
+        if (!FCMCacheManager.isDialogNotificationSettingShowed(context) && SessionHandler.isV4Login(context)) {
+            if (GlobalConfig.isSellerApp()) {
+                if (appInstalledOrNot(PACKAGE_CONSUMER_APP, context)) {
+                    new AlertDialog.Builder(context)
+                            .setTitle(null)
+                            .setMessage(context.getString(R.string.notification_dialog_content_seller_app))
+                            .setPositiveButton(context.getString(R.string.notification_dialog_positive_button), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    FCMCacheManager.setDialogNotificationSetting(context);
+                                    context.startActivity(ManageGeneral.getCallingIntent(context, ManageGeneral.TAB_POSITION_MANAGE_APP));
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setNegativeButton(context.getString(R.string.notification_dialog_negative_button), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    FCMCacheManager.setDialogNotificationSetting(context);
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialogInterface) {
+                                    FCMCacheManager.setDialogNotificationSetting(context);
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+            } else {
+                if (appInstalledOrNot(PACKAGE_SELLER_APP, context)) {
+                    new AlertDialog.Builder(context)
+                            .setMessage(context.getString(R.string.notification_dialog_content_main_app))
+                            .setPositiveButton(context.getString(R.string.notification_dialog_positive_button), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    FCMCacheManager.setDialogNotificationSetting(context);
+                                    context.startActivity(ManageGeneral.getCallingIntent(context, ManageGeneral.TAB_POSITION_MANAGE_APP));
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setNegativeButton(context.getString(R.string.notification_dialog_negative_button), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    FCMCacheManager.setDialogNotificationSetting(context);
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialogInterface) {
+                                    FCMCacheManager.setDialogNotificationSetting(context);
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .setCancelable(false)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
+            }
+        }
+    }
+
+    private static boolean appInstalledOrNot(String uri, Activity context) {
+        PackageManager pm = context.getPackageManager();
+        boolean app_installed;
+        try {
+            pm.getApplicationInfo(uri, PackageManager.GET_META_DATA);
+            app_installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+            e.printStackTrace();
+        }
+        return app_installed;
+    }
 }

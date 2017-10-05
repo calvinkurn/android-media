@@ -7,11 +7,11 @@ import android.util.Log;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.session.session.service.RegisterService;
-import com.tokopedia.core.util.AppEventTracking;
 
 import org.parceler.Parcels;
 
@@ -65,7 +65,7 @@ public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUt
         } else if (data.containsKey(DATE_DAY)) {
             int day = (int) data.get(DATE_DAY);
             createPassModel.setBdayDay(day);
-        } else if (data.containsKey(ALLOWED_FIELDS)){
+        } else if (data.containsKey(ALLOWED_FIELDS)) {
             List allowedFieldList = (List) data.get(ALLOWED_FIELDS);
             createPassModel.setAllowedFieldList(allowedFieldList);
         }
@@ -78,7 +78,7 @@ public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUt
             boolean isNeedLogin = true;
 
             Bundle data = new Bundle();
-            if (bundle.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, 0) != 0){
+            if (bundle.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, 0) != 0) {
                 data.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE,
                         bundle.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, 0));
             }
@@ -118,7 +118,7 @@ public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUt
     public void initData(@NonNull Context context) {
         view.setAllowedField();
         if (isAfterRotate) {
-            view.setData(RegisterNewImpl.convertToMap(ALLOWED_FIELDS,createPassModel.getAllowedFieldList()));
+            view.setData(RegisterNewImpl.convertToMap(ALLOWED_FIELDS, createPassModel.getAllowedFieldList()));
             view.setData(RegisterNewImpl.convertToMap(PASSWORD, createPassModel.getNewPass()));
             view.setData(RegisterNewImpl.convertToMap(CONFIRM_PASSWORD, createPassModel.getConfirmPass()));
             view.setData(RegisterNewImpl.convertToMap(IS_CHECKED, createPassModel.getRegisterTos()));
@@ -127,7 +127,9 @@ public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUt
             calculateDateTime();
         }
 
-        view.setData(RegisterNewImpl.convertToMap(FULLNAME, createPassModel.getFullName()));
+        if (createPassModel.getFullName() != null)
+            view.setData(RegisterNewImpl.convertToMap(FULLNAME, createPassModel.getFullName()));
+
         if (createPassModel.getMsisdn() != null)
             view.setData(RegisterNewImpl.convertToMap(PHONENUMBER, createPassModel.getMsisdn()));
 

@@ -14,7 +14,6 @@ public class EncoderDecoder {
     	//String initialVector = "abcdefgh";
     	String encode_result = null;
     	IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
-    	System.out.println("result: ");
     	try {
 	    	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 	    	cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivs);
@@ -33,7 +32,6 @@ public class EncoderDecoder {
     	//String initialVector = "abcdefgh";
     	String encode_result = null;
     	IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
-    	System.out.println("result: ");
     	try {
 	    	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 	    	cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivs);
@@ -52,7 +50,6 @@ public class EncoderDecoder {
     	//String initialVector = "abcdefgh";
     	String decode_result = null;
     	IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
-    	System.out.println("result: ");
     	try {
     		byte[] data = Base64.decode(text, Base64.DEFAULT);
 	    	Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -74,7 +71,6 @@ public class EncoderDecoder {
 		//String initialVector = "abcdefgh";
 		String decode_result = null;
 		IvParameterSpec ivs = new IvParameterSpec(initialVector.getBytes());
-		System.out.println("result: ");
 		try {
 			byte[] data = Base64.decode(text, Base64.DEFAULT);
 			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");

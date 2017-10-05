@@ -14,6 +14,7 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -43,6 +44,8 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
     WebView webViewOauth;
     @BindView(R2.id.progress_bar)
     ProgressBar progressBar;
+    @BindView(R2.id.layout_parent)
+    FrameLayout layoutParent;
 
     private InvoiceRenderParam invoiceParam;
     private TkpdProgressDialog progressDialog;
@@ -132,7 +135,7 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
     public void renderInvoiceError(String message) {
         if (progressBar != null && progressBar.getVisibility() == View.VISIBLE)
             progressBar.setVisibility(View.GONE);
-        NetworkErrorHelper.showEmptyState(this, findViewById(android.R.id.content), message,
+        NetworkErrorHelper.showEmptyState(this, layoutParent, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {

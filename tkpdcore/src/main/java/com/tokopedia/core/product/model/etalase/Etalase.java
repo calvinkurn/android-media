@@ -2,7 +2,6 @@ package com.tokopedia.core.product.model.etalase;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -96,7 +95,7 @@ public class Etalase implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Etalase> CREATOR = new Parcelable.Creator<Etalase>() {
+    public static final Creator<Etalase> CREATOR = new Creator<Etalase>() {
         @Override
         public Etalase createFromParcel(Parcel in) {
             return new Etalase(in);

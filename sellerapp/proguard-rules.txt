@@ -332,6 +332,14 @@
  -keep enum com.beloo.widget.**
 -dontwarn com.beloo.widget.**
 
+-keep class com.airbnb.deeplinkdispatch.** { *; }
+-keepclasseswithmembers class * {
+     @com.airbnb.deeplinkdispatch.DeepLink <methods>;
+}
+
+# Fingerprint
+-keep class com.tokopedia.core.analytics.fingerprint.domain.model.** { *; }
 
 
-
+-dontwarn android.content.pm.PackageManager
+-dontwarn com.crashlytics.android.answers.shim.**

@@ -14,13 +14,17 @@
     <string name="november">November</string>
     <string name="december">Desember</string>
     <string name="wrong_input">inputan salah</string>
+    <string name="invalid_date">Tanggal Lahir tidak valid</string>
+    <string name="invalid_gender">Jenis Kelamin tidak valid</string>
 
     <string name="title_success_activate_account">Aktivasi telah berhasil</string>
     <string name="welcome_to_tokopedia">Selamat bergabung di Tokopedia</string>
+    <string name="ride_phone_verification_header">Anda harus Verifikasi nomor ponsel untuk melanjutkan.</string>
     <string name="protect_your_account_with_phone_verification">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel</string>
     <string name="title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
     <string name="title_resend_otp_sms">Kirim SMS Ulang</string>
     <string name="change_number">Ubah Nomor</string>
+    <string name="title_phone_number">Nomor Ponsel</string>
     <string name="title_activity_change_phone_number">Ubah Nomor Ponsel</string>
     <string name="verify_phone_number">Verifikasi Nomor Ponsel</string>
     <string name="profile_completion">Kelengkapan data diri</string>
@@ -37,4 +41,45 @@
     <string name="server_error_problem">Masalah Server Error</string>
     <string name="application_version_text">Versi Aplikasi:</string>
     <string name="send_email">Kirim Email</string>
+    <string name="title_change_phone_number_request">Pengajuan Ubah Nomor Ponsel</string>
+    <string name="id_photo">Foto KTP</string>
+    <string name="info_id_photo">Mohon lampirkan foto KTP Anda yang masih aktif.</string>
+    <string name="saving_book_photo_or_transaction_proof">Foto Buku Tabungan atau Bukti Transaksi</string>
+    <string name="info_bank_account">Mohon lampirkan foto halaman pertama dari buku tabungan Anda, atau foto bukti transaksi di Tokopedia</string>
+    <string name="pick_file_here">Pilih file Anda di sini</string>
+    <string name="waiting_data_checking_process">Menunggu Proses Pengecekan Data</string>
+    <string name="info_change_phone_number">Kami akan memproses pengajuan perubahan nomor ponsel Anda dalam waktu 1 x 24 jam. \nSilahkan mengikuti petunjuk perubahan di email Anda.</string>
+    <string name="default_error_upload_image">Gagal mengupload gambar</string>
+    <string name="title_activate_account">Aktivasi Akun Tokopedia</string>
+    <string name="activation_resend_email">Belum menerima email? Kirim ulang email</string>
+    <string name="activation_header_text">Kode aktivasi akun telah dikirimkan ke</string>
+    <string name="resend_activation_email">Kirim Ulang Email</string>
+    <string name="message_resend_email_to">Apakah anda ingin kirim ulang email ke</string>
+    <string name="button_change_email">Ubah Email</string>
+    <string name="title_new_email">Email Baru</string>
+    <string name="default_relogin">Autentikasi gagal. Mohon coba kembali.</string>
+    <string name="tokocash">TokoCash</string>
+    <string name="tokocash_phone_verification">Dengan memverifikasi nomor ponsel, TokoCash akan diaktifkan</string>
+    <string name="register_now">Daftar Sekarang di Tokopedia</string>
+    <string name="profile_completion_title">Data Diri</string>
+    <string name="continue_form">Lanjut</string>
+    <string name="skip_form">Lewati</string>
+    <string name="via_call">atau lewat telepon</string>
+    <string name="via_call_short">lewat telepon</string>
+
+    <string name="tokocash_phone_verification_text">Setelah terverifikasi, TokoCash akan aktif dan dapat digunakan sebagai pilihan pembayaran.</string>
+
+    <string name="your_profile_completion">Kelengkapan profil</string>
+    <string name="gender_title_prof_comp">Jenis Kelamin Anda</string>
+    <string name="date_title_prof_comp">Tanggal Lahir Anda</string>
+    <string name="title_verif_phone_prof_comp">Verifikasi Nomor Handphone</string>
+
+    <string name="profile_completion_man">Pria</string>
+    <string name="profile_completion_woman">Wanita</string>
+    <string name="profile_completion_date">Tanggal</string>
+    <string name="profile_completion_month">Bulan</string>
+    <string name="profile_completion_year">Tahun</string>
+    <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
+    <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
+    <string name="see_your_profile">Lihat Profil Anda</string>
 </resources>

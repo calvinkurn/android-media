@@ -1,31 +1,23 @@
 package com.tokopedia.discovery.search.view.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -134,15 +126,8 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
         void onItemClicked(){
             SearchItem searchItem = items.get(getAdapterPosition());
             searchItem.setEventAction(eventAction);
-            if(searchItem.getApplink()!=null) {
-                List<String> segments = Uri.parse(searchItem.getApplink()).getPathSegments();
-                if(segments!=null && segments.size()>0) {
-                    Intent intent = new Intent(context, ShopInfoActivity.class);
-                    intent.putExtras(ShopInfoActivity.createBundle(segments.get(0), ""));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
-                }
-            }
+            UnifyTracking.eventClickAutoCompleteShopSearch(searchItem.getKeyword());
+            clickListener.onItemClicked(searchItem);
         }
 
     }

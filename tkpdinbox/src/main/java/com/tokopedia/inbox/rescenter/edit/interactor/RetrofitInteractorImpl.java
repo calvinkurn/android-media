@@ -245,7 +245,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                         listener.onSuccess(data.getListSolution());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
-                        else listener.onError(response.body().getErrorMessages().get(0));
+                        else listener.onError(response.body().getErrorMessageJoined());
                     }
                 } else {
                     new ErrorHandler(new ErrorListener() {
@@ -522,7 +522,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 Log.d(TAG + "-step3", response.body().getStrResponse());
                 if (response.isSuccessful()) {
                     ActionResponseData responseData = response.body().convertDataObj(ActionResponseData.class);
-                    if (responseData.isSuccess()) {
+                    if (responseData != null && responseData.isSuccess()) {
                         if (responseData.getPostKey() != null) {
                             passData.setPostKey(responseData.getPostKey());
                             passData.setByPassFlag(false);
@@ -532,7 +532,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                         }
                         return passData;
                     } else {
-                        throw new RuntimeException(response.body().getErrorMessages().toString());
+                        throw new RuntimeException(response.body().getErrorMessageJoined());
                     }
                 } else {
                     throw new RuntimeException(String.valueOf(response.code()));
@@ -579,7 +579,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     public ActionParameterPassData call(ActionParameterPassData passData, UploadResCenterImageData response) {
                         Log.d(TAG + "-step4", response.toString());
                         if (response.getData() != null) {
-                            if (response.getData().isSuccess()) {
+                            if (response.getData() != null && response.getData().isSuccess()) {
                                 passData.setFileUploaded(response.getData().getFileUploaded());
                                 return passData;
                             } else {
@@ -604,10 +604,10 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
                 if (response.isSuccessful()) {
                     ActionResponseData temp = response.body().convertDataObj(ActionResponseData.class);
-                    if (temp.isSuccess()) {
+                    if (temp != null && temp.isSuccess()) {
                         return temp;
                     } else {
-                        throw new RuntimeException(response.body().getErrorMessages().toString());
+                        throw new RuntimeException(response.body().getErrorMessageJoined());
                     }
                 } else {
                     throw new RuntimeException(String.valueOf(response.code()));
@@ -775,7 +775,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                         listener.onSuccess(response.body().convertDataObj(AppealResCenterFormData.class));
                     } else {
                         if (response.body().isNullData()) listener.onTimeOut(null);
-                        else listener.onError(response.body().getErrorMessages().get(0));
+                        else listener.onError(response.body().getErrorMessageJoined());
                     }
                 } else {
                     new ErrorHandler(new ErrorListener() {
@@ -963,7 +963,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 Log.d(TAG + "-step3", response.body().getStrResponse());
                 if (response.isSuccessful()) {
                     ActionResponseData responseData = response.body().convertDataObj(ActionResponseData.class);
-                    if (responseData.isSuccess()) {
+                    if (responseData != null && responseData.isSuccess()) {
                         if (responseData.getPostKey() != null) {
                             passData.setPostKey(responseData.getPostKey());
                             passData.setByPassFlag(false);
@@ -973,7 +973,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                         }
                         return passData;
                     } else {
-                        throw new RuntimeException(response.body().getErrorMessages().toString());
+                        throw new RuntimeException(response.body().getErrorMessageJoined());
                     }
                 } else {
                     throw new RuntimeException(String.valueOf(response.code()));
@@ -994,10 +994,10 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
                 if (response.isSuccessful()) {
                     ActionResponseData temp = response.body().convertDataObj(ActionResponseData.class);
-                    if (temp.isSuccess()) {
+                    if (temp != null && temp.isSuccess()) {
                         return temp;
                     } else {
-                        throw new RuntimeException(response.body().getErrorMessages().toString());
+                        throw new RuntimeException(response.body().getErrorMessageJoined());
                     }
                 } else {
                     throw new RuntimeException(String.valueOf(response.code()));

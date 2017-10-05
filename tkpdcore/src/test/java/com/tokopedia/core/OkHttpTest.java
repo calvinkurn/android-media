@@ -2,14 +2,11 @@ package com.tokopedia.core;
 
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
-import com.tokopedia.core.payment.model.responsecartstep2.SystemBank;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

@@ -15,11 +15,9 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Created by Angga.Prasetiyo on 23/10/2015.
+ * @author by Angga.Prasetiyo on 23/10/2015.
  */
 public class ImagePagerAdapter extends PagerAdapter {
-    private static final String TAG = ImagePagerAdapter.class.getSimpleName();
-
     private Context context;
     private List<ProductImage> productImages = new ArrayList<>();
 
@@ -38,10 +36,9 @@ public class ImagePagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
         ImageView imageView = new ImageView(context);
-        String urlImage = productImages.get(position).getImageSrc300();
+        String urlImage = productImages.get(position).getImageSrc();
         if (!urlImage.isEmpty())
-            ImageHandler.LoadImage(imageView, urlImage);
-//            ImageHandler.LoadImagewoFit(imageView, urlImage);
+            ImageHandler.loadImageFit2(context, imageView, urlImage);
         imageView.setOnClickListener(new OnClickImage(position));
         container.addView(imageView, 0);
         return imageView;
@@ -97,7 +94,7 @@ public class ImagePagerAdapter extends PagerAdapter {
     private class OnClickImage implements View.OnClickListener {
         private final int position;
 
-        public OnClickImage(int position) {
+        OnClickImage(int position) {
             this.position = position;
         }
 

@@ -3,10 +3,14 @@ package com.tokopedia.core;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.CommonUtils;
@@ -21,6 +25,7 @@ import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginBypassModel;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
@@ -40,10 +45,12 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     public static final String RE_INIT_DATA_FOR_THE_FIRST_TIME = "RE-INIT-DATA-FOR-THE-FIRST-TIME";
     public static final int WEEK_IN_SECONDS = 604800;
     public static final int DAYS_IN_SECONDS = 86400;
+    public static final int OVERLAY_PERMISSION_REQ_CODE = 1080;
     private PasswordGenerator Pgenerator;
     DownloadResultReceiver mReceiver;
 	String id = null;
     protected SessionHandler sessionHandler;
+    protected View decorView;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,15 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         mReceiver.setReceiver(this);
         sessionHandler = new SessionHandler(this);
         resetAllDatabaseFlag();
+        initPermissionReactNativeDev();
+        decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
     }
 
     @Override
@@ -179,5 +195,41 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         flagDB.applyEditor();
     }
 
+    private void initPermissionReactNativeDev() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.canDrawOverlays(this)) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:" + getPackageName()));
+                    startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == OVERLAY_PERMISSION_REQ_CODE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.canDrawOverlays(this)) {
+                    // SYSTEM_ALERT_WINDOW permission not granted...
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
 }

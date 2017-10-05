@@ -3,6 +3,7 @@ package com.tokopedia.core.var;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 
 /**
  * Created by Nisie on 11/11/15.
@@ -39,16 +40,22 @@ public class TkpdCache {
     public static final String APP_INFO = "APP_INFO";
     public static final String ALLOW_REFRESH = "ALLOW_REFRESH";
     public static final String EXCLUSION = "EXCLUSION";
+    public static final String CACHE_RECHARGE_WIDGET_TAB_SELECTION = "CACHE_RECHARGE_WIDGET_TAB_SELECTION";
+    public static final String DEFAULT_GRID_SETTINGS = "DEFAULT_GRID_SETTINGS";
+    public static final String DIGITAL_LAST_INPUT_CLIENT_NUMBER = "DIGITAL_LAST_INPUT_CLIENT_NUMBER";
+    public static final String DIGITAL_INSTANT_CHECKOUT_HISTORY = "DIGITAL_INSTANT_CHECKOUT_HISTORY";
+    public static final String DIGITAL_USSD_MOBILE_NUMBER = "DIGITAL_USSD_MOBILE_NUMBER";
+    public static final String CACHE_API = "CACHE_API";
     public static String LAST_BCA = "LAST_BCA";
     public static String LAST_MANDIRI = "LAST_MANDIRI";
     public static String LAST_BRI = "LAST_BRI";
     public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
-    public static final String CACHE_RECHARGE_WIDGET_TAB_SELECTION = "CACHE_RECHARGE_WIDGET_TAB_SELECTION";
-
+    public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
+    public static final String FIREBASE_REMOTE_CONFIG = "FIREBASE_REMOTE_CONFIG";
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
-        LocalCacheHandler.clearCache(context, TkpdCache.NOTIFICATION_DATA);
+        LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
         LocalCacheHandler.clearCache(context, TkpdCache.ETALASE_ADD_PROD);
         LocalCacheHandler.clearCache(context, TkpdCache.REGISTERED);
         LocalCacheHandler.clearCache(context, TkpdCache.VERIFICATION_NUMBER);
@@ -139,6 +146,7 @@ public class TkpdCache {
         public static final String FAVORITE_SHOP = "FAVORITE_SHOP";
         public static final String RECOMMEND_SHOP = "RECOMMEND_SHOP";
         public static final String FAVORITE_PAGING = "FAVORITE_PAGING";
+        public static final String TOP_ADS_SHOP = "TOP_ADS_SHOP";
 
         public static final String PROMO = "PROMO";
 
@@ -179,6 +187,28 @@ public class TkpdCache {
         public static final String SHOP_SCORE_DETAIL = "SHOP_SCORE_DETAIL";
 
         public static final String WIDGET_RECHARGE_TAB_LAST_SELECTED = "WIDGET_RECHARGE_TAB_LAST_SELECTED";
+
+        public static final String CATEOGRY_HEADER_LEVEL = "CATEGORY_LEVEL_";
+
+        public static final String DIGITAL_CLIENT_NUMBER_CATEGORY = "DIGITAL_CLIENT_NUMBER_CATEGORY_";
+        public static final String DIGITAL_OPERATOR_ID_CATEGORY = "DIGITAL_OPERATOR_ID_CATEGORY_";
+        public static final String DIGITAL_PRODUCT_ID_CATEGORY = "DIGITAL_PRODUCT_ID_CATEGORY_";
+        public static final String DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY = "DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY_";
+
+        public static final String DIGITAL_CATEGORY_ITEM_LIST = "DIGITAL_CATEGORY_ITEM_LIST";
+        public static final String DIGITAL_LAST_ORDER = "DIGITAL_LAST_ORDER";
+
+        public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
+
+        public static final String KEY_LOCATION = "KEY_FP_LOCATION";
+
+        public static final String KEY_USSD_SIM1 = "KEY_USSD_SIM1";
+        public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
+
+        public static final String VERSION_NAME_IN_CACHE = "VERSION_NAME_IN_CACHE";
+
+        public static final String SHOW_HIDE_APP_SHARE_BUTTON_KEY = "SHOW_HIDE_APP_SHARE_BUTTON_KEY";
+        public static final String APP_SHARE_DESCRIPTION_KEY = "APP_SHARE_DESCRIPTION_KEY";
     }
 
 }

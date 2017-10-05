@@ -13,4 +13,7 @@ public interface DeepLinkView {
 
     void replaceFragment(Fragment fragment, String tag);
 
+    void hideActionBar();
+
+    void actionChangeToolbarWithBackToNative();
 }

@@ -22,17 +22,17 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.inbox.rescenter.edit.customview.EditCategorySectionView;
 import com.tokopedia.inbox.rescenter.edit.customview.EditPackageStatusView;
 import com.tokopedia.inbox.rescenter.edit.customview.EditProductTroubleView;
 import com.tokopedia.inbox.rescenter.edit.customview.EditTroubleSectionView;
 import com.tokopedia.inbox.rescenter.edit.listener.BuyerEditResCenterListener;
-import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
+import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.edit.presenter.BuyerEditResCenterImpl;
 import com.tokopedia.inbox.rescenter.edit.presenter.BuyerEditResCenterPresenter;
-import com.tokopedia.core.util.AppUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -94,7 +94,12 @@ public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerE
         passData = savedState.getParcelable(ARGS_PARAM_PASS_DATA);
         setLoading(false);
         setMainView(true);
-        presenter.renderView(passData.getFormData());
+        if (passData.getFormData() == null) {
+            presenter.setOnLaunching(getActivity());
+        } else {
+            renderPackageReceivedFormView();
+            presenter.renderView(passData.getFormData());
+        }
     }
 
     @Override

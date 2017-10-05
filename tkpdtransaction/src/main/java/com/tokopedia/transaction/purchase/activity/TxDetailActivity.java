@@ -17,17 +17,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
@@ -84,6 +86,8 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     TextView btnTrackOrder;
     @BindView(R2.id.complain_but)
     TextView btnComplainOrder;
+    @BindView(R2.id.btn_do_complain)
+    TextView btnDoComplain;
     @BindView(R2.id.upload_proof)
     TextView btnUploadProof;
     @BindView(R2.id.btn_request_cancel_order)
@@ -96,6 +100,18 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     View holderFormSender;
     @BindView(R2.id.order_status_layout)
     LinearLayout holderOrderStatus;
+    @BindView(R2.id.instant_courier_driver_layout)
+    LinearLayout instantCourierDriverLayout;
+    @BindView(R2.id.driver_photo)
+    ImageView driverPhoto;
+    @BindView(R2.id.driver_name)
+    TextView driverName;
+    @BindView(R2.id.driver_phone)
+    TextView driverPhone;
+    @BindView(R2.id.driver_license)
+    TextView driverLicense;
+    @BindView(R2.id.driver_info_border)
+    TextView driverInfoBorder;
 
     private OrderData orderData;
     private TkpdProgressDialog progressDialog;
@@ -201,6 +217,22 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                 orderData.getOrderShipment().getShipmentProduct()));
         tvDestinationDetail.setText(orderData.getOrderDestination().getDetailDestination()
                 .replace("&amp;", "&"));
+
+        if(orderData.getDriverInfo() != null
+                && !orderData.getDriverInfo().getDriverName().isEmpty()) {
+            instantCourierDriverLayout.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageCircle2(this, driverPhoto, orderData.getDriverInfo().getDriverPhoto());
+            driverName.setText(orderData.getDriverInfo().getDriverName());
+            driverPhone.setText(orderData.getDriverInfo().getDriverPhone());
+            if(orderData.getDriverInfo().getLicenseNumber().isEmpty()) {
+                driverLicense.setVisibility(View.GONE);
+                driverInfoBorder.setVisibility(View.GONE);
+            } else {
+                driverLicense.setVisibility(View.VISIBLE);
+                driverInfoBorder.setVisibility(View.VISIBLE);
+                driverLicense.setText(orderData.getDriverInfo().getLicenseNumber());
+            }
+        } else instantCourierDriverLayout.setVisibility(View.GONE);
     }
 
     private void renderActionButton() {
@@ -222,10 +254,16 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                         ? View.VISIBLE : View.GONE
         );
 
-        btnRejectOrder.setVisibility(orderData.getOrderButton().getButtonOpenDispute() != null
-                && orderData.getOrderButton().getButtonOpenDispute().equals("1")
-                ? View.VISIBLE : View.GONE);
 
+        btnRejectOrder.setVisibility(View.GONE);
+
+        if (orderData.getOrderButton().getButtonResCenterGoTo().equals("1")) {
+            btnDoComplain.setVisibility(View.GONE);
+        } else {
+            btnDoComplain.setVisibility(orderData.getOrderButton().getButtonComplaintReceived().equals("1")
+                    || orderData.getOrderButton().getButtonComplaintNotReceived().equals("1")
+                    ? View.VISIBLE : View.GONE);
+        }
         btnComplainOrder.setVisibility(orderData.getOrderButton().getButtonResCenterGoTo() != null
                 && orderData.getOrderButton().getButtonResCenterGoTo().equals("1")
                 ? View.VISIBLE : View.GONE);
@@ -329,8 +367,13 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @OnClick(R2.id.receive_btn)
     void actionConfirmDeliver() {
-        presenter.processConfirmDeliver(this, orderData);
+        presenter.processFinish(this, orderData);
         UnifyTracking.eventReceivedShipping();
+    }
+
+    @OnClick(R2.id.btn_do_complain)
+    void actionComplain() {
+        presenter.processComplain(this, orderData);
     }
 
     @OnClick(R2.id.track_btn)
@@ -371,7 +414,9 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @Override
     public void actionToProductInfo(ProductPass productPass) {
-        navigateToActivity(ProductInfoActivity.createInstance(this, productPass));
+        Intent intent = ProductDetailRouter
+                .createInstanceProductDetailInfoActivity(this, productPass);
+        navigateToActivity(intent);
     }
 
     @Override

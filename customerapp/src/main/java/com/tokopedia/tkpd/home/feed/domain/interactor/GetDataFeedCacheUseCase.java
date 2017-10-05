@@ -10,14 +10,13 @@ import com.tokopedia.tkpd.home.feed.domain.FeedRepository;
 import com.tokopedia.tkpd.home.feed.domain.model.DataFeed;
 import com.tokopedia.tkpd.home.feed.domain.model.Feed;
 import com.tokopedia.tkpd.home.feed.domain.model.ProductFeed;
-import com.tokopedia.tkpd.home.feed.domain.model.TopAds;
 
 import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.functions.Func3;
+import rx.functions.Func2;
 
 /**
  * @author kulomady on 12/8/16.
@@ -37,16 +36,16 @@ public class GetDataFeedCacheUseCase extends UseCase<DataFeed> {
 
     @Override
     public Observable<DataFeed> createObservable(RequestParams requestParams) {
+
         return Observable.zip(
                 getRecentProductObservable(),
                 getFeedObservable(),
-                getTopAdsObservable(),
-                new Func3<List<ProductFeed>, Feed, List<TopAds>, DataFeed>() {
+                new Func2<List<ProductFeed>, Feed, DataFeed>() {
                     @Override
                     public DataFeed call(List<ProductFeed> products,
-                                         Feed feed, List<TopAds> topAds) {
+                                         Feed feed) {
 
-                        return getValidDataFeed(products, feed, topAds);
+                        return getValidDataFeed(products, feed);
                     }
                 }
         ).onErrorReturn(new Func1<Throwable, DataFeed>() {
@@ -58,11 +57,10 @@ public class GetDataFeedCacheUseCase extends UseCase<DataFeed> {
     }
 
     @NonNull
-    private DataFeed getValidDataFeed(List<ProductFeed> products, Feed feed, List<TopAds> topAds) {
+    private DataFeed getValidDataFeed(List<ProductFeed> products, Feed feed) {
         DataFeed dataFeed = new DataFeed();
         dataFeed.setFeed(feed);
         dataFeed.setRecentProductList(products);
-        dataFeed.setTopAds(topAds);
         dataFeed.setValid(true);
         return dataFeed;
     }
@@ -101,19 +99,5 @@ public class GetDataFeedCacheUseCase extends UseCase<DataFeed> {
             }
         };
     }
-
-    private Observable<List<TopAds>> getTopAdsObservable() {
-        return feedRepository.getTopAdsCache().onErrorReturn(topAdsErrorReturn());
-    }
-
-    private Func1<Throwable, List<TopAds>> topAdsErrorReturn() {
-        return new Func1<Throwable, List<TopAds>>() {
-            @Override
-            public List<TopAds> call(Throwable throwable) {
-                return Collections.emptyList();
-            }
-        };
-    }
-
 
 }

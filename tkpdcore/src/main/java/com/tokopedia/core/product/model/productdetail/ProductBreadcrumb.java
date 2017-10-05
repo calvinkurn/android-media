@@ -104,7 +104,7 @@ public class ProductBreadcrumb implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ProductBreadcrumb> CREATOR = new Parcelable.Creator<ProductBreadcrumb>() {
+    public static final Creator<ProductBreadcrumb> CREATOR = new Creator<ProductBreadcrumb>() {
         @Override
         public ProductBreadcrumb createFromParcel(Parcel in) {
             return new ProductBreadcrumb(in);

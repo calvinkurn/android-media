@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class TopAdsHome {
     @SerializedName("data")
-     Data[] data;
+    Data[] data;
 
     public Data[] getData() {
         return data;
@@ -21,11 +21,14 @@ public class TopAdsHome {
         @SerializedName("cover")
         public String cover;
 
+        @SerializedName("cover_ecs")
+        public String coverEcs;
+
         // This is very small size of photo profile.
-        @SerializedName("xs_url")
+        @SerializedName("xs_ecs")
         public String xsUrl;
 
-        @SerializedName("s_url")
+        @SerializedName("s_ecs")
         public String sUrl;
     }
 
@@ -54,6 +57,12 @@ public class TopAdsHome {
 
         @SerializedName("lucky_shop")
         public String luckyShop;
+
+        @SerializedName("shop_is_official")
+        public boolean shopIsOfficial;
+
+        @SerializedName("domain")
+        public String domain;
     }
 
     public static class Data {
@@ -71,5 +80,7 @@ public class TopAdsHome {
 
         @SerializedName("shop_click_url")
         public String shopClickUrl;
+
+        public boolean isSelected;
     }
 }

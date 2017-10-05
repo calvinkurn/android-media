@@ -44,4 +44,8 @@ public class CloudOtpSource {
         return accountsService.getApi()
                 .validateOtp(params).map(validateOtpMapper);
     }
+
+    public Observable<RequestOtpModel> requestOtpToEmail(TKPDMapParam<String, Object> parameters) {
+        return accountsService.getApi().requestOtpToEmail(parameters).map(requestOtpMapper);
+    }
 }

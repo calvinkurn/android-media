@@ -27,8 +27,8 @@ public class DrawerHeader extends RecyclerViewItem {
     public String tokoCashValue = "";
     public String tokoCashText = "";
     public boolean tokoCashToWallet = false;
-    public boolean tokoCashOtherAction = false;
     public Integer tokoCashLink = 0;
+    public boolean TopPointsEnabled = false;
     public UserType userType = UserType.TYPE_GUEST;
 
     public DrawerHeader() {

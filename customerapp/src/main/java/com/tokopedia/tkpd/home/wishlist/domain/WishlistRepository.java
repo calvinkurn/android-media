@@ -9,5 +9,5 @@ import rx.Observable;
  */
 public interface WishlistRepository {
 
-    public Observable<DataWishlist> search_wishlist(String userId, String query);
+    public Observable<DataWishlist> search_wishlist(String userId, String query, int page);
 }

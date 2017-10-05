@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxtalk.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -18,16 +19,16 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.talk.model.model.InboxTalk;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.inbox.inboxtalk.InboxTalkFilterDialog;
 import com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.inbox.inboxtalk.adapter.InboxTalkAdapter;
 import com.tokopedia.inbox.inboxtalk.listener.InboxTalkView;
-import com.tokopedia.core.talk.model.model.InboxTalk;
 import com.tokopedia.inbox.inboxtalk.presenter.InboxTalkPresenter;
 import com.tokopedia.inbox.inboxtalk.presenter.InboxTalkPresenterImpl;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,16 +54,20 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     InboxTalkAdapter adapter;
     private InboxTalkFilterDialog dialog;
 
-    @BindView(R2.id.coordinator)
     CoordinatorLayout coordinatorLayout;
-    @BindView(R2.id.talk_list)
     RecyclerView recyclerView;
-    @BindView(R2.id.include_loading)
     ProgressBar progressBar;
-    @BindView(R2.id.fab)
     FloatingActionButton floatingActionButton;
     SnackbarRetry snackbarRetry;
 
+    public static Fragment createInstance(String nav, Boolean forceUnread) {
+        Bundle bundle = new Bundle();
+        InboxTalkFragment fragment = new InboxTalkFragment();
+        bundle.putString("nav", nav);
+        bundle.putBoolean("unread", forceUnread);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     public void onErrorAction(Bundle resultData, int resultCode) {
         adapter.onErrorAction(resultData, resultCode);
@@ -88,6 +93,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         super.onCreate(savedInstanceState);
         items = new ArrayList<>();
         adapter = InboxTalkAdapter.createAdapter(getActivity(), this, items, false, true, presenter);
+
     }
 
     @Override
@@ -96,9 +102,15 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         displayLoading(true);
         requestFromCache();
+    }
+
+    @Override
+    protected void onFirstTimeLaunched() {
+
     }
 
     @Override
@@ -142,6 +154,10 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     protected void initView(View view) {
+        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator);
+        recyclerView = (RecyclerView) view.findViewById(R.id.talk_list);
+        progressBar = (ProgressBar) view.findViewById(R.id.include_loading);
+        floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
         layoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(layoutManager);
         refresh = new RefreshHandler(getActivity(), view, onRefreshListener());
@@ -246,13 +262,12 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     @Override
     public void onConnectionResponse(List<InboxTalk> list, int page,
                                      int isUnread) {
-        floatingActionButton.setEnabled(true);
+        floatingActionButton.show();
         isRequest = false;
         if (page == 1) {
             refresh.finishRefresh();
             items.clear();
         }
-        refresh.setPullEnabled(true);
         items.addAll(list);
         if (!(getActivity() instanceof InboxTalkActivity))
             adapter.setEnableAction(false);
@@ -270,17 +285,15 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onTimeoutResponse(String error, int page) {
-        floatingActionButton.setEnabled(false);
+        floatingActionButton.hide();
         isRequest = false;
         if (page == 1) {
             refresh.finishRefresh();
             if (items.size() > 0) {
-                refresh.setPullEnabled(true);
                 removeLoadingFooter();
                 adapter.notifyDataSetChanged();
                 NetworkErrorHelper.showSnackbar(getActivity());
             } else {
-                refresh.setPullEnabled(false);
                 displayView(false);
                 if (error.length() <= 0) {
                     NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryListener());
@@ -289,7 +302,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
                 }
             }
         } else {
-            refresh.setPullEnabled(false);
             removeLoadingFooter();
             snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), retrySnackbarListener());
             adapter.setEnableAction(false);
@@ -334,9 +346,8 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onStateResponse(List<RecyclerViewItem> list, int position, int page, boolean hasNext, String filterString) {
-        floatingActionButton.setEnabled(true);
+        floatingActionButton.show();
         isRequest = false;
-        refresh.setPullEnabled(true);
 //        if (pagingHandler.getPage() == 1) {
 //            refresh.finishRefresh();
 //            items.clear();
@@ -349,9 +360,8 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onCacheResponse(List<InboxTalk> list, int isUnread) {
-        floatingActionButton.setEnabled(true);
+        floatingActionButton.show();
         isRequest = false;
-        refresh.setPullEnabled(true);
         items.addAll(list);
         adapter.notifyDataSetChanged();
         displayLoading(false);
@@ -363,25 +373,22 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     }
 
     private void request() {
-        floatingActionButton.setEnabled(false);
+        floatingActionButton.hide();
         isRequest = true;
-        refresh.setPullEnabled(false);
         presenter.getInboxTalk(getActivity(), getParam());
     }
 
 
     private void firstRequest() {
-        floatingActionButton.setEnabled(false);
+        floatingActionButton.hide();
         isRequest = true;
-        refresh.setPullEnabled(false);
         presenter.refreshInboxTalk(getActivity(), getParam());
     }
 
     @Override
     public void cancelRequest() {
-        floatingActionButton.setEnabled(true);
+        floatingActionButton.show();
         isRequest = false;
-        refresh.setPullEnabled(true);
     }
 
     @Override
@@ -449,39 +456,33 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case GO_TO_DETAIL:
-                if(data == null){
+                if (data == null) {
                     return;
                 }
 
-                int position = data.getExtras().getInt("position", -1);
                 if (resultCode == RESULT_DELETE) {
-                   if (position != -1){
-                       items.remove(position);
-                       adapter.notifyDataSetChanged();
-                   }else {
-                       displayLoading(true);
-                       requestFromCache();
-                   }
+                    int position = data.getExtras().getInt("position");
+                    items.remove(position);
+                    adapter.notifyDataSetChanged();
                     SnackbarManager.make(getActivity(),
-                            getString(R.string.message_success_delete_talk),Snackbar.LENGTH_LONG).show();
-                }else if(resultCode == Activity.RESULT_OK){
-                    if (position != -1){
-                        items.remove(position);
-                        adapter.notifyDataSetChanged();
-                        int size = data.getExtras().getInt("total_comment");
-                        int followStatus = data.getExtras().getInt("is_follow");
-                        int readStatus = data.getExtras().getInt("read_status");
-                        ((InboxTalk) items.get(position)).setTalkTotalComment(String.valueOf(size));
-                        ((InboxTalk) items.get(position)).setTalkFollowStatus(followStatus);
-                        ((InboxTalk) items.get(position)).setTalkReadStatus(readStatus);
-                        adapter.notifyDataSetChanged();
-                    }else {
-                        displayLoading(true);
-                        requestFromCache();
-                    }
+                            getString(R.string.message_success_delete_talk), Snackbar.LENGTH_LONG).show();
+                } else if (resultCode == Activity.RESULT_OK) {
+                    int position = data.getExtras().getInt("position");
+                    int size = data.getExtras().getInt("total_comment");
+                    int followStatus = data.getExtras().getInt("is_follow");
+                    int readStatus = data.getExtras().getInt("read_status");
+                    ((InboxTalk) items.get(position)).setTalkTotalComment(String.valueOf(size));
+                    ((InboxTalk) items.get(position)).setTalkFollowStatus(followStatus);
+                    ((InboxTalk) items.get(position)).setTalkReadStatus(readStatus);
+                    adapter.notifyDataSetChanged();
                 }
+                break;
+            default:
+                doRefresh();
                 break;
         }
 
     }
+
+
 }

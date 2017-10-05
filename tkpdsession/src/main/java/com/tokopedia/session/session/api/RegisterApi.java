@@ -21,7 +21,7 @@ public interface RegisterApi {
     String USER_EMAIL = "user_email";
     String VALIDATE_EMAIL_PL = "validate_email.pl";
     String frenky = "http://www.fs-frenky.ndvl";
-    String VALIDATE_EMAIL_FRENKY = "/web-service/v4/action/register/validate_email.pl";
+    String VALIDATE_EMAIL_FRENKY = "/web-service/v4/action/registerEmail/validate_email.pl";
 
     @GET(VALIDATE_EMAIL_PL)
     Observable<ValidateEmailData> validateEmail(

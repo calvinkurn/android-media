@@ -19,19 +19,13 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.orderReject.ConfirmRejectOrderActivity;
 import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by Erry on 6/6/2016.
  */
 public class ConstrainRejectedDialog extends DialogFragment {
 
-    @BindView(R2.id.confirm_button)
     TextView confirmBtn;
-    @BindView(R2.id.reason)
     EditText reasonTxt;
-    @BindView(R2.id.title)
     TextView titleTxt;
 
     OnConfirmReject onConfirmReject;
@@ -67,8 +61,10 @@ public class ConstrainRejectedDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_reject_order_reason, container, false);;
-        ButterKnife.bind(this, view);
+        View view = inflater.inflate(R.layout.dialog_reject_order_reason, container, false);
+        confirmBtn = (TextView) view.findViewById(R.id.confirm_button);
+        reasonTxt = (EditText) view.findViewById(R.id.reason);
+        titleTxt = (TextView) view.findViewById(R.id.title);
         return view;
     }
 
@@ -90,7 +86,6 @@ public class ConstrainRejectedDialog extends DialogFragment {
     }
 
     public boolean validateForm(){
-        Log.d("Info Text Reason", "length "+reasonTxt.getText().toString().length());
         if(reasonTxt.getText().toString().isEmpty()){
             reasonTxt.setError(getString(R.string.desc_should_not_empty));
             return false;

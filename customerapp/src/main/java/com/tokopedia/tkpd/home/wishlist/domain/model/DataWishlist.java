@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.home.wishlist.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.network.entity.wishlist.Pagination;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +13,8 @@ import java.util.List;
 public class DataWishlist {
     private boolean isDataValid;
     private List<WishlistDomain> Wishlists = new ArrayList<>();
-     private String nextUrl;
+    @SerializedName("pagination")
+    Pagination Paging;
 
     public List<WishlistDomain> getWishlists() {
         return Wishlists;
@@ -20,12 +24,12 @@ public class DataWishlist {
         Wishlists = wishlists;
     }
 
-    public String getNextUrl() {
-        return nextUrl;
+    public Pagination getPaging() {
+        return Paging;
     }
 
-    public void setNextUrl(String nextUrl) {
-        this.nextUrl = nextUrl;
+    public void setPaging(Pagination paging) {
+        Paging = paging;
     }
 
     public boolean isDataValid() {

@@ -17,9 +17,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
@@ -28,7 +26,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.var.NotificationVariable;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
 import com.tokopedia.seller.customadapter.ListViewShopOrderDetail;
 import com.tokopedia.seller.selling.model.orderShipping.OrderCustomer;
@@ -46,9 +43,6 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
 
 public class
@@ -80,51 +74,29 @@ ShippingConfirmationDetail extends TActivity {
 
     private static final String PHONE_TOKOPEDIA = "021-53691015";
 
-    @BindView(R2.id.payment_method)
     TextView PaymentMethod;
-    @BindView(R2.id.invoice_text)
     TextView Invoice;
-    @BindView(R2.id.buyer_name)
     TextView BuyerName;
-    @BindView(R2.id.product_list)
     ListView ProductListView;
-    @BindView(R2.id.order_status)
     ListView OrderStatus;
-    @BindView(R2.id.deadline)
     TextView Deadline;
-    @BindView(R2.id.shipping_cost)
     TextView ShippingCost;
-    @BindView(R2.id.additional_cost)
     TextView AdditionalCost;
-    @BindView(R2.id.destination)
     TextView Destination;
     //	@BindView(R2.id.last_status)
 //	TextView LastStatus;
-    @BindView(R2.id.destination_detail)
     TextView DestinationDetail;
-    @BindView(R2.id.quantity)
     TextView Quantity;
-    @BindView(R2.id.grand_total)
     TextView GrandTotal;
-    @BindView(R2.id.error_message)
     TextView ErrorMessage;
-    @BindView(R2.id.confirm_button)
     TextView ConfirmButton;
-    @BindView(R2.id.cancel_button)
     TextView CancelButton;
-    @BindView(R2.id.sender_name)
     TextView SenderName;
-    @BindView(R2.id.sender_phone)
     TextView SenderPhone;
-    @BindView(R2.id.sender_form)
     View SenderForm;
-    @BindView(R2.id.layout_destination_default)
     View viewDefaultDestination;
-    @BindView(R2.id.layout_pickup_instant_shipping_courier)
     View viewPickupLocationCourier;
-    @BindView(R2.id.pickup_detail_location)
     TextView pickupLocationDetail;
-    @BindView(R2.id.destination_detail_location)
     TextView deliveryLocationDetail;
 
     ListViewOrderStatus OrderAdapter;
@@ -132,7 +104,6 @@ ShippingConfirmationDetail extends TActivity {
     private TkpdProgressDialog mProgressDialog;
     private BroadcastReceiver onComplete;
     private Dialog dialog;
-    private NotificationVariable notif;
 
     ShippingConfirmDetModel shippingConfirmDetModel;
     ArrayList<ShippingConfirmDetModel.Data> dataProducts = new ArrayList<>();
@@ -154,12 +125,8 @@ ShippingConfirmationDetail extends TActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_shipping_confirmation_detail);
-        ButterKnife.bind(this);
-
+        initView();
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
-
-        notif = MainApplication.getNotifInstance();
-        notif.setContext(this);
 
         ConfirmButton.setVisibility(View.GONE);
         CancelButton.setVisibility(View.GONE);
@@ -203,6 +170,43 @@ ShippingConfirmationDetail extends TActivity {
 
     }
 
+    private void initView(){
+        PaymentMethod = (TextView) findViewById(R.id.payment_method);
+        Invoice = (TextView) findViewById(R.id.invoice_text);
+        BuyerName = (TextView) findViewById(R.id.buyer_name);
+        ProductListView = (ListView) findViewById(R.id.product_list);
+        OrderStatus = (ListView) findViewById(R.id.order_status);
+        Deadline = (TextView) findViewById(R.id.deadline);
+        ShippingCost = (TextView) findViewById(R.id.shipping_cost);
+        AdditionalCost = (TextView) findViewById(R.id.additional_cost);
+        Destination = (TextView) findViewById(R.id.destination);
+        DestinationDetail = (TextView) findViewById(R.id.destination_detail);
+        Quantity = (TextView) findViewById(R.id.quantity);
+        GrandTotal = (TextView) findViewById(R.id.grand_total);
+        ErrorMessage = (TextView) findViewById(R.id.error_message);
+        ConfirmButton = (TextView) findViewById(R.id.confirm_button);
+        CancelButton = (TextView) findViewById(R.id.cancel_button);
+        SenderName = (TextView) findViewById(R.id.sender_name);
+        SenderPhone = (TextView) findViewById(R.id.sender_phone);
+        SenderForm = findViewById(R.id.sender_form);
+        viewDefaultDestination = findViewById(R.id.layout_destination_default);
+        viewPickupLocationCourier = findViewById(R.id.layout_pickup_instant_shipping_courier);
+        pickupLocationDetail = (TextView) findViewById(R.id.pickup_detail_location);
+        deliveryLocationDetail = (TextView) findViewById(R.id.destination_detail_location);
+
+        Invoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                invoiceClick();
+            }
+        });
+        BuyerName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBuyerClick();
+            }
+        });
+    }
 
     @Override
     protected void onDestroy() {
@@ -421,12 +425,10 @@ ShippingConfirmationDetail extends TActivity {
 //		}
 //	}
 
-    @OnClick(R2.id.invoice_text)
     public void invoiceClick() {
         AppUtils.InvoiceDialog(ShippingConfirmationDetail.this, invoice_uri, invoice_pdf, Invoice.getText().toString());
     }
 
-    @OnClick(R2.id.buyer_name)
     public void onBuyerClick() {
         startActivity(PeopleInfoNoDrawerActivity.createInstance(ShippingConfirmationDetail.this, UserID));
     }

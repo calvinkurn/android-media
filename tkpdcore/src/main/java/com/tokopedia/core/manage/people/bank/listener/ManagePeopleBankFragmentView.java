@@ -27,10 +27,6 @@ public interface ManagePeopleBankFragmentView {
 
     void setOnActionBankListener(ManagePeopleBankFragment.BankFormListener listener);
 
-    void onSuccessEditDefaultBankAccount(Bundle resultData);
-
-    void onSuccessDeleteBankAccount(Bundle resultData);
-
     void onFailedEditDefaultBankAccount(Bundle resultData);
 
     void onFailedDeleteBankAccount(Bundle resultData);
@@ -40,4 +36,6 @@ public interface ManagePeopleBankFragmentView {
     void showDialogLoading();
 
     ManagePeopleBankFragment.BankFormListener getBankFormListener();
+
+    void onSuccessFinishAction();
 }

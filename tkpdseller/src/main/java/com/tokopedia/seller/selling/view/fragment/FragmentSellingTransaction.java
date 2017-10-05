@@ -37,31 +37,28 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
-import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransaction;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransactionImpl;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransactionView;
-import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.DateFormatUtils;
-import com.tokopedia.core.util.ValidationTextUtil;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
+import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.TransactionViewHolder;
 
 import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -69,18 +66,13 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransaction> implements SellingStatusTransactionView, View.OnClickListener {
 
-    @BindView(R2.id.order_list)
     RecyclerView recyclerView;
-    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-    @BindView(R2.id.fab)
     FloatingActionButton fab;
-    @BindView(R2.id.root)
     CoordinatorLayout rootView;
 
     private static final String ORDER_ID = "OrderID";
 
-    private LinearLayoutManager linearLayoutManager;
     private BaseSellingAdapter adapter;
     private Dialog editRefDialog;
     private TkpdProgressDialog progressDialog;
@@ -219,7 +211,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
     @Override
     public void ariseRetry(int type, Object... data) {
-        Log.d(TAG, "ariseRetry type " + type);
+
     }
 
     @Override
@@ -242,7 +234,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     public void initHandlerAndAdapter() {
         setRetainInstance(true);
         mPaging = new PagingHandler();
-        linearLayoutManager = new LinearLayoutManager(getActivity());
         adapter = new BaseSellingAdapter<SellingStatusTxModel, TransactionViewHolder>(SellingStatusTxModel.class, getActivity(), R.layout.selling_transaction_list_item, TransactionViewHolder.class) {
             @Override
             protected void populateViewHolder(TransactionViewHolder viewHolder, final SellingStatusTxModel model, int position) {
@@ -290,23 +281,26 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        recyclerView = (RecyclerView) view.findViewById(R.id.order_list);
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        rootView = (CoordinatorLayout) view.findViewById(R.id.root);
         initView();
         return view;
     }
 
     public void initView() {
         refresh = new RefreshHandler(getActivity(), rootView, onRefreshListener());
-        setRefreshPullEnable(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_transaction, null);
-        searchTxt = ButterKnife.findById(filterView, R.id.search);
-        startDate = ButterKnife.findById(filterView, R.id.start_date);
+        searchTxt = (SearchView) filterView.findViewById(R.id.search);
+        startDate = (EditText) filterView.findViewById(R.id.start_date);
 
-        endDate = ButterKnife.findById(filterView, R.id.end_date);
+        endDate = (EditText)filterView.findViewById(R.id.end_date);
 
-        spinnerFilter = ButterKnife.findById(filterView, R.id.transaction_filter);
-        searchbtn = ButterKnife.findById(filterView, R.id.search_button);
+        spinnerFilter = (Spinner) filterView.findViewById(R.id.transaction_filter);
+        searchbtn =  (TextView) filterView.findViewById(R.id.search_button);
 
         datePicker = DatePickerV2.createInstance(getActivity());
         spinnerFilter.setOnItemSelectedListener(onFilterSelected());
@@ -317,6 +311,12 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         bottomSheetDialog.setContentView(filterView);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         setDate();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.show();
+            }
+        });
     }
 
     private RefreshHandler.OnRefreshHandlerListener onRefreshListener() {
@@ -389,7 +389,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                presenter.onScrollList(linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1);
+                presenter.onScrollList(((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition() == recyclerView.getLayoutManager().getItemCount() - 1);
             }
         });
     }
@@ -591,11 +591,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
             ;
         };
-    }
-
-    @OnClick(R2.id.fab)
-    public void onClick() {
-        bottomSheetDialog.show();
     }
 
     public interface LVShopStatusInterface {

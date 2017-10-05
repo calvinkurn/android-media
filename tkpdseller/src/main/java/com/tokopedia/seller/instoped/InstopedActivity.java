@@ -1,5 +1,6 @@
 package com.tokopedia.seller.instoped;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,16 +12,17 @@ import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
-import com.tokopedia.seller.instoped.fragment.InstagramMediaFragment;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
-import com.tokopedia.seller.myproduct.ProductSocMedActivity;
-import com.tokopedia.seller.myproduct.presenter.ProductSocMedPresenter;
+import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.instoped.fragment.InstagramMediaFragment;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,10 +32,12 @@ import java.util.List;
 
 public class InstopedActivity extends TActivity implements InstagramActivityListener {
 
-    private static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
+    public static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
+    private static final String MAX_RESULT = "MAX_R";
     private String FRAGMENT;
     private FragmentManager supportFragmentManager;
     private Toolbar toolbar;
+    private int maxResult;
 
     public static void startInstopedActivity(Context context){
         Intent moveToProductActivity = new Intent(context, InstopedActivity.class);
@@ -41,6 +45,25 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
         bundle.putString(FRAGMENT_TO_SHOW, InstagramAuth.TAG);
         moveToProductActivity.putExtras(bundle);
         context.startActivity(moveToProductActivity);
+    }
+
+    public static void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult){
+        Intent moveToProductActivity = createIntent(activity, maxResult);
+        activity.startActivityForResult(moveToProductActivity, resultCode);
+    }
+
+    public static void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult){
+        Intent moveToProductActivity = createIntent(context, maxResult);
+        fragment.startActivityForResult(moveToProductActivity, resultCode);
+    }
+
+    private static Intent createIntent (Context context, int maxResult){
+        Intent moveToProductActivity = new Intent(context, InstopedActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(FRAGMENT_TO_SHOW, InstagramAuth.TAG);
+        bundle.putInt(MAX_RESULT, maxResult);
+        moveToProductActivity.putExtras(bundle);
+        return moveToProductActivity;
     }
 
     @Override
@@ -76,6 +99,7 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
             } else {
                 FRAGMENT = InstagramAuth.TAG;
             }
+            maxResult = intent.getIntExtra(MAX_RESULT,-1);
         }
     }
 
@@ -92,7 +116,7 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
 
             case InstagramAuth.TAG:
                 InstagramAuth auth = new InstagramAuth();
-                auth.getMedias(supportFragmentManager);
+                auth.getMedias(supportFragmentManager, maxResult);
                 break;
             default :
                 throw new RuntimeException("not implemented yet");
@@ -115,26 +139,45 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
         return new InstagramMediaFragment.OnGetInstagramMediaListener() {
             @Override
             public void onSuccess(SparseArray<InstagramMediaModel> selectedModel) {
-                selectedModel.size();
-                //[START] move to productSocMedActivity
-                Intent moveToProductSocMed = new Intent(InstopedActivity.this, ProductSocMedActivity.class);
-                moveToProductSocMed.putExtra(
-                        ProductSocMedPresenter.PRODUCT_SOC_MED_DATA,
-                        Parcels.wrap(selectedModel)
-                );
-                InstopedActivity.this.startActivity(moveToProductSocMed);
-                InstopedActivity.this.finish();
-                //[END] move to productSocMedActivity
+
+                UnifyTracking.eventImageUploadSuccessInstagram();
+
+                // if activity has no caller, continue to build product soc med
+                if (getCallingActivity() == null) {
+                    //[START] move to productSocMedActivity
+                    Intent intent = new Intent(InstopedActivity.this, ProductAddActivity.class);
+                    intent.putExtra(GalleryActivity.PRODUCT_SOC_MED_DATA, fromSparseArray(selectedModel)
+                    );
+                    InstopedActivity.this.startActivity(intent);
+                    InstopedActivity.this.finish();
+                    //[END] move to productSocMedActivity
+                }
+                else { // activity has caller, just finish it and return the bundle to the caller
+                    Intent socMedIntent = new Intent();
+                    socMedIntent.putParcelableArrayListExtra(
+                            GalleryActivity.PRODUCT_SOC_MED_DATA,
+                            fromSparseArray(selectedModel)
+                    );
+                    InstopedActivity.this.setResult(Activity.RESULT_OK, socMedIntent);
+                    InstopedActivity.this.finish();
+                }
             }
-        };    }
+        };
+    }
+
+    private ArrayList<InstagramMediaModel> fromSparseArray(SparseArray<InstagramMediaModel> data) {
+        ArrayList<InstagramMediaModel> modelList = new ArrayList<>();
+        for (int i = 0; i < data.size(); i++) {
+            InstagramMediaModel rawData = data.get(
+                    data.keyAt(i));
+            modelList.add(rawData);
+        }
+        return modelList;
+    }
 
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_INSTOPED;
-    }
-
-    public interface OnBackPressedListener {
-        boolean onBackPressed();
     }
 
     @Override
@@ -155,6 +198,10 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
         } else {
             super.onBackPressed();
         }
+    }
+
+    public interface OnBackPressedListener {
+        boolean onBackPressed();
     }
 
 }

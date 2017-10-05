@@ -16,6 +16,8 @@ import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -29,6 +31,7 @@ import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity;
+import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
@@ -44,11 +47,21 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tokopedia.core.talkview.activity.TalkViewActivity.INBOX_TALK;
+import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.MESSAGE_ALL;
+import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.MESSAGE_ARCHIVE;
+import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.MESSAGE_SENT;
+import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.MESSAGE_TRASH;
+
 public class InboxTalkActivity extends DrawerPresenterActivity implements
         InboxTalkActivityView,
         NotificationReceivedListener, InboxTalkResultReceiver.Receiver {
 
     private static final String BUNDLE_POSITION = "INBOX_TALK_POSITION";
+
+    private static final String MY_PRODUCT = "inbox-talk-my-product";
+    private static final String INBOX_ALL = "inbox-talk";
+    private static final String FOLLOWING = "inbox-talk-following";
     PagerAdapter adapter;
 
     @BindView(R2.id.pager)
@@ -141,7 +154,6 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
 
     private void getExtras() {
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
-        forceUnread = getIntent().getBooleanExtra(Constants.EXTRA_UNREAD, false);
     }
 
     private void initResultReceiver() {
@@ -188,16 +200,33 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     @Override
     protected void initView() {
         super.initView();
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.INBOX_TALK);
+//        drawer.setDrawerPosition(TkpdState.DrawerPosition.INBOX_TALK);
         ButterKnife.bind(this);
         setContent();
-        adapter = new PagerAdapter(getFragmentManager());
+        adapter = new PagerAdapter(getFragmentManager(), getFragmentList());
         mViewPager.setOffscreenPageLimit(contentArray.length);
         mViewPager.setAdapter(adapter);
 
         if (getIntent().getExtras() != null && getIntent().getExtras().getInt(BUNDLE_POSITION, -1) != -1) {
             mViewPager.setCurrentItem(getIntent().getExtras().getInt(BUNDLE_POSITION));
         }
+    }
+
+    private List<Fragment> getFragmentList() {
+        forceUnread = getIntent().getBooleanExtra(Constants.EXTRA_UNREAD, false);
+        List<Fragment> fragmentList = new ArrayList<>();
+        if (GlobalConfig.isSellerApp()) {
+            fragmentList.add(InboxTalkFragment.createInstance(MY_PRODUCT, forceUnread));
+        } else {
+            if (checkHasNoShop()) {
+                fragmentList.add(InboxTalkFragment.createInstance(INBOX_ALL, forceUnread));
+            } else {
+                fragmentList.add(InboxTalkFragment.createInstance(INBOX_ALL, forceUnread));
+                fragmentList.add(InboxTalkFragment.createInstance(MY_PRODUCT, forceUnread));
+                fragmentList.add(InboxTalkFragment.createInstance(FOLLOWING, forceUnread));
+            }
+        }
+        return fragmentList;
     }
 
     @Override
@@ -223,19 +252,18 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
 
     @Override
     public void onGetNotif() {
-        if (MainApplication.getNotificationStatus()) {
-            drawer.getNotification();
-        }
-        if (MainApplication.getDrawerStatus()) {
-            drawer.updateData();
-        }
+//        if (MainApplication.getNotificationStatus()) {
+//            drawer.getNotification();
+//        }
+//        if (MainApplication.getDrawerStatus()) {
+//            drawer.updateData();
+//        }
     }
 
     @Override
     public void onRefreshCart(int status) {
-        LocalCacheHandler Cache = new LocalCacheHandler(this,
-                "NOTIFICATION_DATA");
-        Cache.putInt("is_has_cart", status);
+        LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
+        Cache.putInt(DrawerNotification.IS_HAS_CART, status);
         Cache.applyEditor();
         invalidateOptionsMenu();
         MainApplication.resetCartStatus(false);
@@ -277,7 +305,7 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        drawer.getNotification();
+//        drawer.getNotification();
     }
 
     public void followTalk(Bundle param) {
@@ -299,45 +327,19 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
 
         private List<Fragment> fragmentList = new ArrayList<>();
 
-        public PagerAdapter(FragmentManager fm) {
+        public PagerAdapter(FragmentManager fm, List<Fragment> fragmentList) {
             super(fm);
-            // TODO Auto-generated constructor stub
+            this.fragmentList = fragmentList;
         }
 
         @Override
         public Fragment getItem(int position) {
-            Fragment fragment;
-            if (position < fragmentList.size()) {
-                fragment = fragmentList.get(position);
-            } else {
-                Bundle b = new Bundle();
-                if (GlobalConfig.isSellerApp()) {
-                    b.putString("nav", "inbox-talk-my-product");
-                } else {
-                    switch (position) {
-                        case 0:
-                            b.putString("nav", "inbox-talk");
-                            break;
-                        case 1:
-                            b.putString("nav", "inbox-talk-my-product");
-                            break;
-                        case 2:
-                            b.putString("nav", "inbox-talk-following");
-                            break;
-                    }
-                }
-                b.putBoolean("unread", forceUnread);
-                fragment = new InboxTalkFragment();
-                fragment.setArguments(b);
-                this.fragmentList.add(fragment);
-            }
-            return fragment;
-
+            return fragmentList.get(position);
         }
 
         @Override
         public int getCount() {
-            return contentArray.length;
+            return fragmentList.size();
         }
     }
 
@@ -346,7 +348,7 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
         if (isTaskRoot() && GlobalConfig.isSellerApp()) {
             startActivity(SellerAppRouter.getSellerHomeActivity(this));
             finish();
-        } else if(isTaskRoot()){
+        } else if (isTaskRoot()) {
             startActivity(HomeRouter.getHomeActivity(this));
             finish();
         }

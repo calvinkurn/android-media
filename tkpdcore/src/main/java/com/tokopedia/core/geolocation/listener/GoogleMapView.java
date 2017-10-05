@@ -9,6 +9,10 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.tokopedia.core.geolocation.domain.IMapsRepository;
+import com.tokopedia.core.network.apiservices.maps.MapService;
+
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hangnadi on 1/31/16.
@@ -22,11 +26,6 @@ public interface GoogleMapView {
      *
      */
     void prepareActionBarView();
-
-    /**
-     *
-     */
-    void initGoogleMap();
 
     /**
      *
@@ -49,13 +48,11 @@ public interface GoogleMapView {
     void initMapView();
 
     /**
-     *
      * @param latLng
      */
     void moveMap(LatLng latLng);
 
     /**
-     *
      * @param result
      */
     void checkLocationSettings(PendingResult<LocationSettingsResult> result);
@@ -68,11 +65,12 @@ public interface GoogleMapView {
     void prepareDetailDestination(View view);
 
     /**
-     *
      * @param googleApiClient
      * @param latLngBounds
      */
-    void initAutoCompleteAdapter(GoogleApiClient googleApiClient, LatLngBounds latLngBounds);
+    void initAutoCompleteAdapter(CompositeSubscription compositeSubscription,
+                                 MapService service, IMapsRepository repository,
+                                 GoogleApiClient googleApiClient, LatLngBounds latLngBounds);
 
     /**
      *
@@ -80,19 +78,16 @@ public interface GoogleMapView {
     void setAutoCompleteAdaoter();
 
     /**
-     *
      * @param s
      */
     void toastMessage(String s);
 
     /**
-     *
      * @param s
      */
     void setValuePointer(String s);
 
     /**
-     *
      * @param bounds
      * @return
      */
@@ -119,13 +114,13 @@ public interface GoogleMapView {
     void hideDetailDestination();
 
     /**
-     *
      * @param view
      */
     void showDetailDestination(View view);
 
     /**
      * show manual address inputted by user
+     *
      * @param s Manual Address
      */
     void setManualDestination(String s);

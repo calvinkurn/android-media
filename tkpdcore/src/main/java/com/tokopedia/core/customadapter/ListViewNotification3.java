@@ -92,7 +92,6 @@ public class ListViewNotification3 extends BaseAdapter
 					}
 					else{
 						if(CountSales.get(position - 1) > 0){
-							System.out.println(TitleSales.get(position - 1) + " " + CountSales.get(position - 1));
 							holder.txtViewTitleMain.setVisibility(View.GONE);
 							holder.txtViewTitle.setVisibility(View.VISIBLE);
 							holder.txtViewCounter.setVisibility(View.VISIBLE);

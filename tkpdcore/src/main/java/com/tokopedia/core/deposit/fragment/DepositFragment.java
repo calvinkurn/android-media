@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +17,7 @@ import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.deposit.adapter.DepositAdapter;
 import com.tokopedia.core.deposit.listener.DepositFragmentView;
@@ -28,7 +28,6 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
 
 import butterknife.BindView;
 
@@ -273,7 +272,6 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     public void finishLoading() {
         adapter.showLoading(false);
         adapter.showEmpty(false);
-        refreshHandler.setPullEnabled(true);
         refreshHandler.setRefreshing(false);
 
     }
@@ -331,7 +329,6 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         endDate.setEnabled(isEnabled);
         drawButton.setEnabled(isEnabled);
         searchButton.setEnabled(isEnabled);
-        refreshHandler.setPullEnabled(isEnabled);
     }
 
     @Override

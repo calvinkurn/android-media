@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.Badge;
@@ -84,7 +83,7 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
                 UnifyTracking.eventFavoriteView(item.getName());
 
                 Bundle bundle = new Bundle();
-                Intent intent = new Intent(context, ProductInfoActivity.class);
+                Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
                 bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, item);
                 intent.putExtras(bundle);
                 context.startActivity(intent);

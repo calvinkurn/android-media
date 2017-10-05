@@ -1,16 +1,22 @@
 package com.tokopedia.core.shopinfo.adapter;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.R;
+import com.tokopedia.core.shopinfo.models.GetShopProductParam;
+import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseAdapterModel;
+import com.tokopedia.core.app.MainApplication;
 
 /**
  * Created by Tkpd_Eka on 11/2/2015.
@@ -26,7 +32,8 @@ public class ShopProductListHeaderDelegate {
 
     private ProductHeaderListListener listener;
     private SpinnerInteractionListener spinnerInteractionListener;
-    private SimpleSpinnerAdapter etalaseAdapter;
+    private ArrayAdapter<EtalaseAdapterModel> etalaseAdapter;
+    private FeaturedProductAdapter featuredProductAdapter;
     private int spinnerLastPos = 0;
     // if selection == -1, no selection request
     private int spinnerSelectedPos = -1;
@@ -41,17 +48,27 @@ public class ShopProductListHeaderDelegate {
         public ImageView toggle;
         public Spinner etalase;
         public View filterClick;
+        public RecyclerView featuredProductList;
+        public TextView featuredProductTitle;
+        public TextView productSectionTitle;
 
         public VHolder(View itemView) {
             super(itemView);
             toggle = (ImageView) itemView.findViewById(R.id.toggle_view);
             filterClick = itemView.findViewById(R.id.btn_filter_sort);
             etalase = (Spinner)itemView.findViewById(R.id.spinner_etalase);
+            featuredProductList = (RecyclerView) itemView.findViewById(R.id.featured_product_list);
+            featuredProductTitle = (TextView) itemView.findViewById(R.id.featured_product_title);
+            productSectionTitle = (TextView) itemView.findViewById(R.id.product_section_title);
         }
     }
 
-    public void setEtalaseAdapter(SimpleSpinnerAdapter etalaseAdapter){
+    public void setEtalaseAdapter(ArrayAdapter<EtalaseAdapterModel> etalaseAdapter){
         this.etalaseAdapter = etalaseAdapter;
+    }
+
+    public void setFeaturedProductAdapter(FeaturedProductAdapter featuredProductAdapter) {
+        this.featuredProductAdapter = featuredProductAdapter;
     }
 
     public void setSelectedEtalase(int pos){
@@ -82,6 +99,33 @@ public class ShopProductListHeaderDelegate {
         vholder.toggle.setImageResource(toggleIcon);
         if(hasSelection(spinnerSelectedPos))
             vholder.etalase.setSelection(spinnerSelectedPos);
+
+        if (featuredProductAdapter.getItemCount() > 0 && isAllEtalaseSelected()) {
+            vholder.featuredProductTitle.setVisibility(View.VISIBLE);
+            vholder.featuredProductList.setVisibility(View.VISIBLE);
+            vholder.productSectionTitle.setVisibility(View.VISIBLE);
+        } else {
+            vholder.featuredProductTitle.setVisibility(View.GONE);
+            vholder.featuredProductList.setVisibility(View.GONE);
+            vholder.productSectionTitle.setVisibility(View.GONE);
+        }
+
+        if (vholder.featuredProductList.getLayoutManager() == null) {
+            vholder.featuredProductList.setLayoutManager(
+                    new LinearLayoutManager(MainApplication.getAppContext(),
+                            LinearLayoutManager.VERTICAL, false)
+            );
+        }
+
+        if (vholder.featuredProductList.getAdapter() == null) {
+            vholder.featuredProductList.setAdapter(featuredProductAdapter);
+        }
+    }
+
+    private boolean isAllEtalaseSelected() {
+        return etalaseAdapter != null &&
+                etalaseAdapter.getCount() > spinnerLastPos &&
+                GetShopProductParam.DEFAULT_ALL_ETALASE_ID.equals(etalaseAdapter.getItem(spinnerLastPos).getEtalaseId());
     }
 
     private boolean hasSelection(int spinnerSelectedPos) {

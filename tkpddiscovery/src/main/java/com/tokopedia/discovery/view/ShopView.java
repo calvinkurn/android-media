@@ -13,13 +13,18 @@ import java.util.List;
 public interface ShopView extends BaseView {
     void setupRecyclerView();
     void initAdapter();
-
-    void onCallProductServiceLoadMore(List<ShopModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
+    void setShopData(List<ShopModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     boolean isLoading();
     int getStartIndexForQuery(String TAG);
     int getPage(String TAG);
     int getDataSize();
     void setLoading(boolean isLoading);
-
+    void setEmptyState();
     void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab);
+
+    void startShopInfoActivity(String shopId);
+
+    void showErrorMessage(String error);
+
+    void showToggleFavoriteSuccess(String shopName, boolean favorited);
 }

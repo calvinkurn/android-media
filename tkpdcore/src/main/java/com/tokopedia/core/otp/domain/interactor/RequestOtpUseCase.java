@@ -17,6 +17,7 @@ public class RequestOtpUseCase extends UseCase<RequestOtpModel> {
 
     public static final String PARAM_MODE = "mode";
     public static final String PARAM_OTP_TYPE = "otp_type";
+    public static final String PARAM_TYPE = "type";
     public static final String PARAM_MSISDN = "msisdn";
 
     public static final String MODE_SMS = "sms";

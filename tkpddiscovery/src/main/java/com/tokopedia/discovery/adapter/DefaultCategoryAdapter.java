@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tokopedia.core.R;
@@ -13,12 +12,11 @@ import com.tokopedia.core.R2;
 
 import butterknife.ButterKnife;
 
-import com.tokopedia.core.network.entity.categoriesHades.Child;
+import com.tokopedia.core.network.entity.intermediary.Child;
 
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Alifa on 2/28/2017.
@@ -57,6 +55,11 @@ public class DefaultCategoryAdapter extends
                 categoryListener.onCategoryClick(categories.get(position));
             }
         });
+        if(position % 2 != 0 ){
+            itemRowHolder.separator.setVisibility(View.GONE);
+        } else {
+            itemRowHolder.separator.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -73,7 +76,7 @@ public class DefaultCategoryAdapter extends
         LinearLayout container;
 
         @BindView(R2.id.separator)
-        ImageView separator;
+        View separator;
 
         ItemRowHolder(View view) {
             super(view);

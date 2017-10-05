@@ -17,17 +17,14 @@ import java.util.Map;
 public class EmailVerificationPresenterImpl implements EmailVerificationPresenter {
 
 
-    private static final String SEND_OTP_EMAIL = "SEND_OTP_EMAIL";
     private static final String TIMESTAMP = "timestamp";
     private static final String EXPIRE_TIME = "expired_time";
     EmailVerificationView viewListener;
     ManagePeopleProfileInteractor networkInteractor;
-    private LocalCacheHandler otpCache;
 
     public EmailVerificationPresenterImpl(EmailVerificationView viewListener) {
         this.viewListener = viewListener;
         this.networkInteractor = ManagePeopleProfileInteractorImpl.createInstance();
-        this.otpCache = new LocalCacheHandler(viewListener.getActivity(), SEND_OTP_EMAIL);
     }
 
     @Override
@@ -101,15 +98,7 @@ public class EmailVerificationPresenterImpl implements EmailVerificationPresente
     @Override
     public void onRequestOTP() {
         viewListener.showLoadingProgress();
-        if (otpCache.isExpired()) {
-            sendEmailOTP();
-        } else {
-            Long diff = System.currentTimeMillis() / 1000 - otpCache.getLong(TIMESTAMP);
-            int interval = otpCache.getInt(EXPIRE_TIME);
-            int remainingTime = interval - diff.intValue();
-            viewListener.showErrorToast("Silahkan coba " + remainingTime + " detik lagi");
-            viewListener.finishLoading();
-        }
+        sendEmailOTP();
         viewListener.getOTP().setEnabled(true);
     }
 

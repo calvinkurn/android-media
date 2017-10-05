@@ -18,22 +18,29 @@ import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.addtocart.model.kero.Rates;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.ResponseTransform;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
+import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
+import com.tokopedia.transaction.cart.model.cartdata.CartRatesData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
+import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.services.TopPayIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
+
+import org.json.JSONArray;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -48,6 +55,12 @@ import rx.Subscriber;
  * @author anggaprasetiyo on 11/3/16.
  */
 public class CartPresenter implements ICartPresenter {
+
+
+    private static final int MUST_INSURANCE_MODE = 3;
+    public static final int OPTIONAL_INSURANCE_MODE = 2;
+    public static final String VOUCHER_CODE = "voucher_code";
+    public static final String IS_SUGGESTED = "suggested";
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
 
@@ -68,19 +81,20 @@ public class CartPresenter implements ICartPresenter {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 handleThrowableCartInfo(e);
             }
 
             @Override
             public void onNext(ResponseTransform<CartData> responseTransform) {
                 CartData cartData = responseTransform.getData();
-                view.renderVisibleMainCartContainer();
                 try {
                     processCartAnalytics(cartData);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 processRenderViewCartData(cartData);
+                view.renderVisibleMainCartContainer();
             }
         });
     }
@@ -160,7 +174,8 @@ public class CartPresenter implements ICartPresenter {
                 new TypeToken<ArrayList<com.tokopedia.core.analytics.model.Product>>() {
                 }.getType()
         );
-        String checkout = afGSON.toJson(checkoutAnalytics, new TypeToken<Checkout>(){}.getType());
+        String checkout = afGSON.toJson(checkoutAnalytics, new TypeToken<Checkout>() {
+        }.getType());
 
         LocalCacheHandler cache = view.getLocalCacheHandlerNotificationData();
 
@@ -189,13 +204,13 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCancelCart(@NonNull CartItem cartData) {
+    public void processCancelCart(@NonNull final CartItem canceledCartItem) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
-        maps.put("address_id", cartData.getCartDestination().getAddressId());
-        maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
-        maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
-        maps.put("shop_id", cartData.getCartShop().getShopId());
+        maps.put("address_id", canceledCartItem.getCartDestination().getAddressId());
+        maps.put("shipment_id", canceledCartItem.getCartShipments().getShipmentId());
+        maps.put("shipment_package_id", canceledCartItem.getCartShipments().getShipmentPackageId());
+        maps.put("shop_id", canceledCartItem.getCartShop().getShopId());
         cartDataInteractor.cancelCart(view.getGeneratedAuthParamNetwork(maps),
                 view.getGeneratedAuthParamNetwork(null),
                 new Subscriber<ResponseTransform<CartData>>() {
@@ -222,6 +237,7 @@ public class CartPresenter implements ICartPresenter {
                         view.showToastMessage(messageSuccess);
                         try {
                             processCartAnalytics(cartData);
+                            trackCanceledCart(canceledCartItem);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -231,15 +247,15 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCancelCartProduct(@NonNull CartItem cartData,
-                                         @NonNull CartProduct cartProductData) {
+    public void processCancelCartProduct(@NonNull final CartItem canceledCartItem,
+                                         @NonNull final CartProduct canceledCartProduct) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
-        maps.put("product_cart_id", cartProductData.getProductCartId());
-        maps.put("address_id", cartData.getCartDestination().getAddressId());
-        maps.put("shipment_id", cartData.getCartShipments().getShipmentId());
-        maps.put("shipment_package_id", cartData.getCartShipments().getShipmentPackageId());
-        maps.put("shop_id", cartData.getCartShop().getShopId());
+        maps.put("product_cart_id", canceledCartProduct.getProductCartId());
+        maps.put("address_id", canceledCartItem.getCartDestination().getAddressId());
+        maps.put("shipment_id", canceledCartItem.getCartShipments().getShipmentId());
+        maps.put("shipment_package_id", canceledCartItem.getCartShipments().getShipmentPackageId());
+        maps.put("shop_id", canceledCartItem.getCartShop().getShopId());
         cartDataInteractor.cancelCart(view.getGeneratedAuthParamNetwork(maps),
                 view.getGeneratedAuthParamNetwork(null),
                 new Subscriber<ResponseTransform<CartData>>() {
@@ -266,6 +282,7 @@ public class CartPresenter implements ICartPresenter {
                         view.showToastMessage(messageSuccess);
                         try {
                             processCartAnalytics(cartData);
+                            trackCanceledProduct(canceledCartItem, canceledCartProduct);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -321,8 +338,10 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processUpdateInsurance(@NonNull CartItem cartData, boolean useInsurance) {
+    public void processUpdateInsurance(@NonNull final CartItemEditable cartItemEditable,
+                                       final boolean useInsurance) {
         view.showProgressLoading();
+        CartItem cartData = cartItemEditable.getCartItem();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
         maps.put("address_id", cartData.getCartDestination().getAddressId());
         maps.put("product_insurance", useInsurance ? "1" : "0");
@@ -340,6 +359,7 @@ public class CartPresenter implements ICartPresenter {
                     @Override
                     public void onError(Throwable e) {
                         handleThrowableGeneral(e);
+                        switchInsurancePrice(cartItemEditable, !useInsurance);
                     }
 
                     @Override
@@ -358,16 +378,23 @@ public class CartPresenter implements ICartPresenter {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        processRenderViewCartData(cartData);
+                        switchInsurancePrice(cartItemEditable, useInsurance);
                     }
                 });
     }
 
+    private void switchInsurancePrice(@NonNull CartItemEditable cartItemEditable, boolean useInsurance) {
+        cartItemEditable.setUseInsurance(useInsurance);
+        cartItemEditable.getCartCourierPrices().setCartSubtotal(useInsurance);
+        view.refreshCartList();
+    }
+
     @Override
-    public void processCheckVoucherCode() {
+    public void processCheckVoucherCode(final int instantCheckVoucher) {
         view.showProgressLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put("voucher_code", view.getVoucherCodeCheckoutData());
+        params.put(VOUCHER_CODE, view.getVoucherCodeCheckoutData());
+        params.put(IS_SUGGESTED, String.valueOf(instantCheckVoucher));
         cartDataInteractor.checkVoucherCode(view.getGeneratedAuthParamNetwork(params),
                 new Subscriber<ResponseTransform<VoucherData>>() {
                     @Override
@@ -377,7 +404,13 @@ public class CartPresenter implements ICartPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        handleThrowableVoucherCode(e);
+                        if (e.getCause() instanceof ResponseErrorException) {
+                            view.renderErrorCheckVoucher(e.getCause().getMessage());
+                            view.renderErrorFromInstantVoucher(instantCheckVoucher);
+                            view.hideProgressLoading();
+                        } else {
+                            handleThrowableVoucherCode(e);
+                        }
                     }
 
                     @Override
@@ -388,7 +421,7 @@ public class CartPresenter implements ICartPresenter {
                         ) + responseTransform.getData().getVoucher().getVoucherAmountIdr();
                         if (voucherData.getVoucher().getVoucherAmount().equals("0"))
                             descVoucher = voucherData.getVoucher().getVoucherPromoDesc();
-                        view.renderSuccessCheckVoucher(descVoucher);
+                        view.renderSuccessCheckVoucher(descVoucher, instantCheckVoucher);
                         view.hideProgressLoading();
                     }
                 });
@@ -415,14 +448,18 @@ public class CartPresenter implements ICartPresenter {
         String voucherCode = view.getVoucherCodeCheckoutData();
         boolean isUseVoucher = view.isCheckoutDataUseVoucher();
 
-        if (isUseVoucher && voucherCode.isEmpty()) {
-            view.renderErrorCheckVoucher(
-                    view.getStringFromResource(R.string.label_error_form_voucher_code_empty)
-            );
-            return;
-        } else if (isUseVoucher && !voucherCode.isEmpty()) {
-            view.renderDisableErrorCheckVoucher();
-            checkoutDataBuilder.voucherCode(voucherCode);
+        if (isUseVoucher) {
+            if (voucherCode.isEmpty()) {
+                view.renderErrorCheckVoucher(
+                        view.getStringFromResource(R.string.label_error_form_voucher_code_empty)
+                );
+                return;
+            } else {
+                view.renderDisableErrorCheckVoucher();
+                checkoutDataBuilder.voucherCode(voucherCode);
+            }
+        } else {
+            checkoutDataBuilder.voucherCode("");
         }
 
         String depositCheckout = view.getDepositCheckoutData();
@@ -451,6 +488,130 @@ public class CartPresenter implements ICartPresenter {
         cartDataInteractor.unSubscribeObservable();
     }
 
+    @Override
+    public void processValidationPayment(String paymentId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(TopPayIntentService.EXTRA_ACTION,
+                TopPayIntentService.SERVICE_ACTION_GET_THANKS_TOP_PAY);
+        bundle.putString(TopPayIntentService.EXTRA_PAYMENT_ID, paymentId);
+        view.executeIntentService(bundle, TopPayIntentService.class);
+    }
+
+    @Override
+    public void processCheckoutAnalytics(LocalCacheHandler localCacheHandler, String gateway) {
+        Gson afGSON = new Gson();
+        Checkout checkoutData = afGSON.fromJson(
+                localCacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
+                new TypeToken<Checkout>() {
+                }.getType());
+        checkoutData.setCheckoutOption(gateway);
+        PaymentTracking.eventCartCheckout(checkoutData);
+    }
+
+    @Override
+    public void processPaymentAnalytics(LocalCacheHandler cacheHandler, ThanksTopPayData thanksTopPayData) {
+        Gson afGSON = new Gson();
+        Map[] mapResult = afGSON.fromJson(
+                cacheHandler.getString(Jordan.CACHE_AF_KEY_ALL_PRODUCTS),
+                new TypeToken<Map[]>() {
+                }.getType()
+        );
+        ArrayList<com.tokopedia.core.analytics.model.Product> locaProducts = afGSON.fromJson(
+                cacheHandler.getString(Jordan.CACHE_LC_KEY_ALL_PRODUCTS),
+                new TypeToken<ArrayList<com.tokopedia.core.analytics.model.Product>>() {
+                }.getType()
+        );
+        ArrayList<Purchase> purchases = afGSON.fromJson(
+                cacheHandler.getString(Jordan.CACHE_KEY_DATA_AR_ALLPURCHASE),
+                new TypeToken<ArrayList<Purchase>>() {
+                }.getType()
+        );
+
+        JSONArray arrJas = new JSONArray(
+                cacheHandler.getArrayListString(Jordan.CACHE_AF_KEY_JSONIDS)
+        );
+        String revenue = cacheHandler.getString(Jordan.CACHE_AF_KEY_REVENUE);
+        int qty = cacheHandler.getInt(Jordan.CACHE_AF_KEY_QTY);
+        String totalShipping = cacheHandler.getLong(Jordan.CACHE_LC_KEY_SHIPPINGRATE) + "";
+
+        /*
+          GTM Block
+         */
+        if (purchases != null) {
+            if (!purchases.isEmpty()) {
+                for (Purchase purchase : purchases) {
+                    purchase.setTransactionID(thanksTopPayData.getParameter().getPaymentId());
+                    PaymentTracking.eventTransactionGTM(purchase);
+                }
+            }
+        }
+
+
+        /*
+          Localytics Block
+
+         */
+        Map<String, String> values = new HashMap<>();
+        values.put(
+                view.getStringFromResource(com.tokopedia.core.R.string.event_payment_method),
+                thanksTopPayData.getParameter().getGatewayName());
+        values.put(
+                view.getStringFromResource(
+                        com.tokopedia.core.R.string.event_value_total_transaction
+                ), revenue
+        );
+        values.put(view.getStringFromResource(
+                com.tokopedia.core.R.string.value_total_quantity), qty + ""
+        );
+        values.put(view.getStringFromResource(
+                com.tokopedia.core.R.string.value_shipping_fee), totalShipping + ""
+        );
+
+        PaymentTracking.eventTransactionLoca(values, locaProducts);
+
+        /*
+          AppsFlyer Block
+
+         */
+        PaymentTracking.eventTransactionAF(
+                thanksTopPayData.getParameter().getPaymentId(),
+                revenue, arrJas, qty, mapResult
+        );
+    }
+
+    @Override
+    public void clearNotificationCart() {
+        LocalCacheHandler cache = view.getLocalCacheHandlerNotificationData();
+        cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);
+        cache.applyEditor();
+    }
+
+    private void trackCanceledCart(CartItem canceledCartItem) {
+        if(canceledCartItem != null
+                && canceledCartItem.getCartProducts() != null
+                && !canceledCartItem.getCartProducts().isEmpty()) {
+            for(CartProduct cartProduct : canceledCartItem.getCartProducts()) {
+                trackCanceledProduct(canceledCartItem, cartProduct);
+            }
+        }
+    }
+
+    private void trackCanceledProduct(CartItem cartData, CartProduct cartProduct) {
+        if (cartData != null
+                && cartData.getCartShop() != null
+                && cartProduct != null) {
+            com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
+            product.setName(cartProduct.getProductName());
+            product.setId(cartProduct.getProductId());
+            product.setUrl(cartProduct.getProductUrl());
+            product.setImageUrl(cartProduct.getProductPic());
+            product.setPrice(cartProduct.getProductPrice());
+            product.setShopId(cartData.getCartShop().getShopId());
+
+            TrackingUtils.sendMoEngageRemoveProductFromCart(product);
+        }
+    }
+
     @NonNull
     private Map<String, String> generateDropShipperParam(List<String> dropShipperNameList,
                                                          List<String> dropShipperPhoneList,
@@ -475,6 +636,8 @@ public class CartPresenter implements ICartPresenter {
 
         List<String> dropShipperStringList = new ArrayList<>();
         List<String> partialDeliverStringList = new ArrayList<>();
+        List<String> rateKeyList = new ArrayList<>();
+        List<String> rateDataList = new ArrayList<>();
 
         for (CartItemEditable data : cartItemEditables) {
             if (data.isDropShipper()) {
@@ -484,6 +647,10 @@ public class CartPresenter implements ICartPresenter {
             }
             if (data.isPartialDeliver()) {
                 partialDeliverStringList.add(data.getCartStringForDeliverOption());
+            }
+            if (data.getCartCourierPrices() != null && !hasError(data.getCartItem())) {
+                rateKeyList.add(data.getCartCourierPrices().getKey());
+                rateDataList.add(data.getCartCourierPrices().getKeroValue());
             }
         }
 
@@ -526,17 +693,24 @@ public class CartPresenter implements ICartPresenter {
                 .partialString(partialDeliverParamString)
                 .lpFlag("1")
                 .step("1")
+                .keroKeyParams(rateKeyList)
+                .keroValueParams(rateDataList)
                 .build();
         if (checkoutData.getGateway() == null) {
             view.renderForceShowPaymentGatewaySelection();
             return;
         }
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(TopPayIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
-        bundle.putInt(TopPayIntentService.EXTRA_ACTION,
-                TopPayIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
-        view.executeIntentService(bundle, TopPayIntentService.class);
+        if (checkoutData.getKeroKeyParams().size() < 1) {
+            view.showToastMessage(view.getStringFromResource(
+                    R.string.label_message_error_cannot_checkout));
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(TopPayIntentService.EXTRA_CHECKOUT_DATA, checkoutData);
+            bundle.putInt(TopPayIntentService.EXTRA_ACTION,
+                    TopPayIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
+            view.executeIntentService(bundle, TopPayIntentService.class);
+        }
     }
 
     private void handleThrowableGeneral(Throwable e) {
@@ -560,8 +734,6 @@ public class CartPresenter implements ICartPresenter {
             view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
         } else if (e instanceof UnknownHostException) {
             view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
-        } else if (e.getCause() instanceof ResponseErrorException) {
-            view.renderErrorCheckVoucher(e.getCause().getMessage());
         } else if (e.getCause() instanceof HttpErrorException) {
             view.showToastMessage(e.getCause().getMessage());
         } else {
@@ -600,10 +772,11 @@ public class CartPresenter implements ICartPresenter {
         view.renderTotalPaymentWithLoyalty(data.getGrandTotalIdr());
         view.renderPaymentGatewayOption(data.getGatewayList());
         if (data.getLpAmount() != 0)
-            view.renderVisibleLoyaltyBalance(data.getLpAmountIdr());
+            view.renderVisibleLoyaltyBalance(data.getLpAmountIdr(),
+                    String.valueOf(data.getLpAmount()));
         else view.renderInvisibleLoyaltyBalance();
         view.renderTotalPaymentWithoutLoyalty(data.getGrandTotalWithoutLPIDR());
-        view.renderCartListData(data.getCartItemList());
+        view.renderCartListData(data.getTokenKero(), data.getUt(), data.getCartItemList());
         view.renderCheckoutCartDepositAmount(data.getDeposit() + "");
         view.setCheckoutCartToken(data.getToken());
         if ((data.getCheckoutNotifError() != null && !data.getCheckoutNotifError().equals("0"))) {
@@ -621,5 +794,94 @@ public class CartPresenter implements ICartPresenter {
             view.renderInvisibleErrorPaymentCart();
         }
         view.renderButtonCheckVoucherListener();
+        view.renderInstantPromo(data.getCartPromo());
+    }
+
+    @Override
+    public void processCartRates(String token, String ut, final List<CartItem> cartItemList) {
+        cartDataInteractor.calculateKeroRates(token, ut, cartItemList, keroRatesListener());
+    }
+
+    private ICartDataInteractor.KeroRatesListener keroRatesListener() {
+        return new ICartDataInteractor.KeroRatesListener() {
+            @Override
+            public void onSuccess(CartRatesData cartRatesData) {
+                if (cartRatesData.getRatesResponse() == null) {
+                    view.setCartError(cartRatesData.getRatesIndex());
+                } else {
+                    Rates ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
+                            Rates.class);
+                    CartCourierPrices cartCourierPrices = new CartCourierPrices();
+                    cartCourierPrices.setKey(cartRatesData.getKeroRatesKey());
+                    cartCourierPrices.setCartProductPrice(cartRatesData.getCartTotalProductPrice());
+                    cartCourierPrices.setCartIndex(cartRatesData.getRatesIndex());
+                    cartCourierPrices.setAdditionFee(cartRatesData.getCartAdditionalLogisticFee());
+                    cartCourierPrices.setKeroWeight(String.valueOf(ratesData.getData()
+                            .getAttributes()
+                            .get(0)
+                            .getWeight()));
+                    List<com.tokopedia.transaction.addtocart.model.kero.Product> shipmentServices =
+                            ratesData.getData().getAttributes().get(0).getProducts();
+
+                    setSubTotalPrice(shipmentServices,
+                            cartCourierPrices,
+                            cartRatesData);
+                    view.setCartSubTotal(cartCourierPrices);
+                }
+            }
+
+            @Override
+            public void onAllDataCompleted() {
+                view.showRatesCompletion();
+            }
+
+            @Override
+            public void onRatesFailed(String errorMessage) {
+                view.setCartNoGrandTotal();
+            }
+
+            @Override
+            public void onConnectionFailed() {
+
+            }
+        };
+    }
+
+    private void setSubTotalPrice(List<com.tokopedia.transaction.addtocart.model.kero
+            .Product> keroShipmentServices,
+                                  CartCourierPrices courierPrices,
+                                  CartRatesData cartRatesData) {
+
+        int shipmentServiceId = cartRatesData.getCourierServiceId();
+
+        for (int i = 0; i < keroShipmentServices.size(); i++) {
+            Integer currentKeroShipmentServiceId = Integer
+                    .parseInt(keroShipmentServices.get(i).getShipperProductId());
+
+            if (currentKeroShipmentServiceId == shipmentServiceId) {
+                courierPrices.setShipmentPrice(keroShipmentServices.get(i).getPrice());
+                courierPrices.setInsuranceMode(keroShipmentServices.get(i).getInsuranceMode());
+                if (courierPrices.getInsuranceMode() == MUST_INSURANCE_MODE) {
+                    courierPrices.setInsurancePrice(keroShipmentServices.get(i)
+                            .getInsurancePrice());
+                    courierPrices.setCartSubtotal(true);
+                } else if (courierPrices.getInsuranceMode() == OPTIONAL_INSURANCE_MODE) {
+                    courierPrices.setInsurancePrice(keroShipmentServices.get(i)
+                            .getInsurancePrice());
+                    courierPrices.setCartSubtotal(cartRatesData.isInsuranced());
+                } else {
+                    courierPrices.setCartSubtotal(false);
+                }
+                courierPrices.setKeroValue(keroShipmentServices.get(i));
+            }
+        }
+
+    }
+
+    private boolean hasError(CartItem cartItem) {
+        return (cartItem.getCartErrorMessage2() != null
+                && !cartItem.getCartErrorMessage2().equals("0"))
+                || (cartItem.getCartErrorMessage1() != null
+                && !cartItem.getCartErrorMessage1().equals("0"));
     }
 }

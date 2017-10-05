@@ -30,7 +30,7 @@ import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
-import com.tokopedia.session.session.fragment.RegisterInitialFragment;
+import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
 import com.tokopedia.session.session.interactor.LoginInteractor;
 import com.tokopedia.session.session.interactor.LoginInteractorImpl;
 import com.tokopedia.session.session.model.LoginModel;
@@ -39,7 +39,6 @@ import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.tokopedia.session.session.presenter.Login.LOGIN_UUID_KEY;
@@ -292,7 +291,7 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
 //                    registerView.updateData(RegisterView.NAME, loginGoogleModel.getFullName());
                 registerViewModel.setmName(loginGoogleModel.getFullName());
             }
-            if(loginGoogleModel.getGender().contains("male")){
+            if(loginGoogleModel.getGender() == null || loginGoogleModel.getGender().contains("male")){
 //                    registerView.updateData(RegisterView.GENDER, RegisterViewModel.GENDER_MALE);
                 registerViewModel.setmGender(RegisterViewModel.GENDER_MALE);
             }else{

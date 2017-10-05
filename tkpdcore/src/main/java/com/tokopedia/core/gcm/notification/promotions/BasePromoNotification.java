@@ -31,6 +31,7 @@ public abstract class BasePromoNotification extends BaseNotification {
             configuration.setNetworkIcon(true);
         }
         data = mNotificationAnalyticsReceiver.buildAnalyticNotificationData(data);
+        mNotificationPass.extraData = data;
         configureNotificationData(data);
         showNotification(data);
     }

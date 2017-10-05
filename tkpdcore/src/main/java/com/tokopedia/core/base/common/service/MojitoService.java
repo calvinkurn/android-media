@@ -2,6 +2,7 @@ package com.tokopedia.core.base.common.service;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.HashMap;
 
@@ -23,7 +24,7 @@ public interface MojitoService {
 
     @GET(TkpdBaseURL.Mojito.PATH_WISHLIST_PRODUCT)
     Observable<Response<String>> getWishlist(@Path("userId") String UserId,
-                                             @QueryMap HashMap<String, String> params);
+                                             @QueryMap HashMap<String, Object> params);
 
     @GET(TkpdBaseURL.Mojito.PATH_SEARCH_WISHLIST)
     Observable<Response<WishlistData>> searchWishlist(

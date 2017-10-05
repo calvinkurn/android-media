@@ -1,5 +1,6 @@
 package com.tokopedia.seller.selling.view.fragment;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,28 +16,23 @@ import android.widget.AdapterView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 
-import com.tokopedia.core.R2;
+import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
-import com.tokopedia.seller.selling.view.viewHolder.OrderViewHolder;
+import com.tokopedia.core.session.baseFragment.BaseFragment;
+import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.presenter.NewOrder;
 import com.tokopedia.seller.selling.presenter.NewOrderImpl;
 import com.tokopedia.seller.selling.presenter.NewOrderView;
-import com.tokopedia.core.R;
-import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.RefreshHandler;
-
+import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
+import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
+import com.tokopedia.seller.selling.view.viewHolder.OrderViewHolder;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by Toped10 on 7/28/2016.
@@ -46,18 +42,14 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     public static final int PROCESS_ORDER = 1;
     private boolean isRefresh = false;
     private boolean inhibit_spinner_deadline = true;
-    private LinearLayoutManager linearLayoutManager;
     private boolean shouldRefreshList = false;
 
     public static FragmentSellingNewOrder createInstance() {
         return new FragmentSellingNewOrder();
     }
 
-    @BindView(R2.id.order_list)
     RecyclerView list;
-    @BindView(R2.id.fab)
     FloatingActionButton fab;
-    @BindView(R2.id.root)
     View mainView;
     SearchView search;
     Spinner deadline;
@@ -101,7 +93,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     public void initHandlerAndAdapter() {
         setRetainInstance(true);
         page = new PagingHandler();
-        linearLayoutManager = new LinearLayoutManager(getActivity());
         adapter = new BaseSellingAdapter<OrderShippingList, OrderViewHolder>(OrderShippingList.class, getActivity(), R.layout.selling_order_list_item, OrderViewHolder.class) {
             @Override
             protected void populateViewHolder(OrderViewHolder viewHolder, OrderShippingList model, int position) {
@@ -110,7 +101,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
                     @Override
                     public void onItemClicked(int position) {
                         UnifyTracking.eventNewOrderDetail();
-                        if(adapter.isLoading()) {
+                        if (adapter.isLoading()) {
                             getPaging().setPage(getPaging().getPage() - 1);
                             presenter.finishConnection();
                         }
@@ -160,6 +151,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         if (resultCode == getActivity().RESULT_OK) {
             switch (requestCode) {
                 case PROCESS_ORDER:
+                    AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
                     shouldRefreshList = true;
                     break;
             }
@@ -170,23 +162,33 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        list = (RecyclerView) view.findViewById(R.id.order_list);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        mainView = view.findViewById(R.id.root);
+
         initView();
         return view;
     }
 
     public void initView() {
         refresh = new RefreshHandler(getActivity(), mainView, onRefreshListener());
-        setRefreshPullEnable(true);
-        list.setLayoutManager(linearLayoutManager);
+        list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(adapter);
         filterLayout = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_order, null);
-        search = ButterKnife.findById(filterLayout, R.id.search);
+        search = (SearchView) filterLayout.findViewById(R.id.search);
         int searchPlateId = search.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
         View searchPlate = search.findViewById(searchPlateId);
         searchPlate.setBackgroundColor(Color.TRANSPARENT);
-        deadline = ButterKnife.findById(filterLayout, R.id.deadline_spinner);
+        deadline = (Spinner) filterLayout.findViewById(R.id.deadline_spinner);
         bottomSheetDialog = new BottomSheetDialog(getActivity());
         bottomSheetDialog.setContentView(filterLayout);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.show();
+            }
+        });
     }
 
     @Override
@@ -203,14 +205,9 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                presenter.onScrollList(linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1);
+                presenter.onScrollList(((LinearLayoutManager) list.getLayoutManager()).findLastVisibleItemPosition() == list.getLayoutManager().getItemCount() - 1);
             }
         });
-    }
-
-    @OnClick(R2.id.fab)
-    public void onClickFab() {
-        bottomSheetDialog.show();
     }
 
     @Override
@@ -221,7 +218,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         initPresenter();
-
         presenter.getOrderList(isVisibleToUser);
         ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_NEWORDER);
         ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_NEWORDER);
@@ -339,12 +335,12 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     }
 
     @Override
-    public void hideFab(){
+    public void hideFab() {
         fab.hide();
     }
 
     @Override
-    public void showFab(){
+    public void showFab() {
         fab.show();
     }
 

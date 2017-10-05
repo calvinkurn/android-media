@@ -15,7 +15,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.forgotpassword.fragment.ForgotPasswordFragment;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenterImpl;
-import com.tokopedia.session.session.presenter.ForgotPassword;
 
 /**
  * Created by Alifa on 10/17/2016.

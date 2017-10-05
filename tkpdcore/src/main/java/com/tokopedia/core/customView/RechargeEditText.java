@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -79,7 +80,7 @@ public class RechargeEditText extends LinearLayout {
     }
 
     private void initBackgroundContactButtonAndClearButton() {
-        Glide.with(getContext()).load(R.drawable.ic_clear).asBitmap().into(
+        Glide.with(getContext()).load(R.drawable.ic_clear_widget).asBitmap().into(
                 new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource,
@@ -89,7 +90,7 @@ public class RechargeEditText extends LinearLayout {
                     }
                 });
 
-        Glide.with(getContext()).load(R.drawable.ic_phonebook).asBitmap().into(
+        Glide.with(getContext()).load(R.drawable.ic_phonebook_widget).asBitmap().into(
                 new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource,
@@ -157,6 +158,7 @@ public class RechargeEditText extends LinearLayout {
             public void onClick(View v) {
                 autoCompleteTextView.setText("");
                 setImgOperatorInvisible();
+                rechargeEditTextListener.onRechargeTextClear();
             }
         };
     }
@@ -216,6 +218,14 @@ public class RechargeEditText extends LinearLayout {
         this.btnClear.setVisibility(GONE);
     }
 
+    public void setInputTypeNumber() {
+        this.autoCompleteTextView.setInputType(InputType.TYPE_CLASS_NUMBER);
+    }
+
+    public void setInputTypeText() {
+        this.autoCompleteTextView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+    }
+
     public void setDropdownAutoComplete(List<String> displayList) {
         String[] wannaDisplay = new String[displayList.size()];
         wannaDisplay = displayList.toArray(wannaDisplay);
@@ -242,6 +252,7 @@ public class RechargeEditText extends LinearLayout {
                                    final int start,
                                    final int before,
                                    final int count);
+        void onRechargeTextClear();
     }
 
     public interface OnButtonPickerListener {

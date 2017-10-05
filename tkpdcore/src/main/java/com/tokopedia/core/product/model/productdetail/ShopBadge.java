@@ -65,7 +65,7 @@ public class ShopBadge implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ShopBadge> CREATOR = new Parcelable.Creator<ShopBadge>() {
+    public static final Creator<ShopBadge> CREATOR = new Creator<ShopBadge>() {
         @Override
         public ShopBadge createFromParcel(Parcel in) {
             return new ShopBadge(in);

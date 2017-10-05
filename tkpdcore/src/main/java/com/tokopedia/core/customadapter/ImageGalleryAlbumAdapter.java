@@ -62,19 +62,6 @@ public class ImageGalleryAlbumAdapter extends BaseAdapter{
 		}
 		
 		holder.mAlbumname.setText(mData.get(fPosition).getFolderName());
-//		holder.mBorder.setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				System.out.println(mData.get(position).getFirstPhotoURL());
-//				if(mListener != null){
-//					mListener.onPictureClicked(fPosition);
-//				}
-//			}
-//		});
-
-//		ImageHandler.LoadImageCustom(mData.get(position).getFirstPhotoURL())
-//		.fit()
-//		.centerCrop().into(holder.mImageView);
 
 		ImageHandler.loadImageFit2(convertView.getContext(), holder.mImageView,
 				mData.get(position).getFirstPhotoURL());

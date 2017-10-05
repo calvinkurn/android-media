@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics.nishikino.model;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,28 +15,32 @@ public class Campaign extends BaseGTMModel {
 
     }
 
+    public Campaign(Campaign campaign){
+        this.campaignMap.putAll(campaign.getCampaign());
+    }
+
     public void setUtmSource(String utmSource) {
-        this.campaignMap.put("utm_source", utmSource);
+        this.campaignMap.put(AppEventTracking.GTM.UTM_SOURCE, utmSource);
     }
 
     public void setUtmMedium(String utmMedium) {
-        this.campaignMap.put("utm_medium", utmMedium);
+        this.campaignMap.put(AppEventTracking.GTM.UTM_MEDIUM, utmMedium);
     }
 
     public void setUtmCampaign(String utmCampaign) {
-        this.campaignMap.put("utm_campaign", utmCampaign);
+        this.campaignMap.put(AppEventTracking.GTM.UTM_CAMPAIGN, utmCampaign);
     }
 
     public void setUtmContent(String utmContent) {
-        this.campaignMap.put("utm_content", utmContent);
+        this.campaignMap.put(AppEventTracking.GTM.UTM_CONTENT, utmContent);
     }
 
     public void setUtmTerm(String utmTerm) {
-        this.campaignMap.put("utm_term", utmTerm);
+        this.campaignMap.put(AppEventTracking.GTM.UTM_TERM, utmTerm);
     }
 
     public void setGclid(String gclid) {
-        this.campaignMap.put("gclid", gclid);
+        this.campaignMap.put(AppEventTracking.GTM.UTM_GCLID, gclid);
     }
 
     public void setScreenName(String screenName) {

@@ -115,9 +115,6 @@ public class UploadImageDialog {
                         listener.onFailed();
                     }
                     break;
-                default:
-                    listener.onFailed();
-                    break;
             }
         }
     }

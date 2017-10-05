@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxticket.activity;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
@@ -56,12 +57,17 @@ public class InboxTicketActivity extends DrawerPresenterActivity<InboxTicketPres
     @Override
     protected void initView() {
         super.initView();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+        Fragment fragment;
         if (getFragmentManager().findFragmentByTag(InboxTicketFragment.class.getSimpleName()) == null) {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentTransaction.add(R.id.container, InboxTicketFragment.createInstance(), InboxTicketFragment.class.getSimpleName());
-            fragmentTransaction.commit();
+            fragment = InboxTicketFragment.createInstance();
+        } else {
+            fragment = getFragmentManager().findFragmentByTag(InboxTicketFragment.class.getSimpleName());
         }
+
+        fragmentTransaction.replace(R.id.container, fragment, InboxTicketFragment.class.getSimpleName());
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -89,7 +95,7 @@ public class InboxTicketActivity extends DrawerPresenterActivity<InboxTicketPres
         if (isTaskRoot() && GlobalConfig.isSellerApp()) {
             startActivity(SellerAppRouter.getSellerHomeActivity(this));
             finish();
-        } else if (isTaskRoot()){
+        } else if (isTaskRoot()) {
             startActivity(HomeRouter.getHomeActivity(this));
             finish();
         }

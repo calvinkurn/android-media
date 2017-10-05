@@ -19,6 +19,7 @@ import com.tokopedia.core.InfoTopAds;
 import com.tokopedia.core.R;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
+import com.tokopedia.discovery.view.FragmentBrowseProductView;
 
 import java.util.List;
 
@@ -33,18 +34,24 @@ public class TopAdsListRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     private List<ProductItem> data;
     private Context context;
     private String source;
+    private FragmentBrowseProductView fragmentBrowseProductView;
 
-    public TopAdsListRecyclerViewAdapter(List<ProductItem> data, Context context, String source) {
+    public TopAdsListRecyclerViewAdapter(List<ProductItem> data, Context context, String source,
+                                         FragmentBrowseProductView fragmentBrowseProductView) {
         this.data = data;
         this.context = context;
         this.source = source;
+        this.fragmentBrowseProductView = fragmentBrowseProductView;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
             //inflate your layout and pass it to view holder
-            return new ProductAdapter.ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false));
+            return new ProductAdapter.ViewHolderProductitem(context,
+                    LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false),
+                    fragmentBrowseProductView
+                    );
         } else if (viewType == TYPE_HEADER) {
             //inflate your layout and pass it to view holder
             return new VHHeader(LayoutInflater.from(context).inflate(R.layout.child_main_top_ads_header, parent, false));
@@ -56,7 +63,7 @@ public class TopAdsListRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ProductAdapter.ViewHolderProductitem) {
             ProductAdapter.ViewHolderProductitem holderProductitem = (ProductAdapter.ViewHolderProductitem) holder;
-            holderProductitem.bindData(getItem(position), holderProductitem);
+            holderProductitem.bindData(getItem(position), holderProductitem, position);
         }
     }
 

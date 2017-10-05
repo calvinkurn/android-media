@@ -18,11 +18,10 @@ import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.ErrorContainer;
 import com.tokopedia.discovery.model.NetworkParam;
-import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.discovery.view.ShopView;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 
@@ -31,29 +30,28 @@ import java.util.List;
  */
 public class ShopImpl extends Shop implements DiscoveryListener {
     DiscoveryInteractor discoveryInteractor;
-    WeakReference<Context> context;
     NetworkParam.Shop shop;
 
     private int index;
-    private DiscoveryActivityPresenter activityPresenter;
+    private BrowseView browseView;
 
     public ShopImpl(ShopView view) {
         super(view);
     }
 
     @Override
-    public void callNetwork(DiscoveryActivityPresenter discoveryActivityPresenter) {
+    public void callNetwork(BrowseView browseView) {
         // jika datanya kosong, maka itu dianggap first time.
-        this.activityPresenter = discoveryActivityPresenter;
+        this.browseView = browseView;
         if (view.getDataSize() <= 0) {
             shop = new NetworkParam.Shop();
-            shop.floc = discoveryActivityPresenter.getProductParam().floc;
-            shop.q = discoveryActivityPresenter.getProductParam().q;
-            shop.fshop = discoveryActivityPresenter.getProductParam().fshop;
+            shop.floc = browseView.getProductParam().floc;
+            shop.q = browseView.getProductParam().q;
+            shop.fshop = browseView.getProductParam().fshop;
             shop.start = 0;
-            shop.extraFilter = discoveryActivityPresenter.getProductParam().extraFilter;
-            discoveryInteractor.getShops(NetworkParam.generateShopQuery(shop));
+            shop.extraFilter = browseView.getProductParam().extraFilter;
             view.setLoading(true);
+            discoveryInteractor.getShops(NetworkParam.generateShopQuery(shop));
         }
     }
 
@@ -69,9 +67,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
     @Override
     public void initData(@NonNull Context context) {
-        if (!isAfterRotate) {
-            view.setupRecyclerView();
-        }
+        view.setupRecyclerView();
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
     }
 
@@ -98,9 +94,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
     @Override
     public void initDataInstance(Context context) {
-        if (!isAfterRotate) {
-            view.initAdapter();
-        }
+        view.initAdapter();
         discoveryInteractor = new DiscoveryInteractorImpl();
         discoveryInteractor.setDiscoveryListener(this);
     }
@@ -141,7 +135,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
                 Pair<List<ShopModel>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseShopModel(browseShopModel);
                 view.setLoading(false);
-                view.onCallProductServiceLoadMore(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                view.setShopData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                 fetchDynamicAttribut();
                 break;
             case DiscoveryListener.DYNAMIC_ATTRIBUTE:
@@ -155,8 +149,11 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
     @Override
     public void fetchDynamicAttribut() {
-        if (activityPresenter.checkHasFilterAttrIsNull(index)) {
-            discoveryInteractor.getDynamicAttribute(view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP, activityPresenter.getBrowseProductActivityModel().getDepartmentId());
+        if (browseView.checkHasFilterAttrIsNull(index)) {
+            discoveryInteractor.getDynamicAttribute(view.getContext(),
+                    BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP,
+                    browseView.getBrowseProductActivityModel().getDepartmentId(),
+                    browseView.getBrowseProductActivityModel().getQ());
         }
     }
 }

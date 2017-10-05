@@ -3,7 +3,6 @@ package com.tokopedia.core.product.model.share;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.Html;
 import android.text.TextUtils;
 
 import com.tokopedia.core.util.MethodChecker;
@@ -16,12 +15,15 @@ public class ShareData implements Parcelable {
     public static final String CATALOG_TYPE = "Catalog";
     public static final String SHOP_TYPE = "Shop";
     public static final String PRODUCT_TYPE = "Product";
+    public static final String CATEGORY_TYPE = "Directory";
     public static final String DISCOVERY_TYPE = "Discovery";
     public static final String HOTLIST_TYPE = "Hotlist";
+    public static final String RIDE_TYPE = "Ride";
     private static final String ARG_UTM_MEDIUM = "Android%20Share%20Button";
     private static final String DEFAULT_EMPTY_FIELD = "";
+    public static final String APP_SHARE_TYPE = "App";
 
-    private String type;
+    private String type = "";
     private String name;
     private String price;
     private String uri;
@@ -118,7 +120,7 @@ public class ShareData implements Parcelable {
     }
 
     public String getTextContent() {
-        if (getType() != null){
+        if (getType() != null) {
             return (this.textContent != null) ? (this.textContent + "\n" + renderShareUri()) : renderShareUri();
         }
         return String.valueOf(MethodChecker.fromHtml("Jual " + name + " hanya " + price + ", lihat gambar klik " + uri + "\n"));
@@ -145,24 +147,35 @@ public class ShareData implements Parcelable {
     }
 
     public String renderShareUri() {
-        if (getUri() == null){
-           return "";
+        if (getUri() == null) {
+            return "";
         }
         String campaign = "Product";
         if (getType() != null)
             campaign = getType();
 
         String renderedUrl;
-        if (getUri().contains("?")) {
-            Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_campaign=%s&utm_medium=%s",
-                    getUri(), getSource(), campaign, ARG_UTM_MEDIUM));
-            renderedUrl = uri.toString();
+        if (!getType().equalsIgnoreCase(RIDE_TYPE)) {
+            if (getUri().contains("?")) {
+                Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_campaign=%s&utm_medium=%s",
+                        getUri(), getSource(), campaign, ARG_UTM_MEDIUM));
+                renderedUrl = uri.toString();
+            } else {
+                Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_campaign=%s&utm_medium=%s",
+                        getUri(), getSource(), campaign, ARG_UTM_MEDIUM));
+                renderedUrl = uri.toString();
+            }
         } else {
-            Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_campaign=%s&utm_medium=%s",
-                    getUri(), getSource(), campaign, ARG_UTM_MEDIUM));
-            renderedUrl = uri.toString();
+            renderedUrl = getUri();
         }
         return renderedUrl;
+    }
+
+    public String[] getSplittedDescription(String splitWith) {
+        if (description.contains(splitWith))
+            return description.split(splitWith);
+        else
+            return new String[0];
     }
 
     public static class Builder {
@@ -238,5 +251,6 @@ public class ShareData implements Parcelable {
             shareData.setSource(source);
             return shareData;
         }
+
     }
 }

@@ -4,19 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.ValidationTextUtil;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
-import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 
 import java.util.ArrayList;
@@ -67,13 +62,12 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
     }
 
     private void getStatusList() {
-        view.setRefreshPullEnable(false);
+
         isLoading = true;
         requestGetStatusList();
     }
 
     private void getTransactionList() {
-        view.setRefreshPullEnable(false);
         isLoading = true;
         requestGetTransactionList();
     }
@@ -230,7 +224,6 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         finishConnection();
         listDatas.addAll(model);
         view.notifyDataSetChanged(listDatas);
-        view.setRefreshPullEnable(true);
         view.showFab();
     }
 
@@ -242,7 +235,6 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
             view.addEmptyView();
         }
         view.getPaging().setHasNext(false);
-        view.setRefreshPullEnable(true);
         view.showFab();
         view.removeRetry();
     }
@@ -256,7 +248,6 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);
         }
-        view.setRefreshPullEnable(true);
     }
 
     @Override
@@ -268,7 +259,6 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);
         }
-        view.setRefreshPullEnable(true);
     }
 
     @Override

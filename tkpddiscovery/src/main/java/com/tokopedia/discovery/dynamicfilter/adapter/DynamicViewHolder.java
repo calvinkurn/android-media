@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R2;
 import com.tokopedia.core.discovery.model.DynamicObject;
+import com.tokopedia.discovery.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,6 +24,7 @@ public class DynamicViewHolder extends RecyclerView.ViewHolder {
     CheckBox dynamicParentViewHolder;
     @BindView(R2.id.container)
     LinearLayout containerLayout;
+    View dropDownIndicator;
     DynamicObject dynamicObject;
 
     /**
@@ -35,6 +37,7 @@ public class DynamicViewHolder extends RecyclerView.ViewHolder {
     public DynamicViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+        dropDownIndicator = itemView.findViewById(R.id.drop_down_indicator);
     }
 
     public DynamicObject getDynamicObject() {

@@ -14,6 +14,8 @@ public interface WishList {
     String TAG = "MNORMANSYAH";
     String messageTAG = "WishList : ";
     String WISHLIST_MODEL = "WISHLIST_MODEL";
+    String WISHLIST_ENTITY = "WISHLIST_ENTITY";
+    String PAGINATION_MODEL = "PAGINATION_MODEL";
 
     void initDataInstance(Context context);
 
@@ -79,11 +81,19 @@ public interface WishList {
 
     void setData(com.tokopedia.core.network.entity.wishlist.WishlistData wishlistData);
 
-    void deleteWishlist(Context context, String productId);
+    void deleteWishlist(Context context, String productId, int position);
 
     void addToCart(Context context, String productId);
 
     boolean isLoadedFirstPage();
 
     void searchWishlist(String query);
+
+    void searchWishlistLoadMore();
+
+    void fetchDataAfterClearSearch(Context context);
+
+    void refreshDataOnSearch(CharSequence query);
+
+    void onResume(Context context);
 }

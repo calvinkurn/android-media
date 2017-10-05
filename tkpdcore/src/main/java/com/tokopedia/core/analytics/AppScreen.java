@@ -12,27 +12,6 @@ import com.tokopedia.core.router.home.HomeRouter;
 public final class AppScreen {
 
 
-
-
-    private AppScreen() {
-
-    }
-
-    public static String convertAFActivityEvent(String tag) {
-        if (tag.equals(HomeRouter.IDENTIFIER_HOME_ACTIVITY)) {
-            return AFInAppEventType.LOGIN;
-        } else {
-            return AFInAppEventType.CONTENT_VIEW;
-        }
-    }
-
-    public static String convertAFFragmentEvent(String tag) {
-        if (tag.equals(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
-            return AFInAppEventType.COMPLETE_REGISTRATION;
-        } else {
-            return AFInAppEventType.CONTENT_VIEW;
-        }
-    }
     public static final String STATISTIC_PAGE = "Statistic Page";
     public static final String SCREEN_COPY_PRODUCT = "Salin Product Page";
     public static final String SCREEN_INSTOPED = "Instoped Upload Page";
@@ -70,6 +49,8 @@ public final class AppScreen {
     public static final String SCREEN_CONFIG_P_PRIVACY = "People Edit Privacy";
     public static final String SCREEN_CONFIG_P_PASSWORD = "People Edit Password";
     public static final String SCREEN_SHOP = "Shop Info";
+    public static final String SCREEN_OFFICIAL_STORE = "Official Store";
+    public static final String SCREEN_OFFICIAL_STORE_REACT = "Official Store React";
     public static final String SCREEN_SHOP_SEND_MESSAGE = "Shop Send Message";
     public static final String SCREEN_SHOP_DETAIL = "Shop Info Detail";
     public static final String SCREEN_SHOP_DETAIL_STATS = "Shop Info Detail Statistic";
@@ -137,7 +118,7 @@ public final class AppScreen {
     public static final String SCREEN_TOPADS = "Top Ads Screen";
     public static final String SCREEN_SORT_PRODUCT = "Sort Produk Activity";
     public static final String SCREEN_BROWSE_PRODUCT_FROM_SEARCH = "Browse Produk - From Search";
-    public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY = "Browse Category";
+    public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY = "Browse Category - ";
     public static final String SCREEN_SEARCH_PAGE = "Search page";
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     public static final String SCREEN_SEARCH_PAGE_CATALOG_TAB = "Search result - Catalog tab";
@@ -217,16 +198,19 @@ public final class AppScreen {
     public static final String SCREEN_SHARE = "Share Screen";
     public static final String SCREEN_GALLERY_BROWSE = "Browse Gallery Screen";
     public static final String SCREEN_GM_SUBSCRIBE = "Gold Merchant Subscribe";
+    public static final String SCREEN_GM_SUBSCRIBE_CHECKOUT = "Gold Merchant Subscribe Checkout Page";
+    public static final String SCREEN_GM_SUBSCRIBE_PAYMENT = "Gold Merchant Subscribe Payment Page";
+    public static final String SCREEN_GM_SUBSCRIBE_PRODUCT = "Gold Merchant Product Subscribe Page";
     public static final String SCREEN_SELLER_HOME = "Seller Home";
+    public static final String SCREEN_SELLER_REP_HISTORY = "Reputation History";
+    public static final String SCREEN_SELLER_SHOP_SCORE = "Shop Score";
     public static final String SCREEN_PHONE_VERIFICATION = "Phone Verification Screen";
     public static final String SCREEN_OTP_SQ = "Security Question Screen";
     public static final String GOLD_MERCHANT_REDIRECT = "Gold Merchant Redirect Page";
-
     public static final String SCREEN_INBOX_MAIN = "Inbox Page";
     public static final String SCREEN_INBOX_SENT = "Inbox - Sent Page";
     public static final String SCREEN_INBOX_ARCHIVE = "Inbox - Archive Page";
     public static final String SCREEN_INBOX_TRASH = "Inbox - Trash Page";
-
     public static final String SCREEN_LOCA_NEWORDER = "Transaction - New Order Page";
     public static final String SCREEN_LOCA_TXCENTER = "Transaction List - Selling Page";
     public static final String SCREEN_LOCA_TXSTATUS = "Transaction - Sell page";
@@ -244,7 +228,41 @@ public final class AppScreen {
     public static final String SCREEN_VIEWED_SEARCH_PAGE = "event : Viewed Search Page";
     public static final String EVENT_ADDED_PRODUCT = "event : Add Product";
     public static final String EVENT_ADDED_WISHLIST = "event : Add to wishlist";
-    public static final String EVENT_CLICKED_HOTLIST= "event : Clicked Hot List";
+    public static final String EVENT_CLICKED_HOTLIST = "event : Clicked Hot List";
+    public static final String EVENT_GOOD_REVIEW = "event: Good Review";
     public static final String SCREEN_VIEWED_WISHLIST_PAGE = "event : Viewed Wishlist Page";
     public static final String SCREEN_VIDEO_PLAYER = "Video player page";
+    public static final String SCREEN_RIDE_HOME = "Ride Home Page";
+    public static final String SCREEN_RIDE_ONTRIP = "Ride On Trip Page";
+    public static final String SCREEN_DEEPLINK_APPLINKHANDLER = "AppLink Handler";
+    public static final String SCREEN_RESOLUTION_CENTER_HISTORY_ACTION = "Resolution Center - History Action Page";
+    public static final String SCREEN_RESOLUTION_CENTER_HISTORY_ADDRESS = "Resolution Center - History Address Page";
+    public static final String SCREEN_RESOLUTION_CENTER_HISTORY_SHIPPING = "Resolution Center - History Shipping Page";
+    public static final String SCREEN_RESOLUTION_CENTER_PRODUCT_LIST = "Resolution Center - Product List";
+    public static final String SCREEN_RESOLUTION_CENTER_PRODUCT_DETAIL = "Resolution Center - Product Detail";
+    public static final String SCREEN_RESOLUTION_CENTER_DISCUSSION = "Resolution Center - Discussion";
+    public static final String CREATE_SHOP_REDIRECT = "Create Shop Redirect Page";
+    public static final String SCREEN_FEED_DETAIL = "Feed Detail";
+    public static final String SCREEN_OPPORTUNITY_DETAIL = "Replacement Detail Page";
+    public static final String SCREEN_OPPORTUNITY_TAB= "Replacement Main Page";
+
+    private AppScreen() {
+
+    }
+
+    public static String convertAFActivityEvent(String tag) {
+        if (tag.equals(HomeRouter.IDENTIFIER_HOME_ACTIVITY)) {
+            return AFInAppEventType.LOGIN;
+        } else {
+            return AFInAppEventType.CONTENT_VIEW;
+        }
+    }
+
+    public static String convertAFFragmentEvent(String tag) {
+        if (tag.equals(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
+            return AFInAppEventType.COMPLETE_REGISTRATION;
+        } else {
+            return AFInAppEventType.CONTENT_VIEW;
+        }
+    }
 }

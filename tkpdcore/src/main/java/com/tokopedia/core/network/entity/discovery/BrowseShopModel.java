@@ -118,6 +118,10 @@ public class BrowseShopModel {
         @SerializedName("is_official")
         public boolean isOfficial;
 
+        @SerializedName("product_images")
+        public List<String> productImages;
+
+        public boolean isFavorited;
 
         @Override
         public ShopModel from(Shops data) {

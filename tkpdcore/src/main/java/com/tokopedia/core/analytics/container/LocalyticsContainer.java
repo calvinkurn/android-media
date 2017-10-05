@@ -13,6 +13,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.model.Product;
+import com.tokopedia.core.app.MainApplication;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,7 +93,15 @@ public class LocalyticsContainer implements ILocalyticsContainer {
 
     @Override
     public void register(Application appl, String senderId, MessagingListener msgListener) {
-        appl.registerActivityLifecycleCallbacks(new LocalyticsActivityLifecycleCallbacks(context));
+        if(appl!=null){
+            try{
+                appl.registerActivityLifecycleCallbacks(new LocalyticsActivityLifecycleCallbacks(context));
+            }catch (RuntimeException e){
+                e.printStackTrace();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
         Localytics.setMessagingListener(msgListener);
         doRegister(senderId);
         setPushDisabled(false);
@@ -218,7 +227,7 @@ public class LocalyticsContainer implements ILocalyticsContainer {
                 .map(new Func1<Bundle, Boolean>() {
                     @Override
                     public Boolean call(Bundle data) {
-                        Localytics.handlePushNotificationReceived(data);
+                        Localytics.tagPushReceivedEvent(data);
                         return null;
                     }
                 });
@@ -562,5 +571,10 @@ public class LocalyticsContainer implements ILocalyticsContainer {
                     }
                 });
         executeTagEvent(observable, null);
+    }
+
+    @Override
+    public void setNotificationsDisabled(boolean notificationsDisabled) {
+        Localytics.setNotificationsDisabled(notificationsDisabled);
     }
 }

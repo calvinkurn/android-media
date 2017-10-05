@@ -59,13 +59,15 @@
 
     <TextView
         android:id="@+id/account_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/bank_icon"
         android:layout_marginBottom="@dimen/margin_vs"
         android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_toLeftOf="@id/default_bank"
         android:textStyle="bold"
-        tools:text="Apa aja boyeh"/>
+        tools:text="Apa aja boleh"/>
 
     <TextView
         android:id="@+id/account_number"

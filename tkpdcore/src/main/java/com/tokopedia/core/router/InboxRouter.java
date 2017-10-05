@@ -1,28 +1,30 @@
 package com.tokopedia.core.router;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
-import com.tokopedia.core.gcm.GCMLegacyListenerService;
 import com.tokopedia.core.onboarding.FreeReturnOnboardingActivity;
 import com.tokopedia.core.util.RouterUtils;
 
-import static com.raizlabs.android.dbflow.config.FlowLog.Level.I;
 
 /**
  * Created by Nathaniel on 11/11/2016.
  */
 
+/**
+ * @deprecated do not use this class
+ * please use TkpdInboxRouter instead
+ * @author nisie
+ */
+@Deprecated
 public class InboxRouter {
 
     private static final String INBOX_CONTACT_US_ACTIVITY = "com.tokopedia.inbox.contactus.activity.ContactUsActivity";
     private static final String CREATE_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity";
-    private static final String DETAIL_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.detail.activity.ResCenterActivity";
+    private static final String DETAIL_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity";
     private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
     private static final String INBOX_RESCENTER_FRAGMENT = "com.tokopedia.inbox.rescenter.inbox.fragment.InboxResCenterFragment";
     private static final String INBOX_TALK_ACTIVITY = "com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity";
@@ -32,7 +34,7 @@ public class InboxRouter {
     public static final String ARG_PARAM_EXTRA_INSTANCE_TYPE = "ARG_PARAM_EXTRA_INSTANCE_TYPE";
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
-    public static final String EXTRA_RESOLUTION_ID = "EXTRA_RESOLUTION_ID";
+    public static final String EXTRA_RESOLUTION_ID = "resolution_id";
     public static final String EXTRA_STATE_FLAG_RECEIVED = "EXTRA_STATE_FLAG_RECEIVED";
     public static final String EXTRA_TROUBLE_ID = "EXTRA_TROUBLE_ID";
     public static final String EXTRA_SOLUTION_ID = "EXTRA_SOLUTION_ID";
@@ -45,12 +47,15 @@ public class InboxRouter {
 
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
     private static final String INBOX_MESSAGE_FRAGMENT = "com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment";
-    private static final String SEND_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity";;
-    public static final java.lang.String PARAM_CUSTOM_SUBJECT = "custom_subject";
-    public static final java.lang.String PARAM_CUSTOM_MESSAGE = "custom_message";
     public static final java.lang.String PARAM_OWNER_FULLNAME = "owner_fullname";
-    public static final java.lang.String PARAM_USER_ID = "to_user_id";
     public static final java.lang.String PARAM_SHOP_ID = "to_shop_id";
+    public static final String PARAM_URL = "PARAM_URL";
+
+    //Trouble ID
+
+    //Solution ID
+    public static final int SOLUTION_REFUND = 1;
+    public static final int SOLUTION_CHECK_COURIER = 6;
 
 
     /////////// INTENT
@@ -200,9 +205,5 @@ public class InboxRouter {
         bundle.putInt(ARG_PARAM_EXTRA_INSTANCE_TYPE, state);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    public static Intent getSendMessageActivityIntent(Context context) {
-        return RouterUtils.getActivityIntent(context, SEND_MESSAGE_ACTIVITY);
     }
 }

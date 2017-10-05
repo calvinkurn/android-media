@@ -8,37 +8,28 @@ import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.tkpd.home.feed.domain.FeedRepository;
 import com.tokopedia.tkpd.home.feed.domain.model.DataFeed;
 import com.tokopedia.tkpd.home.feed.domain.model.Feed;
-import com.tokopedia.tkpd.home.feed.domain.model.TopAds;
 
-import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * @author Kulomady on 12/8/16.
  */
 
-public class LoadMoreFeedUseCase
-        extends UseCase<DataFeed> {
-
-    public static final String KEY_IS_INCLUDE_TOPADS = "isIncludeTopAds";
-    public static final String KEY_TOPADS_PAGE = "keyTopAdsPage";
+public class LoadMoreFeedUseCase extends UseCase<DataFeed> {
 
     private final ThreadExecutor threadExecutor;
     private final PostExecutionThread postExecutionThread;
     private FeedRepository feedRepository;
     private final GetListShopIdUseCase getListShopIdUseCase;
-    private GetTopAdsUseCase getTopAdsUseCase;
 
 
     public LoadMoreFeedUseCase(ThreadExecutor threadExecutor,
                                PostExecutionThread postExecutionThread,
                                FeedRepository feedRepository,
-                               GetListShopIdUseCase getListShopIdUseCase,
-                               GetTopAdsUseCase getTopAdsUseCase) {
+                               GetListShopIdUseCase getListShopIdUseCase) {
 
         super(threadExecutor, postExecutionThread);
 
@@ -46,31 +37,10 @@ public class LoadMoreFeedUseCase
         this.postExecutionThread = postExecutionThread;
         this.feedRepository = feedRepository;
         this.getListShopIdUseCase = getListShopIdUseCase;
-        this.getTopAdsUseCase = getTopAdsUseCase;
     }
 
     @Override
     public Observable<DataFeed> createObservable(RequestParams requestParams) {
-        boolean isIncludeTopAds = requestParams.getBoolean(KEY_IS_INCLUDE_TOPADS, false);
-        requestParams.clearValue(KEY_IS_INCLUDE_TOPADS);
-        if (isIncludeTopAds) {
-            String topAdsPage = requestParams.getString(KEY_TOPADS_PAGE, "1");
-            return Observable.zip(
-                    getFeedObservable(requestParams),
-                    getTopAdsObservable(topAdsPage),
-                    new Func2<Feed, List<TopAds>, DataFeed>() {
-                        @Override
-                        public DataFeed call(Feed feed, List<TopAds> topAds) {
-                            return getValidDataFeedWithTopAds(feed, topAds);
-                        }
-                    })
-                    .onErrorReturn(new Func1<Throwable, DataFeed>() {
-                        @Override
-                        public DataFeed call(Throwable throwable) {
-                            return getInvalidDataFeed();
-                        }
-                    });
-        } else {
             return getFeedObservable(requestParams).map(new Func1<Feed, DataFeed>() {
                 @Override
                 public DataFeed call(Feed feed) {
@@ -83,20 +53,12 @@ public class LoadMoreFeedUseCase
                 }
             });
 
-        }
+
     }
 
     private DataFeed getInvalidDataFeed() {
         DataFeed dataFeed = new DataFeed();
         dataFeed.setValid(false);
-        return dataFeed;
-    }
-
-    private DataFeed getValidDataFeedWithTopAds(Feed feed, List<TopAds> topAds) {
-        DataFeed dataFeed = new DataFeed();
-        dataFeed.setFeed(feed);
-        dataFeed.setTopAds(topAds);
-        dataFeed.setValid(true);
         return dataFeed;
     }
 
@@ -144,26 +106,6 @@ public class LoadMoreFeedUseCase
                         return feed;
                     }
                 });
-    }
-
-    private Observable<List<TopAds>> getTopAdsObservable(String topAdsPage) {
-        return getTopAdsUseCase.createObservable(getTopAdsParams(topAdsPage))
-                .onErrorReturn(new Func1<Throwable, List<TopAds>>() {
-                    @Override
-                    public List<TopAds> call(Throwable throwable) {
-                        throwable.printStackTrace();
-                        return Collections.emptyList();
-                    }
-                });
-    }
-
-
-    private RequestParams getTopAdsParams(String topAdsPage) {
-        RequestParams params = RequestParams.create();
-        params.putString(GetTopAdsUseCase.KEY_PAGE, topAdsPage);
-        params.putString(GetTopAdsUseCase.KEY_ITEM, GetTopAdsUseCase.TOPADS_ITEM_DEFAULT_VALUE);
-        params.putString(GetTopAdsUseCase.KEY_SRC, GetTopAdsUseCase.SRC_PRODUCT_FEED);
-        return params;
     }
 
 

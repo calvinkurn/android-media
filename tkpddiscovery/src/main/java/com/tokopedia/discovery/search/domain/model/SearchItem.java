@@ -1,16 +1,25 @@
 package com.tokopedia.discovery.search.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author erry on 23/02/17.
  */
 
 public class SearchItem {
+    @SerializedName("keyword")
     private String keyword;
+    @SerializedName("url")
     private String url;
+    @SerializedName("recom")
     private String recom;
+    @SerializedName("applink")
     private String applink;
+    @SerializedName("sc")
     private String sc;
+    @SerializedName("imageURI")
     private String imageURI;
+    @SerializedName("isOfficial")
     private boolean isOfficial;
     private String eventAction;
 

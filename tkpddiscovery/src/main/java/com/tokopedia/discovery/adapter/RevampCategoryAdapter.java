@@ -11,9 +11,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-
 import com.tokopedia.core.R2;
-import com.tokopedia.core.network.entity.categoriesHades.Child;
+import com.tokopedia.core.network.entity.intermediary.Child;
 
 import java.util.List;
 
@@ -55,7 +54,7 @@ public class RevampCategoryAdapter extends
         itemRowHolder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                categoryListener.onCategoryIntermediaryClick(categories.get(position));
+                categoryListener.onCategoryRevampClick(categories.get(position));
             }
         });
     }
@@ -83,7 +82,7 @@ public class RevampCategoryAdapter extends
     }
 
     public interface CategoryListener {
-        void onCategoryIntermediaryClick(Child child);
+        void onCategoryRevampClick(Child child);
     }
 
     public void addDataChild(List<Child> childs) {
@@ -92,7 +91,7 @@ public class RevampCategoryAdapter extends
     }
 
     public void hideExpandable() {
-        categories.subList(6,categories.size()).clear();
+        categories.subList(9,categories.size()).clear();
         notifyDataSetChanged();
     }
 }

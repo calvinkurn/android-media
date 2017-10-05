@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.contactus.activity;
 
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,6 +9,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
@@ -101,25 +101,32 @@ public class ContactUsActivity extends BasePresenterActivity implements
         if (bundle == null)
             bundle = new Bundle();
 
-        if (goToCreateTicket(bundle)) {
-            url = bundle.getString(PARAM_URL, "");
-            if (url != null && !url.equals(""))
-                bundle.putString(PARAM_SOLUTION_ID, Uri.parse(url).getQueryParameter("solution_id"));
-            onGoToCreateTicket(bundle);
-        } else if (getFragmentManager().findFragmentById(R.id.main_view) == null) {
-            ContactUsFaqFragment fragment = ContactUsFaqFragment.createInstance(bundle);
-            listener = fragment.getBackButtonListener();
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
-            fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
-            fragmentTransaction.commit();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+        ContactUsFaqFragment fragment;
+        if (getFragmentManager().findFragmentByTag(ContactUsFaqFragment.class.getSimpleName()) == null) {
+            fragment = ContactUsFaqFragment.createInstance(bundle);
+        } else {
+            fragment = (ContactUsFaqFragment) getFragmentManager().findFragmentByTag(ContactUsFaqFragment.class.getSimpleName());
         }
+
+        listener = fragment.getBackButtonListener();
+        fragmentTransaction.replace(R.id.main_view, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
+
+        setTitle();
     }
 
-    private boolean goToCreateTicket(Bundle bundle) {
-        return getFragmentManager().findFragmentById(R.id.main_view) == null
-                && !bundle.getString(PARAM_URL, "").equals("")
-                && Uri.parse(bundle.getString(PARAM_URL, "")).getQueryParameter("solution_id") != null;
+    private void setTitle() {
+        if (getIntent().getExtras() == null || (
+                getIntent().getExtras() != null
+                        && getIntent().getExtras()
+                        .getString(InboxRouter.PARAM_URL, "").equals(""))) {
+            toolbar.setTitle(com.tokopedia.inbox.R.string.title_help);
+        } else {
+            toolbar.setTitle(R.string.title_activity_contact_us);
+        }
     }
 
     @Override
@@ -157,7 +164,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
         } else if (listener != null && listener.canGoBack()) {
             listener.onBackPressed();
         } else {
-            super.onBackPressed();
+            finish();
         }
     }
 

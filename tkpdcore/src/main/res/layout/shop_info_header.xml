@@ -46,7 +46,6 @@
                     android:gravity="center_horizontal"
                     android:shadowColor="@color/black"
                     android:shadowRadius="2"
-                    android:text="Kirisameya"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_large"
                     android:textStyle="bold" />
@@ -95,7 +94,7 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:src="@drawable/ic_shop_gold"
-                    android:visibility="gone" />
+                    android:visibility="invisible" />
 
                 <ImageView
                     android:id="@id/lucky_shop"

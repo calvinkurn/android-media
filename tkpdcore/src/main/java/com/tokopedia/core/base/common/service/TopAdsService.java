@@ -19,7 +19,7 @@ public interface TopAdsService {
     Observable<Response<String>> getTopAds(@QueryMap Map<String, Object> params);
 
     @GET(TkpdBaseURL.TopAds.PATH_GET_SHOP_TOP_ADS)
-    Observable<Response<String>> getShopTopAds(@QueryMap Map<String, String> params);
+    Observable<Response<String>> getShopTopAds(@QueryMap Map<String, Object> params);
 
 }
 

@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,12 +24,12 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.base.BaseFragment;
-import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.ShopEditorActivity;
@@ -36,10 +38,6 @@ import com.tokopedia.seller.shop.presenter.ShopCreatePresenterImpl;
 import com.tokopedia.seller.shop.presenter.ShopCreateView;
 
 import java.io.File;
-
-import butterknife.BindView;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
 
 import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.DESC_ERROR;
 import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.DOMAIN_ERROR;
@@ -56,46 +54,131 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     private TkpdProgressDialog progressDialog;
 
     // SUBMIT BUTTON
-    @BindView(R2.id.submit_button)
     TextView submitButton;
 
     // VERIFY PHONE
-    @BindView(R2.id.verify_button)
     TextView verifyButton;
-    @BindView(R2.id.verify_instruction)
     TextView verifyInstruction;
 
     // SHOP AVATAR
-    @BindView(R2.id.shop_avatar)
     ImageView shopAvatar;
-    @BindView(R2.id.myImageViewText)
     TextView imageText;
 
     // DOMAIN CHECKER
-    @BindView(R2.id.domain)
     EditText shopDomain;
-    @BindView(R2.id.domain_input_layout)
     TextInputLayout domainInput;
 
     // NAME CHECKER
-    @BindView(R2.id.shop_name)
     EditText shopName;
-    @BindView(R2.id.name_input_layout)
     TextInputLayout nameInput;
 
     // TAG CHECKER
-    @BindView(R2.id.tag_input_layout)
     TextInputLayout tagInput;
-    @BindView(R2.id.shop_tag)
     EditText shopTag;
 
     // DESC CHECKER
-    @BindView(R2.id.desc_input_layout)
     TextInputLayout descInput;
-    @BindView(R2.id.shop_desc)
     EditText shopDesc;
 
-    @OnClick(R2.id.verify_button)
+    private void initView(View view){
+        submitButton = (TextView) view.findViewById(R.id.submit_button);
+        verifyButton = (TextView) view.findViewById(R.id.verify_button);
+        verifyInstruction = (TextView) view.findViewById(R.id.verify_instruction);
+        shopAvatar = (ImageView) view.findViewById(R.id.shop_avatar);
+        imageText = (TextView) view.findViewById(R.id.myImageViewText);
+        shopDomain = (EditText) view.findViewById(R.id.domain);
+        domainInput = (TextInputLayout) view.findViewById(R.id.domain_input_layout);
+        shopName = (EditText) view.findViewById(R.id.shop_name);
+        nameInput = (TextInputLayout) view.findViewById(R.id.name_input_layout);
+        tagInput = (TextInputLayout) view.findViewById(R.id.tag_input_layout);
+        shopTag = (EditText) view.findViewById(R.id.shop_tag);
+        descInput = (TextInputLayout) view.findViewById(R.id.desc_input_layout);
+        shopDesc = (EditText) view.findViewById(R.id.shop_desc);
+        verifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showVerificationDialog();
+            }
+        });
+        shopAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startUploadDialog();
+            }
+        });
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SubmitDialog();
+            }
+        });
+        shopDomain.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                domainChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        shopName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                nameChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        shopTag.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                tagChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        shopDesc.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                descChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+    }
+
     public void showVerificationDialog() {
         startActivityForResult(SessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()),
                 REQUEST_VERIFY_PHONE_NUMBER);
@@ -112,12 +195,10 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         }
     }
 
-    @OnClick(R2.id.shop_avatar)
     public void startUploadDialog() {
         ImageGalleryEntry.moveToImageGallery((AppCompatActivity) getActivity(), 0, 1);
     }
 
-    @OnClick(R2.id.submit_button)
     public void SubmitDialog() {
         showProgress(true);
         presenter.saveDescTag();
@@ -135,7 +216,6 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         }
     }
 
-    @OnTextChanged(R2.id.domain)
     void domainChanged() {
         if (shopDomain.getText().toString().length() != 0) {
             domainInput.setHint(getString(R.string.title_hint_domain) + " : "
@@ -150,6 +230,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     public void setShopDomainResult(String message, boolean available) {
         if (domainInput != null) {
             if (!available) {
+                UnifyTracking.eventCreateShopFillBiodataError();
                 domainInput.setErrorEnabled(true);
                 domainInput.setError(message);
             } else {
@@ -162,6 +243,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     @Override
     public boolean checkDomainError() {
         if (shopDomain.getText().toString().isEmpty()) {
+            UnifyTracking.eventCreateShopFillBiodataError();
             domainInput.setError(getString(R.string.error_domain_unfilled));
         }
         return domainInput.isErrorEnabled();
@@ -174,7 +256,6 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         }
     }
 
-    @OnTextChanged(R2.id.shop_name)
     void nameChanged() {
         if (shopName.getText().toString().length() != 0) {
             presenter.checkShopName(shopName.getText().toString());
@@ -185,6 +266,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     public void setShopNameResult(String message, boolean available) {
         if (nameInput != null) {
             if (!available) {
+                UnifyTracking.eventCreateShopFillBiodataError();
                 nameInput.setErrorEnabled(true);
                 nameInput.setError(message);
                 nameInput.setHint(getString(R.string.title_shop_name));
@@ -199,12 +281,12 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     @Override
     public boolean checkNameError() {
         if (shopName.getText().toString().isEmpty()) {
+            UnifyTracking.eventCreateShopFillBiodataError();
             nameInput.setError(getString(R.string.error_name_unfilled));
         }
         return nameInput.isErrorEnabled();
     }
 
-    @OnTextChanged(R2.id.shop_tag)
     void tagChanged() {
         checkTagError();
     }
@@ -225,8 +307,10 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     @Override
     public boolean checkTagError() {
         if (shopTag.getText().toString().isEmpty()) {
+            UnifyTracking.eventCreateShopFillBiodataError();
             tagInput.setError(getString(R.string.error_tag_unfilled));
         } else if (shopTag.getText().toString().length() > 48) {
+            UnifyTracking.eventCreateShopFillBiodataError();
             tagInput.setError(getString(R.string.error_tag_too_long));
         } else {
             tagInput.setErrorEnabled(false);
@@ -234,7 +318,6 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         return tagInput.isErrorEnabled();
     }
 
-    @OnTextChanged(R2.id.shop_desc)
     void descChanged() {
         checkDescError();
     }
@@ -254,8 +337,10 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     @Override
     public boolean checkDescError() {
         if (shopDesc.getText().toString().isEmpty()) {
+            UnifyTracking.eventCreateShopFillBiodataError();
             descInput.setError(getString(R.string.error_desc_unfilled));
         } else if (shopDesc.getText().toString().length() > 140) {
+            UnifyTracking.eventCreateShopFillBiodataError();
             descInput.setError(getString(R.string.error_desc_too_long));
         } else {
             descInput.setErrorEnabled(false);
@@ -304,7 +389,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
                 CommonUtils.UniversalToast(getContext(), descInput.getError().toString());
                 break;
             default:
-                CommonUtils.UniversalToast(getContext(), (String) (data[0]));
+                CommonUtils.UniversalToast(getContext(), (String) (data[0] == null ? getString(R.string.error_connection) : data[0]));
                 break;
         }
 
@@ -327,9 +412,11 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         display.getSize(size);
-        int imageWidth = (int) (size.x - 4) / 3;
+        int imageWidth = (size.x - 4) / 3;
+        View view = super.onCreateView(parentView, savedInstanceState);
+        initView(view);
         shopAvatar.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageWidth));
-        return super.onCreateView(parentView, savedInstanceState);
+        return view;
     }
 
     @Override
@@ -400,4 +487,8 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         ShopEditorActivity.startOpenShopEditShippingActivity((AppCompatActivity) getActivity());
     }
 
+    @Override
+    public void sendBroadcastToAppWidget() {
+        AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
+    }
 }

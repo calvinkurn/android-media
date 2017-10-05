@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.manage.people.profile.datamanager.DataManager;
 import com.tokopedia.core.manage.people.profile.datamanager.DataManagerImpl;
 import com.tokopedia.core.manage.people.profile.intentservice.ManagePeopleProfileIntentService;
@@ -22,10 +24,12 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
 
     private final ManagePeopleProfileFragmentView view;
     private final DataManager dataManager;
+    private final GlobalCacheManager cacheManager;
 
     public ManagePeopleProfileFragmentImpl(ManagePeopleProfileFragmentView view) {
         this.view = view;
         this.dataManager = new DataManagerImpl(this);
+        cacheManager = new GlobalCacheManager();
     }
 
     @Override
@@ -186,6 +190,7 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
 
     private void deleteCache(Context context) {
         ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PROFILE, context);
+        cacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
     }
 
     @Override

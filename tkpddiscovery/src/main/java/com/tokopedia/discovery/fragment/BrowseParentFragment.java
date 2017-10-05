@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
@@ -30,7 +29,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.entity.categoriesHades.Data;
+import com.tokopedia.core.network.entity.intermediary.Data;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
@@ -41,7 +41,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.model.NetworkParam;
-import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.browseparent.BrowseProductParent;
 import com.tokopedia.discovery.presenter.browseparent.BrowseProductParentImpl;
 import com.tokopedia.discovery.view.BrowseProductParentView;
@@ -85,55 +85,59 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         return null;
     }
 
-    public DiscoveryActivityPresenter discoveryActivityPresenter = new DiscoveryActivityPresenter.DiscoveryActivityPresenterImpl() {
-        @Override
-        public BrowseProductActivityModel getBrowseProductActivityModel() {
-            FragmentActivity activity = BrowseParentFragment.this.getActivity();
-            if (activity != null && activity instanceof DiscoveryActivityPresenter) {
-                return ((DiscoveryActivityPresenter) activity).getBrowseProductActivityModel();
+    @Override
+    public List<Breadcrumb> getProductBreadCrumb() {
+        try {
+            Fragment fragment = browserSectionsPagerAdapter.getItem(viewPager.getCurrentItem());
+            switch (viewPager.getCurrentItem()) {
+                case 0:
+                    if (fragment instanceof ProductFragment) {
+                        return presenter.getBreadCrumb();
+                    }
+                case 1:
+                    if (fragment instanceof CatalogFragment) {
+                        BrowseCatalogModel catalogModel = ((CatalogFragment) fragment).getDataModel();
+                        return catalogModel.result.breadcrumb;
+                    }
+                default:
+                    return new ArrayList<Breadcrumb>();
+
             }
+        } catch (Exception e) {
             return null;
         }
+    }
 
-        @Override
-        public BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly) {
-            return presenter.getDataForBrowseProduct(firstTimeOnly);
-        }
+    @Override
+    public boolean checkHasFilterAttrIsNull(int activeTab) {
+        return ((BrowseView) getActivity()).checkHasFilterAttrIsNull(activeTab);
+    }
 
-        @Override
-        public NetworkParam.Product getProductParam() {
-            return presenter.getProductParam();
-        }
+    @Override
+    public BrowseProductModel getDataForBrowseProduct() {
+        return presenter.getDataForBrowseProduct();
+    }
 
-        @Override
-        public List<Breadcrumb> getProductBreadCrumb() {
-            try {
-                Fragment fragment = browserSectionsPagerAdapter.getItem(viewPager.getCurrentItem());
-                switch (viewPager.getCurrentItem()) {
-                    case 0:
-                        if (fragment instanceof ProductFragment) {
-                            return presenter.getBreadCrumb();
-                        }
-                    case 1:
-                        if (fragment instanceof CatalogFragment) {
-                            BrowseCatalogModel catalogModel = ((CatalogFragment) fragment).getDataModel();
-                            return catalogModel.result.breadcrumb;
-                        }
-                    default:
-                        return new ArrayList<Breadcrumb>();
+    @Override
+    public NetworkParam.Product getProductParam() {
+        return presenter.getProductParam();
+    }
 
-                }
-            } catch (Exception e) {
-                return null;
+    @Override
+    public void setDefaultGridTypeFromNetwork(Integer viewType) {
+        ((BrowseView) getActivity()).setDefaultGridTypeFromNetwork(viewType);
+    }
+
+    @Override
+    public void setOfficialStoreBanner(BannerOfficialStoreModel model) {
+        for (int i=0; i< browserSectionsPagerAdapter.getCount(); i++) {
+            if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {
+                ProductFragment productFragment = (ProductFragment) browserSectionsPagerAdapter.getItem(i);
+                productFragment.showOfficialStoreBanner(model);
+                break;
             }
         }
-
-        @Override
-        public boolean checkHasFilterAttrIsNull(int activeTab) {
-            return ((BrowseProductActivity) getActivity()).checkHasFilterAttrIsNull(activeTab);
-        }
-    };
-
+    }
 
     public static BrowseParentFragment newInstance(BrowseProductActivityModel browseProductActivityModel) {
         return newInstance(browseProductActivityModel, 0);
@@ -250,45 +254,46 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }
-        ((BrowseProductActivity) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+        ((BrowseView) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+    }
+
+    @Override
+    public void showTabLayout() {
+        if(browserSectionsPagerAdapter != null && browserSectionsPagerAdapter.getCount()>1){
+            tabLayout.setVisibility(View.VISIBLE);
+        } else {
+            tabLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void redirectUrl(BrowseProductModel productModel) {
         String uri = productModel.result.redirect_url;
         if (uri.contains("/hot/")) {
-            Uri myurl = Uri.parse(uri);
-            uri = myurl.getPathSegments().get(1);
-            ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
+            if (getActivity() !=null && getActivity() instanceof BrowseProductActivity) {
+                BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
+                browseProductActivity.resetBrowseProductActivityModel();
+                BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
+                Uri myurl = Uri.parse(uri);
+                uri = myurl.getPathSegments().get(1);
+                browseProductActivity.sendHotlist(uri, model.getQ());
+            }
         }
         if (uri.contains("/p/")) {
-            BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
-            browseProductActivity.resetBrowseProductActivityModel();
-            BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
-            model.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
-            model.setDepartmentId(productModel.result.departmentId);
-            ((BrowseProductActivity) getActivity()).setFragment(BrowseParentFragment.newInstance(model), BrowseParentFragment.FRAGMENT_TAG);
+            if (getActivity() !=null && getActivity() instanceof BrowseProductActivity) {
+                BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
+                browseProductActivity.resetBrowseProductActivityModel();
+                BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
+                model.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
+                model.setDepartmentId(productModel.result.departmentId);
+                ((BrowseProductActivity) getActivity()).setFragment(BrowseParentFragment.newInstance(model), BrowseParentFragment.FRAGMENT_TAG);
+            }
         }
         if (uri.contains("/catalog/")) {
             URLParser urlParser = new URLParser(uri);
             getActivity().startActivity(DetailProductRouter.getCatalogDetailActivity(getActivity(),
                     urlParser.getHotAlias()));
             getActivity().finish();
-        }
-    }
-
-    @Override
-    public void setupCategory(BrowseProductModel browseProductModel) {
-        ((BrowseProductActivity) getActivity()).sendCategory(browseProductModel.result.departmentId);
-    }
-
-    @Override
-    public void renderCategories(Data categoryHeader) {
-        for (int i=0; i< browserSectionsPagerAdapter.getCount(); i++) {
-            if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {
-                ProductFragment productFragment = (ProductFragment) browserSectionsPagerAdapter.getItem(i);
-                productFragment.addCategoryHeader(categoryHeader);
-            }
         }
     }
 
@@ -320,8 +325,10 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             @Override
             public void onPageSelected(int position) {
                 Log.d(TAG, MESSAGE_TAG + " >> position >> " + position);
-                ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel().setActiveTab(position);
-                ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel().setSource(source);
+                if (getActivity() !=null && getActivity() instanceof BrowseProductActivity) {
+
+                }
+
                 fetchData(position);
                 sendTabClickGTM();
             }
@@ -368,12 +375,14 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         }
 
         if (fragment != null && fragment instanceof ProductFragment) {
+            ((ProductFragment) fragment).onCallNetwork();
             if (source.startsWith("search")) {
                 source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
             }
         }
         Log.d(TAG, "source " + source);
         BrowseProductActivity productActivity = (BrowseProductActivity) getActivity();
+        productActivity.getBrowseProductActivityModel().setActiveTab(position);
         productActivity.changeBottomBar(source);
     }
 
@@ -454,10 +463,5 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     @Override
     public Context getContext() {
         return super.getContext();
-    }
-
-    @Override
-    public DiscoveryActivityPresenter getActivityPresenter() {
-        return discoveryActivityPresenter;
     }
 }

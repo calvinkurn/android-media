@@ -1,14 +1,11 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
-import android.content.Intent;
-import android.util.Log;
-
-import com.tkpd.library.utils.AnalyticsLog;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
+import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.SessionRefresh;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,8 +14,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -41,6 +39,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         this.authKey = AuthUtil.KEY.KEY_WSV4;
     }
 
+    private Lock lock = new ReentrantLock();
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         final Request originRequest = chain.request();
@@ -51,7 +51,34 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         final Request finalRequest = newRequest.build();
         Response response = getResponse(chain, finalRequest);
 
+        if (isNeedRelogin(response)) {
+            doRelogin();
+            response = getResponse(chain, finalRequest);
+        }
+
+        if (!response.isSuccessful()) {
+            throwChainProcessCauseHttpError(response);
+        }
+
+        if (isUnauthorized(finalRequest, response)) {
+            refreshToken();
+            Request newest = recreateRequestWithNewAccessToken(chain);
+            Response response1 = chain.proceed(newest);
+            if (isUnauthorized(newest, response1)) {
+                showForceLogoutDialog();
+                sendForceLogoutAnalytics(response1);
+            }
+            return response1;
+        }
+
         String bodyResponse = response.body().string();
+        checkResponse(bodyResponse, response);
+
+        return createNewResponse(response, bodyResponse);
+    }
+
+    private void checkResponse(String string, Response response) {
+        String bodyResponse = string;
         if (isMaintenance(bodyResponse)) {
             showMaintenancePage();
         } else if (isRequestDenied(bodyResponse)) {
@@ -60,111 +87,90 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
             showServerErrorSnackbar();
             sendErrorNetworkAnalytics(response);
-        } else if (isForbiddenRequest(response)
+        } else if (isForbiddenRequest(bodyResponse, response.code())
                 && isTimezoneNotAutomatic()) {
             showTimezoneErrorSnackbar();
         }
-
-        return createNewResponse(response, bodyResponse);
     }
 
-    private void showTimezoneErrorSnackbar() {
-        Intent intent = new Intent();
-        intent.setAction(ACTION_TIMEZONE_ERROR);
-        MainApplication.getAppContext().sendBroadcast(intent);
+
+    public void throwChainProcessCauseHttpError(Response response) throws IOException {
+        /* this can override for throw error */
     }
 
-    private boolean isTimezoneNotAutomatic() {
+
+    protected boolean isTimezoneNotAutomatic() {
         return MethodChecker.isTimezoneNotAutomatic();
     }
 
-    private boolean isForbiddenRequest(Response response) {
-        return response.code() == ERROR_FORBIDDEN_REQUEST;
+    protected boolean isForbiddenRequest(String bodyResponse, int code) {
+
+        JSONObject json;
+        try {
+            json = new JSONObject(bodyResponse);
+            String status = json.optString("status", "OK");
+            return status.equals("FORBIDDEN") && code == ERROR_FORBIDDEN_REQUEST;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     protected void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)
             throws IOException {
         Map<String, String> authHeaders = new HashMap<>();
         authHeaders = prepareHeader(authHeaders, originRequest);
+        //   Log.d(TAG, "header: " + new PrettyPrintingMap<>(authHeaders).toString());
         generateHeader(authHeaders, originRequest, newRequest);
     }
 
     Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
+
+        String contentTypeHeader = null;
+        if (!"GET".equals(originRequest.method())
+                && originRequest.body() != null
+                && originRequest.body().contentType() != null)
+            contentTypeHeader = originRequest.body().contentType().toString();
+        if ("GET".equalsIgnoreCase(originRequest.method())) contentTypeHeader = "";
         switch (originRequest.method()) {
             case "PATCH":
+            case "DELETE":
             case "POST":
-                authHeaders = getHeaderMap(originRequest.url().uri().getPath(),
-                        generateParamBodyString(originRequest), originRequest.method(), authKey);
+                authHeaders = getHeaderMap(
+                        originRequest.url().uri().getPath(),
+                        generateParamBodyString(originRequest),
+                        originRequest.method(),
+                        authKey,
+                        contentTypeHeader
+                );
                 break;
             case "GET":
-                authHeaders = getHeaderMap(originRequest.url().uri().getPath(),
-                        generateQueryString(originRequest), originRequest.method(), authKey);
+                authHeaders = getHeaderMap(
+                        originRequest.url().uri().getPath(),
+                        generateQueryString(originRequest),
+                        originRequest.method(),
+                        authKey,
+                        contentTypeHeader
+                );
                 break;
         }
         return authHeaders;
     }
 
-    protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey) {
-        return AuthUtil.generateHeaders(path, strParam, method, authKey);
+    protected Map<String, String> getHeaderMap(
+            String path, String strParam, String method, String authKey, String contentTypeHeader) {
+        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader);
     }
 
-    void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest) {
+    void generateHeader(
+            Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest
+    ) {
         for (Map.Entry<String, String> entry : authHeaders.entrySet())
             newRequest.addHeader(entry.getKey(), entry.getValue());
         newRequest.method(originRequest.method(), originRequest.body());
     }
 
-    @SuppressWarnings("unused")
-    @Deprecated
-    /**
-     * Move to #generateParamBodyString
-     */
-    private Map<String, String> generateMapBody(final Request request) {
-        try {
-            final Buffer buffer = new Buffer();
-            request.body().writeTo(buffer);
-            String bodyStr = buffer.readUtf8();
-            Map<String, String> myMap = new HashMap<>();
-            String[] pairs = bodyStr.split("&");
-            for (String pair : pairs) {
-                int indexSplit = pair.indexOf('=');
-                String key1 = pair.substring(0, indexSplit);
-                String key2 = "";
-                if (pair.length() > indexSplit + 1) {
-                    key2 = pair.substring(indexSplit + 1);
-                }
-                myMap.put(key1.trim(), key2.trim());
-            }
-            return myMap;
-        } catch (final IOException e) {
-            return new HashMap<>();
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @Deprecated
-    /**
-     * Move to #generateQueryString
-     */
-    private Map<String, String> generateMapQuery(final Request request) {
-        String bodyStr = request.url().query();
-        Map<String, String> myMap = new HashMap<>();
-        if (bodyStr != null) {
-            String[] pairs = bodyStr.split("&");
-            for (String pair : pairs) {
-                int indexSplit = pair.indexOf('=');
-                String key1 = pair.substring(0, indexSplit);
-                String key2 = "";
-                if (pair.length() > indexSplit + 1) {
-                    key2 = pair.substring(indexSplit + 1);
-                }
-                myMap.put(key1.trim(), key2.trim());
-            }
-        }
-        return myMap;
-    }
-
-    protected String generateParamBodyString(final Request request) {
+    String generateParamBodyString(final Request request) {
         try {
             final Buffer buffer = new Buffer();
             request.body().writeTo(buffer);
@@ -174,12 +180,12 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    protected String generateQueryString(final Request request) {
+    private String generateQueryString(final Request request) {
         String query = request.url().query();
         return query != null ? query : "";
     }
 
-    private Boolean isMaintenance(String response) {
+    protected boolean isMaintenance(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -191,7 +197,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private boolean isHasErrorMessage(String response) {
+    protected boolean isHasErrorMessage(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -203,7 +209,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private Boolean isRequestDenied(String response) {
+    protected boolean isRequestDenied(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -215,7 +221,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private Boolean isInvalidRequest(String response) {
+    @SuppressWarnings("unused")
+    private boolean isInvalidRequest(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -229,11 +236,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return false;
     }
 
-    private Boolean isServerError(int code) {
+    protected boolean isServerError(int code) {
         return code >= 500;
     }
 
-    private Response createNewResponse(Response oldResponse, String oldBodyResponse) {
+    protected Response createNewResponse(Response oldResponse, String oldBodyResponse) {
         ResponseBody body = ResponseBody.create(oldResponse.body().contentType(), oldBodyResponse);
 
         Response.Builder builder = new Response.Builder();
@@ -244,35 +251,110 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 .protocol(oldResponse.protocol())
                 .cacheResponse(oldResponse.cacheResponse())
                 .priorResponse(oldResponse.priorResponse())
-                .code(isServerError(oldResponse.code()) && isHasErrorMessage(oldBodyResponse) ? 200 : oldResponse.code())
+                .code(isServerError(oldResponse.code())
+                        && isHasErrorMessage(oldBodyResponse) ? 200 : oldResponse.code())
                 .request(oldResponse.request())
                 .networkResponse(oldResponse.networkResponse());
 
         return builder.build();
     }
 
-    private void showMaintenancePage() {
-        MainApplication.getAppContext().startActivity(
-                MaintenancePage.createIntentFromNetwork(MainApplication.getAppContext()));
+    /**
+     * @deprecated Use {@link ServerErrorHandler#showTimezoneErrorSnackbar()} instead.
+     */
+    @Deprecated
+    protected void showTimezoneErrorSnackbar() {
+        ServerErrorHandler.showTimezoneErrorSnackbar();
     }
 
-    private void showForceLogoutDialog() {
-        Intent intent = new Intent();
-        intent.setAction("com.tokopedia.tkpd.FORCE_LOGOUT");
-        MainApplication.getAppContext().sendBroadcast(intent);
+    /**
+     * @deprecated Use {@link ServerErrorHandler#showMaintenancePage()} instead.
+     */
+    @Deprecated
+    protected void showMaintenancePage() {
+        ServerErrorHandler.showMaintenancePage();
     }
 
-    private void sendForceLogoutAnalytics(Response response) {
-        AnalyticsLog.logForceLogout(response.request().url().toString());
+    /**
+     * @deprecated Use {@link ServerErrorHandler#showForceLogoutDialog()} instead.
+     */
+    @Deprecated
+    protected void showForceLogoutDialog() {
+        ServerErrorHandler.showForceLogoutDialog();
     }
 
-    private void showServerErrorSnackbar() {
-        Intent intent = new Intent();
-        intent.setAction("com.tokopedia.tkpd.SERVER_ERROR");
-        MainApplication.getAppContext().sendBroadcast(intent);
+    /**
+     * @deprecated Use {@link ServerErrorHandler#sendForceLogoutAnalytics(String)} instead.
+     */
+    @Deprecated
+    protected void sendForceLogoutAnalytics(Response response) {
+        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
     }
 
-    private void sendErrorNetworkAnalytics(Response response) {
-        AnalyticsLog.logNetworkError(response.request().url().toString(), response.code());
+    /**
+     * @deprecated Use {@link ServerErrorHandler#showServerErrorSnackbar()} instead.
+     */
+    @Deprecated
+    protected void showServerErrorSnackbar() {
+        ServerErrorHandler.showServerErrorSnackbar();
+    }
+
+    /**
+     * @deprecated Use {@link ServerErrorHandler#sendErrorNetworkAnalytics(String, int)} instead.
+     */
+    @Deprecated
+    protected void sendErrorNetworkAnalytics(Response response) {
+        ServerErrorHandler.sendErrorNetworkAnalytics(
+                response.request().url().toString(), response.code()
+        );
+    }
+
+    protected Boolean isNeedRelogin(Response response) {
+        try {
+            //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
+            String responseString = response.peekBody(512).string();
+            return responseString.toUpperCase().contains("REQUEST_DENIED") &&
+                    !response.request().url().encodedPath().contains("make_login");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    protected boolean isUnauthorized(Request request, Response response) {
+        try {
+            //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
+            String responseString = response.peekBody(512).string();
+            return responseString.toLowerCase().contains("invalid_request")
+                    && request.header("authorization").contains("Bearer");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    protected void doRelogin() {
+        SessionRefresh sessionRefresh = new SessionRefresh();
+        try {
+            sessionRefresh.refreshLogin();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void refreshToken() {
+        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+        try {
+            accessTokenRefresh.refreshToken();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Request recreateRequestWithNewAccessToken(Chain chain) {
+        String freshAccessToken = SessionHandler.getAccessToken();
+        return chain.request().newBuilder()
+                .header("authorization", "Bearer " + freshAccessToken)
+                .build();
     }
 }

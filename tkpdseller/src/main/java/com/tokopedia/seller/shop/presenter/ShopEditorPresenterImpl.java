@@ -11,9 +11,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.prototype.ShopCache;
@@ -30,7 +31,6 @@ import com.tokopedia.core.shop.model.shopData.Data;
 import com.tokopedia.core.shop.model.shopData.Image;
 import com.tokopedia.core.shop.model.shopData.Info;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
 
@@ -48,9 +48,11 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
     private boolean isViewActive = true;
     private Data modelShopData;
     ShopScheduleDialog editScheduleDialog;
+    private final GlobalCacheManager cacheManager;
 
     public ShopEditorPresenterImpl(ShopEditorView view) {
         super(view);
+        cacheManager = new GlobalCacheManager();
     }
 
     @Override
@@ -68,20 +70,23 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
             view.loadImageAva(shopEditorModel.getmShopAvaUri());
             modelShopData = shopEditorModel.getModelShopData();
 
-            if(modelShopData.getInfo().getShopIsGold() == 1){
-                view.setShopIsGold(modelShopData.getInfo().getShopGoldExpiredTime());
-            }else{
-                view.setShopReguler();
-            }
+            if(modelShopData != null) {
+                view.hideDialog();
+                if (modelShopData.getInfo() != null && modelShopData.getInfo().getShopIsGold() == 1) {
+                    view.setShopIsGold(modelShopData.getInfo().getShopGoldExpiredTime());
+                } else {
+                    view.setShopReguler();
+                }
 
-            if(modelShopData.getClosedScheduleDetail().getCloseStatus() == 1){
-                view.setOpenShop();
-            }else if(modelShopData.getClosedScheduleDetail().getCloseStatus() == 2){
-                view.setCloseShop(modelShopData.getClosedScheduleDetail().getCloseEnd());
-            }else if(modelShopData.getClosedScheduleDetail().getCloseStatus() == 3){
-                view.setCloseShopWithSchedule(modelShopData.getClosedScheduleDetail().getCloseStart());
-            } else {
-                view.setOpenShop();
+                if (modelShopData.getClosedScheduleDetail().getCloseStatus() == 1) {
+                    view.setOpenShop();
+                } else if (modelShopData.getClosedScheduleDetail().getCloseStatus() == 2) {
+                    view.setCloseShop(modelShopData.getClosedScheduleDetail().getCloseEnd());
+                } else if (modelShopData.getClosedScheduleDetail().getCloseStatus() == 3) {
+                    view.setCloseShopWithSchedule(modelShopData.getClosedScheduleDetail().getCloseStart());
+                } else {
+                    view.setOpenShop();
+                }
             }
         }
     }
@@ -223,6 +228,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                         }
                         String jsonShopDataCache = resultData.getString(ShopEditService.JSON_SHOP_DATA_CACHE);
                         ShopSettingCache.SaveCache(ShopSettingCache.CODE_SHOP_INFO, jsonShopDataCache, context);
+
                         //((BaseView) fragment).setData(type, resultData);
                         break;
                     case ShopEditServiceConstant.POST_EDIT_DATA:
@@ -234,16 +240,19 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                                 view.finishActivity();
                             }
                             ShopCache.DeleteCache(SessionHandler.getShopID(context), (Activity)context);
+                            view.deleteShopCachev2();
                         }
                         break;
                     case ShopEditServiceConstant.UPDATE_SHOP_IMAGE:
                         UpdateShopImageModel updateShopImageModel = Parcels.unwrap(resultData.getParcelable(ShopEditService.UPLOAD_SHOP_LOGO_DATA));
+                        if (updateShopImageModel == null || updateShopImageModel.getData() == null) {
+                            return;
+                        }
                         if(updateShopImageModel.getData().getIs_success() == 1){
                             ShopCache.DeleteCache(SessionHandler.getShopID(context), (Activity)context);
+                            view.deleteShopCachev2();
                             ShopSettingCache.DeleteCache(ShopSettingCache.CODE_SHOP_INFO, context);
-                            LocalCacheHandler Cache = new LocalCacheHandler(context, TkpdState.CacheName.CACHE_USER);
-                            Cache.putString("shop_pic_uri", resultData.getString(ShopEditService.PIC_SRC));
-                            Cache.applyEditor();
+                            cacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
                             shopEditorModel.setUploadingAvatar(false);
                             if(isViewActive) {
                                 view.loadImageAva(resultData.getString(ShopEditService.PIC_SRC));
@@ -266,6 +275,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                                 getShopData();
                             }
                             ShopCache.DeleteCache(SessionHandler.getShopID(context), (Activity)context);
+                            view.deleteShopCachev2();
                         }
 
                         break;
@@ -326,6 +336,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                 break;
         }// end of status download service
     }
+
 
     @Override
     public void unSubscribe() {

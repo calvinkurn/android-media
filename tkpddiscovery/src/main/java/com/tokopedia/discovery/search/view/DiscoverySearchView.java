@@ -33,19 +33,31 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author Erry Suprayogi
  */
 public class DiscoverySearchView extends FrameLayout implements Filter.FilterListener {
     public static final int REQUEST_VOICE = 9999;
-
+    private static final String TAG = DiscoverySearchView.class.getSimpleName();
+    private static final String LOCALE_INDONESIA = "in_ID";
     private MenuItem mMenuItem;
     private boolean mIsSearchOpen = false;
     private int mAnimationDuration;
@@ -78,6 +90,15 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private Drawable suggestionIcon;
     private boolean copyText = false;
     private Context mContext;
+    private CompositeSubscription compositeSubscription;
+    private Subscription querySubscription;
+    private QueryListener queryListener;
+
+    private interface QueryListener {
+        void onQueryChanged(String query);
+    }
+
+    private String lastQuery;
 
     public DiscoverySearchView(Context context) {
         this(context, null);
@@ -95,6 +116,46 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         initiateView();
 
         initStyle(attrs, defStyleAttr);
+
+        initCompositeSubscriber();
+    }
+
+    private void initCompositeSubscriber() {
+        compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
+        compositeSubscription.add(querySubscription = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                queryListener = new QueryListener() {
+                    @Override
+                    public void onQueryChanged(String query) {
+                        subscriber.onNext(query);
+                    }
+                };
+            }
+        })
+                .debounce(200, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, e.getLocalizedMessage());
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        if (s != null) {
+                            Log.d(TAG, "Sending the text " + s);
+                            DiscoverySearchView.this.onTextChanged(s);
+                        }
+                    }
+                }));
     }
 
     public void setActivity(AppCompatActivity activity) {
@@ -179,7 +240,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mEmptyBtn.setOnClickListener(mOnClickListener);
         mTintView.setOnClickListener(mOnClickListener);
 
-        allowVoiceSearch = false;
+        allowVoiceSearch = true;
 
         showVoice(true);
 
@@ -205,12 +266,16 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (copyText) {
-                    s = s.subSequence(0, s.length() - 1);
-                    copyText = false;
+                if (s != null) {
+                    if (copyText) {
+                        s = s.subSequence(0, s.length() - 1);
+                        copyText = false;
+                    }
+                    mUserQuery = s;
+                    if (queryListener != null) {
+                        queryListener.onQueryChanged(s.toString());
+                    }
                 }
-                mUserQuery = s;
-                DiscoverySearchView.this.onTextChanged(s);
             }
 
             @Override
@@ -255,6 +320,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         //intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak an item name or number");    // user hint
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);    // setting recognition model, optimized for short phrases – search queries
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LOCALE_INDONESIA);  //This is priority for Indonesian language
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);    // quantity of results we want to receive
         if (mContext instanceof Activity) {
             ((Activity) mContext).startActivityForResult(intent, REQUEST_VOICE);
@@ -276,8 +342,12 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         if (mOnQueryChangeListener != null && !TextUtils.equals(newText, mOldQueryText)) {
             mOnQueryChangeListener.onQueryTextChange(newText.toString());
         }
+
         mOldQueryText = newText.toString();
-        mSuggestionFragment.search(newText.toString());
+
+        if (mSuggestionFragment != null) {
+            mSuggestionFragment.search(newText.toString());
+        }
     }
 
     private void onSubmitQuery() {
@@ -291,13 +361,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     }
 
     private boolean isVoiceAvailable() {
-        if (isInEditMode()) {
-            return true;
-        }
         PackageManager pm = getContext().getPackageManager();
         List<ResolveInfo> activities = pm.queryIntentActivities(
                 new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
-        return activities.size() == 0;
+        return activities.size() != 0;
     }
 
     public void hideKeyboard(View view) {
@@ -519,9 +586,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         }
 
         //Request Focus
-        mSearchSrcTextView.setText(null);
+        mSearchSrcTextView.setText(lastQuery);
         mSearchSrcTextView.requestFocus();
-        bringToFront();
+        mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
         if (animate) {
             setVisibleWithAnimation();
 
@@ -530,6 +597,13 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             if (mSearchViewListener != null) {
                 mSearchViewListener.onSearchViewShown();
             }
+        }
+
+        String source = ((BrowseProductActivity) activity).getBrowseProductActivityModel().getSource();
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP.equals(source)) {
+            mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_SHOP);
+        } else {
+            mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_PRODUCT);
         }
         mIsSearchOpen = true;
     }
@@ -586,6 +660,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             mSearchViewListener.onSearchViewClosed();
         }
         mIsSearchOpen = false;
+    }
+
+    public void setLastQuery(String lastQuery) {
+        this.lastQuery = lastQuery;
     }
 
     /**

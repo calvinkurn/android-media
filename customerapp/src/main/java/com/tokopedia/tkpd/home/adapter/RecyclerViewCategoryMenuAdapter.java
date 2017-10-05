@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.home.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +12,16 @@ import android.widget.TextView;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
-import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.tkpd.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 /**
  * @author by mady on 9/23/16.
- * Modified by erry
+ *         Modified by erry
  */
 public class RecyclerViewCategoryMenuAdapter extends
         RecyclerView.Adapter<RecyclerViewCategoryMenuAdapter.ItemRowHolder> {
@@ -32,9 +31,9 @@ public class RecyclerViewCategoryMenuAdapter extends
     private int homeMenuWidth;
 
 
-
     private SectionListCategoryAdapter.OnCategoryClickedListener onCategoryClickedListener;
     private SectionListCategoryAdapter.OnGimmicClickedListener onGimmicClickedListener;
+    private SectionListCategoryAdapter.OnApplinkClickedListener onApplinkClickedListener;
 
     public RecyclerViewCategoryMenuAdapter(Context context) {
         this.mContext = context;
@@ -67,12 +66,13 @@ public class RecyclerViewCategoryMenuAdapter extends
                 homeMenuWidth);
         itemListDataAdapter.setCategoryClickedListener(onCategoryClickedListener);
         itemListDataAdapter.setGimmicClickedListener(onGimmicClickedListener);
+        itemListDataAdapter.setOnApplinkClickedListener(onApplinkClickedListener);
 
         itemRowHolder.recycler_view_list.setHasFixedSize(true);
         itemRowHolder.recycler_view_list.setLayoutManager(
                 new NonScrollGridLayoutManager(mContext, 2,
                 GridLayoutManager.VERTICAL, false));
-        itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(mContext));
+        itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(mContext,R.drawable.divider300));
         itemRowHolder.recycler_view_list.setAdapter(itemListDataAdapter);
     }
 
@@ -85,6 +85,10 @@ public class RecyclerViewCategoryMenuAdapter extends
             SectionListCategoryAdapter.OnGimmicClickedListener onGimmicClickedListener) {
 
         this.onGimmicClickedListener = onGimmicClickedListener;
+    }
+
+    public void setOnApplinkClickedListener(SectionListCategoryAdapter.OnApplinkClickedListener onApplinkClickedListener){
+        this.onApplinkClickedListener = onApplinkClickedListener;
     }
 
     public void setOnCategoryClickedListener(

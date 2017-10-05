@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -227,6 +228,7 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
             getActivity().onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.action_send) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
             presenter.onConfirmClicked();
         }
         return super.onOptionsItemSelected(item);
@@ -338,7 +340,9 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @Override
     public void showLoading() {
-        loadingLayout.setVisibility(View.VISIBLE);
+        if (loadingLayout != null) {
+            loadingLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -440,7 +444,9 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @Override
     public void finishLoading() {
-        progressDialog.dismiss();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
         loadingLayout.setVisibility(View.GONE);
     }
 
@@ -448,7 +454,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     public void enableView() {
         mainView.setVisibility(View.VISIBLE);
         codeOTP.setEnabled(true);
-        totalBalance.setEnabled(true);
         totalWithdrawal.setEnabled(true);
         bankListView.setEnabled(true);
         password.setEnabled(true);
@@ -462,7 +467,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     @Override
     public void disableView() {
         codeOTP.setEnabled(false);
-        totalBalance.setEnabled(false);
         totalWithdrawal.setEnabled(false);
         bankListView.setEnabled(false);
         password.setEnabled(false);

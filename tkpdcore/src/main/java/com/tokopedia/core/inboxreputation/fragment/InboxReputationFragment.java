@@ -236,7 +236,6 @@ public class InboxReputationFragment extends BasePresenterFragment<InboxReputati
 
     @Override
     public void setActionEnabled(boolean isEnabled) {
-        refreshHandler.setPullEnabled(isEnabled);
         if (isEnabled) {
             fab.show();
         } else {

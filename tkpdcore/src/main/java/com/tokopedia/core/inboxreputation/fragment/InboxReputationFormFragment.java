@@ -44,7 +44,7 @@ import com.tokopedia.core.inboxreputation.presenter.InboxReputationDetailFragmen
 import com.tokopedia.core.inboxreputation.presenter.InboxReputationFormFragmentPresenter;
 import com.tokopedia.core.inboxreputation.presenter.InboxReputationFormFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
@@ -201,7 +201,10 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = ProductInfoActivity.createInstance(context, inboxReputationDetail.getProductId());
+                Intent intent = ProductDetailRouter
+                        .createInstanceProductDetailInfoActivity(
+                                context, inboxReputationDetail.getProductId());
+
                 context.startActivity(intent);
             }
         };

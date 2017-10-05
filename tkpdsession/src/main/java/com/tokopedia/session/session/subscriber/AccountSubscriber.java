@@ -88,7 +88,7 @@ public class AccountSubscriber extends rx.Subscriber<Response<String>> implement
                     result.putBoolean(DO_LOGIN, true);
                     result.putParcelable(TOKEN_BUNDLE, model);
                     result.putParcelable(EXTRA_TYPE, parcelable);
-                    sessionHandler.setToken(model.getAccessToken(), model.getTokenType(), model.getRefreshToken());
+                    sessionHandler.setToken(model.getAccessToken(), model.getTokenType());
                     receiver.send(DownloadService.STATUS_FINISHED, result);
                     break;
                 case LOGIN_ACCOUNTS_INFO:

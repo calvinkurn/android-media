@@ -70,7 +70,7 @@ public class ConvenientBanner<T> extends LinearLayout {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public ConvenientBanner(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        TypedArray a = context.obtainStyledAttributes(attrs,R.styleable.ConvenientBanner);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ConvenientBanner);
         canLoop = a.getBoolean(R.styleable.ConvenientBanner_canLoop,true);
         a.recycle();
         init(context);

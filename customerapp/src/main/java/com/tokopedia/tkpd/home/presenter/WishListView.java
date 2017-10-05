@@ -79,13 +79,17 @@ public interface WishListView {
 
     void loadDataChange();
 
+    void setEmptyState();
+
     void setAdapter();
 
-    void displayMainContent(boolean isShow);
+    void displayContentList(boolean isShow);
+
+    void setSearchNotFound();
 
     void displayLoading(boolean isShow);
 
-    void displayDeleteWishlistDialog(String productId);
+    void displayDeleteWishlistDialog(String productId, int position);
 
     void displayAddToCart(String productId);
 
@@ -93,11 +97,11 @@ public interface WishListView {
 
     void dismissProgressDialog();
 
-    void onSuccessDeleteWishlist();
+    void onSuccessDeleteWishlist(String searchTerm, int position);
 
     void displayErrorNetwork(Boolean isAction);
 
     String getUserId();
 
-    void clearSearch();
+    void clearSearchView();
 }

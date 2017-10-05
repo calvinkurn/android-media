@@ -2,7 +2,6 @@ package com.tokopedia.core.shopinfo.facades;
 
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
-import android.text.Html;
 
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;

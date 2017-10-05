@@ -14,13 +14,13 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.ShareApi;
 import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationDetailActivity;
 import com.tokopedia.core.inboxreputation.fragment.ImageUploadPreviewFragment;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFormFragment;
@@ -164,6 +164,9 @@ public class InboxReputationFormFragmentPresenterImpl
                     postReview(getActReviewPass());
                     break;
             }
+            int accuracy = (int) Float.parseFloat(viewListener.getAccuracyRating());
+            int quality = (int) Float.parseFloat(viewListener.getQualityRating());
+            UnifyTracking.eventLocaGoodReview(accuracy, quality);
         }
     }
 
@@ -232,7 +235,6 @@ public class InboxReputationFormFragmentPresenterImpl
                 .setImageUrl(Uri.parse(inboxReputationDetail.getProductImageUrl()))
                 .setContentUrl(Uri.parse(stringDomain+inboxReputationDetail.getProductUri()))
                 .setContentDescription(contentDescription)
-                .setShareHashtag(new ShareHashtag.Builder().setHashtag(fragment.getActivity().getString(R.string.title_tokopedia_hashtag)).build())
                 .build();
 
         LoginManager.getInstance().logInWithPublishPermissions(fragment, FacebookContainer.writePermissions);
@@ -279,9 +281,6 @@ public class InboxReputationFormFragmentPresenterImpl
 
         if (isMessageEmpty()) {
             viewListener.showMessageReviewError(R.string.error_review_message_empty);
-            isValid = false;
-        } else if (isMessageInvalid()) {
-            viewListener.showMessageReviewError(R.string.error_review_message);
             isValid = false;
         }
 

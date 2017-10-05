@@ -26,7 +26,6 @@ public class SlideOffViewHandler {
 	}
 	
 	public void AddFakeHeader(Activity context, ListView lv,final View header){
-		System.out.println("header called");
 		View LVHeader = View.inflate(context, R.layout.fake_footer_shop_info, null);
 		header.setOnClickListener(new OnClickListener() {
 			
@@ -109,7 +108,6 @@ public class SlideOffViewHandler {
 	        case MotionEvent.ACTION_MOVE:
 	        	currY = event.getRawY();
 	        	deltaY = currY - startY;
-//	        	System.out.println("currY: " + currY + " startY: " + startY + " deltaY " + deltaY);
 	        	if(startY!=currY)
 	        		startY = currY;
 	        	if(isDown){

@@ -19,12 +19,15 @@
     <item name="view_main" type="id" />
     <item name="view_progress" type="id" />
     <item name="tv_buy" type="id" />
+    <item name="tv_promote_topads" type="id" />
     <item name="layout_desc" type="id" />
     <item name="tv_desc" type="id" />
+    <item name="tv_description" type="id" />
     <item name="iv_toggle" type="id" />
     <item name="tv_weight" type="id" />
     <item name="tv_minimum" type="id" />
     <item name="tv_preorder" type="id" />
+    <item name="tv_success_rate" type="id" />
     <item name="tv_insurance" type="id" />
     <item name="tv_catalog" type="id" />
     <item name="tv_etalase" type="id" />
@@ -56,6 +59,8 @@
     <item name="iv_quality" type="id" />
     <item name="iv_accuracy" type="id" />
     <item name="tv_success" type="id" />
+    <item name="tv_discussion" type="id" />
+    <item name="tv_courier" type="id" />
     <item name="iv_ava" type="id" />
     <item name="iv_gold" type="id" />
     <item name="iv_official" type="id" />
@@ -116,6 +121,8 @@
     <item name="rl_title_layout" type="id"/>
     <item name="rv_view_list" type="id"/>
     <item name="rv_brands_list" type="id"/>
+    <item name="view_other_products" type="id" />
+    <item name="view_no_free_return" type="id" />
 
     <!--ids for PDP youtube-->
     <item name="product_video_horizontal_scroll" type="id" />
@@ -132,5 +139,65 @@
     <item name="categoryTitle" type="id"/>
     <item name="separator" type="id"/>
     <item name="thumbnail" type="id"/>
+
+    <item name="recycler_view_curation" type="id"/>
+    <item name="recycler_view_revamp_categories" type="id"/>
+    <item name="image_header" type="id"/>
+    <item name="title_header" type="id"/>
+    <item name="expand_layout" type="id"/>
+    <item name="hide_layout" type="id"/>
+    <item name="card_hoth_intermediary" type="id"/>
+    <item name="product_image_hoth" type="id"/>
+    <item name="title_header_hoth" type="id"/>
+    <item name="recycler_view_hot_list" type="id"/>
+    <item name="category_view_all" type="id"/>
+    <item name="top_ads_view" type="id"/>
+    <item name="nested_intermediary" type="id"/>
+    <item name="banner_container" type="id"/>
+    <item name="view_pager_intermediary" type="id"/>
+    <item name="indicator_intermediary" type="id"/>
+    <item name="card_video_intermediary" type="id"/>
+    <item name="card_official_intermediary" type="id"/>
+    <item name="rv_official_intermediary" type="id"/>
+    <item name="header_container" type="id"/>
+    <item name="intermediary_video_title" type="id"/>
+    <item name="intermediary_video_desc" type="id"/>
+
+
+    <item name="fragmentv2list" type="id"/>
+    <item name="topads" type="id"/>
+    <item name="include_no_result" type="id"/>
+    <item name="no_result_image" type="id"/>
+    <item name="text_no_result" type="id"/>
+    <item name="wishlist_button" type="id"/>
+    <item name="wishlist_button_container" type="id"/>
+    <item name="rating" type="id"/>
+    <item name="review_count" type="id"/>
+    <item name="last_online_textview" type="id" />
+    <item name="review_container" type="id" />
+    <item name="talk_container" type="id" />
+    <item name="courier_container" type="id" />
+    <item name="installmet" type="id" />
+    <item name="tv_installmet" type="id" />
+    <item name="wholesale" type="id" />
+    <item name="tv_wholesale" type="id" />
+    <item name="separator_pdp" type="id" />
+    <item name="favorite_button" type="id" />
+    <item name="favorite_tv" type="id" />
+    <item name="tabs" type="id" />
+    <item name="viewpager" type="id" />
+    <item name="error_product_container" type="id" />
+    <item name="error_product_title" type="id" />
+    <item name="error_product_subtitle" type="id" />
+    <item name="appbarDetail" type="id" />
+    <item name="view_transaction_detail" type="id" />
+    <item name="fab_detail" type="id" />
+    <item name="view_price_simulation" type="id" />
+    <item name="button_buy_container" type="id" />
+    <item name="button_use_topads" type="id" />
+    <item name="tv_promo_product" type="id" />
+    <item name="tv_promo_expired" type="id" />
+    <item name="toolbar_title" type="id" />
+
 
 </resources>

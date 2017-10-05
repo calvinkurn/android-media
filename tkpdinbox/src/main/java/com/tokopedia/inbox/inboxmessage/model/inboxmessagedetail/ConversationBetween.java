@@ -72,12 +72,4 @@ public class ConversationBetween implements Parcelable {
         dest.writeString(userId);
         dest.writeString(userName);
     }
-
-    public String getUserLabel() {
-        if (!this.userId.equals("0")) {
-            return "Pengguna";
-        } else {
-            return "Admin";
-        }
-    }
 }

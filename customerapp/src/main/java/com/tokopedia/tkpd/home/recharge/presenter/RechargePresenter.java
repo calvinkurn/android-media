@@ -30,6 +30,12 @@ public interface RechargePresenter {
 
     LastOrder getLastOrderFromCache();
 
+    void storeLastInstantCheckoutUsed(String categoryId, boolean checked);
+
+    boolean isRecentInstantCheckoutUsed(String categoryId);
+
+    boolean isAlreadyHaveLastOrderDataOnCacheByCategoryId(int categoryId);
+
     void saveLastInputToCache(String key, String userLastInput);
 
     String getLastInputFromCache(String key);

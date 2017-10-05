@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics.container;
 
+import android.app.Activity;
+
 import java.util.Map;
 
 /**
@@ -24,5 +26,9 @@ public interface IAppsflyerContainer {
      */
     void getAdsID(AppsflyerContainer.AFAdsIDCallback callback);
 
+    String getAdsIdDirect();
+
     String getUniqueId();
+
+    void sendDeeplinkData(Activity activity);
 }

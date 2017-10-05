@@ -13,104 +13,65 @@ public class Rule {
     private String productText;
     @SerializedName("products_view_style")
     @Expose
-    private Integer productsViewStyle;
+    private int productsViewStyle;
     @SerializedName("show_price")
     @Expose
-    private Boolean showPrice;
+    private boolean showPrice;
     @SerializedName("show_product")
     @Expose
-    private Boolean showProduct;
+    private boolean showProduct;
     @SerializedName("show_product_list_page")
     @Expose
-    private Boolean showProductListPage;
+    private boolean showProductListPage;
+    @SerializedName("allow_alphanumeric_number")
+    @Expose
+    private boolean allowAphanumericNumber;
 
-    /**
-     *
-     * @return
-     * The productText
-     */
     public String getProductText() {
         return productText;
     }
 
-    /**
-     *
-     * @param productText
-     * The product_text
-     */
     public void setProductText(String productText) {
         this.productText = productText;
     }
 
-    /**
-     *
-     * @return
-     * The productsViewStyle
-     */
-    public Integer getProductsViewStyle() {
+    public int getProductsViewStyle() {
         return productsViewStyle;
     }
 
-    /**
-     *
-     * @param productsViewStyle
-     * The products_view_style
-     */
-    public void setProductsViewStyle(Integer productsViewStyle) {
+    public void setProductsViewStyle(int productsViewStyle) {
         this.productsViewStyle = productsViewStyle;
     }
 
-    /**
-     *
-     * @return
-     * The showPrice
-     */
-    public Boolean getShowPrice() {
+    public boolean isShowPrice() {
         return showPrice;
     }
 
-    /**
-     *
-     * @param showPrice
-     * The show_price
-     */
-    public void setShowPrice(Boolean showPrice) {
+    public void setShowPrice(boolean showPrice) {
         this.showPrice = showPrice;
     }
 
-    /**
-     *
-     * @return
-     * The showProduct
-     */
-    public Boolean getShowProduct() {
+    public boolean isShowProduct() {
         return showProduct;
     }
 
-    /**
-     *
-     * @param showProduct
-     * The show_product
-     */
-    public void setShowProduct(Boolean showProduct) {
+    public void setShowProduct(boolean showProduct) {
         this.showProduct = showProduct;
     }
 
-    /**
-     *
-     * @return
-     * The showProductListPage
-     */
-    public Boolean getShowProductListPage() {
+    public boolean isShowProductListPage() {
         return showProductListPage;
     }
 
-    /**
-     *
-     * @param showProductListPage
-     * The show_product_list_page
-     */
-    public void setShowProductListPage(Boolean showProductListPage) {
+    public void setShowProductListPage(boolean showProductListPage) {
         this.showProductListPage = showProductListPage;
+    }
+
+    public boolean isAllowAphanumericNumber() {
+        return allowAphanumericNumber;
+    }
+
+    public void setAllowAphanumericNumber(boolean allowAphanumericNumber) {
+        this.allowAphanumericNumber = allowAphanumericNumber;
     }
 }

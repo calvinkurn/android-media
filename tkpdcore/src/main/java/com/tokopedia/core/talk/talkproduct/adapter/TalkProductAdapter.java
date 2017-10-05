@@ -23,10 +23,13 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
 import com.tokopedia.core.talk.talkproduct.model.Talk;
@@ -41,7 +44,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.TokenHandler;
 import com.tokopedia.core.util.ToolTipUtils;
-import com.tokopedia.core.var.NotificationVariable;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.List;
@@ -56,7 +58,6 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
 
     public static final int MAIN_TYPE = 123456789;
     public LayoutInflater inflater;
-    NotificationVariable notif;
     boolean isShop, isInbox;
     Bundle bundle;
     TokenHandler Token;
@@ -160,9 +161,6 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         final TalkProductViewHolder holder = (TalkProductViewHolder) viewHolder;
         final Talk talk = (Talk) data.get(position);
         LabelUtils label = LabelUtils.getInstance(context, holder.UserView);
-        notif = MainApplication.getNotifInstance();
-        notif.setContext((Activity) context);
-
 
         talk.setTalkProductId(bundle.getString("product_id"));
         talk.setTalkProductName(bundle.getString("prod_name"));
@@ -270,13 +268,11 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                Intent intent;
-                intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putString("product_id", productID);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                ProductPass productPass = new ProductPass();
+                productPass.setProductId(productID);
+                ((PdpRouter) ((BaseActivity) context)
+                        .getApplication())
+                        .goToProductDetail(context, productPass);
             }
         };
     }
@@ -405,7 +401,6 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
                     notifyDataSetChanged();
                     break;
                 case InboxTalkIntentService.STATUS_SUCCESS_DELETE:
-                    notif.GetNotif();
                     data.remove(position);
                     SnackbarManager.make((Activity) context,
                             context.getApplicationContext().getString(R.string.message_success_delete_talk),

@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by stevenfredian on 3/1/16.
  */
-public class HelpfulReview implements Parcelable{
+public class HelpfulReview implements Parcelable {
 
     @SerializedName("review_update_time")
     @Expose
@@ -90,17 +90,20 @@ public class HelpfulReview implements Parcelable{
     private String reviewUserId;
     @SerializedName("review_image_attachment")
     @Expose
-    java.util.List<ReviewImageList> reviewImageList = new ArrayList<ReviewImageList>();
+    private List<ReviewImageList> reviewImageList = new ArrayList<ReviewImageList>();
+
 
     protected HelpfulReview(Parcel in) {
         reviewUpdateTime = in.readString();
         reviewRateAccuracyDesc = in.readInt();
         reviewUserLabelId = in.readInt();
         reviewUserName = in.readString();
+        reviewUserReputation = in.readParcelable(ReviewUserReputation.class.getClassLoader());
         reviewMessage = in.readString();
         reviewRateAccuracy = in.readInt();
         reviewRateProductDesc = in.readString();
         reviewRateSpeedDesc = in.readString();
+        reviewResponse = in.readParcelable(ReviewResponse.class.getClassLoader());
         reviewShopId = in.readString();
         reviewReputationId = in.readString();
         reviewUserLabel = in.readString();
@@ -108,17 +111,14 @@ public class HelpfulReview implements Parcelable{
         reviewCreateTime = in.readString();
         reviewLikeDislike = in.readParcelable(ReviewLikeDislike.class.getClassLoader());
         reviewId = in.readString();
+        reviewProductOwner = in.readParcelable(ReviewProductOwner.class.getClassLoader());
         reviewProductId = in.readString();
         reviewRateServiceDesc = in.readString();
         reviewRateProduct = in.readInt();
         reviewRateSpeed = in.readString();
         reviewRateService = in.readString();
         reviewUserId = in.readString();
-        reviewLikeDislike = (ReviewLikeDislike) in.readValue(ReviewLikeDislike.class.getClassLoader());
-        reviewProductOwner = (ReviewProductOwner) in.readValue(ReviewProductOwner.class.getClassLoader());
-        reviewResponse = (ReviewResponse) in.readValue(ReviewResponse.class.getClassLoader());
-        reviewUserReputation = (ReviewUserReputation) in.readValue(ReviewUserReputation.class.getClassLoader());
-        reviewImageList = (java.util.List) in.readValue(java.util.List.class.getClassLoader());
+        reviewImageList = in.createTypedArrayList(ReviewImageList.CREATOR);
     }
 
     public static final Creator<HelpfulReview> CREATOR = new Creator<HelpfulReview>() {
@@ -134,432 +134,336 @@ public class HelpfulReview implements Parcelable{
     };
 
     /**
-     *
-     * @return
-     *     The reviewUpdateTime
+     * @return The reviewUpdateTime
      */
     public String getReviewUpdateTime() {
         return reviewUpdateTime;
     }
 
     /**
-     *
-     * @param reviewUpdateTime
-     *     The review_update_time
+     * @param reviewUpdateTime The review_update_time
      */
     public void setReviewUpdateTime(String reviewUpdateTime) {
         this.reviewUpdateTime = reviewUpdateTime;
     }
 
     /**
-     *
-     * @return
-     *     The reviewRateAccuracyDesc
+     * @return The reviewRateAccuracyDesc
      */
     public int getReviewRateAccuracyDesc() {
         return reviewRateAccuracyDesc;
     }
 
     /**
-     *
-     * @param reviewRateAccuracyDesc
-     *     The review_rate_accuracy_desc
+     * @param reviewRateAccuracyDesc The review_rate_accuracy_desc
      */
     public void setReviewRateAccuracyDesc(int reviewRateAccuracyDesc) {
         this.reviewRateAccuracyDesc = reviewRateAccuracyDesc;
     }
 
     /**
-     *
-     * @return
-     *     The reviewUserLabelId
+     * @return The reviewUserLabelId
      */
     public int getReviewUserLabelId() {
         return reviewUserLabelId;
     }
 
     /**
-     *
-     * @param reviewUserLabelId
-     *     The review_user_label_id
+     * @param reviewUserLabelId The review_user_label_id
      */
     public void setReviewUserLabelId(int reviewUserLabelId) {
         this.reviewUserLabelId = reviewUserLabelId;
     }
 
     /**
-     *
-     * @return
-     *     The reviewUserName
+     * @return The reviewUserName
      */
     public String getReviewUserName() {
         return reviewUserName;
     }
 
     /**
-     *
-     * @param reviewUserName
-     *     The review_user_name
+     * @param reviewUserName The review_user_name
      */
     public void setReviewUserName(String reviewUserName) {
         this.reviewUserName = reviewUserName;
     }
 
     /**
-     *
-     * @return
-     *     The reviewUserReputation
+     * @return The reviewUserReputation
      */
     public ReviewUserReputation getReviewUserReputation() {
         return reviewUserReputation;
     }
 
     /**
-     *
-     * @param reviewUserReputation
-     *     The review_user_reputation
+     * @param reviewUserReputation The review_user_reputation
      */
     public void setReviewUserReputation(ReviewUserReputation reviewUserReputation) {
         this.reviewUserReputation = reviewUserReputation;
     }
 
     /**
-     *
-     * @return
-     *     The reviewMessage
+     * @return The reviewMessage
      */
     public String getReviewMessage() {
         return reviewMessage;
     }
 
     /**
-     *
-     * @param reviewMessage
-     *     The review_message
+     * @param reviewMessage The review_message
      */
     public void setReviewMessage(String reviewMessage) {
         this.reviewMessage = reviewMessage;
     }
 
     /**
-     *
-     * @return
-     *     The reviewRateAccuracy
+     * @return The reviewRateAccuracy
      */
     public int getReviewRateAccuracy() {
         return reviewRateAccuracy;
     }
 
     /**
-     *
-     * @param reviewRateAccuracy
-     *     The review_rate_accuracy
+     * @param reviewRateAccuracy The review_rate_accuracy
      */
     public void setReviewRateAccuracy(int reviewRateAccuracy) {
         this.reviewRateAccuracy = reviewRateAccuracy;
     }
 
     /**
-     *
-     * @return
-     *     The reviewRateProductDesc
+     * @return The reviewRateProductDesc
      */
     public String getReviewRateProductDesc() {
         return reviewRateProductDesc;
     }
 
     /**
-     *
-     * @param reviewRateProductDesc
-     *     The review_rate_product_desc
+     * @param reviewRateProductDesc The review_rate_product_desc
      */
     public void setReviewRateProductDesc(String reviewRateProductDesc) {
         this.reviewRateProductDesc = reviewRateProductDesc;
     }
 
     /**
-     *
-     * @return
-     *     The reviewRateSpeedDesc
+     * @return The reviewRateSpeedDesc
      */
     public String getReviewRateSpeedDesc() {
         return reviewRateSpeedDesc;
     }
 
     /**
-     *
-     * @param reviewRateSpeedDesc
-     *     The review_rate_speed_desc
+     * @param reviewRateSpeedDesc The review_rate_speed_desc
      */
     public void setReviewRateSpeedDesc(String reviewRateSpeedDesc) {
         this.reviewRateSpeedDesc = reviewRateSpeedDesc;
     }
 
     /**
-     *
-     * @return
-     *     The reviewResponse
+     * @return The reviewResponse
      */
     public ReviewResponse getReviewResponse() {
         return reviewResponse;
     }
 
     /**
-     *
-     * @param reviewResponse
-     *     The review_response
+     * @param reviewResponse The review_response
      */
     public void setReviewResponse(ReviewResponse reviewResponse) {
         this.reviewResponse = reviewResponse;
     }
 
     /**
-     *
-     * @return
-     *     The reviewShopId
+     * @return The reviewShopId
      */
     public String getReviewShopId() {
         return reviewShopId;
     }
 
     /**
-     *
-     * @param reviewShopId
-     *     The review_shop_id
+     * @param reviewShopId The review_shop_id
      */
     public void setReviewShopId(String reviewShopId) {
         this.reviewShopId = reviewShopId;
     }
 
     /**
-     *
-     * @return
-     *     The reviewReputationId
+     * @return The reviewReputationId
      */
     public String getReviewReputationId() {
         return reviewReputationId;
     }
 
     /**
-     *
-     * @param reviewReputationId
-     *     The review_reputation_id
+     * @param reviewReputationId The review_reputation_id
      */
     public void setReviewReputationId(String reviewReputationId) {
         this.reviewReputationId = reviewReputationId;
     }
 
     /**
-     *
-     * @return
-     *     The reviewUserLabel
+     * @return The reviewUserLabel
      */
     public String getReviewUserLabel() {
         return reviewUserLabel;
     }
 
     /**
-     *
-     * @param reviewUserLabel
-     *     The review_user_label
+     * @param reviewUserLabel The review_user_label
      */
     public void setReviewUserLabel(String reviewUserLabel) {
         this.reviewUserLabel = reviewUserLabel;
     }
 
     /**
-     *
-     * @return
-     *     The reviewUserImage
+     * @return The reviewUserImage
      */
     public String getReviewUserImage() {
         return reviewUserImage;
     }
 
     /**
-     *
-     * @param reviewUserImage
-     *     The review_user_image
+     * @param reviewUserImage The review_user_image
      */
     public void setReviewUserImage(String reviewUserImage) {
         this.reviewUserImage = reviewUserImage;
     }
 
     /**
-     *
-     * @return
-     *     The reviewCreateTime
+     * @return The reviewCreateTime
      */
     public String getReviewCreateTime() {
         return reviewCreateTime;
     }
 
     /**
-     *
-     * @param reviewCreateTime
-     *     The review_create_time
+     * @param reviewCreateTime The review_create_time
      */
     public void setReviewCreateTime(String reviewCreateTime) {
         this.reviewCreateTime = reviewCreateTime;
     }
 
     /**
-     *
-     * @return
-     *     The reviewLikeDislike
+     * @return The reviewLikeDislike
      */
     public ReviewLikeDislike getReviewLikeDislike() {
         return reviewLikeDislike;
     }
 
     /**
-     *
-     * @param reviewLikeDislike
-     *     The review_like_dislike
+     * @param reviewLikeDislike The review_like_dislike
      */
     public void setReviewLikeDislike(ReviewLikeDislike reviewLikeDislike) {
         this.reviewLikeDislike = reviewLikeDislike;
     }
 
     /**
-     *
-     * @return
-     *     The reviewId
+     * @return The reviewId
      */
     public String getReviewId() {
         return reviewId;
     }
 
     /**
-     *
-     * @param reviewId
-     *     The review_id
+     * @param reviewId The review_id
      */
     public void setReviewId(String reviewId) {
         this.reviewId = reviewId;
     }
 
     /**
-     *
-     * @return
-     *     The reviewProductOwner
+     * @return The reviewProductOwner
      */
     public ReviewProductOwner getReviewProductOwner() {
         return reviewProductOwner;
     }
 
     /**
-     *
-     * @param reviewProductOwner
-     *     The review_product_owner
+     * @param reviewProductOwner The review_product_owner
      */
     public void setReviewProductOwner(ReviewProductOwner reviewProductOwner) {
         this.reviewProductOwner = reviewProductOwner;
     }
 
     /**
-     *
-     * @return
-     *     The reviewProductId
+     * @return The reviewProductId
      */
     public String getReviewProductId() {
         return reviewProductId;
     }
 
     /**
-     *
-     * @param reviewProductId
-     *     The review_product_id
+     * @param reviewProductId The review_product_id
      */
     public void setReviewProductId(String reviewProductId) {
         this.reviewProductId = reviewProductId;
     }
 
     /**
-     *
-     * @return
-     *     The reviewRateServiceDesc
+     * @return The reviewRateServiceDesc
      */
     public String getReviewRateServiceDesc() {
         return reviewRateServiceDesc;
     }
 
     /**
-     *
-     * @param reviewRateServiceDesc
-     *     The review_rate_service_desc
+     * @param reviewRateServiceDesc The review_rate_service_desc
      */
     public void setReviewRateServiceDesc(String reviewRateServiceDesc) {
         this.reviewRateServiceDesc = reviewRateServiceDesc;
     }
 
     /**
-     *
-     * @return
-     *     The reviewRateProduct
+     * @return The reviewRateProduct
      */
     public int getReviewRateProduct() {
         return reviewRateProduct;
     }
 
     /**
-     *
-     * @param reviewRateProduct
-     *     The review_rate_product
+     * @param reviewRateProduct The review_rate_product
      */
     public void setReviewRateProduct(int reviewRateProduct) {
         this.reviewRateProduct = reviewRateProduct;
     }
 
     /**
-     *
-     * @return
-     *     The reviewRateSpeed
+     * @return The reviewRateSpeed
      */
     public String getReviewRateSpeed() {
         return reviewRateSpeed;
     }
 
     /**
-     *
-     * @param reviewRateSpeed
-     *     The review_rate_speed
+     * @param reviewRateSpeed The review_rate_speed
      */
     public void setReviewRateSpeed(String reviewRateSpeed) {
         this.reviewRateSpeed = reviewRateSpeed;
     }
 
     /**
-     *
-     * @return
-     *     The reviewRateService
+     * @return The reviewRateService
      */
     public String getReviewRateService() {
         return reviewRateService;
     }
 
     /**
-     *
-     * @param reviewRateService
-     *     The review_rate_service
+     * @param reviewRateService The review_rate_service
      */
     public void setReviewRateService(String reviewRateService) {
         this.reviewRateService = reviewRateService;
     }
 
     /**
-     *
-     * @return
-     *     The reviewUserId
+     * @return The reviewUserId
      */
     public String getReviewUserId() {
         return reviewUserId;
     }
 
     /**
-     *
-     * @param reviewUserId
-     *     The review_user_id
+     * @param reviewUserId The review_user_id
      */
     public void setReviewUserId(String reviewUserId) {
         this.reviewUserId = reviewUserId;
@@ -576,10 +480,11 @@ public class HelpfulReview implements Parcelable{
     public ArrayList<ImageUpload> getImages() {
         ArrayList<ImageUpload> list = new ArrayList<>();
         for (ReviewImageList reviewImage : reviewImageList) {
-            list.add(new ImageUpload(reviewImage.getImageUrl(),reviewImage.getImageUrlLarge(), reviewImage.getImageCaption(), reviewImage.getAttachmentId()));
+            list.add(new ImageUpload(reviewImage.getImageUrl(), reviewImage.getImageUrlLarge(), reviewImage.getImageCaption(), reviewImage.getAttachmentId()));
         }
         return list;
     }
+
 
     @Override
     public int describeContents() {
@@ -592,10 +497,12 @@ public class HelpfulReview implements Parcelable{
         dest.writeInt(reviewRateAccuracyDesc);
         dest.writeInt(reviewUserLabelId);
         dest.writeString(reviewUserName);
+        dest.writeParcelable(reviewUserReputation, flags);
         dest.writeString(reviewMessage);
         dest.writeInt(reviewRateAccuracy);
         dest.writeString(reviewRateProductDesc);
         dest.writeString(reviewRateSpeedDesc);
+        dest.writeParcelable(reviewResponse, flags);
         dest.writeString(reviewShopId);
         dest.writeString(reviewReputationId);
         dest.writeString(reviewUserLabel);
@@ -603,17 +510,13 @@ public class HelpfulReview implements Parcelable{
         dest.writeString(reviewCreateTime);
         dest.writeParcelable(reviewLikeDislike, flags);
         dest.writeString(reviewId);
+        dest.writeParcelable(reviewProductOwner, flags);
         dest.writeString(reviewProductId);
         dest.writeString(reviewRateServiceDesc);
         dest.writeInt(reviewRateProduct);
         dest.writeString(reviewRateSpeed);
         dest.writeString(reviewRateService);
         dest.writeString(reviewUserId);
-        dest.writeValue(reviewLikeDislike);
-        dest.writeValue(reviewProductOwner);
-        dest.writeValue(reviewResponse);
-        dest.writeValue(reviewUserReputation);
-        dest.writeValue(reviewImageList);
-
+        dest.writeTypedList(reviewImageList);
     }
 }

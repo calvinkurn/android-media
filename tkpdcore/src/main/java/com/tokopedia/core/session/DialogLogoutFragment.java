@@ -19,6 +19,8 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -48,6 +50,7 @@ public class DialogLogoutFragment extends DialogFragment {
     CompositeSubscription compositeSubscription = new CompositeSubscription();
     Button okButton;
     TkpdProgressDialog progressDialog;
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -79,8 +82,8 @@ public class DialogLogoutFragment extends DialogFragment {
         SessionService sessionService = new SessionService();
         compositeSubscription.add(
                 sessionService.getApi().logout(AuthUtil.generateParams(activity, new HashMap<String, String>()))
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<Response<TkpdResponse>>() {
                             @Override
@@ -110,14 +113,19 @@ public class DialogLogoutFragment extends DialogFragment {
                                         DbManagerImpl.getInstance().removeAllEtalase();
                                         SessionHandler.clearUserData(activity);
                                         NotificationModHandler notif = new NotificationModHandler(activity);
-                                        notif.cancelNotif();
                                         notif.dismissAllActivedNotifications();
 
-                                        NotificationModHandler.clearCacheAllNotification();
+                                        NotificationModHandler.clearCacheAllNotification(getActivity());
                                         SessionHandler.onLogoutListener logout = (SessionHandler.onLogoutListener) activity;
                                         if (logout != null)
                                             logout.onLogout(true);
                                         progressDialog.dismiss();
+
+                                        if (getActivity() instanceof BaseActivity) {
+                                            AppComponent component = ((BaseActivity) getActivity()).getApplicationComponent();
+                                            Router.onLogout(getActivity(), component);
+                                        }
+
                                         dismiss();
                                     } else {
                                         progressDialog.dismiss();
@@ -161,6 +169,7 @@ public class DialogLogoutFragment extends DialogFragment {
 
     @Override
     public void onPause() {
+        dismiss();
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         super.onPause();
     }

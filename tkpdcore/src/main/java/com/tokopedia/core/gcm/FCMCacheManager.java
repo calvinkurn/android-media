@@ -25,6 +25,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author by Herdi_WORK on 13.12.16.
@@ -33,6 +34,7 @@ import java.util.List;
 public class FCMCacheManager {
     private String NOTIFICATION_CODE = "tkp_code";
     private static final String GCM_STORAGE = "GCM_STORAGE";
+    private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
     private LocalCacheHandler cache;
     private Context context;
 
@@ -149,53 +151,53 @@ public class FCMCacheManager {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         switch (code) {
             case TkpdState.GCMServiceState.GCM_MESSAGE:
-                return settings.getBoolean("notification_receive_pm", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PM, true);
             case TkpdState.GCMServiceState.GCM_TALK:
-                return settings.getBoolean("notification_receive_talk", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_TALK, true);
             case TkpdState.GCMServiceState.GCM_REVIEW:
-                return settings.getBoolean("notification_receive_review", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
             case TkpdState.GCMServiceState.GCM_REVIEW_EDIT:
-                return settings.getBoolean("notification_receive_review", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
             case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
-                return settings.getBoolean("notification_receive_review", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
             case TkpdState.GCMServiceState.GCM_PROMO:
-                return settings.getBoolean("notification_receive_promo", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
             case TkpdState.GCMServiceState.GCM_HOT_LIST:
-                return settings.getBoolean("notification_receive_promo", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
-                return settings.getBoolean("notification_receive_reputation", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
-                return settings.getBoolean("notification_receive_reputation", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER:
-                return settings.getBoolean("notification_receive_reputation", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER:
-                return settings.getBoolean("notification_receive_reputation", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_NEWORDER:
-                return settings.getBoolean("notification_sales", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_SALES, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
-                return settings.getBoolean("notification_purchase", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
-                return settings.getBoolean("notification_purchase", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
-                return settings.getBoolean("notification_purchase", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
-                return settings.getBoolean("notification_purchase", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
-                return settings.getBoolean("notification_purchase", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             default:
                 return true;
         }
@@ -253,6 +255,34 @@ public class FCMCacheManager {
 
     public static String getRegistrationId(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        return cache.getString("gcm_id", "");
+    }
+
+    public static void setDialogNotificationSetting(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, NOTIFICATION_STORAGE);
+        cache.putBoolean("notification_dialog", true);
+        cache.applyEditor();
+    }
+
+    public static boolean isDialogNotificationSettingShowed(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, NOTIFICATION_STORAGE);
+        return cache.getBoolean("notification_dialog", false);
+    }
+
+    public static void clearDialogNotificationSetting(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, NOTIFICATION_STORAGE);
+        cache.putBoolean("notification_dialog", false);
+        cache.applyEditor();
+    }
+
+    public static String getRegistrationIdWithTemp(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        if (cache.getString("gcm_id", "").equals("")) {
+            String tempID = getTempFcmId();
+            cache.putString("gcm_id", tempID);
+            cache.applyEditor();
+            return tempID;
+        }
         return cache.getString("gcm_id", "");
     }
 
@@ -330,5 +360,9 @@ public class FCMCacheManager {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private static String getTempFcmId() {
+        return UUID.randomUUID().toString();
     }
 }

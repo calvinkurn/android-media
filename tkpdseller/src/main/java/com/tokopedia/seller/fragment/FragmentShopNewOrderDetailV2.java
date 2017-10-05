@@ -12,9 +12,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,11 +30,14 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
@@ -423,7 +426,10 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.ProductListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(ProductInfoActivity.createInstance(getActivity(), getProductDataToPass(position)));
+                startActivity(
+                        ProductDetailRouter
+                                .createInstanceProductDetailInfoActivity(
+                                        getActivity(), getProductDataToPass(position)));
             }
         });
         ListViewHelper.getListViewSize(holder.ProductListView);
@@ -447,20 +453,22 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = InboxRouter.getSendMessageActivityIntent(getActivity());
-                Bundle bundle = new Bundle();
-                bundle.putString(InboxRouter.PARAM_USER_ID, order.getOrderCustomer().getCustomerId());
-                bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, order.getOrderCustomer().getCustomerName());
-                bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
-                        order.getOrderDetail().getDetailInvoice());
-                bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
-                        MethodChecker.fromHtml(
-                                getString(R.string.custom_content_message_ask_seller)
-                                        .replace("XXX",
-                                                order.getOrderDetail().getDetailPdfUri())).toString()
-                );
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                    Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                            .getAskBuyerIntent(getActivity(),
+                                    order.getOrderCustomer().getCustomerId(),
+                                    order.getOrderCustomer().getCustomerName(),
+                                    order.getOrderDetail().getDetailInvoice(),
+                                    MethodChecker.fromHtml(
+                                            getString(R.string.custom_content_message_ask_seller)
+                                                    .replace("XXX",
+                                                            order.getOrderDetail()
+                                                                    .getDetailPdfUri())).toString(),
+                                    TkpdInboxRouter.TX_ASK_BUYER);
+                    startActivity(intent);
+                }
+
+
             }
         };
     }
@@ -639,6 +647,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.PartialButton.setVisibility(View.GONE);
         holder.RejectButton.setVisibility(View.GONE);
         holder.AcceptButton.setText(getString(R.string.title_order_processed));
+        holder.AcceptButton.setBackgroundResource(com.tokopedia.seller.R.drawable.button_finish_disable);
+        holder.AcceptButton.setTextColor(ContextCompat.getColor(activity, com.tokopedia.seller.R.color.black_twenty_five_percent));
         holder.AcceptButton.setOnClickListener(null);
         isConfirmDone = true;
         if (!isAfterSaveInstance) {
@@ -648,7 +658,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     }
 
     private void onProceedFailed(String messageError) {
-        Log.e(TAG, "onProceedFailed " + messageError);
         if (messageError.toLowerCase().contains("pesanan tidak valid")) {
             holder.AcceptButton.setEnabled(false);
             holder.AcceptButton.setBackgroundResource(R.drawable.btn_shop);
@@ -669,7 +678,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(getClass().getSimpleName(), "onActivityResult requestCode " + requestCode + " resultcode " + resultCode);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQ_REJECT_ORDER:

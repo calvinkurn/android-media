@@ -10,6 +10,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -110,6 +111,7 @@ public class ScreenTracking extends TrackingUtils {
     }
 
     public static void sendAFPDPEvent(final ProductDetailData data, final String eventName){
+        final AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
         getAFEngine().getAdsID(new AppsflyerContainer.AFAdsIDCallback() {
             @Override
             public void onGetAFAdsID(String adsID) {
@@ -124,6 +126,9 @@ public class ScreenTracking extends TrackingUtils {
                 values.put(AFInAppEventParameterName.PRICE, productPrice);
                 values.put(AFInAppEventParameterName.CURRENCY, "IDR");
                 values.put(AFInAppEventParameterName.QUANTITY, 1);
+                if(!analHandler.isAdsIdAvailable()){
+                    analHandler.setAdsId(adsID);
+                }
 
                 CommonUtils.dumper(TAG + "Appsflyer data " + adsID + " " + productID + " " + productPrice);
                 getAFEngine().sendTrackEvent(eventName, values);
@@ -136,7 +141,17 @@ public class ScreenTracking extends TrackingUtils {
         });
     }
 
-    public static void eventDiscoveryScreenAuth(){
-        getGTMEngine().sendScreenAuthenticated(AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY);
+    public static void eventDiscoveryScreenAuth(String departmentId){
+        if(!TextUtils.isEmpty(departmentId)) {
+            getGTMEngine().sendScreenAuthenticated(
+                    AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY + departmentId
+            );
+        }
+    }
+
+    public static void eventOfficialStoreScreenAuth(String shopID, String shopType){
+        getGTMEngine().sendScreenAuthenticatedOfficialStore(
+                AppScreen.SCREEN_OFFICIAL_STORE, shopID, shopType
+        );
     }
 }

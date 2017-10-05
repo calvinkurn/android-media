@@ -2,7 +2,6 @@ package com.tokopedia.core.talkview.fragment;
 
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.view.View;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.R;
@@ -95,17 +94,5 @@ public class InboxTalkViewFragment extends TalkViewFragment{
         detail.setCommentUserName(SessionHandler.getLoginName(context));
         detail.setCommentShopName(SessionHandler.getShopDomain(context));
         items.add(detail);
-    }
-
-    @Override
-    protected void showMainLoading() {
-        progressBar.setVisibility(View.VISIBLE);
-        contentLv.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void hideMainLoading() {
-        progressBar.setVisibility(View.GONE);
-        contentLv.setVisibility(View.VISIBLE);
     }
 }

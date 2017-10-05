@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Nisie on 19/06/15.
  */
+@Deprecated
 public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private OnRetryListener listener;
@@ -187,7 +188,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    private boolean isRetry() {
+    public boolean isRetry() {
         if (retry == 1) {
             return true;
         } else

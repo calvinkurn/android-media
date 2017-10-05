@@ -64,8 +64,8 @@ public class SignInInteractorImpl implements SignInInteractor{
                         if(accountsParameter.getErrorModel()==null) {
                             TokenModel tokenModel = accountsParameter.getTokenModel();
                             sessionHandler.setToken(tokenModel.getAccessToken(),
-                                    tokenModel.getTokenType(),
-                                    tokenModel.getRefreshToken());
+                                    tokenModel.getTokenType()
+                            );
                         }
                         return Observable.just(accountsParameter);
                     }

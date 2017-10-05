@@ -1,30 +1,40 @@
 package com.tokopedia.discovery.fragment;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowseShopAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
-import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.browseparent.Shop;
 import com.tokopedia.discovery.presenter.browseparent.ShopImpl;
 import com.tokopedia.discovery.view.ShopView;
@@ -34,6 +44,9 @@ import java.util.List;
 
 import butterknife.BindView;
 
+import static com.tokopedia.core.shopinfo.ShopInfoActivity.FAVORITE_STATUS_UPDATED;
+import static com.tokopedia.core.shopinfo.ShopInfoActivity.SHOP_STATUS_IS_FAVORITED;
+
 /**
  * Created by Erry on 6/30/2016.
  * modified by m.normansyah
@@ -41,13 +54,39 @@ import butterknife.BindView;
 public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchNetwork {
     public static final int IDFRAGMENT = 1903_909;
     public static final String INDEX = "FRAGMENT_INDEX";
+    public static final int GOTO_SHOP_DETAIL = 125;
     @BindView(R2.id.list_shop)
     RecyclerView list_shop;
 
     List<RecyclerViewItem> browseShopModelList = new ArrayList<>();
     private BrowseShopAdapter browseShopAdapter;
     private GridLayoutManager gridLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
     private static final String TAG = ShopFragment.class.getSimpleName();
+    private BrowseProductRouter.GridType gridType;
+    private int spanCount = 2;
+
+    private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            BrowseProductRouter.GridType gridType = (BrowseProductRouter.GridType) intent.getSerializableExtra(BrowseProductActivity.GRID_TYPE_EXTRA);
+            int lastItemPosition = getLastItemPosition();
+            changeLayoutType(gridType);
+            browseShopAdapter.notifyItemChanged(browseShopAdapter.getItemCount());
+            list_shop.scrollToPosition(lastItemPosition);
+        }
+    };
+
+    private int getLastItemPosition() {
+        switch (gridType) {
+            case GRID_1:
+                return linearLayoutManager.findFirstVisibleItemPosition();
+            case GRID_2:
+            case GRID_3:
+            default:
+                return gridLayoutManager.findFirstVisibleItemPosition();
+        }
+    }
 
     public static ShopFragment newInstance(int index) {
         Bundle args = new Bundle();
@@ -74,11 +113,9 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void ariseRetry(int type, Object... data) {
-        browseShopAdapter.setIsLoading(false);
-        browseShopAdapter.setIsErrorState(true);
-        browseShopAdapter.setOnRetryListenerRV(new BaseRecyclerViewAdapter.OnRetryListener() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
-            public void onRetryCliked() {
+            public void onRetryClicked() {
                 presenter.loadMore(getActivity());
             }
         });
@@ -124,6 +161,9 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void setupRecyclerView() {
+        if (list_shop.getAdapter() != null) {
+            return;
+        }
         list_shop.setLayoutManager(gridLayoutManager);
         list_shop.setAdapter(browseShopAdapter);
         list_shop.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -140,14 +180,44 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
                 }
             }
         });
+        changeLayoutType(((BrowseProductActivity) getActivity()).getGridType());
+    }
+
+    private void changeLayoutType(BrowseProductRouter.GridType gridType) {
+        this.gridType = gridType;
+        switch (gridType) {
+            case GRID_1:
+                spanCount = 1;
+                linearLayoutManager = new LinearLayoutManager(getActivity());
+                browseShopAdapter.setViewType(gridType);
+                list_shop.setLayoutManager(linearLayoutManager);
+                break;
+            case GRID_2:
+                spanCount = 2;
+                gridLayoutManager.setSpanCount(spanCount);
+                browseShopAdapter.setViewType(gridType);
+                list_shop.setLayoutManager(gridLayoutManager);
+                break;
+            case GRID_3:
+                spanCount = 1;
+                gridLayoutManager.setSpanCount(spanCount);
+                browseShopAdapter.setViewType(gridType);
+                list_shop.setLayoutManager(gridLayoutManager);
+                break;
+        }
+        list_shop.setAdapter(browseShopAdapter);
     }
 
     @Override
     public void initAdapter() {
-        browseShopAdapter = new BrowseShopAdapter(getActivity().getApplicationContext(), browseShopModelList);
-        browseShopAdapter.setIsLoading(true);
-        gridLayoutManager = new GridLayoutManager(getActivity(),
-                ProductFeedHelper.calcColumnSize(getResources().getConfiguration().orientation));
+        if (browseShopAdapter != null) {
+            return;
+        }
+        browseShopAdapter = new BrowseShopAdapter(getActivity().getApplicationContext(),
+                browseShopModelList, this);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        spanCount = ProductFeedHelper.calcColumnSize(getResources().getConfiguration().orientation);
+        gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
 
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
     }
@@ -171,13 +241,10 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
                 if (position == browseShopAdapter.getData().size()) {
                     // productFeedPresenter.getData().size()
                     // header column
-                    return footerColumnSize;
+                    return spanCount;
                 } else if (position == 0) {
 //                    return headerColumnSize;
                     return regularColumnSize;
-                } else if (browseShopAdapter.isTopAds(position)) {
-                    // top ads span column
-                    return headerColumnSize;
                 } else {
                     // regular one column
                     return regularColumnSize;
@@ -186,13 +253,19 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
         };
     }
 
+
+    @Override
+    public void setEmptyState() {
+
+    }
+
     @Override
     public void setLoading(boolean isLoading) {
         if (browseShopAdapter != null) browseShopAdapter.setIsLoading(isLoading);
     }
 
     @Override
-    public void onCallProductServiceLoadMore(List<ShopModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+    public void setShopData(List<ShopModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         browseShopAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         browseShopAdapter.setPagingHandlerModel(pagingHandlerModel);
         if (browseShopAdapter.checkHasNext()) {
@@ -205,7 +278,14 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public boolean isLoading() {
-        return browseShopAdapter.getItemViewType(gridLayoutManager.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
+        switch (gridType) {
+            case GRID_1:
+                return browseShopAdapter.getItemViewType(linearLayoutManager.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
+            case GRID_2:
+            case GRID_3:
+            default:
+                return browseShopAdapter.getItemViewType(gridLayoutManager.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
+        }
     }
 
     @Override
@@ -237,9 +317,9 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     @Override
     public void onCallNetwork() {
         Log.d(TAG, "onCallNetwork");
-        if (getActivity() != null && getActivity() instanceof DiscoveryActivityPresenter) {
-            DiscoveryActivityPresenter discoveryActivityPresenter = (DiscoveryActivityPresenter) getActivity();
-            presenter.callNetwork(discoveryActivityPresenter);
+        if (getActivity() != null && getActivity() instanceof BrowseView) {
+            BrowseView browseView = (BrowseView) getActivity();
+            presenter.callNetwork(browseView);
         }
     }
 
@@ -253,6 +333,56 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }
-        ((BrowseProductActivity) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+        ((BrowseView) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+    }
+
+    @Override
+    public void startShopInfoActivity(String shopId) {
+        Intent intent = new Intent(getContext(), ShopInfoActivity.class);
+        intent.putExtras(ShopInfoActivity.createBundle(shopId, ""));
+        startActivityForResult(intent, ShopFragment.GOTO_SHOP_DETAIL);
+    }
+
+    @Override
+    public void showErrorMessage(String error) {
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
+    }
+
+    @Override
+    public void showToggleFavoriteSuccess(String shopName, boolean favorited) {
+        String message;
+        if (favorited) {
+            message = getResources().getString(R.string.add_favorite_success_message)
+                    .replace("$1", shopName);
+        } else {
+            message = getResources().getString(R.string.remove_favorite_success_message)
+                    .replace("$1", shopName);
+        }
+        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null && requestCode == GOTO_SHOP_DETAIL && resultCode == Activity.RESULT_CANCELED) {
+            boolean isFavorited = data.getBooleanExtra(SHOP_STATUS_IS_FAVORITED, false);
+            boolean isUpdated = data.getBooleanExtra(FAVORITE_STATUS_UPDATED, false);
+            int position = browseShopAdapter.getLastItemClickedPosition();
+            if (browseShopAdapter != null && position != -1 && isUpdated) {
+                browseShopAdapter.updateShopIsFavorited(isFavorited, position);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(changeGridReceiver, new IntentFilter(BrowseProductActivity.CHANGE_GRID_ACTION_INTENT));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(changeGridReceiver);
     }
 }

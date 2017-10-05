@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home.adapter;
 
 import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
+import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 
 import java.util.ArrayList;
+
 
 /**
  * @author by mady on 9/23/16.
@@ -23,6 +27,7 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
     private ArrayList<CategoryItemModel> itemsList;
     private OnCategoryClickedListener categoryClickedListener;
     private OnGimmicClickedListener gimmicClickedListener;
+    private OnApplinkClickedListener applinkClickedListener;
     private final int homeMenuWidth;
 
     SectionListCategoryAdapter(ArrayList<CategoryItemModel> itemsList, int homeMenuWidth) {
@@ -50,25 +55,34 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
 
         holder.tvTitle.setText(singleItem.getName());
 
-        ImageHandler.LoadImage(holder.itemImage,singleItem.getImageUrl());
+        ImageHandler.LoadImage(holder.itemImage, singleItem.getImageUrl());
 
         holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (singleItem.getType().equals(CategoryItemModel.TYPE.CATEGORY)) {
-                    categoryClickedListener.onCategoryClicked(singleItem, holder.getAdapterPosition());
-                } else {
-                    gimmicClickedListener.onGimmicClicked(singleItem);
-                }
-            }
-        });
+                                           @Override
+                                           public void onClick(View v) {
+                                               DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
 
-        if(i % 2 != 0 ){
+                                               if (singleItem.getType().equals(CategoryItemModel.TYPE.CATEGORY)) {
+                                                   categoryClickedListener.onCategoryClicked(singleItem, holder.getAdapterPosition());
+                                               } else if (CategoryItemModel.TYPE.DIGITAL.equals(singleItem.getType())) {
+                                                   gimmicClickedListener.onDigitalCategoryClicked(singleItem);
+                                               } else if (!TextUtils.isEmpty(singleItem.getAppLinks()) && deepLinkDelegate.supportsUri(singleItem.getAppLinks())) {
+                                                   applinkClickedListener.onApplinkClicked(singleItem);
+                                               } else {
+                                                   gimmicClickedListener.onGimmicClicked(singleItem);
+                                               }
+
+                                           }
+                                       }
+        );
+
+        if (i % 2 != 0) {
             holder.sparator.setVisibility(View.GONE);
-        } else {
+        } else
+
+        {
             holder.sparator.setVisibility(View.VISIBLE);
         }
-
     }
 
 
@@ -78,6 +92,10 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
 
     void setGimmicClickedListener(OnGimmicClickedListener gimmicClickedListener) {
         this.gimmicClickedListener = gimmicClickedListener;
+    }
+
+    void setOnApplinkClickedListener(OnApplinkClickedListener onApplinkClickedListener) {
+        this.applinkClickedListener = onApplinkClickedListener;
     }
 
     @Override
@@ -103,9 +121,7 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
             this.itemImage = (ImageView) view.findViewById(R.id.itemImage);
 
             this.linWrapper = (LinearLayout) view.findViewById(R.id.linWrapper);
-
         }
-
     }
 
     public interface OnCategoryClickedListener {
@@ -114,6 +130,11 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
 
     public interface OnGimmicClickedListener {
         void onGimmicClicked(CategoryItemModel categoryItemModel);
+
+        void onDigitalCategoryClicked(CategoryItemModel itemModel);
     }
 
+    public interface OnApplinkClickedListener {
+        void onApplinkClicked(CategoryItemModel categoryItemModel);
+    }
 }

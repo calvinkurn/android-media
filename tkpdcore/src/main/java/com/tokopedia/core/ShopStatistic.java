@@ -140,11 +140,9 @@ public class ShopStatistic extends TActivity {
 		reputationPoint = (TextView)findViewById(R.id.reputation_point);
 
 
-		System.out.println("ShopStatistics started");
 		try {
 			JSONObject Result = new JSONObject(getIntent().getExtras().getString("shop_info"));
 			JSONObject responseSpeed = Result.getJSONObject("speed");
-			System.out.println("Magic result " + Result.toString(1));
 			JSONObject ShopInfo = new JSONObject(Result.getString("shop_info"));
 			JSONObject ShopStats = new JSONObject(Result.getString("shop_stats"));
 			JSONObject OwnerInfo = new JSONObject(Result.getString("owner_info"));
@@ -235,7 +233,6 @@ public class ShopStatistic extends TActivity {
 			for(int i=0; i<ShopShipmentList.length(); i++){
 				ShopShipment = new JSONObject(ShopShipmentList.getString(i));
 				AgencyUri.add(ShopShipment.getString("logo"));
-				System.out.println(ShopShipment.getString("logo"));
 				ShopShipmentPackage = new JSONArray(ShopShipmentPackageList.getString(ShopShipment.getString("shipping_id")));
 				SSCombined = "";
 				for(int j=0; j<ShopShipmentPackage.length(); j++){
@@ -245,7 +242,6 @@ public class ShopStatistic extends TActivity {
 					else
 					SSCombined = SSCombined + "\n" + SSIndividualPackage.getString("product_name");
 				}
-				System.out.println(SSCombined);
 				AgencyPackage.add(SSCombined);
 				}
 			

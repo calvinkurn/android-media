@@ -2,7 +2,6 @@ package com.tokopedia.inbox.rescenter.inbox.presenter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -11,8 +10,8 @@ import android.view.View;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.inbox.rescenter.detail.activity.ResCenterActivity;
-import com.tokopedia.inbox.rescenter.detail.model.passdata.ActivityParamenterPassData;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inbox.facade.Facade;
 import com.tokopedia.inbox.rescenter.inbox.facade.FacadeImpl;
@@ -24,7 +23,6 @@ import com.tokopedia.inbox.rescenter.inbox.model.ResCenterHeader;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxData;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxDataPass;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
-import com.tokopedia.core.util.PagingHandler;
 
 import java.util.Map;
 
@@ -64,10 +62,7 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
 
     @Override
     public void setActionOnItemListClickListener(Context context, String resolutionID) {
-        ActivityParamenterPassData activityParamenterPassData = new ActivityParamenterPassData();
-        activityParamenterPassData.setResCenterId(resolutionID);
-        Intent intent = ResCenterActivity.newInstance(context, activityParamenterPassData);
-        context.startActivity(intent);
+        context.startActivity(DetailResCenterActivity.newInstance(context, resolutionID));
         UnifyTracking.eventResolutionDetail(getResCenterTabModel().titleFragment);
     }
 
@@ -146,7 +141,6 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
         setNoResultView(false);
         setLoadingView(true);
         listener.setFilterAble(false);
-        listener.setPullToRefreshAble(false);
     }
 
     @Override
@@ -252,7 +246,6 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
     @Override
     public void setOnRequestSuccess() {
         listener.setFilterAble(true);
-        listener.setPullToRefreshAble(true);
     }
 
     @Override
@@ -264,7 +257,6 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
             listener.showTimeOutEmtpyState(retryClickedListener);
         } else {
             listener.setFilterAble(true);
-            listener.setPullToRefreshAble(true);
             setAllowConnection(true);
             listener.setRetryView();
         }

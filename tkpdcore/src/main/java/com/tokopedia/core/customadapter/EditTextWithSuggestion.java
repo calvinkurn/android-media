@@ -88,7 +88,6 @@ public class EditTextWithSuggestion extends EditText{
 	}
 	
 	public void Initiate(){
-		System.out.println("Shit is initialized");
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 		suggestionList = new PopupWindow(inflater.inflate(R.layout.popup_window_suggestion, null), LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		suggestionList.setFocusable(true);
@@ -100,7 +99,6 @@ public class EditTextWithSuggestion extends EditText{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				System.out.println("Can be clicked");
 				setText(getText().toString().substring(0, LastIndex) + ProdUrlMap.get(ProdNameList.get(position)) + getText().toString().substring((LastIndex + 1 + (length() - LastLength)), length()));
 				setSelection(length());
 				suggestionList.dismiss();

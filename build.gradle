@@ -8,9 +8,12 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.0.1"
+        classpath 'com.apollographql.apollo:gradle-plugin:0.3.0'
+        classpath 'com.google.firebase:firebase-plugins:1.1.1'
+
     }
 }
 
@@ -22,6 +25,8 @@ allprojects {
         maven { url "https://www.jitpack.io" }
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'http://maven.localytics.com/public' }
+        maven { url 'https://dl.bintray.com/guardian/android' }
+        maven { url "https://maven.google.com" }
         maven {
             url "${artifactory_url}" + "/libs-release-local";
             credentials {
@@ -29,6 +34,8 @@ allprojects {
                 password = "${artifactory_password}"
             }
         }
+        maven { url "$rootDir/node_modules/react-native/android" }
+
     }
 }
 

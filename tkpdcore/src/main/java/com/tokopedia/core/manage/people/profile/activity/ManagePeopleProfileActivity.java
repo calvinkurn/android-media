@@ -75,7 +75,7 @@ public class ManagePeopleProfileActivity extends BasePresenterActivity<ManagePeo
     public void inflateFragment(Fragment fragment, String tag) {
         if (getFragmentManager().findFragmentByTag(tag) == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment, tag)
+                    .replace(R.id.container, fragment, tag)
                     .commit();
         } else {
             Intent intent = getIntent();

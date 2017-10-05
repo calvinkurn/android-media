@@ -16,14 +16,21 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.opportunity.data.factory.ActionReplacementSourceFactory;
+import com.tokopedia.transaction.opportunity.domain.interactor.CancelReplacementUseCase;
+import com.tokopedia.transaction.opportunity.domain.repository.ReplacementRepository;
+import com.tokopedia.transaction.opportunity.domain.repository.ReplacementRepositoryImpl;
 import com.tokopedia.transaction.purchase.adapter.TxListAdapter;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.listener.TxListViewListener;
@@ -133,7 +140,20 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
 
     @Override
     protected void initialPresenter() {
-        presenter = new TxListPresenterImpl(this);
+
+        ActionReplacementSourceFactory actionReplacementSourceFactory =
+                new ActionReplacementSourceFactory(context);
+
+        ReplacementRepository replacementRepository =
+                new ReplacementRepositoryImpl(actionReplacementSourceFactory);
+        CancelReplacementUseCase cancelReplacementUseCase =
+                new CancelReplacementUseCase(new JobExecutor(),
+                        new UIThread(),
+                        replacementRepository);
+
+        SessionHandler sessionHandler = new SessionHandler(context);
+
+        presenter = new TxListPresenterImpl(this, cancelReplacementUseCase, sessionHandler);
     }
 
     @Override
@@ -230,12 +250,14 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
 
     @Override
     public void showProgressLoading() {
-        progressDialog.showDialog();
+        if (progressDialog != null)
+            progressDialog.showDialog();
     }
 
     @Override
     public void hideProgressLoading() {
-        progressDialog.dismiss();
+        if (progressDialog != null)
+            progressDialog.dismiss();
     }
 
     @Override
@@ -499,6 +521,21 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     }
 
     @Override
+    public void actionCancelReplacement(OrderData orderData) {
+        presenter.cancelReplacement(getActivity(), orderData);
+    }
+
+    @Override
+    public void actionComplain(OrderData orderData) {
+        presenter.processComplain(getActivity(), orderData);
+    }
+
+    @Override
+    public void actionComplainConfirmDeliver(OrderData orderData) {
+        presenter.processComplainConfirmDeliver(getActivity(), orderData);
+    }
+
+    @Override
     public void onRefresh(View view) {
         if (!isLoading) {
             pagingHandler.resetPage();
@@ -577,6 +614,22 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
 
     public interface StateFilterListener {
         String getStateTxFilterID();
+    }
+
+    @Override
+    public void onErrorCancelReplacement(String errorMessage) {
+        hideProgressLoading();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessCancelReplacement() {
+        if (getView() != null) {
+            Snackbar.make(getView(), getString(R.string.success_cancel_replacement), Snackbar
+                    .LENGTH_SHORT).show();
+            hideProgressLoading();
+            onRefresh(getView());
+        }
     }
 }
 

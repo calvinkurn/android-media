@@ -11,4 +11,31 @@
     <string name="title_home_official_store">Official Store</string>
     <string name="label_gold_merchant">Gold Merchant</string>
     <string name="hint_search_wishlist">Cari produk di wishlist</string>
+
+    <!--favorite page-->
+    <string name="msg_empty_wishlist">Empty wishlist</string>
+    <string name="msg_fav_shop_success">Sukses memfavoritkan toko</string>
+    <string name="msg_fav_shop_failed">Gagal memfavoritkan toko silahkan coba lagi</string>
+    <string name="empty_wishlist">Wishlist Anda masih kosong</string>
+    <string name="find_product">Mulai cari produk</string>
+    <string name="lihat_semua_product">Lihat Semua Produk</string>
+    <string name="textview_redirect_seller_app">Fitur ini hanya tersedia pada aplikasi TopSeller. Nikmati berbagai kemudahan berjualan online dalam genggaman Anda.</string>
+    <string name="drawer_title_wishlist">Wishlist</string>
+    <string name="drawer_title_buyer">Pembelian</string>
+    <string name="drawer_title_payment_status">Status Pembayaran</string>
+    <string name="drawer_title_order_status">Status Pemesanan</string>
+    <string name="drawer_title_confirm_delivery">Konfirmasi Penerimaan</string>
+    <string name="drawer_title_transaction_canceled">Transaksi Dibatalkan</string>
+    <string name="drawer_title_purchase_list">Daftar Pembelian</string>
+    <string name="introducing">Memperkenalkan</string>
+    <string name="download_topseller_app">Download Aplikasi TopSeller</string>
+
+    <!--tokocash cashback-->
+    <string name="toko_cash_pending_title">Bonus Cashback</string>
+    <string name="toko_cash_pending_proceed_button">Dapatkan Cashback Sekarang</string>
+    <string name="toko_cash_pending_close_button">Tutup</string>
+    <string name="toko_cash_pending_body">Anda mendapatkan cashback TokoCash sebesar %s dari transaksi terakhir</string>
+
+    <string name="react_native_banner_official_title">Official Store</string>
+
 </resources>

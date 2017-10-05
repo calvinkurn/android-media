@@ -9,6 +9,7 @@ import android.widget.RemoteViews;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.var.TkpdCache;
 
 public class TkpdWidgetProvider extends AppWidgetProvider{
@@ -19,9 +20,8 @@ public class TkpdWidgetProvider extends AppWidgetProvider{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if(intent.getExtras()!=null){
-			System.out.println("Updating content");
 			RemoteViews rem = new RemoteViews(context.getPackageName(), R.layout.widget_home);
-			LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+			LocalCacheHandler cache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
 			if(cache.getArrayListInteger(TkpdCache.Key.SALES_COUNT).size()>0){
 			rem.setTextViewText(R.id.order, ""+cache.getArrayListInteger(TkpdCache.Key.SALES_COUNT).get(0));
 			rem.setTextViewText(R.id.status, ""+cache.getArrayListInteger(TkpdCache.Key.SALES_COUNT).get(1));
@@ -42,7 +42,7 @@ public class TkpdWidgetProvider extends AppWidgetProvider{
 		// TODO Auto-generated method stub
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 		RemoteViews rem = new RemoteViews(context.getPackageName(), R.layout.widget_home);
-		LocalCacheHandler cache = new LocalCacheHandler(context,TkpdCache.NOTIFICATION_DATA);
+		LocalCacheHandler cache = new LocalCacheHandler(context,DrawerHelper.DRAWER_CACHE);
 //		rem.setTextViewText(R.id.test, "xXXx");
 		if(cache.getArrayListInteger(TkpdCache.Key.SALES_COUNT).size()>0){
 		rem.setTextViewText(R.id.order, ""+cache.getArrayListInteger(TkpdCache.Key.SALES_COUNT).get(0));

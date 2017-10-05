@@ -11,10 +11,5 @@
         android:orderInCategory="101"
         android:title="@string/action_delete"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_report"
-        android:orderInCategory="102"
-        android:title="@string/action_report"
-        app:showAsAction="never" />
 
 </menu>

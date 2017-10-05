@@ -7,10 +7,9 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractor;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractorImpl;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeView;
 
 import java.util.ArrayList;
@@ -26,23 +25,23 @@ public class RechargePresenterImpl implements RechargePresenter,
         RechargeInteractor.OnGetListProductForOperator, RechargeInteractor.OnGetListOperatorByIdsListener,
         RechargeInteractor.OnGetProductById, RechargeInteractor.OnGetDetailProduct {
 
+    static final String KEY_LAST_ORDER = "RECHARGE_LAST_ORDER";
+    static final String RECHARGE_CACHE_KEY = "PrimaryRechargeCache";
     private static final String RECHARGE_PHONEBOOK_CACHE_KEY = "RECHARGE_CACHE";
     private final LocalCacheHandler cacheHandlerPhoneBook;
     private final LocalCacheHandler cacheHandlerLastOrder;
+    private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
     private RechargeView view;
-    private RechargeNetworkInteractor interactor;
     private RechargeInteractor dbInteractor;
     private Context context;
 
     public RechargePresenterImpl(Context context, RechargeView view) {
         this.view = view;
-        this.interactor = new RechargeNetworkInteractorImpl();
         this.dbInteractor = new RechargeInteractorImpl();
         this.context = context;
         this.cacheHandlerPhoneBook = new LocalCacheHandler(this.context, RECHARGE_PHONEBOOK_CACHE_KEY);
         this.cacheHandlerLastOrder = new LocalCacheHandler(
-                this.context,RechargeCategoryPresenterImpl.RECHARGE_CACHE_KEY
-        );
+                this.context, RECHARGE_CACHE_KEY);
     }
 
 
@@ -53,7 +52,7 @@ public class RechargePresenterImpl implements RechargePresenter,
 
     @Override
     public void fetchRecentNumbers(int categoryId) {
-        dbInteractor.getRecentData(categoryId,this);
+        dbInteractor.getRecentData(categoryId, this);
     }
 
     @Override
@@ -73,7 +72,7 @@ public class RechargePresenterImpl implements RechargePresenter,
 
     @Override
     public void getListOperatorFromCategory(int categoryId) {
-        dbInteractor.getListProductForOperator(this,categoryId);
+        dbInteractor.getListProductForOperator(this, categoryId);
     }
 
     @Override
@@ -93,17 +92,55 @@ public class RechargePresenterImpl implements RechargePresenter,
 
     @Override
     public boolean isAlreadyHaveLastOrderDataOnCache() {
-        return null != cacheHandlerLastOrder.getString(RechargeCategoryPresenterImpl.KEY_LAST_ORDER);
+        return null != cacheHandlerLastOrder.getString(KEY_LAST_ORDER);
     }
 
     @Override
     public LastOrder getLastOrderFromCache() {
         if (isAlreadyHaveLastOrderDataOnCache()) {
-            String temp = cacheHandlerLastOrder.getString(RechargeCategoryPresenterImpl.KEY_LAST_ORDER);
+            String temp = cacheHandlerLastOrder.getString(KEY_LAST_ORDER);
             return CacheUtil.convertStringToModel(temp, LastOrder.class);
         } else {
             return null;
         }
+    }
+
+    @Override
+    public boolean isAlreadyHaveLastOrderDataOnCacheByCategoryId(int categoryId) {
+        if (isAlreadyHaveLastOrderDataOnCache()) {
+            String temp = cacheHandlerLastOrder.getString(KEY_LAST_ORDER);
+            try {
+                LastOrder lastOrder = CacheUtil.convertStringToModel(temp, LastOrder.class);
+                return (lastOrder.getData().getAttributes().getCategory_id() == categoryId);
+            } catch (Exception e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {
+        if (cacheHandlerRecentInstantCheckoutUsed == null)
+            cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
+                    this.context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+            );
+        cacheHandlerRecentInstantCheckoutUsed.putBoolean(
+                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
+        );
+        cacheHandlerRecentInstantCheckoutUsed.applyEditor();
+    }
+
+    @Override
+    public boolean isRecentInstantCheckoutUsed(String categoryId) {
+        if (cacheHandlerRecentInstantCheckoutUsed == null)
+            cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
+                    this.context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+            );
+        return cacheHandlerRecentInstantCheckoutUsed.getBoolean(
+                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
+        );
     }
 
     @Override
@@ -128,6 +165,8 @@ public class RechargePresenterImpl implements RechargePresenter,
         if (!listProduct.isEmpty()) {
             processOperatorById(listProduct);
             view.renderDataProducts(listProduct);
+        } else {
+            view.hideFormAndImageOperator();
         }
     }
 
@@ -175,11 +214,11 @@ public class RechargePresenterImpl implements RechargePresenter,
     @Override
     public void onSuccessFetchProducts(List<Product> listProduct) {
         List<Integer> operatorIds = new ArrayList<>();
-        for (Product prod: listProduct) {
+        for (Product prod : listProduct) {
             if (!operatorIds.contains(prod.getRelationships().getOperator().getData().getId()))
                 operatorIds.add(prod.getRelationships().getOperator().getData().getId());
         }
-        dbInteractor.getOperatorListByIds(operatorIds,this);
+        dbInteractor.getOperatorListByIds(operatorIds, this);
     }
 
     @Override

@@ -45,6 +45,34 @@ public class EditResCenterActivity extends BasePresenterActivity<EditResCenterPr
         return editPassData;
     }
 
+    private static Parcelable generateEditPassData(String resolutionID,
+                                                   String orderID,
+                                                   boolean isSeller,
+                                                   boolean isReceived) {
+        ActionParameterPassData editPassData = new ActionParameterPassData();
+        editPassData.setResolutionID(resolutionID);
+        DetailResCenterData data = new DetailResCenterData();
+        DetailResCenterData.Detail detail = new DetailResCenterData.Detail();
+
+        DetailResCenterData.ResolutionBy resolutionBy = new DetailResCenterData.ResolutionBy();
+        resolutionBy.setByCustomer(isSeller ? 0 : 1);
+        detail.setResolutionBy(resolutionBy);
+
+        DetailResCenterData.ResolutionOrder resolutionOrder = new DetailResCenterData.ResolutionOrder();
+        resolutionOrder.setOrderId(orderID);
+        detail.setResolutionOrder(resolutionOrder);
+
+        DetailResCenterData.ResolutionLast resolutionLast = new DetailResCenterData.ResolutionLast();
+        resolutionLast.setLastFlagReceived(isReceived ? 1 : 0);
+        resolutionLast.setLastResolutionId(resolutionID);
+        detail.setResolutionLast(resolutionLast);
+
+        data.setDetail(detail);
+
+        editPassData.setDetailData(data);
+        return editPassData;
+    }
+
     public static Intent newBuyerInstance(Context context,
                                           ActivityParamenterPassData passData,
                                           DetailResCenterData detailData) {
@@ -52,6 +80,19 @@ public class EditResCenterActivity extends BasePresenterActivity<EditResCenterPr
         Bundle bundle = new Bundle();
         bundle.putBoolean(ARGS_PARAM_FLAG_EDIT, true);
         bundle.putParcelable(ARGS_PARAM_PASS_DATA, generateEditPassData(passData, detailData));
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newBuyerInstance(Context context,
+                                          String resolutionID,
+                                          String orderID,
+                                          boolean isReceived) {
+        Intent intent = new Intent(context, EditResCenterActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ARGS_PARAM_FLAG_EDIT, true);
+        bundle.putParcelable(ARGS_PARAM_PASS_DATA,
+                generateEditPassData(resolutionID, orderID, false, isReceived));
         intent.putExtras(bundle);
         return intent;
     }
@@ -67,12 +108,38 @@ public class EditResCenterActivity extends BasePresenterActivity<EditResCenterPr
         return intent;
     }
 
+    public static Intent newSellerInstance(Context context,
+                                           String resolutionID,
+                                           String orderID,
+                                           boolean isReceived) {
+        Intent intent = new Intent(context, EditResCenterActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ARGS_PARAM_FLAG_EDIT, true);
+        bundle.putParcelable(ARGS_PARAM_PASS_DATA,
+                generateEditPassData(resolutionID, orderID, true, isReceived));
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     public static Intent newAppealInstance(Context context,
                                            ActivityParamenterPassData passData,
                                            DetailResCenterData detailData) {
         Intent intent = new Intent(context, EditResCenterActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_PARAM_PASS_DATA, generateEditPassData(passData, detailData));
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newAppealInstance(Context context,
+                                           String resolutionID,
+                                           String orderID,
+                                           boolean seller,
+                                           boolean isReceived) {
+        Intent intent = new Intent(context, EditResCenterActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARGS_PARAM_PASS_DATA,
+                generateEditPassData(resolutionID, orderID, seller, isReceived));
         intent.putExtras(bundle);
         return intent;
     }

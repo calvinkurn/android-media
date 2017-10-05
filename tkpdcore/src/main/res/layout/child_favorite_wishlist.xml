@@ -1,40 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
     android:id="@+id/main_content"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_small"
+    android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_marginTop="@dimen/margin_small"
-        >
+        android:background="@color/white">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_wishlist"
-            android:singleLine="true"
-            android:textStyle="bold"
             android:padding="@dimen/padding_small"
-            />
+            android:maxLines="1"
+            android:text="@string/title_wishlist"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textview_see_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title_see_all"
-            android:textColor="@color/href_link"
             android:layout_alignParentRight="true"
-            android:singleLine="true"
+            android:layout_alignParentEnd="true"
             android:clickable="true"
             android:padding="@dimen/padding_small"
-            android:textSize="@dimen/fontvs"
-
-            />
+            android:maxLines="1"
+            android:text="@string/title_see_all"
+            android:textColor="@color/href_link"
+            android:textSize="@dimen/fontvs" />
 
     </RelativeLayout>
 
@@ -44,14 +42,13 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <include layout="@layout/empty_wishlist"/>
+        <include layout="@layout/empty_wishlist" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/wishlist_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/wishlist_height"
-            android:scrollbars="horizontal"
-            />
+            android:scrollbars="horizontal" />
     </LinearLayout>
 
 </LinearLayout>

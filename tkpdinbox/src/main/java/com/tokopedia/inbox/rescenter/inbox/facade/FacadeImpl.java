@@ -47,7 +47,7 @@ public class FacadeImpl implements Facade {
             public void onPreExecute(Map<String, String> params) {
                 presenter.setAllowConnection(false);
                 presenter.setBeforeInitInboxData();
-                getCacheResCenterInbox(generateCacheKey(params));
+//                getCacheResCenterInbox(generateCacheKey(params));
             }
 
             @Override

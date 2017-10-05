@@ -1,6 +1,7 @@
 package com.tokopedia.core.home.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ public class ViewHolderHistoryProduct extends RecyclerView.ViewHolder {
     public RelativeLayout emptyLayout;
     public RelativeLayout emptyHistory;
     public TextView findFavoriteShop;
+    public View officialStoreLinkContainer;
 
     public ViewHolderHistoryProduct(FragmentIndexMainHeader header) {
         super(header.getParentView());
@@ -30,5 +32,6 @@ public class ViewHolderHistoryProduct extends RecyclerView.ViewHolder {
         emptyHistory = header.getEmptyHistory();
         historyAdapter = header.getAdapter();
         findFavoriteShop = header.getFindFavoriteShop();
+        officialStoreLinkContainer = header.getOfficialStoreLinkContainer();
     }
 }

@@ -39,9 +39,9 @@ import com.tokopedia.core.inboxreputation.model.actresult.ActResult;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.MethodChecker;
@@ -409,10 +409,8 @@ public class ReputationViewShop extends TActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(ReputationViewShop.this, ProductInfoActivity.class);
-                bundle.putString("product_id", model.productId);
-                intent.putExtras(bundle);
+                Intent intent = ProductDetailRouter
+                        .createInstanceProductDetailInfoActivity(ReputationViewShop.this, model.productId);
                 startActivity(intent);
             }
         };
@@ -797,7 +795,8 @@ public class ReputationViewShop extends TActivity {
 
     private void deleteComment() {
         showProgressDialog();
-        networkInteractor.deleteComment(this, getDeleteCommentParam(), new ActReputationRetrofitInteractor.ActReputationListener() {
+        networkInteractor.deleteComment(this, getDeleteCommentParam(),
+                new ActReputationRetrofitInteractor.ActReputationListener() {
             @Override
             public void onSuccess(ActResult result) {
                 dismissProgressDialog();
@@ -808,6 +807,7 @@ public class ReputationViewShop extends TActivity {
                 intent.putExtras(bundle);
                 setResult(RESULT_OK, intent);
                 refreshData();
+                holderComment.postCommentView.setVisibility(View.VISIBLE);
             }
 
             @Override

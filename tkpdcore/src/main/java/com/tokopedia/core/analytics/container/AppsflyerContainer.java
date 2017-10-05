@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics.container;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -8,9 +9,11 @@ import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.GlobalConfig;
 
 import java.io.IOException;
 import java.util.Map;
@@ -52,7 +55,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         setCurrencyCode("IDR");
         setUserID(userID);
         setAndroidID();
-        setAFLog(true);
+        setAFLog(BuildConfig.DEBUG);
         setGCMId(Jordan.GCM_PROJECT_NUMBER);
         setAppsFlyerKey(key);
     }
@@ -132,7 +135,29 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     }
 
     @Override
+    public String getAdsIdDirect() {
+
+        AdvertisingIdClient.Info adInfo;
+        try {
+            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+            return adInfo.getId();
+        } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+            return "";
+        } catch (Exception e){
+            e.printStackTrace();
+            return "";
+        }
+
+    }
+
+    @Override
     public String getUniqueId() {
         return AppsFlyerLib.getInstance().getAppsFlyerUID(context);
+    }
+
+    @Override
+    public void sendDeeplinkData(Activity activity) {
+        AppsFlyerLib.getInstance().sendDeepLinkData(activity);
     }
 }

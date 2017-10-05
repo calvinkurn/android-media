@@ -44,4 +44,7 @@ public interface PeopleApi {
 
     @GET(TkpdBaseURL.User.PATH_GET_SEARCH_BANK_ACCOUNT)
     Observable<Response<TkpdResponse>> searchBankAccount(@QueryMap Map<String, String> params);
+
+    @GET(TkpdBaseURL.User.PATH_GET_PEOPLE_INFO)
+    Observable<Response<TkpdResponse>> getProfile2(@QueryMap Map<String, Object> params);
 }

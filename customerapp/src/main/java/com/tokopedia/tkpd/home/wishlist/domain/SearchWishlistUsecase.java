@@ -2,9 +2,6 @@ package com.tokopedia.tkpd.home.wishlist.domain;
 
 import com.tokopedia.core.base.domain.DefaultUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.home.wishlist.data.WishlistDataRepository;
 import com.tokopedia.tkpd.home.wishlist.domain.model.DataWishlist;
 
@@ -17,6 +14,7 @@ import rx.Observable;
 public class SearchWishlistUsecase extends DefaultUseCase<DataWishlist> {
     public static final String KEY_QUERY = "query";
     public static final String KEY_USER_ID = "userId";
+    public static final String KEY_PAGE = "page";
 
     private final WishlistRepository wishlistRepository;
 
@@ -28,6 +26,7 @@ public class SearchWishlistUsecase extends DefaultUseCase<DataWishlist> {
     public Observable<DataWishlist> createObservable(RequestParams requestParams) {
         String query = requestParams.getString(KEY_QUERY, "");
         String userId = requestParams.getString(KEY_USER_ID, "");
-        return wishlistRepository.search_wishlist(userId, query);
+        int page = requestParams.getInt(KEY_PAGE, 1);
+        return wishlistRepository.search_wishlist(userId, query, page);
     }
 }
