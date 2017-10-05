@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -128,6 +129,9 @@ public class DrawerPosHelper extends DrawerHelper
             PosSessionHandler posSessionHandler = new PosSessionHandler(context);
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
+                    Intent intent = ((TkpdCoreRouter) context.getApplication()).getHomeIntent(context);
+                    context.startActivity(intent);
+                    context.finish();
                     break;
                 case TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY:
                     posSessionHandler.showPasswordDialog(
