@@ -64,10 +64,10 @@
     <string name="report_option_sara">Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/normal sosial</string>
     <string name="report_option_others">Lainnya</string>
     <string name="hint_input_reason">Isi alasan disini</string>
-    <string name="success_report_review">Sukses mengirim laporan</string>
-    <string name="success_edit_review">Sukses mengubah ulasan</string>
+    <string name="success_report_review">Laporan telah dikirim</string>
+    <string name="success_edit_review">Ulasan telah diubah</string>
     <string name="success_send_review">Sukses mengirim ulasan</string>
-    <string name="success_skip_review">Sukses melewati ulasan</string>
+    <string name="success_skip_review">Ulasan telah dilewati</string>
     <string name="title_reputation_history">Penalti Reputasi</string>
     <string name="more_to_complete">Selengkapnya</string>
     <string name="tips1_title">Kesesuaian dengan deskripsi</string>
@@ -95,5 +95,10 @@
     <string name="edited">(diubah)</string>
     <string name="buyer_has_not_review">Pembeli belum menilai</string>
     <string name="score_from_buyer">Penilaian dari Pembeli</string>
+    <string name="product_is_deleted">Produk telah dihapus</string>
+    <string name="review_is_skipped">Ulasan ini telah dilewati</string>
+    <string name="review_for">Ulasan untuk</string>
+    <string name="is_done">sudah selesai</string>
+    <string name="is_edited">telah diubah</string>
 
 </resources>

@@ -115,7 +115,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     public static InboxReputationFormFragment createInstance(String reviewId, String
             reputationId, String productId, String shopId, String productAvatar, String productName,
-                                                             String productUrl) {
+                                                             String productUrl, String revieweeName) {
         InboxReputationFormFragment fragment = new InboxReputationFormFragment();
         Bundle bundle = new Bundle();
         bundle.putString(InboxReputationFormActivity.ARGS_SHOP_ID, shopId);
@@ -125,6 +125,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_AVATAR, productAvatar);
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_NAME, productName);
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_URL, productUrl);
+        bundle.putString(InboxReputationFormActivity.ARGS_REVIEWEE_NAME, revieweeName);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -134,7 +135,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                                               int rating, String review,
                                               ArrayList<ImageAttachmentViewModel> listImage,
                                               String productAvatar, String productName,
-                                              String productUrl, boolean isAnonymous) {
+                                              String productUrl, boolean isAnonymous, String revieweeName) {
         InboxReputationFormFragment fragment = new InboxReputationFormFragment();
         Bundle bundle = new Bundle();
         bundle.putString(InboxReputationFormActivity.ARGS_SHOP_ID, shopId);
@@ -149,6 +150,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_NAME, productName);
         bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_URL, productUrl);
         bundle.putBoolean(InboxReputationFormActivity.ARGS_ANONYMOUS, isAnonymous);
+        bundle.putString(InboxReputationFormActivity.ARGS_REVIEWEE_NAME, revieweeName);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -477,7 +479,10 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessSendReview() {
-        getActivity().setResult(Activity.RESULT_OK);
+        Intent intent = new Intent();
+        intent.putExtra(InboxReputationFormActivity.ARGS_REVIEWEE_NAME,
+                getArguments().getString(InboxReputationFormActivity.ARGS_REVIEWEE_NAME, ""));
+        getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
 
@@ -516,13 +521,19 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessEditReview() {
-        getActivity().setResult(Activity.RESULT_OK);
+        Intent intent = new Intent();
+        intent.putExtra(InboxReputationFormActivity.ARGS_REVIEWEE_NAME,
+                getArguments().getString(InboxReputationFormActivity.ARGS_REVIEWEE_NAME, ""));
+        getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
 
     @Override
     public void onSuccessSendReviewWithShareFB(ShareModel model) {
-        getActivity().setResult(Activity.RESULT_OK);
+        Intent intent = new Intent();
+        intent.putExtra(InboxReputationFormActivity.ARGS_REVIEWEE_NAME,
+                getArguments().getString(InboxReputationFormActivity.ARGS_REVIEWEE_NAME, ""));
+        getActivity().setResult(Activity.RESULT_OK, intent);
         showFbShareDialog(model);
 
     }
@@ -578,7 +589,10 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessEditReviewWithShareFb(ShareModel shareModel) {
-        getActivity().setResult(Activity.RESULT_OK);
+        Intent intent = new Intent();
+        intent.putExtra(InboxReputationFormActivity.ARGS_REVIEWEE_NAME,
+                getArguments().getString(InboxReputationFormActivity.ARGS_REVIEWEE_NAME, ""));
+        getActivity().setResult(Activity.RESULT_OK, intent);
         showFbShareDialog(shareModel);
     }
 

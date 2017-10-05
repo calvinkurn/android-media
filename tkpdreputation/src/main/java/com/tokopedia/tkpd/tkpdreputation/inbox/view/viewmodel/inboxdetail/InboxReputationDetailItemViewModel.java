@@ -30,6 +30,7 @@ public class InboxReputationDetailItemViewModel implements
     String productName;
     String productAvatar;
     String reviewerName;
+    String revieweeName;
     String reviewTime;
     ArrayList<ImageAttachmentViewModel> reviewAttachment;
     String review;
@@ -59,7 +60,8 @@ public class InboxReputationDetailItemViewModel implements
                                               likeDislikeViewModel,
                                               boolean reviewIsAnonymous,
                                               boolean isProductDeleted,
-                                              boolean reviewIsEdited) {
+                                              boolean reviewIsEdited,
+                                              String revieweeName) {
         this.reputationId = reputationId;
         this.productId = productId;
         this.productName = productName;
@@ -82,6 +84,7 @@ public class InboxReputationDetailItemViewModel implements
         this.reviewIsAnonymous = reviewIsAnonymous;
         this.isProductDeleted = isProductDeleted;
         this.reviewIsEdited = reviewIsEdited;
+        this.revieweeName = revieweeName;
     }
 
     public String getReviewId() {
@@ -187,5 +190,9 @@ public class InboxReputationDetailItemViewModel implements
 
     public boolean isReviewIsEdited() {
         return reviewIsEdited;
+    }
+
+    public String getRevieweeName() {
+        return revieweeName;
     }
 }

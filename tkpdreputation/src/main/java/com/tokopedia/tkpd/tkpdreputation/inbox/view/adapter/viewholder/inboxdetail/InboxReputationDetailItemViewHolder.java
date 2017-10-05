@@ -174,15 +174,10 @@ public class InboxReputationDetailItemViewHolder extends
     @Override
     public void bind(final InboxReputationDetailItemViewModel element) {
         if (element.isProductDeleted()) {
-            productName.setText(MethodChecker.fromHtml(element.getProductName()));
-            productName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewListener.onGoToProductDetail(element.getProductId());
-                }
-            });
+            productName.setText(
+                    MainApplication.getAppContext().getString(R.string.product_is_deleted));
 
-            ImageHandler.LoadImage(productAvatar, element.getProductAvatar());
+            ImageHandler.loadImageWithIdWithoutPlaceholder(productAvatar, R.drawable.ic_action_delete);
         } else {
             productName.setText(MethodChecker.fromHtml(element.getProductName()));
             productName.setOnClickListener(new View.OnClickListener() {
@@ -212,9 +207,13 @@ public class InboxReputationDetailItemViewHolder extends
             viewReview.setVisibility(View.GONE);
             helpfulLayout.setVisibility(View.GONE);
             emptyReviewText.setVisibility(View.VISIBLE);
+            emptyReviewText.setText(R.string.not_reviewed);
         } else if (element.isReviewHasReviewed() && element.isReviewSkipped()) {
+            emptyReviewText.setVisibility(View.VISIBLE);
             viewReview.setVisibility(View.GONE);
             helpfulLayout.setVisibility(View.GONE);
+            emptyReviewText.setVisibility(View.VISIBLE);
+            emptyReviewText.setText(R.string.review_is_skipped);
         } else {
             emptyReviewText.setVisibility(View.GONE);
             viewReview.setVisibility(View.VISIBLE);
@@ -272,7 +271,8 @@ public class InboxReputationDetailItemViewHolder extends
                         element.isReviewIsSkippable(),
                         element.getProductAvatar(),
                         element.getProductName(),
-                        element.getProductUrl());
+                        element.getProductUrl(),
+                        element.getRevieweeName());
             }
         });
 

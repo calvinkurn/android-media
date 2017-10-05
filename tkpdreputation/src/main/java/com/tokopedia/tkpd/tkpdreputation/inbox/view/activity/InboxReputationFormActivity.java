@@ -54,6 +54,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
     public static final String ARGS_REVIEW = "ARGS_REVIEW";
     public static final String ARGS_REVIEW_IMAGES = "ARGS_REVIEW_IMAGES";
     public static final String ARGS_ANONYMOUS = "ARGS_ANONYMOUS";
+    public static final String ARGS_REVIEWEE_NAME = "ARGS_REVIEWEE_NAME";
 
 
     SkipListener listener;
@@ -119,6 +120,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         String productName = getIntent().getExtras().getString(ARGS_PRODUCT_NAME, "");
         String productUrl = getIntent().getExtras().getString(ARGS_PRODUCT_URL, "");
         boolean isAnonymous = getIntent().getExtras().getBoolean(ARGS_ANONYMOUS, false);
+        String revieweeName = getIntent().getExtras().getString(ARGS_REVIEWEE_NAME, "");
 
         int rating = getIntent().getExtras().getInt(ARGS_RATING);
         String review = getIntent().getExtras().getString(ARGS_REVIEW, "");
@@ -130,10 +132,10 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         if (fragment == null && getIntent().getExtras().getBoolean(ARGS_IS_EDIT, false)) {
             fragment = InboxReputationFormFragment.createInstanceEdit(reviewId, reputationId,
                     productId, shopId, rating, review, listImage, productAvatar, productName,
-                    productUrl, isAnonymous);
+                    productUrl, isAnonymous, revieweeName);
         } else if (fragment == null) {
             fragment = InboxReputationFormFragment.createInstance(reviewId, reputationId,
-                    productId, shopId, productAvatar, productName, productUrl);
+                    productId, shopId, productAvatar, productName, productUrl, revieweeName);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container,
@@ -169,7 +171,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
                                              String reputationId, String productId,
                                              String shopId, boolean reviewIsSkippable,
                                              String productAvatar, String productName,
-                                             String productUrl) {
+                                             String productUrl, String revieweeName) {
         Intent intent = new Intent(context, InboxReputationFormActivity.class);
         intent.putExtra(ARGS_PRODUCT_ID, productId);
         intent.putExtra(ARGS_REPUTATION_ID, reputationId);
@@ -180,6 +182,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         intent.putExtra(ARGS_PRODUCT_AVATAR, productAvatar);
         intent.putExtra(ARGS_PRODUCT_NAME, productName);
         intent.putExtra(ARGS_PRODUCT_URL, productUrl);
+        intent.putExtra(ARGS_REVIEWEE_NAME, revieweeName);
 
         return intent;
     }
@@ -189,7 +192,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
                                              String shopId, int reviewStar, String review,
                                              ArrayList<ImageAttachmentViewModel> reviewAttachment,
                                              String productAvatar, String productName,
-                                             String productUrl, boolean isAnonymous) {
+                                             String productUrl, boolean isAnonymous, String revieweeName) {
         Intent intent = new Intent(context, InboxReputationFormActivity.class);
         intent.putExtra(ARGS_PRODUCT_ID, productId);
         intent.putExtra(ARGS_REPUTATION_ID, reputationId);
@@ -204,6 +207,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         intent.putExtra(ARGS_PRODUCT_NAME, productName);
         intent.putExtra(ARGS_PRODUCT_URL, productUrl);
         intent.putExtra(ARGS_ANONYMOUS, isAnonymous);
+        intent.putExtra(ARGS_REVIEWEE_NAME, revieweeName);
 
         return intent;
     }

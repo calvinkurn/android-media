@@ -222,21 +222,23 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                         element.getProductAvatar(),
                         element.getProductName(),
                         element.getProductUrl(),
-                        element.isReviewIsAnonymous()),
+                        element.isReviewIsAnonymous(),
+                        element.getRevieweeName()),
                 REQUEST_EDIT_REVIEW
         );
     }
 
     @Override
     public void onGoToGiveReview(String reviewId, String productId,
-                                 int shopId, boolean reviewIsSkippable, String productAvatar, String productName, String productUrl) {
+                                 int shopId, boolean reviewIsSkippable, String productAvatar,
+                                 String productName, String productUrl, String revieweeName) {
         startActivityForResult(
                 InboxReputationFormActivity.getGiveReviewIntent(
                         getActivity(),
                         reviewId,
                         passModel.getReputationId(), productId,
                         String.valueOf(shopId), reviewIsSkippable,
-                        productAvatar, productName, productUrl),
+                        productAvatar, productName, productUrl, revieweeName),
                 REQUEST_GIVE_REVIEW);
     }
 
@@ -530,8 +532,10 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
-                    .success_send_review));
+            NetworkErrorHelper.showSnackbar(getActivity(),
+                    getString(R.string.review_for) + " " + data.getExtras().getString
+                            (InboxReputationFormActivity.ARGS_REVIEWEE_NAME, "")
+                            + " " + getString(R.string.is_done));
         } else if (requestCode == REQUEST_GIVE_REVIEW && resultCode ==
                 InboxReputationFormFragment.RESULT_CODE_SKIP) {
             refreshPage();
@@ -541,14 +545,15 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_EDIT_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
-                    .success_edit_review));
+            NetworkErrorHelper.showSnackbar(getActivity(),
+                    getString(R.string.review_for) + " " + data.getExtras().getString
+                            (InboxReputationFormActivity.ARGS_REVIEWEE_NAME, "")
+                            + " " + getString(R.string.is_edited));
         } else if (requestCode == REQUEST_REPORT_REVIEW && resultCode == Activity.RESULT_OK) {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
                     .success_report_review));
         } else
             super.onActivityResult(requestCode, resultCode, data);
-
     }
 
     private void refreshPage() {
