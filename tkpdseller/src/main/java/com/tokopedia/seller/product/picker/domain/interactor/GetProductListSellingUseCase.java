@@ -88,7 +88,7 @@ public class GetProductListSellingUseCase extends UseCase<ProductListSellerModel
                                                                  @PictureStatusProductOption String pictureStatus,
                                                                  @SortProductOption String sort) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(ProductListPickerConstant.QUERY_PER_PAGE, ProductListPickerConstant.REQUEST_PER_PAGE);
+        requestParams.putString(ProductListPickerConstant.QUERY_PER_PAGE, ProductListPickerConstant.REQUEST_PER_PAGE_MANAGE_PRODUCT);
         requestParams.putString(ProductListPickerConstant.QUERY_PAGE, String.valueOf(page));
         requestParams.putString(ProductListPickerConstant.QUERY_SORT, String.valueOf(sort));
         requestParams.putString(ProductListPickerConstant.QUERY_KEYWORD, keywordFilter);
