@@ -106,7 +106,7 @@ public class ProductDetailActivity extends BasePresenterActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_product_detail, menu);
+        inflater.inflate(R.menu.menu_product_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -115,6 +115,10 @@ public class ProductDetailActivity extends BasePresenterActivity
         if(item.getItemId() == R.id.action_installment) {
             Intent intent = new Intent(this, ReactInstallmentActivity.class);
             startActivity(intent);
+            return true;
+        } else if(item.getItemId() == R.id.action_cart) {
+            startActivity(new Intent(this, LocalCartActivity.class));
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
