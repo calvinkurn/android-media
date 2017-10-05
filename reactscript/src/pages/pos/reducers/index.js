@@ -258,16 +258,34 @@ const cart = (state = {
 
 // ============= Checkout ============= //
 const checkout = (state = {
-  isFetching: true,
-  data: []
+  isFetchingParamsCheckout: false,
+  showLoadingPage: false,
+  data: [],
+  status_msg: ''
 }, action) => {
   switch (action.type) {
-    case `${PAYMENT_CHECKOUT_TO_NATIVE}_${FULFILLED}`:
-      console.log(action.payload)
+    case `${PAYMENT_CHECKOUT_TO_NATIVE}_${PENDING}`:
       return {
         ...state,
-        isFetching: false,
-        data: action.payload
+        isFetchingParamsCheckout: true,
+        showLoadingPage: true,
+        status_msg: 'PENDING'
+      }
+    case `${PAYMENT_CHECKOUT_TO_NATIVE}_${FULFILLED}`:
+      return {
+        ...state,
+        isFetchingParamsCheckout: false,
+        showLoadingPage: false,
+        data: action.payload,
+        status_msg: 'SUCCESS'
+      }
+    case `${PAYMENT_CHECKOUT_TO_NATIVE}_${REJECTED}`:
+      return {
+        ...state,
+        isFetchingParamsCheckout: false,
+        showLoadingPage: false,
+        data: action.payload,
+        status_msg: 'REJECTED'
       }
     
     default:
