@@ -251,16 +251,14 @@ public class ProductVariantPickerSearchFragment extends BaseSearchListFragment<B
 
     @Override
     public void onSearchSubmitted(String text) {
-        super.onSearchSubmitted(text);
         filterSearch(text);
-        resetPageAndSearch();
+        super.onSearchSubmitted(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-        super.onSearchTextChanged(text);
         filterSearch(text);
-        resetPageAndSearch();
+        super.onSearchTextChanged(text);
     }
 
     @Override

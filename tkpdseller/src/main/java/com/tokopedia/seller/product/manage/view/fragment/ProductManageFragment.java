@@ -64,8 +64,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private ProgressDialog progressDialog;
 
     private boolean hasNextPage;
-    private String keywordFilter;
-    private @SortProductOption String sortProductOption;
+    private boolean filtered;
+    @SortProductOption
+    private String sortProductOption;
     private ProductManageFilterModel productManageFilterModel;
     private ActionMode actionMode;
 
@@ -118,7 +119,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         super.initialVar();
         sortProductOption = SortProductOption.POSITION;
         productManageFilterModel = new ProductManageFilterModel();
-        keywordFilter = "";
         hasNextPage = false;
     }
 
@@ -187,6 +187,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                     productManageFilterModel = data.getParcelableExtra(ProductManageConstant.EXTRA_FILTER_SELECTED);
                     resetPageAndSearch();
                     swipeToRefresh.setRefreshing(true);
+                    filtered = true;
+                    setSearchMode(true);
                 }
                 break;
             case ProductManageConstant.REQUEST_CODE_SORT:
@@ -204,17 +206,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onSearchSubmitted(String text) {
-        super.onSearchSubmitted(text);
-        keywordFilter = text;
-        resetPageAndSearch();
-    }
-
-    @Override
-    public void onSearchTextChanged(String text) {
-        super.onSearchTextChanged(text);
-        keywordFilter = text;
-        resetPageAndSearch();
+    protected void setSearchMode(boolean searchMode) {
+        if (filtered) {
+            super.setSearchMode(filtered);
+            return;
+        }
+        super.setSearchMode(searchMode);
     }
 
     @Override
@@ -236,7 +233,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         if (page == getStartPage()) {
             productManagePresenter.getListFeaturedProduct();
         }
-        productManagePresenter.getListProduct(page, keywordFilter,
+        productManagePresenter.getListProduct(page, searchInputView.getSearchText(),
                 productManageFilterModel.getCatalogProductOption(), productManageFilterModel.getConditionProductOption(),
                 productManageFilterModel.getEtalaseProductOption(), productManageFilterModel.getPictureStatusOption(),
                 sortProductOption, productManageFilterModel.getCategoryId());

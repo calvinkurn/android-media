@@ -90,15 +90,17 @@ public abstract class BaseSearchListFragment<P, T extends ItemType> extends Base
     @Override
     public void onSearchSubmitted(String text) {
         updateSearchMode(text);
+        resetPageAndSearch();
     }
 
     @Override
     public void onSearchTextChanged(String text) {
         updateSearchMode(text);
+        resetPageAndSearch();
     }
 
     private void updateSearchMode(String text) {
-        searchMode = !TextUtils.isEmpty(text);
+        setSearchMode(!TextUtils.isEmpty(text));
     }
 
     protected void showSearchView(boolean show) {
