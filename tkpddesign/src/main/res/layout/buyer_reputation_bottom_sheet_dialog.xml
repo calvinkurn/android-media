@@ -31,9 +31,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/smiley_size"
         android:layout_gravity="center_vertical"
+        android:layout_marginBottom="@dimen/margin_sm"
         android:layout_marginTop="@dimen/margin_sm"
+
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
