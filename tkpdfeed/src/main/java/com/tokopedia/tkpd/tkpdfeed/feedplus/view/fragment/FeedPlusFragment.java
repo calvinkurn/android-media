@@ -62,6 +62,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
@@ -516,6 +517,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.showEmpty();
         adapter.addList(listFeed);
         if (canShowTopads)
+            adapter.addItem(new EmptyTopAdsProductModel(presenter.getUserId()));
             adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
     }
@@ -527,6 +529,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         adapter.showEmpty();
         if (canShowTopads)
+            adapter.addItem(new EmptyTopAdsProductModel(presenter.getUserId()));
             adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
 
