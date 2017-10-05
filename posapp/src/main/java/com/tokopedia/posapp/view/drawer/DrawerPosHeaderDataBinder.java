@@ -76,6 +76,7 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
         holder.ivOnline.setVisibility(View.VISIBLE);
         holder.tvOnline.setText("Online");
         holder.tvOutlet.setText(PosSessionHandler.getOutletName(context));
+        holder.ivAvatar.setImageResource(R.drawable.qc_launcher);
     }
 
     @Override
