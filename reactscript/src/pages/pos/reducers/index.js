@@ -22,6 +22,7 @@ import {
   MAKE_PAYMENT_FUlFILLED,
   FETCH_SHOP_NAME,
   FETCH_SHOP_ID,
+  PAYMENT_CHECKOUT_TO_NATIVE,
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
 import { icons } from '../components/icon/index'
@@ -253,6 +254,28 @@ const cart = (state = {
       return state
   }
 }
+
+
+// ============= Checkout ============= //
+const checkout = (state = {
+  isFetching: true,
+  data: []
+}, action) => {
+  switch (action.type) {
+    case `${PAYMENT_CHECKOUT_TO_NATIVE}_${FULFILLED}`:
+      console.log(action.payload)
+      return {
+        ...state,
+        isFetching: false,
+        data: action.payload
+      }
+    
+    default:
+      return state
+  }
+}
+// ============= Checkout ============= //
+
 
 const payment = (state = {
   items: [],
@@ -490,6 +513,7 @@ const rootReducer = combineReducers({
   etalase,
   cart,
   payment,
+  checkout,
   search,
   paymentInvoice,
   transactionHistory,
