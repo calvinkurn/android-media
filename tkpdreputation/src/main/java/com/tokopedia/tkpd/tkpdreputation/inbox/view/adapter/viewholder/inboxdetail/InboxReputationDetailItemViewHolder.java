@@ -292,6 +292,7 @@ public class InboxReputationDetailItemViewHolder extends
 
     private void setSellerReply(final InboxReputationDetailItemViewModel element) {
         sellerAddReplyLayout.setVisibility(View.GONE);
+        helpfulLayout.setVisibility(View.VISIBLE);
         seeReplyText.setVisibility(View.VISIBLE);
         replyArrow.setVisibility(View.VISIBLE);
 
