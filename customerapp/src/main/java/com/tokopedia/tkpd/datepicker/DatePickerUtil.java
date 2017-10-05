@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
-import com.tokopedia.seller.goldmerchant.statistic.utils.GMStatisticDateUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,7 +19,12 @@ import java.util.Locale;
  * Created by normansyahputa on 8/22/17.
  */
 
-public class DatePickerUtil extends GMStatisticDateUtils {
+public class DatePickerUtil {
+
+    public static final int MAX_DAY_FROM_CURRENT_DATE = -1;
+    private static final int MAX_DATE_RANGE = 60;
+    private static final String MIN_DATE = "25 07 2015";
+
     public static Intent getDatePickerIntent(Activity activity, long startDate, long endDate,
                                              List<PeriodRangeModel> periodRangeModels,
                                              int datePickerSelection, int datePickerType) {
@@ -53,5 +57,14 @@ public class DatePickerUtil extends GMStatisticDateUtils {
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, datePickerType);
 
         return intent;
+    }
+
+    private static Calendar getMaxDateCalendar() {
+        Calendar maxCalendar = Calendar.getInstance();
+        maxCalendar.add(Calendar.DATE, MAX_DAY_FROM_CURRENT_DATE);
+        maxCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        maxCalendar.set(Calendar.MINUTE, 59);
+        maxCalendar.set(Calendar.SECOND, 59);
+        return maxCalendar;
     }
 }

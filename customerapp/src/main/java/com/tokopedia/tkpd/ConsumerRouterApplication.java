@@ -35,6 +35,7 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
+import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -42,6 +43,7 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
@@ -57,7 +59,6 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.instoped.InstopedActivity;
@@ -88,6 +89,7 @@ import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -102,7 +104,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter {
+        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
+        TokoCashRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -581,7 +584,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
         activity.startActivity(intent);
     }
-}
 
     @Override
     public Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels,
@@ -605,6 +607,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getRangeDateFormatted(Context context, long startDate, long endDate) {
-        return DatePickerUtils.getRangeDateFormatted(context, startDate, endDate);
+        return DateLabelUtils.getRangeDateFormatted(context, startDate, endDate);
     }
 }

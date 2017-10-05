@@ -4,26 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by normansyahputa on 8/22/17.
+ * Created by nabillasabbaha on 10/5/17.
  */
 
-public interface SellerModuleRouter {
-
-    void goToHome(Context context);
-
-    void goToProductDetail(Context context, String productUrl);
+public interface TokoCashRouter {
 
     Intent goToDatePicker(Activity activity, List<PeriodRangeModelCore> periodRangeModels, long startDate, long endDate,
                           int datePickerSelection, int datePickerType);
 
     String getRangeDateFormatted(Context context, long startDate, long endDate);
-
-    void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList);
-
 }

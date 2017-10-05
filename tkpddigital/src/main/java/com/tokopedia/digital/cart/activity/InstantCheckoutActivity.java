@@ -133,11 +133,6 @@ public class InstantCheckoutActivity extends BaseDigitalPresenterActivity {
         webView.loadUrl(instantCheckoutData.getRedirectUrl());
     }
 
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return false;
-    }
-
     private class InstantCheckoutWebViewChromeClient extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {

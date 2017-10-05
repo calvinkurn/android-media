@@ -21,7 +21,7 @@ import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
-import com.tokopedia.core.router.digitalmodule.sellermodule.SellerModuleRouter;
+import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -143,7 +143,7 @@ public class HistoryTokocashActivity extends BaseDigitalPresenterActivity<ITokoC
 
     private void initialRangeDateFilter() {
         Application application = HistoryTokocashActivity.this.getApplication();
-        if (application != null && application instanceof SellerModuleRouter) {
+        if (application != null && application instanceof TokoCashRouter) {
             Calendar startCalendar = Calendar.getInstance();
             Calendar endCalendar = Calendar.getInstance();
             startCalendar.setTimeInMillis(endCalendar.getTimeInMillis());
@@ -151,7 +151,7 @@ public class HistoryTokocashActivity extends BaseDigitalPresenterActivity<ITokoC
             startDate = startCalendar.getTimeInMillis();
             endDate = endCalendar.getTimeInMillis();
             String getFormattedDatePicker =
-                    ((SellerModuleRouter) application)
+                    ((TokoCashRouter) application)
                             .getRangeDateFormatted(HistoryTokocashActivity.this, startDate, endDate);
             tvDate.setText(getFormattedDatePicker);
         }
@@ -228,8 +228,8 @@ public class HistoryTokocashActivity extends BaseDigitalPresenterActivity<ITokoC
             @Override
             public void onClick(View view) {
                 Application application = HistoryTokocashActivity.this.getApplication();
-                if (application != null && application instanceof SellerModuleRouter) {
-                    Intent intent = ((SellerModuleRouter) application)
+                if (application != null && application instanceof TokoCashRouter) {
+                    Intent intent = ((TokoCashRouter) application)
                             .goToDatePicker(HistoryTokocashActivity.this, getPeriodRangeModel(),
                                     startDate, endDate, datePickerSelection, datePickerType);
                     startActivityForResult(intent, EXTRA_INTENT_DATE_PICKER);
@@ -280,13 +280,13 @@ public class HistoryTokocashActivity extends BaseDigitalPresenterActivity<ITokoC
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == EXTRA_INTENT_DATE_PICKER && intent != null) {
             Application application = HistoryTokocashActivity.this.getApplication();
-            if (application != null && application instanceof SellerModuleRouter) {
+            if (application != null && application instanceof TokoCashRouter) {
                 startDate = intent.getLongExtra(EXTRA_START_DATE, -1);
                 endDate = intent.getLongExtra(EXTRA_END_DATE, -1);
                 datePickerSelection = intent.getIntExtra(EXTRA_SELECTION_PERIOD, 1);
                 datePickerType = intent.getIntExtra(EXTRA_SELECTION_TYPE, SELECTION_TYPE_PERIOD_DATE);
                 String getFormattedDatePicker =
-                        ((SellerModuleRouter) application)
+                        ((TokoCashRouter) application)
                                 .getRangeDateFormatted(HistoryTokocashActivity.this,
                                         startDate, endDate);
                 tvDate.setText(getFormattedDatePicker);
