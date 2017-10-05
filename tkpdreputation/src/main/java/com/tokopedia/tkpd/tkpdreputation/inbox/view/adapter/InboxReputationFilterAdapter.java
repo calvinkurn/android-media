@@ -4,9 +4,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.filter.HeaderOptionViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.filter.OptionViewModel;
@@ -38,13 +40,16 @@ public class InboxReputationFilterAdapter
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        CheckBox checkBox;
+        TextView filter;
+        ImageView check;
+        View mainView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            this.checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
-
-            checkBox.setOnClickListener(new View.OnClickListener() {
+            this.filter = (TextView) itemView.findViewById(R.id.filter);
+            this.check = (ImageView) itemView.findViewById(R.id.check);
+            this.mainView = itemView.findViewById(R.id.main_view);
+            mainView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     for (OptionViewModel viewModel : listOption) {
@@ -54,7 +59,7 @@ public class InboxReputationFilterAdapter
                             viewModel.setSelected(false);
                     }
 
-                    if(listOption.get(getAdapterPosition()).isSelected()){
+                    if (listOption.get(getAdapterPosition()).isSelected()) {
                         listener.onFilterSelected(listOption.get(getAdapterPosition()));
                     }
                     notifyDataSetChanged();
@@ -68,7 +73,7 @@ public class InboxReputationFilterAdapter
 
 
     public static InboxReputationFilterAdapter createInstance(FilterListener listener,
-                                                                      ArrayList<OptionViewModel>
+                                                              ArrayList<OptionViewModel>
                                                                       listOption) {
         return new InboxReputationFilterAdapter(listener, listOption);
     }
@@ -101,8 +106,16 @@ public class InboxReputationFilterAdapter
             holder.title.setText(listOption.get(position).getName());
         } else {
             ViewHolder holder = (ViewHolder) parent;
-            holder.checkBox.setText(listOption.get(position).getName());
-            holder.checkBox.setChecked(listOption.get(position).isSelected());
+            holder.filter.setText(listOption.get(position).getName());
+            if (listOption.get(position).isSelected()) {
+                holder.filter.setTextColor(MethodChecker.getColor(MainApplication.getAppContext()
+                        , R.color.medium_green));
+                holder.check.setVisibility(View.VISIBLE);
+            } else {
+                holder.filter.setTextColor(MethodChecker.getColor(MainApplication.getAppContext()
+                        , R.color.black_54));
+                holder.check.setVisibility(View.GONE);
+            }
         }
 
     }

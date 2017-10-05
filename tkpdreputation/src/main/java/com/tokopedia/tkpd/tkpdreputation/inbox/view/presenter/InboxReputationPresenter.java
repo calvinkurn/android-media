@@ -90,8 +90,8 @@ public class InboxReputationPresenter
     }
 
     public void refreshPage(String query, String timeFilter, String readStatusFilter, int tab) {
-        getFirstTimeInboxReputationUseCase.execute(
-                GetFirstTimeInboxReputationUseCase.getParam(1, query, timeFilter,
+        getInboxReputationUseCase.execute(
+                GetInboxReputationUseCase.getParam(1, query, timeFilter,
                         readStatusFilter, tab),
                 new RefreshInboxReputationSubscriber(viewListener));
     }

@@ -41,6 +41,8 @@
             android:layout_width="@dimen/smiley_size"
             android:layout_height="@dimen/smiley_size"
             android:layout_marginRight="@dimen/margin_small"
+            android:maxHeight="@dimen/smiley_size"
+            android:maxWidth="@dimen/smiley_size"
             android:src="@drawable/ic_smiley_good"/>
 
         <TextView
@@ -57,9 +59,12 @@
             />
 
         <ImageView
+            android:id="@+id/imageView"
             android:layout_width="@dimen/smiley_size"
             android:layout_height="@dimen/smiley_size"
             android:layout_marginRight="@dimen/margin_small"
+            android:maxHeight="@dimen/smiley_size"
+            android:maxWidth="@dimen/smiley_size"
             android:src="@drawable/ic_smiley_netral"/>
 
         <TextView
@@ -79,6 +84,8 @@
             android:layout_width="@dimen/smiley_size"
             android:layout_height="@dimen/smiley_size"
             android:layout_marginRight="@dimen/margin_small"
+            android:maxHeight="@dimen/smiley_size"
+            android:maxWidth="@dimen/smiley_size"
             android:src="@drawable/ic_smiley_bad"/>
 
         <TextView
