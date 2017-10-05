@@ -122,7 +122,7 @@ public class InboxReputationDetailHeaderViewHolder extends
             lockedText.setText(R.string.review_is_saved);
             promptMessage.setText(MainApplication.getAppContext().getString(R.string.your_scoring));
             smiley.setLayoutManager(linearLayoutManager);
-            adapter.showLockedSmiley();
+            setSmiley(element, adapter);
         } else if (element.getReputationDataViewModel().isLocked()) {
             lockedLayout.setVisibility(View.VISIBLE);
             lockedText.setText(R.string.locked_reputation);
