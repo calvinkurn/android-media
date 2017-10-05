@@ -11,6 +11,7 @@ import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.domain.DeleteProductUseCase;
 import com.tokopedia.seller.product.manage.domain.EditPriceProductUseCase;
 import com.tokopedia.seller.product.manage.domain.MultipleDeleteProductUseCase;
+import com.tokopedia.seller.product.manage.domain.model.MultipleDeleteProductModel;
 import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
 import com.tokopedia.seller.product.manage.view.mapper.GetProductListManageMapperView;
 import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
@@ -58,7 +59,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     @Override
     public void deleteListProduct(List<String> productIds) {
         getView().showLoadingProgress();
-        multipleDeleteProductUseCase.execute(MultipleDeleteProductUseCase.createRequestParams(productIds), getSubscriberDeleteProduct());
+        multipleDeleteProductUseCase.execute(MultipleDeleteProductUseCase.createRequestParams(productIds), getSubscriberMultipleDeleteProduct());
     }
 
     @Override
@@ -218,6 +219,35 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                     getView().onSuccessSetCashback();
                 }else{
                     getView().onErrorSetCashback();
+                }
+            }
+        };
+    }
+
+
+
+    public Subscriber<MultipleDeleteProductModel> getSubscriberMultipleDeleteProduct() {
+        return new Subscriber<MultipleDeleteProductModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()) {
+                    getView().hideLoadingProgress();
+                    getView().onErrorMultipleDeleteProduct(e);
+                }
+            }
+
+            @Override
+            public void onNext(MultipleDeleteProductModel multipleDeleteProductModel) {
+                getView().hideLoadingProgress();
+                if(multipleDeleteProductModel.isSuccess()){
+                    getView().onSuccessMultipleDeleteProduct(multipleDeleteProductModel.getCountOfSuccess(), multipleDeleteProductModel.getCountOfError());
+                }else{
+                    getView().onErrorMultipleDeleteProduct(multipleDeleteProductModel.getCountOfSuccess(), multipleDeleteProductModel.getCountOfError());
                 }
             }
         };
