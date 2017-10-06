@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -124,7 +125,7 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                         && view.getContext().getApplicationContext() instanceof IDigitalModuleRouter
                         && ((IDigitalModuleRouter) view.getContext().getApplicationContext()).isSupportedDelegateDeepLink(item.getPromoApplink())) {
                     ((IDigitalModuleRouter) view.getContext().getApplicationContext())
-                            .actionNavigateByApplinksUrl((Activity) view.getContext(), item.getPromoApplink(), new Bundle());
+                            .actionNavigateByApplinksUrl(getActivity(view), item.getPromoApplink(), new Bundle());
                 } else {
 
                     String url = item.getPromoUrl();
@@ -153,6 +154,17 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                 }
             }
         };
+    }
+
+    private Activity getActivity(View view) {
+        Context context = view.getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
     }
 
     private void trackingBannerClick(Context context, BannerView.PromoItem item, int currentPosition) {

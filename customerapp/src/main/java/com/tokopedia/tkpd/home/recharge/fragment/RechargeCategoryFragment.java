@@ -101,7 +101,7 @@ public class RechargeCategoryFragment extends
                                         new RechargeService(), new DigitalEndpointService())));
 
         showFetchDataLoading();
-        rechargeCategoryPresenter.fecthDataRechargeCategory();
+        rechargeCategoryPresenter.fetchDataRechargeCategory();
     }
 
 
