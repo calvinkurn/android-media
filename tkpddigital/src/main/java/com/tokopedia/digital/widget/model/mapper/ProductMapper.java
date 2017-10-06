@@ -28,8 +28,8 @@ public class ProductMapper implements Func1<List<ProductEntity>, List<Product>> 
             product.setId(productEntity.getId());
             product.setType(productEntity.getType());
 
-            Attributes attributes = new Attributes();
             if (productEntity.getAttributes() != null) {
+                Attributes attributes = new Attributes();
                 attributes.setDesc(productEntity.getAttributes().getDesc());
                 attributes.setDetail(productEntity.getAttributes().getDetail());
                 attributes.setDetailUrl(productEntity.getAttributes().getDetailUrl());
@@ -39,22 +39,21 @@ public class ProductMapper implements Func1<List<ProductEntity>, List<Product>> 
                 attributes.setStatus(productEntity.getAttributes().getStatus());
                 attributes.setWeight(productEntity.getAttributes().getWeight());
 
-                Promo promo = new Promo();
                 if (productEntity.getAttributes().getPromo() != null) {
+                    Promo promo = new Promo();
                     promo.setBonusText(productEntity.getAttributes().getPromo().getBonusText());
                     promo.setNewPrice(productEntity.getAttributes().getPromo().getNewPrice());
                     promo.setNewPricePlain(productEntity.getAttributes().getPromo().getNewPricePlain());
                     promo.setTag(productEntity.getAttributes().getPromo().getTag());
                     promo.setTerms(productEntity.getAttributes().getPromo().getTerms());
                     promo.setValueText(productEntity.getAttributes().getPromo().getValueText());
+                    attributes.setPromo(promo);
                 }
-                attributes.setPromo(promo);
+                product.setAttributes(attributes);
             }
 
-            product.setAttributes(attributes);
-
-            Relationship relationship = new Relationship();
             if (productEntity.getRelationships() != null) {
+                Relationship relationship = new Relationship();
                 Category category = new Category();
                 Data dataCategory = new Data();
                 dataCategory.setId(productEntity.getRelationships().getCategory().getData().getId());
@@ -68,8 +67,9 @@ public class ProductMapper implements Func1<List<ProductEntity>, List<Product>> 
                 dataOperator.setType(productEntity.getRelationships().getOperator().getData().getType());
                 operator.setData(dataOperator);
                 relationship.setOperator(operator);
+
+                product.setRelationships(relationship);
             }
-            product.setRelationships(relationship);
 
             productList.add(product);
         }

@@ -21,19 +21,23 @@ public class CategoryMapper implements Func1<List<CategoryEntity>, List<Category
     public List<Category> call(List<CategoryEntity> categoryEntities) throws MapperDataException {
         List<Category> categoryList = new ArrayList<>();
         for (CategoryEntity categoryEntity : categoryEntities) {
-            Attributes attributes = new Attributes();
-            if (categoryEntity.getAttributes() != null) {
+            Category category = new Category();
+            category.setId(categoryEntity.getId());
+            category.setType(categoryEntity.getType());
 
-                ClientNumber clientNumber = new ClientNumber();
+            if (categoryEntity.getAttributes() != null) {
+                Attributes attributes = new Attributes();
+
                 if (categoryEntity.getAttributes().getClientNumber() != null) {
+                    ClientNumber clientNumber = new ClientNumber();
                     clientNumber.setHelp(categoryEntity.getAttributes().getClientNumber().getHelp());
                     clientNumber.setOperatorStyle(categoryEntity.getAttributes().getClientNumber().getOperatorStyle());
                     clientNumber.setPlaceholder(categoryEntity.getAttributes().getClientNumber().getPlaceholder());
                     clientNumber.setShown(categoryEntity.getAttributes().getClientNumber().isShown());
                     clientNumber.setText(categoryEntity.getAttributes().getClientNumber().getText());
+                    attributes.setClientNumber(clientNumber);
                 }
 
-                attributes.setClientNumber(clientNumber);
                 attributes.setName(categoryEntity.getAttributes().getName());
                 attributes.setDefaultOperatorId(categoryEntity.getAttributes().getDefaultOperatorId());
                 attributes.setIcon(categoryEntity.getAttributes().getIcon());
@@ -46,12 +50,9 @@ public class CategoryMapper implements Func1<List<CategoryEntity>, List<Category
                 attributes.setUsePhonebook(categoryEntity.getAttributes().isUsePhonebook());
                 attributes.setValidatePrefix(categoryEntity.getAttributes().isValidatePrefix());
                 attributes.setWeight(categoryEntity.getAttributes().getWeight());
-            }
 
-            Category category = new Category();
-            category.setAttributes(attributes);
-            category.setId(categoryEntity.getId());
-            category.setType(categoryEntity.getType());
+                category.setAttributes(attributes);
+            }
 
             categoryList.add(category);
         }

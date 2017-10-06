@@ -18,20 +18,21 @@ public class StatusMapper implements Func1<StatusEntity, Status> {
         Status status = new Status();
         status.setType(statusEntity.getType());
 
-        Attributes attributes = new Attributes();
         if (statusEntity.getAttributes() != null) {
+            Attributes attributes = new Attributes();
             attributes.setMaintenance(statusEntity.getAttributes().isMaintenance());
 
-            Version version = new Version();
             if (statusEntity.getAttributes().getVersion() != null) {
+                Version version = new Version();
                 version.setCategory(statusEntity.getAttributes().getVersion().getCategory());
                 version.setMinimumAndroidBuild(statusEntity.getAttributes().getVersion().getMinimumAndroidBuild());
                 version.setOperator(statusEntity.getAttributes().getVersion().getOperator());
                 version.setProduct(statusEntity.getAttributes().getVersion().getProduct());
+                attributes.setVersion(version);
             }
-            attributes.setVersion(version);
+
+            status.setAttributes(attributes);
         }
-        status.setAttributes(attributes);
 
         return status;
     }
