@@ -382,8 +382,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
                 widgetClientNumberView.setFilterMaxLength(rechargeOperatorModel.getAttributes().getMaximumLength());
                 widgetProductChooserView.setTitleProduct(rechargeOperatorModel.getAttributes().getRule().getProductText());
                 widgetProductChooserView.setVisibilityProduct(rechargeOperatorModel.getAttributes().getRule().isShowProduct());
-                if (!rechargeOperatorModel.getAttributes().getRule().isShowPrice())
-                    showPrice = false;
+                if (!rechargeOperatorModel.getAttributes().getRule().isShowPrice()) showPrice = false;
             }
 
             @Override
