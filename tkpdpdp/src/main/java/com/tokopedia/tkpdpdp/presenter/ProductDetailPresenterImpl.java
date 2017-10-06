@@ -644,6 +644,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void saveStatePromoWidget(Bundle outState, String key, PromoAttributes promoAttributes) {
+        if (promoAttributes != null) outState.putParcelable(key, promoAttributes);
+    }
+
+    @Override
     public void processStateData(Bundle savedInstanceState) {
         ProductDetailData productData = savedInstanceState
                 .getParcelable(ProductDetailFragment.STATE_DETAIL_PRODUCT);
@@ -651,6 +656,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 .getParcelableArrayList(ProductDetailFragment.STATE_OTHER_PRODUCTS);
         VideoData videoData = savedInstanceState.getParcelable(ProductDetailFragment.STATE_VIDEO);
         ProductCampaign productCampaign = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_CAMPAIGN);
+        PromoAttributes promoAttributes = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PROMO_WIDGET);
 
         if (productData != null & productOthers != null) {
             viewListener.onProductDetailLoaded(productData);
@@ -662,6 +668,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
         if (productCampaign != null) {
             viewListener.showProductCampaign(productCampaign);
+        }
+
+        if (promoAttributes != null) {
+            viewListener.showPromoWidget(promoAttributes);
         }
     }
 
@@ -897,7 +907,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         cacheInteractor.getPromoWidgetCache(targetType, userId, new CacheInteractor.GetPromoWidgetCacheListener() {
             @Override
             public void onSuccess(PromoAttributes result) {
-                viewListener.showPromoWidget(result);
+                if (result.getCode()!=null && result.getCodeHtml() !=null && result.getShortCondHtml()!=null
+                        && result.getShortDescHtml()!=null) {
+                    viewListener.showPromoWidget(result);
+                }
             }
 
             @Override

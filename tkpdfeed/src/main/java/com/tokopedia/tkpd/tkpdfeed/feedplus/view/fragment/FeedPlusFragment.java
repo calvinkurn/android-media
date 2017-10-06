@@ -68,6 +68,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.Inspirati
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -114,7 +115,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private CallbackManager callbackManager;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
-    private static final String TOPADS_ITEM = "4";
+    private static final String TOPADS_ITEM = "4,1";
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private String firstCursor = "";
 
@@ -159,7 +160,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .withPreferedCategory()
-                .setEndpoint(Endpoint.RANDOM)
+                .setEndpoint(Endpoint.PRODUCT)
                 .displayMode(DisplayMode.FEED)
                 .topAdsParams(generateTopAdsParams())
                 .build();
@@ -316,6 +317,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onRefresh() {
+        topAdsRecyclerAdapter.clearAds();
         newFeed.setVisibility(View.GONE);
         presenter.refreshPage();
     }
@@ -486,6 +488,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
+        if(listFeed.get(0) instanceof RecentViewViewModel){
+            topAdsRecyclerAdapter.setHasHeader(true);
+        } else {
+            topAdsRecyclerAdapter.setHasHeader(false);
+        }
         topAdsRecyclerAdapter.setEndlessScrollListener();
     }
 
@@ -493,7 +500,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
         topAdsRecyclerAdapter.reset();
         topAdsRecyclerAdapter.shouldLoadAds(true);
-
+        if(listFeed.get(0) instanceof RecentViewViewModel){
+            topAdsRecyclerAdapter.setHasHeader(true);
+        } else {
+            topAdsRecyclerAdapter.setHasHeader(false);
+        }
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         int positionStart = adapter.getItemCount();
@@ -505,6 +516,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed, boolean canShowTopads) {
         topAdsRecyclerAdapter.reset();
+        topAdsRecyclerAdapter.setHasHeader(true);
         topAdsRecyclerAdapter.shouldLoadAds(false);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
 

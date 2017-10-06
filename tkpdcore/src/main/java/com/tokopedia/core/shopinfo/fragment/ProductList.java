@@ -624,6 +624,7 @@ public class ProductList extends V2BaseFragment {
             @Override
             public void onSuccess(List<FeaturedProductItem> featuredProductItemList) {
                 featuredProductAdapter.setDataList(featuredProductItemList);
+                adapter.notifyDataSetChanged();
             }
 
             @Override

@@ -97,5 +97,7 @@ dependencies {
     apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.miscDependencies.reactNative
-    compile rootProject.ext.miscDependencies.codePushReactNative
+    //compile rootProject.ext.miscDependencies.codePushReactNative
+
+    compile project(':react-native-codepush')
 }

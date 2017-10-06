@@ -2,10 +2,14 @@ package com.tokopedia.ride.bookingride.di;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.geolocation.domain.MapsRepository;
+import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.ride.bookingride.di.scope.BookingRideScope;
+import com.tokopedia.ride.bookingride.domain.AutoCompletePredictionUseCase;
 import com.tokopedia.ride.bookingride.domain.GetCurrentRideRequestUseCase;
 import com.tokopedia.ride.bookingride.domain.GetDistanceMatrixUseCase;
 import com.tokopedia.ride.bookingride.domain.GetNearbyCarsUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPlaceDetailUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPriceEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
@@ -99,4 +103,33 @@ public class BookingRideModule {
         return new GetNearbyCarsUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
     }
 
+    @Provides
+    @BookingRideScope
+    MapService provideMapService() {
+        return new MapService();
+    }
+
+    @Provides
+    @BookingRideScope
+    MapsRepository provideMapsRepository() {
+        return new MapsRepository();
+    }
+
+    @Provides
+    @BookingRideScope
+    AutoCompletePredictionUseCase provideAutoCompletePredictionUseCase(ThreadExecutor threadExecutor,
+                                                                       PostExecutionThread postExecutionThread,
+                                                                       MapsRepository mapsRepository,
+                                                                       MapService mapService) {
+        return new AutoCompletePredictionUseCase(threadExecutor, postExecutionThread, mapsRepository, mapService);
+    }
+
+    @Provides
+    @BookingRideScope
+    GetPlaceDetailUseCase provideGetPlaceDetailUseCase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutionThread,
+                                                       MapsRepository mapsRepository,
+                                                       MapService mapService) {
+        return new GetPlaceDetailUseCase(threadExecutor, postExecutionThread, mapsRepository, mapService);
+    }
 }
