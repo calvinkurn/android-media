@@ -773,7 +773,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 startActivity(TransactionCartRouter.createInstanceCartActivity(getActivity()));
             }
             return true;
-        }else if (i == R.id.action_report) {
+        } else if (i == R.id.action_report) {
             presenter.reportProduct(context);
             return true;
         } else if (i == R.id.action_warehouse) {
