@@ -546,7 +546,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                 if (productData.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE)) {
                     report.setVisible(false);
-//                    report.setEnabled(false);
+                    report.setEnabled(false);
                 } else {
                     report.setVisible(true);
                     report.setEnabled(true);
@@ -560,7 +560,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 menuCart.setVisible(false);
                 menuCart.setEnabled(false);
                 report.setVisible(false);
-//                report.setEnabled(false);
+                report.setEnabled(false);
                 switch (productData.getInfo().getProductStatus()) {
                     case PRD_STATE_ACTIVE:
                         etalase.setVisible(false);
@@ -584,7 +584,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             menuCart.setVisible(false);
             menuCart.setEnabled(false);
             report.setVisible(false);
-//            report.setEnabled(false);
+            report.setEnabled(false);
             warehouse.setVisible(false);
             warehouse.setEnabled(false);
             etalase.setVisible(false);

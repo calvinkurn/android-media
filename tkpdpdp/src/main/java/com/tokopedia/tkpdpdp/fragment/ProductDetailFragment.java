@@ -189,12 +189,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }
@@ -596,7 +590,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity instanceof DeepLinkWebViewHandleListener){
+        if (activity instanceof DeepLinkWebViewHandleListener) {
             webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
         } else {
             throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
@@ -606,7 +600,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onAttach(Context activity) {
         super.onAttach(context);
-        if (activity instanceof DeepLinkWebViewHandleListener){
+        if (activity instanceof DeepLinkWebViewHandleListener) {
             webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
         } else {
             throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
@@ -735,7 +729,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
         presenter.saveStateProductCampaign(outState, STATE_PRODUCT_CAMPAIGN, productCampaign);
-        presenter.saveStatePromoWidget(outState,STATE_PROMO_WIDGET,promoAttributes);
+        presenter.saveStatePromoWidget(outState, STATE_PROMO_WIDGET, promoAttributes);
     }
 
     @Override
@@ -763,7 +757,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 onProductShareClicked(shareData);
             }
             return true;
-        } else if(i == R.id.action_cart){
+        } else if (i == R.id.action_cart) {
             if (!SessionHandler.isV4Login(getActivity())) {
                 Intent intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
@@ -774,7 +768,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             }
             return true;
         } else if (i == R.id.action_report) {
-            presenter.reportProduct(context);
+            onProductReportClicked();
             return true;
         } else if (i == R.id.action_warehouse) {
             presenter.requestMoveToWarehouse(context, productData.getInfo().getProductId());
@@ -945,13 +939,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showPromoWidget(PromoAttributes promoAttributes) {
-        this.promoAttributes=promoAttributes;
+        this.promoAttributes = promoAttributes;
         this.promoWidgetView.renderData(promoAttributes);
     }
 
     @Override
     public void onPromoWidgetCopied() {
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout,context.getString(R.string.title_copied),
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, context.getString(R.string.title_copied),
                 Snackbar.LENGTH_LONG);
         snackbar.setAction(context.getString(R.string.close), new View.OnClickListener() {
             @Override
@@ -1039,41 +1033,42 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     private void initToolbarLight() {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
+        collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(context, R.color.grey_toolbar_icon));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
-        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
+        toolbar.setTitleTextColor(ContextCompat.getColor(context, R.color.grey_toolbar_icon));
+        toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
         if (menu != null && menu.size() > 2) {
-            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.icon_share));
+            menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share));
             LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart_notif));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_cart_notif));
             } else {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_cart));
             }
         }
-        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_more));
-
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(context, R.drawable.icon_more));
+        onPrepareOptionsMenu(menu);
     }
 
     private void initToolbarTransparant() {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+        collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(context, R.color.white));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setBackgroundColor(Color.TRANSPARENT);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
         if (menu != null && menu.size() > 1) {
-            menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white));
+            menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white));
             LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
             } else {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart_white));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_cart_white));
             }
-            toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_more_white));
         }
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(context, R.drawable.icon_more_white));
+        onPrepareOptionsMenu(menu);
     }
 
     private void initStatusBarDark() {

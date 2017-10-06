@@ -22,8 +22,7 @@
             app:expandedTitleMarginStart="48dp"
             app:collapsedTitleTextAppearance="@style/TextAppearance.Tokopedia.Title.Collapsed"
             app:expandedTitleTextAppearance="@style/TextAppearance.Tokopedia.Title.Expanded"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            android:fitsSystemWindows="true">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <com.tokopedia.tkpdpdp.customview.PictureView
                 android:id="@+id/view_picture"
@@ -38,9 +37,8 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:gravity="top"
                 app:layout_collapseMode="pin"
-                app:layout_scrollFlags="scroll|enterAlways"
-                android:fitsSystemWindows="false"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
