@@ -37,7 +37,7 @@ public interface CommonService {
 
     @POST
     @Headers("Content-Type: application/x-www-form-urlencoded")
-    Observable<String> postParam(@Url String Url, @Body RequestBody params);
+    Observable<String> postParam(@Url String Url, @Body String params);
 
     @POST
     Observable<String> post(@Url String Url);

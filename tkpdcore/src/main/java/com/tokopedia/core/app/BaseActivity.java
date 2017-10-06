@@ -226,6 +226,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             Intent intent;
             if (GlobalConfig.isSellerApp()) {
                 intent = new Intent(this, WelcomeActivity.class);
+            } else if(GlobalConfig.isPosApp()) {
+                intent = ((TkpdCoreRouter) getApplication()).getLoginIntent(this);
             } else {
                 intent = HomeRouter.getHomeActivity(this);
             }

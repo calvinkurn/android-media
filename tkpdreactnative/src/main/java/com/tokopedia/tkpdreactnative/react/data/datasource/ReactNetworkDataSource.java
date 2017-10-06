@@ -43,8 +43,7 @@ public class ReactNetworkDataSource {
     }
 
     public Observable<String> postParam(String url, String params) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), params);
-        return commonService.postParam(url, requestBody);
+        return commonService.postParam(url, params);
     }
 
     public Observable<String> delete(String url) {

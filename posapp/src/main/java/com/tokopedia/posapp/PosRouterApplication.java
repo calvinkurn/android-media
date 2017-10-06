@@ -29,6 +29,7 @@ import com.tokopedia.posapp.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.posapp.di.component.DaggerReactNativeComponent;
 import com.tokopedia.posapp.di.component.ReactNativeComponent;
 import com.tokopedia.posapp.di.module.PosReactNativeModule;
+import com.tokopedia.posapp.view.activity.LoginActivity;
 import com.tokopedia.posapp.view.activity.OutletActivity;
 import com.tokopedia.posapp.view.activity.ProductListActivity;
 import com.tokopedia.posapp.view.drawer.DrawerPosHelper;
@@ -181,6 +182,7 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public void onLogout(AppComponent appComponent) {
         PosSessionHandler.clearPosUserData(this);
+        PosCacheHandler.clearUserData(this);
     }
 
     @Override
@@ -200,7 +202,7 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public Intent getLoginIntent(Context context) {
-        return null;
+        return LoginActivity.getPosLoginIntent(context);
     }
 
     @Override

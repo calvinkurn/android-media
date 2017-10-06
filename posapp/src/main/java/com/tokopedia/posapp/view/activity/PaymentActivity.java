@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.deeplink.Constants;
 import com.tokopedia.posapp.react.PosReactConst;
@@ -20,12 +19,12 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity;
 
 public class PaymentActivity extends ReactNativeActivity {
 
-    private static final String TOTAL_PAYMENT = "total_payment";
+    private static final String CHECKOUT_DATA = "checkout_data";
 
     @DeepLink(Constants.Applinks.PAYMENT_CHECKOUT)
     public static Intent getIntentFromDeeplink(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
-        extras.putString(TOTAL_PAYMENT, uri.getQueryParameter(TOTAL_PAYMENT));
+        extras.putString(CHECKOUT_DATA, uri.getQueryParameter(CHECKOUT_DATA));
 
 
         return new Intent(context, PaymentActivity.class)
@@ -39,7 +38,7 @@ public class PaymentActivity extends ReactNativeActivity {
         bundle.putString(ReactConst.KEY_SCREEN, PosReactConst.Screen.MAIN_POS_O2O);
         bundle.putString(PosReactConst.Screen.PARAM_POS_PAGE,  PosReactConst.Page.PAYMENT);
         bundle.putString(USER_ID,  SessionHandler.getLoginID(this));
-        bundle.putString(TOTAL_PAYMENT, getIntent().getExtras().getString(TOTAL_PAYMENT));
+        bundle.putString(CHECKOUT_DATA, getIntent().getExtras().getString(CHECKOUT_DATA));
 
         return bundle;
     }
