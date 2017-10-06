@@ -10,12 +10,11 @@ import { getBankList, selectBank, getEmiList, selectEmi, makePayment } from '../
 import { Text } from '../common/TKPText'
 import { NavigationModule } from 'NativeModules'
 
+
+
 class PaymentBank extends Component {
-
   constructor(props) {
-
     super(props);
-
     const dsEmi = new ListView.DataSource({
           rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -37,7 +36,8 @@ class PaymentBank extends Component {
 
   componentDidMount() {
     console.log(this.props)
-    console.log(this.props.screenProps.total_payment)
+    const checkout_data = JSON.parse(this.props.screenProps.checkout_data)
+    console.log(checkout_data)
     this.props.dispatch(getBankList());
   }
 

@@ -32,7 +32,7 @@ class CartItemList extends Component {
   }
 
   paymentCheckoutClicked = () => {
-    console.log("checkout clicked, total: " + this.props.totalPrice)
+    // console.log("checkout clicked, total: " + this.props.totalPrice)
     this.props.dispatch(PaymentCheckoutToNative())
   }
 
@@ -58,7 +58,8 @@ class CartItemList extends Component {
     }
 
     if (this.props.checkout_status_msg === 'SUCCESS' && !this.props.showLoadingPage && !this.props.isFetchingParamsCheckout){
-      NavigationModule.navigateAndFinish(`posapp://payment/checkout?total_payment=${this.props.totalPrice}`, "")
+      console.log(this.props)
+      NavigationModule.navigateAndFinish(`posapp://payment/checkout?checkout_data=${JSON.stringify(this.props.checkout_data)}`, "")
     }
 
 
