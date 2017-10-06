@@ -133,6 +133,7 @@ dependencies {
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    compile rootProject.ext.miscDependencies.bcaOneClick
+    //compile rootProject.ext.miscDependencies.bcaOneClick
+    compile(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
 }
 

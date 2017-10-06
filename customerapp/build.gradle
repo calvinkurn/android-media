@@ -163,7 +163,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
-        resConfigs "en", "id"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = true
@@ -240,7 +239,10 @@ dependencies {
 //    compile(rootProject.ext.tkpdDependencies.digital) {
 //        exclude group: 'com.tokopedia.core'
 //    }
-    //compile (rootProject.ext.tkpdDependencies.core)
+//    compile(rootProject.ext.tkpdDependencies.reactNative) {
+//        exclude group: 'com.tokopedia.core'
+//    }
+//    compile (rootProject.ext.tkpdDependencies.core)
     //compile project(':tkpdcore')
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')

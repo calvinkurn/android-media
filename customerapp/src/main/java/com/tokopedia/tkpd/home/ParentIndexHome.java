@@ -21,8 +21,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.google.firebase.perf.FirebasePerformance;
-import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -104,8 +102,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
-    private Trace homeTrace;
-    private GetFingerprintUseCase getFingerprintUseCase;
 
     private AnalyticsCacheHandler cacheHandler;
     List<String> content;
@@ -191,8 +187,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
 
-        homeTrace = FirebasePerformance.getInstance().newTrace("trace_home_android");
-        homeTrace.start();
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         if (arg0 != null) {
             //be16268	commit id untuk memperjelas yang bawah
@@ -612,8 +606,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Log.d(TAG, messageTAG + "onStop");
         super.onStop();
         needToRefresh = true;
-        if(homeTrace!=null)
-            homeTrace.stop();
     }
 
     @Override

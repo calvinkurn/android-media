@@ -17,7 +17,7 @@ publishing {
     publications {
         aar(MavenPublication) {
             groupId 'com.tokopedia.tkpdreactnative'
-            artifactId 'reactnative'
+            artifactId 'tkpdreactnative'
             version getArtifactVersionCode()
             artifact("$buildDir/outputs/aar/tkpdreactnative-release.aar")
             pom.withXml {
@@ -98,4 +98,5 @@ dependencies {
 
     compile rootProject.ext.miscDependencies.reactNative
     compile rootProject.ext.miscDependencies.codePushReactNative
+
 }

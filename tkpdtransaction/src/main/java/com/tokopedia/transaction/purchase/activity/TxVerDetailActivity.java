@@ -233,7 +233,8 @@ public class TxVerDetailActivity extends BasePresenterActivity<TxVerDetailPresen
     @Override
     public void renderInvoiceList(List<Detail> detail) {
         invoiceAdapter.addAllInvoiceList(detail);
-        if(presenter.getTypePaymentMethod(txVerData) != KLIK_BCA_MODE) {
+        if(presenter.getTypePaymentMethod(txVerData) != KLIK_BCA_MODE
+                && !tvPaymentCode.getText().toString().isEmpty()) {
             tvPaymentCode.setVisibility(View.VISIBLE);
         }
     }
