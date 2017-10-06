@@ -11,6 +11,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.deeplink.Constants;
+import com.tokopedia.posapp.view.ScanCreditCard;
+import com.tokopedia.posapp.view.presenter.ScanCreditCardPresenter;
 
 import io.card.payment.CardIOActivity;
 
@@ -18,7 +20,8 @@ import io.card.payment.CardIOActivity;
  * Created by okasurya on 8/14/17.
  */
 
-public class ScanCreditCardActivity extends BasePresenterActivity {
+public class ScanCreditCardActivity extends BasePresenterActivity<ScanCreditCard.Presenter>
+        implements ScanCreditCard.View {
 
     public static final int REQUEST_CARD_SCANNER = 7001;
     public static final String BANK_ID = "bank_id";
@@ -48,7 +51,7 @@ public class ScanCreditCardActivity extends BasePresenterActivity {
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new ScanCreditCardPresenter(this);
     }
 
     @Override

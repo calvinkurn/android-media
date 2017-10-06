@@ -4,6 +4,8 @@ import com.tokopedia.posapp.data.factory.CartFactory;
 import com.tokopedia.posapp.domain.model.cart.ATCStatusDomain;
 import com.tokopedia.posapp.domain.model.cart.CartDomain;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -40,5 +42,10 @@ public class CartRepositoryImpl implements CartRepository {
     @Override
     public Observable<CartDomain> getCartProduct(int productId) {
         return cartFactory.local().getCartProduct(productId);
+    }
+
+    @Override
+    public Observable<List<CartDomain>> getAllCartProducts() {
+        return cartFactory.local().getAllCartProducts();
     }
 }

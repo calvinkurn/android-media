@@ -32,6 +32,7 @@ public class PaymentProcessingActivity extends ReactNativeActivity {
         bundle.putString(ReactConst.KEY_SCREEN, PosReactConst.Screen.MAIN_POS_O2O);
         bundle.putString(PosReactConst.Screen.PARAM_POS_PAGE, PosReactConst.Page.PAYMENT_PROCESSING);
         bundle.putString(USER_ID,  SessionHandler.getLoginID(this));
+        bundle.putString("data_process", getIntent().getStringExtra("extras"));
 
         return bundle;
     }

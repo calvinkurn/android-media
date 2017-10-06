@@ -82,9 +82,13 @@ public class CardDetailFragment extends BaseDaggerFragment implements CardDetail
         buttonPay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.pay();
+                presenter.pay(getLatestData());
             }
         });
+    }
+
+    private CreditCardViewModel getLatestData() {
+        return null;
     }
 
     private void setupCardData(CreditCardViewModel creditCard) {
