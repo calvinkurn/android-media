@@ -59,7 +59,7 @@ class PaymentBank extends Component {
     }
   };
 
-  _renderPopRow(rowData: string, sectionID: number, rowID: number) {
+  _renderPopRow(rowData, sectionID, rowID) {
     if (rowID > 10) {
       return (
         <TouchableWithoutFeedback onPress={this._onPressPopupRow.bind(this, rowID, rowData)}>
@@ -79,7 +79,7 @@ class PaymentBank extends Component {
   }
 
 
-  _renderEmiRow(rowData: string, sectionID: number, rowID: number) {
+  _renderEmiRow(rowData, sectionID, rowID) {
 
     if (rowData.available === false) {
       return (
@@ -104,7 +104,7 @@ class PaymentBank extends Component {
     );
   }
 
-  _renderBankLogo(rowData: string, sectionID: number, rowID: number) {
+  _renderBankLogo(rowData, sectionID, rowID) {
     if (rowID <= 10) {
       return (
         <TouchableWithoutFeedback onPress={this._onPressLogo.bind(this, rowID, rowData)}>
