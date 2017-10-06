@@ -195,8 +195,11 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.GOLD_MERCHANT,
                 drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                 0);
-        menu.add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
-                TkpdState.DrawerPosition.FEATURED_PRODUCT, true));
+        boolean isGoldMerchant = SessionHandler.isGoldMerchant(context);
+        if(isGoldMerchant) {
+            menu.add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
+                    TkpdState.DrawerPosition.FEATURED_PRODUCT, false, true));
+        }
         return menu;
     }
 
