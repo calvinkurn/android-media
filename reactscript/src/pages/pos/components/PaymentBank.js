@@ -43,7 +43,16 @@ class PaymentBank extends Component {
      const selectedBankData = !this.state.selectedBankData ? {} : this.state.selectedBankData;
 
     if (this.state.paymentMethod === 'SCAN'){
-      NavigationModule.navigate("posapp://payment/scan/3/6", "")
+      const data_scan_params = {
+        checkout_data: this.props.screenProps.checkout_data,
+        selectBank: this.state.selectedBank,
+        selectIdBank: this.state.selectIdBank,
+        selectedEmiId: selected_installment,
+        selectedBankData: selectedBankData,
+        total_payment: this.props.screenProps.total_payment
+      }
+      NavigationModule.navigate("posapp://payment/scan", JSON.stringify(data_scan_params))
+
     } else {
       // console.log(this.state.selectedBank, this.state.selectIdBank, this.state.selectedEmiId)
       this.props.navigation.navigate('Payment', {

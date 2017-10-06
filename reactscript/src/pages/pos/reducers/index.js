@@ -23,6 +23,7 @@ import {
   FETCH_SHOP_NAME,
   FETCH_SHOP_ID,
   PAYMENT_CHECKOUT_TO_NATIVE,
+  MAKE_PAYMENT_V2
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
 import { icons } from '../components/icon/index'
@@ -295,6 +296,46 @@ const checkout = (state = {
 // ============= Checkout ============= //
 
 
+// ============= Payment V2 ============= //
+const paymentV2 = (state = {
+  isFetchingParams: false,
+  showLoadingPage: false,
+  data: [],
+  status_msg: ''
+}, action) => {
+  switch (action.type) {
+    case `${MAKE_PAYMENT_V2}_${PENDING}`:
+      return {
+        ...state,
+        isFetchingParams: true,
+        showLoadingPage: true,
+        data: [],
+        status_msg: 'PROCESSING'
+      }
+    case `${MAKE_PAYMENT_V2}_${FULFILLED}`:
+      return {
+        ...state,
+        isFetchingParams: false,
+        showLoadingPage: false,
+        data: [],
+        status_msg: 'SUCCESS'
+      }
+    case `${MAKE_PAYMENT_V2}_${REJECTED}`:
+      return {
+        ...state,
+        isFetchingParams: false,
+        showLoadingPage: false,
+        data: [],
+        status_msg: 'FAILED'
+      }
+    
+    default:
+      return state
+  }
+}
+// ============= Payment V2 ============= //
+
+
 const payment = (state = {
   items: [],
   emiList: [],
@@ -532,6 +573,7 @@ const rootReducer = combineReducers({
   cart,
   payment,
   checkout,
+  paymentV2,
   search,
   paymentInvoice,
   transactionHistory,

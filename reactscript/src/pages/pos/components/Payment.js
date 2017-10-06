@@ -68,15 +68,23 @@ class payment extends Component {
       errorMessage.cvv = 'CVV tidak valid'
     }
 
-    this.setState({
-      errorMessage
-    });
+    this.setState({ errorMessage })
     
     if (errorMessage.ccNum == '' && errorMessage.cvv == '' && errorMessage.date == '') {
-      //this.props.navigation.navigate('PaymentProcessing', {})
-          this.props.dispatch(makePayment(this.props.navigation.state.params.total_payment, this.props.navigation.state.params.selectedEmiId,
-            this.props.ccNum, this.props.mon+ '/' + this.props.year, this.props.cvv));
-       NavigationModule.navigate('posapp://payment/process', '')
+      const checkout_data = this.props.navigation.state.params.checkout_data
+      const data_process = {
+        checkout_data,
+        selectedEmiId: this.props.navigation.state.params.selectedEmiId,
+        ccNum: this.props.ccNum,
+        mon: this.props.mon,
+        year: this.props.year,
+        cvv: this.props.cvv
+      }
+
+      // this.props.dispatch(makePayment(checkout_data, this.props.navigation.state.params.selectedEmiId, 
+      //   this.props.ccNum, this.props.mon + '/' + this.props.year, this.props.cvv));
+
+       NavigationModule.navigate('posapp://payment/process', JSON.stringify(data_process))
     }
   };
 

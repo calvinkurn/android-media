@@ -1,31 +1,8 @@
 import React, { Component } from 'react'
 import { View, Text, Image } from 'react-native'
-// import { NavigationModule } from 'NativeModules'
-// import { connect } from 'react-redux'
-// import { PaymentCheckoutToNative } from '../actions/index'
 
-
-class Processing extends Component {
-    // componentDidMount(){
-    //     this.props.dispatch(PaymentCheckoutToNative())
-
-    //     // setTimeout(
-    //     //     () => {
-    //     //         NavigationModule.navigateAndFinish(`posapp://payment/checkout?total_payment=${this.props.totalPrice}`, "")
-    //     //     },  4000
-    //     // )
-    // {!this.props.checkoutData.isFetching && 
-    //     NavigationModule.navigateAndFinish(`posapp://payment/checkout?total_payment=${this.props.totalPrice}`, "")
-    // }
-        
-    // }
-
-
-    
-
+export default class Processing extends Component {
     render() {
-        // console.log(this.props)
-        
         return (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
                 <View style={{ width: "100%", marginTop: "60%", flexDirection: 'column',alignItems: 'center', justifyContent: 'center'}}>
@@ -36,16 +13,3 @@ class Processing extends Component {
         )
     }
 }
-
-
-
-export default Processing
-// const mapStateToProps = (state) => {
-//     console.log(state)
-//     return {
-//         data: state,
-//         checkoutData: state.checkout 
-//     }
-// }
-
-// export default connect(mapStateToProps)(Processing)
