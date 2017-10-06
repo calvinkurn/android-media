@@ -395,11 +395,19 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             }
         });
 
-        productName.setText(MethodChecker.fromHtml(getArguments().getString
-                (InboxReputationFormActivity.ARGS_PRODUCT_NAME)));
+        if (TextUtils.isEmpty(getArguments().getString
+                (InboxReputationFormActivity.ARGS_PRODUCT_NAME, ""))) {
+            productName.setText(
+                    MainApplication.getAppContext().getString(R.string.product_is_deleted));
 
-        ImageHandler.LoadImage(productImage, getArguments().getString
-                (InboxReputationFormActivity.ARGS_PRODUCT_AVATAR));
+            ImageHandler.loadImageWithIdWithoutPlaceholder(productImage, R.drawable.ic_product_deleted);
+        }else{
+            productName.setText(MethodChecker.fromHtml(getArguments().getString
+                    (InboxReputationFormActivity.ARGS_PRODUCT_NAME)));
+
+            ImageHandler.LoadImage(productImage, getArguments().getString
+                    (InboxReputationFormActivity.ARGS_PRODUCT_AVATAR));
+        }
     }
 
     private void setTips() {

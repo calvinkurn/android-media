@@ -140,7 +140,7 @@ public class ReputationAdapter extends RecyclerView.Adapter<ReputationAdapter.Vi
 
     public void showLockedSmiley() {
         this.list.clear();
-        this.list.add(new SmileyModel(R.drawable.ic_lock,
+        this.list.add(new SmileyModel(R.drawable.ic_locked2,
                 "",
                 ""));
         this.canGiveReputation = false;

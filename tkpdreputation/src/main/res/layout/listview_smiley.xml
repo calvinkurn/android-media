@@ -14,7 +14,7 @@
         android:id="@+id/smiley"
         android:layout_width="@dimen/smiley_size"
         android:layout_height="@dimen/smiley_size"
-        tools:src="@drawable/ic_lock"/>
+        tools:src="@drawable/ic_locked2"/>
 
 
     <TextView

@@ -174,7 +174,7 @@ public class InboxReputationDetailItemViewHolder extends
             productName.setText(
                     MainApplication.getAppContext().getString(R.string.product_is_deleted));
 
-            ImageHandler.loadImageWithIdWithoutPlaceholder(productAvatar, R.drawable.ic_action_delete);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(productAvatar, R.drawable.ic_product_deleted);
         } else {
             productName.setText(MethodChecker.fromHtml(element.getProductName()));
             productName.setOnClickListener(new View.OnClickListener() {
