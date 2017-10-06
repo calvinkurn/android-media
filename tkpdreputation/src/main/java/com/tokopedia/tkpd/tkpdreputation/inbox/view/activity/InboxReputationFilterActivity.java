@@ -151,23 +151,14 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
     protected void setupToolbar() {
         super.setupToolbar();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View view = getWindow().getDecorView();
-            int flags = view.getSystemUiVisibility();
-
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
-
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.white)));
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.grey_300));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
-        }
+//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+//                .getColor(R.color.white)));
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+//        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
+//        toolbar.setSubtitleTextColor(getResources().getColor(R.color.grey_300));
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            toolbar.setElevation(10);
+//        }
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_close_24dp);
@@ -175,5 +166,10 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

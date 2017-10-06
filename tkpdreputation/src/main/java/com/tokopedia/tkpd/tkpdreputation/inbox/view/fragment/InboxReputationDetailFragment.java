@@ -544,7 +544,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.detachView();
+        if (presenter != null)
+            presenter.detachView();
         callbackManager = null;
     }
 }

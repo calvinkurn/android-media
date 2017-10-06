@@ -721,7 +721,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.detachView();
+        if (presenter != null)
+            presenter.detachView();
         shareDialog = null;
         callbackManager = null;
     }

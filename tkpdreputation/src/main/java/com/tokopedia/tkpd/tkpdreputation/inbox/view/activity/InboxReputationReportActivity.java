@@ -100,32 +100,23 @@ public class InboxReputationReportActivity extends BasePresenterActivity
     protected void setupToolbar() {
         super.setupToolbar();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View view = getWindow().getDecorView();
-            int flags = view.getSystemUiVisibility();
+//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+//                .getColor(R.color.white)));
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+//        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
+//        toolbar.setSubtitleTextColor(getResources().getColor(R.color.grey_300));
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            toolbar.setElevation(10);
+//        }
 
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
-
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.white)));
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.grey_300));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
-        }
-
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this,
-                android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
-        if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700),
-                    PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        }
+//        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+//        Drawable upArrow = ContextCompat.getDrawable(this,
+//                android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+//        if (upArrow != null) {
+//            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700),
+//                    PorterDuff.Mode.SRC_ATOP);
+//            getSupportActionBar().setHomeAsUpIndicator(upArrow);
+//        }
     }
 
     public static Intent getCallingIntent(Context context, int shopId, String reviewId) {
@@ -135,5 +126,11 @@ public class InboxReputationReportActivity extends BasePresenterActivity
         bundle.putString(ARGS_REVIEW_ID, reviewId);
         intent.putExtras(bundle);
         return intent;
+    }
+
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

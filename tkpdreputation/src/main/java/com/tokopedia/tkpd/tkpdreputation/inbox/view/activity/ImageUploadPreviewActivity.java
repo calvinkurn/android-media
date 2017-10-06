@@ -111,5 +111,8 @@ public class ImageUploadPreviewActivity extends BasePresenterActivity {
             super.onActivityResult(requestCode, resultCode, data);
     }
 
-
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

@@ -226,6 +226,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onSuccessGetFirstTimeInboxReputation(InboxReputationViewModel inboxReputationViewModel) {
         searchView.setVisibility(View.VISIBLE);
+        filterButton.setVisibility(View.VISIBLE);
         adapter.setList(inboxReputationViewModel.getList());
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
     }
@@ -348,6 +349,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onShowEmpty() {
         searchView.setVisibility(View.GONE);
+        filterButton.setVisibility(View.GONE);
         adapter.clearList();
         if (GlobalConfig.isSellerApp()) {
             adapter.showEmpty(getString(R.string.inbox_reputation_empty_title));
@@ -425,5 +427,12 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onResume() {
         super.onResume();
         KeyboardHandler.DropKeyboard(getActivity(), searchView);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (presenter != null)
+            presenter.detachView();
     }
 }
