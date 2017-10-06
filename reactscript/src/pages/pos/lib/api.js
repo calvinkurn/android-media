@@ -12,3 +12,4 @@ export const BASE_API_URL_PCIDSS = {
     STAGING: 'https://pay-staging.tokopedia.id',
     PRODUCTION: 'https://pay.tokopedia.id'
 }
+
