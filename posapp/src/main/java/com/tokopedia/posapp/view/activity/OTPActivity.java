@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.SslErrorHandler;
@@ -22,6 +23,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.payment.utils.ErrorNetMessage;
+import com.tokopedia.posapp.PosAppSplashScreen;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.deeplink.Constants;
 import com.tokopedia.posapp.view.Otp;
@@ -126,6 +128,7 @@ public class OTPActivity extends BasePresenterActivity<Otp.Presenter>
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Log.d("pos o2o otp url", url);
             return super.shouldOverrideUrlLoading(view, url);
         }
 

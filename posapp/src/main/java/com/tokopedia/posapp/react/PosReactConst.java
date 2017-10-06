@@ -25,8 +25,4 @@ public interface PosReactConst {
         String BANK = "BANK";
         String ETALASE = "ETALASE";
     }
-
-    interface EventEmitter {
-        String LOCAL_CART_OPEN = "localCartOpen";
-    }
 }
