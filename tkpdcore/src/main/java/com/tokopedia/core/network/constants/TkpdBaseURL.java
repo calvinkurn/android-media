@@ -842,7 +842,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_CANCEL_TRANSACTION_DIALOG = "get_payment_status";
         public static final String PATH_CANCEL_TRANSACTION = "cancel";
 
-        public static final String PATH_PAYMENT = "v1/api/payment/";
+        public static final String PATH_PAYMENT = "v1/api/payments";
     }
 
     public static class FinTech {

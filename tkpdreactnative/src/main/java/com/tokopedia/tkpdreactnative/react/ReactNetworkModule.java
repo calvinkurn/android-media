@@ -1,5 +1,8 @@
 package com.tokopedia.tkpdreactnative.react;
 
+import android.net.Uri;
+import android.util.Log;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -15,6 +18,9 @@ import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Iterator;
 
 import javax.inject.Inject;
@@ -117,12 +123,20 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         }
     }
 
+    /**
+     * call api with <b>encoded</b> parameter query
+     * @param url
+     * @param method POST or GET
+     * @param encodedRequest the request data must be encoded
+     * @param isAuth
+     * @param promise
+     */
     @ReactMethod
-    public void getResponseParam(String url, String method, String request, Boolean isAuth, final Promise promise) {
+    public void getResponseParam(String url, String method, String encodedRequest, Boolean isAuth, final Promise promise) {
         try {
-            CommonUtils.dumper(url + " " + request);
+            CommonUtils.dumper(url + " " + encodedRequest);
             Subscription subscribe = reactNetworkRepository
-                    .getResponseParam(url, method, request, isAuth)
+                    .getResponseParam(url, method, encodedRequest, isAuth)
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(new Subscriber<String>() {
                         @Override
@@ -171,5 +185,4 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
 
         return params;
     }
-
 }

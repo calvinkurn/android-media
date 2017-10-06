@@ -24,23 +24,27 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.deeplink.Constants;
+import com.tokopedia.posapp.view.Otp;
+import com.tokopedia.posapp.view.presenter.OtpPresenter;
+import com.tokopedia.posapp.view.viewmodel.OtpData;
 
 /**
  * Created by okasurya on 10/4/17.
  */
 
-public class OTPActivity extends BasePresenterActivity
-        implements HasComponent {
+public class OTPActivity extends BasePresenterActivity<Otp.Presenter>
+        implements HasComponent, Otp.View {
     public static final long FORCE_TIMEOUT = 90000L;
 
     private WebView scroogeWebView;
     private ProgressBar progressBar;
 
     @DeepLink(Constants.Applinks.OTP)
-    private static Intent newInstance(Context context, Bundle extras) {
+    public static Intent newInstance(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
 
         Intent intent = new Intent(context, OTPActivity.class);
+        intent.setData(uri);
         intent.putExtras(extras);
 
         return intent;
@@ -63,7 +67,7 @@ public class OTPActivity extends BasePresenterActivity
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new OtpPresenter(this);
     }
 
     @Override
@@ -89,7 +93,6 @@ public class OTPActivity extends BasePresenterActivity
         scroogeWebView.setWebViewClient(new OTPWebViewClient());
         scroogeWebView.setWebChromeClient(new OTPWebViewChromeClient());
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
-//        scroogeWebView.postUrl(url, );
     }
 
     @Override
@@ -99,7 +102,22 @@ public class OTPActivity extends BasePresenterActivity
 
     @Override
     protected void setActionVar() {
+        presenter.initializeData(getIntent().getStringExtra("extras"));
+    }
 
+    @Override
+    public void getOTPWebview(OtpData data) {
+        scroogeWebView.loadUrl(data.getUrl());
+    }
+
+    @Override
+    public void postOTPWebview(OtpData data) {
+        scroogeWebView.postUrl(data.getUrl(), data.getParameters());
+    }
+
+    @Override
+    public void onLoadDataError(Throwable e) {
+        e.printStackTrace();
     }
 
     private class OTPWebViewClient extends WebViewClient {
