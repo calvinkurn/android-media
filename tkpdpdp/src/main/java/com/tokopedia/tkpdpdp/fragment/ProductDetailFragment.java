@@ -189,6 +189,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     protected boolean getOptionsMenuEnable() {
         return false;
     }
@@ -740,10 +746,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
             getActivity().onBackPressed();
             return true;
-        } else if (item.getItemId() == R.id.action_share) {
+        } else if (i == R.id.action_share) {
             if (productData != null) {
                 ShareData shareData = ShareData.Builder.aShareData()
                         .setName(productData.getInfo().getProductName())
@@ -756,7 +763,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 onProductShareClicked(shareData);
             }
             return true;
-        } else if (item.getItemId() == R.id.action_cart) {
+        } else if(i == R.id.action_cart){
             if (!SessionHandler.isV4Login(getActivity())) {
                 Intent intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
@@ -766,16 +773,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 startActivity(TransactionCartRouter.createInstanceCartActivity(getActivity()));
             }
             return true;
-        } else if (item.getItemId() == R.id.action_report) {
+        }else if (i == R.id.action_report) {
             presenter.reportProduct(context);
             return true;
-        } else if (item.getItemId() == R.id.action_warehouse) {
+        } else if (i == R.id.action_warehouse) {
             presenter.requestMoveToWarehouse(context, productData.getInfo().getProductId());
             return true;
-        } else if (item.getItemId() == R.id.action_etalase) {
+        } else if (i == R.id.action_etalase) {
             presenter.requestMoveToEtalase(context, productData.getInfo().getProductId());
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

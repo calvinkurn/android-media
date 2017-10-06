@@ -22,17 +22,17 @@
         android:icon="@drawable/report_icon"
         android:orderInCategory="100"
         android:title="@string/title_report_action"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_warehouse"
         android:orderInCategory="100"
         android:title="@string/title_sold_out"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_etalase"
         android:orderInCategory="100"
         android:title="@string/title_to_etalase"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 </menu>
