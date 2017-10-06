@@ -62,7 +62,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabe
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
@@ -110,7 +109,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
-    private ShareBottomDialog shareBottomDialog;
     private CallbackManager callbackManager;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
@@ -345,20 +343,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 .setType(ShareData.FEED_TYPE)
                                 .build();
                onProductShareClicked(shareData);
-
-//        if (shareBottomDialog == null) {
-//            shareBottomDialog = new ShareBottomDialog(
-//                    FeedPlusFragment.this,
-//                    callbackManager);
-//        }
-//
-//        shareBottomDialog.setShareModel(
-//                new ShareModel(shareUrl,
-//                        title,
-//                        imgUrl,
-//                        contentMessage));
-//
-//        shareBottomDialog.show();
 
     }
 

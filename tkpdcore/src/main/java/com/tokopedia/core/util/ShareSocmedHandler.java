@@ -254,21 +254,17 @@ public class ShareSocmedHandler {
             share.putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(context, f));
         }
         share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
-//        share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
-//		 share.putExtra(Intent.EXTRA_TEXT, "Jual " + pName + " hanya " + pPrice + ", lihat gambar klik " + ProductUri);
         share.putExtra(Intent.EXTRA_TEXT, shareTxt);
 
         List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
         for (ResolveInfo info : resInfo) {
             if (info.activityInfo.packageName.equals(packageName)) {
                 Resolved = true;
-//        		 share.setClassName(info.activityInfo.packageName, info.activityInfo.name );
                 share.setPackage(info.activityInfo.packageName);
             }
         }
 
         if (Resolved) {
-            //           context.startActivity(Intent.createChooser(share, shareTxt));
             context.startActivity(share);
         } else if (altUrl != null) {
             context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)));
@@ -349,20 +345,17 @@ public class ShareSocmedHandler {
         }
         share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
         share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
-//		 share.putExtra(Intent.EXTRA_TEXT, "Jual " + pName + " hanya " + pPrice + ", lihat gambar klik " + ProductUri);
         share.putExtra(Intent.EXTRA_TEXT, shareTxt);
 
         List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
         for (ResolveInfo info : resInfo) {
             if (info.activityInfo.packageName.equals(packageName)) {
                 Resolved = true;
-//        		 share.setClassName(info.activityInfo.packageName, info.activityInfo.name );
                 share.setPackage(info.activityInfo.packageName);
             }
         }
 
         if (Resolved) {
-            //           context.startActivity(Intent.createChooser(share, shareTxt));
             context.startActivity(share);
         } else if (altUrl != null) {
             context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)));

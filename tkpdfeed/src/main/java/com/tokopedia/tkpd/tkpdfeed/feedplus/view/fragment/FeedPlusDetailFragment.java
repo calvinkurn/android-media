@@ -39,7 +39,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.WishlistListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusDetailPresenter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
@@ -70,7 +69,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
     private DetailFeedAdapter adapter;
-    private ShareBottomDialog shareBottomDialog;
     private CallbackManager callbackManager;
     private PagingHandler pagingHandler;
     private TkpdProgressDialog progressDialog;
@@ -183,19 +181,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                         .setType(ShareData.FEED_TYPE)
                         .build();
                 onProductShareClicked(shareData);
-//                if (shareBottomDialog == null) {
-//                    shareBottomDialog = new ShareBottomDialog(
-//                            FeedPlusDetailFragment.this,
-//                            callbackManager);
-//                }
-//
-//                shareBottomDialog.setShareModel(
-//                        new ShareModel(
-//                                url,
-//                                title,
-//                                imageUrl,
-//                                description));
-//                shareBottomDialog.show();
             }
         };
     }
