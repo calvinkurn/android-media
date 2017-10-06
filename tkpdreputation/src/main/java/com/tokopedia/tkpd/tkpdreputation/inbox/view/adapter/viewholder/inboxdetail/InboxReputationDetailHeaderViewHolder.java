@@ -200,25 +200,27 @@ public class InboxReputationDetailHeaderViewHolder extends
 
         opponentSmileyText.setText(getOpponentSmileyPromptText(element));
 
-        if(element.getReputationDataViewModel().isShowRevieweeScore()){
-        switch (element.getReputationDataViewModel().getRevieweeScore()) {
-            case NO_REPUTATION:
-                ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_empty);
-                break;
-            case SMILEY_BAD:
-                ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_bad);
-                break;
-            case SMILEY_NEUTRAL:
-                ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_netral);
-                break;
-            case SMILEY_GOOD:
-                ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_good);
-                break;
-        }}else{
+        if (!element.getReputationDataViewModel().isShowRevieweeScore()
+                && element.getReputationDataViewModel().
+                getRevieweeScore() != NO_REPUTATION) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.shop_list_favorite_check);
+        } else {
+            switch (element.getReputationDataViewModel().getRevieweeScore()) {
+                case NO_REPUTATION:
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_empty);
+                    break;
+                case SMILEY_BAD:
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_bad);
+                    break;
+                case SMILEY_NEUTRAL:
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_netral);
+                    break;
+                case SMILEY_GOOD:
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_good);
+                    break;
+            }
 
         }
-
     }
 
     private String getOpponentSmileyPromptText(InboxReputationDetailHeaderViewModel element) {
@@ -242,6 +244,7 @@ public class InboxReputationDetailHeaderViewHolder extends
             case SMILEY_NEUTRAL:
                 adapter.showSmileyNeutral();
                 break;
+
             case SMILEY_GOOD:
                 adapter.showSmileyGood();
                 break;

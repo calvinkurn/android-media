@@ -310,6 +310,7 @@ public class InboxReputationDetailItemViewHolder extends
                 .getResponseBy())));
         sellerReplyTime.setText(getFormattedTime(reviewResponseViewModel.getResponseCreateTime()));
         sellerReply.setText(MethodChecker.fromHtml(reviewResponseViewModel.getResponseMessage()));
+        sellerAddReplyEditText.setText("");
         if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
             seeReplyLayout.setVisibility(View.VISIBLE);
             replyOverflow.setVisibility(View.VISIBLE);
