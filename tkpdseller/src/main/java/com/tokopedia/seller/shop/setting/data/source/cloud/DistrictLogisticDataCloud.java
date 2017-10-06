@@ -3,7 +3,7 @@ package com.tokopedia.seller.shop.setting.data.source.cloud;
 import android.content.Context;
 
 import com.tokopedia.core.base.common.util.GetData;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.shop.apis.MyShopApi;
 import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictServiceModel;
 import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopLogisticServiceModel;
@@ -29,7 +29,7 @@ public class DistrictLogisticDataCloud {
     private final Context context;
 
     @Inject
-    public DistrictLogisticDataCloud(@ActivityContext Context context, MyShopApi api) {
+    public DistrictLogisticDataCloud(@ApplicationContext Context context, MyShopApi api) {
         this.api = api;
         this.context = context;
     }

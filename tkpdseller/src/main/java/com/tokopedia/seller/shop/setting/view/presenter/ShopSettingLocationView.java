@@ -1,7 +1,7 @@
 package com.tokopedia.seller.shop.setting.view.presenter;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewModel;
 
 

@@ -2,7 +2,7 @@ package com.tokopedia.seller.shop.setting.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckDomain;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckShop;
 import com.tokopedia.seller.shop.setting.data.source.cloud.api.TomeApi;
@@ -22,7 +22,7 @@ public class ShopOpenDataCloud {
     private final Context context;
 
     @Inject
-    public ShopOpenDataCloud(TomeApi api, @ActivityContext Context context) {
+    public ShopOpenDataCloud(TomeApi api, @ApplicationContext Context context) {
         this.api = api;
         this.context = context;
     }

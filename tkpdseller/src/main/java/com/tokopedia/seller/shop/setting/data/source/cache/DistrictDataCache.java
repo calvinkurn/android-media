@@ -3,7 +3,7 @@ package com.tokopedia.seller.shop.setting.data.source.cache;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.model.DistrictDataDb;
 import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictServiceModel;
 import com.tokopedia.seller.shop.setting.data.source.cache.db.DistrictDataManager;
@@ -29,7 +29,7 @@ public class DistrictDataCache {
     private final LocalCacheHandler localCacheHandler;
 
     @Inject
-    public DistrictDataCache(@ActivityContext Context context, DistrictDataManager dataManager) {
+    public DistrictDataCache(@ApplicationContext Context context, DistrictDataManager dataManager) {
         this.dataManager = dataManager;
         this.localCacheHandler = new LocalCacheHandler(context, DISTRICT_DATA_CACHE);
     }

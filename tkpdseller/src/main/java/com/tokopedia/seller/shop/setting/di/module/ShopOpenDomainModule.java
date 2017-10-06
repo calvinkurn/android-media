@@ -2,12 +2,9 @@ package com.tokopedia.seller.shop.setting.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ActivityScope;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.app.BaseFragmentModule;
 import com.tokopedia.seller.shop.setting.data.repository.ShopOpenRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.source.ShopOpenDataSource;
 import com.tokopedia.seller.shop.setting.data.source.cloud.api.TomeApi;
@@ -17,7 +14,6 @@ import com.tokopedia.seller.shop.setting.domain.interactor.CheckDomainNameUseCas
 import com.tokopedia.seller.shop.setting.domain.interactor.CheckShopNameUseCase;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopOpenDomainPresenter;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopOpenDomainPresenterImpl;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopOpenDomainView;
 
 import dagger.Module;
 import dagger.Provides;
@@ -46,7 +42,7 @@ public class ShopOpenDomainModule {
     }
 
     @Provides
-    public TomeService provideTomeService(@ActivityContext Context context) {
+    public TomeService provideTomeService(@ApplicationContext Context context) {
         return new TomeService(SessionHandler.getAccessToken(context));
     }
 

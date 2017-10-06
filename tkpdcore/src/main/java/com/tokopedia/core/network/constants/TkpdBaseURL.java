@@ -391,6 +391,8 @@ public class TkpdBaseURL {
 
     public static final class Tome {
         public static final String URL_ADDRESS = TOME_DOMAIN + "v1/web-service/apps/";
+        public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
+        public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
     }
 
     public static class ResCenter {
@@ -556,11 +558,6 @@ public class TkpdBaseURL {
         public static final String PATH_PROFILE_IMAGE = "/web-service/v4/action/upload-image/upload_profile_image.pl";
         public static final String PATH_UPLOAD_VIDEO = "/upload/video";
         public static final String PATH_UPLOAD_ATTACHMENT = "/upload/attachment";
-    }
-
-    public static class Tome {
-        public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
-        public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
     }
 
     public static class Ace {

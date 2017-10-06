@@ -193,4 +193,6 @@
     <string name="open_shop_title_shop_information">Informasi Toko</string>
     <string name="open_shop_title_shop_location">Lokasi Toko</string>
     <string name="open_shop_title_shop_shipping">Atur Pengiriman</string>
+    <string name="postal_code_not_filled">Kode pos harus diisi</string>
+    <string name="shop_setting_city_not_filled">Kota harus diisi</string>
 </resources>

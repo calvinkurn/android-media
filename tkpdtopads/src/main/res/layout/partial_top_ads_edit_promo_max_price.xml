@@ -12,7 +12,7 @@
         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.Small"
         style="@style/TextInputLayout">
 
-        <com.tokopedia.topads.dashboard.view.widget.PrefixEditText
+        <com.tokopedia.seller.common.widget.PrefixEditText
             android:id="@+id/edit_text_max_price"
             style="@style/EditText.Currency"
             android:layout_width="match_parent"

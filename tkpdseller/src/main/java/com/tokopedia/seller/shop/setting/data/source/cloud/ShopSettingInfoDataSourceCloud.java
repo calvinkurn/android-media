@@ -2,7 +2,7 @@ package com.tokopedia.seller.shop.setting.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
@@ -37,7 +37,7 @@ public class ShopSettingInfoDataSourceCloud {
     private final ShopOpenUploadImageMapper shopOpenUploadImageMapper;
 
     @Inject
-    public ShopSettingInfoDataSourceCloud(GenerateHostApi generateHostApi, @ActivityContext Context context,
+    public ShopSettingInfoDataSourceCloud(GenerateHostApi generateHostApi, @ApplicationContext Context context,
                                           ShopOpenGenerateHostMapper shopOpenGenerateHostMapper,
                                           ShopOpenUploadImageMapper shopOpenUploadImageMapper) {
         this.generateHostApi = generateHostApi;

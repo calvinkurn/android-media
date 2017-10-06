@@ -12,18 +12,11 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_hello"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textColor="@color/font_top_ads_black_70"
+            style="@style/TextView.Headline"
             android:text="@string/hello_blank_name"/>
 
         <android.support.v7.widget.AppCompatTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.Large"
-            android:textSize="16sp"
-            android:textColor="@color/font_top_ads_black_54"
+            style="@style/TextView.Subheading"
             android:text="@string/fill_domain_and_shop"/>
 
         <com.tokopedia.seller.lib.widget.TkpdTextInputLayout
@@ -61,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefix="@string/domain_short"
-                app:prefixTextColor="@color/black_fifty_four_percent"
+                app:prefixTextColor="@color/font_black_secondary_54"
                 style="@style/EditText"
                 android:maxLines="2"
                 android:inputType="textNoSuggestions|textMultiLine"/>
@@ -70,7 +63,7 @@
 
         <Button
             android:id="@+id/button_submit"
-            style="@style/Button.TopAds.Submit.Green"
+            style="@style/Button.Submit.Green"
             android:text="@string/title_open_shop"
             android:layout_marginTop="@dimen/margin_med"
             android:layout_marginLeft="0dp"

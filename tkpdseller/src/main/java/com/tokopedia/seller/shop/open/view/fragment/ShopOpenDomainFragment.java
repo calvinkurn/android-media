@@ -13,13 +13,13 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.lib.widget.TkpdTextInputLayout;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopOpenDomainPresenter;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopOpenDomainView;
-import com.tokopedia.seller.topads.view.widget.PrefixEditText;
 
 import rx.Subscription;
 
