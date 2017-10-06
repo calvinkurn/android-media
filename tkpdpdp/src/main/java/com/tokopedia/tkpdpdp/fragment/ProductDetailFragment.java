@@ -83,6 +83,7 @@ import com.tokopedia.tkpdpdp.customview.ShopInfoViewV2;
 import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
 import com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout;
 import com.tokopedia.tkpdpdp.dialog.ReportProductDialogFragment;
+import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
@@ -247,7 +248,21 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         toolbar.setTitle("");
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
+        appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                switch (state){
+                    case COLLAPSED:
+                        initStatusBarLight();
+                        initToolbarLight();
+                        break;
+                    case EXPANDED:
+                        initStatusBarDark();
+                        initToolbarTransparant();
+                        break;
+                }
+            }
+        });
         setHasOptionsMenu(true);
         initToolbarTransparant();
     }
@@ -1008,30 +1023,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
     }
 
-    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
-        return new AppBarLayout.OnOffsetChangedListener() {
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0 && isAdded()) {
-                    initStatusBarLight();
-                    initToolbarLight();
-                    fabWishlist.hide();
-                } else if (isAdded()) {
-                    initStatusBarDark();
-                    initToolbarTransparant();
-                    if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
-                        fabWishlist.show();
-                    }
-                }
-            }
-        };
-    }
-
     private void initToolbarLight() {
         collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(context, R.color.grey_toolbar_icon));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
@@ -1049,7 +1040,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             }
         }
         toolbar.setOverflowIcon(ContextCompat.getDrawable(context, R.drawable.icon_more));
-        getActivity().invalidateOptionsMenu();
     }
 
     private void initToolbarTransparant() {
@@ -1068,7 +1058,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             }
         }
         toolbar.setOverflowIcon(ContextCompat.getDrawable(context, R.drawable.icon_more_white));
-        getActivity().invalidateOptionsMenu();
     }
 
     private void initStatusBarDark() {

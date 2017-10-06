@@ -22,7 +22,7 @@
             app:expandedTitleMarginStart="48dp"
             app:collapsedTitleTextAppearance="@style/TextAppearance.Tokopedia.Title.Collapsed"
             app:expandedTitleTextAppearance="@style/TextAppearance.Tokopedia.Title.Expanded"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <com.tokopedia.tkpdpdp.customview.PictureView
                 android:id="@+id/view_picture"
@@ -48,6 +48,7 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:nestedScrollingEnabled="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
