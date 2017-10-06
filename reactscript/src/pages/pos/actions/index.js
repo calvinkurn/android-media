@@ -412,14 +412,15 @@ export const selectEmi = (id) => {
 }
 
 
-//  ==================== Make Payment to Native ===================== //
-export const MAKE_PAYMENT = 'MAKE_PAYMENT'
+
+//  ==================== Make Payment V2 Native ===================== //
+export const MAKE_PAYMENT_V2 = 'MAKE_PAYMENT_V2'
 export const makePayment = (checkout_data, installment_term, cc_no, expiry_date, cvv) => {
   const data = { checkout_data, installment_term, cc_no, expiry_date, cvv }
-
+  console.log(data)
 
   return {
-    type: MAKE_PAYMENT,
+    type: MAKE_PAYMENT_V2,
     payload: postDataToNative(data)
   }
 }
@@ -427,25 +428,9 @@ export const makePayment = (checkout_data, installment_term, cc_no, expiry_date,
 const postDataToNative = async (data) => {
   const env = await getEnv()
   const api_url = await getBaseAPI(env)
-  console.log(api_url)
-
   const gateway_code = await getGatewayCode(data)
-
   const payment_v2 = await makePaymentV2(api_url, data, gateway_code)
   console.log(payment_v2)
-
-//   return PaymentModule.pay(`{ 
-//     total_amount: ${data.total_amount},
-//     installment_term: ${data.installment_term},
-//     cc_no: ${data.cc_no},
-//     expiry_date: ${data.expiry_date},
-//     cvv: ${data.cvv}
-//   }`).then(response => {
-//       console.log(response)
-//     })
-//     .catch(err => {
-//       console.log(err)
-//     })
 }
 
 const getGatewayCode = (data) => {
@@ -458,21 +443,11 @@ const getGatewayCode = (data) => {
   return gtwCode
 }
 
-
 const makePaymentV2 = (api_url, data, gateway_code) => {
-  console.log(api_url)
-  console.log(data)
-  // console.log(gateway_code)
-
   const jsonData = JSON.parse(data.checkout_data)
-  console.log(jsonData)
   const exp_month = (data.expiry_date).substring(0, (data.expiry_date).indexOf('/'))
   const exp_year = (data.expiry_date).substring((data.expiry_date).indexOf("/") + 1)
-
-  // const cc_no = data.cc_card_no
   const cc_card_no_without_spaces = (data.cc_no).replace(/\s/g, '')
-  // console.log(jsonData)
-  // console.log(cc_card_no_without_spaces)
 
   const data_params = {
     cc_card_no: cc_card_no_without_spaces,
@@ -487,12 +462,10 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
     transaction_id: jsonData.data.transaction_id,
     signature: jsonData.data.signature
   }
-  console.log(data_params)
 
   return NetworkModule.getResponse(`${api_url.api_url_pcidss}/v2/payment/process/CREDITCARD`, `POST`, JSON.stringify(data_params), true)
     .then(res => {
       const jsonResponse = JSON.parse(res)
-      console.log(jsonResponse)
       return jsonResponse
     })
     .catch(err => { 
@@ -500,10 +473,7 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
       return
     })
 }
-
-
-
-
+//  ==================== Make Payment V2 Native ===================== //
 
 
 

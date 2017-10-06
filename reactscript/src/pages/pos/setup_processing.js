@@ -19,10 +19,14 @@ const App = StackNavigator({
 
 
 class Root extends Component {
+    componentDidMount(){
+        console.log(this.props)
+    }
+
     render() {
         return (
             <Provider store={store}>
-                <App />
+                <App screenProps={this.props} />
             </Provider>
         )
     }
