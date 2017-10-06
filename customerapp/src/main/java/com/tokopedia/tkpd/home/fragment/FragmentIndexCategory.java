@@ -286,7 +286,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private void loadDummyPromos() {
                 List<FacadePromo.PromoItem> dummyPromoList = new ArrayList<>();
                 dummyPromoList.add(new FacadePromo.PromoItem());
-                dummyPromoList.add(new FacadePromo.PromoItem());
                 setBanner(dummyPromoList);
             }
 
