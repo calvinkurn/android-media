@@ -109,7 +109,9 @@ class payment extends Component {
   }
 
   render() {
-    console.log(this.state)
+    const checkout_data = JSON.parse(this.props.navigation.state.params.checkout_data)
+    console.log(checkout_data)
+    // console.log(this.state)
     let years = this.state.years().map((i) => {
       return <Picker.Item key={i} value={i} label={i.toString()} />
     });
@@ -117,8 +119,7 @@ class payment extends Component {
     let months = this.state.months.map((i) => {
       return <Picker.Item key={i} value={i} label={i.toString()} />
     });
-
-
+    
 
     return (
       <View style={styles.mainContainers} >
@@ -132,7 +133,7 @@ class payment extends Component {
                 Total Pembayaran
             </Text>
               <Text style={styles.row1Text}>
-                Rp {this.props.navigation.state.params.total_payment}
+                Rp {(checkout_data.data.payment_amount).toLocaleString("id")}
             </Text>
             </View>
 

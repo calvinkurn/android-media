@@ -258,7 +258,7 @@ const cart = (state = {
 
 // ============= Checkout ============= //
 const checkout = (state = {
-  isFetchingParamsCheckout: false,
+  isFetchingParams: false,
   showLoadingPage: false,
   data: [],
   status_msg: ''
@@ -269,7 +269,7 @@ const checkout = (state = {
         ...state,
         isFetchingParamsCheckout: true,
         showLoadingPage: true,
-        status_msg: 'PENDING'
+        status_msg: 'PROCESSING'
       }
     case `${PAYMENT_CHECKOUT_TO_NATIVE}_${FULFILLED}`:
       return {
@@ -285,7 +285,7 @@ const checkout = (state = {
         isFetchingParamsCheckout: false,
         showLoadingPage: false,
         data: action.payload,
-        status_msg: 'REJECTED'
+        status_msg: 'FAILED'
       }
     
     default:
