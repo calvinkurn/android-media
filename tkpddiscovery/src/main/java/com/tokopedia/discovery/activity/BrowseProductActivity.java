@@ -2,6 +2,7 @@ package com.tokopedia.discovery.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -47,7 +48,6 @@ import com.tokopedia.core.network.entity.intermediary.SimpleCategory;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.share.ShareActivity;
-import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.discovery.BuildConfig;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
@@ -56,7 +56,6 @@ import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.fragment.ShopFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.presenter.BrowsePresenter;
@@ -64,8 +63,11 @@ import com.tokopedia.discovery.presenter.BrowsePresenterImpl;
 import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.view.BrowseProductParentView;
-
-import org.json.JSONObject;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,6 +93,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public static final String EXTRA_DATA = "EXTRA_DATA";
     public static final String CHANGE_GRID_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".LAYOUT";
     public static final String GRID_TYPE_EXTRA = "GRID_TYPE_EXTRA";
+    public static final String TAG_SHOWCASE_BOTTOM_NAV = "-SHOWCASE_BOTTOM_NAVIGATION";
     public static final int REQUEST_SORT = 121;
     private static final String SEARCH_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".SEARCH";
     private static final int BOTTOM_BAR_GRID_TYPE_ITEM_POSITION = 2;
@@ -100,6 +103,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     private FragmentManager fragmentManager;
     private BrowsePresenter browsePresenter;
     private MenuItem searchItem;
+
+    private ShowCaseDialog showCaseDialog;
 
     @BindView(R2.id.progressBar)
     ProgressBar progressBar;
@@ -490,6 +495,50 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         return items;
     }
 
+    private void startShowCase() {
+        final String showCaseTag = BrowseProductActivity.class.getName()+TAG_SHOWCASE_BOTTOM_NAV;
+        if (ShowCasePreference.hasShown(BrowseProductActivity.this, showCaseTag) || showCaseDialog != null) {
+            return;
+        }
+        showCaseDialog = createShowCase();
+        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                return false;
+            }
+        });
+
+        Rect rectToShowCase = new Rect();
+        bottomNavigation.getGlobalVisibleRect(rectToShowCase);
+
+        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+        showCaseObjectList.add(new ShowCaseObject(
+                bottomNavigation,
+                getResources().getString(R.string.choose_category),
+                getResources().getString(R.string.choose_category_desc),
+                ShowCaseContentPosition.UNDEFINED,
+                R.color.tkpd_main_green).withCustomTarget(new int[]{ rectToShowCase.right-(bottomNavigation.getWidth()/bottomNavigation.getItemsCount()),
+                rectToShowCase.top-(int)getResources().getDimension(R.dimen.bottom_navigation_height_elevation), rectToShowCase.right, rectToShowCase.bottom}));
+        showCaseDialog.show(BrowseProductActivity.this, showCaseTag, showCaseObjectList);
+    }
+
+    private ShowCaseDialog createShowCase() {
+        return new ShowCaseBuilder()
+                .customView(R.layout.view_onboarding_category_nav)
+                .titleTextColorRes(R.color.white)
+                .spacingRes(R.dimen.spacing_show_case)
+                .textColorRes(R.color.grey_400)
+                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(R.color.black)
+                .textSizeRes(R.dimen.fontvs)
+                .finishStringRes(R.string.title_done)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .arrowWidth(R.dimen.category_nav_showcase_arrow)
+                .build();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -606,6 +655,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @Override
     public void setupAllItemsBottomBar(String source) {
         setupBottomBar(getBottomItemsAll(), source);
+
+        if (browsePresenter.isFromCategory()) {
+            startShowCase();
+        }
     }
 
     @Override
