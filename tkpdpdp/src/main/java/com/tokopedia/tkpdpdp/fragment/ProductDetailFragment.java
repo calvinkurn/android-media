@@ -1049,7 +1049,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             }
         }
         toolbar.setOverflowIcon(ContextCompat.getDrawable(context, R.drawable.icon_more));
-        onPrepareOptionsMenu(menu);
+        getActivity().invalidateOptionsMenu();
     }
 
     private void initToolbarTransparant() {
@@ -1068,7 +1068,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             }
         }
         toolbar.setOverflowIcon(ContextCompat.getDrawable(context, R.drawable.icon_more_white));
-        onPrepareOptionsMenu(menu);
+        getActivity().invalidateOptionsMenu();
     }
 
     private void initStatusBarDark() {
