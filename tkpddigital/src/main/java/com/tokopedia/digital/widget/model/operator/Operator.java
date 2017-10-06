@@ -69,4 +69,9 @@ public class Operator implements Parcelable {
         dest.writeInt(id);
         dest.writeString(type);
     }
+
+    @Override
+    public String toString() {
+        return attributes.getName();
+    }
 }
