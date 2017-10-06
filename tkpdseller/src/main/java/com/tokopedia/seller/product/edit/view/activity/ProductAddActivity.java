@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -336,7 +337,10 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
             if (uriString.startsWith(CONTENT_GMAIL_LS)) {// get email attachment from gmail
                 imageUrls.add(FileUtils.getPathFromGmail(this, imageUri));
             } else { // get extras for import from gallery
-                imageUrls.add(FileUtils.getRealPathFromURI(this, imageUri));
+                String url = FileUtils.getTkpdPathFromURI(this, imageUri);
+                if (!TextUtils.isEmpty(url)) {
+                    imageUrls.add(url);
+                }
             }
         }
         dismissDialog();
@@ -441,6 +445,11 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         start(this);
         startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
         finish();
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 
     @Override

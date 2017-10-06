@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.edit.view.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,7 +25,9 @@ import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
+import com.tokopedia.seller.common.utils.MenuTintUtils;
 import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.edit.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.edit.domain.interactor.YoutubeVideoUseCase;
@@ -336,10 +339,10 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_youtube, menu);
-
         this.menu = menu;
-
-
+        if (getActivity() instanceof BaseSimpleActivity) {
+            ((BaseSimpleActivity) getActivity()).updateOptionMenuColor(menu);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 

@@ -106,8 +106,12 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     ImageView driverPhoto;
     @BindView(R2.id.driver_name)
     TextView driverName;
-    @BindView(R2.id.driver_phone_and_license)
-    TextView driverPhoneAndLicense;
+    @BindView(R2.id.driver_phone)
+    TextView driverPhone;
+    @BindView(R2.id.driver_license)
+    TextView driverLicense;
+    @BindView(R2.id.driver_info_border)
+    TextView driverInfoBorder;
 
     private OrderData orderData;
     private TkpdProgressDialog progressDialog;
@@ -219,9 +223,15 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
             instantCourierDriverLayout.setVisibility(View.VISIBLE);
             ImageHandler.loadImageCircle2(this, driverPhoto, orderData.getDriverInfo().getDriverPhoto());
             driverName.setText(orderData.getDriverInfo().getDriverName());
-            driverPhoneAndLicense.setText(orderData.getDriverInfo().getDriverPhone()
-                    + " | "
-                    + orderData.getDriverInfo().getLicenseNumber());
+            driverPhone.setText(orderData.getDriverInfo().getDriverPhone());
+            if(orderData.getDriverInfo().getLicenseNumber().isEmpty()) {
+                driverLicense.setVisibility(View.GONE);
+                driverInfoBorder.setVisibility(View.GONE);
+            } else {
+                driverLicense.setVisibility(View.VISIBLE);
+                driverInfoBorder.setVisibility(View.VISIBLE);
+                driverLicense.setText(orderData.getDriverInfo().getLicenseNumber());
+            }
         } else instantCourierDriverLayout.setVisibility(View.GONE);
     }
 

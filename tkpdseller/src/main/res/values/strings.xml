@@ -11,6 +11,8 @@
     <string name="label_no">Tidak</string>
     <string name="label_try_again">Coba Lagi</string>
 
+    <string name="price_format_text">%1$s %2$s</string>
+
     <string name="title_date_setting">Atur Tanggal</string>
     <string name="next">Selanjutnya</string>
     <string name="label_top_ads_choose_credit">Pilih</string>
@@ -143,7 +145,7 @@
     <string name="title_activity_product_list_picker">Pilih Produk Unggulan</string>
     <string name="product_list_picker_variant_count">%1$d Produk Unggulan terpilih</string>
     <string name="product_list_featured_max_limit">%1$d batas maksimum produk unggulan</string>
-    <string name="product_list_picker_empty_stock_cannot_picked">Produk yang anda pilih tidak memiliki stok. Harap pilih produk yang memiliki stok sebagai Produk Unggulan</string>
+    <string name="product_list_picker_empty_stock_cannot_picked">Stok kosong. Pilih produk dengan stok tersedia untuk ditambahkan ke Produk Unggulan.</string>
 
     <!-- featured product -->
     <string name="product_variant_search_x">Cari %1$s</string>
@@ -160,5 +162,22 @@
     <string name="shop_score_title_widget_home">Performa Toko</string>
     <string name="product_picker_empty_search_description">Ubah pencarian untuk memilih Produk Unggulan</string>
     <string name="apply_text_description">Terapkan</string>
+    <string name="title_picture_product">Gambar Produk</string>
 
+    <string name="product_manage_title_both_picture_option_menu">Dengan &amp; Tanpa Gambar</string>
+    <string name="product_manage_title_with_picture_menu">Dengan Gambar</string>
+    <string name="product_manage_title_without_picture_menu">Tanpa Gambar</string>
+    <string name="product_manage_title_both_catalog_option_menu">Dengan &amp; Tanpa Katalog</string>
+    <string name="product_manage_title_with_catalog_menu">Dengan Katalog</string>
+    <string name="product_manage_title_without_catalog_menu">Tanpa Katalog</string>
+    <string name="product_manage_title_both_condition_option_menu">Semua Kondisi</string>
+    <string name="product_manage_title_new_condition_menu">Baru</string>
+    <string name="product_manage_title_old_condition_menu">Bekas</string>
+    <string name="product_manage_title_set_cashback_menu">atur %% cashback</string>
+    <string name="product_manage_title_set_cashback">Atur Cashback</string>
+    <string name="product_manage_label_option_cashback_3">3%% senilai %1$s %2$d</string>
+    <string name="product_manage_label_option_cashback_4">4%% senilai %1$s %2$d</string>
+    <string name="product_manage_label_option_cashback_5">5%% senilai %1$s %2$d</string>
+    <string name="product_manage_label_option_without_cashback">Tanpa Cashback</string>
+    <string name="product_manage_title_set_price">Atur Harga</string>
 </resources>

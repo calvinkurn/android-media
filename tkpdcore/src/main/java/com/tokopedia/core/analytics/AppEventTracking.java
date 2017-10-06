@@ -131,8 +131,9 @@ public interface AppEventTracking {
 
         String SELLER_WIDGET = "sellerWidget";
         String TOP_ADS_SELLER_APP = "TopAdsSellerApp";
-        String CLICK_DASHBOARD = "clickDashboard";
         String CLICK_CREATE_SHOP = "clickCreateShop";
+        String CLICK_APP_SHARE_REFERRAL = "clickReferral";
+        String HOME_DASHBOARD_CLICK_SELLER = "homeDashboardClicked";
     }
 
     interface Category {
@@ -219,6 +220,8 @@ public interface AppEventTracking {
         String GOLD_MERCHANT_ATC = "Gold Merchant ATC";
         String GOLD_MERCHANT_CHECKOUT = "Gold Merchant Checkout";
         String TOP_ADS_PRODUCT_SHOP = "TopAds - Product/Shop";
+        String REFERRAL="Referral";
+        String FEATURED_PRODUCT = "Featured Product";
     }
 
     interface Action {
@@ -310,6 +313,7 @@ public interface AppEventTracking {
         String VOUCHER_SUCCESS = "Voucher Success - ";
         String VOUCHER_ERROR = "Voucher Error - ";
         String SUBMIT = "Submit";
+        String CLICK_DASHBOARD_CARD = "Click - Dashboard Card";
     }
 
     interface EventLabel {
@@ -415,6 +419,7 @@ public interface AppEventTracking {
         String PROFILE = "Profile";
         String SHOP_EN = "Shop";
         String PRODUCT = "Product - ";
+        String APPSHARE = "App share";
 
         String REGISTER = "Register";
         String CTA = "CTA";
@@ -591,6 +596,32 @@ public interface AppEventTracking {
         String ADD_PROMO_PRODUCT = "Add Produk Promo";
         String ADD_PROMO_KEYWORD_POSITIF = "Add Positive Keyword";
         String ADD_PROMO_KEYWORD_NEGATIVE = "Add Negative Keyword";
+        String APP_SHARE_LABEL="Share";
+        String FEATURED_PRODUCT = "Featured Product";
+        String ADD_FEATURED_PRODUCT = "Add Featured Product";
+        String TICK_ERROR = "Tick Error";
+        String SAVE_FEATURED_PRODUCT_PICKER = "Simpan - ";
+        String SORT_FEATURED_PRODUCT_CHANGE = "Atur Urutan (Change)";
+        String SORT_FEATURED_PRODUCT_NO_CHANGE = "Atur Urutan (No Change)";
+        String DELETE_FEATURED_PRODUCT = "Delete";
+
+        String DASHBOARD_MAIN_SHOP_INFO = "Shop Info";
+        String DASHBOARD_MAIN_TRANSACTION = "Penjualan";
+        String DASHBOARD_MAIN_INBOX = "Kotak Masuk";
+
+        String DASHBOARD_ITEM_SETTINGS = "Settings";
+        String DASHBOARD_ITEM_PERFORMA_TOKO = "Performa Toko";
+        String DASHBOARD_ITEM_REPUTASI_TOKO = "Reputasi Toko";
+        String DASHBOARD_ITEM_TRANSAKSI_SUKSES = "Transaksi Sukses";
+
+        String DASHBOARD_ITEM_ORDER_BARU = "Order Baru";
+        String DASHBOARD_ITEM_KONFIRMASI_PENGIRIMAN = "Konfirmasi Pengiriman";
+        String DASHBOARD_ITEM_STATUS_PENGIRIMAN = "Transaksi Sukses";
+        String DASHBOARD_ITEM_PELUANG = "Peluang";
+        String DASHBOARD_ITEM_PESAN = "Pesan";
+        String DASHBOARD_ITEM_DISKUSI_PRODUK = "Diskusi Produk";
+        String DASHBOARD_ITEM_ULASAN = "Ulasan";
+
     }
 
     interface SOCIAL_MEDIA {

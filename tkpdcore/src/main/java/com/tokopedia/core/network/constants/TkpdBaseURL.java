@@ -56,7 +56,7 @@ public class TkpdBaseURL {
     public static String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
     public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
-
+    public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
         public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
@@ -726,6 +726,8 @@ public class TkpdBaseURL {
         public static final String GET_SHOP_SCORE_DETAIL = "/v1/shopstats/shopscore/dtl/";
         public static final String GET_GM_SUBSCRIBE_PRODUCT = "/v1/gold/product";
         public static final String GET_FEATURED_PRODUCTS = "/v1/mobile/featured_product/{shopId}?json=1";
+        public static final String SET_CASHBACK_PRODUCTS = "/v1/cashback/set";
+        public static final String GET_CASHBACK_PRODUCTS = "v1/tx/cashback";
     }
 
     public static class FCM {
@@ -838,8 +840,14 @@ public class TkpdBaseURL {
         public static final String PATH_MITRA_TOPPERS_WEBVIEW = "mitra-toppers";
 
     }
+
     public class TkpdCart {
         public static final String CHECK_VOUCHER = "v1/voucher/verify";
         public static final String CHECKOUT_ORDER = "v1/cart/order";
+    }
+
+    public class Maps {
+        public static final String PATH_MAPS_PLACES = "maps/places/autocomplete";
+        public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
     }
 }

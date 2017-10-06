@@ -19,7 +19,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.myproduct.ManageProductSeller;
+import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.seller.product.edit.di.component.DaggerAddProductServiceComponent;
 import com.tokopedia.seller.product.edit.di.module.AddProductserviceModule;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
@@ -180,11 +180,11 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     private NotificationCompat.Builder buildBaseNotification(String productName) {
         String title = getString(R.string.product_title_notification_upload_product) + " " + productName;
-        Intent pendingIntent = new Intent(this, ManageProductSeller.class);
+        Intent pendingIntent = new Intent(this, ProductManageSellerFragment.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
         return new NotificationCompat.Builder(this)
                 .setContentTitle(title)
-                .setSmallIcon(getDrawableLargeIcon())
+                .setSmallIcon(getSmallDrawableIcon())
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableIcon()))
                 .setContentIntent(pIntent)
                 .setGroup(getString(R.string.product_group_notification));
@@ -206,12 +206,19 @@ public class UploadProductService extends BaseService implements AddProductServi
         }
     }
 
+    private int getSmallDrawableIcon() {
+            return R.drawable.ic_stat_notify_white;
+    }
+
     private Notification buildFailedNotification(String errorMessage, String productDraftId, @ProductStatus int productStatus) {
         Intent pendingIntent = ProductDraftAddActivity.createInstance(this, productDraftId);
         if (productStatus == ProductStatus.EDIT) {
             pendingIntent = ProductDraftEditActivity.createInstance(this, productDraftId);
         }
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if(notificationBuilderMap.get(productDraftId) == null){
+            createNotification(productDraftId, "");
+        }
         return notificationBuilderMap.get(productDraftId)
                 .setContentText(errorMessage)
                 .setStyle(new NotificationCompat

@@ -41,6 +41,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 
