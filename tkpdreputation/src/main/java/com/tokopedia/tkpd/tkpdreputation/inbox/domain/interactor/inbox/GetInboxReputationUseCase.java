@@ -25,10 +25,7 @@ public class GetInboxReputationUseCase extends UseCase<InboxReputationDomain> {
     protected static final int DEFAULT_PER_PAGE = 10;
     public static final String PARAM_TIME_FILTER = "time_filter";
     public static final String PARAM_STATUS = "status";
-    public static final String PARAM_READ_STATUS = "read_status";
-    protected static final String DEFAULT_READ_STATUS = "1";
-    protected static final int UNREAD = 1;
-    protected static final int READ = 2;
+    public static final String PARAM_SCORE_FILTER = "score_filter";
 
     protected static final int STATUS_UNASSESSED_REPUTATION = 1;
     protected static final int STATUS_UPDATED_REPUTATION = 2;
@@ -57,7 +54,7 @@ public class GetInboxReputationUseCase extends UseCase<InboxReputationDomain> {
     }
 
     public static RequestParams getParam(int page, String keyword, String timeFilter,
-                                         String readStatusFilter, int tab) {
+                                         String scoreFilter, int tab) {
         RequestParams params = RequestParams.create();
         params.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE);
         params.putInt(PARAM_PAGE, page);
@@ -66,9 +63,8 @@ public class GetInboxReputationUseCase extends UseCase<InboxReputationDomain> {
             params.putString(PARAM_KEYWORD, keyword);
         params.putString(PARAM_TIME_FILTER, !TextUtils.isEmpty(timeFilter) ? timeFilter :
                 DEFAULT_TIME_FILTER);
-        if (!TextUtils.isEmpty(readStatusFilter))
-            params.putString(PARAM_READ_STATUS, !TextUtils.isEmpty(readStatusFilter) ?
-                    readStatusFilter : DEFAULT_READ_STATUS);
+        if (!TextUtils.isEmpty(scoreFilter))
+            params.putString(PARAM_SCORE_FILTER, scoreFilter);
         params.putInt(PARAM_STATUS, getStatus(tab));
         params.putInt(PARAM_TAB, tab);
         return params;

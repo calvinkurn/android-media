@@ -37,8 +37,8 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
     private static final String FILTER_THIS_MONTH = "3";
     private static final String FILTER_LAST_3_MONTH = "4";
 
-    private static final String FILTER_GIVEN_REPUTATION = "1";
-    private static final String FILTER_NO_REPUTATION = "2";
+    private static final String FILTER_GIVEN_SCORE = "1";
+    private static final String FILTER_NO_SCORE = "2";
 
 
     public static final String SELECTED_TIME_FILTER = "SELECTED_TIME_FILTER";
@@ -138,11 +138,11 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
                 InboxReputationActivity.TAB_BUYER_REVIEW) {
             list.add(new HeaderOptionViewModel(getString(R.string.filter_status)));
             list.add(new OptionViewModel(getString(R.string.filter_given_reputation),
-                    GetFirstTimeInboxReputationUseCase.PARAM_READ_STATUS, FILTER_GIVEN_REPUTATION, list
+                    GetFirstTimeInboxReputationUseCase.PARAM_SCORE_FILTER, FILTER_GIVEN_SCORE, list
                     .size
                             ()));
             list.add(new OptionViewModel(getString(R.string.filter_no_reputation),
-                    GetFirstTimeInboxReputationUseCase.PARAM_READ_STATUS, FILTER_NO_REPUTATION, list.size
+                    GetFirstTimeInboxReputationUseCase.PARAM_SCORE_FILTER, FILTER_NO_SCORE, list.size
                     ()));
         }
         return list;
@@ -160,7 +160,7 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
                 }
 
                 if (optionViewModel.getKey().equals(
-                        GetFirstTimeInboxReputationUseCase.PARAM_READ_STATUS)
+                        GetFirstTimeInboxReputationUseCase.PARAM_SCORE_FILTER)
                         && optionViewModel.getValue().equals(
                         getArguments().getString(SELECTED_STATUS_FILTER))) {
                     optionViewModel.setSelected(true);
@@ -179,7 +179,7 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
         if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER)) {
             timeFilter = optionViewModel.getValue();
         } else if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase
-                .PARAM_READ_STATUS)) {
+                .PARAM_SCORE_FILTER)) {
             statusFilter = optionViewModel.getValue();
         }
     }

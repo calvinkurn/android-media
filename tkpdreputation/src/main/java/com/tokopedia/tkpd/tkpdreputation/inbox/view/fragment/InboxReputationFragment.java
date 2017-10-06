@@ -56,7 +56,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private LinearLayoutManager layoutManager;
     private InboxReputationAdapter adapter;
     private String timeFilter;
-    private String statusFilter;
+    private String scoreFilter;
     private View filterButton;
 
     @Inject
@@ -101,13 +101,13 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private void openFilter() {
 
         Intent intent = InboxReputationFilterActivity.createIntent(getActivity(),
-                timeFilter, statusFilter, getTab());
+                timeFilter, scoreFilter, getTab());
         startActivityForResult(intent, REQUEST_FILTER);
     }
 
     private void initVar() {
         timeFilter = "";
-        statusFilter = "";
+        scoreFilter = "";
         InboxReputationTypeFactory typeFactory = new InboxReputationTypeFactoryImpl(this);
         adapter = new InboxReputationAdapter(typeFactory);
     }
@@ -133,14 +133,19 @@ public class InboxReputationFragment extends BaseDaggerFragment
         mainList.setAdapter(adapter);
 
         mainList.addOnScrollListener(onScroll());
-        swipeToRefresh.setOnRefreshListener(onRefresh());
+        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshPage();
+            }
+        });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 presenter.getFilteredInboxReputation(query,
                         timeFilter,
-                        statusFilter,
+                        scoreFilter,
                         getTab());
                 return false;
             }
@@ -150,7 +155,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 if (newText.length() == 0) {
                     presenter.getFilteredInboxReputation("",
                             timeFilter,
-                            statusFilter,
+                            scoreFilter,
                             getTab());
                 }
                 return false;
@@ -164,14 +169,11 @@ public class InboxReputationFragment extends BaseDaggerFragment
         });
     }
 
-    private SwipeRefreshLayout.OnRefreshListener onRefresh() {
-        return new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                presenter.refreshPage(getQuery(),
-                        timeFilter, statusFilter, getTab());
-            }
-        };
+    public void refreshPage() {
+        if (!swipeToRefresh.isRefreshing())
+            showRefreshing();
+        presenter.refreshPage(getQuery(),
+                timeFilter, scoreFilter, getTab());
     }
 
     private RecyclerView.OnScrollListener onScroll() {
@@ -183,7 +185,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (!adapter.isLoading())
                     presenter.getNextPage(lastItemPosition, visibleItem, "",
-                            timeFilter, statusFilter, getTab
+                            timeFilter, scoreFilter, getTab
                                     ());
             }
         };
@@ -265,7 +267,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
                         .RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.refreshPage(getQuery(), timeFilter, statusFilter, getTab());
+                        presenter.refreshPage(getQuery(), timeFilter, scoreFilter, getTab());
                     }
                 });
     }
@@ -336,7 +338,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.getFilteredInboxReputation(getQuery(), timeFilter, statusFilter, getTab());
+                presenter.getFilteredInboxReputation(getQuery(), timeFilter, scoreFilter, getTab());
             }
         }).showRetrySnackbar();
     }
@@ -390,7 +392,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     @Override
                     public void onClick(View v) {
                         timeFilter = "";
-                        statusFilter = "";
+                        scoreFilter = "";
                         searchView.setQuery("", true);
 
                     }
@@ -401,18 +403,18 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_OPEN_DETAIL && resultCode == Activity.RESULT_OK) {
-            onRefresh();
+            refreshPage();
         } else if (requestCode == REQUEST_FILTER
                 && resultCode == Activity.RESULT_OK
                 && data != null) {
             timeFilter = data.getExtras().getString(
                     InboxReputationFilterFragment.SELECTED_TIME_FILTER, "");
-            statusFilter = data.getExtras().getString(InboxReputationFilterFragment
+            scoreFilter = data.getExtras().getString(InboxReputationFilterFragment
                     .SELECTED_STATUS_FILTER, "");
             presenter.getFilteredInboxReputation(
                     getQuery(),
                     timeFilter,
-                    statusFilter,
+                    scoreFilter,
                     getTab()
             );
         } else

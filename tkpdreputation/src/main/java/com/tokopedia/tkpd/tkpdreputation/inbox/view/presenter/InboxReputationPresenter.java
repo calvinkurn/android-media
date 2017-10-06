@@ -53,7 +53,7 @@ public class InboxReputationPresenter
     @Override
     public void getNextPage(int lastItemPosition, int visibleItem,
                             String query, String timeFilter,
-                            String statusFilter, int tab) {
+                            String scoreFilter, int tab) {
         if (hasNextPage() && isOnLastPosition(lastItemPosition,
                 visibleItem)) {
             viewListener.showLoadingNext();
@@ -62,7 +62,7 @@ public class InboxReputationPresenter
                     GetInboxReputationUseCase.getParam(pagingHandler.getPage(),
                             query,
                             timeFilter,
-                            statusFilter,
+                            scoreFilter,
                             tab),
                     new GetNextPageInboxReputationSubscriber(viewListener));
         }
@@ -89,10 +89,10 @@ public class InboxReputationPresenter
         return itemPosition == visibleItem;
     }
 
-    public void refreshPage(String query, String timeFilter, String readStatusFilter, int tab) {
+    public void refreshPage(String query, String timeFilter, String scoreFilter, int tab) {
         getInboxReputationUseCase.execute(
                 GetInboxReputationUseCase.getParam(1, query, timeFilter,
-                        readStatusFilter, tab),
+                        scoreFilter, tab),
                 new RefreshInboxReputationSubscriber(viewListener));
     }
 
