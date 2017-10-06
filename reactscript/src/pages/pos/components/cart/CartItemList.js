@@ -15,20 +15,11 @@ class CartItemList extends Component {
     super(props)
     this.state = {
       showPopUp: false,
-      // showLoadingPage: false,
     }
   }
 
-  componentDidMount(){
-    console.log(this.props)
-    // if (!this.props.checkoutData.isFetching){
-    //   this.setState({
-    //     showLoadingPage: false
-    //   })
-    // }
-    // {!this.props.checkoutData.isFetching && 
-    //     NavigationModule.navigateAndFinish(`posapp://payment/checkout?total_payment=${this.props.totalPrice}`, "")
-    // }
+  componentWillMount() {
+    this.props.fetchCartList()
   }
 
   toggleScreen = (visible) => {
@@ -41,29 +32,12 @@ class CartItemList extends Component {
   }
 
   paymentCheckoutClicked = () => {
-    console.log("checkout clicked, total: " + this.props.totalPrice)
+    // console.log("checkout clicked, total: " + this.props.totalPrice)
     this.props.dispatch(PaymentCheckoutToNative())
-    // this.setState({
-    //   showLoadingPage: true
-    // })
-    // if (this.props.isFetching)
-
-    // if (!isFetch) {
-    //   if (data)
-    //     ret
-    //   else {
-    //     error
-    //   }
-    // }
-    // NavigationModule.navigateAndFinish(`posapp://payment/checkout?total_payment=${this.props.totalPrice}`, "")
   }
 
   onBackPress = () => {
     NavigationModule.navigateAndFinish("posapp://product", "")
-  }
-  componentWillMount() {
-    // console.log(this.props)
-    this.props.fetchCartList()
   }
 
   
@@ -78,34 +52,16 @@ class CartItemList extends Component {
     const onRemoveFromCart = this.props.onRemoveFromCart
     const onRemoveAllFromCart = this.props.onRemoveAllFromCart
     const { isFetching } = this.props
-    
-    console.log(this.props)
-    console.log(this.props.data_checkout)
-    // console.log(JSON.stringify(this.props.checkoutData.isFetching))
-    console.log('cajshajhsjkchka')
-
-
-    // if (!this.props.checkoutData.isFetching){
-    //   console.log('hehreerhehrhehre')
-    //   NavigationModule.navigateAndFinish(`posapp://payment/checkout?total_payment=${this.props.totalPrice}`, "")
-    // } 
 
     if (this.props.checkout_showLoadingPage){
       return <Processing />
     }
 
     if (this.props.checkout_status_msg === 'SUCCESS' && !this.props.showLoadingPage && !this.props.isFetchingParamsCheckout){
-      NavigationModule.navigateAndFinish(`posapp://payment/checkout?total_payment=${this.props.totalPrice}`, "")
+      console.log(this.props)
+      NavigationModule.navigateAndFinish(`posapp://payment/checkout?checkout_data=${JSON.stringify(this.props.checkout_data)}`, "")
     }
 
-    // console.log(this.props)
-
-    // console.log(this.state.showLoadingPage)
-    // console.log(this.props.checkoutData.isFetching)
-    // if (!this.state.showLoadingPage && !this.props.checkoutData.isFetching){
-    //   console.log('hehreerhehrhehre')
-    //   NavigationModule.navigateAndFinish(`posapp://payment/checkout?total_payment=${this.props.totalPrice}`, "")
-    // } 
 
     return (
       <View>
@@ -288,15 +244,6 @@ const mapStateToProps = (state) => {
       checkout_showLoadingPage: state.checkout.showLoadingPage,
       checkout_data: state.checkout.data,
       checkout_status_msg: state.checkout.status_msg
-
-      // isFetching: state.checkout.isFetching,
-      // showLoadingPage: state.checkout.showLoadingPage,
-      // data: state.checkout.data
-      // error: 
-
-      // loading: s.checkout.isFetching,
-      // data: s.checkout.data,
-      // error: s.checkout.error
     }
 }
 
