@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
@@ -15,8 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.stepstone.stepper.Step;
-import com.stepstone.stepper.VerificationError;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingInfoComponent;
@@ -34,7 +31,7 @@ import javax.inject.Inject;
  */
 
 public class ShopSettingInfoFragment extends BaseDaggerFragment
-        implements ShopSettingInfoView, Step, ListenerShopSettingInfo.ListenerOnImagePickerReady {
+        implements ShopSettingInfoView, ListenerShopSettingInfo.ListenerOnImagePickerReady {
 
     @Inject
     public ShopSettingInfoPresenter presenter;
@@ -167,21 +164,6 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment
 
     @Override
     public void onFailedSaveInfoShop() {
-
-    }
-
-    @Override
-    public VerificationError verifyStep() {
-        return null;
-    }
-
-    @Override
-    public void onSelected() {
-
-    }
-
-    @Override
-    public void onError(@NonNull VerificationError error) {
 
     }
 

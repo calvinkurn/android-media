@@ -5,20 +5,18 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.stepstone.stepper.StepperLayout;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
-import com.tokopedia.seller.shop.open.view.adapter.ShopOpenStepperViewAdapter;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
@@ -26,20 +24,17 @@ import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationListen
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLogisticListener;
 import com.tokopedia.seller.shop.setting.view.listener.ListenerShopSettingInfo;
 import com.tokopedia.seller.shop.setting.view.model.ShopSettingLocationModel;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticView;
 import com.tokopedia.seller.shop.utils.UploadPhotoShopTask;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopOpenMandatoryActivity
-        extends TActivity
-        implements
+public class ShopOpenMandatoryActivity extends BaseStepperActivity implements
         ShopSettingLocationListener,
         HasComponent<ShopSettingComponent>,
         ListenerShopSettingInfo, ShopSettingLogisticListener {
@@ -47,26 +42,22 @@ public class ShopOpenMandatoryActivity
     //    StepperLayout stepperLayout;
     public static final int MAX_SELECTION_PICK_IMAGE = 1;
     private static final int OPEN_MAP_CODE = 1000;
-    StepperLayout stepperLayout;
     private ShopSettingComponent component;
     private ListenerShopSettingInfo.ListenerOnImagePickerReady listenerOnImagePickerReady;
-    private ShopOpenStepperViewAdapter stepAdapter;
+
+    private List<Fragment> fragmentList;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_shop_open_mandatory);
-
-        initView();
         initComponent();
 
     }
 
-    protected void initView() {
-        stepperLayout = (StepperLayout) findViewById(R.id.stepper_view);
-        stepAdapter = new ShopOpenStepperViewAdapter(getSupportFragmentManager(), this);
-        stepperLayout.setAdapter(stepAdapter);
-
+    @NonNull
+    @Override
+    protected List<Fragment> getListFragment() {
+        return fragmentList;
     }
 
     protected void initComponent() {
@@ -96,16 +87,16 @@ public class ShopOpenMandatoryActivity
     @Override
     public void goToShopSettingLogisticFragment(ShopSettingLocationModel model) {
         updateFragmentLogistic(model.getDistrictCode());
-        stepperLayout.setCurrentStepPosition(2);
+//        stepperLayout.setCurrentStepPosition(2);
     }
 
     private void updateFragmentLogistic(int districtCode) {
-        Fragment fragment = stepAdapter.getItemFragment(ShopOpenStepperViewAdapter.SHOP_SETTING_LOGICTIC_POSITION);
-        if (fragment instanceof ShopSettingLogisticView) {
-            ((ShopSettingLogisticView) fragment).changeDistrictCode(districtCode);
-        } else {
-            throw new RuntimeException("Fragment must implement ShopSettingLogisticView");
-        }
+//        Fragment fragment = stepAdapter.getItemFragment(ShopOpenStepperViewAdapter.SHOP_SETTING_LOGICTIC_POSITION);
+//        if (fragment instanceof ShopSettingLogisticView) {
+//            ((ShopSettingLogisticView) fragment).changeDistrictCode(districtCode);
+//        } else {
+//            throw new RuntimeException("Fragment must implement ShopSettingLogisticView");
+//        }
     }
 
     @Override
@@ -150,15 +141,15 @@ public class ShopOpenMandatoryActivity
     }
 
     private void changeGoogleMapDataInLocationFragment(LocationPass locationPass) {
-        Fragment fragment =
-                stepAdapter.getItemFragment(
-                        ShopOpenStepperViewAdapter.SHOP_SETTING_LOCATION_POSITION
-                );
-        if (fragment instanceof ShopSettingLocationView) {
-            ((ShopSettingLocationView)fragment).changePickupLocation(locationPass);
-        } else {
-            throw new RuntimeException("Fragment must implement ShopSettingLocationView");
-        }
+//        Fragment fragment =
+//                stepAdapter.getItemFragment(
+//                        ShopOpenStepperViewAdapter.SHOP_SETTING_LOCATION_POSITION
+//                );
+//        if (fragment instanceof ShopSettingLocationView) {
+//            ((ShopSettingLocationView)fragment).changePickupLocation(locationPass);
+//        } else {
+//            throw new RuntimeException("Fragment must implement ShopSettingLocationView");
+//        }
     }
 
 
@@ -174,8 +165,8 @@ public class ShopOpenMandatoryActivity
 
     @Override
     public void goBackToLocation() {
-        stepperLayout.setCurrentStepPosition(
-                ShopOpenStepperViewAdapter.SHOP_SETTING_LOCATION_POSITION
-        );
+//        stepperLayout.setCurrentStepPosition(
+//                ShopOpenStepperViewAdapter.SHOP_SETTING_LOCATION_POSITION
+//        );
     }
 }

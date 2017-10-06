@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewCostNewGroupFragment;
@@ -23,8 +25,8 @@ import java.util.List;
  * Created by zulfikarrahman on 8/7/17.
  */
 
-public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity {
-    List<Fragment> fragmentList;
+public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity implements HasComponent<AppComponent> {
+    private List<Fragment> fragmentList;
 
     @NonNull
     @Override
@@ -72,5 +74,10 @@ public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity {
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
         setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

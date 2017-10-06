@@ -19,7 +19,7 @@ import java.util.List;
  * Created by zulfikarrahman on 7/27/17.
  */
 
-public abstract class BaseStepperActivity extends BaseToolbarActivity implements StepperListener, HasComponent<AppComponent> {
+public abstract class BaseStepperActivity extends BaseToolbarActivity implements StepperListener {
     public static final String STEPPER_MODEL_EXTRA = "STEPPER_MODEL_EXTRA";
 
     protected StepperModel stepperModel;
@@ -108,11 +108,6 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     public void updateToolbarTitle() {
         getSupportActionBar().setTitle(getString(R.string.top_ads_label_stepper, currentPosition, getListFragment().size()));
-    }
-
-    @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
     }
 
     @Override
