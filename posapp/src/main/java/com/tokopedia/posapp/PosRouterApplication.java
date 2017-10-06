@@ -168,6 +168,14 @@ public class PosRouterApplication extends MainApplication implements
         return intent;
     }
 
+    public Class getHomeActivity(Context context){
+        if(isOutletSelected(context)) {
+            return ProductListActivity.class;
+        } else {
+            return OutletActivity.class;
+        }
+    }
+
     @Override
     public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
         return null;
