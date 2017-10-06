@@ -35,9 +35,6 @@ class PaymentBank extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props)
-    const checkout_data = JSON.parse(this.props.screenProps.checkout_data)
-    console.log(checkout_data)
     this.props.dispatch(getBankList());
   }
 
@@ -50,6 +47,7 @@ class PaymentBank extends Component {
     } else {
       // console.log(this.state.selectedBank, this.state.selectIdBank, this.state.selectedEmiId)
       this.props.navigation.navigate('Payment', {
+        checkout_data: this.props.screenProps.checkout_data,
         selectBank: this.state.selectedBank,
         selectIdBank: this.state.selectIdBank,
         selectedEmiId: selected_installment,
@@ -109,7 +107,7 @@ class PaymentBank extends Component {
       return (
         <TouchableWithoutFeedback onPress={this._onPressLogo.bind(this, rowID, rowData)}>
           <View style={[styles.logoBox, { marginTop: 10, height: 80 }, (rowData.isSelected ? styles.selectedBorder : '')]}>
-            <Image source={{uri: rowData.bank_logo}}
+            <Image source={{ uri: rowData.bank_logo || 'http://via.placeholder.com/50x27' }}
               style={styles.cardLogo} />
           </View>
         </TouchableWithoutFeedback>
@@ -210,7 +208,11 @@ class PaymentBank extends Component {
     })
   }
 
+
   render() {
+    const checkout_data = JSON.parse(this.props.screenProps.checkout_data)
+    console.log(checkout_data)
+
     return (
       <View style={styles.mainContainers} >
         {/* <View style={styles.header}>
@@ -229,7 +231,7 @@ class PaymentBank extends Component {
                   Total Pembayaran
                   </Text>
                 <Text style={[styles.font16, styles.fontColor70]}>
-                  Rp {this.props.screenProps.total_payment}
+                  Rp {(checkout_data.data.payment_amount).toLocaleString("id")}
                   </Text>
               </View>
 

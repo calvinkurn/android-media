@@ -234,9 +234,10 @@ const makePaymentToNativeStepOne = (data_payment) => {
   return NetworkModule.getResponseJson(`${data_payment.base_api_url_payment}/o2o/get_payment_params`, `POST`, JSON.stringify(data), true)
     .then(response => {
       const jsonResponse = JSON.parse(response)
+      const itemsRes = jsonResponse.data.parameter.items
       let itemsData = []
 
-      jsonResponse.data.parameter.items.map((res) => {
+      itemsRes.map((res) => {
         itemsData.push({ 
           id: res.id,
           name: res.name,
@@ -246,7 +247,10 @@ const makePaymentToNativeStepOne = (data_payment) => {
       })
       return { jsonResponse, itemsData}
     })
-    .catch(err => { console.log(err) })
+    .catch(err => { 
+      console.log(err) 
+      return
+    })
 }
 // ===================== Make Payment ===================== //
 
@@ -254,7 +258,11 @@ const makePaymentToNativeStepOne = (data_payment) => {
 // ===================== Make Payment 2 ===================== //
 const makePaymentToNativeStepTwo = (paymentToNative_getParams, data_payment, local_cart) => {
   let data_items = ''
-  paymentToNative_getParams.itemsData.map((res) => {
+  const paymentParams = paymentToNative_getParams.itemsData
+
+  if (!paymentParams) return 
+
+  paymentParams.map((res) => {
     data_items += `items[name]=${encodeURIComponent(res.name)}&items[quantity]=${encodeURIComponent(res.quantity)}&items[price]=${encodeURIComponent(res.price)}&`
   })
   
@@ -273,7 +281,10 @@ const makePaymentToNativeStepTwo = (paymentToNative_getParams, data_payment, loc
       const jsonResponse = JSON.parse(res)
       return jsonResponse
     })
-    .catch(err => { console.log(err) })
+    .catch(err => { 
+      console.log(err) 
+      return
+    })
 }
 // ===================== Make Payment 2 ===================== //
 
@@ -368,7 +379,6 @@ const fetchBankData = () => {
   return PosCacheModule.getDataAll('BANK')
     .then(response => {
       const jsonResponse = JSON.parse(response)
-      console.log(jsonResponse.data.list)
       if (jsonResponse.data) return jsonResponse.data.list
     })
     .catch(err => console.log(err))
