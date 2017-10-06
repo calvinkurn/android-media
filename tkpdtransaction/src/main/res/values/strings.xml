@@ -97,4 +97,5 @@
     <string name="title_cancel_transaction">Batalkan Transaksi</string>
     <string name="title_confirm_cancel_transaction">Konfirmasi Pembatalan Transaksi</string>
     <string name="question_cancel_transaction">Batalkan Transaksi?</string>
+    <string name="string_splitter">|</string>
 </resources>

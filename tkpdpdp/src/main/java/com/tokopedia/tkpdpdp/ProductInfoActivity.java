@@ -59,10 +59,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     @Override
     @AddTrace(name = "onCreateTracePDP", enabled = true)
     protected void onCreate(Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow();
-            w.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_info_fragmented);
     }

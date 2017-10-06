@@ -27,6 +27,7 @@ public class GetOpportunityFirstTimeUseCase extends UseCase<OpportunityFirstTime
     public static final String QUERY = "search";
     public static final String LIST_FILTER = "list_filter";
     public static final String SHOP_ID = "shop_id";
+    public static final String ORDER_BY = "order_by";
 
 
     private final GetOpportunityUseCase getOpportunityUseCase;
