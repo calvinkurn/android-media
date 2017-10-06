@@ -341,8 +341,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
                 widgetClientNumberView.setInputType(rechargeOperatorModel.getAttributes().getRule().isAllowAphanumericNumber());
                 widgetProductChooserView.setTitleProduct(rechargeOperatorModel.getAttributes().getRule().getProductText());
                 widgetProductChooserView.setVisibilityProduct(rechargeOperatorModel.getAttributes().getRule().isShowProduct());
-                if (!rechargeOperatorModel.getAttributes().getRule().isShowPrice())
-                    showPrice = false;
+                if (!rechargeOperatorModel.getAttributes().getRule().isShowPrice()) showPrice = false;
 
                 if (!category.getAttributes().getClientNumber().isShown()) {
                     clearHolder(holderWidgetWrapperBuy);

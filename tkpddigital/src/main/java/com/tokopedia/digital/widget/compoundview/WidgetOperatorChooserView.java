@@ -97,7 +97,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
     private void setLastOrderSelectedOperator(List<Operator> operators,
                                               LastOrder lastOrder, int categoryId,
                                               String lastOperatorSelected) {
-        if (SessionHandler.isV4Login(getContext()) &&
+        if (SessionHandler.isV4Login(getContext()) && lastOrder != null &&
                 lastOrder.getAttributes().getCategoryId() == categoryId) {
             for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
                 Operator model = operators.get(i);
