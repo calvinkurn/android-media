@@ -47,7 +47,7 @@
             android:maxHeight="@dimen/smiley_size"
             android:maxWidth="@dimen/smiley_size"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_smiley_good"/>
+            />
 
         <TextView
             android:id="@+id/score_good"
@@ -73,7 +73,7 @@
             android:maxHeight="@dimen/smiley_size"
             android:maxWidth="@dimen/smiley_size"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_smiley_netral"/>
+            />
 
         <TextView
             android:id="@+id/score_netral"
@@ -99,7 +99,7 @@
             android:maxHeight="@dimen/smiley_size"
             android:maxWidth="@dimen/smiley_size"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_smiley_bad"/>
+            />
 
         <TextView
             android:id="@+id/score_bad"

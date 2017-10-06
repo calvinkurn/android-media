@@ -97,12 +97,25 @@ public class ReputationView extends BaseCustomView {
                             TextView positiveText = (TextView) dialog.findViewById(R.id.score_good);
                             if (positiveText != null)
                                 positiveText.setText(String.valueOf(positive));
+                            ImageView smileyGood = (ImageView) dialog.findViewById(R.id.smiley_good);
+                            if (smileyGood != null)
+                                smileyGood.setImageDrawable(getResources().getDrawable(R.drawable
+                                        .ic_smiley_good));
                             TextView neutralText = (TextView) dialog.findViewById(R.id
                                     .score_netral);
                             if (neutralText != null) neutralText.setText(String.valueOf(neutral));
+                            ImageView smileyNeutral = (ImageView) dialog.findViewById(R.id
+                                    .smiley_neutral);
+                            if (smileyNeutral != null)
+                                smileyNeutral.setImageDrawable(getResources().getDrawable(R.drawable
+                                        .ic_smiley_netral));
                             TextView negativeText = (TextView) dialog.findViewById(R.id.score_bad);
                             if (negativeText != null)
                                 negativeText.setText(String.valueOf(negative));
+                            ImageView smileyBad = (ImageView) dialog.findViewById(R.id.smiley_bad);
+                            if (smileyBad != null)
+                                smileyBad.setImageDrawable(getResources().getDrawable(R.drawable
+                                        .ic_smiley_bad));
                             Button closeButton = (Button) dialog.findViewById(R.id.close_button);
                             if (closeButton != null)
                                 closeButton.setOnClickListener(new OnClickListener() {
