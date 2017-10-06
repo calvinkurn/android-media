@@ -150,7 +150,8 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
 
 
     private void setSelected(ArrayList<OptionViewModel> listOption) {
-        if (!getArguments().getString(SELECTED_TIME_FILTER, "").equals("")) {
+        if (!getArguments().getString(SELECTED_TIME_FILTER, "").equals("")
+                || !getArguments().getString(SELECTED_SCORE_FILTER, "").equals("")) {
             for (OptionViewModel optionViewModel : listOption) {
                 if (optionViewModel.getKey().equals(
                         GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER)
