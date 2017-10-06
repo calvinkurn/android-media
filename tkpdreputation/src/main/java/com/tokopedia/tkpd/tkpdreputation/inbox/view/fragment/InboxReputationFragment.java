@@ -410,7 +410,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
             timeFilter = data.getExtras().getString(
                     InboxReputationFilterFragment.SELECTED_TIME_FILTER, "");
             scoreFilter = data.getExtras().getString(InboxReputationFilterFragment
-                    .SELECTED_STATUS_FILTER, "");
+                    .SELECTED_SCORE_FILTER, "");
             presenter.getFilteredInboxReputation(
                     getQuery(),
                     timeFilter,

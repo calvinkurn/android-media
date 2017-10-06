@@ -42,7 +42,7 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
 
 
     public static final String SELECTED_TIME_FILTER = "SELECTED_TIME_FILTER";
-    public static final String SELECTED_STATUS_FILTER = "SELECTED_STATUS_FILTER";
+    public static final String SELECTED_SCORE_FILTER = "SELECTED_SCORE_FILTER";
 
     RecyclerView list;
     Button saveButton;
@@ -56,7 +56,7 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
         InboxReputationFilterFragment fragment = new InboxReputationFilterFragment();
         Bundle bundle = new Bundle();
         bundle.putString(SELECTED_TIME_FILTER, timeFilter);
-        bundle.putString(SELECTED_STATUS_FILTER, statusFilter);
+        bundle.putString(SELECTED_SCORE_FILTER, statusFilter);
         bundle.putInt(InboxReputationFragment.PARAM_TAB, tab);
         fragment.setArguments(bundle);
         return fragment;
@@ -99,7 +99,7 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 Intent data = new Intent();
                 data.putExtra(SELECTED_TIME_FILTER, timeFilter);
-                data.putExtra(SELECTED_STATUS_FILTER, statusFilter);
+                data.putExtra(SELECTED_SCORE_FILTER, statusFilter);
                 getActivity().setResult(Activity.RESULT_OK, data);
                 getActivity().finish();
 
@@ -162,7 +162,7 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
                 if (optionViewModel.getKey().equals(
                         GetFirstTimeInboxReputationUseCase.PARAM_SCORE_FILTER)
                         && optionViewModel.getValue().equals(
-                        getArguments().getString(SELECTED_STATUS_FILTER))) {
+                        getArguments().getString(SELECTED_SCORE_FILTER))) {
                     optionViewModel.setSelected(true);
                 }
             }

@@ -200,6 +200,7 @@ public class InboxReputationDetailHeaderViewHolder extends
 
         opponentSmileyText.setText(getOpponentSmileyPromptText(element));
 
+        if(element.getReputationDataViewModel().isShowRevieweeScore()){
         switch (element.getReputationDataViewModel().getRevieweeScore()) {
             case NO_REPUTATION:
                 ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_empty);
@@ -213,6 +214,9 @@ public class InboxReputationDetailHeaderViewHolder extends
             case SMILEY_GOOD:
                 ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_good);
                 break;
+        }}else{
+            ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.shop_list_favorite_check);
+
         }
 
     }

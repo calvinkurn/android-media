@@ -2,22 +2,14 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.customView.TextDrawable;
@@ -38,11 +30,11 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
     ResetListener listener;
 
     public static Intent createIntent(Context context, String timeFilter,
-                                      String statusFilter,
+                                      String scoreFilter,
                                       int tab) {
         Intent intent = new Intent(context, InboxReputationFilterActivity.class);
         intent.putExtra(InboxReputationFilterFragment.SELECTED_TIME_FILTER, timeFilter);
-        intent.putExtra(InboxReputationFilterFragment.SELECTED_STATUS_FILTER, statusFilter);
+        intent.putExtra(InboxReputationFilterFragment.SELECTED_SCORE_FILTER, scoreFilter);
         intent.putExtra(InboxReputationFragment.PARAM_TAB, tab);
         return intent;
     }
@@ -108,7 +100,7 @@ public class InboxReputationFilterActivity extends BasePresenterActivity {
         String timeFilter = getIntent().getStringExtra(InboxReputationFilterFragment
                 .SELECTED_TIME_FILTER);
         String statusFilter = getIntent().getStringExtra(InboxReputationFilterFragment
-                .SELECTED_STATUS_FILTER);
+                .SELECTED_SCORE_FILTER);
         int tab = getIntent().getIntExtra(InboxReputationFragment
                 .PARAM_TAB, -1);
 
