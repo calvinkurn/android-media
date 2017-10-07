@@ -95,9 +95,16 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
                 productManageViewModel.getImageUrl()
         );
         titleTextView.setText(productManageViewModel.getProductName());
-
         priceTextView.setText(priceTextView.getContext().getString(
                 R.string.price_format_text, productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductPrice()));
+
+        if (productManageViewModel.getProductCashback() > 0) {
+            cashbackTextView.setText(cashbackTextView.getContext().getString(
+                    R.string.product_manage_item_cashback, productManageViewModel.getProductCashback()));
+            cashbackTextView.setVisibility(View.VISIBLE);
+        } else {
+            cashbackTextView.setVisibility(View.GONE);
+        }
         preOrderTextView.setVisibility(
                 productManageViewModel.getProductPreorder() == ProductManagePreOrderDef.PRE_ORDER ? View.VISIBLE : View.GONE);
         freeReturnImageView.setVisibility(

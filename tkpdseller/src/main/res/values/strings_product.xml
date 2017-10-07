@@ -185,7 +185,7 @@
 
     <!-- Product manage -->
     <string name="product_manage_item_stock">Stok %1$s</string>
-    <string name="product_manage_item_cashback">Cashback %1$s</string>
+    <string name="product_manage_item_cashback">Cashback %1$d%%</string>
     <string name="product_manage_menu_set_price">Atur Harga</string>
     <string name="product_manage_menu_set_cashback">Atur &#37; cashback</string>
     <string name="product_manage_filter_menu_etalase_all">Semua Produk</string>
