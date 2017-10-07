@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.widget.builder;
+package com.tokopedia.seller.common.bottomsheet.custom;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItem;
+import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemAdapter;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 
 import java.util.List;
@@ -15,10 +16,10 @@ import java.util.List;
 /**
  * @author normansyahputa on 7/17/17.
  */
-public class BottomSheetItemAdapter extends com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemAdapter {
+public class CheckedBottomSheetItemAdapter extends BottomSheetItemAdapter {
     public static final int TYPE_CHECKED_ITEM = 3;
 
-    public BottomSheetItemAdapter(List<BottomSheetItem> items, int mode, BottomSheetItemClickListener listener) {
+    public CheckedBottomSheetItemAdapter(List<BottomSheetItem> items, int mode, BottomSheetItemClickListener listener) {
         super(items, mode, listener);
     }
 

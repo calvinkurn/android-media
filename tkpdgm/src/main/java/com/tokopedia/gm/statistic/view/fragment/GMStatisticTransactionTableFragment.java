@@ -31,7 +31,7 @@ import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
 import com.tokopedia.gm.statistic.view.adapter.GMStatisticTransactionTableAdapter;
 import com.tokopedia.gm.statistic.view.adapter.model.GMStatisticTransactionTableModel;
-import com.tokopedia.seller.common.widget.builder.CheckedBottomSheetBuilder;
+import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionTableView;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenter;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.widget.builder;
+package com.tokopedia.seller.common.bottomsheet.custom;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -46,8 +46,8 @@ public class CheckedAdapterBottomSheetBuilder extends BottomSheetAdapterBuilder 
 
     @NonNull
     @Override
-    protected BottomSheetItemAdapter getBottomSheetItemAdapter(BottomSheetItemClickListener itemClickListener) {
-        return new BottomSheetItemAdapter(
+    protected CheckedBottomSheetItemAdapter getBottomSheetItemAdapter(BottomSheetItemClickListener itemClickListener) {
+        return new CheckedBottomSheetItemAdapter(
                 mItems,
                 mMode, itemClickListener );
     }
