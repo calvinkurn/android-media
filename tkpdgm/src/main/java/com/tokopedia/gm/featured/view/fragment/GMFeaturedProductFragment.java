@@ -40,6 +40,7 @@ import com.tokopedia.gm.featured.view.listener.GMFeaturedProductView;
 import com.tokopedia.gm.featured.view.presenter.GMFeaturedProductPresenterImpl;
 import com.tokopedia.gm.featured.view.util.GMSnackbarRetry;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
@@ -299,7 +300,9 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     public void onItemChecked(GMFeaturedProductModel gmFeaturedProductModel, boolean checked) {
         if (featuredProductTypeView == GMFeaturedProductTypeView.DELETE_DISPLAY) {
             int totalChecked = ((GMFeaturedProductAdapter) adapter).getTotalChecked();
-            updateTitle(String.valueOf(totalChecked), null);
+            if (getActivity() instanceof BaseSimpleActivity) {
+                ((BaseSimpleActivity) getActivity()).updateTitle(String.valueOf(totalChecked), null);
+            }
             getActivity().invalidateOptionsMenu();
         }
     }
@@ -383,38 +386,20 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
     private void updateTitle() {
         switch (featuredProductTypeView) {
             case GMFeaturedProductTypeView.DELETE_DISPLAY:
-                updateTitle(String.valueOf(((GMFeaturedProductAdapter) adapter).getTotalChecked()), null);
+                if (getActivity() instanceof BaseSimpleActivity) {
+                    ((BaseSimpleActivity) getActivity()).updateTitle(String.valueOf(((GMFeaturedProductAdapter) adapter).getTotalChecked()), null);
+                }
                 break;
             case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
             case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
             default:
-                updateTitle(getString(R.string.featured_product_title),
-                        getString(R.string.gm_featured_product_subtitle_counter, adapter.getDataSize(), MAX_ITEM));
+                if (getActivity() instanceof BaseSimpleActivity) {
+                    ((BaseSimpleActivity) getActivity()).updateTitle(getString(R.string.featured_product_title),
+                            getString(R.string.gm_featured_product_subtitle_counter, adapter.getDataSize(), MAX_ITEM));
+                }
         }
     }
-
-    private void updateTitle(String title, String subTitle) {
-        if (!(getActivity() instanceof AppCompatActivity)) {
-            return;
-        }
-        AppCompatActivity appCompatActivity = ((AppCompatActivity) getActivity());
-        if (appCompatActivity == null) {
-            return;
-        }
-        ActionBar actionBar = appCompatActivity.getSupportActionBar();
-        if (actionBar == null) {
-            return;
-        }
-        if (TextUtils.isEmpty(title)) {
-            title = "";
-        }
-        if (TextUtils.isEmpty(subTitle)) {
-            subTitle = "";
-        }
-        actionBar.setTitle(title);
-        actionBar.setSubtitle(subTitle);
-    }
-
+    
     public void onBackPressed() {
         switch (featuredProductTypeView) {
             case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
@@ -482,9 +467,9 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             }
             return true;
         } else if (item.getItemId() == R.id.menu_done) {
-            if(isFeaturedProductListChanged(gmFeaturedProductModelListFromServer, adapter.getData())) {
+            if (isFeaturedProductListChanged(gmFeaturedProductModelListFromServer, adapter.getData())) {
                 UnifyTracking.eventSortFeaturedProductChange();
-            }else{
+            } else {
                 UnifyTracking.eventSortFeaturedProductNotChange();
             }
             onBackPressed();
