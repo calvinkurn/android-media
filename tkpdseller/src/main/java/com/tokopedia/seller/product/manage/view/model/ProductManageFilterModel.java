@@ -16,9 +16,9 @@ public class ProductManageFilterModel implements Parcelable {
 
     private String etalaseProductOption = EtalaseProductOption.ALL_SHOWCASE;
     private String etalaseProductOptionName;
-    @PictureStatusProductOption String pictureStatusOption = PictureStatusProductOption.NOT_USED;
-    @ConditionProductOption String conditionProductOption = ConditionProductOption.NOT_USED;
-    @CatalogProductOption String catalogProductOption = CatalogProductOption.NOT_USED;
+    @PictureStatusProductOption String pictureStatusOption = PictureStatusProductOption.WITH_AND_WITHOUT;
+    @ConditionProductOption String conditionProductOption = ConditionProductOption.ALL_CONDITION;
+    @CatalogProductOption String catalogProductOption = CatalogProductOption.WITH_AND_WITHOUT;
     private String categoryId;
     private String categoryName;
 
@@ -86,9 +86,9 @@ public class ProductManageFilterModel implements Parcelable {
         setEtalaseProductOptionName("");
         setCategoryId("");
         setCategoryName("");
-        setPictureStatusOption(PictureStatusProductOption.NOT_USED);
-        setCatalogProductOption(CatalogProductOption.NOT_USED);
-        setConditionProductOption(ConditionProductOption.NOT_USED);
+        setPictureStatusOption(PictureStatusProductOption.WITH_AND_WITHOUT);
+        setCatalogProductOption(CatalogProductOption.WITH_AND_WITHOUT);
+        setConditionProductOption(ConditionProductOption.ALL_CONDITION);
     }
 
     @Override

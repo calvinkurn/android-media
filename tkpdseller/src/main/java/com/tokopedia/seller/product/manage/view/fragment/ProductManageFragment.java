@@ -25,6 +25,7 @@ import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
+import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
@@ -119,6 +120,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         super.initialVar();
         sortProductOption = SortProductOption.POSITION;
         productManageFilterModel = new ProductManageFilterModel();
+        productManageFilterModel.reset();
         hasNextPage = false;
     }
 
@@ -382,13 +384,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private void showOptionCashback(String productId, String productPrice, String productPriceSymbol) {
         double productPricePlain = Double.parseDouble(productPrice);
 
-        BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
+        BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(getString(R.string.product_manage_title_set_cashback))
-                .addItem(CASHBACK_OPTION_3, getString(R.string.product_manage_label_option_cashback_3, productPriceSymbol, (int) ((3/100.0f) * productPricePlain)), null)
-                .addItem(CASHBACK_OPTION_4, getString(R.string.product_manage_label_option_cashback_4, productPriceSymbol, (int) ((4/100.0f) * productPricePlain)), null)
-                .addItem(CASHBACK_OPTION_5, getString(R.string.product_manage_label_option_cashback_5, productPriceSymbol, (int) ((5/100.0f) * productPricePlain)), null)
-                .addItem(WITHOUT_CASHBACK_OPTION, getString(R.string.product_manage_label_option_without_cashback), null);
+                .addTitleItem(getString(R.string.product_manage_cashback_title))
+                .addItem(CASHBACK_OPTION_3, getString(R.string.product_manage_cashback_option_3, productPriceSymbol, (int) ((3/100.0f) * productPricePlain)), null)
+                .addItem(CASHBACK_OPTION_4, getString(R.string.product_manage_cashback_option_4, productPriceSymbol, (int) ((4/100.0f) * productPricePlain)), null)
+                .addItem(CASHBACK_OPTION_5, getString(R.string.product_manage_cashback_option_5, productPriceSymbol, (int) ((5/100.0f) * productPricePlain)), null)
+                .addItem(WITHOUT_CASHBACK_OPTION, getString(R.string.product_manage_cashback_option_none), null);
 
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionCashbackClicked(productId))

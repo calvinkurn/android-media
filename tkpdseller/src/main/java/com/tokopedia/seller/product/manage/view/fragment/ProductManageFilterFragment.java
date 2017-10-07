@@ -10,6 +10,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -89,7 +90,7 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
+        super.onViewCreated(view, savedInstanceState);
         etalaseLabelView = (LabelView) view.findViewById(R.id.etalase);
         categoryLabelView = (LabelView) view.findViewById(R.id.category);
         conditionLabelView = (LabelView) view.findViewById(R.id.condition);
@@ -97,7 +98,7 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
         productPictureLabelView = (LabelView) view.findViewById(R.id.product_picture);
         submitButton = (Button) view.findViewById(R.id.button_submit);
 
-        updateView();
+        updateFilterView();
 
         etalaseLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,7 +136,6 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
                 onSubmitFilter();
             }
         });
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -155,54 +155,60 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
         int itemId = item.getItemId();
         if (itemId == R.id.menu_reset) {
             productManageFilterModel.reset();
-            updateView();
+            updateFilterView();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateView() {
+    private void updateFilterView() {
+        if (TextUtils.isEmpty(productManageFilterModel.getEtalaseProductOptionName())) {
+            productManageFilterModel.setEtalaseProductOptionName(getString(R.string.product_manage_filter_menu_etalase_all));
+        }
         etalaseLabelView.setContent(productManageFilterModel.getEtalaseProductOptionName());
+        if (TextUtils.isEmpty(productManageFilterModel.getCategoryName())) {
+            productManageFilterModel.setCategoryName(getString(R.string.product_manage_filter_menu_category_all));
+        }
         categoryLabelView.setContent(productManageFilterModel.getCategoryName());
         switch (productManageFilterModel.getConditionProductOption()) {
-            case ConditionProductOption.NOT_USED:
-                conditionLabelView.setContent(getString(R.string.product_manage_title_both_condition_option_menu));
+            case ConditionProductOption.ALL_CONDITION:
+                conditionLabelView.setContent(getString(R.string.product_manage_filter_menu_both_condition));
                 break;
             case ConditionProductOption.NEW:
-                conditionLabelView.setContent(getString(R.string.product_manage_title_new_condition_menu));
+                conditionLabelView.setContent(getString(R.string.product_manage_filter_menu_condition_new));
                 break;
             case ConditionProductOption.USED:
-                conditionLabelView.setContent(getString(R.string.product_manage_title_old_condition_menu));
+                conditionLabelView.setContent(getString(R.string.product_manage_filter_menu_condition_old));
                 break;
             default:
-                conditionLabelView.setContent(getString(R.string.product_manage_title_both_condition_option_menu));
+                conditionLabelView.setContent(getString(R.string.product_manage_filter_menu_both_condition));
                 break;
         }
         switch (productManageFilterModel.getCatalogProductOption()) {
-            case CatalogProductOption.NOT_USED:
-                catalogLabelView.setContent(getString(R.string.product_manage_title_both_catalog_option_menu));
+            case CatalogProductOption.WITH_AND_WITHOUT:
+                catalogLabelView.setContent(getString(R.string.product_manage_filter_menu_both_catalog));
                 break;
             case CatalogProductOption.WITH_CATALOG:
-                catalogLabelView.setContent(getString(R.string.product_manage_title_with_catalog_menu));
+                catalogLabelView.setContent(getString(R.string.product_manage_filter_menu_with_catalog));
                 break;
             case CatalogProductOption.WITHOUT_CATALOG:
-                catalogLabelView.setContent(getString(R.string.product_manage_title_without_catalog_menu));
+                catalogLabelView.setContent(getString(R.string.product_manage_filter_menu_without_catalog));
                 break;
             default:
-                catalogLabelView.setContent(getString(R.string.product_manage_title_both_catalog_option_menu));
+                catalogLabelView.setContent(getString(R.string.product_manage_filter_menu_both_catalog));
                 break;
         }
         switch (productManageFilterModel.getPictureStatusOption()) {
-            case PictureStatusProductOption.NOT_USED:
-                productPictureLabelView.setContent(getString(R.string.product_manage_title_both_picture_option_menu));
+            case PictureStatusProductOption.WITH_AND_WITHOUT:
+                productPictureLabelView.setContent(getString(R.string.product_manage_filter_menu_picture_both));
                 break;
             case PictureStatusProductOption.WITH_IMAGE:
-                productPictureLabelView.setContent(getString(R.string.product_manage_title_with_picture_menu));
+                productPictureLabelView.setContent(getString(R.string.product_manage_filter_menu_with_picture));
                 break;
             case PictureStatusProductOption.WITHOUT_IMAGE:
-                productPictureLabelView.setContent(getString(R.string.product_manage_title_without_picture_menu));
+                productPictureLabelView.setContent(getString(R.string.product_manage_filter_menu_without_picture));
                 break;
             default:
-                productPictureLabelView.setContent(getString(R.string.product_manage_title_both_picture_option_menu));
+                productPictureLabelView.setContent(getString(R.string.product_manage_filter_menu_picture_both));
                 break;
         }
     }
@@ -225,10 +231,10 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
             case ProductManageConstant.REQUEST_CODE_CATEGORY:
                 if (resultCode == Activity.RESULT_OK) {
                     long categoryId = data.getLongExtra(CategoryPickerActivity.CATEGORY_RESULT_ID, -1);
-                    String categoryName = data.getStringExtra(CategoryPickerActivity.CATEGORY_RESULT_ID);
+                    String categoryName = data.getStringExtra(CategoryPickerActivity.CATEGORY_RESULT_NAME);
                     productManageFilterModel.setCategoryId(String.valueOf(categoryId));
                     productManageFilterModel.setCategoryName(categoryName);
-                    updateView();
+                    updateFilterView();
                 }
                 break;
             case ProductManageConstant.REQUEST_CODE_ETALASE:
@@ -237,7 +243,7 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
                     String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
                     productManageFilterModel.setEtalaseProductOption(String.valueOf(etalaseId));
                     productManageFilterModel.setEtalaseProductOptionName(etalaseName);
-                    updateView();
+                    updateFilterView();
                 }
                 break;
             default:
@@ -253,13 +259,13 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
             public void onBottomSheetItemClick(MenuItem item) {
                 int itemId = item.getItemId();
                 if (itemId == R.id.both_picture_option_menu) {
-                    productManageFilterModel.setPictureStatusOption(PictureStatusProductOption.NOT_USED);
+                    productManageFilterModel.setPictureStatusOption(PictureStatusProductOption.WITH_AND_WITHOUT);
                 } else if (itemId == R.id.without_picture_option_menu) {
                     productManageFilterModel.setPictureStatusOption(PictureStatusProductOption.WITHOUT_IMAGE);
                 } else if (itemId == R.id.with_picture_option_menu) {
                     productManageFilterModel.setPictureStatusOption(PictureStatusProductOption.WITH_IMAGE);
                 }
-                updateView();
+                updateFilterView();
             }
         });
     }
@@ -271,13 +277,13 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
             public void onBottomSheetItemClick(MenuItem item) {
                 int itemId = item.getItemId();
                 if (itemId == R.id.both_catalog_option_menu) {
-                    productManageFilterModel.setCatalogProductOption(CatalogProductOption.NOT_USED);
+                    productManageFilterModel.setCatalogProductOption(CatalogProductOption.WITH_AND_WITHOUT);
                 } else if (itemId == R.id.without_catalog_option_menu) {
                     productManageFilterModel.setCatalogProductOption(CatalogProductOption.WITHOUT_CATALOG);
                 } else if (itemId == R.id.with_catalog_option_menu) {
                     productManageFilterModel.setCatalogProductOption(CatalogProductOption.WITH_CATALOG);
                 }
-                updateView();
+                updateFilterView();
             }
         });
     }
@@ -289,13 +295,13 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
             public void onBottomSheetItemClick(MenuItem item) {
                 int itemId = item.getItemId();
                 if (itemId == R.id.both_condtion_option_menu) {
-                    productManageFilterModel.setConditionProductOption(ConditionProductOption.NOT_USED);
+                    productManageFilterModel.setConditionProductOption(ConditionProductOption.ALL_CONDITION);
                 } else if (itemId == R.id.new_condition_option_menu) {
                     productManageFilterModel.setConditionProductOption(ConditionProductOption.NEW);
                 } else if (itemId == R.id.old_condition_option_menu) {
                     productManageFilterModel.setConditionProductOption(ConditionProductOption.USED);
                 }
-                updateView();
+                updateFilterView();
             }
         });
     }

@@ -18,7 +18,7 @@
 
     <group>
         <item
-            android:title="@string/product_manage_title_set_cashback_menu"
+            android:title="@string/product_manage_menu_set_cashback"
             android:id="@+id/set_cashback_product_menu"
             android:icon="@drawable/ic_list"/>
         <item
