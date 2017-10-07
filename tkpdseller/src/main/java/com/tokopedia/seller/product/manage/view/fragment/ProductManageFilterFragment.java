@@ -140,7 +140,7 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_manage_product_filter, menu);
+        inflater.inflate(R.menu.menu_product_manage_filter, menu);
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());

@@ -134,7 +134,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_gmstat_transaction_table, menu);
+        inflater.inflate(R.menu.menu_gm_statistic_transaction_table, menu);
     }
 
     @Override

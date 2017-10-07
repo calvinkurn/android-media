@@ -39,8 +39,9 @@ public class CheckedAdapterBottomSheetBuilder extends BottomSheetAdapterBuilder 
     @Override
     protected BottomSheetMenuItem getBottomSheetMenuItem(int itemTextColor, int itemBackground, int tintColor, MenuItem item, int position) {
         CheckedBottomSheetMenuItem checkedBottomSheetMenuItem = new CheckedBottomSheetMenuItem(item, itemTextColor, itemBackground, tintColor);
-        if (position != Integer.MIN_VALUE)
+        if (position != Integer.MIN_VALUE && mSelectionItems.size() > 0) {
             checkedBottomSheetMenuItem.setChecked(mSelectionItems.get(position));
+        }
         return checkedBottomSheetMenuItem;
     }
 
@@ -49,6 +50,6 @@ public class CheckedAdapterBottomSheetBuilder extends BottomSheetAdapterBuilder 
     protected CheckedBottomSheetItemAdapter getBottomSheetItemAdapter(BottomSheetItemClickListener itemClickListener) {
         return new CheckedBottomSheetItemAdapter(
                 mItems,
-                mMode, itemClickListener );
+                mMode, itemClickListener);
     }
 }
