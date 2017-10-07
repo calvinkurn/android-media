@@ -70,7 +70,7 @@ public class BottomSheetBuilder {
     private boolean mDelayedDismiss = true;
     private boolean mExpandOnStart = false;
     private int mMode;
-    private Menu mMenu;
+    protected Menu mMenu;
     private CoordinatorLayout mCoordinatorLayout;
     private AppBarLayout mAppBarLayout;
     private BottomSheetItemClickListener mItemClickListener;

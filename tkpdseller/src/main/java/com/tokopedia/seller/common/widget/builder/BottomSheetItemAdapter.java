@@ -1,12 +1,11 @@
-package com.tokopedia.gm.statistic.view.adapter;
+package com.tokopedia.seller.common.widget.builder;
 
-import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import com.tokopedia.gm.R;
-import com.tokopedia.gm.statistic.view.adapter.model.CheckedBottomSheetMenuItem;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItem;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
@@ -59,11 +58,11 @@ public class BottomSheetItemAdapter extends com.tokopedia.seller.common.bottomsh
 
     public class CheckedItemViewHolder extends ItemViewHolder {
 
-        private final AppCompatImageView checkedImage;
+        private final ImageView checkedImage;
 
         public CheckedItemViewHolder(View itemView) {
             super(itemView);
-            checkedImage = (AppCompatImageView) itemView.findViewById(R.id.checked_image);
+            checkedImage = (ImageView) itemView.findViewById(R.id.checked_image);
             itemView.setOnClickListener(this);
         }
 

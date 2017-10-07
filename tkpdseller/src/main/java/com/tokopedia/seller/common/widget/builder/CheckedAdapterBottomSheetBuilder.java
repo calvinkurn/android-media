@@ -1,12 +1,10 @@
-package com.tokopedia.gm.statistic.view.builder;
+package com.tokopedia.seller.common.widget.builder;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.MenuItem;
 
-import com.tokopedia.gm.statistic.view.adapter.model.CheckedBottomSheetMenuItem;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetAdapterBuilder;
-import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemAdapter;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetMenuItem;
 
@@ -33,6 +31,10 @@ public class CheckedAdapterBottomSheetBuilder extends BottomSheetAdapterBuilder 
         mSelectionItems.add(value);
     }
 
+    public void addSelection(int index, boolean value) {
+        mSelectionItems.add(index, value);
+    }
+
     @NonNull
     @Override
     protected BottomSheetMenuItem getBottomSheetMenuItem(int itemTextColor, int itemBackground, int tintColor, MenuItem item, int position) {
@@ -45,7 +47,7 @@ public class CheckedAdapterBottomSheetBuilder extends BottomSheetAdapterBuilder 
     @NonNull
     @Override
     protected BottomSheetItemAdapter getBottomSheetItemAdapter(BottomSheetItemClickListener itemClickListener) {
-        return new com.tokopedia.gm.statistic.view.adapter.BottomSheetItemAdapter(
+        return new BottomSheetItemAdapter(
                 mItems,
                 mMode, itemClickListener );
     }
