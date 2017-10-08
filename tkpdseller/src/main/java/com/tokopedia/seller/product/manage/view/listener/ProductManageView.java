@@ -17,7 +17,7 @@ public interface ProductManageView extends BaseListViewListener<ProductManageVie
 
     void onSuccessLoadGoldMerchantFlag(boolean goldMerchant);
 
-    void onErrorEditPrice(String productId, String price, String currencyId, String currencyText);
+    void onErrorEditPrice(Throwable t, String productId, String price, String currencyId, String currencyText);
 
     void onSuccessEditPrice(String productId, String price, String currencyId, String currencyText);
 

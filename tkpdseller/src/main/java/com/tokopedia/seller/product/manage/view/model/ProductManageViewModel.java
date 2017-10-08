@@ -19,7 +19,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
     private String productPrice;
     private String productPricePlain;
     private String productStatus;
-    private String productCurrencyId;
+    private int productCurrencyId;
     private String productUrl;
     private String productCurrencySymbol;
     private int productReturnable;
@@ -124,11 +124,11 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productId = productId;
     }
 
-    public void setProductCurrencyId(String productCurrencyId) {
+    public void setProductCurrencyId(int productCurrencyId) {
         this.productCurrencyId = productCurrencyId;
     }
 
-    public String getProductCurrencyId() {
+    public int getProductCurrencyId() {
         return productCurrencyId;
     }
 
@@ -169,7 +169,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         dest.writeString(this.productPrice);
         dest.writeString(this.productPricePlain);
         dest.writeString(this.productStatus);
-        dest.writeString(this.productCurrencyId);
+        dest.writeInt(this.productCurrencyId);
         dest.writeString(this.productUrl);
         dest.writeString(this.productCurrencySymbol);
         dest.writeInt(this.productReturnable);
@@ -185,7 +185,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productPrice = in.readString();
         this.productPricePlain = in.readString();
         this.productStatus = in.readString();
-        this.productCurrencyId = in.readString();
+        this.productCurrencyId = in.readInt();
         this.productUrl = in.readString();
         this.productCurrencySymbol = in.readString();
         this.productReturnable = in.readInt();

@@ -126,10 +126,10 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(Throwable t) {
                 if (isViewAttached()) {
                     getView().hideLoadingProgress();
-                    getView().onErrorEditPrice(productId, price, currencyId, currencyText);
+                    getView().onErrorEditPrice(t, productId, price, currencyId, currencyText);
                 }
             }
 
@@ -137,8 +137,6 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
             public void onNext(Boolean isSuccessEditPrice) {
                 if (isSuccessEditPrice) {
                     getView().onSuccessEditPrice(productId, price, currencyId, currencyText);
-                } else {
-                    getView().onErrorEditPrice(productId, price, currencyId, currencyText);
                 }
                 getView().hideLoadingProgress();
             }

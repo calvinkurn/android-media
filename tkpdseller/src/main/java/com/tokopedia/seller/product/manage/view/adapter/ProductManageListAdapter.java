@@ -85,8 +85,7 @@ public class ProductManageListAdapter extends BaseMultipleCheckListAdapter<Produ
             ProductManageViewModel productManageViewModel = it.next();
             if (productManageViewModel.getId().equalsIgnoreCase(productId)) {
                 productManageViewModel.setProductPricePlain(price);
-                productManageViewModel.setProductPrice(price);
-                productManageViewModel.setProductCurrencyId(currencyId);
+                productManageViewModel.setProductCurrencyId(Integer.parseInt(currencyId));
                 productManageViewModel.setProductCurrencySymbol(priceCurrency);
                 notifyItemChanged(i);
                 return;

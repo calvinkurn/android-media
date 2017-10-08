@@ -8,12 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,7 +35,6 @@ import com.tokopedia.gm.featured.view.adapter.GMFeaturedProductAdapter;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
 import com.tokopedia.gm.featured.view.listener.GMFeaturedProductView;
 import com.tokopedia.gm.featured.view.presenter.GMFeaturedProductPresenterImpl;
-import com.tokopedia.gm.featured.view.util.GMSnackbarRetry;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
@@ -158,12 +154,8 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             if (adapter.getDataSize() == 0) {
                 textToPresent = getString(R.string.success_empty_delete_featured_product_empty);
             }
-            new GMSnackbarRetry(
-                    SnackbarManager.make(coordinatorLayoutContainer,
-                            textToPresent,
-                            Snackbar.LENGTH_LONG,
-                            android.R.color.white,
-                            com.tokopedia.core.R.color.black_seventy_percent_),
+            NetworkErrorHelper.createSnackbarWithAction(
+                    coordinatorLayoutContainer, textToPresent, Snackbar.LENGTH_LONG, getString(R.string.undo_text),
                     new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
@@ -27,6 +29,8 @@ import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
@@ -59,6 +63,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     ProductManagePresenter productManagePresenter;
     private BottomActionView bottomActionView;
     private ProgressDialog progressDialog;
+    private CoordinatorLayout coordinatorLayout;
 
     private boolean hasNextPage;
     private boolean filtered;
@@ -93,6 +98,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     protected void initView(View view) {
         super.initView(view);
+        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         bottomActionView = (BottomActionView) view.findViewById(R.id.bottom_action_view);
@@ -286,8 +292,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onErrorEditPrice(String productId, String price, String currencyId, String currencyText) {
-
+    public void onErrorEditPrice(Throwable t, final String productId, final String price, final String currencyId, final String currencyText) {
+        NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
+                ViewUtils.getErrorMessage(getActivity(), t), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        productManagePresenter.editPrice(productId, price, currencyId, currencyText);
+                    }
+                }).showRetrySnackbar();
     }
 
     @Override
@@ -450,7 +462,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         startActivity(intent);
     }
 
-    private void showDialogChangeProductPrice(final String productId, String productPrice, String productCurrencyId) {
+    private void showDialogChangeProductPrice(final String productId, String productPrice, @CurrencyTypeDef int productCurrencyId) {
         ProductManageEditPriceDialogFragment productManageEditPriceDialogFragment =
                 ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId, goldMerchant);
         productManageEditPriceDialogFragment.setListenerDialogEditPrice(new ProductManageEditPriceDialogFragment.ListenerDialogEditPrice() {

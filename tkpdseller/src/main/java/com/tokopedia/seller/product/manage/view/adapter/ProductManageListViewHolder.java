@@ -7,9 +7,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
+import com.tokopedia.seller.product.common.utils.CurrencyUtils;
 import com.tokopedia.seller.product.edit.constant.FreeReturnTypeDef;
 import com.tokopedia.seller.product.manage.constant.ProductManagePreOrderDef;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
@@ -96,7 +98,8 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         );
         titleTextView.setText(productManageViewModel.getProductName());
         priceTextView.setText(priceTextView.getContext().getString(
-                R.string.price_format_text, productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductPrice()));
+                R.string.price_format_text, productManageViewModel.getProductCurrencySymbol(),
+                CurrencyUtils.getPriceFormatted(productManageViewModel.getProductCurrencyId(), productManageViewModel.getProductPricePlain())));
 
         if (productManageViewModel.getProductCashback() > 0) {
             cashbackTextView.setText(cashbackTextView.getContext().getString(
