@@ -17,17 +17,17 @@ public interface ProductManagePresenter extends CustomerPresenter<ProductManageV
 
     void getGoldMerchantStatus();
 
-    void editPrice(String productId, String price, String currencyId, String currencyText);
-
-    void deleteProduct(String productId);
-
     void getListFeaturedProduct();
-
-    void deleteListProduct(List<String> productIds);
-
-    void setCashback(String productId, int cashback);
 
     void getListProduct(int page, String keywordFilter, @CatalogProductOption String catalogOption,
                         @ConditionProductOption String conditionOption, String etalaseId,
                         @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption, String categoryId);
+
+    void editPrice(String productId, String price, String currencyId, String currencyText);
+
+    void setCashback(String productId, int cashback);
+
+    void deleteProduct(String productId);
+
+    void deleteProduct(List<String> productIds);
 }

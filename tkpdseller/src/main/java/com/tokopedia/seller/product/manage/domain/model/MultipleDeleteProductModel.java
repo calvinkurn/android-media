@@ -1,35 +1,42 @@
 package com.tokopedia.seller.product.manage.domain.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by zulfikarrahman on 10/5/17.
  */
 
 public class MultipleDeleteProductModel {
-    private boolean isSuccess;
-    private int countOfSuccess;
-    private int countOfError;
+    private List<String> productIdDeletedList;
+    private List<String> productIdFailedToDeleteList;
 
-    public boolean isSuccess() {
-        return isSuccess;
+    public MultipleDeleteProductModel (){
+        productIdDeletedList = new ArrayList<>();
+        productIdFailedToDeleteList = new ArrayList<>();
     }
 
-    public void setSuccess(boolean success) {
-        isSuccess = success;
+    public List<String> getProductIdDeletedList() {
+        return productIdDeletedList;
     }
 
-    public int getCountOfSuccess() {
-        return countOfSuccess;
+    public void setProductIdDeletedList(List<String> productIdDeletedList) {
+        this.productIdDeletedList = productIdDeletedList;
     }
 
-    public void setCountOfSuccess(int countOfSuccess) {
-        this.countOfSuccess = countOfSuccess;
+    public List<String> getProductIdFailedToDeleteList() {
+        return productIdFailedToDeleteList;
     }
 
-    public int getCountOfError() {
-        return countOfError;
+    public void setProductIdFailedToDeleteList(List<String> productIdFailedToDeleteList) {
+        this.productIdFailedToDeleteList = productIdFailedToDeleteList;
     }
 
-    public void setCountOfError(int countOfError) {
-        this.countOfError = countOfError;
+    public void addProductIdFailedToDelete(String productId) {
+        productIdFailedToDeleteList.add(productId);
+    }
+
+    public void addProductIdDeleted(String productId) {
+        productIdDeletedList.add(productId);
     }
 }

@@ -107,9 +107,9 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     }
 
     @Override
-    public void deleteListProduct(List<String> productIds) {
+    public void deleteProduct(final List<String> productIdList) {
         getView().showLoadingProgress();
-        multipleDeleteProductUseCase.execute(MultipleDeleteProductUseCase.createRequestParams(productIds), new Subscriber<MultipleDeleteProductModel>() {
+        multipleDeleteProductUseCase.execute(MultipleDeleteProductUseCase.createRequestParams(productIdList), new Subscriber<MultipleDeleteProductModel>() {
             @Override
             public void onCompleted() {
 
@@ -119,17 +119,19 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
             public void onError(Throwable e) {
                 if (isViewAttached()) {
                     getView().hideLoadingProgress();
-                    getView().onErrorMultipleDeleteProduct(e);
+                    getView().onErrorMultipleDeleteProduct(e, new ArrayList<String>(), productIdList);
                 }
             }
 
             @Override
             public void onNext(MultipleDeleteProductModel multipleDeleteProductModel) {
                 getView().hideLoadingProgress();
-                if (multipleDeleteProductModel.isSuccess()) {
-                    getView().onSuccessMultipleDeleteProduct(multipleDeleteProductModel.getCountOfSuccess(), multipleDeleteProductModel.getCountOfError());
+                if (multipleDeleteProductModel.getProductIdFailedToDeleteList().size() > 0) {
+                    getView().onErrorMultipleDeleteProduct(new NetworkErrorException(),
+                            multipleDeleteProductModel.getProductIdDeletedList(),
+                            multipleDeleteProductModel.getProductIdFailedToDeleteList());
                 } else {
-                    getView().onErrorMultipleDeleteProduct(multipleDeleteProductModel.getCountOfSuccess(), multipleDeleteProductModel.getCountOfError());
+                    getView().onSuccessMultipleDeleteProduct();
                 }
             }
         });

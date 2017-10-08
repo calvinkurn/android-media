@@ -31,11 +31,9 @@ public interface ProductManageView extends BaseListViewListener<ProductManageVie
 
     void onSuccessSetCashback(String productId, int cashback);
 
-    void onErrorMultipleDeleteProduct(Throwable e);
+    void onErrorMultipleDeleteProduct(Throwable e, List<String> productIdDeletedList, List<String> productIdFailToDeleteList);
 
-    void onSuccessMultipleDeleteProduct(int countOfSuccess, int countOfError);
-
-    void onErrorMultipleDeleteProduct(int countOfSuccess, int countOfError);
+    void onSuccessMultipleDeleteProduct();
 
     void showLoadingProgress();
 

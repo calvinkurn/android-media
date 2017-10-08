@@ -164,7 +164,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 if (item.getItemId() == R.id.delete_product_menu) {
-                    productManagePresenter.deleteListProduct(((ProductManageListAdapter) adapter).getListChecked());
+                    productManagePresenter.deleteProduct(((ProductManageListAdapter) adapter).getListChecked());
                     mode.finish();
                 }
                 return false;
@@ -335,20 +335,23 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onErrorMultipleDeleteProduct(int countOfSuccess, int countOfError) {
-        if (countOfSuccess > 0) {
-            resetPageAndSearch();
-        }
-    }
-
-    @Override
-    public void onSuccessMultipleDeleteProduct(int countOfSuccess, int countOfError) {
+    public void onSuccessMultipleDeleteProduct() {
         resetPageAndSearch();
     }
 
     @Override
-    public void onErrorMultipleDeleteProduct(Throwable e) {
-
+    public void onErrorMultipleDeleteProduct(
+            Throwable t, List<String> productIdDeletedList, final List<String> productIdFailToDeleteList) {
+        if (productIdDeletedList.size() > 0) {
+            resetPageAndSearch();
+        }
+        NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
+                ViewUtils.getErrorMessage(getActivity(), t), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        productManagePresenter.deleteProduct(productIdFailToDeleteList);
+                    }
+                }).showRetrySnackbar();
     }
 
     @Override

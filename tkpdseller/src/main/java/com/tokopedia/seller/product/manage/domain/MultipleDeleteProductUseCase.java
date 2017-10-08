@@ -4,16 +4,17 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.product.common.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.product.manage.domain.model.MultipleDeleteProductModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -33,34 +34,38 @@ public class MultipleDeleteProductUseCase extends UseCase<MultipleDeleteProductM
 
     @Override
     public Observable<MultipleDeleteProductModel> createObservable(RequestParams requestParams) {
-        List<String> productIds = (List<String>) requestParams.getObject(ProductManageConstant.LIST_ID_DELETED);
-        return Observable.from(productIds)
+        final List<String> productIdList = (List<String>) requestParams.getObject(ProductManageConstant.LIST_ID_DELETED);
+        return Observable.from(productIdList)
                 .flatMap(new Func1<String, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(String productId) {
+                    public Observable<Boolean> call(final String productId) {
                         RequestParams requestParams = RequestParams.create();
                         requestParams.putString(ProductNetworkConstant.PRODUCT_ID, productId);
-                        return actionProductManageRepository.deleteProduct(requestParams.getParamsAllValueInString());
+                        return actionProductManageRepository.deleteProduct(requestParams.getParamsAllValueInString()).onErrorResumeNext(new Func1<Throwable, Observable<? extends Boolean>>() {
+                            @Override
+                            public Observable<? extends Boolean> call(Throwable throwable) {
+                                return Observable.just(false);
+                            }
+                        });
                     }
                 }).toList()
                 .flatMap(new Func1<List<Boolean>, Observable<MultipleDeleteProductModel>>() {
                     @Override
                     public Observable<MultipleDeleteProductModel> call(List<Boolean> booleen) {
-                        boolean isError = false;
-                        int counterIsSuccess = 0;
-                        int counterIsError = 0;
+                        List<String> productIdDeletedList = new ArrayList<>();
+                        List<String> productIdFailToDeleteList = new ArrayList<>();
+                        int i = 0;
                         for (Boolean isSuccess : booleen) {
-                            if (!isSuccess) {
-                                counterIsSuccess++;
-                                isError = true;
+                            if (isSuccess) {
+                                productIdDeletedList.add(productIdList.get(i));
                             } else {
-                                counterIsError++;
+                                productIdFailToDeleteList.add(productIdList.get(i));
                             }
+                            i++;
                         }
                         MultipleDeleteProductModel multipleDeleteProductModel = new MultipleDeleteProductModel();
-                        multipleDeleteProductModel.setCountOfError(counterIsError);
-                        multipleDeleteProductModel.setCountOfSuccess(counterIsSuccess);
-                        multipleDeleteProductModel.setSuccess(!isError);
+                        multipleDeleteProductModel.setProductIdDeletedList(productIdDeletedList);
+                        multipleDeleteProductModel.setProductIdFailedToDeleteList(productIdFailToDeleteList);
                         return Observable.just(multipleDeleteProductModel);
                     }
                 });
