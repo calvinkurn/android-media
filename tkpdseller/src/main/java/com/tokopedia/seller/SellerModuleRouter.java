@@ -23,10 +23,16 @@ public interface SellerModuleRouter {
     ProductComponent getProductComponent();
 
     void goToHome(Context context);
+
     void goToProductDetail(Context context, String productUrl);
+
     Observable<GMFeaturedProductDomainModel> getFeaturedProduct();
+
     void goMultipleInstagramAddProduct(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList);
+
     void goToGMSubscribe(Activity activity);
-    Observable<Boolean> setCashBack(String productId, String cashback);
+
+    Observable<Boolean> setCashBack(String productId, int cashback);
+
     Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds);
 }

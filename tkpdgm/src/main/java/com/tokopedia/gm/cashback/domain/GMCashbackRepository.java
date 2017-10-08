@@ -11,7 +11,7 @@ import rx.Observable;
  */
 
 public interface GMCashbackRepository {
-    Observable<Boolean> setCashback(String product_id, String cashback);
+    Observable<Boolean> setCashback(String product_id, int cashback);
 
     Observable<List<DataCashbackModel>> getCashbackList(List<Long> productIds, String shopId);
 }

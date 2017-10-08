@@ -93,4 +93,17 @@ public class ProductManageListAdapter extends BaseMultipleCheckListAdapter<Produ
             i++;
         }
     }
+
+    public void updateCashback(String productId, int cashback) {
+        int i = 0;
+        for (Iterator<ProductManageViewModel> it = data.iterator(); it.hasNext(); ) {
+            ProductManageViewModel productManageViewModel = it.next();
+            if (productManageViewModel.getId().equalsIgnoreCase(productId)) {
+                productManageViewModel.setProductCashback(cashback);
+                notifyItemChanged(i);
+                return;
+            }
+            i++;
+        }
+    }
 }

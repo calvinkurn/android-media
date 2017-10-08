@@ -281,7 +281,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onGetFeaturedProductList(List<String> data) {
+    public void onSuccessGetFeaturedProductList(List<String> data) {
         ((ProductManageListAdapter) adapter).setFeaturedProduct(data);
         adapter.notifyDataSetChanged();
     }
@@ -303,13 +303,19 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onSuccessSetCashback() {
-        resetPageAndSearch();
+    public void onSuccessSetCashback(String productId, int cashback) {
+        ((ProductManageListAdapter) adapter).updateCashback(productId, cashback);
     }
 
     @Override
-    public void onErrorSetCashback() {
-
+    public void onErrorSetCashback(Throwable t, final String productId, final int cashback) {
+        NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
+                ViewUtils.getErrorMessage(getActivity(), t), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        productManagePresenter.setCashback(productId, cashback);
+                    }
+                }).showRetrySnackbar();
     }
 
     @Override
@@ -417,7 +423,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 .addItem(CashbackOption.CASHBACK_OPTION_3, getCashbackMenuText(CashbackOption.CASHBACK_OPTION_3, productPriceSymbol, productPricePlain), null)
                 .addItem(CashbackOption.CASHBACK_OPTION_4, getCashbackMenuText(CashbackOption.CASHBACK_OPTION_4, productPriceSymbol, productPricePlain), null)
                 .addItem(CashbackOption.CASHBACK_OPTION_5, getCashbackMenuText(CashbackOption.CASHBACK_OPTION_5, productPriceSymbol, productPricePlain), null)
-                .addItem(CashbackOption.WITHOUT_CASHBACK_OPTION, getString(R.string.product_manage_cashback_option_none), null);
+                .addItem(CashbackOption.CASHBACK_OPTION_NONE, getString(R.string.product_manage_cashback_option_none), null);
 
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionCashbackClicked(productId))
@@ -437,16 +443,16 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 int itemId = item.getItemId();
                 switch (itemId) {
                     case CashbackOption.CASHBACK_OPTION_3:
-                        productManagePresenter.setCashback(productId, String.valueOf(CashbackOption.CASHBACK_OPTION_3));
+                        productManagePresenter.setCashback(productId, CashbackOption.CASHBACK_OPTION_3);
                         break;
                     case CashbackOption.CASHBACK_OPTION_4:
-                        productManagePresenter.setCashback(productId, String.valueOf(CashbackOption.CASHBACK_OPTION_4));
+                        productManagePresenter.setCashback(productId, CashbackOption.CASHBACK_OPTION_4);
                         break;
                     case CashbackOption.CASHBACK_OPTION_5:
-                        productManagePresenter.setCashback(productId, String.valueOf(CashbackOption.CASHBACK_OPTION_5));
+                        productManagePresenter.setCashback(productId, CashbackOption.CASHBACK_OPTION_5);
                         break;
-                    case CashbackOption.WITHOUT_CASHBACK_OPTION:
-                        productManagePresenter.setCashback(productId, String.valueOf(CashbackOption.WITHOUT_CASHBACK_OPTION));
+                    case CashbackOption.CASHBACK_OPTION_NONE:
+                        productManagePresenter.setCashback(productId, CashbackOption.CASHBACK_OPTION_NONE);
                         break;
                     default:
                         break;

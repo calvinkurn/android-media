@@ -17,6 +17,8 @@ public interface ProductManageView extends BaseListViewListener<ProductManageVie
 
     void onSuccessLoadGoldMerchantFlag(boolean goldMerchant);
 
+    void onSuccessGetFeaturedProductList(List<String> data);
+
     void onErrorEditPrice(Throwable t, String productId, String price, String currencyId, String currencyText);
 
     void onSuccessEditPrice(String productId, String price, String currencyId, String currencyText);
@@ -25,19 +27,17 @@ public interface ProductManageView extends BaseListViewListener<ProductManageVie
 
     void onErrorDeleteProduct(Throwable t, String productId);
 
-    void showLoadingProgress();
+    void onErrorSetCashback(Throwable t, String productId, int cashback);
 
-    void hideLoadingProgress();
-
-    void onGetFeaturedProductList(List<String> data);
-
-    void onErrorSetCashback();
-
-    void onSuccessSetCashback();
+    void onSuccessSetCashback(String productId, int cashback);
 
     void onErrorMultipleDeleteProduct(Throwable e);
 
     void onSuccessMultipleDeleteProduct(int countOfSuccess, int countOfError);
 
     void onErrorMultipleDeleteProduct(int countOfSuccess, int countOfError);
+
+    void showLoadingProgress();
+
+    void hideLoadingProgress();
 }

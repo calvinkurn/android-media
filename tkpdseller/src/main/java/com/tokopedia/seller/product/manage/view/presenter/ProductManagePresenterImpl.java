@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.manage.view.presenter;
 
+import android.accounts.NetworkErrorException;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -7,7 +9,6 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
-import com.tokopedia.seller.product.manage.constant.EtalaseProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.domain.DeleteProductUseCase;
@@ -77,9 +78,32 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     }
 
     @Override
-    public void setCashback(String productId, String cashback) {
+    public void setCashback(final String productId, final int cashback) {
         getView().showLoadingProgress();
-        sellerModuleRouter.setCashBack(productId, cashback).subscribe(getSubscriberSetCashback());
+        sellerModuleRouter.setCashBack(productId, cashback).subscribe(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().hideLoadingProgress();
+                    getView().onErrorSetCashback(e, productId, cashback);
+                }
+            }
+
+            @Override
+            public void onNext(Boolean isSuccess) {
+                getView().hideLoadingProgress();
+                if (isSuccess) {
+                    getView().onSuccessSetCashback(productId, cashback);
+                } else {
+                    getView().onErrorSetCashback(new NetworkErrorException(), productId, cashback);
+                }
+            }
+        });
     }
 
     @Override
@@ -135,10 +159,12 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onNext(Boolean isSuccessEditPrice) {
+                getView().hideLoadingProgress();
                 if (isSuccessEditPrice) {
                     getView().onSuccessEditPrice(productId, price, currencyId, currencyText);
+                } else {
+                    getView().onErrorEditPrice(new NetworkErrorException(), productId, price, currencyId, currencyText);
                 }
-                getView().hideLoadingProgress();
             }
         });
     }
@@ -164,6 +190,8 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
             public void onNext(Boolean isSuccessDeleteProduct) {
                 if (isSuccessDeleteProduct) {
                     getView().onSuccessDeleteProduct();
+                } else {
+                    getView().onErrorDeleteProduct(new NetworkErrorException(), productId);
                 }
                 getView().hideLoadingProgress();
             }
@@ -217,7 +245,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onNext(GMFeaturedProductDomainModel gmFeaturedProductDomainModel) {
-                getView().onGetFeaturedProductList(transform(gmFeaturedProductDomainModel.getData()));
+                getView().onSuccessGetFeaturedProductList(transform(gmFeaturedProductDomainModel.getData()));
             }
         };
     }
@@ -228,34 +256,6 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
             productIds.add(String.valueOf(data.getProductId()));
         }
         return productIds;
-    }
-
-
-    private Subscriber<Boolean> getSubscriberSetCashback() {
-        return new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().hideLoadingProgress();
-                    getView().onErrorSetCashback();
-                }
-            }
-
-            @Override
-            public void onNext(Boolean isSuccess) {
-                getView().hideLoadingProgress();
-                if (isSuccess) {
-                    getView().onSuccessSetCashback();
-                } else {
-                    getView().onErrorSetCashback();
-                }
-            }
-        };
     }
 
     @Override

@@ -20,8 +20,8 @@ public class GmCashbackRepositoryImpl implements GMCashbackRepository {
     }
 
     @Override
-    public Observable<Boolean> setCashback(String product_id, String cashback) {
-        return gmCashbackDataSource.setCashback(product_id, cashback);
+    public Observable<Boolean> setCashback(String productId, int cashback) {
+        return gmCashbackDataSource.setCashback(productId, cashback);
     }
 
     @Override

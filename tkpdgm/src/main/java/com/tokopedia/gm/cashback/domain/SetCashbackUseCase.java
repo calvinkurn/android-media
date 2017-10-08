@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.product.manage.constant.CashbackOption;
 
 import javax.inject.Inject;
 
@@ -27,13 +28,13 @@ public class SetCashbackUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return gmCashbackRepository.setCashback(requestParams.getString(PRODUCT_ID, ""), requestParams.getString(CASHBACK, ""));
+        return gmCashbackRepository.setCashback(requestParams.getString(PRODUCT_ID, ""), requestParams.getInt(CASHBACK, CashbackOption.CASHBACK_OPTION_NONE));
     }
 
-    public static RequestParams createRequestParams(String productId, String cashback){
+    public static RequestParams createRequestParams(String productId, int cashback) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PRODUCT_ID, productId);
-        requestParams.putString(CASHBACK, cashback);
+        requestParams.putInt(CASHBACK, cashback);
         return requestParams;
     }
 }

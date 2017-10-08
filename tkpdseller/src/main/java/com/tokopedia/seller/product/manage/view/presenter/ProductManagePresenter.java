@@ -25,7 +25,7 @@ public interface ProductManagePresenter extends CustomerPresenter<ProductManageV
 
     void deleteListProduct(List<String> productIds);
 
-    void setCashback(String productId, String cashback);
+    void setCashback(String productId, int cashback);
 
     void getListProduct(int page, String keywordFilter, @CatalogProductOption String catalogOption,
                         @ConditionProductOption String conditionOption, String etalaseId,
