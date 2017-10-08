@@ -17,6 +17,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author ricoharisin on 7/11/16.
  *         Modified by kulomady on 08/23/2016
  *         Modified by Nabilla Sabbaha on 08/07/2017
+ *         Modified by rizkyfadillah at 10/6/17.
  */
 public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor {
 
@@ -28,25 +29,25 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
         this.repository = repository;
     }
 
-    @Override
-    public void getRecentNumbers(Subscriber<Boolean> subscriber, Map<String, String> params) {
-        compositeSubscription.add(
-                repository.storeObservableRecentDataNetwork(params)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber));
-    }
+//    @Override
+//    public void getRecentNumbers(Subscriber<Boolean> subscriber, Map<String, String> params) {
+//        compositeSubscription.add(
+//                repository.storeObservableRecentDataNetwork(params)
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribeOn(Schedulers.newThread())
+//                        .unsubscribeOn(Schedulers.newThread())
+//                        .subscribe(subscriber));
+//    }
 
-    @Override
-    public void getLastOrder(Subscriber<LastOrder> subscriber, Map<String, String> params) {
-        compositeSubscription.add(
-                repository.getObservableLastOrderNetwork(params)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber));
-    }
+//    @Override
+//    public void getLastOrder(Subscriber<LastOrder> subscriber, Map<String, String> params) {
+//        compositeSubscription.add(
+//                repository.getObservableLastOrderNetwork(params)
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribeOn(Schedulers.newThread())
+//                        .unsubscribeOn(Schedulers.newThread())
+//                        .subscribe(subscriber));
+//    }
 
     @Override
     public void getCategoryData(Subscriber<CategoryData> subscriber) {

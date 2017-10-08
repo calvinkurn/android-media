@@ -98,14 +98,14 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
 //    }
 
     //    @Override
-    LastOrder getLastOrderFromCache() {
-        if (isAlreadyHaveLastOrderOnCache()) {
-            String temp = localCacheHandlerLastOrder.getString(TkpdCache.Key.DIGITAL_LAST_ORDER);
-            return CacheUtil.convertStringToModel(temp, LastOrder.class);
-        } else {
-            return null;
-        }
-    }
+//    LastOrder getLastOrderFromCache() {
+//        if (isAlreadyHaveLastOrderOnCache()) {
+//            String temp = localCacheHandlerLastOrder.getString(TkpdCache.Key.DIGITAL_LAST_ORDER);
+//            return CacheUtil.convertStringToModel(temp, LastOrder.class);
+//        } else {
+//            return null;
+//        }
+//    }
 
     @Override
     public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {

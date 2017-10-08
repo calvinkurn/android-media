@@ -9,11 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
-import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.R;
@@ -22,17 +21,11 @@ import com.tokopedia.digital.product.adapter.NumberListAdapter;
 import com.tokopedia.digital.product.listener.ISearchNumberDigitalView;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.presenter.ISearchNumberDigitalPresenter;
-import com.tokopedia.digital.product.presenter.SearchNumberDigitalPresenter;
-import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
-import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.interactor.DigitalWidgetInteractor;
-import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author rizkyfadillah on 10/4/2017.
@@ -45,6 +38,8 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment<ISearchNu
     RecyclerView rvNumberList;
     @BindView(R2.id.edittext_search_number)
     EditText editTextSearchNumber;
+    @BindView(R2.id.btn_clear_number)
+    Button btnClearNumber;
 
     private NumberListAdapter numberListAdapter;
 
@@ -54,8 +49,13 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment<ISearchNu
     private static final String ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER";
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
 
-    private String categoryId;
     private String clientNumber;
+
+    private OnClientNumberClickListener callback;
+
+    public interface OnClientNumberClickListener {
+        void onClientNumberClicked(OrderClientNumber orderClientNumber);
+    }
 
     public static Fragment newInstance(String categoryId, String clientNumber, List<OrderClientNumber> numberList) {
         Fragment fragment = new DigitalSearchNumberFragment();
@@ -95,20 +95,16 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment<ISearchNu
 
     @Override
     protected void initialPresenter() {
-        IDigitalWidgetInteractor digitalWidgetInteractor = new DigitalWidgetInteractor(new CompositeSubscription(),
-                new DigitalWidgetRepository(new RechargeService(), new DigitalEndpointService(), new FavoriteNumberListDataMapper()));
 
-        presenter = new SearchNumberDigitalPresenter(this, digitalWidgetInteractor);
     }
 
     @Override
     protected void initialListener(Activity activity) {
-
+        callback = (OnClientNumberClickListener) activity;
     }
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        categoryId = arguments.getString(ARG_PARAM_EXTRA_CATEGORY_ID);
         clientNumber = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER);
         clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST);
     }
@@ -120,6 +116,16 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment<ISearchNu
 
     @Override
     protected void initView(View view) {
+        btnClearNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editTextSearchNumber.setText("");
+            }
+        });
+
+        if (clientNumber != null) {
+            editTextSearchNumber.setText(clientNumber);
+        }
         numberListAdapter = new NumberListAdapter(this, clientNumbers);
         rvNumberList.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvNumberList.setAdapter(numberListAdapter);
@@ -152,8 +158,16 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment<ISearchNu
                 searchClientNumbers.add(orderClientNumber);
             }
         }
-        numberListAdapter.setNumbers(searchClientNumbers);
-        numberListAdapter.notifyDataSetChanged();
+        if (!searchClientNumbers.isEmpty()) {
+            numberListAdapter.setNumbers(searchClientNumbers);
+            numberListAdapter.notifyDataSetChanged();
+        } else {
+            searchClientNumbers.add(new OrderClientNumber.Builder()
+                    .clientNumber(query)
+                    .build());
+            numberListAdapter.setNumbers(searchClientNumbers);
+            numberListAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -179,8 +193,8 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment<ISearchNu
     }
 
     @Override
-    public void onClientNumberClicked(String number) {
-        editTextSearchNumber.setText(number);
+    public void onClientNumberClicked(OrderClientNumber orderClientNumber) {
+        callback.onClientNumberClicked(orderClientNumber);
     }
 
 }

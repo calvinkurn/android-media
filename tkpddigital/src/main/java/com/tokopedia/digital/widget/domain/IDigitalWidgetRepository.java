@@ -1,22 +1,19 @@
 package com.tokopedia.digital.widget.domain;
 
-import com.tokopedia.core.database.model.RechargeNumberListModelDB;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.database.recharge.operator.Operator;
 import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 
 /**
  * Created by nabillasabbaha on 7/28/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public interface IDigitalWidgetRepository {
@@ -37,8 +34,8 @@ public interface IDigitalWidgetRepository {
 
 //    Observable<LastOrder> getObservableLastOrderNetwork(Map<String, String> params);
 
-    Observable<LastOrder> getObservableLastOrderFromDBByCategoryId(int categoryId);
+//    Observable<LastOrder> getObservableLastOrderFromDBByCategoryId(int categoryId);
 
-    Observable<Boolean> hasLastOrder(int categoryId);
+//    Observable<Boolean> hasLastOrder(int categoryId);
 
 }

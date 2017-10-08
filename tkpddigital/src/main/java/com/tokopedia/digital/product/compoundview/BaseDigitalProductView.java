@@ -185,6 +185,8 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         void storeLastInstantCheckoutUsed(String categoryId, boolean checked);
 
         void onClientNumberClicked(String clientNumber, List<OrderClientNumber> numberList);
+
+        void onClientNumberCleared(List<OrderClientNumber> recentClientNumberList);
     }
 
     public static class PreCheckoutProduct {

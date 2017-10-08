@@ -30,7 +30,9 @@ public interface IDigitalWidgetInteractor {
     void getNumberList(Subscriber<DigitalNumberList> subscriber,
                        TKPDMapParam<String, String> param);
 
-    void getLastOrderByCategoryId(Subscriber<LastOrder> subscriber, int categoryId);
+//    void saveLastOrderByCategoryId(int categoryId, LastOrder lastOrder);
+
+//    void getLastOrderByCategoryId(Subscriber<LastOrder> subscriber, int categoryId);
 
     void onDestroy();
 

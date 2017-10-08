@@ -40,6 +40,7 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nabillasabbaha on 7/18/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment implements IDigitalWidgetStyle1View {
@@ -79,7 +80,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         DigitalWidgetInteractor interactor = new DigitalWidgetInteractor(new CompositeSubscription(),
                 new DigitalWidgetRepository(new RechargeService(), new DigitalEndpointService(), new FavoriteNumberListDataMapper()));
         presenter = new DigitalWidgetStyle1Presenter(getActivity(), interactor, this);
-        presenter.fetchNumberList(String.valueOf(category.getId()));
 
         sessionHandler = new SessionHandler(getActivity());
         lastClientNumberTyped = presenter.getLastClientNumberTyped(String.valueOf(category.getId()));
@@ -107,11 +107,12 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         setRechargeEditTextTouchCallback(widgetClientNumberView);
 
         if (category.getAttributes().getClientNumber().isShown()) {
+            presenter.fetchNumberList(String.valueOf(category.getId()));
+
             widgetClientNumberView.setClientNumberLabel(clientNumber.getText());
             widgetClientNumberView.setHint(clientNumber.getPlaceholder());
             widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
             holderWidgetClientNumber.addView(widgetClientNumberView);
-//            initClientNumber();
         } else {
             selectedOperatorId = category.getAttributes().getDefaultOperatorId();
             presenter.validateOperatorWithProducts(category.getId(), selectedOperatorId);
@@ -276,30 +277,32 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         };
     }
 
-    private void initClientNumber() {
-        String defaultPhoneNumber = sessionHandler.getPhoneNumber();
+//    private void initClientNumber() {
+//        String defaultPhoneNumber = sessionHandler.getPhoneNumber();
+//
+//        if (sessionHandler.isV4Login(getActivity())
+//                && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
+//                && !TextUtils.isEmpty(lastClientNumberTyped)) {
+//            renderLastTypedClientNumber();
+//        } else if (sessionHandler.isV4Login(getActivity())
+//                && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
+//                && TextUtils.isEmpty(lastClientNumberTyped)
+//                && (category.getId() == 1 || category.getId() == 2)
+//                && !TextUtils.isEmpty(defaultPhoneNumber)) {
+//            widgetClientNumberView.setText(defaultPhoneNumber);
+//        } else if (!sessionHandler.isV4Login(getActivity())
+//                && !TextUtils.isEmpty(lastClientNumberTyped)) {
+//            renderLastTypedClientNumber();
+//        }
+//    }
 
-        if (sessionHandler.isV4Login(getActivity())
-                && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
-                && !TextUtils.isEmpty(lastClientNumberTyped)) {
-            renderLastTypeClientNumber();
-        } else if (sessionHandler.isV4Login(getActivity())
-                && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
-                && TextUtils.isEmpty(lastClientNumberTyped)
-                && (category.getId() == 1 || category.getId() == 2)
-                && !TextUtils.isEmpty(defaultPhoneNumber)) {
-            widgetClientNumberView.setText(defaultPhoneNumber);
-        } else if (!sessionHandler.isV4Login(getActivity())
-                && !TextUtils.isEmpty(lastClientNumberTyped)) {
-            renderLastTypeClientNumber();
-        }
-    }
-
-    private void renderLastTypeClientNumber() {
-        if (category.getAttributes().isValidatePrefix())
+    @Override
+    public void renderLastTypedClientNumber() {
+        if (category.getAttributes().isValidatePrefix()) {
             widgetClientNumberView.setText(lastClientNumberTyped);
-        else
+        } else {
             presenter.getOperatorById(lastOperatorSelected);
+        }
     }
 
     @Override

@@ -316,7 +316,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         };
     }
 
-
     private void renderCategoryDataAndBannerToView(CategoryData categoryData,
                                                    List<BannerData> bannerDataList,
                                                    List<BannerData> otherBannerDataList,
@@ -592,7 +591,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         if (ussdHandler != null) {
             ussdHandler.removeCallbacksAndMessages(null);
         }
-
     }
 
     @Override

@@ -324,6 +324,11 @@ public class CategoryProductStyle3View extends
             public void onClientNumberHasFocus(String clientNumber) {
                 actionListener.onClientNumberClicked(clientNumber, historyClientNumber.getRecentClientNumberList());
             }
+
+            @Override
+            public void onClientNumberCleared() {
+                actionListener.onClientNumberCleared(historyClientNumber.getRecentClientNumberList());
+            }
         };
     }
 

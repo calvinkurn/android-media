@@ -4,6 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/digital_bg_item_product_selected"
     android:padding="16dp">
 
     <TextView
@@ -11,7 +12,8 @@
         android:layout_width="0dp"
         android:id="@+id/text_name"
         tools:text="081322867354"
-        android:layout_marginRight="16dp"
+        android:layout_marginRight="@dimen/digital_padding_16"
+        android:layout_marginEnd="@dimen/digital_padding_16"
         android:layout_height="wrap_content" />
 
     <TextView

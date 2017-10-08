@@ -264,6 +264,7 @@ public class ClientNumberInputView extends LinearLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
+                actionListener.onClientNumberCleared();
                 autoCompleteTextView.setText("");
             }
         };
@@ -347,6 +348,8 @@ public class ClientNumberInputView extends LinearLayout {
         void onClientNumberInputInvalid();
 
         void onClientNumberHasFocus(String clientNumber);
+
+        void onClientNumberCleared();
     }
 
 }

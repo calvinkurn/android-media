@@ -1,14 +1,11 @@
 package com.tokopedia.digital.widget.interactor;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.model.RechargeNumberListModelDB;
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.operator.Operator;
 import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
 
@@ -26,6 +23,7 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nabillasabbaha on 7/21/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
@@ -139,7 +137,6 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
-
     }
 
     private Observable<List<Integer>> getIdOperators(final int categoryId) {
@@ -250,15 +247,20 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
         }
     }
 
-    @Override
-    public void getLastOrderByCategoryId(Subscriber<LastOrder> subscriber, int categoryId) {
-        compositeSubscription.add(
-                digitalWidgetRepository.getObservableLastOrderFromDBByCategoryId(categoryId)
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(subscriber));
-    }
+//    @Override
+//    public void saveLastOrderByCategoryId(int categoryId, LastOrder lastOrder) {
+//
+//    }
+
+//    @Override
+//    public void getLastOrderByCategoryId(Subscriber<LastOrder> subscriber, int categoryId) {
+//        compositeSubscription.add(
+//                digitalWidgetRepository.getObservableLastOrderFromDBByCategoryId(categoryId)
+//                        .subscribeOn(Schedulers.newThread())
+//                        .unsubscribeOn(Schedulers.newThread())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(subscriber));
+//    }
 
     private Func1<Product, Boolean> isProductValidToOperator(final int categoryId, final int operatorId) {
         return new Func1<Product, Boolean>() {

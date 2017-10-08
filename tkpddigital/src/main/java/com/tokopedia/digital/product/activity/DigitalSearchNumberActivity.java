@@ -9,6 +9,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.product.adapter.NumberListAdapter;
 import com.tokopedia.digital.product.fragment.DigitalSearchNumberFragment;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 
@@ -19,11 +20,14 @@ import java.util.List;
  * @author rizkyfadillah on 10/4/2017.
  */
 
-public class DigitalSearchNumberActivity extends BasePresenterActivity {
+public class DigitalSearchNumberActivity extends BasePresenterActivity implements
+        DigitalSearchNumberFragment.OnClientNumberClickListener {
 
     private static final String EXTRA_NUMBER_LIST = "EXTRA_NUMBER_LIST";
-    public static final String EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER";
-    public static final String EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID";
+    private static final String EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER";
+    private static final String EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID";
+
+    public static final String EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER";
 
     private String categoryId;
     private String clientNumber;
@@ -87,6 +91,12 @@ public class DigitalSearchNumberActivity extends BasePresenterActivity {
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public void onClientNumberClicked(OrderClientNumber orderClientNumber) {
+        setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber));
+        finish();
     }
 
 }

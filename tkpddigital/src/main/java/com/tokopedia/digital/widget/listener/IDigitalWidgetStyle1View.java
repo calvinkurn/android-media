@@ -27,6 +27,8 @@ public interface IDigitalWidgetStyle1View extends BaseDigitalWidgetView {
 
 //    void renderLastOrder(LastOrder lastOrder);
 
+    void renderLastTypedClientNumber();
+
     void renderErrorProduct(String message);
 
     void renderDefaultError();

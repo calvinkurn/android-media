@@ -2,7 +2,6 @@ package com.tokopedia.digital.widget.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -39,6 +38,7 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nabillasabbaha on 7/18/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment implements IDigitalWidgetStyle2View {
@@ -78,7 +78,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
         DigitalWidgetInteractor interactor = new DigitalWidgetInteractor(new CompositeSubscription(),
                 new DigitalWidgetRepository(new RechargeService(), new DigitalEndpointService(), new FavoriteNumberListDataMapper()));
         presenter = new DigitalWidgetStyle2Presenter(getActivity(), interactor, this);
-        presenter.fetchNumberList(String.valueOf(category.getId()));
 
         lastClientNumberTyped = presenter.getLastClientNumberTyped(String.valueOf(category.getId()));
         lastOperatorSelected = presenter.getLastOperatorSelected(String.valueOf(category.getId()));
@@ -102,6 +101,8 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
                 category.getAttributes().isInstantCheckoutAvailable());
 
         if (category.getAttributes().getClientNumber().isShown()) {
+            presenter.fetchNumberList(String.valueOf(category.getId()));
+
             widgetClientNumberView.setButtonPickerListener(getButtonPickerListener());
             widgetClientNumberView.setRechargeEditTextListener(getEditTextListener());
             widgetClientNumberView.setClientNumberLabel(clientNumber.getText());
@@ -111,7 +112,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
             setRechargeEditTextCallback(widgetClientNumberView);
             setRechargeEditTextTouchCallback(widgetClientNumberView);
-//            initClientNumber();
         }
     }
 
@@ -192,7 +192,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
                     if (widgetProductChooserView.checkStockProduct(selectedProduct))
                         presenter.storeLastInstantCheckoutUsed(String.valueOf(category.getId()),
                                 widgetWrapperBuyView.isCreditCheckboxChecked());
-
 
                     DigitalCheckoutPassData digitalCheckoutPassData =
                             widgetWrapperBuyView.getGeneratedCheckoutPassData(getDataPreCheckout());
@@ -387,6 +386,15 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderDefaultError() {
 
+    }
+
+    @Override
+    public void renderLastTypedClientNumber() {
+        if (category.getAttributes().isValidatePrefix()) {
+            widgetClientNumberView.setText(lastClientNumberTyped);
+        } else {
+            presenter.getOperatorById(lastOperatorSelected);
+        }
     }
 
     @Override

@@ -5,15 +5,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.model.category.CategoryData;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.database.recharge.status.Status;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
 import com.tokopedia.tkpd.home.recharge.util.CategoryComparator;
@@ -25,7 +19,8 @@ import rx.Subscriber;
 
 /**
  * @author kulomady 05 on 7/13/2016.
- * Modify by Nabilla Sabbaha on 8/16/2017
+ * Modify by Nabilla Sabbaha on 8/16/2017.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter {
 
@@ -35,14 +30,12 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     private RechargeCategoryView view;
     private RechargeNetworkInteractor rechargeNetworkInteractor;
     private CategoryData categoryData;
-    private final LocalCacheHandler cacheHandler;
 
     public RechargeCategoryPresenterImpl(Activity activity, RechargeCategoryView view,
                                          RechargeNetworkInteractor rechargeNetworkInteractor) {
         this.activity = activity;
         this.view = view;
         this.rechargeNetworkInteractor = rechargeNetworkInteractor;
-        this.cacheHandler = new LocalCacheHandler(activity, TkpdCache.DIGITAL_WIDGET_LAST_ORDER);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.product.Product;
@@ -9,7 +8,6 @@ import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrderEntity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle2View;
@@ -21,15 +19,14 @@ import rx.Subscriber;
 
 /**
  * Created by nabillasabbaha on 7/21/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
         implements IDigitalWidgetStyle2Presenter {
 
     private final IDigitalWidgetInteractor widgetInteractor;
-
     private final IDigitalWidgetStyle2View view;
-
     private Context context;
 
     public DigitalWidgetStyle2Presenter(Context context,
@@ -46,26 +43,23 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("category_id", categoryId);
         param.put("sort", "label");
-        widgetInteractor.getNumberList(getNumberListSubscriber(),
+        widgetInteractor.getNumberList(getNumberListSubscriber(categoryId),
                 AuthUtil.generateParamsNetwork(context, param));
     }
 
-    private Subscriber<DigitalNumberList> getNumberListSubscriber() {
+    private Subscriber<DigitalNumberList> getNumberListSubscriber(final String categoryId) {
         return new Subscriber<DigitalNumberList>() {
             @Override
             public void onCompleted() {
-                Log.d("DigitalWidgetStyle2Presenter", "onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
                 view.renderDefaultError();
-                Log.d("DigitalWidgetStyle1Presenter", "onError: " + e.getMessage());
             }
 
             @Override
             public void onNext(DigitalNumberList digitalNumberList) {
-                Log.d("DigitalWidgetStyle2Presenter", "onNext");
                 view.renderNumberList(digitalNumberList.getOrderClientNumbers());
                 if (digitalNumberList.getLastOrder() != null) {
                     LastOrder lastOrder = new LastOrder();
@@ -77,9 +71,10 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
                     attributesBean.setProduct_id(Integer.valueOf(digitalNumberList.getLastOrder().getLastProduct()));
                     lastOrderEntity.setAttributes(attributesBean);
                     lastOrder.setData(lastOrderEntity);
+
                     view.renderLastOrder(lastOrder);
-                } else {
-                    view.renderLastOrder(getLastOrderFromCache());
+                } else if (getLastClientNumberTyped(categoryId) != null){
+                    view.renderLastTypedClientNumber();
                 }
             }
         };

@@ -119,6 +119,8 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.digital.product.activity.DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER;
+
 /**
  * @author anggaprasetiyo on 4/25/17.
  */
@@ -146,7 +148,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
 
-
     private Operator operatorSelectedState;
     private Product productSelectedState;
     private String clientNumberState;
@@ -169,7 +170,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     LinearLayout holderProductDetail;
     @BindView(R2.id.holder_check_balance)
     LinearLayout holderCheckBalance;
-
 
     private BannerAdapter bannerAdapter;
     private String categoryId;
@@ -787,6 +787,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public void onClientNumberCleared(List<OrderClientNumber> recentClientNumberList) {
+        startActivityForResult(
+                DigitalSearchNumberActivity.newInstance(
+                        getActivity(), categoryId, "", recentClientNumberList
+                ),
+                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
+        );
+    }
+
+    @Override
     public void onButtonCopyBannerVoucherCodeClicked(String voucherCode) {
         this.voucherCodeCopiedState = voucherCode;
         ClipboardManager clipboard = (ClipboardManager)
@@ -848,7 +858,18 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     presenter.processAddToCartProduct(digitalCheckoutPassDataState);
                 }
                 break;
+            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    OrderClientNumber orderClientNumber = data.getParcelableExtra(EXTRA_CALLBACK_CLIENT_NUMBER);
+                    handleCallbackSearchNumber(orderClientNumber);
+                }
+                break;
         }
+    }
+
+    private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
+        historyClientNumberState.setLastOrderClientNumber(orderClientNumber);
+        digitalProductView.renderData(categoryDataState, historyClientNumberState);
     }
 
     @Override

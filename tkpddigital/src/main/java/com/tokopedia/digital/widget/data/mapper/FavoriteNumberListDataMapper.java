@@ -24,6 +24,7 @@ public class FavoriteNumberListDataMapper implements IFavoriteNumberMapper {
                     .lastProduct(responseFavoriteNumber.getAttributes().getLastProduct())
                     .categoryId(responseFavoriteNumber.getRelationships().getCategory().getData().getId())
                     .operatorId(responseFavoriteNumber.getRelationships().getOperator().getData().getId())
+                    .productId(responseFavoriteNumber.getAttributes().getLastProduct())
                     .build());
         }
         return orderClientNumbers;

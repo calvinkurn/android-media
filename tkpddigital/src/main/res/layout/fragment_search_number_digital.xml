@@ -30,6 +30,16 @@
                 android:textColorHint="@color/black_38"
                 android:textSize="16sp" />
 
+            <Button
+                android:layout_height="@dimen/digital_height_width_25"
+                android:layout_width="@dimen/digital_height_width_25"
+                android:id="@+id/btn_clear_number"
+                android:layout_gravity="end|center"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/ic_clear_widget"
+                android:visibility="visible" />
+
         </FrameLayout>
 
     </FrameLayout>

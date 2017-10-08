@@ -22,7 +22,7 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
     private OnClientNumberClickListener callback;
 
     public interface OnClientNumberClickListener {
-        void onClientNumberClicked(String number);
+        void onClientNumberClicked(OrderClientNumber orderClientNumber);
     }
 
     public NumberListAdapter(OnClientNumberClickListener callback, List<OrderClientNumber> clientNumbers) {
@@ -55,7 +55,7 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
         private TextView number;
         private TextView name;
 
-        private String clientNumber;
+        private OrderClientNumber orderClientNumber;
 
         ItemHolder(View itemView) {
             super(itemView);
@@ -65,14 +65,14 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
         }
 
         public void bind(OrderClientNumber orderClientNumber) {
-            this.clientNumber = orderClientNumber.getClientNumber();
+            this.orderClientNumber = orderClientNumber;
             number.setText(orderClientNumber.getClientNumber());
             name.setText(orderClientNumber.getName());
         }
 
         @Override
         public void onClick(View v) {
-            callback.onClientNumberClicked(clientNumber);
+            callback.onClientNumberClicked(orderClientNumber);
         }
     }
 

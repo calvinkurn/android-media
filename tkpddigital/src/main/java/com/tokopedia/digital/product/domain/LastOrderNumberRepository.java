@@ -32,7 +32,6 @@ public class LastOrderNumberRepository implements ILastOrderNumberRepository {
     @Override
     public Observable<OrderClientNumber> getLastOrder(TKPDMapParam<String, String> param
     ) {
-
         return digitalEndpointService.getApi().getLastOrder(param)
                 .map(new Func1<Response<TkpdDigitalResponse>, OrderClientNumber>() {
                     @Override

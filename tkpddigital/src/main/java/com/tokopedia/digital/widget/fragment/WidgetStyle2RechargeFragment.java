@@ -78,7 +78,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         DigitalWidgetInteractor interactor = new DigitalWidgetInteractor(new CompositeSubscription(),
                 new DigitalWidgetRepository(new RechargeService(), new DigitalEndpointService(), new FavoriteNumberListDataMapper()));
         presenter = new DigitalWidgetStyle2Presenter(getActivity(), interactor, this);
-        presenter.fetchNumberList(String.valueOf(category.getId()));
 
         lastClientNumberTyped = presenter.getLastClientNumberTyped(String.valueOf(category.getId()));
         lastOperatorSelected = presenter.getLastOperatorSelected(String.valueOf(category.getId()));
@@ -102,16 +101,19 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         setRechargeEditTextCallback(widgetClientNumberView);
         setRechargeEditTextTouchCallback(widgetClientNumberView);
 
-        widgetClientNumberView.setClientNumberLabel(clientNumber.getText());
-        widgetClientNumberView.setHint(clientNumber.getPlaceholder());
-        widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
-        widgetWrapperBuyView.setCategory(category);
-        widgetWrapperBuyView.renderInstantCheckoutOption(
-                category.getAttributes().isInstantCheckoutAvailable());
-        holderWidgetClientNumber.addView(widgetClientNumberView);
+        if (category.getAttributes().getClientNumber().isShown()) {
+            presenter.fetchNumberList(String.valueOf(category.getId()));
+
+            widgetClientNumberView.setClientNumberLabel(clientNumber.getText());
+            widgetClientNumberView.setHint(clientNumber.getPlaceholder());
+            widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
+            widgetWrapperBuyView.setCategory(category);
+            widgetWrapperBuyView.renderInstantCheckoutOption(
+                    category.getAttributes().isInstantCheckoutAvailable());
+            holderWidgetClientNumber.addView(widgetClientNumberView);
+        }
 
         presenter.fetchOperatorByCategory(category.getId());
-//        initClientNumber();
     }
 
     private WidgetClientNumberView.OnButtonPickerListener getButtonPickerListener() {
@@ -350,6 +352,15 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderDefaultError() {
 
+    }
+
+    @Override
+    public void renderLastTypedClientNumber() {
+        if (category.getAttributes().isValidatePrefix()) {
+            widgetClientNumberView.setText(lastClientNumberTyped);
+        } else {
+            presenter.getOperatorById(lastOperatorSelected);
+        }
     }
 
     @Override

@@ -1,20 +1,14 @@
 package com.tokopedia.digital.widget.domain;
 
-import android.util.Log;
-
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.database.manager.RechargeNumberListManager;
-import com.tokopedia.core.database.model.RechargeNumberListModelDB;
 import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.database.recharge.operator.Operator;
 import com.tokopedia.core.database.recharge.operator.OperatorData;
 import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.database.recharge.product.ProductData;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrderEntity;
 import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.apiservices.recharge.RechargeService;
@@ -23,9 +17,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteNumber;
 import com.tokopedia.digital.widget.data.mapper.IFavoriteNumberMapper;
-import com.tokopedia.digital.widget.model.DigitalNumberList;
-import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +32,7 @@ import rx.functions.Func1;
 
 /**
  * Created by nabillasabbaha on 7/28/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public class DigitalWidgetRepository implements IDigitalWidgetRepository {
@@ -220,7 +214,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                 .onErrorReturn(new Func1<Throwable, List<Operator>>() {
                     @Override
                     public List<Operator> call(Throwable throwable) {
-                        return new ArrayList<Operator>();
+                        return new ArrayList<>();
                     }
                 });
     }
@@ -379,9 +373,9 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
 
 //        Observable<List<OrderClientNumber>> observableDummyNumbers = Observable.just(dummyNumbers);
 
+//        return observableDummyNumbers
         return digitalEndpointService.getApi().getNumberList(param)
                 .map(getFuncTransformNumberList())
-//        return observableDummyNumbers
                 .flatMap(new Func1<List<OrderClientNumber>, Observable<DigitalNumberList>>() {
                     @Override
                     public Observable<DigitalNumberList> call(final List<OrderClientNumber> orderClientNumbers) {
@@ -449,28 +443,28 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
         };
     }
 
-    @Override
-    public Observable<LastOrder> getObservableLastOrderFromDBByCategoryId(int categoryId) {
-        RechargeNumberListModelDB db = new RechargeNumberListManager()
-                .getLastOrderById(categoryId);
+//    @Override
+//    public Observable<LastOrder> getObservableLastOrderFromDBByCategoryId(int categoryId) {
+//        RechargeNumberListModelDB db = new RechargeNumberListManager()
+//                .getLastOrderById(categoryId);
+//
+//        LastOrder lastOrder = new LastOrder();
+//        LastOrderEntity data = new LastOrderEntity();
+//        LastOrderEntity.AttributesBean attributesBean = new LastOrderEntity.AttributesBean();
+//        attributesBean.setCategory_id(db.categoryId);
+//        attributesBean.setClient_number(db.clientNumber);
+//        data.setAttributes(attributesBean);
+//        lastOrder.setData(data);
+//
+//        return Observable.just(lastOrder);
+//    }
 
-        LastOrder lastOrder = new LastOrder();
-        LastOrderEntity data = new LastOrderEntity();
-        LastOrderEntity.AttributesBean attributesBean = new LastOrderEntity.AttributesBean();
-        attributesBean.setCategory_id(db.categoryId);
-        attributesBean.setClient_number(db.clientNumber);
-        data.setAttributes(attributesBean);
-        lastOrder.setData(data);
-
-        return Observable.just(lastOrder);
-    }
-
-    @Override
-    public Observable<Boolean> hasLastOrder(int categoryId) {
-        RechargeNumberListModelDB db = new RechargeNumberListManager()
-                .getLastOrderById(categoryId);
-
-        return Observable.just(db == null);
-    }
+//    @Override
+//    public Observable<Boolean> hasLastOrder(int categoryId) {
+//        RechargeNumberListModelDB db = new RechargeNumberListManager()
+//                .getLastOrderById(categoryId);
+//
+//        return Observable.just(db == null);
+//    }
 
 }
