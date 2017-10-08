@@ -15,12 +15,16 @@ import java.util.List;
 
 public interface ProductManagePresenter extends CustomerPresenter<ProductManageView> {
 
-    void editPrice(String productId, String price, String priceCurrency);
+    void getGoldMerchantStatus();
+
+    void editPrice(String productId, String price, String currencyId, String currencyText);
 
     void deleteProduct(String productId);
 
     void getListFeaturedProduct();
+
     void deleteListProduct(List<String> productIds);
+
     void setCashback(String productId, String cashback);
 
     void getListProduct(int page, String keywordFilter, @CatalogProductOption String catalogOption,

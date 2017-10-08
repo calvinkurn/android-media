@@ -6,10 +6,6 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.manage.data.repository.ActionProductManageRepositoryImpl;
 import com.tokopedia.seller.product.manage.data.source.ActionProductManageDataSource;
 import com.tokopedia.seller.product.manage.data.source.ProductActionApi;
@@ -26,6 +22,7 @@ import com.tokopedia.seller.product.picker.data.source.GetProductListSellingData
 import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -40,13 +37,14 @@ import retrofit2.Retrofit;
 public class ProductManageModule {
     @Provides
     @ProductManageScope
-    public ProductManagePresenter provideManageProductPresenter(GetProductListSellingUseCase getProductListSellingUseCase,
+    public ProductManagePresenter provideManageProductPresenter(GetShopInfoUseCase getShopInfoUseCase,
+                                                                GetProductListSellingUseCase getProductListSellingUseCase,
                                                                 EditPriceProductUseCase editPriceProductUseCase,
                                                                 DeleteProductUseCase deleteProductUseCase,
                                                                 GetProductListManageMapperView getProductListManageMapperView,
                                                                 SellerModuleRouter sellerModuleRouter,
                                                                 MultipleDeleteProductUseCase multipleDeleteProductUseCase){
-        return new ProductManagePresenterImpl(getProductListSellingUseCase, editPriceProductUseCase, deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter, multipleDeleteProductUseCase);
+        return new ProductManagePresenterImpl(getShopInfoUseCase, getProductListSellingUseCase, editPriceProductUseCase, deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter, multipleDeleteProductUseCase);
     }
 
     @Provides
@@ -75,20 +73,8 @@ public class ProductManageModule {
 
     @Provides
     @ProductManageScope
-    public ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
-        return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
-    }
-
-    @Provides
-    @ProductManageScope
     public TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
         return retrofit.create(TomeApi.class);
-    }
-
-    @Provides
-    @ProductManageScope
-    public ShopApi provideShopApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
-        return retrofit.create(ShopApi.class);
     }
 
     @Provides

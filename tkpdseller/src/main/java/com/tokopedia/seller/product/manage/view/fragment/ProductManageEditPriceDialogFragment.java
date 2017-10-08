@@ -40,7 +40,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
     private CurrencyUsdTextWatcher usdTextWatcher;
 
     public interface ListenerDialogEditPrice {
-        void onSubmitEditPrice(String productId, String price, String priceCurrency);
+        void onSubmitEditPrice(String productId, String price, String currencyId, String currencyText);
     }
 
     private String productId;
@@ -107,10 +107,13 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPriceValid()) {
-                    listenerDialogEditPrice.onSubmitEditPrice(productId, formatDecimal(spinnerCounterInputViewPrice.getCounterValue()), spinnerCounterInputViewPrice.getSpinnerValue());
+                if (isPriceValid()) {
+                    listenerDialogEditPrice.onSubmitEditPrice(productId,
+                            formatDecimal(spinnerCounterInputViewPrice.getCounterValue()),
+                            spinnerCounterInputViewPrice.getSpinnerValue(),
+                            spinnerCounterInputViewPrice.getSpinnerEntry());
                     dismiss();
-                }else{
+                } else {
                     spinnerCounterInputViewPrice.requestFocus();
                 }
             }

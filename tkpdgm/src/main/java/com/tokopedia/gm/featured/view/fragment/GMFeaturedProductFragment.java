@@ -399,7 +399,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
                 }
         }
     }
-    
+
     public void onBackPressed() {
         switch (featuredProductTypeView) {
             case GMFeaturedProductTypeView.ARRANGE_DISPLAY:

@@ -14,8 +14,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.design.button.BottomActionView;
@@ -66,6 +66,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private String sortProductOption;
     private ProductManageFilterModel productManageFilterModel;
     private ActionMode actionMode;
+    private Boolean goldMerchant;
 
     @Override
     protected void initInjector() {
@@ -227,8 +228,18 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
+    protected void onPullToRefresh() {
+        goldMerchant = null;
+        ((ProductManageListAdapter) adapter).setFeaturedProduct(null);
+        super.onPullToRefresh();
+    }
+
+    @Override
     protected void searchForPage(int page) {
-        if (page == getStartPage()) {
+        if (goldMerchant == null) {
+            productManagePresenter.getGoldMerchantStatus();
+        }
+        if (((ProductManageListAdapter) adapter).getFeaturedProduct() == null) {
             productManagePresenter.getListFeaturedProduct();
         }
         productManagePresenter.getListProduct(page, searchInputView.getSearchText(),
@@ -253,13 +264,40 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onErrorEditPrice() {
+    public void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage) {
+        onSearchLoaded(list, totalItem);
+        this.hasNextPage = hasNextPage;
+    }
+
+    @Override
+    public void onSuccessLoadGoldMerchantFlag(boolean goldMerchant) {
+        this.goldMerchant = goldMerchant;
+    }
+
+    @Override
+    public void onGetFeaturedProductList(List<String> data) {
+        ((ProductManageListAdapter) adapter).setFeaturedProduct(data);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSuccessEditPrice(String productId, String price, String currencyId, String currencyText) {
+        ((ProductManageListAdapter) adapter).updatePrice(productId, price, currencyId, currencyText);
+    }
+
+    @Override
+    public void onErrorEditPrice(String productId, String price, String currencyId, String currencyText) {
 
     }
 
     @Override
-    public void onSuccessEditPrice() {
+    public void onSuccessSetCashback() {
         resetPageAndSearch();
+    }
+
+    @Override
+    public void onErrorSetCashback() {
+
     }
 
     @Override
@@ -273,9 +311,20 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNext) {
-        onSearchLoaded(list, totalItem);
-        this.hasNextPage = hasNext;
+    public void onErrorMultipleDeleteProduct(int countOfSuccess, int countOfError) {
+        if (countOfSuccess > 0) {
+            resetPageAndSearch();
+        }
+    }
+
+    @Override
+    public void onSuccessMultipleDeleteProduct(int countOfSuccess, int countOfError) {
+        resetPageAndSearch();
+    }
+
+    @Override
+    public void onErrorMultipleDeleteProduct(Throwable e) {
+
     }
 
     @Override
@@ -302,42 +351,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void hideLoadingProgress() {
         progressDialog.hide();
-    }
-
-    @Override
-    public void onGetFeaturedProductList(List<String> data) {
-        ((ProductManageListAdapter) adapter).setFeaturedProduct(data);
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onErrorGetFeaturedProductList() {
-
-    }
-
-    @Override
-    public void onErrorSetCashback() {
-
-    }
-
-    @Override
-    public void onSuccessSetCashback() {
-        resetPageAndSearch();
-    }
-
-    @Override
-    public void onErrorMultipleDeleteProduct(int countOfSuccess, int countOfError) {
-        resetPageAndSearch();
-    }
-
-    @Override
-    public void onSuccessMultipleDeleteProduct(int countOfSuccess, int countOfError) {
-        resetPageAndSearch();
-    }
-
-    @Override
-    public void onErrorMultipleDeleteProduct(Throwable e) {
-
     }
 
     private void showActionProductDialog(ProductManageViewModel productManageViewModel) {
@@ -438,11 +451,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void showDialogChangeProductPrice(final String productId, String productPrice, String productCurrencyId) {
-        ProductManageEditPriceDialogFragment productManageEditPriceDialogFragment = ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId, false);
+        ProductManageEditPriceDialogFragment productManageEditPriceDialogFragment =
+                ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId, goldMerchant);
         productManageEditPriceDialogFragment.setListenerDialogEditPrice(new ProductManageEditPriceDialogFragment.ListenerDialogEditPrice() {
             @Override
-            public void onSubmitEditPrice(String productId, String price, String priceCurrency) {
-                productManagePresenter.editPrice(productId, price, priceCurrency);
+            public void onSubmitEditPrice(String productId, String price, String currencyId, String currencyText) {
+                productManagePresenter.editPrice(productId, price, currencyId, currencyText);
             }
         });
         productManageEditPriceDialogFragment.show(getActivity().getFragmentManager(), "");

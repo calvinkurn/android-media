@@ -139,10 +139,17 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
             new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
                 @Override
                 public void onRefresh(View view) {
-                    setAndSearchForPage(getStartPage());
+                    onPullToRefresh();
                 }
             });
         }
+    }
+
+    /**
+     * Manual refresh from pull to refresh
+     */
+    protected void onPullToRefresh() {
+        setAndSearchForPage(getStartPage());
     }
 
     @Override

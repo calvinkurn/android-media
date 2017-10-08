@@ -49,12 +49,12 @@ public class MultipleDeleteProductUseCase extends UseCase<MultipleDeleteProductM
                         boolean isError = false;
                         int counterIsSuccess = 0;
                         int counterIsError = 0;
-                        for(Boolean isSuccess : booleen){
-                            if(!isSuccess){
-                                counterIsSuccess += 1;
+                        for (Boolean isSuccess : booleen) {
+                            if (!isSuccess) {
+                                counterIsSuccess++;
                                 isError = true;
-                            }else{
-                                counterIsError += 1;
+                            } else {
+                                counterIsError++;
                             }
                         }
                         MultipleDeleteProductModel multipleDeleteProductModel = new MultipleDeleteProductModel();
@@ -66,7 +66,7 @@ public class MultipleDeleteProductUseCase extends UseCase<MultipleDeleteProductM
                 });
     }
 
-    public static RequestParams createRequestParams(List<String> productIds){
+    public static RequestParams createRequestParams(List<String> productIds) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(ProductManageConstant.LIST_ID_DELETED, productIds);
         return requestParams;

@@ -13,11 +13,13 @@ import java.util.List;
 
 public interface ProductManageView extends BaseListViewListener<ProductManageViewModel> {
 
-    void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNext);
+    void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage);
 
-    void onErrorEditPrice();
+    void onSuccessLoadGoldMerchantFlag(boolean goldMerchant);
 
-    void onSuccessEditPrice();
+    void onErrorEditPrice(String productId, String price, String currencyId, String currencyText);
+
+    void onSuccessEditPrice(String productId, String price, String currencyId, String currencyText);
 
     void onSuccessDeleteProduct();
 
@@ -28,8 +30,6 @@ public interface ProductManageView extends BaseListViewListener<ProductManageVie
     void hideLoadingProgress();
 
     void onGetFeaturedProductList(List<String> data);
-
-    void onErrorGetFeaturedProductList();
 
     void onErrorSetCashback();
 
