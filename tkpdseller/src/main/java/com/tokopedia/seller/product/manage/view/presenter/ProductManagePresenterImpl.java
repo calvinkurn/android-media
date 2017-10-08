@@ -144,9 +144,30 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     }
 
     @Override
-    public void deleteProduct(String productId) {
+    public void deleteProduct(final String productId) {
         getView().showLoadingProgress();
-        deleteProductUseCase.execute(DeleteProductUseCase.createRequestParams(productId), getSubscriberDeleteProduct());
+        deleteProductUseCase.execute(DeleteProductUseCase.createRequestParams(productId), new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                if (isViewAttached()) {
+                    getView().hideLoadingProgress();
+                    getView().onErrorDeleteProduct(t, productId);
+                }
+            }
+
+            @Override
+            public void onNext(Boolean isSuccessDeleteProduct) {
+                if (isSuccessDeleteProduct) {
+                    getView().onSuccessDeleteProduct();
+                }
+                getView().hideLoadingProgress();
+            }
+        });
     }
 
     @Override
@@ -156,33 +177,6 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(page,
                 keywordFilter, catalogOption, conditionOption, categoryId, etalaseId,
                 pictureOption, sortOption), getSubscriberGetListProduct());
-    }
-
-    private Subscriber<Boolean> getSubscriberDeleteProduct() {
-        return new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().hideLoadingProgress();
-                    getView().onErrorDeleteProduct();
-                }
-            }
-
-            @Override
-            public void onNext(Boolean isSuccessDeleteProduct) {
-                if (isSuccessDeleteProduct) {
-                    getView().onSuccessDeleteProduct();
-                } else {
-                    getView().onErrorDeleteProduct();
-                }
-                getView().hideLoadingProgress();
-            }
-        };
     }
 
     private Subscriber<ProductListSellerModel> getSubscriberGetListProduct() {

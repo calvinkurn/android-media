@@ -23,7 +23,7 @@ public interface ProductManageView extends BaseListViewListener<ProductManageVie
 
     void onSuccessDeleteProduct();
 
-    void onErrorDeleteProduct();
+    void onErrorDeleteProduct(Throwable t, String productId);
 
     void showLoadingProgress();
 

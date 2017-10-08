@@ -318,8 +318,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onErrorDeleteProduct() {
-
+    public void onErrorDeleteProduct(Throwable t, final String productId) {
+        NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
+                ViewUtils.getErrorMessage(getActivity(), t), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        productManagePresenter.deleteProduct(productId);
+                    }
+                }).showRetrySnackbar();
     }
 
     @Override
