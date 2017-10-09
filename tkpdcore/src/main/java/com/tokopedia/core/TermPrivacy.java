@@ -29,8 +29,6 @@ public class TermPrivacy extends TActivity {
 
     private Fragment fragment;
     private Uri data;
-    @BindView(R2.id.toolbar)
-    Toolbar toolbar;
     FragmentManager supportFragmentManager;
     private Unbinder unbinder;
 
@@ -42,13 +40,7 @@ public class TermPrivacy extends TActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
-        }
-        setContentView(R.layout.activity_term_privacy);
-        unbinder = ButterKnife.bind(this);
-
+        setContentView(R.layout.activity_simple_fragment);
         supportFragmentManager = getSupportFragmentManager();
         supportFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             public void onBackStackChanged() {
@@ -61,19 +53,15 @@ public class TermPrivacy extends TActivity {
             }
         });
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
 //        try {
         data = getIntent().getData();
         if (data != null) {
             if (data.getQueryParameter("param").equals("0")) {
-                setTitle(R.string.custom_string_term_condition);
+
+                toolbar.setTitle(R.string.custom_string_term_condition);
                 fragment = FragmentTermPrivacy.createInstance(FragmentTermPrivacy.TERM_MODE);
             } else {
-                setTitle(R.string.custom_string_privacy_policy);
+                toolbar.setTitle(R.string.custom_string_privacy_policy);
                 fragment = FragmentTermPrivacy.createInstance(FragmentTermPrivacy.PRIVACY_MODE);
             }
         }
@@ -86,11 +74,11 @@ public class TermPrivacy extends TActivity {
                 && getIntent().getExtras().getString("param") != null) {
             switch (getIntent().getExtras().getString("param")) {
                 case T_AND_C:
-                    setTitle(R.string.custom_string_term_condition);
+                    toolbar.setTitle(R.string.custom_string_term_condition);
                     fragment = FragmentTermPrivacy.createInstance(FragmentTermPrivacy.TERM_MODE);
                     break;
                 case P_P:
-                    setTitle(R.string.custom_string_privacy_policy);
+                    toolbar.setTitle(R.string.custom_string_privacy_policy);
                     fragment = FragmentTermPrivacy.createInstance(FragmentTermPrivacy.PRIVACY_MODE);
                     break;
             }
@@ -131,19 +119,19 @@ public class TermPrivacy extends TActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (data != null && data.getQueryParameter("param").equals("0")) {
-            getSupportActionBar().setTitle(R.string.custom_string_term_condition);
+            toolbar.setTitle(R.string.custom_string_term_condition);
         } else {
-            getSupportActionBar().setTitle(R.string.custom_string_privacy_policy);
+            toolbar.setTitle(R.string.custom_string_privacy_policy);
         }
 
         if (getIntent() != null && getIntent().getExtras() != null
                 && getIntent().getExtras().getString("param") != null) {
             switch (getIntent().getExtras().getString("param")) {
                 case T_AND_C:
-                    getSupportActionBar().setTitle(R.string.custom_string_term_condition);
+                    toolbar.setTitle(R.string.custom_string_term_condition);
                     break;
                 case P_P:
-                    getSupportActionBar().setTitle(R.string.custom_string_privacy_policy);
+                    toolbar.setTitle(R.string.custom_string_privacy_policy);
                     break;
             }
         }
