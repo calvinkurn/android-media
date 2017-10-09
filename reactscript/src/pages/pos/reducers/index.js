@@ -314,7 +314,7 @@ const paymentV2 = (state = {
       }
     case `${MAKE_PAYMENT_V2}_${FULFILLED}`:
       // console.log('full')
-      console.log(action.payload)
+      // console.log(action.payload)
       return {
         ...state,
         processing_isFetchingParams: false,

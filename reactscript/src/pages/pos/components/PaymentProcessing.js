@@ -36,7 +36,7 @@ class PaymentProcessing extends Component {
 
   render() {
     console.log(this.props)
-    if (this.props.processing_data){
+    if (this.props.processing_status_msg === 'SUCCESS'){
       NavigationModule.navigate('posapp://payment/otp', JSON.stringify(this.props.processing_data))
     }
 

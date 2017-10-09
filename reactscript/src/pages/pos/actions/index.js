@@ -151,14 +151,12 @@ const doPayment = async () => {
     shop_id: parseInt(shop_id),
     cart: local_cart
   }
-  // console.log(data_payment)
-
   const paymentToNative_getParams = await makePaymentToNativeStepOne(data_payment)
-  console.log(paymentToNative_getParams)  
-  
   const paymentToNative_secondStep = await makePaymentToNativeStepTwo(paymentToNative_getParams, data_payment, local_cart)
-  console.log(paymentToNative_secondStep)
-
+  // console.log(data_payment)
+  // console.log(paymentToNative_getParams)  
+  // console.log(paymentToNative_secondStep)
+  
   return paymentToNative_secondStep
 }
 
