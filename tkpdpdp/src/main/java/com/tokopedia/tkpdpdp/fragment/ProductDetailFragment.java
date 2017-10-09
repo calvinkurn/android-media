@@ -25,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -69,6 +70,7 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
+import com.tokopedia.tkpdpdp.customview.FlingBehavior;
 import com.tokopedia.tkpdpdp.customview.HeaderInfoView;
 import com.tokopedia.tkpdpdp.customview.LastUpdateView;
 import com.tokopedia.tkpdpdp.customview.LatestTalkView;
@@ -148,6 +150,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     AppBarLayout appBarLayout;
     CollapsingToolbarLayout collapsingToolbarLayout;
     FloatingActionButton fabWishlist;
+    LinearLayout rootView;
 
     private TextView tvTickerGTM;
 
@@ -242,6 +245,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         priceSimulationView
                 = (PriceSimulationView) view.findViewById(R.id.view_price_simulation);
         fabWishlist = (FloatingActionButton) view.findViewById(R.id.fab_detail);
+        rootView = (LinearLayout) view.findViewById(R.id.root_view);
 
         collapsingToolbarLayout.setTitle("");
         toolbar.setTitle("");
@@ -250,6 +254,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         setHasOptionsMenu(true);
         initToolbarTransparant();
+        rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int viewId = v.getId();
+            }
+        });
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+        params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
     }
 
     @Override
