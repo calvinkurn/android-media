@@ -59,6 +59,7 @@ public class ImageUploadPreviewFragment extends
 
     public static final String NAV_UPLOAD_IMAGE = "nav_upload_image";
     private static final int MAX_CHAR = 128;
+    private static final String ARGS_IMAGE_LIST = "ARGS_IMAGE_LIST";
 
     ViewPager previewImage;
     TextView submitButton;
@@ -84,6 +85,8 @@ public class ImageUploadPreviewFragment extends
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        adapter = ImageUploadAdapter.createAdapter(getActivity().getApplicationContext());
+        adapter.addList(savedInstanceState.<ImageUpload>getParcelableArrayList(ARGS_IMAGE_LIST));
     }
 
     @Override
@@ -140,7 +143,6 @@ public class ImageUploadPreviewFragment extends
         imageRecyclerView = (RecyclerView) view.findViewById(R.id.image_upload_list);
         description = (EditText) view.findViewById(R.id.image_description);
 
-        adapter = ImageUploadAdapter.createAdapter(getActivity().getApplicationContext());
         adapter.setListener(onProductImageActionListener());
         adapter.setCanUpload(true);
         viewPagerAdapter = new PreviewImageViewPagerAdapter(adapter.getList());
@@ -456,5 +458,11 @@ public class ImageUploadPreviewFragment extends
         listPermission.add(Manifest.permission.CAMERA);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(ARGS_IMAGE_LIST, adapter.getList());
     }
 }

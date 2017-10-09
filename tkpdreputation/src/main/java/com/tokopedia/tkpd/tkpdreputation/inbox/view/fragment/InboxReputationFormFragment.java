@@ -112,7 +112,6 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     @Inject
     InboxReputationFormPresenter presenter;
 
-
     public static InboxReputationFormFragment createInstance(String reviewId, String
             reputationId, String productId, String shopId, String productAvatar, String productName,
                                                              String productUrl, String revieweeName) {
@@ -401,7 +400,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                     MainApplication.getAppContext().getString(R.string.product_is_deleted));
 
             ImageHandler.loadImageWithIdWithoutPlaceholder(productImage, R.drawable.ic_product_deleted);
-        }else{
+        } else {
             productName.setText(MethodChecker.fromHtml(getArguments().getString
                     (InboxReputationFormActivity.ARGS_PRODUCT_NAME)));
 

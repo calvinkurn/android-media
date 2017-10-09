@@ -49,6 +49,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public final static String PARAM_TAB = "tab";
     private static final int REQUEST_OPEN_DETAIL = 101;
     private static final int REQUEST_FILTER = 102;
+    private static final String ARGS_TIME_FILTER = "ARGS_TIME_FILTER";
+    private static final String ARGS_SCORE_FILTER = "ARGS_SCORE_FILTER";
 
     SearchView searchView;
     private RecyclerView mainList;
@@ -95,7 +97,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        initVar();
+        initVar(savedInstanceState);
     }
 
     private void openFilter() {
@@ -105,9 +107,15 @@ public class InboxReputationFragment extends BaseDaggerFragment
         startActivityForResult(intent, REQUEST_FILTER);
     }
 
-    private void initVar() {
-        timeFilter = "";
-        scoreFilter = "";
+    private void initVar(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            timeFilter = savedInstanceState.getString(ARGS_TIME_FILTER);
+            scoreFilter = savedInstanceState.getString(ARGS_SCORE_FILTER);
+        } else {
+            timeFilter = "";
+            scoreFilter = "";
+        }
+
         InboxReputationTypeFactory typeFactory = new InboxReputationTypeFactoryImpl(this);
         adapter = new InboxReputationAdapter(typeFactory);
     }
@@ -436,5 +444,12 @@ public class InboxReputationFragment extends BaseDaggerFragment
         super.onDestroy();
         if (presenter != null)
             presenter.detachView();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ARGS_TIME_FILTER, timeFilter);
+        outState.putString(ARGS_SCORE_FILTER, scoreFilter);
     }
 }
