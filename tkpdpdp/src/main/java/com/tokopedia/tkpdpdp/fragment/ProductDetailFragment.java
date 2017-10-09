@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -249,11 +250,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
         collapsingToolbarLayout.setTitle("");
         toolbar.setTitle("");
+        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         setHasOptionsMenu(true);
-        initToolbarTransparant();
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1019,20 +1020,20 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
         return new AppBarLayout.OnOffsetChangedListener() {
-            int scrollRange = -1;
+            int intColor = 0;
 
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0 && isAdded()) {
-                    initStatusBarLight();
+
+                intColor = - verticalOffset;
+                if (intColorc v>=255 && isAdded()) {
                     initToolbarLight();
+                    initStatusBarLight();
                     fabWishlist.hide();
                 } else if (isAdded()) {
                     initStatusBarDark();
                     initToolbarTransparant();
+                    toolbar.getBackground().setAlpha(-verticalOffset);
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
                     }
@@ -1042,10 +1043,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     private void initToolbarLight() {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
-        collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
-        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
+        toolbar.getBackground().setAlpha(255);
+        toolbar.setAlpha(1);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
         if (menu != null && menu.size() > 2) {
             menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.icon_share));
@@ -1062,9 +1061,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     private void initToolbarTransparant() {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
-        collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-        toolbar.setBackgroundColor(Color.TRANSPARENT);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
         if (menu != null && menu.size() > 1) {
             menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white));
