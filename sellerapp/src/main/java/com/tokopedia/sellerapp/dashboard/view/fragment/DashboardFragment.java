@@ -294,6 +294,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         updateViewShopOpen(shopModel);
         shopScoreWidget.renderView(shopScoreViewModel);
         swipeRefreshLayout.setRefreshing(false);
+        hideSnackBarRetry();
     }
 
     private void updateReputation(final ShopModel shopModel) {
