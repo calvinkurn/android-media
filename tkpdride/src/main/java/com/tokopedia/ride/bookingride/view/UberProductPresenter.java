@@ -188,6 +188,11 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                     if (destination != null) {
                         rideProductViewModel.setBaseFare("");
                         rideProductViewModel.setSurgePrice(false);
+                        rideProductViewModel.setDestinationSelected(true);
+                        getView().showFareListHeader();
+                    } else {
+                        rideProductViewModel.setDestinationSelected(false);
+                        getView().hideFareListHeader();
                     }
 
                     rideProductViewModel.setEnabled(false);

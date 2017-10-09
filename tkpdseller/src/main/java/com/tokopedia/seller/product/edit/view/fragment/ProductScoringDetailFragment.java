@@ -62,7 +62,7 @@ public class ProductScoringDetailFragment extends BaseDaggerFragment implements 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_detail_product_score, container, false);
+        View view = inflater.inflate(R.layout.fragment_product_score_detail, container, false);
 
         initalVar();
         initView(view);

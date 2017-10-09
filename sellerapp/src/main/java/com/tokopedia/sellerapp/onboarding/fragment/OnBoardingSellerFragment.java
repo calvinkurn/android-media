@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -137,6 +138,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
             @Override
             public void onClick(View v) {
                 Intent intent;
+                UnifyTracking.eventClickCreateShopOnBoardingSellerApp();
                 if (SessionHandler.isMsisdnVerified()) {
                     intent = SellerRouter.getAcitivityShopCreateEdit(getActivity());
                     intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,

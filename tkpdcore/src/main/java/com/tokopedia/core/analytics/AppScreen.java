@@ -243,6 +243,8 @@ public final class AppScreen {
     public static final String SCREEN_RESOLUTION_CENTER_DISCUSSION = "Resolution Center - Discussion";
     public static final String CREATE_SHOP_REDIRECT = "Create Shop Redirect Page";
     public static final String SCREEN_FEED_DETAIL = "Feed Detail";
+    public static final String SCREEN_OPPORTUNITY_DETAIL = "Replacement Detail Page";
+    public static final String SCREEN_OPPORTUNITY_TAB= "Replacement Main Page";
 
     private AppScreen() {
 

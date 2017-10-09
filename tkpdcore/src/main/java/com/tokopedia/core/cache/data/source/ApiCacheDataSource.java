@@ -2,6 +2,7 @@ package com.tokopedia.core.cache.data.source;
 
 import android.util.Log;
 
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
@@ -47,13 +48,16 @@ public class ApiCacheDataSource {
 
     }
 
-    public static CacheApiWhiteListDomain from2(String host, String path, long expiredTime) {
-        CacheApiWhiteListDomain cacheApiWhitelist = new CacheApiWhiteListDomain();
-        cacheApiWhitelist.setHost(host.replace(HTTPS, "").replace(COM_WITH_SLASH, COM1));
-        cacheApiWhitelist.setPath(path);
-        cacheApiWhitelist.setExpireTime(expiredTime);
+    public static String generateCacheHost(String host) {
+        return (host.replace(HTTPS, "").replace(COM_WITH_SLASH, COM1));
+    }
 
-        return cacheApiWhitelist;
+    public static String generateCachePath(String path) {
+        if (!path.startsWith("/")) {
+            return "/" + path;
+        } else {
+            return path;
+        }
     }
 
     public Observable<Boolean> addWhiteListData(CacheApiWhitelist cacheApiWhitelist) {
@@ -102,7 +106,7 @@ public class ApiCacheDataSource {
                 .where(CacheApiData_Table.host.eq(host))
                 .and(CacheApiData_Table.path.eq(path))
                 .and(CacheApiData_Table.requestParam.eq(param));
-        Log.d(TAG, "queryDataFrom : "+and
+        Log.d(TAG, "queryDataFrom : " + and
                 .toString());
         return and.querySingle();
     }
@@ -117,13 +121,20 @@ public class ApiCacheDataSource {
         return and.queryList();
     }
 
+    public boolean delete(String host, String path) {
+        new Delete()
+                .from(CacheApiData.class)
+                .where(CacheApiData_Table.host.eq(host))
+                .and(CacheApiData_Table.path.eq(path))
+                .execute();
+        return true;
+    }
+
     public void clearTimeout() {
         long currentTime = System.currentTimeMillis() / DIVIDE_FOR_SECONDS;
         List<CacheApiData> cacheApiDatas = new Select().from(CacheApiData.class).where(CacheApiData_Table.expiredDate.lessThan(currentTime)).queryList();
-        if (cacheApiDatas != null) {
-            for (int i = 0; i < cacheApiDatas.size(); i++) {
-                cacheApiDatas.get(i).delete();
-            }
+        for (int i = 0; i < cacheApiDatas.size(); i++) {
+            cacheApiDatas.get(i).delete();
         }
     }
 
@@ -237,13 +248,7 @@ public class ApiCacheDataSource {
             return false;
         }
 
-        CacheApiData cacheApiData = queryDataFrom(cacheApiDataDomain.getHost(), cacheApiDataDomain.getPath(), cacheApiDataDomain.getParam());
-        if (cacheApiData == null) {
-            return false;
-        } else {
-            cacheApiData.delete();
-            return true;
-        }
+        return delete(cacheApiDataDomain.getHost(), cacheApiDataDomain.getPath());
     }
 
     public boolean singleDelete(CacheApiWhiteListDomain cacheApiWhiteListDomain) {

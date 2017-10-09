@@ -3,7 +3,7 @@ package com.tokopedia.core.category.data.source.cloud.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
+@Deprecated
 public class CategoryVersionServiceModel {
 
     @SerializedName("version")

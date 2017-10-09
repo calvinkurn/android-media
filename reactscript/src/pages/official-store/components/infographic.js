@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Image, Text, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
-import { icons } from '../../../icons/index'
 
 
 const { height, width, fontScale } = Dimensions.get('window');
@@ -40,7 +39,7 @@ class infographic extends Component {
         {infoContent.map((info, idx) => (
           <View style={styles.osInfoContent} key={idx}>
             <View style={styles.osInfoImgWrap}>
-              <Image source={ info.img } style={{width:70, height:70, resizeMode:'contain'}} />
+              <Image source={{ uri : info.img }} style={{width:70, height:70, resizeMode:'contain'}} />
             </View>
             <View style={styles.osInfoContentText}>
               <View>

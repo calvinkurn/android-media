@@ -104,7 +104,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.add_whole_sale_dialog_layout, container, false);
+        View view = inflater.inflate(R.layout.dialog_product_add_whole_sale, container, false);
         determineFormatter();
         title = (TextView) view.findViewById(R.id.string_picker_dialog_title);
         title.setText(R.string.product_add_whole_sale_title);

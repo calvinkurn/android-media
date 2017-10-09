@@ -24,8 +24,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
@@ -436,6 +437,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
             getActivity().finish();
         } else if(fragmentShipingMainLayout.getChildCount() < 1){
             showErrorToast(getActivity().getString(R.string.title_select_shop_location));
+            UnifyTracking.eventCreateShopFillLogisticError();
         }
     }
 

@@ -14,12 +14,12 @@
         app:lv_title_color="@color/font_black_secondary_54"
         app:content_text_size="@dimen/font_subheading"
         app:content_color="@color/font_black_primary_70"
-        style="@style/LabelLayout2"/>
+        style="@style/LabelLayout"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@drawable/line_separator_medium"/>
+        android:background="@drawable/bg_line_separator"/>
 
     <FrameLayout
         android:layout_width="match_parent"
