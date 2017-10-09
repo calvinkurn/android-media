@@ -33,6 +33,7 @@ public class ProductProblemDetailFragmentPresenter
     private ProductProblemViewModel productProblemViewModel;
     private HashMap<String, Integer> troubleHashMap = new HashMap<>();
     private int currentTroublePos = 0;
+    private boolean isEditData;
 
     public ProductProblemDetailFragmentPresenter(Context context) {
         this.context = context;
@@ -68,6 +69,7 @@ public class ProductProblemDetailFragmentPresenter
     }
 
     public void initProblemResult(ProductProblemViewModel productProblemViewModel) {
+        isEditData = true;
         problemResult.type = productProblemViewModel.getProblem().getType();
         problemResult.isDelivered = true;
         //init with first trouble item of delivered status
@@ -122,7 +124,7 @@ public class ProductProblemDetailFragmentPresenter
                     i++;
                 }
                 problemResult.trouble = statusViewModel.getTrouble().get(0).getId();
-                if (isDelivered) {
+                if (!isEditData && isDelivered) {
                     problemResult.trouble = 0;
                 }
                 mainView.populateReasonSpinner(troubleStringArray, pos);

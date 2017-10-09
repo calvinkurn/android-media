@@ -252,6 +252,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             buttonDisabled(btnNotArrived);
             buttonSelected(btnArrived);
         } else {
+            presenter.updateSpinner(isArrived);
             if (isArrived) {
                 buttonCanSelected(btnNotArrived);
                 buttonSelected(btnArrived);
