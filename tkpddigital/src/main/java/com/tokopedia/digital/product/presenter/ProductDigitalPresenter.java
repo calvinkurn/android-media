@@ -88,7 +88,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     private boolean ussdTimeOut = false;
 
     private final String PARAM_IS_RESELLER = "is_reseller";
-    private final String balance = "balance";
+    private final static String balance = "balance";
 
     public ProductDigitalPresenter(IProductDigitalView view,
                                    IProductDigitalInteractor productDigitalInteractor) {
