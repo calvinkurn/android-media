@@ -42,6 +42,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
+import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
@@ -323,67 +325,78 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK && intent!= null) {
-            List<InstagramMediaModel> images = intent.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
-            if (images == null || images.size() == 0) {
-                return;
+        switch (requestCode) {
+            case INSTAGRAM_SELECT_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK && intent!= null) {
+                    List<InstagramMediaModel> images = intent.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
+                    if (images == null || images.size() == 0) {
+                        return;
+                    }
+                    final ArrayList<String> standardResoImageUrlList = new ArrayList<>();
+                    final ArrayList<String> imageDescriptionList = new ArrayList<>();
+                    for (int i = 0; i < images.size(); i++) {
+                        InstagramMediaModel instagramMediaModel = images.get(i);
+                        standardResoImageUrlList.add(instagramMediaModel.standardResolution);
+                        imageDescriptionList.add(instagramMediaModel.captionText);
+                    }
+                    showProgressDialog();
+                    ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(getContext());
+                    imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList, ManageProductSeller.DEFAULT_NEED_COMPRESS_TKPD,
+                            new ImageDownloadHelper.OnImageDownloadListener() {
+                                @Override
+                                public void onError(Throwable e) {
+                                    hideProgressDialog();
+                                    CommonUtils.UniversalToast(getActivity(),
+                                            ErrorHandler.getErrorMessage(e, getActivity()));
+                                }
+
+                                @Override
+                                public void onSuccess(ArrayList<String> localPaths) {
+                                    // if the path is different with the original,
+                                    // means no all draft is saved to local for some reasons
+                                    if (localPaths == null || localPaths.size() == 0 ||
+                                            localPaths.size() != standardResoImageUrlList.size()) {
+                                        throw new NullPointerException();
+                                    }
+                                    productDraftListPresenter.saveInstagramToDraft(getActivity(),
+                                            localPaths, imageDescriptionList);
+                                    // goto onSaveBulkDraftSuccess
+                                    // goto onSaveBulkDraftError
+                                }
+                            });
+                }
+                break;
+            case ImageEditorActivity.REQUEST_CODE: {
+                if (intent!= null && intent.hasExtra(ImageEditorActivity.RESULT_IMAGE_PATH)) {
+                    ProductAddActivity.start(ProductDraftListFragment.this, getActivity(),
+                            intent.getStringArrayListExtra(ImageEditorActivity.RESULT_IMAGE_PATH));
+                }
             }
-            final ArrayList<String> standardResoImageUrlList = new ArrayList<>();
-            final ArrayList<String> imageDescriptionList = new ArrayList<>();
-            for (int i = 0; i < images.size(); i++) {
-                InstagramMediaModel instagramMediaModel = images.get(i);
-                standardResoImageUrlList.add(instagramMediaModel.standardResolution);
-                imageDescriptionList.add(instagramMediaModel.captionText);
+            default: {
+                ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
+                    @Override
+                    public void onSuccess(ArrayList<String> imageUrls) {
+                        ProductAddActivity.start(ProductDraftListFragment.this, getActivity(), imageUrls);
+                    }
+
+                    @Override
+                    public void onSuccess(String path) {
+                        ArrayList<String> imageUrls = new ArrayList<>();
+                        imageUrls.add(path);
+                        ProductAddActivity.start(ProductDraftListFragment.this, getActivity(), imageUrls);
+                    }
+
+                    @Override
+                    public void onFailed(String message) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), message);
+                    }
+
+                    @Override
+                    public Context getContext() {
+                        return getActivity();
+                    }
+                }, requestCode, resultCode, intent);
             }
-            showProgressDialog();
-            ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(getContext());
-            imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList, ManageProductSeller.DEFAULT_NEED_COMPRESS_TKPD,
-                    new ImageDownloadHelper.OnImageDownloadListener() {
-                        @Override
-                        public void onError(Throwable e) {
-                            hideProgressDialog();
-                            CommonUtils.UniversalToast(getActivity(),
-                                    ErrorHandler.getErrorMessage(e, getActivity()));
-                        }
-
-                        @Override
-                        public void onSuccess(ArrayList<String> localPaths) {
-                            // if the path is different with the original,
-                            // means no all draft is saved to local for some reasons
-                            if (localPaths == null || localPaths.size() == 0 ||
-                                    localPaths.size() != standardResoImageUrlList.size()) {
-                                throw new NullPointerException();
-                            }
-                            productDraftListPresenter.saveInstagramToDraft(getActivity(),
-                                    localPaths, imageDescriptionList);
-                            // goto onSaveBulkDraftSuccess
-                            // goto onSaveBulkDraftError
-                        }
-                    });
-        } else {
-            ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
-                @Override
-                public void onSuccess(ArrayList<String> imageUrls) {
-                    ProductAddActivity.start(ProductDraftListFragment.this, getActivity(), imageUrls);
-                }
-
-                @Override
-                public void onSuccess(String path) {
-                    ArrayList<String> imageUrls = new ArrayList<>();
-                    imageUrls.add(path);
-                    ProductAddActivity.start(ProductDraftListFragment.this, getActivity(), imageUrls);
-                }
-
-                @Override
-                public void onFailed(String message) {
-                    NetworkErrorHelper.showSnackbar(getActivity(), message);
-                }
-
-                @Override
-                public Context getContext() {
-                    return getActivity();
-                }
-            }, requestCode, resultCode, intent);
         }
     }
 
