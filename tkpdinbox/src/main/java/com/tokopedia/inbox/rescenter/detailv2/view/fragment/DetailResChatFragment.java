@@ -3,10 +3,15 @@ package com.tokopedia.inbox.rescenter.detailv2.view.fragment;
 import android.os.Bundle;
 import android.view.View;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragmentV4;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
+import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatFragmentPresenter;
+
+import javax.inject.Inject;
 
 /**
  * Created by yoasfs on 10/6/17.
@@ -17,6 +22,9 @@ public class DetailResChatFragment
         implements DetailResChatFragmentListener.View{
 
     private String resolutionId;
+
+    @Inject
+    DetailResChatFragmentPresenter presenter;
 
     public static DetailResChatFragment newInstance(String resolutionId) {
         DetailResChatFragment fragment = new DetailResChatFragment();
@@ -38,7 +46,13 @@ public class DetailResChatFragment
 
     @Override
     protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+        DaggerResolutionDetailComponent daggerCreateResoComponent =
+                (DaggerResolutionDetailComponent) DaggerResolutionDetailComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
 
+        daggerCreateResoComponent.inject(this);
     }
 
     @Override
