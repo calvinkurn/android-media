@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Button, Image, TouchableWithoutFeedback} from 'react-native';
 import { makePayment } from '../actions/index'
+import { NavigationModule } from 'NativeModules'
 
 
 class PaymentProcessing extends Component {
@@ -25,7 +26,6 @@ class PaymentProcessing extends Component {
     // console.log(data_process_json)
     // console.log(checkout_data)
 
-    // // PR hereeeeee!!!!
     this.props.dispatch(makePayment(data_process_json.checkout_data, data_process_json.selectedEmiId, 
       data_process_json.ccNum, data_process_json.mon + '/' + data_process_json.year, data_process_json.cvv));
     
@@ -36,10 +36,9 @@ class PaymentProcessing extends Component {
 
   render() {
     console.log(this.props)
-
-    // if (!this.props.isFetchingParams && !this.props.showLoadingPage && this.props.status_msg === 'SUCCESS'){
-    //   this.props.navigation.navigate('PaymentInvoice', {})
-    // }
+    if (this.props.processing_data){
+      NavigationModule.navigate('posapp://payment/otp', JSON.stringify(this.props.processing_data))
+    }
 
     return (
       <View style={{ flex: 1 }}>
@@ -68,6 +67,7 @@ const mapStateToProps = state => {
   console.log(state.paymentV2)
   return {
     ...state.paymentV2,
+    // processing_data
     processing_url: state.paymentV2.processing_data.url,
     processing_isFetchingParams: state.paymentV2.processing_isFetchingParams,
     processing_showLoadingPage: state.paymentV2.processing_showLoadingPage,
