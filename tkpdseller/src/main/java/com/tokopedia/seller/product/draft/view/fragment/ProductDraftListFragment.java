@@ -155,7 +155,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_draft_list,menu);
+        inflater.inflate(R.menu.menu_product_draft_list,menu);
         menuDelete = menu.findItem(R.id.menu_delete);
         menuDelete.setVisible(totalItem > 0);
         super.onCreateOptionsMenu(menu, inflater);

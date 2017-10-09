@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_sm"
-        android:text="@string/product_manage_title_set_price"
+        android:text="@string/product_manage_menu_set_price"
         android:textColor="@color/font_black_primary_70"
         android:textSize="20sp" />
 

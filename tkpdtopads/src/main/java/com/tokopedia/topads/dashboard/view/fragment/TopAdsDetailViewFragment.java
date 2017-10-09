@@ -25,8 +25,6 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailViewPresenter;
 
-import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -122,7 +120,7 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
     public void onTurnOnAdError() {
         setStatusSwitch(!status.isChecked());
         hideLoading();
-        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 setStatusSwitch(true);
@@ -143,7 +141,7 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
     public void onTurnOffAdError() {
         setStatusSwitch(!status.isChecked());
         hideLoading();
-        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 setStatusSwitch(false);
@@ -165,7 +163,7 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
     @Override
     public void onDeleteAdError() {
         hideLoading();
-        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 deleteAd();

@@ -1,4 +1,4 @@
-package com.tokopedia.gm.statistic.view.adapter.model;
+package com.tokopedia.seller.common.bottomsheet.custom;
 
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;

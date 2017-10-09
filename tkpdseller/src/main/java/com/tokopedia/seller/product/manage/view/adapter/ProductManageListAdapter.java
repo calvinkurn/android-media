@@ -9,6 +9,7 @@ import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
 public class ProductManageListAdapter extends BaseMultipleCheckListAdapter<ProductManageViewModel> implements ProductManageListViewHolder.ClickOptionCallbackHolder {
 
 
-    public interface ClickOptionCallback{
+    public interface ClickOptionCallback {
         void onClickOptionItem(ProductManageViewModel productManageViewModel);
     }
 
@@ -27,8 +28,16 @@ public class ProductManageListAdapter extends BaseMultipleCheckListAdapter<Produ
     private List<String> featuredProduct;
     private boolean isActionMode;
 
+    public void setFeaturedProduct(List<String> featuredProduct) {
+        this.featuredProduct = featuredProduct;
+    }
+
+    public List<String> getFeaturedProduct() {
+        return featuredProduct;
+    }
+
     public ProductManageListAdapter() {
-        featuredProduct = new ArrayList<>();
+
     }
 
     @Override
@@ -42,13 +51,13 @@ public class ProductManageListAdapter extends BaseMultipleCheckListAdapter<Produ
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
-     }
+    }
 
     @Override
     protected void bindData(int position, RecyclerView.ViewHolder viewHolder) {
         super.bindData(position, viewHolder);
-        ((ProductManageListViewHolder)viewHolder).bindFeaturedProduct(isFeaturedProduct(data.get(position).getProductId()));
-        ((ProductManageListViewHolder)viewHolder).bindActionMode(isActionMode);
+        ((ProductManageListViewHolder) viewHolder).bindFeaturedProduct(isFeaturedProduct(data.get(position).getProductId()));
+        ((ProductManageListViewHolder) viewHolder).bindActionMode(isActionMode);
     }
 
     public void setClickOptionCallback(ClickOptionCallback clickOptionCallback) {
@@ -57,21 +66,44 @@ public class ProductManageListAdapter extends BaseMultipleCheckListAdapter<Produ
 
     @Override
     public void onClickOptionItem(ProductManageViewModel productManageViewModel) {
-        if(clickOptionCallback != null){
+        if (clickOptionCallback != null) {
             clickOptionCallback.onClickOptionItem(productManageViewModel);
         }
-    }
-
-    public void setFeaturedProduct(List<String> featuredProduct) {
-        if(featuredProduct != null)
-        this.featuredProduct = featuredProduct;
     }
 
     public void setActionMode(boolean actionMode) {
         isActionMode = actionMode;
     }
 
-    public boolean isFeaturedProduct(String productId){
-        return featuredProduct.contains(productId);
+    private boolean isFeaturedProduct(String productId) {
+        return featuredProduct != null && featuredProduct.contains(productId);
+    }
+
+    public void updatePrice(String productId, String price, String currencyId, String priceCurrency) {
+        int i = 0;
+        for (Iterator<ProductManageViewModel> it = data.iterator(); it.hasNext(); ) {
+            ProductManageViewModel productManageViewModel = it.next();
+            if (productManageViewModel.getId().equalsIgnoreCase(productId)) {
+                productManageViewModel.setProductPricePlain(price);
+                productManageViewModel.setProductCurrencyId(Integer.parseInt(currencyId));
+                productManageViewModel.setProductCurrencySymbol(priceCurrency);
+                notifyItemChanged(i);
+                return;
+            }
+            i++;
+        }
+    }
+
+    public void updateCashback(String productId, int cashback) {
+        int i = 0;
+        for (Iterator<ProductManageViewModel> it = data.iterator(); it.hasNext(); ) {
+            ProductManageViewModel productManageViewModel = it.next();
+            if (productManageViewModel.getId().equalsIgnoreCase(productId)) {
+                productManageViewModel.setProductCashback(cashback);
+                notifyItemChanged(i);
+                return;
+            }
+            i++;
+        }
     }
 }

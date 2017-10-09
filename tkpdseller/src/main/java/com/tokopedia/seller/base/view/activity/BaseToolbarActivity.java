@@ -8,8 +8,11 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -102,6 +105,25 @@ abstract class BaseToolbarActivity extends BaseActivity {
         if (isToolbarWhite()) {
             MenuTintUtils.tintAllIcons(menu, TEXT_COLOR_BACKGROUND_WHITE);
         }
+    }
+
+    public void updateTitle(String title) {
+        updateTitle(title, null);
+    }
+
+    public void updateTitle(String title, String subTitle) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(title)) {
+            title = "";
+        }
+        if (TextUtils.isEmpty(subTitle)) {
+            subTitle = "";
+        }
+        actionBar.setTitle(title);
+        actionBar.setSubtitle(subTitle);
     }
 
     @Override

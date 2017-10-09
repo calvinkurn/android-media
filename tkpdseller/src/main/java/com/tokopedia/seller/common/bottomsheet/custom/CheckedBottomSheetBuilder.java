@@ -1,4 +1,4 @@
-package com.tokopedia.gm.statistic.view.builder;
+package com.tokopedia.seller.common.bottomsheet.custom;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -8,6 +8,7 @@ import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetAdapterBuilder;
@@ -46,6 +47,16 @@ public class CheckedBottomSheetBuilder extends BottomSheetBuilder {
             ((CheckedAdapterBottomSheetBuilder) mAdapterBuilder).addSelection(value);
         }
         mAdapterBuilder.addItem(id, title, icon, mItemTextColor, mItemBackground, mIconTintColor);
+        return this;
+    }
+
+    public BottomSheetBuilder setSelection(String menuTitle) {
+        for (int i = 0; i < mMenu.size(); i++) {
+            boolean titleSelected = !TextUtils.isEmpty(menuTitle) && menuTitle.equalsIgnoreCase(mMenu.getItem(i).getTitle().toString());
+            if (mAdapterBuilder != null && mAdapterBuilder instanceof CheckedAdapterBottomSheetBuilder) {
+                ((CheckedAdapterBottomSheetBuilder) mAdapterBuilder).addSelection(i, titleSelected);
+            }
+        }
         return this;
     }
 

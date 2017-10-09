@@ -48,7 +48,7 @@ public class GetProductListManageMapperView {
             productListPickerViewModel.setImageUrl(product.getProductImage());
             productListPickerViewModel.setTitle(product.getProductName());
             productListPickerViewModel.setProductPrice(product.getProductNormalPrice());
-            productListPickerViewModel.setProductCurrencyId(product.getProductCurrencyId());
+            productListPickerViewModel.setProductCurrencyId(Integer.parseInt(product.getProductCurrencyId()));
             productListPickerViewModel.setProductUrl(product.getProductUrl());
             productListPickerViewModel.setProductStatus(product.getProductStatus());
             productListPickerViewModel.setProductCurrencySymbol(product.getProductCurrencySymbol());

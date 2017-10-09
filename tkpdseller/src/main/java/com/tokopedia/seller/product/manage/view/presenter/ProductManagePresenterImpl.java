@@ -1,11 +1,14 @@
 package com.tokopedia.seller.product.manage.view.presenter;
 
+import android.accounts.NetworkErrorException;
+
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
-import com.tokopedia.seller.product.manage.constant.EtalaseProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.domain.DeleteProductUseCase;
@@ -17,6 +20,7 @@ import com.tokopedia.seller.product.manage.view.mapper.GetProductListManageMappe
 import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,7 @@ import rx.Subscriber;
 
 public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManageView> implements ProductManagePresenter {
 
+    private final GetShopInfoUseCase getShopInfoUseCase;
     private final GetProductListSellingUseCase getProductListSellingUseCase;
     private final EditPriceProductUseCase editPriceProductUseCase;
     private final DeleteProductUseCase deleteProductUseCase;
@@ -36,12 +41,14 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private final SellerModuleRouter sellerModuleRouter;
     private final MultipleDeleteProductUseCase multipleDeleteProductUseCase;
 
-    public ProductManagePresenterImpl(GetProductListSellingUseCase getProductListSellingUseCase,
+    public ProductManagePresenterImpl(GetShopInfoUseCase getShopInfoUseCase,
+                                      GetProductListSellingUseCase getProductListSellingUseCase,
                                       EditPriceProductUseCase editPriceProductUseCase,
                                       DeleteProductUseCase deleteProductUseCase,
                                       GetProductListManageMapperView getProductListManageMapperView,
                                       SellerModuleRouter sellerModuleRouter,
                                       MultipleDeleteProductUseCase multipleDeleteProductUseCase) {
+        this.getShopInfoUseCase = getShopInfoUseCase;
         this.getProductListSellingUseCase = getProductListSellingUseCase;
         this.editPriceProductUseCase = editPriceProductUseCase;
         this.deleteProductUseCase = deleteProductUseCase;
@@ -51,15 +58,83 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     }
 
     @Override
-    public void setCashback(String productId, String cashback) {
-        getView().showLoadingProgress();
-        sellerModuleRouter.setCashBack(productId, cashback).subscribe(getSubscriberSetCashback());
+    public void getGoldMerchantStatus() {
+        getShopInfoUseCase.execute(RequestParams.EMPTY, new Subscriber<ShopModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(ShopModel shopModel) {
+                getView().onSuccessLoadGoldMerchantFlag(shopModel.getInfo().isGoldMerchant());
+            }
+        });
     }
 
     @Override
-    public void deleteListProduct(List<String> productIds) {
+    public void setCashback(final String productId, final int cashback) {
         getView().showLoadingProgress();
-        multipleDeleteProductUseCase.execute(MultipleDeleteProductUseCase.createRequestParams(productIds), getSubscriberMultipleDeleteProduct());
+        sellerModuleRouter.setCashBack(productId, cashback).subscribe(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().hideLoadingProgress();
+                    getView().onErrorSetCashback(e, productId, cashback);
+                }
+            }
+
+            @Override
+            public void onNext(Boolean isSuccess) {
+                getView().hideLoadingProgress();
+                if (isSuccess) {
+                    getView().onSuccessSetCashback(productId, cashback);
+                } else {
+                    getView().onErrorSetCashback(new NetworkErrorException(), productId, cashback);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void deleteProduct(final List<String> productIdList) {
+        getView().showLoadingProgress();
+        multipleDeleteProductUseCase.execute(MultipleDeleteProductUseCase.createRequestParams(productIdList), new Subscriber<MultipleDeleteProductModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().hideLoadingProgress();
+                    getView().onErrorMultipleDeleteProduct(e, new ArrayList<String>(), productIdList);
+                }
+            }
+
+            @Override
+            public void onNext(MultipleDeleteProductModel multipleDeleteProductModel) {
+                getView().hideLoadingProgress();
+                if (multipleDeleteProductModel.getProductIdFailedToDeleteList().size() > 0) {
+                    getView().onErrorMultipleDeleteProduct(new NetworkErrorException(),
+                            multipleDeleteProductModel.getProductIdDeletedList(),
+                            multipleDeleteProductModel.getProductIdFailedToDeleteList());
+                } else {
+                    getView().onSuccessMultipleDeleteProduct();
+                }
+            }
+        });
     }
 
     @Override
@@ -68,15 +143,32 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     }
 
     @Override
-    public void editPrice(String productId, String price, String priceCurrency) {
+    public void editPrice(final String productId, final String price, final String currencyId, final String currencyText) {
         getView().showLoadingProgress();
-        editPriceProductUseCase.execute(EditPriceProductUseCase.createRequestParams(price, priceCurrency, productId), getSubscriberEditPrice());
-    }
+        editPriceProductUseCase.execute(EditPriceProductUseCase.createRequestParams(price, currencyId, productId), new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
 
-    @Override
-    public void deleteProduct(String productId) {
-        getView().showLoadingProgress();
-        deleteProductUseCase.execute(DeleteProductUseCase.createRequestParams(productId), getSubscriberDeleteProduct());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                if (isViewAttached()) {
+                    getView().hideLoadingProgress();
+                    getView().onErrorEditPrice(t, productId, price, currencyId, currencyText);
+                }
+            }
+
+            @Override
+            public void onNext(Boolean isSuccessEditPrice) {
+                getView().hideLoadingProgress();
+                if (isSuccessEditPrice) {
+                    getView().onSuccessEditPrice(productId, price, currencyId, currencyText);
+                } else {
+                    getView().onErrorEditPrice(new NetworkErrorException(), productId, price, currencyId, currencyText);
+                }
+            }
+        });
     }
 
     @Override
@@ -86,60 +178,6 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(page,
                 keywordFilter, catalogOption, conditionOption, categoryId, etalaseId,
                 pictureOption, sortOption), getSubscriberGetListProduct());
-    }
-
-    private Subscriber<Boolean> getSubscriberDeleteProduct() {
-        return new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().hideLoadingProgress();
-                    getView().onErrorDeleteProduct();
-                }
-            }
-
-            @Override
-            public void onNext(Boolean isSuccessDeleteProduct) {
-                if (isSuccessDeleteProduct) {
-                    getView().onSuccessDeleteProduct();
-                } else {
-                    getView().onErrorDeleteProduct();
-                }
-                getView().hideLoadingProgress();
-            }
-        };
-    }
-
-    private Subscriber<Boolean> getSubscriberEditPrice() {
-        return new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().hideLoadingProgress();
-                    getView().onErrorEditPrice();
-                }
-            }
-
-            @Override
-            public void onNext(Boolean isSuccessEditPrice) {
-                if (isSuccessEditPrice) {
-                    getView().onSuccessEditPrice();
-                } else {
-                    getView().onErrorEditPrice();
-                }
-                getView().hideLoadingProgress();
-            }
-        };
     }
 
     private Subscriber<ProductListSellerModel> getSubscriberGetListProduct() {
@@ -175,14 +213,12 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorGetFeaturedProductList();
-                }
+
             }
 
             @Override
             public void onNext(GMFeaturedProductDomainModel gmFeaturedProductDomainModel) {
-                getView().onGetFeaturedProductList(transform(gmFeaturedProductDomainModel.getData()));
+                getView().onSuccessGetFeaturedProductList(transform(gmFeaturedProductDomainModel.getData()));
             }
         };
     }
@@ -193,64 +229,6 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
             productIds.add(String.valueOf(data.getProductId()));
         }
         return productIds;
-    }
-
-
-
-    private Subscriber<Boolean> getSubscriberSetCashback() {
-        return new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if(isViewAttached()){
-                    getView().hideLoadingProgress();
-                    getView().onErrorSetCashback();
-                }
-            }
-
-            @Override
-            public void onNext(Boolean isSuccess) {
-                getView().hideLoadingProgress();
-                if(isSuccess){
-                    getView().onSuccessSetCashback();
-                }else{
-                    getView().onErrorSetCashback();
-                }
-            }
-        };
-    }
-
-
-
-    public Subscriber<MultipleDeleteProductModel> getSubscriberMultipleDeleteProduct() {
-        return new Subscriber<MultipleDeleteProductModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if(isViewAttached()) {
-                    getView().hideLoadingProgress();
-                    getView().onErrorMultipleDeleteProduct(e);
-                }
-            }
-
-            @Override
-            public void onNext(MultipleDeleteProductModel multipleDeleteProductModel) {
-                getView().hideLoadingProgress();
-                if(multipleDeleteProductModel.isSuccess()){
-                    getView().onSuccessMultipleDeleteProduct(multipleDeleteProductModel.getCountOfSuccess(), multipleDeleteProductModel.getCountOfError());
-                }else{
-                    getView().onErrorMultipleDeleteProduct(multipleDeleteProductModel.getCountOfSuccess(), multipleDeleteProductModel.getCountOfError());
-                }
-            }
-        };
     }
 
     @Override

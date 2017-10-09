@@ -571,7 +571,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Observable<Boolean> setCashBack(String productId, String cashback) {
+    public Observable<Boolean> setCashBack(String productId, int cashback) {
         SetCashbackUseCase setCashbackUseCase = getGMComponent().getSetCashbackUseCase();
         return setCashbackUseCase.getExecuteObservableAsync(SetCashbackUseCase.createRequestParams(productId, cashback));
     }

@@ -2,9 +2,6 @@ package com.tokopedia.seller.product.manage.constant;
 
 import android.support.annotation.StringDef;
 
-import static com.tokopedia.seller.product.manage.constant.CatalogProductOption.NOT_USED;
-import static com.tokopedia.seller.product.manage.constant.CatalogProductOption.WITHOUT_CATALOG;
-import static com.tokopedia.seller.product.manage.constant.CatalogProductOption.WITH_CATALOG;
 import static com.tokopedia.seller.product.manage.constant.EtalaseProductOption.ALL_SHOWCASE;
 import static com.tokopedia.seller.product.manage.constant.EtalaseProductOption.NOT_AVAILABLE;
 import static com.tokopedia.seller.product.manage.constant.EtalaseProductOption.PREORDER;

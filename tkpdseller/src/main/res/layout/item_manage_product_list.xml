@@ -62,7 +62,7 @@
                 android:padding="@dimen/padding_vs"
                 android:textColor="@android:color/white"
                 android:visibility="gone"
-                tools:text="@string/product_manage_cashback" />
+                tools:text="@string/product_manage_item_cashback" />
 
             <TextView
                 android:id="@+id/text_view_wholesale"

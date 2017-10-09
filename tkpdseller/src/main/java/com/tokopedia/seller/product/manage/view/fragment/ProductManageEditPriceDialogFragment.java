@@ -32,6 +32,10 @@ import java.util.Locale;
 
 public class ProductManageEditPriceDialogFragment extends DialogFragment {
 
+    public interface ListenerDialogEditPrice {
+        void onSubmitEditPrice(String productId, String price, String currencyId, String currencyText);
+    }
+
     private static final String PRODUCT_ID = "product_id";
     private static final String PRODUCT_PRICE = "product_price";
     private static final String PRODUCT_CURRENCY_ID = "product_currency_id";
@@ -39,13 +43,9 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
     private CurrencyIdrTextWatcher idrTextWatcher;
     private CurrencyUsdTextWatcher usdTextWatcher;
 
-    public interface ListenerDialogEditPrice {
-        void onSubmitEditPrice(String productId, String price, String priceCurrency);
-    }
-
     private String productId;
     private String productPrice;
-    private String productCurrencyId;
+    private int productCurrencyId;
     private boolean isGoldMerchant;
     private ListenerDialogEditPrice listenerDialogEditPrice;
 
@@ -54,11 +54,11 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
     private TextView cancelButton;
 
     public static ProductManageEditPriceDialogFragment createInstance(final String productId, String productPrice,
-                                                                      String productCurrencyId, boolean isGoldMerchant) {
+                                                                      int productCurrencyId, boolean isGoldMerchant) {
         Bundle args = new Bundle();
         args.putString(PRODUCT_ID, productId);
         args.putString(PRODUCT_PRICE, productPrice);
-        args.putString(PRODUCT_CURRENCY_ID, productCurrencyId);
+        args.putInt(PRODUCT_CURRENCY_ID, productCurrencyId);
         args.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
         ProductManageEditPriceDialogFragment fragment = new ProductManageEditPriceDialogFragment();
         fragment.setArguments(args);
@@ -74,7 +74,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         productId = getArguments().getString(PRODUCT_ID);
         productPrice = getArguments().getString(PRODUCT_PRICE);
-        productCurrencyId = getArguments().getString(PRODUCT_CURRENCY_ID);
+        productCurrencyId = getArguments().getInt(PRODUCT_CURRENCY_ID);
         isGoldMerchant = getArguments().getBoolean(IS_GOLD_MERCHANT);
     }
 
@@ -103,14 +103,17 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
         cancelButton = (TextView) view.findViewById(R.id.string_picker_dialog_cancel);
 
         spinnerCounterInputViewPrice.setCounterValue(Double.valueOf(productPrice));
-        spinnerCounterInputViewPrice.setSpinnerValue(productCurrencyId);
+        spinnerCounterInputViewPrice.setSpinnerValue(String.valueOf(productCurrencyId));
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPriceValid()) {
-                    listenerDialogEditPrice.onSubmitEditPrice(productId, formatDecimal(spinnerCounterInputViewPrice.getCounterValue()), spinnerCounterInputViewPrice.getSpinnerValue());
+                if (isPriceValid()) {
+                    listenerDialogEditPrice.onSubmitEditPrice(productId,
+                            formatDecimal(spinnerCounterInputViewPrice.getCounterValue()),
+                            spinnerCounterInputViewPrice.getSpinnerValue(),
+                            spinnerCounterInputViewPrice.getSpinnerEntry());
                     dismiss();
-                }else{
+                } else {
                     spinnerCounterInputViewPrice.requestFocus();
                 }
             }

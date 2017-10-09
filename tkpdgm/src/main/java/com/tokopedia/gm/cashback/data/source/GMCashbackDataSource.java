@@ -26,8 +26,8 @@ public class GMCashbackDataSource {
         this.gmCashbackDataSourceCloud = gmCashbackDataSourceCloud;
     }
 
-    public Observable<Boolean> setCashback(String product_id, String cashback) {
-        return gmCashbackDataSourceCloud.setCashback(new RequestCashbackModel(Long.parseLong(product_id), Integer.parseInt(cashback)))
+    public Observable<Boolean> setCashback(String productId, int cashback) {
+        return gmCashbackDataSourceCloud.setCashback(new RequestCashbackModel(Long.parseLong(productId), cashback))
                 .map(new SimpleDataResponseMapper<String>())
                 .map(new Func1<String, Boolean>() {
                     @Override

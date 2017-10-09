@@ -13,31 +13,25 @@ import java.util.List;
 
 public interface ProductManageView extends BaseListViewListener<ProductManageViewModel> {
 
-    void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNext);
+    void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage);
 
-    void onErrorEditPrice();
+    void onSuccessLoadGoldMerchantFlag(boolean goldMerchant);
 
-    void onSuccessEditPrice();
+    void onSuccessGetFeaturedProductList(List<String> data);
 
-    void onSuccessDeleteProduct();
+    void onErrorEditPrice(Throwable t, String productId, String price, String currencyId, String currencyText);
 
-    void onErrorDeleteProduct();
+    void onSuccessEditPrice(String productId, String price, String currencyId, String currencyText);
+
+    void onErrorSetCashback(Throwable t, String productId, int cashback);
+
+    void onSuccessSetCashback(String productId, int cashback);
+
+    void onErrorMultipleDeleteProduct(Throwable e, List<String> productIdDeletedList, List<String> productIdFailToDeleteList);
+
+    void onSuccessMultipleDeleteProduct();
 
     void showLoadingProgress();
 
     void hideLoadingProgress();
-
-    void onGetFeaturedProductList(List<String> data);
-
-    void onErrorGetFeaturedProductList();
-
-    void onErrorSetCashback();
-
-    void onSuccessSetCashback();
-
-    void onErrorMultipleDeleteProduct(Throwable e);
-
-    void onSuccessMultipleDeleteProduct(int countOfSuccess, int countOfError);
-
-    void onErrorMultipleDeleteProduct(int countOfSuccess, int countOfError);
 }

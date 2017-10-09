@@ -215,7 +215,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_etalase_picker, menu);
+        inflater.inflate(R.menu.menu_product_etalase_picker, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setOnQueryTextListener(this);
         super.onCreateOptionsMenu(menu, inflater);
