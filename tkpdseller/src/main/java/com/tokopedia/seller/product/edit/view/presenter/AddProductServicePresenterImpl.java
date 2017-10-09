@@ -89,7 +89,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
                 e = ((UploadProductException) uploadThrowable).getThrowable();
             }
             getView().notificationFailed(e, this.productDraftId, isAdd? ProductStatus.ADD: ProductStatus.EDIT);
-            getView().sendFailedBroadcast(uploadThrowable);
+            getView().sendFailedBroadcast(e);
         }
 
         @Override
