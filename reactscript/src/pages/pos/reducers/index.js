@@ -270,6 +270,7 @@ const checkout = (state = {
         ...state,
         isFetchingParamsCheckout: true,
         showLoadingPage: true,
+        data: [],
         status_msg: 'PROCESSING'
       }
     case `${PAYMENT_CHECKOUT_TO_NATIVE}_${FULFILLED}`:
@@ -285,7 +286,7 @@ const checkout = (state = {
         ...state,
         isFetchingParamsCheckout: false,
         showLoadingPage: false,
-        data: action.payload,
+        data: [],
         status_msg: 'FAILED'
       }
     

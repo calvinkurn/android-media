@@ -133,31 +133,37 @@ export const PaymentCheckoutToNative = () => {
 }
 
 const doPayment = async () => {
-  const user_id = await getUserId()
-  const addr_id = await getAddrId()
-  const shop_id = await getShopId()
-  const env = await getEnv()
-  const api_url = await getBaseAPI(env)
-  const local_cart = await getCart()
-
-  const data_payment = {
-    base_api_url_payment: api_url.api_url_payment,
-    base_api_url_scrooge: api_url.api_url_scrooge,
-    base_api_url_pcidss: api_url.api_url_pcidss,
-    user_id: parseInt(user_id),
-    os_type: '1',
-    addr_id: parseInt(addr_id),
-    client_id: '',
-    shop_id: parseInt(shop_id),
-    cart: local_cart
-  }
-  const paymentToNative_getParams = await makePaymentToNativeStepOne(data_payment)
-  const paymentToNative_secondStep = await makePaymentToNativeStepTwo(paymentToNative_getParams, data_payment, local_cart)
-  // console.log(data_payment)
-  // console.log(paymentToNative_getParams)  
-  // console.log(paymentToNative_secondStep)
+  try {
+    const user_id = await getUserId()
+    const addr_id = await getAddrId()
+    const shop_id = await getShopId()
+    const env = await getEnv()
+    const api_url = await getBaseAPI(env)
+    const local_cart = await getCart()
   
-  return paymentToNative_secondStep
+    const data_payment = {
+      base_api_url_payment: api_url.api_url_payment,
+      base_api_url_scrooge: api_url.api_url_scrooge,
+      base_api_url_pcidss: api_url.api_url_pcidss,
+      user_id: parseInt(user_id),
+      os_type: '1',
+      addr_id: parseInt(addr_id),
+      client_id: '',
+      shop_id: parseInt(shop_id),
+      cart: local_cart
+    }
+    const paymentToNative_getParams = await makePaymentToNativeStepOne(data_payment)
+    const paymentToNative_secondStep = await makePaymentToNativeStepTwo(paymentToNative_getParams, data_payment, local_cart)
+    // console.log(data_payment)
+    // console.log(paymentToNative_getParams)  
+    // console.log(paymentToNative_secondStep)
+    
+    return paymentToNative_secondStep
+
+  } catch (err){
+    console.log(err)
+    return
+  }
 }
 
 const getUserId = () => {
@@ -445,7 +451,7 @@ const getGatewayCode = (data) => {
 const makePaymentV2 = (api_url, data, gateway_code) => {
   // console.log(api_url)
   // console.log(data)
-  // console.log(gateway_code)
+  console.log(gateway_code)
 
   const checkout_data = data.checkout_data
   // const jsonData = JSON.parse(data.checkout_data)
@@ -463,7 +469,7 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
     cc_expired_year: parseInt(exp_year),
     cc_cvv: parseInt(data.cvv),
     inst_term: data.installment_term,
-    gateway_code: gateway_code,
+    gateway_code: 'CICILAN', // gateway_code,
     payment_amount: parseFloat(checkout_data.data.payment_amount),
     merchant_code: checkout_data.data.merchant_code,
     profile_code: checkout_data.data.profile_code,
@@ -475,8 +481,8 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
   return NetworkModule.getResponse(`${api_url.api_url_pcidss}/v2/payment/process/CREDITCARD`, `POST`, JSON.stringify(data_params), true)
     .then(res => {
       const jsonResponse = JSON.parse(res)
-      console.log(jsonResponse.data)
-      return jsonResponse.data
+      console.log(jsonResponse)
+      return jsonResponse
     })
     .catch(err => { 
       console.log(err) 
