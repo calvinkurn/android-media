@@ -38,6 +38,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
@@ -414,7 +415,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void onItemChecked(ProductManageViewModel productManageViewModel, boolean checked) {
         if (actionMode != null) {
-            actionMode.setTitle(String.valueOf(((ProductManageListAdapter) adapter).getTotalChecked()));
+            int totalChecked = ((ProductManageListAdapter) adapter).getTotalChecked();
+            actionMode.setTitle(String.valueOf(totalChecked));
+            MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
+            deleteMenuItem.setVisible(totalChecked > 0);
         }
     }
 
