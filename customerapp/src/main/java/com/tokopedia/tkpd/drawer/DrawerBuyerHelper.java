@@ -37,6 +37,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.Drawer;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -146,14 +147,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                 && !SessionHandler.getShopID(context).equals("")) {
             data.add(getSellerMenu());
             data.add(getProductMenu());
-//            data.add(new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
-//                    R.drawable.ic_goldmerchant_drawer,
-//                    TkpdState.DrawerPosition.GOLD_MERCHANT,
-//                    false));
-//            data.add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
-//                    R.drawable.ic_goldmerchant_drawer,
-//                    TkpdState.DrawerPosition.FEATURED_PRODUCT,
-//                    false, true));
             data.add(getGoldMerchantMenu());
             data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                     R.drawable.ic_top_ads,
@@ -190,15 +183,21 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private DrawerItem getGoldMerchantMenu(){
-        DrawerGroup menu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
-                R.drawable.ic_goldmerchant_drawer,
-                TkpdState.DrawerPosition.GOLD_MERCHANT,
-                drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
-                0);
+        DrawerItem menu;
         boolean isGoldMerchant = SessionHandler.isGoldMerchant(context);
         if(isGoldMerchant) {
-            menu.add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
+            menu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
+                    R.drawable.ic_goldmerchant_drawer,
+                    TkpdState.DrawerPosition.GOLD_MERCHANT,
+                    drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
+                    0);
+            ((DrawerGroup)menu).add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
                     TkpdState.DrawerPosition.FEATURED_PRODUCT, false, true));
+        }else {
+            menu = (new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
+                    R.drawable.ic_goldmerchant_drawer,
+                    TkpdState.DrawerPosition.GOLD_MERCHANT,
+                    false));
         }
         return menu;
     }
