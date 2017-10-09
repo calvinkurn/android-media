@@ -62,6 +62,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
 
         @Override
         public void onError(Throwable uploadThrowable) {
+            Throwable e = uploadThrowable;
             if (!isViewAttached()) {
                 return;
             }
@@ -84,7 +85,10 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
                 }
             });
             getView().onFailedAddProduct();
-            getView().notificationFailed(uploadThrowable, this.productDraftId, isAdd? ProductStatus.ADD: ProductStatus.EDIT);
+            if (uploadThrowable instanceof UploadProductException){
+                e = ((UploadProductException) uploadThrowable).getThrowable();
+            }
+            getView().notificationFailed(e, this.productDraftId, isAdd? ProductStatus.ADD: ProductStatus.EDIT);
             getView().sendFailedBroadcast(uploadThrowable);
         }
 
