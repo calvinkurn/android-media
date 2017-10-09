@@ -5,10 +5,10 @@ import { selectPaymentOptions, makePayment } from '../actions/index'
 import { ccFormat, getCardType } from '../lib/utility'
 import { NavigationModule } from 'NativeModules'
 import { Text } from '../common/TKPText'
+
+
 class payment extends Component {
-
   constructor(props) {
-
     super(props);
 
     this.state = {
@@ -72,8 +72,11 @@ class payment extends Component {
     
     if (errorMessage.ccNum == '' && errorMessage.cvv == '' && errorMessage.date == '') {
       const checkout_data = this.props.navigation.state.params.checkout_data
+      // console.log(checkout_data)
+      const json_checkout_data = JSON.parse(checkout_data)
+      console.log(json_checkout_data)
       const data_process = {
-        checkout_data,
+        checkout_data: json_checkout_data,
         selectedEmiId: this.props.navigation.state.params.selectedEmiId,
         ccNum: this.props.ccNum,
         mon: this.props.mon,

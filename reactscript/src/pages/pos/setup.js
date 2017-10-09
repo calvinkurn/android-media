@@ -21,7 +21,7 @@ class Root extends Component {
     } else if (POS_PAGE === 'LOCAL_CART'){
       return <Setup_cart />
     } else if (POS_PAGE === 'PROCESSING'){
-      return <Setup_processing />
+      return <Setup_processing data={this.props.data} />
     } else if (POS_PAGE === 'HISTORY'){
       return <Setup_history />
     } else if (POS_PAGE === 'CICILAN'){

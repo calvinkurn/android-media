@@ -21,6 +21,9 @@ const App = StackNavigator({
 class Root extends Component {
     componentDidMount(){
         console.log(this.props)
+        // const data_process = JSON.parse(this.props.data.data_process)
+        // console.log(data_process)
+        // console.log(data_process.checkout_data)
     }
 
     render() {

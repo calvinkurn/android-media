@@ -1,18 +1,38 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Button, Image, TouchableWithoutFeedback} from 'react-native';
+import { makePayment } from '../actions/index'
 
 
 class PaymentProcessing extends Component {
   componentDidMount(){
-    console.log(this.props)
-    // setTimeout(
-    //   () => { 
-    //     this.props.navigation.navigate('PaymentInvoice', {})
-    //   }, 
-    //   4000
-    // );
+    this.payment_v2_processing()
   }
+
+  payment_v2_processing = () => {
+    console.log(this.props)
+
+    // console.log(this.props)
+    // const data_process = JSON.parse(this.props.data.data_process)
+    // console.log(data_process)
+    // console.log(data_process.checkout_data)
+
+    const data_process = this.props.screenProps.data.data_process
+    const data_process_json = JSON.parse(data_process)
+    console.log(data_process_json)
+    console.log(data_process_json.checkout_data)
+    // const checkout_data = JSON.parse(data_process_json.checkout_data)
+    // console.log(data_process_json)
+    // console.log(checkout_data)
+
+    // // PR hereeeeee!!!!
+    this.props.dispatch(makePayment(data_process_json.checkout_data, data_process_json.selectedEmiId, 
+      data_process_json.ccNum, data_process_json.mon + '/' + data_process_json.year, data_process_json.cvv));
+    
+
+  }
+
+
 
   render() {
     console.log(this.props)
@@ -47,10 +67,12 @@ class PaymentProcessing extends Component {
 const mapStateToProps = state => {
   console.log(state.paymentV2)
   return {
-    // ...state.payment,
-    // isFetchingParams: state.paymentV2.isFetchingParams,
-    // showLoadingPage: state.paymentV2.showLoadingPage,
-    // status_msg: state.paymentV2.status_msg
+    ...state.paymentV2,
+    processing_url: state.paymentV2.processing_data.url,
+    processing_isFetchingParams: state.paymentV2.processing_isFetchingParams,
+    processing_showLoadingPage: state.paymentV2.processing_showLoadingPage,
+    processing_data: state.paymentV2.processing_data,
+    processing_status_msg: state.paymentV2.processing_status_msg
   }
 }
 

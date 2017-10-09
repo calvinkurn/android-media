@@ -429,8 +429,9 @@ const postDataToNative = async (data) => {
   const env = await getEnv()
   const api_url = await getBaseAPI(env)
   const gateway_code = await getGatewayCode(data)
-  const payment_v2 = await makePaymentV2(api_url, data, gateway_code)
-  console.log(payment_v2)
+  const otp = await makePaymentV2(api_url, data, gateway_code)
+  console.log(otp)
+  return otp
 }
 
 const getGatewayCode = (data) => {
@@ -444,10 +445,19 @@ const getGatewayCode = (data) => {
 }
 
 const makePaymentV2 = (api_url, data, gateway_code) => {
-  const jsonData = JSON.parse(data.checkout_data)
+  // console.log(api_url)
+  // console.log(data)
+  // console.log(gateway_code)
+
+  const checkout_data = data.checkout_data
+  // const jsonData = JSON.parse(data.checkout_data)
+  // console.log(jsonData)
   const exp_month = (data.expiry_date).substring(0, (data.expiry_date).indexOf('/'))
+  // console.log(exp_month)
   const exp_year = (data.expiry_date).substring((data.expiry_date).indexOf("/") + 1)
+  // console.log(exp_year)
   const cc_card_no_without_spaces = (data.cc_no).replace(/\s/g, '')
+  // console.log(cc_card_no_without_spaces)
 
   const data_params = {
     cc_card_no: cc_card_no_without_spaces,
@@ -456,17 +466,19 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
     cc_cvv: parseInt(data.cvv),
     inst_term: data.installment_term,
     gateway_code: gateway_code,
-    payment_amount: parseFloat(jsonData.data.payment_amount),
-    merchant_code: jsonData.data.merchant_code,
-    profile_code: jsonData.data.profile_code,
-    transaction_id: jsonData.data.transaction_id,
-    signature: jsonData.data.signature
+    payment_amount: parseFloat(checkout_data.data.payment_amount),
+    merchant_code: checkout_data.data.merchant_code,
+    profile_code: checkout_data.data.profile_code,
+    transaction_id: checkout_data.data.transaction_id,
+    signature: checkout_data.data.signature
   }
+  console.log(data_params)
 
   return NetworkModule.getResponse(`${api_url.api_url_pcidss}/v2/payment/process/CREDITCARD`, `POST`, JSON.stringify(data_params), true)
     .then(res => {
       const jsonResponse = JSON.parse(res)
-      return jsonResponse
+      console.log(jsonResponse.data)
+      return jsonResponse.data
     })
     .catch(err => { 
       console.log(err) 
