@@ -98,7 +98,7 @@ public class GetProductListSellingUseCase extends UseCase<ProductListSellerModel
         if (!condition.equals(ConditionProductOption.ALL_CONDITION)) {
             requestParams.putString(ProductListPickerConstant.QUERY_CONDITION, condition);
         }
-        if (departmentId != null && !departmentId.isEmpty()) {
+        if (departmentId != null && !departmentId.isEmpty() && !departmentId.equals(String.valueOf(ProductManageConstant.FILTER_ALL_CATEGORY))) {
             requestParams.putString(ProductListPickerConstant.QUERY_DEPARTMENT_ID, departmentId);
         }
         requestParams.putString(ProductListPickerConstant.QUERY_ETALASE_ID, generateEtalaseIdFilter(etalaseId) );

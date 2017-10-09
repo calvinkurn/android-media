@@ -84,7 +84,7 @@ public class ProductManageFilterModel implements Parcelable {
     public void reset() {
         setEtalaseProductOption(ProductManageConstant.FILTER_ALL_PRODUK);
         setEtalaseProductOptionName("");
-        setCategoryId("");
+        setCategoryId(String.valueOf(ProductManageConstant.FILTER_ALL_CATEGORY));
         setCategoryName("");
         setPictureStatusOption(PictureStatusProductOption.WITH_AND_WITHOUT);
         setCatalogProductOption(CatalogProductOption.WITH_AND_WITHOUT);

@@ -144,28 +144,6 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
         });
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_product_manage_filter, menu);
-        for (int i = 0; i < menu.size(); i++) {
-            MenuItem item = menu.getItem(i);
-            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
-            spanString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green)), 0, spanString.length(), 0);
-            item.setTitle(spanString);
-        }
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        if (itemId == R.id.menu_reset) {
-            productManageFilterModel.reset();
-            updateFilterView();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void updateFilterView() {
         if (TextUtils.isEmpty(productManageFilterModel.getEtalaseProductOptionName())) {
             productManageFilterModel.setEtalaseProductOptionName(getString(R.string.product_manage_filter_menu_etalase_all));
@@ -346,5 +324,10 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
                 .setItemClickListener(bottomSheetItemClickListener)
                 .createDialog();
         bottomSheetDialog.show();
+    }
+
+    public void onResetFilter() {
+        productManageFilterModel.reset();
+        updateFilterView();
     }
 }
