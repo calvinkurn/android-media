@@ -1042,14 +1042,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
                 intColor = - verticalOffset;
-                if (intColorc v>=255 && isAdded()) {
+                if (intColor>=255 && isAdded()) {
                     initToolbarLight();
                     initStatusBarLight();
                     fabWishlist.hide();
                 } else if (isAdded()) {
                     initStatusBarDark();
                     initToolbarTransparant();
-                    toolbar.getBackground().setAlpha(-verticalOffset);
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
                     }
@@ -1076,6 +1075,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     private void initToolbarTransparant() {
+        toolbar.getBackground().setAlpha(0);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
         if (menu != null && menu.size() > 1) {
             menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white));
