@@ -7,8 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -94,6 +96,16 @@ public class ProductListActivity extends ReactDrawerPresenterActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_product_main, menu);
+        final Menu m = menu;
+        final MenuItem item = menu.findItem(R.id.action_cart);
+        vCart = item.getActionView();
+        vCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                m.performIdentifierAction(item.getItemId(), 0);
+            }
+        });
+        initInjector();
         return super.onCreateOptionsMenu(menu);
     }
 

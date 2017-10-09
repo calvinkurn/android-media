@@ -19,9 +19,11 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.activity.OutletActivity;
+import com.tokopedia.posapp.view.activity.ProductListActivity;
 import com.tokopedia.posapp.view.activity.TransactionHistoryActivity;
 
 import java.util.ArrayList;
@@ -129,9 +131,9 @@ public class DrawerPosHelper extends DrawerHelper
             PosSessionHandler posSessionHandler = new PosSessionHandler(context);
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
-                    Intent intent = ((TkpdCoreRouter) context.getApplication()).getHomeIntent(context);
-                    context.startActivity(intent);
-                    context.finish();
+
+                    startIntent(context, ((PosApplication) context.getApplication()).getHomeActivity(context));
+
                     break;
                 case TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY:
                     posSessionHandler.showPasswordDialog(
