@@ -37,7 +37,11 @@ public class ReputationBadgeUtils {
 
         layout.removeAllViews();
         layout.setOrientation(LinearLayout.HORIZONTAL);
-        createMedalBasedOnType(context, layout, medalType, levelMedal, onClickListener);
+        if (typeMedal == MEDAL_TYPE_0) {
+            createMedalBasedOnType(context, layout, medalType, 1, onClickListener);
+        } else {
+            createMedalBasedOnType(context, layout, medalType, levelMedal, onClickListener);
+        }
     }
 
     private static void createMedalBasedOnType(Context context, LinearLayout layout, int medalType,
