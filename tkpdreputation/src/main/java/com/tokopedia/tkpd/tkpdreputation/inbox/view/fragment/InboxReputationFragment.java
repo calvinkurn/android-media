@@ -51,6 +51,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private static final int REQUEST_FILTER = 102;
     private static final String ARGS_TIME_FILTER = "ARGS_TIME_FILTER";
     private static final String ARGS_SCORE_FILTER = "ARGS_SCORE_FILTER";
+    private static final String ARGS_QUERY = "ARGS_QUERY";
 
     SearchView searchView;
     private RecyclerView mainList;
@@ -202,7 +203,16 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.getFirstTimeInboxReputation(getTab());
+        if (savedInstanceState != null)
+            presenter.getFilteredInboxReputation(
+                    savedInstanceState.getString(ARGS_QUERY, ""),
+                    savedInstanceState.getString(ARGS_TIME_FILTER, ""),
+                    savedInstanceState.getString(ARGS_SCORE_FILTER, ""),
+                    getTab()
+            );
+        else {
+            presenter.getFirstTimeInboxReputation(getTab());
+        }
     }
 
 
@@ -430,7 +440,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     private String getQuery() {
-        return searchView.getQuery().toString();
+        if (searchView != null)
+            return searchView.getQuery().toString();
+        else
+            return "";
     }
 
     @Override
@@ -451,5 +464,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
         super.onSaveInstanceState(outState);
         outState.putString(ARGS_TIME_FILTER, timeFilter);
         outState.putString(ARGS_SCORE_FILTER, scoreFilter);
+        outState.putString(ARGS_QUERY, getQuery());
     }
 }
