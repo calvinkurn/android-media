@@ -184,4 +184,9 @@ public class TalkViewActivity extends TActivity
     public void reportCommentTalk(Bundle bundle) {
         TalkDetailIntentService.startAction(this, bundle, mReceiverTalkDetail, TalkDetailIntentService.ACTION_REPORT);
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

@@ -67,25 +67,24 @@ public class TermPrivacy extends TActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
 //        try {
-            data = getIntent().getData();
-            if(data!=null) {
-                if (data.getQueryParameter("param").equals("0")) {
-                    setTitle(R.string.custom_string_term_condition);
-                    fragment = FragmentTermPrivacy.createInstance(FragmentTermPrivacy.TERM_MODE);
-                } else {
-                    setTitle(R.string.custom_string_privacy_policy);
-                    fragment = FragmentTermPrivacy.createInstance(FragmentTermPrivacy.PRIVACY_MODE);
-                }
+        data = getIntent().getData();
+        if (data != null) {
+            if (data.getQueryParameter("param").equals("0")) {
+                setTitle(R.string.custom_string_term_condition);
+                fragment = FragmentTermPrivacy.createInstance(FragmentTermPrivacy.TERM_MODE);
+            } else {
+                setTitle(R.string.custom_string_privacy_policy);
+                fragment = FragmentTermPrivacy.createInstance(FragmentTermPrivacy.PRIVACY_MODE);
             }
+        }
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //            finish();
 //        }
 
         if (getIntent() != null && getIntent().getExtras() != null
-                && getIntent().getExtras().getString("param")!=null){
-            switch (getIntent().getExtras().getString("param"))
-            {
+                && getIntent().getExtras().getString("param") != null) {
+            switch (getIntent().getExtras().getString("param")) {
                 case T_AND_C:
                     setTitle(R.string.custom_string_term_condition);
                     fragment = FragmentTermPrivacy.createInstance(FragmentTermPrivacy.TERM_MODE);
@@ -97,7 +96,7 @@ public class TermPrivacy extends TActivity {
             }
         }
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)
                     .commit();
@@ -106,12 +105,13 @@ public class TermPrivacy extends TActivity {
 
     public static final String T_AND_C = "0";
     public static final String P_P = "1";
-    public static void start(Context context, String param){
+
+    public static void start(Context context, String param) {
         Intent intent = new Intent(context, TermPrivacy.class);
         Bundle bundle = new Bundle();
         bundle.putString("param", param);
         intent.putExtras(bundle);
-        switch (param){
+        switch (param) {
             case T_AND_C:
             case P_P:
                 context.startActivity(intent);
@@ -130,16 +130,15 @@ public class TermPrivacy extends TActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(data != null && data.getQueryParameter("param").equals("0")) {
+        if (data != null && data.getQueryParameter("param").equals("0")) {
             getSupportActionBar().setTitle(R.string.custom_string_term_condition);
         } else {
             getSupportActionBar().setTitle(R.string.custom_string_privacy_policy);
         }
 
         if (getIntent() != null && getIntent().getExtras() != null
-                && getIntent().getExtras().getString("param")!=null){
-            switch (getIntent().getExtras().getString("param"))
-            {
+                && getIntent().getExtras().getString("param") != null) {
+            switch (getIntent().getExtras().getString("param")) {
                 case T_AND_C:
                     getSupportActionBar().setTitle(R.string.custom_string_term_condition);
                     break;
@@ -153,10 +152,14 @@ public class TermPrivacy extends TActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

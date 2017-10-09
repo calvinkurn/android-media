@@ -140,4 +140,9 @@ public class VideoPlayerActivity extends BasePresenterActivity<VideoPlayerPresen
         videoView.getHolder().setFixedSize(videoWidth, videoHeight);
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
 }
