@@ -102,7 +102,11 @@
     <string name="label_cancel">Cancel</string>
     <string name="title_showcase_ussd">Cek Sisa Pulsa</string>
     <string name="message_showcase_ussd">Kini Anda bisa mengetahui sisa pulsa Anda sebelum membeli pulsa.</string>
-    
+    <string name="error_message_contact_not_found">Aplikasi kontak tidak ditemukan</string>
+
     <string name="title_tooltip_instan_payment">Bayar Instan</string>
     <string name="body_tooltip_instan_payment">Selesaikan transaksi dengan 1 klik saja menggunakan TokoCash.</string>
+    <string name="error_message_product">Product List kosong</string>
+    <string name="error_message_operator">Operator tidak tersedia</string>
+    <string name="error_message_not_found_product">Produk yang anda pilih saat ini tidak tersedia</string>
 </resources>

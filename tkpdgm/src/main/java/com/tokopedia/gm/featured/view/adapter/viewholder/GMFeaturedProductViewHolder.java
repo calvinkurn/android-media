@@ -10,7 +10,9 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperViewHolder;
@@ -67,7 +69,7 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
     }
 
     public void bindData(final GMFeaturedProductModel gmFeaturedProductModel) {
-        textProductName.setText(gmFeaturedProductModel.getProductName());
+        textProductName.setText(MethodChecker.fromHtml(gmFeaturedProductModel.getProductName()));
         textPrice.setText(gmFeaturedProductModel.getProductPrice());
         ImageHandler.loadImageRounded2(
                 icGMFeaturedProduct.getContext(),
@@ -155,6 +157,7 @@ public class GMFeaturedProductViewHolder extends BaseMultipleCheckViewHolder<GMF
             case GMFeaturedProductTypeView.ARRANGE_DISPLAY:
             case GMFeaturedProductTypeView.DEFAULT_DISPLAY:
             default:
+                gmFeaturedContainer.setBackgroundResource(android.R.color.white);
                 break;
         }
 

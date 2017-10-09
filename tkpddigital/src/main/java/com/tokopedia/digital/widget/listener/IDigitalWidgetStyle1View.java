@@ -25,4 +25,8 @@ public interface IDigitalWidgetStyle1View {
 
     void renderOperator(RechargeOperatorModel operatorModel);
 
+    void renderErrorProduct(String message);
+
+    void renderDefaultError();
+
 }
