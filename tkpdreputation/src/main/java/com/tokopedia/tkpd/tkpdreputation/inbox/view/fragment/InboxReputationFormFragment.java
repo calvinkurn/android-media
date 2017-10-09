@@ -86,6 +86,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         implements InboxReputationForm.View, InboxReputationFormActivity.SkipListener {
 
     public static final int RESULT_CODE_SKIP = 321;
+    private static final String ARGS_CAMERA_FILELOC = "ARGS_CAMERA_FILELOC";
 
     ImageView productImage;
     TextView productName;
@@ -724,5 +725,19 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             presenter.detachView();
         shareDialog = null;
         callbackManager = null;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (presenter != null)
+            outState.putString(ARGS_CAMERA_FILELOC, presenter.getFileLocFromCamera());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null)
+            presenter.setCameraFileLoc(savedInstanceState.getString(ARGS_CAMERA_FILELOC, ""));
     }
 }

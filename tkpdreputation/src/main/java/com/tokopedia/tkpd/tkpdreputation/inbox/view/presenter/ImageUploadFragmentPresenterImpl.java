@@ -12,8 +12,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.ImageUploadPreviewFragmentView;
@@ -39,7 +39,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
     GetSendReviewFormUseCase getSendReviewFormUseCase;
     SetReviewFormCacheUseCase setReviewFormCacheUseCase;
     List<ImageUpload> deletedImageUploads;
-
+    String cameraFileLoc;
 
     public ImageUploadFragmentPresenterImpl(ImageUploadPreviewFragmentView viewListener) {
         this.viewListener = viewListener;
@@ -68,7 +68,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
                     image.setFileLoc(data.getStringExtra(ImageGallery.EXTRA_URL));
                     break;
                 case Activity.RESULT_OK:
-                    image.setFileLoc(imageUploadHandler.getCameraFileloc());
+                    image.setFileLoc(cameraFileLoc);
                     break;
                 default:
                     break;
@@ -243,7 +243,17 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 
     @Override
     public void openCamera() {
-        imageUploadHandler.actionCamera();
+        cameraFileLoc = imageUploadHandler.actionCamera2();
+    }
+
+    @Override
+    public String getCameraFileLoc() {
+        return cameraFileLoc;
+    }
+
+    @Override
+    public void setCameraFileLoc(String cameraFileLoc) {
+        this.cameraFileLoc = cameraFileLoc;
     }
 
     private boolean isLastItem(int currentPosition) {

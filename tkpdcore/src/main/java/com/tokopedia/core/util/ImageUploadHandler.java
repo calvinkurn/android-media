@@ -70,6 +70,13 @@ public class ImageUploadHandler {
         startActivity(intent, REQUEST_CODE);
     }
 
+    public String actionCamera2() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, getOutputMediaFileUri());
+        startActivity(intent, REQUEST_CODE);
+        return model.cameraFileLoc;
+    }
+
     private void startActivity(Intent intent, int code) {
         if (activity != null)
             activity.startActivityForResult(intent, code);

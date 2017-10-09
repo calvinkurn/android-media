@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
@@ -60,6 +62,7 @@ public class ImageUploadPreviewFragment extends
     public static final String NAV_UPLOAD_IMAGE = "nav_upload_image";
     private static final int MAX_CHAR = 128;
     private static final String ARGS_IMAGE_LIST = "ARGS_IMAGE_LIST";
+    private static final String ARGS_CAMERA_FILELOC = "ARGS_CAMERA_FILELOC";
 
     ViewPager previewImage;
     TextView submitButton;
@@ -86,8 +89,10 @@ public class ImageUploadPreviewFragment extends
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         adapter = ImageUploadAdapter.createAdapter(getActivity().getApplicationContext());
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             adapter.addList(savedInstanceState.<ImageUpload>getParcelableArrayList(ARGS_IMAGE_LIST));
+            presenter.setCameraFileLoc(savedInstanceState.getString(ARGS_CAMERA_FILELOC,""));
+        }
     }
 
     @Override
@@ -316,9 +321,19 @@ public class ImageUploadPreviewFragment extends
         return adapter;
     }
 
+    private Drawable getDeleteMenu() {
+        TextDrawable drawable = new TextDrawable(getActivity());
+        drawable.setText(getResources().getString(R.string.action_delete));
+        drawable.setTextColor(R.color.black_70b);
+        return drawable;
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_upload_image_preview, menu);
+        menu.add(Menu.NONE, R.id.action_delete, 0, "");
+        MenuItem menuItem = menu.findItem(R.id.action_delete);
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItem.setIcon(getDeleteMenu());
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -465,5 +480,6 @@ public class ImageUploadPreviewFragment extends
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(ARGS_IMAGE_LIST, adapter.getList());
+        outState.putString(ARGS_CAMERA_FILELOC,presenter.getCameraFileLoc());
     }
 }

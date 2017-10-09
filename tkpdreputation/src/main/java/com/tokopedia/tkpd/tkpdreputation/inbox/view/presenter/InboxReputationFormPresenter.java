@@ -46,7 +46,7 @@ public class InboxReputationFormPresenter
     private final EditReviewValidateUseCase editReviewValidateUseCase;
     private InboxReputationForm.View viewListener;
     private ImageUploadHandler imageUploadHandler;
-
+    private String cameraFileLoc;
 
     @Inject
     InboxReputationFormPresenter(SendReviewValidateUseCase sendReviewValidateUseCase,
@@ -145,7 +145,7 @@ public class InboxReputationFormPresenter
     }
 
     public void openCamera() {
-        imageUploadHandler.actionCamera();
+        cameraFileLoc = imageUploadHandler.actionCamera2();
     }
 
     @Override
@@ -161,10 +161,7 @@ public class InboxReputationFormPresenter
 
     @Override
     public String getFileLocFromCamera() {
-        if (imageUploadHandler != null)
-            return imageUploadHandler.getCameraFileloc();
-        else
-            return "";
+        return cameraFileLoc;
     }
 
     @Override
@@ -244,5 +241,9 @@ public class InboxReputationFormPresenter
                         productUrl,
                         productAvatar
                 )));
+    }
+
+    public void setCameraFileLoc(String cameraFileLoc) {
+        this.cameraFileLoc = cameraFileLoc;
     }
 }

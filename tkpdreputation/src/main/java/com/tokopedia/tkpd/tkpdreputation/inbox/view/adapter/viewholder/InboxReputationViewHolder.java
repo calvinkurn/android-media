@@ -36,6 +36,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private ReputationView reputation;
     private TextView date;
     private TextView action;
+    private ImageView unreadNotification;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", Locale.getDefault());
     private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
@@ -51,6 +52,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         reputation = (ReputationView) itemView.findViewById(R.id.reputation);
         date = (TextView) itemView.findViewById(R.id.date);
         action = (TextView) itemView.findViewById(R.id.action);
+        unreadNotification = (ImageView) itemView.findViewById(R.id.unread_notif);
         this.viewListener = viewListener;
 
     }
@@ -65,6 +67,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         setDeadline(element);
         setReputation(element);
         setAction(element);
+        setUnreadNotification(element);
 
         mainView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +84,14 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
                         element.getRole());
             }
         });
+    }
+
+    private void setUnreadNotification(InboxReputationItemViewModel element) {
+        if (element.getReputationDataViewModel().isShowBookmark()) {
+            unreadNotification.setVisibility(View.VISIBLE);
+        } else {
+            unreadNotification.setVisibility(View.GONE);
+        }
     }
 
     private String getDate(String createTime) {
