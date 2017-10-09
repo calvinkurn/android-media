@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -250,6 +251,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
         collapsingToolbarLayout.setTitle("");
         toolbar.setTitle("");
+        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
@@ -268,7 +270,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             }
         });
         setHasOptionsMenu(true);
-        initToolbarTransparant();
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1033,11 +1034,33 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
     }
 
+    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
+        return new AppBarLayout.OnOffsetChangedListener() {
+            int intColor = 0;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                intColor = - verticalOffset;
+                if (intColorc v>=255 && isAdded()) {
+                    initToolbarLight();
+                    initStatusBarLight();
+                    fabWishlist.hide();
+                } else if (isAdded()) {
+                    initStatusBarDark();
+                    initToolbarTransparant();
+                    toolbar.getBackground().setAlpha(-verticalOffset);
+                    if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
+                        fabWishlist.show();
+                    }
+                }
+            }
+        };
+    }
+
     private void initToolbarLight() {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(context, R.color.grey_toolbar_icon));
-        collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-        toolbar.setTitleTextColor(ContextCompat.getColor(context, R.color.grey_toolbar_icon));
-        toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+        toolbar.getBackground().setAlpha(255);
+        toolbar.setAlpha(1);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
         if (menu != null && menu.size() > 2) {
             menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share));
@@ -1053,9 +1076,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     private void initToolbarTransparant() {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(context, R.color.white));
-        collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-        toolbar.setBackgroundColor(Color.TRANSPARENT);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
         if (menu != null && menu.size() > 1) {
             menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white));
