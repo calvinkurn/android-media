@@ -44,13 +44,13 @@
                 android:id="@+id/reputation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"/>
+                android:layout_marginTop="@dimen/margin_vvvs"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/favorite_button"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
             android:background="@drawable/green_button_rounded"
             android:orientation="horizontal"
             android:visibility="gone"
@@ -58,12 +58,11 @@
 
             <ImageView
                 android:id="@+id/favorite_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="@dimen/margin_small"
-                android:padding="@dimen/padding_vs"
-                tools:src="@drawable/ic_new_action_plus"/>
+                tools:src="@drawable/shop_list_favorite_check"/>
 
             <TextView
                 android:id="@+id/favorite_text"
