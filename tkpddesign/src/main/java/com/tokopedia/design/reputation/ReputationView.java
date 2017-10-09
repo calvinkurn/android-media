@@ -137,14 +137,21 @@ public class ReputationView extends BaseCustomView {
                             dialog = new BottomSheetDialog(getContext());
                             dialog.setContentView(R.layout.seller_reputation_bottom_sheet_dialog);
                             TextView point = (TextView) dialog.findViewById(R.id.reputation_point);
-                            if (point != null) point.setText(String.valueOf(reputationPoints) +
-                                    " " + getContext().getString(R.string.point));
+
+                            String pointText = TextUtils.isEmpty(String.valueOf(reputationPoints)) ?
+                                    getContext().getString(R.string.no_reputation_yet) :
+                                    String.valueOf(reputationPoints) +
+                                            " " + getContext().getString(R.string.point);
+
+                            if (point != null) point.setText(pointText);
+
                             LinearLayout sellerReputation = (LinearLayout) dialog.findViewById(R.id
                                     .seller_reputation);
                             ReputationBadgeUtils.setReputationMedals(getContext(),
                                     sellerReputation, typeMedal, levelMedal,
                                     null);
                             Button closeButton = (Button) dialog.findViewById(R.id.close_button);
+
                             if (closeButton != null)
                                 closeButton.setOnClickListener(new OnClickListener() {
                                     @Override
