@@ -180,4 +180,7 @@
     <string name="product_manage_label_option_cashback_5">5%% senilai %1$s %2$d</string>
     <string name="product_manage_label_option_without_cashback">Tanpa Cashback</string>
     <string name="product_manage_title_set_price">Atur Harga</string>
+    <string name="import_from_instagram_text_description">Impor dari Instagram</string>
+    <string name="added_from_gallery_text_description">Tambah dari Galeri</string>
+    <string name="added_from_camera_text_description">Tambah dari Kamera</string>
 </resources>
