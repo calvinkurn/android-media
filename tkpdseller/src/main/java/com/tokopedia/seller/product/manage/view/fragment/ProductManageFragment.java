@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.manage.view.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,6 +49,7 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -162,10 +164,16 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             }
 
             @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
                 if (item.getItemId() == R.id.delete_product_menu) {
-                    productManagePresenter.deleteProduct(((ProductManageListAdapter) adapter).getListChecked());
-                    mode.finish();
+                    final List<String> productIdList = ((ProductManageListAdapter) adapter).getListChecked();
+                    showDialogActionDeleteProduct(productIdList, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mode.finish();
+                            productManagePresenter.deleteProduct(productIdList);
+                        }
+                    });
                 }
                 return false;
             }
@@ -319,22 +327,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onSuccessDeleteProduct() {
-        resetPageAndSearch();
-    }
-
-    @Override
-    public void onErrorDeleteProduct(Throwable t, final String productId) {
-        NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
-                ViewUtils.getErrorMessage(getActivity(), t), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        productManagePresenter.deleteProduct(productId);
-                    }
-                }).showRetrySnackbar();
-    }
-
-    @Override
     public void onSuccessMultipleDeleteProduct() {
         resetPageAndSearch();
     }
@@ -405,7 +397,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 } else if (itemId == R.id.duplicat_product_menu) {
                     goToDuplicateProduct(productManageViewModel.getId());
                 } else if (itemId == R.id.delete_product_menu) {
-                    showDialogActionDeleteProduct(productManageViewModel.getId());
+                    final List<String> productIdList = new ArrayList<>();
+                    productIdList.add(productManageViewModel.getId());
+                    showDialogActionDeleteProduct(productIdList, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            productManagePresenter.deleteProduct(productIdList);
+                        }
+                    });
                 } else if (itemId == R.id.change_price_product_menu) {
                     showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencyId());
                 } else if (itemId == R.id.share_product_menu) {
@@ -489,16 +488,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         productManageEditPriceDialogFragment.show(getActivity().getFragmentManager(), "");
     }
 
-    private void showDialogActionDeleteProduct(final String productId) {
+    private void showDialogActionDeleteProduct(final List<String> productIdList, Dialog.OnClickListener onClickListener) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setTitle(R.string.label_delete);
         alertDialog.setMessage(R.string.dialog_delete_product);
-        alertDialog.setPositiveButton(R.string.label_delete, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                productManagePresenter.deleteProduct(productId);
-            }
-        });
+        alertDialog.setPositiveButton(R.string.label_delete, onClickListener);
         alertDialog.setNegativeButton(R.string.title_cancel, null);
         alertDialog.show();
     }

@@ -172,35 +172,6 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     }
 
     @Override
-    public void deleteProduct(final String productId) {
-        getView().showLoadingProgress();
-        deleteProductUseCase.execute(DeleteProductUseCase.createRequestParams(productId), new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                if (isViewAttached()) {
-                    getView().hideLoadingProgress();
-                    getView().onErrorDeleteProduct(t, productId);
-                }
-            }
-
-            @Override
-            public void onNext(Boolean isSuccessDeleteProduct) {
-                if (isSuccessDeleteProduct) {
-                    getView().onSuccessDeleteProduct();
-                } else {
-                    getView().onErrorDeleteProduct(new NetworkErrorException(), productId);
-                }
-                getView().hideLoadingProgress();
-            }
-        });
-    }
-
-    @Override
     public void getListProduct(int page, String keywordFilter, @CatalogProductOption String catalogOption,
                                @ConditionProductOption String conditionOption, String etalaseId,
                                @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption, String categoryId) {

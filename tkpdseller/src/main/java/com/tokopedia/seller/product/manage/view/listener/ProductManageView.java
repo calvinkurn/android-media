@@ -23,10 +23,6 @@ public interface ProductManageView extends BaseListViewListener<ProductManageVie
 
     void onSuccessEditPrice(String productId, String price, String currencyId, String currencyText);
 
-    void onSuccessDeleteProduct();
-
-    void onErrorDeleteProduct(Throwable t, String productId);
-
     void onErrorSetCashback(Throwable t, String productId, int cashback);
 
     void onSuccessSetCashback(String productId, int cashback);
