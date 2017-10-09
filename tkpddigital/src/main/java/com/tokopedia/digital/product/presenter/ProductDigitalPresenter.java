@@ -88,6 +88,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     private boolean ussdTimeOut = false;
 
     private final String PARAM_IS_RESELLER = "is_reseller";
+    private final String balance = "balance";
 
     public ProductDigitalPresenter(IProductDigitalView view,
                                    IProductDigitalInteractor productDigitalInteractor) {
@@ -499,7 +500,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
             number = getDeviceMobileNumber(selectedSim);
         }
         RequestBodyPulsaBalance requestBodyPulsaBalance = new RequestBodyPulsaBalance();
-        requestBodyPulsaBalance.setType("balance");
+        requestBodyPulsaBalance.setType(balance);
         Attributes attributes = new Attributes();
         attributes.setOperatorId(parseStringToInt(getSelectedUssdOperator(selectedSim).getOperatorId()));
         attributes.setMessage(message);

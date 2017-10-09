@@ -122,7 +122,7 @@ public class USSDAccessibilityService extends AccessibilityService {
         boolean isClosed = checkAndClosed(source,getString(R.string.label_ussd_cancel));
 
         if (!isClosed) {
-            isClosed = checkAndClosed(source,"Batal");
+            isClosed = checkAndClosed(source,getString(R.string.ussd_batal_label));
         }
 
         if (!isClosed) {
@@ -136,7 +136,7 @@ public class USSDAccessibilityService extends AccessibilityService {
                 if (node != null && node.getText() != null) {
                     if (getString(R.string.label_ussd_cancel).equalsIgnoreCase(node.getText().toString()) ||
                             getString(R.string.ok).equalsIgnoreCase(node.getText().toString()) ||
-                            "Batal".equalsIgnoreCase(node.getText().toString())) {
+                            getString(R.string.ussd_batal_label).equalsIgnoreCase(node.getText().toString())) {
                         node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         isClosed = true;
                         break;
