@@ -119,7 +119,9 @@
             android:name="com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService"
             android:exported="false" />
 
-        <activity android:name=".inboxchat.activity.InboxChatActivity"></activity>
+
+        <activity android:name=".inboxchat.activity.InboxChatActivity" />
+        <activity android:name=".inboxchat.activity.DummyActivity"></activity>
     </application>
 
 </manifest>

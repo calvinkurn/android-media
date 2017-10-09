@@ -48,7 +48,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         this.pagingHandler = new PagingHandler();
     }
 
-    private void getMessage() {
+    public void getMessage() {
         showLoading();
         getView().disableActions();
         getView().removeError();

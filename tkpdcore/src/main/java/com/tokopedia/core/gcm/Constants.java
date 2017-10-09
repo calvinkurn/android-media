@@ -25,6 +25,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX = "sender_id";
     String ARG_NOTIFICATION_APPLINK_RIDE = "ride";
     String ARG_NOTIFICATION_APPLINK_PROMO_LABEL = "promo";
+    String ARG_NOTIFICATION_APPLINK_TOPCHAT = "topchat";
     String KEY_ORIGIN = "origin";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;
@@ -103,6 +104,7 @@ public interface Constants {
         String LOGIN = "tokopedia://login";
         String OFFICIAL_STORES = "tokopedia://official-stores";
         String RESCENTER = "tokopedia://resolution/{resolution_id}";
+        String TOPCHAT = "tokopedia://topchat/{message_id}";
 
         interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";

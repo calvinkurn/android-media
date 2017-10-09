@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,6 +54,10 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
         implements InboxMessageView, InboxMessageConstant {
 
 
+    public void restackList(Bundle data) {
+        Log.i("asdf", "restackList: ");
+    }
+
     public interface DoActionInboxMessageListener {
         void archiveMessage(Bundle param);
 
@@ -82,13 +87,11 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
         return fragment;
     }
 
-    @BindView(R2.id.message_list)
+
     RecyclerView mainList;
 
-    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     View filterLayout;
@@ -170,6 +173,9 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
 
     @Override
     protected void initView(View view) {
+        mainList = (RecyclerView) view.findViewById((R.id.chat_list));
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         filterLayout = getActivity().getLayoutInflater().inflate(R.layout.layout_filter_message, null);
         search = (EditText) filterLayout.findViewById(R.id.search);

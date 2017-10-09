@@ -627,6 +627,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_my_product_seller">ULASAN PEMBELI</string>
     <string name="title_my_product">PRODUK SAYA</string>
     <string name="title_inbox_message">Pesan</string>
+    <string name="title_inbox_chat">Chat</string>
     <string name="title_inbox_message_all">INBOX</string>
     <string name="title_inbox_sent">TERKIRIM</string>
     <string name="title_inbox_archive">ARSIP</string>

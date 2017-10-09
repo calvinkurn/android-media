@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -124,13 +125,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                                 == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
                             listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
                         } else {
-                            if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                                    && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof InboxMessageActivity) {
-                                listener.onGetNotif(data);
-                            }
-                            else{
-                                prepareAndExecuteApplinkNotification(data);
-                            }
+
+                            prepareAndExecuteApplinkNotification(data);
+
                         }
                     } else {
                         prepareAndExecuteApplinkNotification(data);
@@ -139,10 +136,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 mFCMCacheManager.resetCache(data);
             }
         } else {
-            if(data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL)) {
+            if (data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL)) {
                 prepareAndExecuteApplinkPromoNotification(data);
-            }
-            else {
+            } else {
                 prepareAndExecuteApplinkNotification(data);
             }
         }
@@ -191,6 +187,17 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 }
                 break;
 
+            case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
+                if ((mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof InboxMessageActivity)
+                    || (MainApplication.currentActivity() instanceof InboxMessageActivity)) {
+                    NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
+                    listener.onGetNotif(data);
+                }else {
+                    ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
+                    applinkBuildAndShowNotification.showApplinkNotification(data);
+                }
+                break;
             default:
                 ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
                 applinkBuildAndShowNotification.showApplinkNotification(data);

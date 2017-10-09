@@ -21,6 +21,7 @@ import android.view.View;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -90,7 +91,7 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
         }
     }
 
-    @DeepLink(Constants.Applinks.MESSAGE_DETAIL)
+    @DeepLink({Constants.Applinks.MESSAGE_DETAIL, Constants.Applinks.TOPCHAT})
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         Intent homeIntent = null;
         if (GlobalConfig.isSellerApp()) {

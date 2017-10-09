@@ -32,7 +32,11 @@ public class DeeplinkNotification extends BasePromoNotification {
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");
         mNotificationPass.isAllowedBigStyle = true;
-        mNotificationPass.mIntent.setData(Uri.parse(data.getString(ARG_NOTIFICATION_URL)));
+        if(data.getString(ARG_NOTIFICATION_URL) != null) {
+            mNotificationPass.mIntent.setData(Uri.parse(data.getString(ARG_NOTIFICATION_URL)));
+        }else {
+            mNotificationPass.mIntent.setData(null);
+        }
         mNotificationPass.mIntent.putExtras(data);
     }
 }

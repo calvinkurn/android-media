@@ -315,7 +315,11 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
 
     private void setNotReadState(ViewHolder holder, int counter) {
         holder.counterUnread.setVisibility(View.VISIBLE);
-        holder.counterUnread.setText(String.valueOf(counter));
+        if(counter > 0) {
+            holder.counterUnread.setText(String.valueOf(counter));
+        }else {
+            holder.counterUnread.setVisibility(View.GONE);
+        }
     }
 
     public void setList(List<ListMessage> list) {

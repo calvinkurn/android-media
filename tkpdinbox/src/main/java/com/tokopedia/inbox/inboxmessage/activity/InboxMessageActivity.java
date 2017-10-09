@@ -18,6 +18,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -31,6 +32,7 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.inbox.inboxmessage.model.inboxmessage.InboxMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +54,7 @@ public class InboxMessageActivity extends DrawerPresenterActivity
 
     InboxMessageResultReceiver mReceiver;
 
-    @DeepLink(Constants.Applinks.MESSAGE)
+    @DeepLink({Constants.Applinks.MESSAGE})
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -71,10 +73,24 @@ public class InboxMessageActivity extends DrawerPresenterActivity
         return taskStackBuilder;
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+        MainApplication.setCurrentActivity(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MainApplication.setCurrentActivity(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MainApplication.setCurrentActivity(null);
     }
 
     @Override
@@ -345,6 +361,8 @@ public class InboxMessageActivity extends DrawerPresenterActivity
     }
 
     private void reStackList(Bundle data) {
+        InboxMessageFragment something = (InboxMessageFragment) ((MessagePagerAdapter)viewPager.getAdapter()).getItem(viewPager.getCurrentItem());
+        something.restackList(data);
         Log.i("", "reStackList: ");
     }
 

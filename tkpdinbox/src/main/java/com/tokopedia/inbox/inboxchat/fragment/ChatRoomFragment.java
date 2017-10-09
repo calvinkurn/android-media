@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -72,6 +73,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_room, container, false);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         initVar();
         progressBar = (ProgressBar) rootView.findViewById(R.id.loading);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.reply_list);
@@ -128,6 +130,25 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
                 }
             }
         });
+        recyclerView.addOnLayoutChangeListener(onKeyboardShows());
+    }
+
+
+    private View.OnLayoutChangeListener onKeyboardShows() {
+        return new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (bottom < oldBottom) {
+                    recyclerView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollToBottom();
+                        }
+                    }, 100);
+                }
+            }
+        };
     }
 
     @Override
@@ -204,7 +225,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
 
     @Override
     public void scrollToBottom() {
-        layoutManager.scrollToPosition(adapter.getItemCount()-1);
+        layoutManager.scrollToPosition(adapter.getList().size());
     }
 
     @Override
@@ -238,14 +259,14 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
 
     @Override
     public void setViewEnabled(boolean isEnabled) {
-        replyColumn.setEnabled(isEnabled);
+//        replyColumn.setEnabled(isEnabled);
 //        attachmentButton.setEnabled(isEnabled);
-        sendButton.setEnabled(isEnabled);
-        recyclerView.setEnabled(isEnabled);
-        if (isEnabled) {
+//        sendButton.setEnabled(isEnabled);
+//        recyclerView.setEnabled(isEnabled);
+//        if (isEnabled) {
 //            header.setVisibility(View.VISIBLE);
-            replyView.setVisibility(View.VISIBLE);
-        }
+//            replyView.setVisibility(View.VISIBLE);
+//        }
 
     }
 

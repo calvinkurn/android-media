@@ -40,10 +40,8 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
 
     RecyclerView mainList;
 
-    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     @Inject
@@ -86,6 +84,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
 
     private void initView(View parentView) {
         mainList = (RecyclerView) parentView.findViewById(R.id.message_list);
+        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         fab = (FloatingActionButton) parentView.findViewById(R.id.fab);
         refreshHandler = new RefreshHandler(getActivity(), parentView, new RefreshHandler.OnRefreshHandlerListener() {
             @Override
@@ -171,6 +170,31 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     @Override
     public boolean hasRetry() {
         return isRetryShowing;
+    }
+
+    @Override
+    public void overridePendingTransition(int i, int i1) {
+
+    }
+
+    @Override
+    public String getFilter() {
+        return null;
+    }
+
+    @Override
+    public String getKeyword() {
+        return null;
+    }
+
+    @Override
+    public void showEmptyState(String localizedMessage) {
+
+    }
+
+    @Override
+    public void showError(String localizedMessage) {
+
     }
 
     @Override

@@ -102,7 +102,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
 
     public void addList(List<Visitable> list) {
         this.list.addAll(0, list);
-        notifyItemRangeInserted(0, list.size());
+        notifyItemRangeInserted(0, list.size()+1);
     }
 
     public void showEmpty() {
@@ -148,6 +148,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
 
 
     public boolean checkLoadMore(int index) {
-        return (list.get(index) instanceof LoadingModel);
+        if(index>=0) {
+            return (list.get(index) instanceof LoadingModel);
+        }
+        return false;
     }
 }

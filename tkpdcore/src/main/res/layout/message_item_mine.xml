@@ -16,7 +16,8 @@
         android:textColor="@color/grey_500"
         tools:text="13:16 wib"
         android:textAllCaps="true"
-        android:textSize="@dimen/fontvs" />
+        android:textSize="@dimen/fontvs"
+        android:visibility="gone"/>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/main"
