@@ -778,22 +778,26 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onClientNumberClicked(String clientNumber, List<OrderClientNumber> numberList) {
-        startActivityForResult(
-                DigitalSearchNumberActivity.newInstance(
-                        getActivity(), categoryId, clientNumber, numberList
-                ),
-                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
-        );
+        if (!numberList.isEmpty()) {
+            startActivityForResult(
+                    DigitalSearchNumberActivity.newInstance(
+                            getActivity(), categoryId, clientNumber, numberList
+                    ),
+                    IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
+            );
+        }
     }
 
     @Override
-    public void onClientNumberCleared(List<OrderClientNumber> recentClientNumberList) {
-        startActivityForResult(
-                DigitalSearchNumberActivity.newInstance(
-                        getActivity(), categoryId, "", recentClientNumberList
-                ),
-                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
-        );
+    public void onClientNumberCleared(List<OrderClientNumber> numberList) {
+        if (!numberList.isEmpty()) {
+            startActivityForResult(
+                    DigitalSearchNumberActivity.newInstance(
+                            getActivity(), categoryId, "", numberList
+                    ),
+                    IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
+            );
+        }
     }
 
     @Override
@@ -870,6 +874,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
         historyClientNumberState.setLastOrderClientNumber(orderClientNumber);
         digitalProductView.renderData(categoryDataState, historyClientNumberState);
+        digitalProductView.clearFocusOnClientNumber();
     }
 
     @Override

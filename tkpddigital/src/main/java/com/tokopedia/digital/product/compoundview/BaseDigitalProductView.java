@@ -155,6 +155,8 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
             String clientNumberState, boolean isInstantCheckoutChecked
     );
 
+    public abstract void clearFocusOnClientNumber();
+
     public interface ActionListener {
         void onButtonBuyClicked(PreCheckoutProduct preCheckoutProduct);
 

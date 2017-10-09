@@ -13,7 +13,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_margin="@dimen/digital_padding_8"
             android:background="@color/grey_100">
 
             <EditText
@@ -21,22 +21,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:hint="Masukkan nomor"
+                android:hint="@string/input_number"
                 android:imeOptions="actionSearch"
                 android:inputType="number"
-                android:padding="16dp"
+                android:padding="@dimen/digital_padding_16"
                 android:singleLine="true"
                 android:textColor="#212121"
                 android:textColorHint="@color/black_38"
-                android:textSize="16sp" />
+                android:textSize="@dimen/font_medium" />
 
             <Button
                 android:layout_height="@dimen/digital_height_width_25"
                 android:layout_width="@dimen/digital_height_width_25"
                 android:id="@+id/btn_clear_number"
                 android:layout_gravity="end|center"
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginEnd="@dimen/margin_small"
                 android:background="@drawable/ic_clear_widget"
                 android:visibility="visible" />
 
@@ -45,7 +45,7 @@
     </FrameLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/digital_padding_16"
         tools:listitem="@layout/item_autocomplete"
         android:id="@+id/recyclerview_number_list"
         android:background="@color/white"

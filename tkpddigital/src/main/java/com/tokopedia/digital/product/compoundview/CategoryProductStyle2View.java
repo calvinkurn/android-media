@@ -142,7 +142,6 @@ public class CategoryProductStyle2View extends
         return clientNumberInputView.getText();
     }
 
-
     @Override
     protected void onRestoreSelectedData(
             Operator operatorSelectedState, Product productSelectedState,
@@ -154,6 +153,11 @@ public class CategoryProductStyle2View extends
                 clientNumberInputView.setText(clientNumberState);
             }
         }
+    }
+
+    @Override
+    public void clearFocusOnClientNumber() {
+        clientNumberInputView.clearFocus();
     }
 
     private void renderInstantCheckoutOptions() {
@@ -218,12 +222,13 @@ public class CategoryProductStyle2View extends
 
         if (hasLastOrderHistoryData()) {
             if (!data.getClientNumberList().isEmpty()) {
-                List<String> recentClientNumberString = new ArrayList<>();
-                for (OrderClientNumber orderClientNumber
-                        : historyClientNumber.getRecentClientNumberList()) {
-                    recentClientNumberString.add(orderClientNumber.getClientNumber());
-                }
-                clientNumberInputView.setAdapterAutoCompleteClientNumber(recentClientNumberString);
+//                List<String> recentClientNumberString = new ArrayList<>();
+//                for (OrderClientNumber orderClientNumber
+//                        : historyClientNumber.getRecentClientNumberList()) {
+//                    recentClientNumberString.add(orderClientNumber.getClientNumber());
+//                }
+                clientNumberInputView.setAdapterAutoCompleteClientNumber2(historyClientNumber.getRecentClientNumberList());
+//                clientNumberInputView.setAdapterAutoCompleteClientNumber(recentClientNumberString);
             }
         }
     }

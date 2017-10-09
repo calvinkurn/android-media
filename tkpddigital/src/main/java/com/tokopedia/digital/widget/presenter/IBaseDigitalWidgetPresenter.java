@@ -11,7 +11,7 @@ public interface IBaseDigitalWidgetPresenter {
 
 //    void fetchNumberList(String categoryId);
 
-    boolean isAlreadyHaveLastOrderOnCache();
+//    boolean isAlreadyHaveLastOrderOnCache();
 
 //    LastOrder getLastOrderFromCache();
 
@@ -19,7 +19,7 @@ public interface IBaseDigitalWidgetPresenter {
 
     boolean isRecentInstantCheckoutUsed(String categoryId);
 
-    boolean isAlreadyHaveLastOrderOnCacheByCategoryId(int categoryId);
+//    boolean isAlreadyHaveLastOrderOnCacheByCategoryId(int categoryId);
 
     void storeLastClientNumberTyped(String categoryId, String clientNumber, Product selectedProduct);
 

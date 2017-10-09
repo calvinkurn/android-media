@@ -26,7 +26,7 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
     private BaseDigitalWidgetView view;
     private IDigitalWidgetInteractor widgetInteractor;
 
-    private final LocalCacheHandler localCacheHandlerLastOrder;
+//    private final LocalCacheHandler localCacheHandlerLastOrder;
     private LocalCacheHandler localCacheHandlerLastClientNumber;
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
@@ -35,8 +35,8 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
         this.context = context;
         this.view = view;
         this.widgetInteractor = widgetInteractor;
-        localCacheHandlerLastOrder = new LocalCacheHandler(context,
-                TkpdCache.DIGITAL_WIDGET_LAST_ORDER);
+//        localCacheHandlerLastOrder = new LocalCacheHandler(context,
+//                TkpdCache.DIGITAL_WIDGET_LAST_ORDER);
     }
 
 //    @Override
@@ -82,10 +82,10 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
 //    }
 
 
-    @Override
-    public boolean isAlreadyHaveLastOrderOnCache() {
-        return null != localCacheHandlerLastOrder.getString(TkpdCache.Key.DIGITAL_LAST_ORDER);
-    }
+//    @Override
+//    public boolean isAlreadyHaveLastOrderOnCache() {
+//        return null != localCacheHandlerLastOrder.getString(TkpdCache.Key.DIGITAL_LAST_ORDER);
+//    }
 
 //    @Override
 //    public LastOrder getLastOrderFromCache() {
@@ -130,20 +130,20 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
         );
     }
 
-    @Override
-    public boolean isAlreadyHaveLastOrderOnCacheByCategoryId(int categoryId) {
-        if (isAlreadyHaveLastOrderOnCache()) {
-            String temp = localCacheHandlerLastOrder.getString(TkpdCache.Key.DIGITAL_LAST_ORDER);
-            try {
-                LastOrder lastOrder = CacheUtil.convertStringToModel(temp, LastOrder.class);
-                return (lastOrder.getData().getAttributes().getCategory_id() == categoryId);
-            } catch (Exception e) {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
+//    @Override
+//    public boolean isAlreadyHaveLastOrderOnCacheByCategoryId(int categoryId) {
+//        if (isAlreadyHaveLastOrderOnCache()) {
+//            String temp = localCacheHandlerLastOrder.getString(TkpdCache.Key.DIGITAL_LAST_ORDER);
+//            try {
+//                LastOrder lastOrder = CacheUtil.convertStringToModel(temp, LastOrder.class);
+//                return (lastOrder.getData().getAttributes().getCategory_id() == categoryId);
+//            } catch (Exception e) {
+//                return false;
+//            }
+//        } else {
+//            return false;
+//        }
+//    }
 
     @Override
     public void storeLastClientNumberTyped(String categoryId, String clientNumber, Product selectedProduct) {

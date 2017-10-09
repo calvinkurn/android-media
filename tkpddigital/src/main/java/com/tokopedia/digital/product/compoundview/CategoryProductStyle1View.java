@@ -156,6 +156,11 @@ public class CategoryProductStyle1View extends
         }
     }
 
+    @Override
+    public void clearFocusOnClientNumber() {
+        clientNumberInputView.clearFocus();
+    }
+
     /**
      * apakah mendukung instant checkout ?
      */
@@ -198,12 +203,13 @@ public class CategoryProductStyle1View extends
 
         if (hasLastOrderHistoryData()) {
             if (!data.getClientNumberList().isEmpty()) {
-                List<String> recentClientNumberString = new ArrayList<>();
-                for (OrderClientNumber orderClientNumber
-                        : historyClientNumber.getRecentClientNumberList()) {
-                    recentClientNumberString.add(orderClientNumber.getClientNumber());
-                }
-                clientNumberInputView.setAdapterAutoCompleteClientNumber(recentClientNumberString);
+//                List<String> recentClientNumberString = new ArrayList<>();
+//                for (OrderClientNumber orderClientNumber
+//                        : historyClientNumber.getRecentClientNumberList()) {
+//                    recentClientNumberString.add(orderClientNumber.getClientNumber());
+//                }
+//                clientNumberInputView.setAdapterAutoCompleteClientNumber(recentClientNumberString);
+                clientNumberInputView.setAdapterAutoCompleteClientNumber2(historyClientNumber.getRecentClientNumberList());
             }
         }
     }
