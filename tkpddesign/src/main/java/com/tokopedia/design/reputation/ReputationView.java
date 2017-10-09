@@ -138,7 +138,8 @@ public class ReputationView extends BaseCustomView {
                             dialog.setContentView(R.layout.seller_reputation_bottom_sheet_dialog);
                             TextView point = (TextView) dialog.findViewById(R.id.reputation_point);
 
-                            String pointText = TextUtils.isEmpty(String.valueOf(reputationPoints)) ?
+                            String pointText = TextUtils.isEmpty(String.valueOf(reputationPoints))
+                                    || reputationPoints.equals("0") ?
                                     getContext().getString(R.string.no_reputation_yet) :
                                     String.valueOf(reputationPoints) +
                                             " " + getContext().getString(R.string.point);
