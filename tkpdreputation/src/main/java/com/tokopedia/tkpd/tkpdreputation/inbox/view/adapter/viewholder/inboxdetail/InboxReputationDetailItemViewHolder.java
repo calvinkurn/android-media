@@ -409,8 +409,9 @@ public class InboxReputationDetailItemViewHolder extends
                     popup.getMenu().add(1, R.id.menu_report, 2, MainApplication.getAppContext()
                             .getString(R.string.menu_report));
 
-                popup.getMenu().add(1, R.id.menu_share, 3, MainApplication.getAppContext()
-                        .getString(R.string.menu_share));
+                if (!TextUtils.isEmpty(element.getProductName()))
+                    popup.getMenu().add(1, R.id.menu_share, 3, MainApplication.getAppContext()
+                            .getString(R.string.menu_share));
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 

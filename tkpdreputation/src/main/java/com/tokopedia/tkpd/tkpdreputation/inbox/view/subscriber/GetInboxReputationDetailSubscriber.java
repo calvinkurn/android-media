@@ -86,35 +86,35 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
     }
 
     private Visitable convertToInboxReputationDetailItemViewModel(
-            ReviewDomain inboxDomain, ReviewItemDomain detailDomain) {
+            ReviewDomain reviewDomain, ReviewItemDomain itemDomain) {
         return new InboxReputationDetailItemViewModel(
-                inboxDomain.getReputationId(),
-                String.valueOf(detailDomain.getProductData().getProductId()),
-                detailDomain.getProductData().getProductName(),
-                detailDomain.getProductData().getProductImageUrl(),
-                detailDomain.getProductData().getProductPageUrl(),
-                String.valueOf(detailDomain.getReviewData().getReviewId()),
-                inboxDomain.getUserData().getFullName(),
-                TextUtils.isEmpty(detailDomain.getReviewData().getReviewUpdateTime().getDateTimeFmt1()) ?
-                        detailDomain.getReviewData().getReviewCreateTime().getDateTimeFmt1() : detailDomain
+                reviewDomain.getReputationId(),
+                String.valueOf(itemDomain.getProductData().getProductId()),
+                itemDomain.getProductData().getProductName(),
+                itemDomain.getProductData().getProductImageUrl(),
+                itemDomain.getProductData().getProductPageUrl(),
+                String.valueOf(itemDomain.getReviewData().getReviewId()),
+                reviewDomain.getUserData().getFullName(),
+                TextUtils.isEmpty(itemDomain.getReviewData().getReviewUpdateTime().getDateTimeFmt1()) ?
+                        itemDomain.getReviewData().getReviewCreateTime().getDateTimeFmt1() : itemDomain
                         .getReviewData().getReviewUpdateTime().getDateTimeFmt1(),
-                convertToImageAttachmentViewModel(detailDomain.getReviewData().getReviewImageUrl()),
-                detailDomain.getReviewData().getReviewMessage(),
-                detailDomain.getReviewData().getReviewRating(),
-                detailDomain.isReviewHasReviewed(),
-                detailDomain.isReviewIsEditable(),
-                detailDomain.isReviewIsSkippable(),
-                detailDomain.isReviewIsSkipped(),
-                detailDomain.getProductData().getShopId(),
+                convertToImageAttachmentViewModel(itemDomain.getReviewData().getReviewImageUrl()),
+                itemDomain.getReviewData().getReviewMessage(),
+                itemDomain.getReviewData().getReviewRating(),
+                itemDomain.isReviewHasReviewed(),
+                itemDomain.isReviewIsEditable(),
+                itemDomain.isReviewIsSkippable(),
+                itemDomain.isReviewIsSkipped(),
+                reviewDomain.getShopData().getShopId(),
                 viewListener.getTab(),
-                convertToReviewResponseViewModel(inboxDomain.getShopData(),
-                        detailDomain.getReviewData()
+                convertToReviewResponseViewModel(reviewDomain.getShopData(),
+                        itemDomain.getReviewData()
                                 .getReviewResponse()),
-                detailDomain.getReviewData().isReviewAnonymity(),
-                detailDomain.getProductData().getProductStatus() == PRODUCT_IS_DELETED,
-                !TextUtils.isEmpty(detailDomain.getReviewData().getReviewUpdateTime()
+                itemDomain.getReviewData().isReviewAnonymity(),
+                itemDomain.getProductData().getProductStatus() == PRODUCT_IS_DELETED,
+                !TextUtils.isEmpty(itemDomain.getReviewData().getReviewUpdateTime()
                         .getDateTimeFmt1()),
-                inboxDomain.getShopData().getShopName()
+                reviewDomain.getShopData().getShopName()
         );
     }
 
