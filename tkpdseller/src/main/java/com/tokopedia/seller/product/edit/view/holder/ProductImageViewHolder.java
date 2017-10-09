@@ -44,6 +44,8 @@ public class ProductImageViewHolder extends ProductViewHolder {
         void onImageResolutionChanged(int maxSize);
 
         void onImageEditor(String uriOrPath);
+
+        void onRemovePreviousPath(String uri);
     }
 
     public static final int MIN_IMG_RESOLUTION = 300;
@@ -91,9 +93,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
             @Override
             public void removePreviousPath(String uri) {
-                if (!TextUtils.isEmpty(uri)) {
-                    FileUtils.deleteAllCacheTkpdFile(uri);
-                }
+                listener.onRemovePreviousPath(uri);
             }
         });
         imagesSelectView.setOnImageChanged(new ImagesSelectView.OnImageChanged() {

@@ -368,10 +368,11 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 break;
             case ImageEditorActivity.REQUEST_CODE: {
                 if (intent!= null && intent.hasExtra(ImageEditorActivity.RESULT_IMAGE_PATH)) {
-                    ProductAddActivity.start(ProductDraftListFragment.this, getActivity(),
+                    ProductAddActivity.start(ProductDraftListFragment.this,getContext(),
                             intent.getStringArrayListExtra(ImageEditorActivity.RESULT_IMAGE_PATH));
                 }
             }
+            break;
             default: {
                 ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
                     @Override
@@ -383,7 +384,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                     public void onSuccess(String path) {
                         ArrayList<String> imageUrls = new ArrayList<>();
                         imageUrls.add(path);
-                        ProductAddActivity.start(ProductDraftListFragment.this, getActivity(), imageUrls);
+                        ImageEditorActivity.start(getContext(), ProductDraftListFragment.this, imageUrls, null, true);
                     }
 
                     @Override
