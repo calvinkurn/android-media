@@ -3,6 +3,7 @@ import { View, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native'
 import { Text } from '../../common/TKPText'
 import PopUp from '../../common/TKPPopupModal'
 import { config } from '../../lib/config'
+import { icons } from '../icon/index'
 
 class CartItem extends Component {
   constructor(props) {
@@ -60,7 +61,7 @@ class CartItem extends Component {
                 disabled={item.qty === 1}
                 onPress={() => { onDecr(item.id, item.product_id, item.quantity) }}>
                 <View>
-                  <Image source={require('../img/btn_minus.png')} style={styles.qtyControlImage}></Image>
+                  <Image source={{ uri: icons.logo_btn_minus }} style={styles.qtyControlImage}></Image>
                 </View>
               </TouchableWithoutFeedback>
               <View style={styles.qty}>
@@ -69,7 +70,7 @@ class CartItem extends Component {
               <TouchableWithoutFeedback
                 onPress={() => { onIncr(item.id, item.product_id, item.quantity) }}>
                 <View>
-                  <Image source={require('../img/btn_plus.png')} style={styles.qtyControlImage}></Image>
+                  <Image source={{ uri: icons.logo_btn_plus }} style={styles.qtyControlImage}></Image>
                 </View>
               </TouchableWithoutFeedback>
             </View>
