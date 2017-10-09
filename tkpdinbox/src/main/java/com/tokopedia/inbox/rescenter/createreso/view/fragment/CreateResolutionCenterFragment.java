@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -426,6 +427,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     @Override
     public void showCreateComplainDialog(final ResultViewModel resultViewModel) {
         final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_create_complain);
         TextView tvProblem = (TextView) dialog.findViewById(R.id.tv_problem);
         TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);

@@ -58,6 +58,7 @@ public class ProductProblemDetailFragmentPresenter
     }
 
     public void updateProblemResult(ProblemResult problemResult) {
+        isEditData = true;
         this.problemResult = problemResult;
         currentTroublePos = problemResult.trouble;
         mainView.updateArriveStatusButton(problemResult.isDelivered, problemResult.canShowInfo);
@@ -69,7 +70,6 @@ public class ProductProblemDetailFragmentPresenter
     }
 
     public void initProblemResult(ProductProblemViewModel productProblemViewModel) {
-        isEditData = true;
         problemResult.type = productProblemViewModel.getProblem().getType();
         problemResult.isDelivered = true;
         //init with first trouble item of delivered status
