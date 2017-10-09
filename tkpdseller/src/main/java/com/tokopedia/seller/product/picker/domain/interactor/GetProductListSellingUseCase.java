@@ -8,8 +8,8 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
-import com.tokopedia.seller.product.manage.constant.EtalaseProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
+import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
@@ -84,7 +84,7 @@ public class GetProductListSellingUseCase extends UseCase<ProductListSellerModel
                                                                  @CatalogProductOption String catalogId,
                                                                  @ConditionProductOption String condition,
                                                                  String departmentId,
-                                                                 @EtalaseProductOption String etalaseId,
+                                                                 int etalaseId,
                                                                  @PictureStatusProductOption String pictureStatus,
                                                                  @SortProductOption String sort) {
         RequestParams requestParams = RequestParams.create();
@@ -101,10 +101,32 @@ public class GetProductListSellingUseCase extends UseCase<ProductListSellerModel
         if (departmentId != null && !departmentId.isEmpty()) {
             requestParams.putString(ProductListPickerConstant.QUERY_DEPARTMENT_ID, departmentId);
         }
-        requestParams.putString(ProductListPickerConstant.QUERY_ETALASE_ID, etalaseId);
+        requestParams.putString(ProductListPickerConstant.QUERY_ETALASE_ID, generateEtalaseIdFilter(etalaseId) );
         if (!pictureStatus.equals(PictureStatusProductOption.WITH_AND_WITHOUT)) {
             requestParams.putString(ProductListPickerConstant.QUERY_PICTURE_STATUS, pictureStatus);
         }
         return requestParams;
+    }
+
+
+    private static String generateEtalaseIdFilter(int etalaseId) {
+        switch (etalaseId){
+            case ProductManageConstant.FILTER_ALL_PRODUK:
+                return ProductManageConstant.FILTER_ALL_PRODUK_VALUE;
+            case ProductManageConstant.FILTER_SOLD_PRODUK:
+                return ProductManageConstant.FILTER_SOLD_PRODUK_VALUE;
+            case ProductManageConstant.FILTER_EMPTY_STOK:
+                return ProductManageConstant.FILTER_EMPTY_STOK_VALUE;
+            case ProductManageConstant.FILTER_PENDING:
+                return ProductManageConstant.FILTER_PENDING_VALUE;
+            case ProductManageConstant.FILTER_FREE_RETURNS:
+                return ProductManageConstant.FILTER_FREE_RETURNS_VALUE;
+            case ProductManageConstant.FILTER_PREORDER:
+                return ProductManageConstant.FILTER_PREORDER_VALUE;
+            case ProductManageConstant.FILTER_ALL_SHOWCASE:
+                return ProductManageConstant.FILTER_ALL_SHOWCASE_VALUE;
+            default:
+                return String.valueOf(etalaseId);
+        }
     }
 }

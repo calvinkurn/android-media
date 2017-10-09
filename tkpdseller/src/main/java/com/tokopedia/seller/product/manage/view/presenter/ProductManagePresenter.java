@@ -20,7 +20,7 @@ public interface ProductManagePresenter extends CustomerPresenter<ProductManageV
     void getListFeaturedProduct();
 
     void getListProduct(int page, String keywordFilter, @CatalogProductOption String catalogOption,
-                        @ConditionProductOption String conditionOption, String etalaseId,
+                        @ConditionProductOption String conditionOption, int etalaseId,
                         @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption, String categoryId);
 
     void editPrice(String productId, String price, String currencyId, String currencyText);

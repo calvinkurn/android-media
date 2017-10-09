@@ -202,5 +202,11 @@
     <string name="product_manage_cashback_title">Atur Cashback</string>
     <string name="product_manage_cashback_option">%1$s%% senilai %2$s %3$d</string>
     <string name="product_manage_cashback_option_none">Tanpa Cashback</string>
+    <string name="product_manage_filter_sold">Produk Terjual</string>
+    <string name="product_manage_filter_empty_stok">Stok Kosong</string>
+    <string name="product_manage_filter_pending">Pengawasan</string>
+    <string name="product_manage_filter_free_returns">Free Returns</string>
+    <string name="product_manage_filter_preorder">Preorder</string>
+    <string name="product_manage_filter_all_showcase">Semua Etalase</string>
 
 </resources>

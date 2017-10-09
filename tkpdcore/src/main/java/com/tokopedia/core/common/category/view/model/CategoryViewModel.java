@@ -22,6 +22,12 @@ public class CategoryViewModel implements Parcelable{
         hasChild = in.readByte() != 0;
     }
 
+    public CategoryViewModel(String name, long id, boolean hasChild) {
+        this.name = name;
+        this.id = id;
+        this.hasChild = hasChild;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

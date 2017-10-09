@@ -173,7 +173,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
     @Override
     public void getListProduct(int page, String keywordFilter, @CatalogProductOption String catalogOption,
-                               @ConditionProductOption String conditionOption, String etalaseId,
+                               @ConditionProductOption String conditionOption, int etalaseId,
                                @PictureStatusProductOption String pictureOption, @SortProductOption String sortOption, String categoryId) {
         getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(page,
                 keywordFilter, catalogOption, conditionOption, categoryId, etalaseId,
