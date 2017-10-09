@@ -86,7 +86,8 @@ public class ImageUploadPreviewFragment extends
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         adapter = ImageUploadAdapter.createAdapter(getActivity().getApplicationContext());
-        adapter.addList(savedInstanceState.<ImageUpload>getParcelableArrayList(ARGS_IMAGE_LIST));
+        if (savedInstanceState != null)
+            adapter.addList(savedInstanceState.<ImageUpload>getParcelableArrayList(ARGS_IMAGE_LIST));
     }
 
     @Override

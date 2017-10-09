@@ -109,8 +109,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     private void initVar(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            timeFilter = savedInstanceState.getString(ARGS_TIME_FILTER);
-            scoreFilter = savedInstanceState.getString(ARGS_SCORE_FILTER);
+            timeFilter = savedInstanceState.getString(ARGS_TIME_FILTER, "");
+            scoreFilter = savedInstanceState.getString(ARGS_SCORE_FILTER, "");
         } else {
             timeFilter = "";
             scoreFilter = "";
