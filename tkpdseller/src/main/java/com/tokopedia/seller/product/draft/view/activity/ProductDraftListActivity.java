@@ -88,6 +88,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
 
                         @Override
                         public void onSuccess(ArrayList<String> localPaths) {
+                            hideProgressDialog();
                             // if the path is different with the original,
                             // means no all draft is saved to local for some reasons
                             if (localPaths == null || localPaths.size() == 0 ||
@@ -101,6 +102,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
                                     .build()
                                     .inject(ProductDraftListActivity.this);
                             productDraftSaveBulkPresenter.attachView(ProductDraftListActivity.this);
+                            showProgressDialog();
                             productDraftSaveBulkPresenter.saveInstagramToDraft(ProductDraftListActivity.this,
                                     localPaths, imageDescriptionList);
                         }
