@@ -7,6 +7,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.cache.constant.CacheApiConstant;
 import com.tokopedia.core.cache.constant.HTTPMethodDef;
 import com.tokopedia.core.network.retrofit.response.BaseResponseError;
+import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
+import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -126,24 +128,24 @@ public class CacheApiUtils {
         if (response.code() != CacheApiConstant.CODE_OK) {
             return false;
         }
-        if (isResponseErrorStatusOk(response)) {
+        if (isStatusOkAndResponseError(response, TkpdV4ResponseError.class)) {
+            return false;
+        }
+        if (isStatusOkAndResponseError(response, TopAdsResponseError.class)) {
             return false;
         }
         return true;
     }
 
-    private static boolean isResponseErrorStatusOk(Response response) {
+    private static boolean isStatusOkAndResponseError(Response response, Class<? extends BaseResponseError> responseErrorClass) {
         try {
             Gson gson = new Gson();
             ResponseBody responseBody = response.peekBody(BYTE_COUNT);
-            BaseResponseError responseError = gson.fromJson(responseBody.string(), BaseResponseError.class);
-            if (responseError == null) {
-                return false;
-            }
+            BaseResponseError responseError = gson.fromJson(responseBody.string(), responseErrorClass);
+            return responseError.isResponseErrorValid();
         } catch (Exception e) {
             return false;
         }
-        return true;
     }
 
     /**

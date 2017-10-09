@@ -1,5 +1,7 @@
 package com.tokopedia.core.network.retrofit.response;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
@@ -13,15 +15,35 @@ import java.util.List;
 
 public class TkpdV4ResponseError extends BaseResponseError {
 
-    private static final String ERROR_KEY = "message_error";
+    private static final String STATUS_OK = "OK";
+    private static final String PARAM_MESSAGE_ERROR = "message_error";
+    private static final String PARAM_STATUS = "status";
 
-    @SerializedName(ERROR_KEY)
+    @SerializedName(PARAM_MESSAGE_ERROR)
     @Expose
-    private List<String> messageError = null;
+    private List<String> messageError;
+
+    @SerializedName(PARAM_STATUS)
+    @Expose
+    private String status;
 
     @Override
     public String getErrorKey() {
-        return ERROR_KEY;
+        return PARAM_MESSAGE_ERROR;
+    }
+
+    @Override
+    public boolean isResponseErrorValid() {
+        if (TextUtils.isEmpty(status)) {
+            return false;
+        }
+        if (status.equalsIgnoreCase(STATUS_OK)) {
+            return false;
+        }
+        if (!hasBody()) {
+            return false;
+        }
+        return true;
     }
 
     @Override
