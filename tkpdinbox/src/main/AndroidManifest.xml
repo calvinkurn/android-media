@@ -72,7 +72,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity"
+            android:name="com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity"
             android:label="@string/title_activity_res_center"
             android:parentActivityName=".rescenter.inbox.activity.InboxResCenterActivity"
             android:screenOrientation="portrait" />

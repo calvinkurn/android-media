@@ -1,7 +1,7 @@
-package com.tokopedia.inbox.rescenter.detailchat.view.presenter;
+package com.tokopedia.inbox.rescenter.detailv2.view.presenter;
 
-import com.tokopedia.inbox.rescenter.detailchat.view.fragment.DetailResChatFragment;
-import com.tokopedia.inbox.rescenter.detailchat.view.listener.DetailResChatActivityListener;
+import com.tokopedia.inbox.rescenter.detailv2.view.fragment.DetailResChatFragment;
+import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
 
 
 /**

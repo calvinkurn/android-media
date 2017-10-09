@@ -1,13 +1,12 @@
-package com.tokopedia.inbox.rescenter.detailchat.view.fragment;
+package com.tokopedia.inbox.rescenter.detailv2.view.fragment;
 
 import android.os.Bundle;
 import android.view.View;
 
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragmentV4;
-import com.tokopedia.inbox.rescenter.detailchat.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.detailchat.view.listener.DetailResChatFragmentListener;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 
 /**
  * Created by yoasfs on 10/6/17.

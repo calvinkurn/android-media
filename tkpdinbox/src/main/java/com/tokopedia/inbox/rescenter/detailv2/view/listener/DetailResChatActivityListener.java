@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.detailchat.view.listener;
+package com.tokopedia.inbox.rescenter.detailv2.view.listener;
 
 import android.support.v4.app.Fragment;
 

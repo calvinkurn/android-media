@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.detailchat.view.activity;
+package com.tokopedia.inbox.rescenter.detailv2.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +8,8 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.detailchat.view.listener.DetailResChatActivityListener;
-import com.tokopedia.inbox.rescenter.detailchat.view.presenter.DetailResChatActivityPresenter;
+import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
+import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatActivityPresenter;
 
 /**
  * Created by yoasfs on 10/6/17.
