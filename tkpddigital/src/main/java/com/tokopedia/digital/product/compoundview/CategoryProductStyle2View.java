@@ -142,7 +142,6 @@ public class CategoryProductStyle2View extends
         return clientNumberInputView.getText();
     }
 
-
     @Override
     protected void onRestoreSelectedData(
             Operator operatorSelectedState, Product productSelectedState,
@@ -226,6 +225,8 @@ public class CategoryProductStyle2View extends
                 clientNumberInputView.setAdapterAutoCompleteClientNumber(recentClientNumberString);
             }
         }
+
+        clientNumberInputView.enableImageOperator(operatorSelected.getImage());
     }
 
     private void renderProductChooserOptions() {
@@ -311,7 +312,7 @@ public class CategoryProductStyle2View extends
 
             @Override
             public void onClientNumberInputInvalid() {
-                clientNumberInputView.disableImageOperator();
+//                clientNumberInputView.disableImageOperator();
                 clearHolder(holderChooserProduct);
                 clearHolder(holderAdditionalInfoProduct);
                 clearHolder(holderPriceInfoProduct);
