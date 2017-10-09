@@ -37,10 +37,16 @@ public class CacheApiUtils {
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private static final String[] UNUSED_PARAM = {"hash", "device_time", "device_id"};
     private static final String PARAM_SEPARATOR = "-";
+    private static final String SEPARATOR_PATH_URL = "/";
+    private static final String PREFIX_UNUSED_REQUEST_PARAM_REGEX = "[?&]";
+    private static final String SUFFIX_UNUSED_REQUEST_PARAM_REGEX = ".*?(?=&|\\?|$)";
+    private static final int MAX_BUFFER_SIZE = 64;
+    private static final int MAX_BYTE_READ_SAMPLE = 16;
+    private static final String CONTENT_ENCODING_PARAM = "Content-Encoding";
 
     public static String generateCachePath(String path) {
-        if (!path.startsWith("/")) {
-            return "/" + path;
+        if (!path.startsWith(SEPARATOR_PATH_URL)) {
+            return SEPARATOR_PATH_URL + path;
         } else {
             return path;
         }
@@ -113,7 +119,7 @@ public class CacheApiUtils {
      */
     private static String getRemovedUnusedRequestParam(String url) {
         for (String param : UNUSED_PARAM) {
-            url = url.replaceAll("[?&]" + param + ".*?(?=&|\\?|$)", "");
+            url = url.replaceAll(PREFIX_UNUSED_REQUEST_PARAM_REGEX + param + SUFFIX_UNUSED_REQUEST_PARAM_REGEX, "");
         }
         return url;
     }
@@ -195,9 +201,9 @@ public class CacheApiUtils {
     private static boolean isPlaintext(Buffer buffer) {
         try {
             Buffer prefix = new Buffer();
-            long byteCount = buffer.size() < 64 ? buffer.size() : 64;
+            long byteCount = buffer.size() < MAX_BUFFER_SIZE ? buffer.size() : MAX_BUFFER_SIZE;
             buffer.copyTo(prefix, 0, byteCount);
-            for (int i = 0; i < 16; i++) {
+            for (int i = 0; i < MAX_BYTE_READ_SAMPLE; i++) {
                 if (prefix.exhausted()) {
                     break;
                 }
@@ -225,7 +231,7 @@ public class CacheApiUtils {
     }
 
     private static boolean bodyGzipped(Headers headers) {
-        String contentEncoding = headers.get("Content-Encoding");
+        String contentEncoding = headers.get(CONTENT_ENCODING_PARAM);
         return "gzip".equalsIgnoreCase(contentEncoding);
     }
 

@@ -36,10 +36,7 @@ public class TopAdsResponseError extends BaseResponseError {
 
     @Override
     public boolean isResponseErrorValid() {
-        if (!hasBody()) {
-            return false;
-        }
-        return true;
+        return hasBody();
     }
 
     public boolean hasBody(){
