@@ -6,6 +6,7 @@ import android.view.KeyEvent;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 
 /**
  * Created by okasurya on 9/26/17.
@@ -31,5 +32,15 @@ public abstract class ReactDrawerPresenterActivity<T> extends DrawerPresenterAct
             return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void onGetNotificationDrawer(DrawerNotification notification) {
+
+    }
+
+    @Override
+    public void onGetNotif() {
+
     }
 }
