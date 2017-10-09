@@ -298,35 +298,37 @@ const checkout = (state = {
 
 // ============= Payment V2 ============= //
 const paymentV2 = (state = {
-  isFetchingParams: false,
-  showLoadingPage: false,
-  data: [],
-  status_msg: ''
+  processing_isFetchingParams: false,
+  processing_showLoadingPage: false,
+  processing_data: [],
+  processing_status_msg: ''
 }, action) => {
   switch (action.type) {
     case `${MAKE_PAYMENT_V2}_${PENDING}`:
       return {
         ...state,
-        isFetchingParams: true,
-        showLoadingPage: true,
-        data: [],
-        status_msg: 'PROCESSING'
+        processing_isFetchingParams: true,
+        processing_showLoadingPage: true,
+        processing_data: [],
+        processing_status_msg: 'PROCESSING'
       }
     case `${MAKE_PAYMENT_V2}_${FULFILLED}`:
+      // console.log('full')
+      console.log(action.payload)
       return {
         ...state,
-        isFetchingParams: false,
-        showLoadingPage: false,
-        data: [],
-        status_msg: 'SUCCESS'
+        processing_isFetchingParams: false,
+        processing_showLoadingPage: false,
+        processing_data: action.payload,
+        processing_status_msg: 'SUCCESS'
       }
     case `${MAKE_PAYMENT_V2}_${REJECTED}`:
       return {
         ...state,
-        isFetchingParams: false,
-        showLoadingPage: false,
-        data: [],
-        status_msg: 'FAILED'
+        processing_isFetchingParams: false,
+        processing_showLoadingPage: false,
+        processing_data: [],
+        processing_status_msg: 'FAILED'
       }
     
     default:
