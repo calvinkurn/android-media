@@ -37,10 +37,15 @@ public class TermPrivacy extends TActivity {
         return AppScreen.SCREEN_TERM_PRIVACY;
     }
 
+
+    @Override
+    protected int getContentId() {
+        return R.layout.activity_simple_fragment;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_simple_fragment);
         supportFragmentManager = getSupportFragmentManager();
         supportFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             public void onBackStackChanged() {
