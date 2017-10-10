@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
-import com.tokopedia.seller.product.manage.constant.EtalaseProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
+import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 
 /**
  * Created by zulfikarrahman on 9/29/17.
@@ -14,12 +14,12 @@ import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
 
 public class ProductManageFilterModel implements Parcelable {
 
-    private String etalaseProductOption = EtalaseProductOption.ALL_SHOWCASE;
+    private int etalaseProductOption = ProductManageConstant.FILTER_ALL_PRODUK;
     private String etalaseProductOptionName;
     @PictureStatusProductOption String pictureStatusOption = PictureStatusProductOption.WITH_AND_WITHOUT;
     @ConditionProductOption String conditionProductOption = ConditionProductOption.ALL_CONDITION;
     @CatalogProductOption String catalogProductOption = CatalogProductOption.WITH_AND_WITHOUT;
-    private String categoryId;
+    private String categoryId = String.valueOf(ProductManageConstant.FILTER_ALL_CATEGORY);
     private String categoryName;
 
     public String getEtalaseProductOptionName() {
@@ -38,11 +38,11 @@ public class ProductManageFilterModel implements Parcelable {
         this.categoryName = categoryName;
     }
 
-    public String getEtalaseProductOption() {
+    public int getEtalaseProductOption() {
         return etalaseProductOption;
     }
 
-    public void setEtalaseProductOption(String etalaseProductOption) {
+    public void setEtalaseProductOption(int etalaseProductOption) {
         this.etalaseProductOption = etalaseProductOption;
     }
 
@@ -82,9 +82,9 @@ public class ProductManageFilterModel implements Parcelable {
     }
 
     public void reset() {
-        setEtalaseProductOption(EtalaseProductOption.ALL_SHOWCASE);
+        setEtalaseProductOption(ProductManageConstant.FILTER_ALL_PRODUK);
         setEtalaseProductOptionName("");
-        setCategoryId("");
+        setCategoryId(String.valueOf(ProductManageConstant.FILTER_ALL_CATEGORY));
         setCategoryName("");
         setPictureStatusOption(PictureStatusProductOption.WITH_AND_WITHOUT);
         setCatalogProductOption(CatalogProductOption.WITH_AND_WITHOUT);
@@ -98,7 +98,7 @@ public class ProductManageFilterModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.etalaseProductOption);
+        dest.writeInt(this.etalaseProductOption);
         dest.writeString(this.etalaseProductOptionName);
         dest.writeString(this.pictureStatusOption);
         dest.writeString(this.conditionProductOption);
@@ -108,7 +108,7 @@ public class ProductManageFilterModel implements Parcelable {
     }
 
     protected ProductManageFilterModel(Parcel in) {
-        this.etalaseProductOption = in.readString();
+        this.etalaseProductOption = in.readInt();
         this.etalaseProductOptionName = in.readString();
         this.pictureStatusOption = in.readString();
         this.conditionProductOption = in.readString();

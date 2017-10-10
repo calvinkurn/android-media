@@ -95,10 +95,10 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK && data!= null) {
-            ArrayList<InstagramMediaModel> images = data.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK && intent != null) {
+            ArrayList<InstagramMediaModel> images = intent.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
             if (images == null || images.size() == 0) {
                 return;
             }
