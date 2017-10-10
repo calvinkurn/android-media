@@ -226,7 +226,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         for (int i = 0; i < listFilter.size(); i++) {
             if (listFilter.get(i).isActive()) {
                 addSelectedFilterToList(list, listFilter.get(i).getListChild());
-                if (i > 0)
+                if (i != listFilter.size() - 1)
                     trackingEventLabel += "~";
             }
         }
