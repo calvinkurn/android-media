@@ -24,6 +24,10 @@ import dagger.Component;
 @Component(modules = RideModule.class, dependencies = AppComponent.class)
 public interface RideComponent {
 
+    GCMHandler gcmHandler();
+    
+    SessionHandler sessionHandler();
+
     ThreadExecutor threadExecutor();
 
     PostExecutionThread postExecutionThread();
