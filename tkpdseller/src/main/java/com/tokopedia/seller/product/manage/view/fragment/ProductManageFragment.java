@@ -289,9 +289,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         switch (requestCode) {
             case ImageGallery.TOKOPEDIA_GALLERY:
-                if (resultCode == Activity.RESULT_OK) {
-                    onActivityResultFromGallery(intent);
-                }
+                onActivityResultFromGallery(intent);
                 break;
             case GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
