@@ -380,7 +380,6 @@ public class WishListImpl implements WishList {
 
     @Override
     public void onResume(Context context) {
-        setLocalyticFlow(context, context.getString(R.string.home_wishlist));
         if (isAfterRotation()) {
             handleAfterRotation(context);
         } else {
