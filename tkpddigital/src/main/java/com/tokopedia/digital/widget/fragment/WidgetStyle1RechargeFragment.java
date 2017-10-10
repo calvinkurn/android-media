@@ -142,11 +142,9 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                     clearHolder(holderWidgetWrapperBuy);
                 } else {
                     if (category.getAttributes().isValidatePrefix()) {
-                        if (temp.length() >= 3) {
-                            if (s.length() >= 3) {
-                                presenter.validatePhonePrefix(temp, category.getId(),
-                                        category.getAttributes().isValidatePrefix());
-                            }
+                        if ((temp.length() >= 3 || temp.length() <= 4) || temp.length() > minLengthDefaultOperator) {
+                            presenter.validatePhonePrefix(temp, category.getId(),
+                                    category.getAttributes().isValidatePrefix());
                         } else {
                             widgetClientNumberView.setImgOperatorInvisible();
                             clearHolder(holderWidgetSpinnerProduct);
