@@ -31,6 +31,12 @@ public class DetailResChatResponse {
     @SerializedName("conversation")
     private List<ConversationResponse> conversation;
 
+    @SerializedName("order")
+    private OrderResponse orderResponse;
+
+    @SerializedName("last")
+    private LastResponse last;
+
     public NextActionResponse getNextAction() {
         return nextAction;
     }
@@ -85,5 +91,21 @@ public class DetailResChatResponse {
 
     public void setConversation(List<ConversationResponse> conversation) {
         this.conversation = conversation;
+    }
+
+    public OrderResponse getOrderResponse() {
+        return orderResponse;
+    }
+
+    public void setOrderResponse(OrderResponse orderResponse) {
+        this.orderResponse = orderResponse;
+    }
+
+    public LastResponse getLast() {
+        return last;
+    }
+
+    public void setLast(LastResponse last) {
+        this.last = last;
     }
 }

@@ -14,6 +14,9 @@ public class ResolutionResponse {
     @SerializedName("freeReturn")
     private int freeReturn;
 
+    @SerializedName("status")
+    private int status;
+
     public int getId() {
         return id;
     }
@@ -28,5 +31,13 @@ public class ResolutionResponse {
 
     public void setFreeReturn(int freeReturn) {
         this.freeReturn = freeReturn;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

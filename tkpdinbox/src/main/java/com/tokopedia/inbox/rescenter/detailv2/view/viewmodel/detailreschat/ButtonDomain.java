@@ -11,47 +11,74 @@ public class ButtonDomain {
     private int cancel;
     private String cancelText;
     private int edit;
+    private String editText;
     private int inputAddress;
+    private String inputAddressText;
     private int appeal;
-    private int inputResi;
+    private String appealText;
+    private int inputAWB;
+    private String inputAWBText;
     private int accept;
+    private String acceptText;
     private int acceptReturn;
+    private String acceptReturnText;
     private int finish;
+    private String finishText;
     private int acceptByAdmin;
+    private String acceptByAdminText;
     private int acceptByAdminReturn;
-    private String finishAcceptText;
-    private int recomplain;
+    private String acceptByAdminReturnText;
+    private int recomplaint;
+    private String recomplaintText;
 
     public ButtonDomain(int report,
                         String reportText,
                         int cancel,
                         String cancelText,
                         int edit,
+                        String editText,
                         int inputAddress,
+                        String inputAddressText,
                         int appeal,
-                        int inputResi,
+                        String appealText,
+                        int inputAWB,
+                        String inputAWBText,
                         int accept,
+                        String acceptText,
                         int acceptReturn,
+                        String acceptReturnText,
                         int finish,
+                        String finishText,
                         int acceptByAdmin,
+                        String acceptByAdminText,
                         int acceptByAdminReturn,
-                        String finishAcceptText,
-                        int recomplain) {
+                        String acceptByAdminReturnText,
+                        int recomplaint,
+                        String recomplaintText) {
         this.report = report;
         this.reportText = reportText;
         this.cancel = cancel;
         this.cancelText = cancelText;
         this.edit = edit;
+        this.editText = editText;
         this.inputAddress = inputAddress;
+        this.inputAddressText = inputAddressText;
         this.appeal = appeal;
-        this.inputResi = inputResi;
+        this.appealText = appealText;
+        this.inputAWB = inputAWB;
+        this.inputAWBText = inputAWBText;
         this.accept = accept;
+        this.acceptText = acceptText;
         this.acceptReturn = acceptReturn;
+        this.acceptReturnText = acceptReturnText;
         this.finish = finish;
+        this.finishText = finishText;
         this.acceptByAdmin = acceptByAdmin;
+        this.acceptByAdminText = acceptByAdminText;
         this.acceptByAdminReturn = acceptByAdminReturn;
-        this.finishAcceptText = finishAcceptText;
-        this.recomplain = recomplain;
+        this.acceptByAdminReturnText = acceptByAdminReturnText;
+        this.recomplaint = recomplaint;
+        this.recomplaintText = recomplaintText;
     }
 
     public int getReport() {
@@ -94,12 +121,28 @@ public class ButtonDomain {
         this.edit = edit;
     }
 
+    public String getEditText() {
+        return editText;
+    }
+
+    public void setEditText(String editText) {
+        this.editText = editText;
+    }
+
     public int getInputAddress() {
         return inputAddress;
     }
 
     public void setInputAddress(int inputAddress) {
         this.inputAddress = inputAddress;
+    }
+
+    public String getInputAddressText() {
+        return inputAddressText;
+    }
+
+    public void setInputAddressText(String inputAddressText) {
+        this.inputAddressText = inputAddressText;
     }
 
     public int getAppeal() {
@@ -110,12 +153,28 @@ public class ButtonDomain {
         this.appeal = appeal;
     }
 
-    public int getInputResi() {
-        return inputResi;
+    public String getAppealText() {
+        return appealText;
     }
 
-    public void setInputResi(int inputResi) {
-        this.inputResi = inputResi;
+    public void setAppealText(String appealText) {
+        this.appealText = appealText;
+    }
+
+    public int getInputAWB() {
+        return inputAWB;
+    }
+
+    public void setInputAWB(int inputAWB) {
+        this.inputAWB = inputAWB;
+    }
+
+    public String getInputAWBText() {
+        return inputAWBText;
+    }
+
+    public void setInputAWBText(String inputAWBText) {
+        this.inputAWBText = inputAWBText;
     }
 
     public int getAccept() {
@@ -126,12 +185,28 @@ public class ButtonDomain {
         this.accept = accept;
     }
 
+    public String getAcceptText() {
+        return acceptText;
+    }
+
+    public void setAcceptText(String acceptText) {
+        this.acceptText = acceptText;
+    }
+
     public int getAcceptReturn() {
         return acceptReturn;
     }
 
     public void setAcceptReturn(int acceptReturn) {
         this.acceptReturn = acceptReturn;
+    }
+
+    public String getAcceptReturnText() {
+        return acceptReturnText;
+    }
+
+    public void setAcceptReturnText(String acceptReturnText) {
+        this.acceptReturnText = acceptReturnText;
     }
 
     public int getFinish() {
@@ -142,12 +217,28 @@ public class ButtonDomain {
         this.finish = finish;
     }
 
+    public String getFinishText() {
+        return finishText;
+    }
+
+    public void setFinishText(String finishText) {
+        this.finishText = finishText;
+    }
+
     public int getAcceptByAdmin() {
         return acceptByAdmin;
     }
 
     public void setAcceptByAdmin(int acceptByAdmin) {
         this.acceptByAdmin = acceptByAdmin;
+    }
+
+    public String getAcceptByAdminText() {
+        return acceptByAdminText;
+    }
+
+    public void setAcceptByAdminText(String acceptByAdminText) {
+        this.acceptByAdminText = acceptByAdminText;
     }
 
     public int getAcceptByAdminReturn() {
@@ -158,19 +249,27 @@ public class ButtonDomain {
         this.acceptByAdminReturn = acceptByAdminReturn;
     }
 
-    public String getFinishAcceptText() {
-        return finishAcceptText;
+    public String getAcceptByAdminReturnText() {
+        return acceptByAdminReturnText;
     }
 
-    public void setFinishAcceptText(String finishAcceptText) {
-        this.finishAcceptText = finishAcceptText;
+    public void setAcceptByAdminReturnText(String acceptByAdminReturnText) {
+        this.acceptByAdminReturnText = acceptByAdminReturnText;
     }
 
-    public int getRecomplain() {
-        return recomplain;
+    public int getRecomplaint() {
+        return recomplaint;
     }
 
-    public void setRecomplain(int recomplain) {
-        this.recomplain = recomplain;
+    public void setRecomplaint(int recomplaint) {
+        this.recomplaint = recomplaint;
+    }
+
+    public String getRecomplaintText() {
+        return recomplaintText;
+    }
+
+    public void setRecomplaintText(String recomplaintText) {
+        this.recomplaintText = recomplaintText;
     }
 }

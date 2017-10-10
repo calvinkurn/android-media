@@ -6,11 +6,13 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat;
 
 public class ConversationProductDomain {
 
-    public ConversationAttachmentDomain image;
-    public int resId;
+    private ConversationAttachmentDomain image;
+    private String message;
+    private int resId;
 
-    public ConversationProductDomain(ConversationAttachmentDomain image, int resId) {
+    public ConversationProductDomain(ConversationAttachmentDomain image, String message, int resId) {
         this.image = image;
+        this.message = message;
         this.resId = resId;
     }
 
@@ -28,5 +30,13 @@ public class ConversationProductDomain {
 
     public void setResId(int resId) {
         this.resId = resId;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

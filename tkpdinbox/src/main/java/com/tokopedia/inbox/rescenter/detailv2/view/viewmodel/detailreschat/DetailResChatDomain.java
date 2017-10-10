@@ -15,7 +15,8 @@ public class DetailResChatDomain {
     private ButtonDomain button;
     private int actionBy;
     private List<ConversationDomain> conversation;
-
+    private OrderDomain order;
+    private LastDomain last;
     private boolean success;
 
     public DetailResChatDomain(NextActionDomain nextAction,
@@ -24,7 +25,9 @@ public class DetailResChatDomain {
                                ResolutionDomain resolution,
                                ButtonDomain button,
                                int actionBy,
-                               List<ConversationDomain> conversation) {
+                               List<ConversationDomain> conversation,
+                               OrderDomain order,
+                               LastDomain last) {
         this.nextAction = nextAction;
         this.shop = shop;
         this.customer = customer;
@@ -32,6 +35,8 @@ public class DetailResChatDomain {
         this.button = button;
         this.actionBy = actionBy;
         this.conversation = conversation;
+        this.order = order;
+        this.last = last;
     }
 
     public NextActionDomain getNextAction() {
@@ -90,6 +95,22 @@ public class DetailResChatDomain {
         this.conversation = conversation;
     }
 
+    public OrderDomain getOrder() {
+        return order;
+    }
+
+    public void setOrder(OrderDomain order) {
+        this.order = order;
+    }
+
+    public LastDomain getLast() {
+        return last;
+    }
+
+    public void setLast(LastDomain last) {
+        this.last = last;
+    }
+
     public boolean isSuccess() {
         return success;
     }
@@ -98,4 +119,3 @@ public class DetailResChatDomain {
         this.success = success;
     }
 }
-

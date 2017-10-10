@@ -20,10 +20,10 @@ public class ConversationResponse {
     private String message;
 
     @SerializedName("address")
-    private String address;
+    private ConversationAddressResponse address;
 
-    @SerializedName("awbNumber")
-    private String awbNumber;
+    @SerializedName("shippingDetail")
+    private ConversationShippingDetailResponse shippingDetail;
 
     @SerializedName("createTime")
     private ConversationCreateTimeResponse createTime;
@@ -70,12 +70,20 @@ public class ConversationResponse {
         this.message = message;
     }
 
-    public String getAddress() {
+    public ConversationAddressResponse getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(ConversationAddressResponse address) {
         this.address = address;
+    }
+
+    public ConversationShippingDetailResponse getShippingDetail() {
+        return shippingDetail;
+    }
+
+    public void setShippingDetail(ConversationShippingDetailResponse shippingDetail) {
+        this.shippingDetail = shippingDetail;
     }
 
     public ConversationCreateTimeResponse getCreateTime() {
@@ -132,13 +140,5 @@ public class ConversationResponse {
 
     public void setFlag(ConversationFlagResponse flag) {
         this.flag = flag;
-    }
-
-    public String getAwbNumber() {
-        return awbNumber;
-    }
-
-    public void setAwbNumber(String awbNumber) {
-        this.awbNumber = awbNumber;
     }
 }

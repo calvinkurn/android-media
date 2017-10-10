@@ -9,10 +9,13 @@ import com.google.gson.annotations.SerializedName;
 public class ConversationProductResponse {
 
     @SerializedName("image")
-    public ConversationAttachmentResponse image;
+    private ConversationAttachmentResponse image;
 
     @SerializedName("resId")
-    public int resId;
+    private int resId;
+
+    @SerializedName("message")
+    private String message;
 
     public ConversationAttachmentResponse getImage() {
         return image;
@@ -28,5 +31,13 @@ public class ConversationProductResponse {
 
     public void setResId(int resId) {
         this.resId = resId;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

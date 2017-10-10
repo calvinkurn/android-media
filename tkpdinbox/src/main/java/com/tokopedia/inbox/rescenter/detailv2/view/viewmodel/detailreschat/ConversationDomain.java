@@ -11,8 +11,8 @@ public class ConversationDomain {
     private int resConvId;
     private ConversationActionDomain action;
     private String message;
-    private String address;
-    private String awbNumber;
+    private ConversationAddressDomain address;
+    private ConversationShippingDetailDomain shippingDetail;
     private ConversationCreateTimeDomain createTime;
     private List<ConversationAttachmentDomain> attachment;
     private ConversationTroubleDomain trouble;
@@ -24,8 +24,8 @@ public class ConversationDomain {
     public ConversationDomain(int resConvId,
                               ConversationActionDomain action,
                               String message,
-                              String address,
-                              String awbNumber,
+                              ConversationAddressDomain address,
+                              ConversationShippingDetailDomain shippingDetail,
                               ConversationCreateTimeDomain createTime,
                               List<ConversationAttachmentDomain> attachment,
                               ConversationTroubleDomain trouble,
@@ -37,7 +37,7 @@ public class ConversationDomain {
         this.action = action;
         this.message = message;
         this.address = address;
-        this.awbNumber = awbNumber;
+        this.shippingDetail = shippingDetail;
         this.createTime = createTime;
         this.attachment = attachment;
         this.trouble = trouble;
@@ -71,20 +71,20 @@ public class ConversationDomain {
         this.message = message;
     }
 
-    public String getAddress() {
+    public ConversationAddressDomain getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(ConversationAddressDomain address) {
         this.address = address;
     }
 
-    public String getAwbNumber() {
-        return awbNumber;
+    public ConversationShippingDetailDomain getShippingDetail() {
+        return shippingDetail;
     }
 
-    public void setAwbNumber(String awbNumber) {
-        this.awbNumber = awbNumber;
+    public void setShippingDetail(ConversationShippingDetailDomain shippingDetail) {
+        this.shippingDetail = shippingDetail;
     }
 
     public ConversationCreateTimeDomain getCreateTime() {

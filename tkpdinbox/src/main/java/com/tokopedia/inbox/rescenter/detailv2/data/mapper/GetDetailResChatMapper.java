@@ -5,36 +5,46 @@ import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ButtonResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationActionResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationAddressResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationAttachmentResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationButtonResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationCreateTimeResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationFlagResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationProductResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationShippingDetailResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationSolutionResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationTroubleResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.CustomerResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.DetailResChatResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.LastResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.LastSolutionResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.NextActionDetailResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.NextActionDetailStepResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.NextActionResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.OrderResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ResolutionResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ShopResponse;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ButtonDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationActionDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAddressDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationButtonDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationFlagDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationProductDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationShippingDetailDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationSolutionDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationTroubleDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.CustomerDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.LastDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.LastSolutionDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.OrderDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ResolutionDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ShopDomain;
 
@@ -80,6 +90,12 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
                 detailResChatResponse.getActionBy(),
                 detailResChatResponse.getConversation() != null ?
                         mappingConversationDomain(detailResChatResponse.getConversation()) :
+                        null,
+                detailResChatResponse.getOrderResponse() != null ?
+                        mappingOrderDomain(detailResChatResponse.getOrderResponse()) :
+                        null,
+                detailResChatResponse.getLast() != null ?
+                        mappingLastDomain(detailResChatResponse.getLast()) :
                         null);
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
@@ -138,7 +154,7 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
     }
 
     private ResolutionDomain mappingResolutionDomain(ResolutionResponse response) {
-        return new ResolutionDomain(response.getId(), response.getFreeReturn());
+        return new ResolutionDomain(response.getId(), response.getFreeReturn(), response.getStatus());
     }
 
     private ButtonDomain mappingButtonDomain(ButtonResponse response) {
@@ -147,16 +163,25 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
                 response.getCancel(),
                 response.getCancelText(),
                 response.getEdit(),
+                response.getEditText(),
                 response.getInputAddress(),
+                response.getInputAddressText(),
                 response.getAppeal(),
-                response.getInputResi(),
+                response.getAppealText(),
+                response.getInputAWB(),
+                response.getInputAWBText(),
                 response.getAccept(),
+                response.getAcceptText(),
                 response.getAcceptReturn(),
+                response.getAcceptReturnText(),
                 response.getFinish(),
+                response.getFinishText(),
                 response.getAcceptByAdmin(),
+                response.getAcceptByAdminText(),
                 response.getAcceptByAdminReturn(),
-                response.getFinishAcceptText(),
-                response.getRecomplain());
+                response.getAcceptByAdminReturnText(),
+                response.getRecomplaint(),
+                response.getRecomplaintText());
     }
 
     private List<ConversationDomain> mappingConversationDomain(List<ConversationResponse> responseList) {
@@ -167,8 +192,12 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
                             mappingConversationActionDomain(response.getAction()) :
                             null,
                     response.getMessage(),
-                    response.getAddress(),
-                    response.getAwbNumber(),
+                    response.getAddress() != null ?
+                            mappingConversationAddressDomain(response.getAddress()) :
+                            null,
+                    response.getShippingDetail() != null ?
+                            mappingConversationShippingDetailDomain(response.getShippingDetail()) :
+                            null,
                     response.getCreateTime() != null ?
                             mappingConversationCreateTimeDomain(response.getCreateTime()) :
                             null,
@@ -214,6 +243,25 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
         return domainList;
     }
 
+    private ConversationAddressDomain mappingConversationAddressDomain(ConversationAddressResponse response) {
+        return new ConversationAddressDomain(response.getAddressId(),
+                response.getAddress(),
+                response.getDistrict(),
+                response.getCity(),
+                response.getProvince(),
+                response.getPhone(),
+                response.getCountry(),
+                response.getPostalCode(),
+                response.getReceiver());
+    }
+
+    private ConversationShippingDetailDomain mappingConversationShippingDetailDomain(
+            ConversationShippingDetailResponse response) {
+        return new ConversationShippingDetailDomain(response.getAwbNumber(),
+                response.getId(),
+                response.getName());
+    }
+
     private ConversationTroubleDomain mappingConversationTroubleDomain(
             ConversationTroubleResponse response) {
         return new ConversationTroubleDomain(response.getString());
@@ -237,7 +285,8 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
                             response.getImage().getThumb(),
                             response.getImage().getFull())
                             : null,
-                    response.resId));
+                    response.getMessage(),
+                    response.getResId()));
         }
         return domainList;
     }
@@ -250,5 +299,20 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
 
     private ConversationFlagDomain mappingConversationFlagDomain(ConversationFlagResponse response) {
         return new ConversationFlagDomain(response.getSystem(), response.getSolution());
+    }
+
+    private OrderDomain mappingOrderDomain(OrderResponse response) {
+        return new OrderDomain(response.getOpenAmount(), response.getShippingPrices());
+    }
+
+    private LastDomain mappingLastDomain(LastResponse response) {
+        return new LastDomain(response.getSolution() != null ?
+                mappingLastSolutionDomain(response.getSolution()) :
+                null,
+                response.getProblem());
+    }
+
+    private LastSolutionDomain mappingLastSolutionDomain(LastSolutionResponse response) {
+        return new LastSolutionDomain(response.getId(), response.getName(), response.getAmount());
     }
 }

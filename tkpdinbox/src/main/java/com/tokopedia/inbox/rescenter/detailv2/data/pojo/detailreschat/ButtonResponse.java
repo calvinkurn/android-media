@@ -14,45 +14,71 @@ public class ButtonResponse {
     @SerializedName("reportText")
     private String reportText;
 
-    @SerializedName("cancel")
+    @SerializedName("cancelComplaint")
     private int cancel;
 
-    @SerializedName("cancelText")
+    @SerializedName("cancelComplaintText")
     private String cancelText;
 
-    @SerializedName("edit")
+    @SerializedName("editSolution")
     private int edit;
+
+    @SerializedName("editSolutionText")
+    private String editText;
 
     @SerializedName("inputAddress")
     private int inputAddress;
 
-    @SerializedName("appeal")
+    @SerializedName("inputAddressText")
+    private String inputAddressText;
+
+    @SerializedName("appealSolution")
     private int appeal;
 
-    @SerializedName("inputResi")
-    private int inputResi;
+    @SerializedName("appealSolutionText")
+    private String appealText;
 
-    @SerializedName("accept")
+    @SerializedName("inputAWB")
+    private int inputAWB;
+
+    @SerializedName("inputAWBText")
+    private String inputAWBText;
+
+    @SerializedName("acceptSolution")
     private int accept;
 
-    @SerializedName("acceptReturn")
+    @SerializedName("acceptSolutionText")
+    private String acceptText;
+
+    @SerializedName("AcceptSolutionRetur")
     private int acceptReturn;
 
-    @SerializedName("finish")
+    @SerializedName("AcceptSolutionReturText")
+    private String acceptReturnText;
+
+    @SerializedName("finishComplaint")
     private int finish;
 
-    @SerializedName("acceptByAdmin")
+    @SerializedName("finishComplaintText")
+    private String finishText;
+
+    @SerializedName("acceptSolutionAdmin")
     private int acceptByAdmin;
 
-    @SerializedName("acceptByAdminReturn")
+    @SerializedName("acceptSolutionAdminText")
+    private String acceptByAdminText;
+
+    @SerializedName("acceptSolutionAdminRetur")
     private int acceptByAdminReturn;
 
-    @SerializedName("finishAcceptText")
-    private String finishAcceptText;
+    @SerializedName("acceptSolutionAdminReturText")
+    private String acceptByAdminReturnText;
 
-    @SerializedName("recomplain")
-    private int recomplain;
+    @SerializedName("")
+    private int recomplaint;
 
+    @SerializedName("")
+    private String recomplaintText;
 
     public int getReport() {
         return report;
@@ -94,12 +120,28 @@ public class ButtonResponse {
         this.edit = edit;
     }
 
+    public String getEditText() {
+        return editText;
+    }
+
+    public void setEditText(String editText) {
+        this.editText = editText;
+    }
+
     public int getInputAddress() {
         return inputAddress;
     }
 
     public void setInputAddress(int inputAddress) {
         this.inputAddress = inputAddress;
+    }
+
+    public String getInputAddressText() {
+        return inputAddressText;
+    }
+
+    public void setInputAddressText(String inputAddressText) {
+        this.inputAddressText = inputAddressText;
     }
 
     public int getAppeal() {
@@ -110,12 +152,28 @@ public class ButtonResponse {
         this.appeal = appeal;
     }
 
-    public int getInputResi() {
-        return inputResi;
+    public String getAppealText() {
+        return appealText;
     }
 
-    public void setInputResi(int inputResi) {
-        this.inputResi = inputResi;
+    public void setAppealText(String appealText) {
+        this.appealText = appealText;
+    }
+
+    public int getInputAWB() {
+        return inputAWB;
+    }
+
+    public void setInputAWB(int inputAWB) {
+        this.inputAWB = inputAWB;
+    }
+
+    public String getInputAWBText() {
+        return inputAWBText;
+    }
+
+    public void setInputAWBText(String inputAWBText) {
+        this.inputAWBText = inputAWBText;
     }
 
     public int getAccept() {
@@ -126,12 +184,28 @@ public class ButtonResponse {
         this.accept = accept;
     }
 
+    public String getAcceptText() {
+        return acceptText;
+    }
+
+    public void setAcceptText(String acceptText) {
+        this.acceptText = acceptText;
+    }
+
     public int getAcceptReturn() {
         return acceptReturn;
     }
 
     public void setAcceptReturn(int acceptReturn) {
         this.acceptReturn = acceptReturn;
+    }
+
+    public String getAcceptReturnText() {
+        return acceptReturnText;
+    }
+
+    public void setAcceptReturnText(String acceptReturnText) {
+        this.acceptReturnText = acceptReturnText;
     }
 
     public int getFinish() {
@@ -142,12 +216,28 @@ public class ButtonResponse {
         this.finish = finish;
     }
 
+    public String getFinishText() {
+        return finishText;
+    }
+
+    public void setFinishText(String finishText) {
+        this.finishText = finishText;
+    }
+
     public int getAcceptByAdmin() {
         return acceptByAdmin;
     }
 
     public void setAcceptByAdmin(int acceptByAdmin) {
         this.acceptByAdmin = acceptByAdmin;
+    }
+
+    public String getAcceptByAdminText() {
+        return acceptByAdminText;
+    }
+
+    public void setAcceptByAdminText(String acceptByAdminText) {
+        this.acceptByAdminText = acceptByAdminText;
     }
 
     public int getAcceptByAdminReturn() {
@@ -158,19 +248,27 @@ public class ButtonResponse {
         this.acceptByAdminReturn = acceptByAdminReturn;
     }
 
-    public String getFinishAcceptText() {
-        return finishAcceptText;
+    public String getAcceptByAdminReturnText() {
+        return acceptByAdminReturnText;
     }
 
-    public void setFinishAcceptText(String finishAcceptText) {
-        this.finishAcceptText = finishAcceptText;
+    public void setAcceptByAdminReturnText(String acceptByAdminReturnText) {
+        this.acceptByAdminReturnText = acceptByAdminReturnText;
     }
 
-    public int getRecomplain() {
-        return recomplain;
+    public int getRecomplaint() {
+        return recomplaint;
     }
 
-    public void setRecomplain(int recomplain) {
-        this.recomplain = recomplain;
+    public void setRecomplaint(int recomplaint) {
+        this.recomplaint = recomplaint;
+    }
+
+    public String getRecomplaintText() {
+        return recomplaintText;
+    }
+
+    public void setRecomplaintText(String recomplaintText) {
+        this.recomplaintText = recomplaintText;
     }
 }
