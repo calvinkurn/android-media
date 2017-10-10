@@ -75,8 +75,8 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                             }
                         })
 
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(subscriber));
     }
@@ -187,8 +187,8 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         })
                         .filter(isProductValidToOperator(categoryId, Integer.parseInt(operatorId)))
                         .toList()
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(subscriber));
     }
