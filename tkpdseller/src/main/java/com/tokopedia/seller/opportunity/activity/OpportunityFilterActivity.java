@@ -205,6 +205,9 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                         }.getType()));
                 cacheManager.store();
 
+                if (trackingEventLabel.endsWith("~"))
+                    trackingEventLabel = trackingEventLabel.substring(0, trackingEventLabel.length
+                            () - 1);
                 UnifyTracking.eventOpportunity(
                         OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
                         OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
@@ -226,8 +229,10 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         for (int i = 0; i < listFilter.size(); i++) {
             if (listFilter.get(i).isActive()) {
                 addSelectedFilterToList(list, listFilter.get(i).getListChild());
-                if (i != listFilter.size() - 1)
-                    trackingEventLabel += "~";
+                if (trackingEventLabel.endsWith(";"))
+                    trackingEventLabel = trackingEventLabel.substring(0, trackingEventLabel.length
+                            () - 1);
+                trackingEventLabel += "~";
             }
         }
         return list;
@@ -247,9 +252,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                         optionViewModel.getName()));
 
                 trackingEventLabel += optionViewModel.getKey() + " " + optionViewModel
-                        .getValue();
-                if (i != listChild.size() - 1)
-                    trackingEventLabel += ";";
+                        .getValue() + ";";
             }
         }
     }
