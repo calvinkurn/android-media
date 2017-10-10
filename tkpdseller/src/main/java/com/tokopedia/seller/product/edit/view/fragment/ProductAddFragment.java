@@ -587,21 +587,31 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 ImageSelectModel imageSelectModel = imagesSelectView.getSelectedImage();
                 if (imageSelectModel!= null) {
                     String path = imageSelectModel.getUriOrPath();
-                    if (!TextUtils.isEmpty(path)) {
+                    if (!TextUtils.isEmpty(path) && !isEdittingDraft()) {
                         FileUtils.deleteAllCacheTkpdFile(path);
                     }
                 }
-
                 imagesSelectView.removeImage();
             }
         });
+    }
+
+    private boolean isEdittingDraft(){
+        return ((getStatusUpload()== ProductStatus.EDIT) && (getProductDraftId() > 0));
     }
 
     @Override
     public void onImageEditor(String uriOrPath) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(uriOrPath);
-        ImageEditorActivity.start(getContext(), ProductAddFragment.this, imageUrls, null);
+        ImageEditorActivity.start(getContext(), ProductAddFragment.this, imageUrls, null, !isEdittingDraft());
+    }
+
+    @Override
+    public void onRemovePreviousPath(String uri) {
+        if (!TextUtils.isEmpty(uri) && !isEdittingDraft()) {
+            FileUtils.deleteAllCacheTkpdFile(uri);
+        }
     }
 
     private void clearFocus(){

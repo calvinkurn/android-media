@@ -307,10 +307,16 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     }
 
     private void deleteNotUsedTkpdCacheImage() {
-        ProductAddFragment fragment = getProductAddFragment();
-        if (fragment != null) {
-            fragment.deleteNotUsedTkpdCacheImage();
+        if (needDeleteCacheOnBack()) {
+            ProductAddFragment fragment = getProductAddFragment();
+            if (fragment != null) {
+                fragment.deleteNotUsedTkpdCacheImage();
+            }
         }
+    }
+
+    protected boolean needDeleteCacheOnBack(){
+        return true;
     }
 
     private boolean saveProductToDraft() {

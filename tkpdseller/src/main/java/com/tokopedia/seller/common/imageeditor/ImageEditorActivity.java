@@ -29,6 +29,7 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     public static final int REQUEST_CODE = 520;
     public static final String EXTRA_IMAGE_URLS = "IMG_URLS";
     public static final String EXTRA_WATERMARK_TEXT = "WTRMK_TEXT";
+    public static final String EXTRA_DELETE_CACHE_WHEN_EXIT = "DEL_CACHE";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_IMAGE_URLS = "SAVED_IMG_URLS";
@@ -46,20 +47,21 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     private TkpdProgressDialog progressDialog;
     private String watermarkText;
 
-    public static void start(Context context, Fragment fragment, ArrayList<String> imageUrls, String watermarkText) {
-        Intent intent = createInstance(context, imageUrls, watermarkText);
+    public static void start(Context context, Fragment fragment, ArrayList<String> imageUrls, String watermarkText, boolean delCacheWhenExit) {
+        Intent intent = createInstance(context, imageUrls, watermarkText, delCacheWhenExit);
         fragment.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static void start(Activity activity, ArrayList<String> imageUrls, String watermarkText) {
-        Intent intent = createInstance(activity, imageUrls, watermarkText);
+    public static void start(Activity activity, ArrayList<String> imageUrls, String watermarkText, boolean delCacheWhenExit) {
+        Intent intent = createInstance(activity, imageUrls, watermarkText, delCacheWhenExit);
         activity.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static Intent createInstance(Context context, ArrayList<String> imageUrls, String watermarkText) {
+    public static Intent createInstance(Context context, ArrayList<String> imageUrls, String watermarkText, boolean delCacheWhenExit) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
         intent.putExtra(EXTRA_WATERMARK_TEXT, watermarkText);
+        intent.putExtra(EXTRA_DELETE_CACHE_WHEN_EXIT, delCacheWhenExit);
         return intent;
     }
 
@@ -195,10 +197,14 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
         Intent intent = new Intent();
         if (isResultOK) {
             intent.putExtra(RESULT_IMAGE_PATH, resultImageUrls);
-            deleteAllTkpdFilesNotInResult(savedCroppedPaths, resultImageUrls);
+            if (getIntent().getBooleanExtra(EXTRA_DELETE_CACHE_WHEN_EXIT, true)) {
+                deleteAllTkpdFilesNotInResult(savedCroppedPaths, resultImageUrls);
+            }
         } else {
             intent.putExtra(RESULT_IMAGE_PATH, getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS));
-            deleteAllTkpdFilesNotInResult(savedCroppedPaths, getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS));
+            if (getIntent().getBooleanExtra(EXTRA_DELETE_CACHE_WHEN_EXIT, true)) {
+                deleteAllTkpdFilesNotInResult(savedCroppedPaths, getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS));
+            }
         }
         setResult(Activity.RESULT_OK, intent);
         finish();

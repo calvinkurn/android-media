@@ -44,6 +44,7 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
             correctResolutionInstagramDescList.add(instagramDescList.get(i));
         }
         if (correctResolutionLocalPathList.size() == 0) {
+            getView().onSaveBulkDraftSuccess(null);
             return;
         }
         saveBulkDraftProductUseCase.execute(
