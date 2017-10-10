@@ -137,6 +137,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".product.category.view.activity.CategoryDynamicPickerActivity"
+            android:label="@string/title_activity_category_picker"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".product.etalase.view.activity.EtalasePickerActivity"
             android:label="@string/product_title_activity_etalase_picker"
             android:screenOrientation="portrait" />
@@ -247,6 +252,11 @@
         <activity
             android:name=".shopsettings.notes.activity.ManageShopNotesActivity"
             android:label="@string/title_activity_manage_shop_notes"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity"
+            android:label="@string/product_title_activity_etalase_picker"
             android:screenOrientation="portrait" />
 
         <activity

@@ -44,7 +44,7 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    private static Intent createIntent(Context context, long departmentId) {
+    protected static Intent createIntent(Context context, long departmentId) {
         Intent intent = new Intent(context, CategoryPickerActivity.class);
         if (departmentId > 0) {
             intent.putExtra(CATEGORY_ID_INIT_SELECTED, departmentId);

@@ -28,8 +28,12 @@ import com.tokopedia.seller.product.etalase.view.adapter.EtalasePickerAdapter;
 import com.tokopedia.seller.product.etalase.view.adapter.EtalasePickerAdapterListener;
 import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerFragmentListener;
 import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerView;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseViewModel;
 import com.tokopedia.seller.product.etalase.view.presenter.EtalasePickerPresenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -44,7 +48,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     @Inject
     EtalasePickerPresenter presenter;
 
-    private EtalasePickerAdapter adapter;
+    protected EtalasePickerAdapter adapter;
     private EtalasePickerFragmentListener listener;
     private TkpdProgressDialog tkpdProgressDialog;
 

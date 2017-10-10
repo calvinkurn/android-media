@@ -21,18 +21,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
+import com.tokopedia.seller.product.category.view.activity.CategoryDynamicPickerActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
+import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
+
+import java.util.ArrayList;
 
 /**
  * Created by zulfikarrahman on 9/26/17.
@@ -138,28 +144,6 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
         });
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_product_manage_filter, menu);
-        for (int i = 0; i < menu.size(); i++) {
-            MenuItem item = menu.getItem(i);
-            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
-            spanString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green)), 0, spanString.length(), 0);
-            item.setTitle(spanString);
-        }
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        if (itemId == R.id.menu_reset) {
-            productManageFilterModel.reset();
-            updateFilterView();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void updateFilterView() {
         if (TextUtils.isEmpty(productManageFilterModel.getEtalaseProductOptionName())) {
             productManageFilterModel.setEtalaseProductOptionName(getString(R.string.product_manage_filter_menu_etalase_all));
@@ -214,7 +198,15 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     }
 
     private void showEtalaseOption() {
-        Intent intent = EtalasePickerActivity.createInstance(getActivity(), 0);
+        ArrayList<MyEtalaseItemViewModel> myEtalaseItemViewModels = new ArrayList<>();
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_PRODUK, getString(R.string.product_manage_filter_menu_etalase_all)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_SOLD_PRODUK, getString(R.string.product_manage_filter_sold)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_EMPTY_STOK, getString(R.string.product_manage_filter_empty_stok)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PENDING, getString(R.string.product_manage_filter_pending)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_FREE_RETURNS, getString(R.string.product_manage_filter_free_returns)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PREORDER, getString(R.string.product_manage_filter_preorder)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_SHOWCASE, getString(R.string.product_manage_filter_all_showcase)));
+        Intent intent = EtalaseDynamicPickerActivity.createInstance(getActivity(), productManageFilterModel.getEtalaseProductOption(), myEtalaseItemViewModels);
         startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_ETALASE);
     }
 
@@ -239,9 +231,9 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
                 break;
             case ProductManageConstant.REQUEST_CODE_ETALASE:
                 if (resultCode == Activity.RESULT_OK) {
-                    long etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
+                    int etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
                     String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
-                    productManageFilterModel.setEtalaseProductOption(String.valueOf(etalaseId));
+                    productManageFilterModel.setEtalaseProductOption(etalaseId);
                     productManageFilterModel.setEtalaseProductOptionName(etalaseName);
                     updateFilterView();
                 }
@@ -313,7 +305,10 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
         } else {
             categoryId = 0;
         }
-        CategoryPickerActivity.start(this, getActivity(), ProductManageConstant.REQUEST_CODE_CATEGORY, categoryId);
+        ArrayList<CategoryViewModel> categoryViewModels = new ArrayList<>();
+        categoryViewModels.add(new CategoryViewModel(getString(R.string.product_manage_filter_menu_category_all), ProductManageConstant.FILTER_ALL_CATEGORY, false));
+        Intent intent = CategoryDynamicPickerActivity.createIntent(getActivity(), categoryId, categoryViewModels);
+        startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_CATEGORY);
     }
 
     private void showBottomSheetOption(
@@ -329,5 +324,10 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
                 .setItemClickListener(bottomSheetItemClickListener)
                 .createDialog();
         bottomSheetDialog.show();
+    }
+
+    public void onResetFilter() {
+        productManageFilterModel.reset();
+        updateFilterView();
     }
 }

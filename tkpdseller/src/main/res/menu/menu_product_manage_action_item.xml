@@ -4,7 +4,7 @@
     <group>
         <item
             android:id="@+id/edit_product_menu"
-            android:icon="@drawable/ic_edit_pencil"
+            android:icon="@drawable/ic_edit_grey"
             android:title="@string/title_edit" />
         <item
             android:id="@+id/duplicat_product_menu"
