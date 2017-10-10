@@ -56,7 +56,7 @@ public abstract class TrackingConfig {
 
     /**
      * Initialize container to start at first time apps launched
-     * @param what type container (GTM, Appsflyer, Localytics)
+     * @param what type container (GTM, Appsflyer, MoEngage)
      */
     public static void runFirstTime(AnalyticsKind what){
         CommonUtils.dumper("runfirstime");
