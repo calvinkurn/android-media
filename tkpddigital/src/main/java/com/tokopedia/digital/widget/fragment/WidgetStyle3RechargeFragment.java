@@ -255,8 +255,9 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
             @Override
             public void trackingProduct() {
-                UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
-                        selectedProduct.getAttributes().getPrice());
+                if (selectedProduct != null)
+                    UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                            selectedProduct.getAttributes().getPrice());
             }
         };
     }

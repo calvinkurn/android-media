@@ -75,8 +75,8 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                             }
                         })
 
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(subscriber));
     }
@@ -117,8 +117,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     public void getOperatorsFromCategory(Subscriber<List<Operator>> subscriber, final int categoryId) {
         compositeSubscription.add(Observable.zip(
                 digitalWidgetRepository.getObservableOperators().map(operatorMapper),
-                getIdOperators(categoryId),
-                new Func2<List<Operator>, List<Integer>, List<Operator>>() {
+                getIdOperators(categoryId), new Func2<List<Operator>, List<Integer>, List<Operator>>() {
                     @Override
                     public List<Operator> call(List<Operator> operators, final List<Integer> integers) {
                         return Observable.just(operators)
@@ -139,8 +138,8 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                 .single();
                     }
                 })
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
 
@@ -188,8 +187,8 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         })
                         .filter(isProductValidToOperator(categoryId, Integer.parseInt(operatorId)))
                         .toList()
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(subscriber));
     }
@@ -211,8 +210,8 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                 return String.valueOf(operator.getId()).equals(operatorId);
                             }
                         })
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(subscriber));
     }
@@ -238,8 +237,8 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                 return products.get(0);
                             }
                         })
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(subscriber));
     }
@@ -248,8 +247,8 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     public void getRecentData(Subscriber<List<String>> subscriber, final int categoryId) {
         compositeSubscription.add(
                 digitalWidgetRepository.getObservableRecentData(categoryId)
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(subscriber));
     }
