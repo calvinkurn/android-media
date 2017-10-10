@@ -40,6 +40,11 @@ public class AttachmentActivity  extends BasePresenterActivity<AttachmentActivit
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    @Override
     protected void setupBundlePass(Bundle extras) {
         resultViewModel = extras.getParcelable(RESULT_VIEW_MODEL_DATA);
     }

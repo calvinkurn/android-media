@@ -32,6 +32,11 @@ public class ProductProblemDetailActivity
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    @Override
     protected void setupBundlePass(Bundle extras) {
         productProblemViewModel = (ProductProblemViewModel) extras.get(PRODUCT_PROBLEM_DATA);
         problemResult = (ProblemResult) extras.get(PROBLEM_RESULT_DATA);

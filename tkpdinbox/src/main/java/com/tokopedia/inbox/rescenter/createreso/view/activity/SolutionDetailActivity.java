@@ -35,6 +35,11 @@ public class SolutionDetailActivity extends
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    @Override
     protected void setupBundlePass(Bundle extras) {
         solutionViewModel = extras.getParcelable(SOLUTION_DATA);
         if (extras.getParcelable(RESULT_VIEW_MODEL_DATA) != null) {

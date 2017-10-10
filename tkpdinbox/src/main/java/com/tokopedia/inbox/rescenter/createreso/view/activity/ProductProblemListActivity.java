@@ -34,6 +34,11 @@ public class ProductProblemListActivity extends BasePresenterActivity<ProductPro
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    @Override
     protected void setupBundlePass(Bundle extras) {
         productProblemListViewModel = (ProductProblemListViewModel) extras.get(KEY_PARAM_PASS_DATA);
         problemResultList = extras.getParcelableArrayList(PROBLEM_RESULT_LIST_DATA);

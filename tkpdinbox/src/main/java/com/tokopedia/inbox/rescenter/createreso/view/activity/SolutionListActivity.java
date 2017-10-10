@@ -66,6 +66,11 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    @Override
     protected void setupBundlePass(Bundle extras) {
         if (extras.getParcelable(RESULT_VIEW_MODEL_DATA) != null) {
             resultViewModel = extras.getParcelable(RESULT_VIEW_MODEL_DATA);
