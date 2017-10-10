@@ -59,6 +59,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     private ArrayList<FilterPass> listPass;
     private OpportunityFilterPassModel filterPassModel;
     private GlobalCacheManager cacheManager;
+    private String trackingEventLabel;
 
     public static Intent createIntent(Context context) {
         Intent intent = new Intent(context, OpportunityFilterActivity.class);
@@ -68,6 +69,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         cacheManager = new GlobalCacheManager();
+        trackingEventLabel = "";
 
         if (savedInstanceState != null) {
             listFilter = savedInstanceState.getParcelableArrayList(PARAM_FILTER_VIEW_MODEL);
@@ -206,6 +208,13 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                 Intent intent = new Intent();
                 setResult(Activity.RESULT_OK, intent);
                 finish();
+
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.SUBMIT,
+                        trackingEventLabel
+                );
             }
         };
     }
@@ -216,6 +225,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         for (FilterViewModel filterViewModel : listFilter) {
             if (filterViewModel.isActive()) {
                 addSelectedFilterToList(list, filterViewModel.getListChild());
+                trackingEventLabel += "~";
             }
         }
         return list;
@@ -231,6 +241,9 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                         optionViewModel.getKey(),
                         optionViewModel.getValue(),
                         optionViewModel.getName()));
+
+                trackingEventLabel += optionViewModel.getKey() + " " + optionViewModel.getValue()
+                        + ";";
             }
         }
     }
