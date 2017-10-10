@@ -559,7 +559,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                         File outputMediaFile = getOutputMediaFile();
-                        if (!isCameraOpen) {
+                        if (outputMediaFile != null && !isCameraOpen) {
                             isCameraOpen = true;
                             imagePathCamera = outputMediaFile.getAbsolutePath();
                             Uri fileuri = MethodChecker.getUri(GalleryActivity.this, outputMediaFile);

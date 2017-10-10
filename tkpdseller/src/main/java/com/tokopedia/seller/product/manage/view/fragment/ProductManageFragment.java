@@ -1,24 +1,41 @@
 package com.tokopedia.seller.product.manage.view.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.ActionMode;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.PopupWindow;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.ImageGallery;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.design.button.BottomActionView;
@@ -54,12 +71,21 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+
 /**
  * Created by zulfikarrahman on 9/22/17.
  */
 
 public class ProductManageFragment extends BaseSearchListFragment<ProductManagePresenter, ProductManageViewModel>
         implements ProductManageView, ProductManageListAdapter.ClickOptionCallback, BaseMultipleCheckListAdapter.CheckedCallback<ProductManageViewModel> {
+
+    private static final int MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY = 5;
+    private static final int MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA = -1;
+    private static final int DEFAULT_IMAGE_GALLERY_POSITION = 0;
+    private static final int POPUP_WINDOW_ELEVATION = 10;
 
     @Inject
     ProductManagePresenter productManagePresenter;
@@ -74,6 +100,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private ProductManageFilterModel productManageFilterModel;
     private ActionMode actionMode;
     private Boolean goldMerchant;
+    private PopupWindow addProductPopupWindow;
 
     @Override
     protected void initInjector() {
@@ -139,11 +166,77 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.add_product_menu) {
-            startActivity(ProductAddActivity.getCallingIntent(getActivity()));
+            showAddProductPopupWindow();
         } else if (itemId == R.id.checklist_product_menu) {
             getActivity().startActionMode(getCallbackActionMode());
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showAddProductPopupWindow() {
+        View view = getActivity().findViewById(R.id.add_product_menu);
+        if (view != null && addProductPopupWindow == null) {
+            LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+            View popupView = layoutInflater.inflate(R.layout.partial_product_manage_add_product_popup_window, null);
+            popupView.findViewById(R.id.label_view_added_from_camera).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onAddFromCamera();
+                    closeAddProductPopupWindow();
+                }
+            });
+            popupView.findViewById(R.id.label_view_added_from_gallery).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onAddFromGallery();
+                    closeAddProductPopupWindow();
+                }
+            });
+            popupView.findViewById(R.id.label_view_import_from_instagram).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    importFromInstagram();
+                    closeAddProductPopupWindow();
+                }
+            });
+            addProductPopupWindow = new PopupWindow(popupView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            addProductPopupWindow.setOutsideTouchable(true);
+            addProductPopupWindow.setFocusable(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                addProductPopupWindow.setElevation(POPUP_WINDOW_ELEVATION);
+            }
+            addProductPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        }
+        Rect location = ViewUtils.locateView(view);
+        if (addProductPopupWindow != null && !addProductPopupWindow.isShowing() && location != null) {
+            addProductPopupWindow.showAtLocation(view, Gravity.TOP | Gravity.START, location.left, location.top);
+        }
+    }
+
+    private void closeAddProductPopupWindow() {
+        if (addProductPopupWindow != null && addProductPopupWindow.isShowing()) {
+            addProductPopupWindow.dismiss();
+        }
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void onAddFromGallery() {
+        GalleryActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
+                false, MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY);
+    }
+
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    public void onAddFromCamera() {
+        GalleryActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
+                true, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA);
+    }
+
+    public void importFromInstagram() {
+        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) getActivity().getApplication()).startInstopedActivityForResult(getActivity(), this,
+                    GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA);
+        }
+        UnifyTracking.eventClickInstoped();
     }
 
     @NonNull
@@ -193,11 +286,21 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         switch (requestCode) {
+            case ImageGallery.TOKOPEDIA_GALLERY:
+                if (resultCode == Activity.RESULT_OK) {
+                    onActivityResultFromGallery(intent);
+                }
+                break;
+            case GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    onActivityResultFromInstagram(intent);
+                }
+                break;
             case ProductManageConstant.REQUEST_CODE_FILTER:
                 if (resultCode == Activity.RESULT_OK) {
-                    productManageFilterModel = data.getParcelableExtra(ProductManageConstant.EXTRA_FILTER_SELECTED);
+                    productManageFilterModel = intent.getParcelableExtra(ProductManageConstant.EXTRA_FILTER_SELECTED);
                     resetPageAndSearch();
                     swipeToRefresh.setRefreshing(true);
                     filtered = true;
@@ -206,7 +309,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 break;
             case ProductManageConstant.REQUEST_CODE_SORT:
                 if (resultCode == Activity.RESULT_OK) {
-                    ProductManageSortModel productManageSortModel = data.getParcelableExtra(ProductManageConstant.EXTRA_SORT_SELECTED);
+                    ProductManageSortModel productManageSortModel = intent.getParcelableExtra(ProductManageConstant.EXTRA_SORT_SELECTED);
                     sortProductOption = productManageSortModel.getId();
                     resetPageAndSearch();
                     swipeToRefresh.setRefreshing(true);
@@ -215,13 +318,59 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             default:
                 break;
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, intent);
+    }
+
+    private void onActivityResultFromGallery(Intent intent) {
+        if (intent == null) {
+            return;
+        }
+        int position = intent.getIntExtra(GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION, GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
+        String imageUrl = intent.getStringExtra(GalleryActivity.IMAGE_URL);
+        if (!TextUtils.isEmpty(imageUrl)) {
+            ArrayList<String> imageUrls = new ArrayList<>();
+            imageUrls.add(imageUrl);
+            ProductAddActivity.start(getActivity(), imageUrls);
+        }
+
+        ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
+        if (imageUrls != null) {
+            ProductAddActivity.start(getActivity(), imageUrls);
+        }
+    }
+
+    private void onActivityResultFromInstagram(Intent intent) {
+        List<InstagramMediaModel> images = intent.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
+
+        ArrayList<String> standardResoImageUrlList = new ArrayList<>();
+        for (int i = 0; i < images.size(); i++) {
+            standardResoImageUrlList.add(images.get(i).standardResolution);
+        }
+        showLoadingProgress();
+        ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(getActivity());
+        imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList, false,
+                new ImageDownloadHelper.OnImageDownloadListener() {
+                    @Override
+                    public void onError(Throwable e) {
+                        hideLoadingProgress();
+                        CommonUtils.UniversalToast(getActivity(), ErrorHandler.getErrorMessage(e, getActivity()));
+                    }
+
+                    @Override
+                    public void onSuccess(ArrayList<String> resultLocalPaths) {
+                        showLoadingProgress();
+                        Intent intent = new Intent();
+                        intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, resultLocalPaths);
+                        ProductAddActivity.start(getActivity(), resultLocalPaths);
+                        getActivity().finish();
+                    }
+                });
     }
 
     @Override
     protected void setSearchMode(boolean searchMode) {
         if (filtered) {
-            super.setSearchMode(filtered);
+            super.setSearchMode(true);
             return;
         }
         super.setSearchMode(searchMode);
@@ -273,7 +422,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void onItemChecked(ProductManageViewModel productManageViewModel, boolean checked) {
         if (actionMode != null) {
-            actionMode.setTitle(String.valueOf(((ProductManageListAdapter) adapter).getTotalChecked()));
+            int totalChecked = ((ProductManageListAdapter) adapter).getTotalChecked();
+            actionMode.setTitle(String.valueOf(totalChecked));
+            MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
+            deleteMenuItem.setVisible(totalChecked > 0);
         }
     }
 
@@ -332,8 +484,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
-    public void onErrorMultipleDeleteProduct(
-            Throwable t, List<String> productIdDeletedList, final List<String> productIdFailToDeleteList) {
+    public void onErrorMultipleDeleteProduct(Throwable t, List<String> productIdDeletedList, final List<String> productIdFailToDeleteList) {
         if (productIdDeletedList.size() > 0) {
             resetPageAndSearch();
         }

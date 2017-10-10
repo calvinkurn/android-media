@@ -146,5 +146,7 @@
     <string name="shop_score_point_value">%1s poin</string>
     <string name="shop_score_title_widget_home">Performa Toko</string>
 
-
+    <string name="import_from_instagram_text_description">Impor dari Instagram</string>
+    <string name="added_from_gallery_text_description">Tambah dari Galeri</string>
+    <string name="added_from_camera_text_description">Tambah dari Kamera</string>
 </resources>
