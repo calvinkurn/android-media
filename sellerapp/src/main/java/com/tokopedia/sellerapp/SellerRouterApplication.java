@@ -71,6 +71,7 @@ import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
@@ -580,5 +581,10 @@ public abstract class SellerRouterApplication extends MainApplication
     public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
         GetCashbackUseCase getCashbackUseCase = getGMComponent().getCashbackUseCase();
         return getCashbackUseCase.getExecuteObservable(GetCashbackUseCase.createRequestParams(productIds));
+    }
+
+    public void goToAddProduct(Activity activity){
+        if(activity != null)
+            ProductAddActivity.start(activity);
     }
 }

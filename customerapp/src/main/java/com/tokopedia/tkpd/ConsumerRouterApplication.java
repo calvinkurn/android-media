@@ -590,4 +590,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         List<DataCashbackModel> dataCashbackModels = new ArrayList<>();
         return Observable.just(dataCashbackModels);
     }
+
+    public void goToAddProduct(Activity activity){
+        if(activity != null)
+            ProductAddActivity.start(activity);
+    }
 }
