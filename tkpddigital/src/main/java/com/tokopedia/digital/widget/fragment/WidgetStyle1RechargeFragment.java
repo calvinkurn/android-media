@@ -269,8 +269,9 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
             @Override
             public void trackingProduct() {
-                UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
-                        selectedProduct.getAttributes().getPrice());
+                if (selectedProduct != null)
+                    UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                            selectedProduct.getAttributes().getPrice());
             }
         };
     }
@@ -363,7 +364,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             widgetProductChooserView.setTitleProduct(operatorModel.getAttributes().getRule().getProductText());
             widgetProductChooserView.setVisibilityProduct(operatorModel.getAttributes().getRule().isShowProduct());
             if (!operatorModel.getAttributes().getRule().isShowPrice()) showPrice = false;
-            if (operatorModel.getAttributes().getRule().isShowProduct()) {
+            if (!operatorModel.getAttributes().getRule().isShowProduct()) {
                 clearHolder(holderWidgetWrapperBuy);
                 holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
             }
