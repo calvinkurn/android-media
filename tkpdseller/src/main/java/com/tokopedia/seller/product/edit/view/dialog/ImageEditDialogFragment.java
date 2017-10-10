@@ -76,8 +76,6 @@ public class ImageEditDialogFragment extends DialogFragment {
                         getString(R.string.title_img_desc)};
             } else { // primary image and not allow delete
                 imageMenu = new CharSequence[]{
-                        getString(R.string.action_edit),
-                        getString(R.string.action_editor),
                         getString(R.string.title_img_desc)};
             }
 
@@ -91,8 +89,6 @@ public class ImageEditDialogFragment extends DialogFragment {
                         getString(R.string.title_img_default)};
             } else { // not primary image and not allow delete
                 imageMenu = new CharSequence[]{
-                        getString(R.string.action_edit),
-                        getString(R.string.action_editor),
                         getString(R.string.title_img_desc),
                         getString(R.string.title_img_default)};
             }
