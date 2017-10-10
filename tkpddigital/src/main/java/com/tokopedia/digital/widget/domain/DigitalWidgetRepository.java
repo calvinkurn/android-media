@@ -18,6 +18,7 @@ import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
+import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,9 +59,19 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                     public Boolean call(CategoryData categoryData) {
                         return categoryData != null &&
                                 categoryData.getData() != null &&
-                                !categoryData.getData().isEmpty();
+                                !categoryData.getData().isEmpty()
+                                && isCategoryDataNotCorrupt(categoryData);
                     }
                 });
+    }
+
+    private boolean isCategoryDataNotCorrupt(CategoryData categoryData) {
+        for (Category data : categoryData.getData()) {
+            if (data.getAttributes() == null || data.getAttributes().getClientNumber() == null
+                    || data.getAttributes().getClientNumber().getOperatorStyle() == null)
+                return false;
+        }
+        return true;
     }
 
 
@@ -304,7 +315,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                     managerStatus.store();
                 } else if (currentStatusString != null && currentStatusString.equals(statusString)
                         && !isInitialGetStatus) {
-                    throw new RuntimeException("Is no need to reload widget");
+                    throw new WidgetRuntimeException("Is no need to reload widget");
                 } else if (currentStatusString == null) {
                     GlobalCacheManager managerStatus = new GlobalCacheManager();
                     managerStatus.setKey(KEY_STATUS_CURRENT);

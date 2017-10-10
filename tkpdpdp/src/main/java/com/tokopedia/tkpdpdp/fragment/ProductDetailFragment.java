@@ -123,6 +123,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
     public static final String STATE_PRODUCT_CAMPAIGN = "STATE_PRODUCT_CAMPAIGN";
+    public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     private CoordinatorLayout coordinatorLayout;
@@ -155,6 +156,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private List<ProductOther> productOthers;
     private VideoData videoData;
     private ProductCampaign productCampaign;
+    private PromoAttributes promoAttributes;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
 
@@ -726,6 +728,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
         presenter.saveStateProductCampaign(outState, STATE_PRODUCT_CAMPAIGN, productCampaign);
+        presenter.saveStatePromoWidget(outState,STATE_PROMO_WIDGET,promoAttributes);
     }
 
     @Override
@@ -932,6 +935,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showPromoWidget(PromoAttributes promoAttributes) {
+        this.promoAttributes=promoAttributes;
         this.promoWidgetView.renderData(promoAttributes);
     }
 
@@ -1009,10 +1013,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
-                if (scrollRange + verticalOffset == 0) {
+                if (scrollRange + verticalOffset == 0 && isAdded()) {
+                    initStatusBarLight();
                     initToolbarLight();
                     fabWishlist.hide();
-                } else {
+                } else if (isAdded()) {
+                    initStatusBarDark();
                     initToolbarTransparant();
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
@@ -1060,8 +1066,22 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
     }
 
+    private void initStatusBarDark() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation()) {
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
     private boolean getWindowValidation() {
         return getActivity() != null && getActivity().getWindow() != null;
+    }
+
+    private void initStatusBarLight() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation()) {
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.green_600));
+        }
     }
 
     private class EditClick implements View.OnClickListener {

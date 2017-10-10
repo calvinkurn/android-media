@@ -46,6 +46,9 @@ public class DrawerItemDataBinder extends DataBinder<DrawerItemDataBinder.ViewHo
         @BindView(R2.id.notif)
         TextView notification;
 
+        @BindView(R2.id.new_drawer_menu)
+        TextView newDrawerHighlight;
+
         @BindView(R2.id.drawer_item)
         RelativeLayout layout;
 
@@ -90,6 +93,12 @@ public class DrawerItemDataBinder extends DataBinder<DrawerItemDataBinder.ViewHo
             holder.label.setTypeface(null, Typeface.BOLD);
         } else {
             holder.label.setTypeface(null, Typeface.NORMAL);
+        }
+
+        if (item.isNew()) {
+            holder.newDrawerHighlight.setVisibility(View.VISIBLE);
+        } else {
+            holder.newDrawerHighlight.setVisibility(View.GONE);
         }
 
         holder.layout.setOnClickListener(new View.OnClickListener() {

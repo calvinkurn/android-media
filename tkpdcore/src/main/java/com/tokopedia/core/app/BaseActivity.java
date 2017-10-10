@@ -63,6 +63,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
+    public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
+    public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     private static final String TAG = "BaseActivity";
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
@@ -114,6 +116,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterForceLogoutReceiver();
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
         HockeyAppHelper.unregisterManager();
@@ -182,7 +185,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         super.onDestroy();
         unregisterHadesReceiver();
 
-        unregisterForceLogoutReceiver();
         HockeyAppHelper.unregisterManager();
 
         sessionHandler = null;
@@ -286,6 +288,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         logoutNetworkReceiver.setReceiver(this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(FORCE_LOGOUT);
+        filter.addAction(SERVER_ERROR);
+        filter.addAction(TIMEZONE_ERROR);
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutNetworkReceiver, filter);
     }
 

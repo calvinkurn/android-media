@@ -386,7 +386,6 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             view.noServiceChosen();
             return false;
         } else {
-            UnifyTracking.eventCreateShopFillLogistic();
             return true;
         }
     }

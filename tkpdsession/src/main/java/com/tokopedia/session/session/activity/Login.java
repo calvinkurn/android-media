@@ -131,7 +131,6 @@ public class Login extends BaseActivity implements SessionView
     RegisterResultReceiver registerReceiver;
     ResetPasswordResultReceiver resetPasswordReceiver;
     OTPResultReceiver otpReceiver;
-    ErrorNetworkReceiver mReceiverLogout;
 
     @DeepLink({Constants.Applinks.LOGIN})
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
@@ -229,7 +228,6 @@ public class Login extends BaseActivity implements SessionView
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_login2);
-        mReceiverLogout = new ErrorNetworkReceiver();
 
         session = new SessionImpl(this);
         session.fetchExtras(getIntent());
@@ -331,8 +329,12 @@ public class Login extends BaseActivity implements SessionView
     public void moveToFragment(Fragment fragment, boolean isAddtoBackStack, String TAG, int type) {
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.login_fragment, fragment, TAG);
-        if (isAddtoBackStack)
-            fragmentTransaction.addToBackStack(null);
+        try {
+            if (isAddtoBackStack)
+                fragmentTransaction.addToBackStack(null);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
         fragmentTransaction.commit();
     }
 
@@ -484,9 +486,6 @@ public class Login extends BaseActivity implements SessionView
     protected void onResume() {
         super.onResume();
 
-        mReceiverLogout.setReceiver(this);
-
-
         switch (session.getWhichFragment()) {
             case TkpdState.DrawerPosition.LOGIN:
                 if (isFragmentCreated(LOGIN_FRAGMENT_TAG)) {
@@ -538,7 +537,6 @@ public class Login extends BaseActivity implements SessionView
     @Override
     protected void onPause() {
         super.onPause();
-        mReceiverLogout.setReceiver(null);
 
     }
 

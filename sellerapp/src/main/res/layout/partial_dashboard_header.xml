@@ -131,14 +131,12 @@
                 android:id="@+id/shop_reputation_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small" />
+                android:layout_marginTop="@dimen/margin_small"/>
 
             <TextView
                 android:id="@+id/text_view_reputation_point"
                 style="@style/TextView.Caption.BlackDisabled"
                 android:layout_marginTop="@dimen/margin_vs"
-                android:layout_marginStart="@dimen/padding_vs"
-                android:layout_marginLeft="@dimen/padding_vs"
                 android:text="@string/label_empty_value"
                 tools:text="50.000 poin"/>
         </LinearLayout>

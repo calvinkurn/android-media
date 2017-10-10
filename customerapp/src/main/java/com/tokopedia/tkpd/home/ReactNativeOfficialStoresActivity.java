@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
@@ -47,6 +48,40 @@ public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
         return intent;
     }
 
+    private void setToolbar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View view = getWindow().getDecorView();
+            int flags = view.getSystemUiVisibility();
+
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            view.setSystemUiVisibility(flags);
+            getWindow().setStatusBarColor(Color.WHITE);
+        }
+
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                .getColor(R.color.white)));
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
+        CommonUtils.dumper("GAv4 "+getIntent().getExtras().getString(EXTRA_TITLE));
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            String title = getIntent().getExtras().getString(EXTRA_TITLE);
+            if (!TextUtils.isEmpty(title)) {
+                toolbar.setTitle(title);
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+        }
+
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+        if (upArrow != null) {
+            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
+            getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        }
+    }
+
+
     @Override
     protected void setupURIPass(Uri data) {
     }
@@ -68,6 +103,7 @@ public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
+        setToolbar();
         Bundle initialProps = getIntent().getExtras();
         ReactNativeOfficialStoreFragment fragment = ReactNativeOfficialStoreFragment.createInstance(initialProps);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();

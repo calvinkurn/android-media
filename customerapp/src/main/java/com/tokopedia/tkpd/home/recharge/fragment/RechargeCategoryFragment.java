@@ -101,7 +101,7 @@ public class RechargeCategoryFragment extends
                                         new RechargeService(), new DigitalEndpointService())));
 
         showFetchDataLoading();
-        rechargeCategoryPresenter.fecthDataRechargeCategory();
+        rechargeCategoryPresenter.fetchDataRechargeCategory();
     }
 
 
@@ -162,6 +162,11 @@ public class RechargeCategoryFragment extends
 
     @Override
     public void renderErrorNetwork() {
+
+    }
+
+    @Override
+    public void renderErrorMessage() {
 
     }
 
