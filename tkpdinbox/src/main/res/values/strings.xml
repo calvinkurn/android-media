@@ -91,6 +91,7 @@
 
     <!--step 2-->
     <string name="string_money_amount_returned">Jumlah uang yang ingin dikembalikan</string>
+    <string name="string_input_amount">Masukkan Jumlah Uang</string>
 
     <!--step 3-->
     <string name="string_upload_prove">Unggah Bukti</string>

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -329,6 +330,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     public void showInfoDialog(ProductProblemViewModel productProblemViewModel) {
         if (dialog == null && !MethodChecker.isTimezoneNotAutomatic()) {
             dialog = new Dialog(getActivity());
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.layout_info);
             Button btnClose = (Button) dialog.findViewById(R.id.btn_close);
             TextView tvCourierInfo = (TextView) dialog.findViewById(R.id.tv_courier_info);

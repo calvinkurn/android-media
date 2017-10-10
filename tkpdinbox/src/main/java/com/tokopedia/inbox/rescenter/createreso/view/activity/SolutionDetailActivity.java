@@ -67,6 +67,7 @@ public class SolutionDetailActivity extends
         } else {
             presenter.initEditAppealFragment(editAppealSolutionModel,
                     solutionViewModel);
+            toolbar.setTitle(R.string.string_input_amount);
         }
     }
 

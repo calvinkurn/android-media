@@ -68,6 +68,11 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    @Override
     protected void setupBundlePass(Bundle extras) {
         this.bundleData = extras;
     }

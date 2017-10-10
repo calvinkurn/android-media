@@ -96,6 +96,11 @@ public class SolutionListActivity extends BasePresenterActivity<SolutionListActi
             presenter.initFragment(resultViewModel);
         } else {
             presenter.initEditAppealFragment(editAppealSolutionModel);
+            if (editAppealSolutionModel.isEdit) {
+                toolbar.setTitle(R.string.string_edit_title);
+            } else {
+                toolbar.setTitle(R.string.string_appeal_title);
+            }
         }
     }
 

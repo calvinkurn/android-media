@@ -55,6 +55,7 @@ public class ProductProblemDetailActivity
     @Override
     protected void initView() {
         setTitle(productProblemViewModel.getOrder().getProduct().getName());
+        toolbar.setTitle(productProblemViewModel.getOrder().getProduct().getName());
         presenter.initFragment(productProblemViewModel, problemResult);
 
     }
