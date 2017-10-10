@@ -222,7 +222,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
                         presenter.storeLastInstantCheckoutUsed(String.valueOf(category.getId()),
                                 widgetWrapperBuyView.isCreditCheckboxChecked());
 
-
                     DigitalCheckoutPassData digitalCheckoutPassData =
                             widgetWrapperBuyView.getGeneratedCheckoutPassData(getDataPreCheckout());
 

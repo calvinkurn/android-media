@@ -303,6 +303,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderDataProducts(List<Product> products) {
+        Log.d("WidgetStyle3RechargeFragment", "renderDataProducts");
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetWrapperBuy);
         widgetProductChooserView.setListener(getProductChoserListener());
@@ -313,6 +314,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderEmptyProduct(String message) {
+        Log.d("WidgetStyle3RechargeFragment", "renderEmptyOperator");
         widgetClientNumberView.setImgOperatorInvisible();
         clearHolder(holderWidgetWrapperBuy);
         clearHolder(holderWidgetSpinnerProduct);
@@ -320,6 +322,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderOperators(List<Operator> operatorModels) {
+        Log.d("WidgetStyle3RechargeFragment", "renderOperators");
         clearHolder(holderWidgetSpinnerOperator);
         widgetOperatorChooserView.setListener(getOperatorChoserListener());
         widgetOperatorChooserView.renderDataView(operatorModels, lastOrder, category.getId(),
@@ -421,6 +424,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderLastOrder(LastOrder lastOrder) {
+        Log.d("WidgetStyle3RechargeFragment", "renderOperators");
         if (presenter != null) {
             this.lastOrder = lastOrder;
             if (lastOrder != null && lastOrder.getAttributes() != null && category != null) {

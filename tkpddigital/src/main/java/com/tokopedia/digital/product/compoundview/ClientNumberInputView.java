@@ -83,11 +83,6 @@ public class ClientNumberInputView extends LinearLayout {
         this.context = context;
         LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
         ButterKnife.bind(this);
-//        adapterAutoComplete = new ArrayAdapter<>(
-//                getContext(), com.tokopedia.core.R.layout.simple_spinner_tv_res
-//        );
-//        autoCompleteTextView.setAdapter(adapterAutoComplete);
-//        autoCompleteTextView.setThreshold(1);
         initialTextWatcher();
         initBackgroundContactButtonAndClearButton();
         setImgOperatorInvisible();
@@ -145,14 +140,7 @@ public class ClientNumberInputView extends LinearLayout {
         };
     }
 
-//    public void setAdapterAutoCompleteClientNumber(List<String> recentClientNumberList) {
-//        adapterAutoComplete.clear();
-//        adapterAutoComplete.notifyDataSetChanged();
-//        adapterAutoComplete.addAll(recentClientNumberList);
-//        adapterAutoComplete.notifyDataSetChanged();
-//    }
-
-    public void setAdapterAutoCompleteClientNumber2(List<OrderClientNumber> numberList) {
+    public void setAdapterAutoCompleteClientNumber(List<OrderClientNumber> numberList) {
         autoCompleteTVAdapter = new AutoCompleteTVAdapter(getContext(), R.layout.item_autocomplete, numberList);
         autoCompleteTextView.setAdapter(autoCompleteTVAdapter);
         autoCompleteTextView.setThreshold(1);
