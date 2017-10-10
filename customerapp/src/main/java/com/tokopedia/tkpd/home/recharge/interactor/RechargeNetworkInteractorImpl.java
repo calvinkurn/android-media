@@ -32,7 +32,6 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
                                          StatusMapper statusMapper) {
         compositeSubscription = new CompositeSubscription();
         this.repository = repository;
-
         this.categoryMapper = categoryMapper;
         this.statusMapper = statusMapper;
     }

@@ -149,7 +149,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         return new WidgetClientNumberView.RechargeEditTextListener() {
             @Override
             public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 0 || before == 1 && count == 0) {
+                if (before == 1 && count == 0) {
                     widgetClientNumberView.setImgOperatorInvisible();
                     clearHolder(holderWidgetSpinnerProduct);
                     clearHolder(holderWidgetWrapperBuy);
@@ -166,6 +166,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
                                 clearHolder(holderWidgetWrapperBuy);
                                 holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
                             }
+                        } else {
+                            widgetClientNumberView.setEmptyString();
                         }
                     } else {
                         selectedOperatorId = category.getAttributes().getDefaultOperatorId();
@@ -368,6 +370,14 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     @Override
+    public void renderOperators(List<Operator> operatorModels) {
+        clearHolder(holderWidgetSpinnerOperator);
+        widgetRadioChooserView.setListener(getRadioChoserListener());
+        widgetRadioChooserView.renderDataView(operatorModels, lastOrder, lastOperatorSelected);
+        holderWidgetSpinnerOperator.addView(widgetRadioChooserView);
+    }
+
+    @Override
     public void renderLastTypedClientNumber() {
         if (category.getAttributes().isValidatePrefix()) {
             widgetClientNumberView.setText(lastClientNumberTyped);
@@ -386,13 +396,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         }
     }
 
-    @Override
-    public void renderOperators(List<Operator> operatorModels) {
-        clearHolder(holderWidgetSpinnerOperator);
-        widgetRadioChooserView.setListener(getRadioChoserListener());
-        widgetRadioChooserView.renderDataView(operatorModels, lastOrder, lastOperatorSelected);
-        holderWidgetSpinnerOperator.addView(widgetRadioChooserView);
-    }
 
     private WidgetRadioChooserView.RadioChoserListener getRadioChoserListener() {
         return new WidgetRadioChooserView.RadioChoserListener() {
@@ -407,8 +410,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
                 widgetClientNumberView.setFilterMaxLength(rechargeOperatorModel.getAttributes().getMaximumLength());
                 widgetProductChooserView.setTitleProduct(rechargeOperatorModel.getAttributes().getRule().getProductText());
                 widgetProductChooserView.setVisibilityProduct(rechargeOperatorModel.getAttributes().getRule().isShowProduct());
-                if (!rechargeOperatorModel.getAttributes().getRule().isShowPrice())
-                    showPrice = false;
+                if (!rechargeOperatorModel.getAttributes().getRule().isShowPrice()) showPrice = false;
             }
 
             @Override

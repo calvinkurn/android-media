@@ -14,7 +14,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.widget.adapter.WidgetOperatorAdapter;
-import com.tokopedia.digital.widget.model.lastorder.LastOrder;
 import com.tokopedia.digital.widget.model.operator.Operator;
 
 import java.util.List;

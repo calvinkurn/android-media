@@ -148,7 +148,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
         return new WidgetClientNumberView.RechargeEditTextListener() {
             @Override
             public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 0 || before == 1 && count == 0) {
+                if (before == 1 && count == 0) {
                     widgetClientNumberView.setImgOperatorInvisible();
                     clearHolder(holderWidgetSpinnerProduct);
                     clearHolder(holderWidgetWrapperBuy);
@@ -342,8 +342,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
                 widgetClientNumberView.setInputType(rechargeOperatorModel.getAttributes().getRule().isAllowAphanumericNumber());
                 widgetProductChooserView.setTitleProduct(rechargeOperatorModel.getAttributes().getRule().getProductText());
                 widgetProductChooserView.setVisibilityProduct(rechargeOperatorModel.getAttributes().getRule().isShowProduct());
-                if (!rechargeOperatorModel.getAttributes().getRule().isShowPrice())
-                    showPrice = false;
+                if (!rechargeOperatorModel.getAttributes().getRule().isShowPrice()) showPrice = false;
 
                 if (!category.getAttributes().getClientNumber().isShown()) {
                     clearHolder(holderWidgetWrapperBuy);

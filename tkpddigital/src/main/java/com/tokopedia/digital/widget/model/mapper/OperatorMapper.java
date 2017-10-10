@@ -20,8 +20,12 @@ public class OperatorMapper implements Func1<List<OperatorEntity>, List<Operator
     public List<Operator> call(List<OperatorEntity> operatorEntities) {
         List<Operator> operatorList = new ArrayList<>();
         for (OperatorEntity operatorEntity : operatorEntities) {
-            Attributes attributes = new Attributes();
+            Operator operator = new Operator();
+            operator.setId(operatorEntity.getId());
+            operator.setType(operatorEntity.getType());
+
             if (operatorEntity.getAttributes() != null) {
+                Attributes attributes = new Attributes();
                 attributes.setImage(operatorEntity.getAttributes().getImage());
                 attributes.setMaximumLength(operatorEntity.getAttributes().getMaximumLength());
                 attributes.setMinimumLength(operatorEntity.getAttributes().getMinimumLength());
@@ -32,8 +36,8 @@ public class OperatorMapper implements Func1<List<OperatorEntity>, List<Operator
                 attributes.setDefaultProductId(operatorEntity.getAttributes().getDefaultProductId());
                 attributes.setPrefix(operatorEntity.getAttributes().getPrefix());
 
-                Rule rule = new Rule();
                 if (operatorEntity.getAttributes().getRule() != null) {
+                    Rule rule = new Rule();
                     rule.setProductText(operatorEntity.getAttributes().getRule().getProductText());
                     rule.setProductsViewStyle(operatorEntity.getAttributes().getRule().getProductsViewStyle());
                     rule.setShowPrice(operatorEntity.getAttributes().getRule().isShowPrice());
@@ -41,14 +45,10 @@ public class OperatorMapper implements Func1<List<OperatorEntity>, List<Operator
                     rule.setShowProductListPage(operatorEntity.getAttributes().getRule().isShowProductListPage());
                     rule.setAllowAphanumericNumber(operatorEntity.getAttributes().getRule().isAllowAphanumericNumber());
                     rule.setButtonLabel(operatorEntity.getAttributes().getRule().getButtonLabel());
+                    attributes.setRule(rule);
                 }
-                attributes.setRule(rule);
+                operator.setAttributes(attributes);
             }
-
-            Operator operator = new Operator();
-            operator.setAttributes(attributes);
-            operator.setId(operatorEntity.getId());
-            operator.setType(operatorEntity.getType());
 
             operatorList.add(operator);
         }

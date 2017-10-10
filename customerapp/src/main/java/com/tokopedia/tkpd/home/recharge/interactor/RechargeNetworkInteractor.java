@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.home.recharge.interactor;
 
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.widget.model.category.Category;
-import com.tokopedia.digital.widget.model.lastorder.LastOrder;
 import com.tokopedia.digital.widget.model.status.Status;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 

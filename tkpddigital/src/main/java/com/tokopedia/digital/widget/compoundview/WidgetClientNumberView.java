@@ -228,7 +228,11 @@ public class WidgetClientNumberView extends LinearLayout {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (rechargeEditTextListener != null) {
-                    rechargeEditTextListener.onRechargeTextChanged(s, start, before, count);
+                    if (s.length() > 0) {
+                        rechargeEditTextListener.onRechargeTextChanged(s, start, before, count);
+                    } else {
+                        rechargeEditTextListener.onRechargeTextClear();
+                    }
                 }
                 if (s.length() > 0) {
                     setBtnClearVisible();

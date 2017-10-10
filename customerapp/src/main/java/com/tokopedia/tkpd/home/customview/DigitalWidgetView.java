@@ -18,7 +18,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.widget.model.category.Category;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;

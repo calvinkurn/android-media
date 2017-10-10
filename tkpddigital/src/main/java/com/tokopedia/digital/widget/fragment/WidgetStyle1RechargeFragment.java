@@ -322,8 +322,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             widgetProductChooserView.setListener(getProductChoserListener());
             widgetProductChooserView.renderDataView(products, showPrice, lastOrder, lastProductSelected);
             holderWidgetSpinnerProduct.addView(widgetProductChooserView);
+            holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
         }
-        holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
     }
 
     @Override
