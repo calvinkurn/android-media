@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.recentview;
 
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -10,6 +12,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.LabelsAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.RecentView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewDetailProductViewModel;
 
@@ -27,9 +30,7 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
     public ImageView productImage;
     public ImageView wishlist;
     public RatingBar productRating;
-    public TextView cashback;
-    public TextView wholesale;
-    public TextView preorder;
+    private RecyclerView labels;
     public TextView shopName;
     public TextView shopLocation;
 
@@ -40,6 +41,7 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
     public View mainView;
 
     private final RecentView.View viewListener;
+    private LabelsAdapter labelsAdapter;
 
     public RecentViewDetailProductViewHolder(View itemView, RecentView.View viewListener) {
         super(itemView);
@@ -48,9 +50,7 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
         productImage = (ImageView) itemView.findViewById(R.id.product_image);
         wishlist = (ImageView) itemView.findViewById(R.id.wishlist);
         productRating = (RatingBar) itemView.findViewById(R.id.product_rating);
-        cashback = (TextView) itemView.findViewById(R.id.cashback);
-        wholesale = (TextView) itemView.findViewById(R.id.wholesale);
-        preorder = (TextView) itemView.findViewById(R.id.preorder);
+        labels = (RecyclerView) itemView.findViewById(R.id.labels);
         freeReturn = (ImageView) itemView.findViewById(R.id.free_return);
         mainView = itemView.findViewById(R.id.main_view);
         goldMerchant = (ImageView) itemView.findViewById(R.id.gold_merchant);
@@ -58,6 +58,13 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
         shopName = (TextView) itemView.findViewById(R.id.shop_name);
         shopLocation = (TextView) itemView.findViewById(R.id.shop_location);
         this.viewListener = viewListener;
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext
+                (), LinearLayoutManager.HORIZONTAL, false);
+        labels.setLayoutManager(layoutManager);
+        labelsAdapter = new LabelsAdapter();
+        labels.setAdapter(labelsAdapter);
+
     }
 
     @Override
@@ -81,27 +88,17 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
             productRating.setVisibility(View.GONE);
         }
 
-        if (element.getCashback().equals(""))
-            cashback.setVisibility(View.GONE);
-        else {
-            cashback.setVisibility(View.VISIBLE);
-            cashback.setText(element.getCashback());
+        if (!element.getLabels().isEmpty()) {
+            labels.setVisibility(View.VISIBLE);
+            labelsAdapter.setList(element.getLabels());
+        } else {
+            labels.setVisibility(View.GONE);
         }
-
-        if (element.isWholesale())
-            wholesale.setVisibility(View.VISIBLE);
-        else
-            wholesale.setVisibility(View.GONE);
 
         if (element.isFreeReturn())
             freeReturn.setVisibility(View.VISIBLE);
         else
             freeReturn.setVisibility(View.GONE);
-
-        if (element.isPreorder())
-            preorder.setVisibility(View.VISIBLE);
-        else
-            preorder.setVisibility(View.GONE);
 //
 //        wishlist.setOnClickListener(new View.OnClickListener() {
 //            @Override
