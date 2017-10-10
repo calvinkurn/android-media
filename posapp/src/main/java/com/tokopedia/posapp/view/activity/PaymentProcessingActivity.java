@@ -26,6 +26,11 @@ public class PaymentProcessingActivity extends ReactNativeActivity {
                 .putExtras(extras);
     }
 
+    public static Intent newInstance(Context context, String data) {
+        return new Intent(context, PaymentProcessingActivity.class)
+                .putExtra("extras", data);
+    }
+
     @Override
     protected Bundle getPropsBundle() {
         Bundle bundle = new Bundle();

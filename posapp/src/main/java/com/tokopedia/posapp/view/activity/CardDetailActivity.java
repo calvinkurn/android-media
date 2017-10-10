@@ -3,16 +3,14 @@ package com.tokopedia.posapp.view.activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.data.pojo.PaymentDataResponse;
 import com.tokopedia.posapp.view.fragment.CardDetailFragment;
 import com.tokopedia.posapp.view.viewmodel.card.CreditCardViewModel;
-import com.tokopedia.posapp.view.widget.CreditCardTextWatcher;
+import com.tokopedia.posapp.view.viewmodel.card.PaymentViewModel;
 
 import io.card.payment.CardIOActivity;
 import io.card.payment.CreditCard;
@@ -53,11 +51,12 @@ public class CardDetailActivity extends BasePresenterActivity {
     }
 
     private void setupView() {
-        CreditCardViewModel data = getCardViewModel(
-                (CreditCard) getIntent().getParcelableExtra(CardIOActivity.EXTRA_SCAN_RESULT)
+        PaymentViewModel paymentViewModel = getPaymentViewModel(
+            getIntent().getStringExtra(ScanCreditCardActivity.CHECKOUT_DATA),
+            (CreditCard) getIntent().getParcelableExtra(CardIOActivity.EXTRA_SCAN_RESULT)
         );
 
-        CardDetailFragment fragment = CardDetailFragment.createInstance(data);
+        CardDetailFragment fragment = CardDetailFragment.createInstance(paymentViewModel);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getSupportFragmentManager().findFragmentByTag(
                 CardDetailFragment.class.getSimpleName()) == null) {
@@ -71,6 +70,34 @@ public class CardDetailActivity extends BasePresenterActivity {
         }
 
         fragmentTransaction.commit();
+    }
+
+    private PaymentViewModel getPaymentViewModel(String paymentResponse, CreditCard creditCard) {
+        PaymentDataResponse response = new Gson().fromJson(paymentResponse, PaymentDataResponse.class);
+
+        PaymentViewModel payment = new PaymentViewModel();
+        payment.setEmiId(response.getSelectedEmiId());
+
+        if(response.getBankData() != null) {
+            payment.setBankId(response.getBankData().getBankId());
+            payment.setBankName(response.getBankData().getBankName());
+            payment.setValidateBin(response.getBankData().getValidateBin());
+            payment.setInstallmentBin(response.getBankData().getInstallmentBin());
+            payment.setAllowInstallment(response.getBankData().getAllowInstallment());
+        }
+
+        if(response.getCheckoutDataResponse() != null
+                && response.getCheckoutDataResponse().getData() != null) {
+            payment.setPaymentAmount(response.getCheckoutDataResponse().getData().getPaymentAmount());
+            payment.setMerchantCode(response.getCheckoutDataResponse().getData().getMerchantCode());
+            payment.setProfileCode(response.getCheckoutDataResponse().getData().getProfileCode());
+            payment.setTransactionId(response.getCheckoutDataResponse().getData().getTransactionId());
+            payment.setSignature(response.getCheckoutDataResponse().getData().getSignature());
+        }
+
+        payment.setCreditCard(getCardViewModel(creditCard));
+
+        return payment;
     }
 
     private CreditCardViewModel getCardViewModel(CreditCard creditCard) {

@@ -21,6 +21,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.Outlet;
+import com.tokopedia.posapp.view.Product;
 import com.tokopedia.posapp.view.Shop;
 import com.tokopedia.posapp.view.activity.ProductListActivity;
 import com.tokopedia.posapp.view.adapter.OutletAdapter;

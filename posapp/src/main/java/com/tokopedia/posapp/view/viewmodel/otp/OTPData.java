@@ -1,14 +1,15 @@
-package com.tokopedia.posapp.view.viewmodel;
+package com.tokopedia.posapp.view.viewmodel.otp;
 
 /**
  * Created by okasurya on 10/5/17.
  */
 
-public class OtpData {
+public class OTPData {
     private String url;
     private String method;
     private String gateway;
     private byte[] parameters;
+    private OTPDetailTransaction otpDetailTransaction;
 
     public String getUrl() {
         return url;
@@ -40,5 +41,13 @@ public class OtpData {
 
     public void setGateway(String gateway) {
         this.gateway = gateway;
+    }
+
+    public OTPDetailTransaction getOtpDetailTransaction() {
+        return otpDetailTransaction;
+    }
+
+    public void setOtpDetailTransaction(OTPDetailTransaction otpDetailTransaction) {
+        this.otpDetailTransaction = otpDetailTransaction;
     }
 }

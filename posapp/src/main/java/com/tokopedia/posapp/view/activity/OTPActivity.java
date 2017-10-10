@@ -20,22 +20,24 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.payment.utils.ErrorNetMessage;
-import com.tokopedia.posapp.PosAppSplashScreen;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.deeplink.Constants;
-import com.tokopedia.posapp.view.Otp;
-import com.tokopedia.posapp.view.presenter.OtpPresenter;
-import com.tokopedia.posapp.view.viewmodel.OtpData;
+import com.tokopedia.posapp.view.OTP;
+import com.tokopedia.posapp.view.presenter.OTPPresenter;
+import com.tokopedia.posapp.view.viewmodel.otp.OTPData;
+
+import java.util.List;
 
 /**
  * Created by okasurya on 10/4/17.
  */
 
-public class OTPActivity extends BasePresenterActivity<Otp.Presenter>
-        implements HasComponent, Otp.View {
+public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
+        implements HasComponent, OTP.View {
     public static final long FORCE_TIMEOUT = 90000L;
 
     private WebView scroogeWebView;
@@ -69,7 +71,7 @@ public class OTPActivity extends BasePresenterActivity<Otp.Presenter>
 
     @Override
     protected void initialPresenter() {
-        presenter = new OtpPresenter(this);
+        presenter = new OTPPresenter(this);
     }
 
     @Override
@@ -108,18 +110,31 @@ public class OTPActivity extends BasePresenterActivity<Otp.Presenter>
     }
 
     @Override
-    public void getOTPWebview(OtpData data) {
+    public void getOTPWebview(OTPData data) {
         scroogeWebView.loadUrl(data.getUrl());
     }
 
     @Override
-    public void postOTPWebview(OtpData data) {
+    public void postOTPWebview(OTPData data) {
         scroogeWebView.postUrl(data.getUrl(), data.getParameters());
     }
 
     @Override
     public void onLoadDataError(Throwable e) {
         e.printStackTrace();
+        CommonUtils.UniversalToast(this, e.getMessage());
+        goToCart();
+    }
+
+    private void goToCart() {
+        finish();
+        startActivity(LocalCartActivity.newTopInstance(this));
+    }
+
+    @Override
+    public void onLoadDataError(List<String> errorList) {
+        if(errorList.get(0) != null) CommonUtils.UniversalToast(this, errorList.get(0));
+        goToCart();
     }
 
     private class OTPWebViewClient extends WebViewClient {
@@ -128,10 +143,10 @@ public class OTPActivity extends BasePresenterActivity<Otp.Presenter>
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            CommonUtils.UniversalToast(OTPActivity.this, url);
             Log.d("pos o2o otp url", url);
             return super.shouldOverrideUrlLoading(view, url);
         }
-
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -165,26 +180,13 @@ public class OTPActivity extends BasePresenterActivity<Otp.Presenter>
 
         @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
-            //  Log.d(TAG, "start url = " + url);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(FORCE_TIMEOUT);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (timeout) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showError(view, WebViewClient.ERROR_TIMEOUT);
-                            }
-                        });
-                    }
-                }
-            }).start();
-            if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+            Log.d("pos o2o", "initial url = " + url);
+            progressBar.setVisibility(View.VISIBLE);
+            if(url.contains("/payment/thanks")) {
+                presenter.checkPaymentState(url);
+                return;
+            }
+            super.onPageStarted(view, url, favicon);
         }
 
         private void showError(WebView view, int errorCode) {

@@ -836,13 +836,13 @@ public class TkpdBaseURL {
         public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
         public static final String PATH_CC_DELETE = "v2/ccvault/delete";
 
-        public static final String PATH_INSTALLMENT_TERMS = "installment/terms/";
-        public static final String PATH_CC_BIN = "credit-card/bins";
-
         public static final String PATH_GET_CANCEL_TRANSACTION_DIALOG = "get_payment_status";
         public static final String PATH_CANCEL_TRANSACTION = "cancel";
 
+        public static final String PATH_INSTALLMENT_TERMS = "installment/terms/";
+        public static final String PATH_CC_BIN = "credit-card/bins";
         public static final String PATH_PAYMENT = "v1/api/payments";
+        public static final String PATH_PAYMENT_STATUS = "v1/payment/status";
     }
 
     public static class FinTech {

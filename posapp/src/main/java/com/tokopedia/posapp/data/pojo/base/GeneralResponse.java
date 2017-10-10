@@ -7,10 +7,14 @@ import com.google.gson.annotations.SerializedName;
  * Created by okasurya on 9/19/17.
  */
 
-public class PaymentResponse<T> {
+public class GeneralResponse<T> {
     @SerializedName("success")
     @Expose
     private String sucess;
+
+    @SerializedName("code")
+    @Expose
+    private int code;
 
     @SerializedName("message")
     @Expose
@@ -26,6 +30,14 @@ public class PaymentResponse<T> {
 
     public void setSucess(String sucess) {
         this.sucess = sucess;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public String getMessage() {

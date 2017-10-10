@@ -9,10 +9,9 @@ import android.widget.LinearLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.deeplink.Constants;
-import com.tokopedia.posapp.view.ScanCreditCard;
-import com.tokopedia.posapp.view.presenter.ScanCreditCardPresenter;
 
 import io.card.payment.CardIOActivity;
 
@@ -20,22 +19,23 @@ import io.card.payment.CardIOActivity;
  * Created by okasurya on 8/14/17.
  */
 
-public class ScanCreditCardActivity extends BasePresenterActivity<ScanCreditCard.Presenter>
-        implements ScanCreditCard.View {
+public class ScanCreditCardActivity extends BasePresenterActivity {
 
     public static final int REQUEST_CARD_SCANNER = 7001;
-    public static final String BANK_ID = "bank_id";
-    public static final String TERM = "term";
+    public static final String CHECKOUT_DATA = "checkout_data";
 
     private LinearLayout cardScanner;
 
     @DeepLink(Constants.Applinks.PAYMENT_SCAN_CC)
     public static Intent getIntentFromDeeplink(Context context, Bundle bundle) {
         Uri uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon().build();
+        Bundle data = new Bundle();
+        data.putString(CHECKOUT_DATA, bundle.getString(TkpdCoreRouter.EXTRAS));
 
         return new Intent(context, ScanCreditCardActivity.class)
                 .setData(uri)
-                .putExtras(bundle);
+                .putExtras(bundle)
+                .putExtras(data);
     }
 
 
@@ -51,7 +51,7 @@ public class ScanCreditCardActivity extends BasePresenterActivity<ScanCreditCard
 
     @Override
     protected void initialPresenter() {
-        presenter = new ScanCreditCardPresenter(this);
+
     }
 
     @Override
@@ -93,6 +93,7 @@ public class ScanCreditCardActivity extends BasePresenterActivity<ScanCreditCard
             if (data != null && data.hasExtra(CardIOActivity.EXTRA_SCAN_RESULT)) {
                 Intent intent = new Intent(this, CardDetailActivity.class);
                 intent.putExtras(data);
+                intent.putExtras(getIntent().getExtras());
                 startActivity(intent);
             }
         }

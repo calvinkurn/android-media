@@ -5,7 +5,7 @@ import com.tokopedia.posapp.data.pojo.BankItemResponse;
 import com.tokopedia.posapp.data.pojo.CCBinResponse;
 import com.tokopedia.posapp.data.pojo.InstallmentResponse;
 import com.tokopedia.posapp.data.pojo.base.ListResponse;
-import com.tokopedia.posapp.data.pojo.base.PaymentResponse;
+import com.tokopedia.posapp.data.pojo.base.GeneralResponse;
 import com.tokopedia.posapp.data.source.cloud.api.CreditCardApi;
 import com.tokopedia.posapp.domain.model.bank.BankDomain;
 import com.tokopedia.posapp.domain.model.bank.InstallmentDomain;
@@ -35,11 +35,11 @@ public class BankCloudSource {
         return Observable.zip(
             creditCardApi.getBankInstallment(),
             creditCardApi.getBins(),
-            new Func2<Response<PaymentResponse<ListResponse<BankItemResponse>>>, Response<PaymentResponse<ListResponse<CCBinResponse>>>, List<BankDomain>>() {
+            new Func2<Response<GeneralResponse<ListResponse<BankItemResponse>>>, Response<GeneralResponse<ListResponse<CCBinResponse>>>, List<BankDomain>>() {
                 @Override
                 public List<BankDomain> call(
-                        Response<PaymentResponse<ListResponse<BankItemResponse>>> bankResponse,
-                        Response<PaymentResponse<ListResponse<CCBinResponse>>> binResponse) {
+                        Response<GeneralResponse<ListResponse<BankItemResponse>>> bankResponse,
+                        Response<GeneralResponse<ListResponse<CCBinResponse>>> binResponse) {
 
                     if(bankResponse.body() != null
                             && bankResponse.isSuccessful()
