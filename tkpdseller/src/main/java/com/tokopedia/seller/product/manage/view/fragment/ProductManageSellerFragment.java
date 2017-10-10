@@ -63,13 +63,14 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
     @Override
     protected void initInjector() {
         super.initInjector();
-//        DaggerProductDraftListCountComponent
-//                .builder()
-//                .productDraftListCountModule(new ProductDraftListCountModule())
-//                .productComponent(getComponent(ProductComponent.class))
-//                .build()
-//                .inject(this);
+        DaggerProductDraftListCountComponent
+                .builder()
+                .productDraftListCountModule(new ProductDraftListCountModule())
+                .productComponent(getComponent(ProductComponent.class))
+                .build()
+                .inject(this);
         productDraftListCountPresenter.attachView(this);
+        productManagePresenter.attachView(this);
     }
 
     @Override

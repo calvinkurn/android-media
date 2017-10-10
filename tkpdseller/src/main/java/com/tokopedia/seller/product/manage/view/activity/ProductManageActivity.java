@@ -12,6 +12,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.manage.view.fragment.ProductManageFragment;
+import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 
 /**
  * Created by zulfikarrahman on 9/25/17.
@@ -27,7 +28,7 @@ public class ProductManageActivity extends DrawerPresenterActivity implements Ha
         inflateView(R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new ProductManageFragment(), TAG).commit();
+                    .replace(R.id.container, new ProductManageSellerFragment(), TAG).commit();
         }
     }
 

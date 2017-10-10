@@ -22,6 +22,8 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 
 public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<ProductManageViewModel> {
 
+    public static final String EMPTY_STOCK_STATUS = "3";
+
     public interface ClickOptionCallbackHolder {
         void onClickOptionItem(ProductManageViewModel productManageViewModel);
     }
@@ -37,6 +39,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
     private ImageView freeReturnImageView;
     private ImageButton optionImageButton;
     private CheckBox checkBoxProduct;
+    private TextView tagEmptyStock;
     private ClickOptionCallbackHolder clickOptionCallbackHolder;
 
     public ProductManageListViewHolder(View layoutView) {
@@ -52,6 +55,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         preOrderTextView = (TextView) layoutView.findViewById(R.id.text_view_pre_order);
         freeReturnImageView = (ImageView) layoutView.findViewById(R.id.image_view_free_return);
         checkBoxProduct = (CheckBox) layoutView.findViewById(R.id.check_box_product);
+        tagEmptyStock = (TextView) layoutView.findViewById(R.id.tag_empty_product);
         optionImageButton = (ImageButton) layoutView.findViewById(R.id.image_button_option);
     }
 
@@ -108,6 +112,13 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         } else {
             cashbackTextView.setVisibility(View.GONE);
         }
+
+        if(productManageViewModel.getProductStatus().equals(EMPTY_STOCK_STATUS)){
+            tagEmptyStock.setVisibility(View.VISIBLE);
+        }else{
+            tagEmptyStock.setVisibility(View.GONE);
+        }
+
         preOrderTextView.setVisibility(
                 productManageViewModel.getProductPreorder() == ProductManagePreOrderDef.PRE_ORDER ? View.VISIBLE : View.GONE);
         freeReturnImageView.setVisibility(
