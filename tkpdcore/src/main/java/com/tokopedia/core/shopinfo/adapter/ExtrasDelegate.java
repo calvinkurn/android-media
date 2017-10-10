@@ -51,20 +51,20 @@ public class ExtrasDelegate {
         };
     }
 
-    public RecyclerView.ViewHolder onCreateViewHolderNoResult(ViewGroup parent){
-        Context context = parent.getContext().getApplicationContext();
-        if(context != null && context instanceof TkpdCoreRouter){
-            if(parent.getContext() != null && parent.getContext() instanceof Activity){
-                ((TkpdCoreRouter)context).goToAddProduct(((Activity) parent.getContext()));
-            }
-        }
+    public RecyclerView.ViewHolder onCreateViewHolderNoResult(final ViewGroup parent){
+        final Context context = parent.getContext().getApplicationContext();
+
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result_shop_info, parent, false);
         ImageHandler.loadImageWithId(((ImageView)view.findViewById(R.id.no_result_image)), R.drawable.status_no_result);
         view.findViewById(R.id.button_add_product).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(context != null && context instanceof TkpdCoreRouter){
+                    if(parent.getContext() != null && parent.getContext() instanceof Activity){
+                        ((TkpdCoreRouter)context).goToAddProduct(((Activity) parent.getContext()));
+                    }
+                }
             }
         });
         return new RecyclerView.ViewHolder(view) {
