@@ -2,15 +2,17 @@ package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.database.model.RechargeOperatorModel;
-import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrderEntity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.widget.data.entity.lastorder.AttributesEntity;
+import com.tokopedia.digital.widget.data.entity.lastorder.LastOrderEntity;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle1View;
+import com.tokopedia.digital.widget.model.lastorder.Attributes;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.operator.Operator;
+import com.tokopedia.digital.widget.model.product.Product;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.List;
@@ -32,7 +34,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
     public DigitalWidgetStyle1Presenter(Context context,
                                         IDigitalWidgetInteractor widgetInteractor,
                                         IDigitalWidgetStyle1View view) {
-        super(context, widgetInteractor, view);
+        super(context);
         this.context = context;
         this.widgetInteractor = widgetInteractor;
         this.view = view;
@@ -63,14 +65,12 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                 view.renderNumberList(digitalNumberList.getOrderClientNumbers());
                 if (digitalNumberList.getLastOrder() != null) {
                     LastOrder lastOrder = new LastOrder();
-                    LastOrderEntity lastOrderEntity = new LastOrderEntity();
-                    LastOrderEntity.AttributesBean attributesBean = new LastOrderEntity.AttributesBean();
-                    attributesBean.setClient_number(digitalNumberList.getLastOrder().getClientNumber());
-                    attributesBean.setCategory_id(Integer.valueOf(digitalNumberList.getLastOrder().getCategoryId()));
-                    attributesBean.setOperator_id(Integer.valueOf(digitalNumberList.getLastOrder().getOperatorId()));
-                    attributesBean.setProduct_id(Integer.valueOf(digitalNumberList.getLastOrder().getLastProduct()));
-                    lastOrderEntity.setAttributes(attributesBean);
-                    lastOrder.setData(lastOrderEntity);
+                    Attributes attributes = new Attributes();
+                    attributes.setClientNumber(digitalNumberList.getLastOrder().getClientNumber());
+                    attributes.setCategoryId(Integer.valueOf(digitalNumberList.getLastOrder().getCategoryId()));
+                    attributes.setOperatorId(Integer.valueOf(digitalNumberList.getLastOrder().getOperatorId()));
+                    attributes.setProductId(Integer.valueOf(digitalNumberList.getLastOrder().getLastProduct()));
+                    lastOrder.setAttributes(attributes);
 
                     view.renderLastOrder(lastOrder);
                 } else if (getLastClientNumberTyped(categoryId) != null){
@@ -85,36 +85,8 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
         widgetInteractor.getOperatorById(getOperatorModelSubscriber(), operatorId);
     }
 
-    @Override
-    public void validatePhonePrefix(String phonePrefix, int categoryId, Boolean validatePrefix) {
-        widgetInteractor.getProductsFromPrefix(getListProductSubscriber(), categoryId, phonePrefix,
-                validatePrefix);
-    }
-
-    @Override
-    public void validateOperatorWithProducts(int categoryId, String operatorId) {
-        widgetInteractor.getProductsFromOperator(getListProductSubscriber(), categoryId, operatorId);
-    }
-
-    @Override
-    public void validateOperatorWithoutProducts(int categoryId, String operatorId) {
-        widgetInteractor.getProductsFromOperator(getListProductFromOperatorSubscriber(), categoryId, operatorId);
-    }
-
-    @Override
-    public void fetchDefaultProduct(String categoryId, String operatorId, String productId) {
-        widgetInteractor.getProductById(getProductSubscribe(), categoryId, operatorId, productId);
-    }
-
-    private void processOperatorById(List<Product> products) {
-        String operatorId = String.valueOf(
-                products.get(0).getRelationships().getOperator().getData().getId()
-        );
-        widgetInteractor.getOperatorById(getOperatorSubscriber(), operatorId);
-    }
-
-    private Subscriber<RechargeOperatorModel> getOperatorModelSubscriber() {
-        return new Subscriber<RechargeOperatorModel>() {
+    private Subscriber<Operator> getOperatorModelSubscriber() {
+        return new Subscriber<Operator>() {
             @Override
             public void onCompleted() {
 
@@ -127,10 +99,16 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             }
 
             @Override
-            public void onNext(RechargeOperatorModel rechargeOperatorModel) {
-                view.renderOperator(rechargeOperatorModel);
+            public void onNext(Operator operator) {
+                view.renderOperator(operator);
             }
         };
+    }
+
+    @Override
+    public void validatePhonePrefix(String phonePrefix, int categoryId, Boolean validatePrefix) {
+        widgetInteractor.getProductsFromPrefix(getListProductSubscriber(), categoryId, phonePrefix,
+                validatePrefix);
     }
 
     private Subscriber<List<Product>> getListProductSubscriber() {
@@ -158,8 +136,15 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
         };
     }
 
-    private Subscriber<RechargeOperatorModel> getOperatorSubscriber() {
-        return new Subscriber<RechargeOperatorModel>() {
+    private void processOperatorById(List<Product> products) {
+        String operatorId = String.valueOf(
+                products.get(0).getRelationships().getOperator().getData().getId()
+        );
+        widgetInteractor.getOperatorById(getOperatorSubscriber(), operatorId);
+    }
+
+    private Subscriber<Operator> getOperatorSubscriber() {
+        return new Subscriber<Operator>() {
             @Override
             public void onCompleted() {
 
@@ -172,13 +157,23 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             }
 
             @Override
-            public void onNext(RechargeOperatorModel rechargeOperatorModel) {
-                if (rechargeOperatorModel != null)
-                    view.renderDataOperator(rechargeOperatorModel);
+            public void onNext(Operator operator) {
+                if (operator != null)
+                    view.renderDataOperator(operator);
                 else
                     view.renderEmptyOperator(context.getString(R.string.error_message_operator));
             }
         };
+    }
+
+    @Override
+    public void validateOperatorWithProducts(int categoryId, String operatorId) {
+        widgetInteractor.getProductsFromOperator(getListProductSubscriber(), categoryId, operatorId);
+    }
+
+    @Override
+    public void validateOperatorWithoutProducts(int categoryId, String operatorId) {
+        widgetInteractor.getProductsFromOperator(getListProductFromOperatorSubscriber(), categoryId, operatorId);
     }
 
     private Subscriber<List<Product>> getListProductFromOperatorSubscriber() {
@@ -203,6 +198,11 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                 }
             }
         };
+    }
+
+    @Override
+    public void fetchDefaultProduct(String categoryId, String operatorId, String productId) {
+        widgetInteractor.getProductById(getProductSubscribe(), categoryId, operatorId, productId);
     }
 
     private Subscriber<Product> getProductSubscribe() {

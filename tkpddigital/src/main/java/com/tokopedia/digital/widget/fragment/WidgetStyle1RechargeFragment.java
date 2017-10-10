@@ -7,13 +7,6 @@ import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.database.model.RechargeOperatorModel;
-import com.tokopedia.core.database.model.category.Category;
-import com.tokopedia.core.database.model.category.ClientNumber;
-import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
-import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -22,6 +15,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.compoundview.WidgetProductChooserView;
@@ -31,6 +25,14 @@ import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.interactor.DigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle1View;
 import com.tokopedia.digital.widget.model.PreCheckoutDigitalWidget;
+import com.tokopedia.digital.widget.model.category.Category;
+import com.tokopedia.digital.widget.model.category.ClientNumber;
+import com.tokopedia.digital.widget.model.lastorder.Attributes;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.mapper.OperatorMapper;
+import com.tokopedia.digital.widget.model.mapper.ProductMapper;
+import com.tokopedia.digital.widget.model.operator.Operator;
+import com.tokopedia.digital.widget.model.product.Product;
 import com.tokopedia.digital.widget.presenter.DigitalWidgetStyle1Presenter;
 
 import java.util.List;
@@ -56,15 +58,13 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     private WidgetClientNumberView widgetClientNumberView;
     private WidgetWrapperBuyView widgetWrapperBuyView;
     private WidgetProductChooserView widgetProductChooserView;
-
-    private RechargeOperatorModel selectedOperator;
+    private Operator selectedOperator;
     private LastOrder lastOrder;
     private Product selectedProduct;
 
     private String selectedOperatorId;
     private int minLengthDefaultOperator;
     private boolean showPrice = true;
-    private SessionHandler sessionHandler;
 
     public static WidgetStyle1RechargeFragment newInstance(Category category, int position) {
         WidgetStyle1RechargeFragment fragment = new WidgetStyle1RechargeFragment();
@@ -77,11 +77,13 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void initialVariable() {
-        DigitalWidgetInteractor interactor = new DigitalWidgetInteractor(new CompositeSubscription(),
-                new DigitalWidgetRepository(new RechargeService(), new DigitalEndpointService(), new FavoriteNumberListDataMapper()));
+        DigitalWidgetInteractor interactor = new DigitalWidgetInteractor(
+                new CompositeSubscription(),
+                new DigitalWidgetRepository(new DigitalEndpointService(), new FavoriteNumberListDataMapper()),
+                new ProductMapper(),
+                new OperatorMapper());
         presenter = new DigitalWidgetStyle1Presenter(getActivity(), interactor, this);
 
-        sessionHandler = new SessionHandler(getActivity());
         lastClientNumberTyped = presenter.getLastClientNumberTyped(String.valueOf(category.getId()));
         lastOperatorSelected = presenter.getLastOperatorSelected(String.valueOf(category.getId()));
         lastProductSelected = presenter.getLastProductSelected(String.valueOf(category.getId()));
@@ -128,7 +130,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     protected void trackingOnClientNumberFocusListener() {
         UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
-                selectedOperator == null ? "" : selectedOperator.name);
+                selectedOperator == null ? "" : selectedOperator.getAttributes().getName());
     }
 
     private WidgetClientNumberView.RechargeEditTextListener getEditTextListener() {
@@ -156,7 +158,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                         }
                     } else {
                         if (s.length() >= minLengthDefaultOperator) {
-                            if (selectedOperator != null && selectedOperator.showProduct) {
+                            if (selectedOperator != null && selectedOperator.getAttributes().getRule().isShowProduct()) {
                                 presenter.validateOperatorWithProducts(category.getId(),
                                         selectedOperatorId);
                             } else {
@@ -177,7 +179,26 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                 clearHolder(holderWidgetSpinnerProduct);
                 clearHolder(holderWidgetWrapperBuy);
             }
+
+            @Override
+            public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
+                LastOrder lastOrder = new LastOrder();
+                Attributes attributes = new Attributes();
+                attributes.setClientNumber(orderClientNumber.getClientNumber());
+                attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
+                attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
+                if (orderClientNumber.getLastProduct() != null) {
+                    attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+                }
+                lastOrder.setAttributes(attributes);
+
+                setLastOrder(lastOrder);
+            }
         };
+    }
+
+    private void setLastOrder(LastOrder lastOrder) {
+        this.lastOrder = lastOrder;
     }
 
     private WidgetClientNumberView.OnButtonPickerListener getButtonPickerListener() {
@@ -193,7 +214,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     private PreCheckoutDigitalWidget getDataPreCheckout() {
         PreCheckoutDigitalWidget preCheckoutDigitalWidget = new PreCheckoutDigitalWidget();
         preCheckoutDigitalWidget.setClientNumber(widgetClientNumberView.getText());
-        preCheckoutDigitalWidget.setOperatorId(String.valueOf(selectedOperator.operatorId));
+        preCheckoutDigitalWidget.setOperatorId(String.valueOf(selectedOperator.getId()));
         preCheckoutDigitalWidget.setProductId(String.valueOf(selectedProduct.getId()));
         preCheckoutDigitalWidget.setPromoProduct(selectedProduct.getAttributes().getPromo() != null);
         preCheckoutDigitalWidget.setBundle(bundle);
@@ -206,7 +227,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             public void goToNativeCheckout() {
                 if (selectedProduct == null) {
                     presenter.fetchDefaultProduct(String.valueOf(category.getId()),
-                            selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
+                            selectedOperatorId, String.valueOf(selectedOperator.getAttributes().getDefaultProductId()));
                 } else {
                     if (widgetProductChooserView.checkStockProduct(selectedProduct))
                         presenter.storeLastInstantCheckoutUsed(String.valueOf(category.getId()),
@@ -232,7 +253,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             public void goToLoginPage() {
                 if (selectedProduct == null) {
                     presenter.fetchDefaultProduct(String.valueOf(category.getId()),
-                            selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
+                            selectedOperatorId, String.valueOf(selectedOperator.getAttributes().getDefaultProductId()));
                 } else {
                     digitalCheckoutPassDataState =
                             widgetWrapperBuyView.getGeneratedCheckoutPassData(getDataPreCheckout());
@@ -256,7 +277,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             @Override
             public void trackingCheckInstantSaldo(boolean isChecked) {
                 UnifyTracking.eventCheckInstantSaldoWidget(category.getAttributes().getName(),
-                        selectedOperator == null ? "" : selectedOperator.name, isChecked);
+                        selectedOperator == null ? "" : selectedOperator.getAttributes().getName(), isChecked);
             }
         };
     }
@@ -275,34 +296,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                         selectedProduct.getAttributes().getPrice());
             }
         };
-    }
-
-//    private void initClientNumber() {
-//        String defaultPhoneNumber = sessionHandler.getPhoneNumber();
-//
-//        if (sessionHandler.isV4Login(getActivity())
-//                && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
-//                && !TextUtils.isEmpty(lastClientNumberTyped)) {
-//            renderLastTypedClientNumber();
-//        } else if (sessionHandler.isV4Login(getActivity())
-//                && !presenter.isAlreadyHaveLastOrderOnCacheByCategoryId(category.getId())
-//                && TextUtils.isEmpty(lastClientNumberTyped)
-//                && (category.getId() == 1 || category.getId() == 2)
-//                && !TextUtils.isEmpty(defaultPhoneNumber)) {
-//            widgetClientNumberView.setText(defaultPhoneNumber);
-//        } else if (!sessionHandler.isV4Login(getActivity())
-//                && !TextUtils.isEmpty(lastClientNumberTyped)) {
-//            renderLastTypedClientNumber();
-//        }
-//    }
-
-    @Override
-    public void renderLastTypedClientNumber() {
-        if (category.getAttributes().isValidatePrefix()) {
-            widgetClientNumberView.setText(lastClientNumberTyped);
-        } else {
-            presenter.getOperatorById(lastOperatorSelected);
-        }
     }
 
     @Override
@@ -341,19 +334,19 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     @Override
-    public void renderDataOperator(RechargeOperatorModel operatorModel) {
+    public void renderDataOperator(Operator operatorModel) {
         if (!TextUtils.isEmpty(widgetClientNumberView.getText())) {
             selectedOperator = operatorModel;
-            selectedOperatorId = String.valueOf(operatorModel.operatorId);
-            minLengthDefaultOperator = operatorModel.minimumLength;
-            widgetClientNumberView.setImgOperator(operatorModel.image);
-            widgetClientNumberView.setFilterMaxLength(operatorModel.maximumLength);
+            selectedOperatorId = String.valueOf(operatorModel.getId());
+            minLengthDefaultOperator = operatorModel.getAttributes().getMinimumLength();
+            widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
+            widgetClientNumberView.setFilterMaxLength(operatorModel.getAttributes().getMaximumLength());
             widgetClientNumberView.setImgOperatorVisible();
-            widgetClientNumberView.setInputType(operatorModel.allowAlphanumeric);
-            widgetProductChooserView.setTitleProduct(operatorModel.nominalText);
-            widgetProductChooserView.setVisibilityProduct(operatorModel.showProduct);
-            if (!operatorModel.showPrice) showPrice = false;
-            if (operatorModel.showProduct) {
+            widgetClientNumberView.setInputType(operatorModel.getAttributes().getRule().isAllowAphanumericNumber());
+            widgetProductChooserView.setTitleProduct(operatorModel.getAttributes().getRule().getProductText());
+            widgetProductChooserView.setVisibilityProduct(operatorModel.getAttributes().getRule().isShowProduct());
+            if (!operatorModel.getAttributes().getRule().isShowPrice()) showPrice = false;
+            if (operatorModel.getAttributes().getRule().isShowProduct()) {
                 clearHolder(holderWidgetWrapperBuy);
                 holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
             }
@@ -368,7 +361,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderProduct(Product product) {
         selectedProduct = product;
-        if (sessionHandler.isV4Login(getActivity())) {
+        if (SessionHandler.isV4Login(getActivity())) {
             if (widgetProductChooserView.checkStockProduct(selectedProduct))
                 widgetWrapperBuyView.goToNativeCheckout();
         } else {
@@ -378,7 +371,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderNumberList(List<OrderClientNumber> results) {
-        if (sessionHandler.isV4Login(getActivity())) {
+        if (SessionHandler.isV4Login(getActivity())) {
             for (OrderClientNumber orderClientNumber : results) {
                 Log.d("WidgetStyle1RechargeFragment",
                         orderClientNumber.getCategoryId() + " " +
@@ -390,21 +383,28 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     @Override
+    public void renderLastTypedClientNumber() {
+        if (category.getAttributes().isValidatePrefix()) {
+            widgetClientNumberView.setText(lastClientNumberTyped);
+        } else {
+            presenter.getOperatorById(lastOperatorSelected);
+        }
+    }
+
+    @Override
     public void renderLastOrder(LastOrder lastOrder) {
         if (presenter != null) {
             this.lastOrder = lastOrder;
-            if (lastOrder != null && lastOrder.getData() != null && category != null) {
-                if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
-                    widgetClientNumberView.setText(lastOrder.getData().getAttributes().getClient_number());
-                }
+            if (lastOrder != null && lastOrder.getAttributes() != null && category != null) {
+                widgetClientNumberView.setText(lastOrder.getAttributes().getClientNumber());
             }
         }
     }
 
     @Override
-    public void renderOperator(RechargeOperatorModel operatorModel) {
+    public void renderOperator(Operator operatorModel) {
         selectedOperator = operatorModel;
-        selectedOperatorId = String.valueOf(selectedOperator.operatorId);
+        selectedOperatorId = String.valueOf(selectedOperator.getId());
         widgetClientNumberView.setText(lastClientNumberTyped);
     }
 

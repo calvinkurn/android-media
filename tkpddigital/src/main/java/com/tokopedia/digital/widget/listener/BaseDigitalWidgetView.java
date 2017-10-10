@@ -1,7 +1,7 @@
 package com.tokopedia.digital.widget.listener;
 
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.digital.product.model.OrderClientNumber;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
 
 import java.util.List;
 
@@ -12,10 +12,6 @@ import java.util.List;
 public interface BaseDigitalWidgetView {
 
     void renderNumberList(List<OrderClientNumber> results);
-
-//    void renderLastOrderFromApi(LastOrder lastOrder);
-
-//    void renderLastOrderFromCache(LastOrder lastOrder);
 
     void renderLastOrder(LastOrder lastOrder);
 

@@ -1,7 +1,7 @@
 package com.tokopedia.digital.widget.listener;
 
-import com.tokopedia.core.database.model.RechargeOperatorModel;
-import com.tokopedia.core.database.recharge.product.Product;
+import com.tokopedia.digital.widget.model.operator.Operator;
+import com.tokopedia.digital.widget.model.product.Product;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 
 import java.util.List;
@@ -16,17 +16,13 @@ public interface IDigitalWidgetStyle2View extends BaseDigitalWidgetView {
 
     void renderEmptyProduct(String message);
 
-    void renderOperators(List<RechargeOperatorModel> operatorModels);
+    void renderOperators(List<Operator> operatorModels);
 
     void renderEmptyOperators(String message);
 
-//    void renderDataRecent(List<String> results);
-
-//    void renderNumberList(List<OrderClientNumber> results);
-
     void renderProduct(Product product);
 
-    void renderOperator(RechargeOperatorModel rechargeOperatorModel);
+    void renderOperator(Operator rechargeOperatorModel);
 
     void renderErrorProduct(String message);
 

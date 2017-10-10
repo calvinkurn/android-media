@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -55,8 +56,6 @@ public class WidgetClientNumberView extends LinearLayout {
     @BindView(R2.id.btn_phone_book)
     Button btnPhoneBook;
 
-    private List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
-
     private RechargeEditTextListener rechargeEditTextListener;
     private OnButtonPickerListener buttonPickerListener;
 
@@ -87,6 +86,7 @@ public class WidgetClientNumberView extends LinearLayout {
         actionView();
     }
 
+    @SuppressWarnings("deprecation")
     private void initContactAndClearButtonBg() {
         Glide.with(getContext()).load(R.drawable.ic_clear_widget).asBitmap().into(
                 new SimpleTarget<Bitmap>() {
@@ -182,51 +182,25 @@ public class WidgetClientNumberView extends LinearLayout {
         this.pulsaAutocompleteView.setThreshold(1);
     }
 
-    private List<OrderClientNumber> generateDummyOrderClientNumbers() {
-        List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
-        orderClientNumbers.add(new OrderClientNumber.Builder()
-                .clientNumber("081322867354")
-                .name("Rizky Fadillah")
-                .build());
-        orderClientNumbers.add(new OrderClientNumber.Builder()
-                .clientNumber("085322678936")
-                .name("Sarah Nurlaila")
-                .build());
-        orderClientNumbers.add(new OrderClientNumber.Builder()
-                .clientNumber("081311109877")
-                .name("Mentari")
-                .build());
-        orderClientNumbers.add(new OrderClientNumber.Builder()
-                .clientNumber("089899237788")
-                .name("Benny M Fazrido")
-                .build());
-        orderClientNumbers.add(new OrderClientNumber.Builder()
-                .clientNumber("081899762254")
-                .name("Cristiano Ronaldo")
-                .build());
-        orderClientNumbers.add(new OrderClientNumber.Builder()
-                .clientNumber("083111776688")
-                .build());
-        orderClientNumbers.add(new OrderClientNumber.Builder()
-                .clientNumber("081899880099")
-                .build());
-        orderClientNumbers.add(new OrderClientNumber.Builder()
-                .clientNumber("081266778899")
-                .build());
-        return orderClientNumbers;
-    }
-
     private void actionView() {
-        adapter = new AutoCompleteTVAdapter(getContext(),
-                R.layout.item_autocomplete, orderClientNumbers);
-
         this.pulsaAutocompleteView.setAdapter(adapter);
         this.pulsaAutocompleteView.setThreshold(1);
 
+        this.pulsaAutocompleteView.setOnItemClickListener(getItemClickListener());
         this.pulsaAutocompleteView.setOnFocusChangeListener(getFocusChangeListener());
         this.pulsaAutocompleteView.addTextChangedListener(getTextChangedListener());
         this.btnClear.setOnClickListener(getClickClearButtonListener());
         this.btnPhoneBook.setOnClickListener(getClickPhonebookListener());
+    }
+
+    private AdapterView.OnItemClickListener getItemClickListener() {
+        return new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                OrderClientNumber orderClientNumber = adapter.getItem(position);
+                rechargeEditTextListener.onItemAutocompletedSelected(orderClientNumber);
+            }
+        };
     }
 
     private OnFocusChangeListener getFocusChangeListener() {
@@ -324,6 +298,8 @@ public class WidgetClientNumberView extends LinearLayout {
         void onRechargeTextChanged(final CharSequence s, int start, int before, int count);
 
         void onRechargeTextClear();
+
+        void onItemAutocompletedSelected(OrderClientNumber orderClientNumber);
     }
 
     public interface OnButtonPickerListener {

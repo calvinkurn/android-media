@@ -22,7 +22,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -32,6 +31,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.model.WidgetContact;
+import com.tokopedia.digital.widget.model.category.Category;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -63,7 +63,6 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
     protected Unbinder unbinder;
     protected Bundle bundle;
     protected DigitalCheckoutPassData digitalCheckoutPassDataState;
-    protected SessionHandler sessionHandler;
     protected String lastClientNumberTyped = "";
     protected String lastOperatorSelected = "";
     protected String lastProductSelected = "";
@@ -110,7 +109,6 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sessionHandler = new SessionHandler(getActivity());
         initialVariable();
         return view;
     }
@@ -145,7 +143,7 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
                     }
                     break;
                 case LOGIN_REQUEST_CODE:
-                    if (sessionHandler.isV4Login(getActivity()) && digitalCheckoutPassDataState != null) {
+                    if (SessionHandler.isV4Login(getActivity()) && digitalCheckoutPassDataState != null) {
                         if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
                             IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
                             startActivityForResult(

@@ -100,6 +100,12 @@ public class AutoCompleteTVAdapter extends ArrayAdapter<OrderClientNumber> imple
         return orderClientNumbers.size();
     }
 
+    @Nullable
+    @Override
+    public OrderClientNumber getItem(int position) {
+        return orderClientNumbers.get(position);
+    }
+
     private class ItemHolder {
         private TextView number;
         private TextView name;

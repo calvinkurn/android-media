@@ -1,9 +1,8 @@
 package com.tokopedia.digital.widget.presenter;
 
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-
 /**
  * Created by nabillasabbaha on 7/21/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public interface IDigitalWidgetStyle1Presenter {

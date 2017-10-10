@@ -2,15 +2,16 @@ package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.database.model.RechargeOperatorModel;
-import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrderEntity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.widget.data.entity.lastorder.LastOrderEntity;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle2View;
+import com.tokopedia.digital.widget.model.lastorder.Attributes;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.operator.Operator;
+import com.tokopedia.digital.widget.model.product.Product;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
     public DigitalWidgetStyle2Presenter(Context context,
                                         IDigitalWidgetInteractor widgetInteractor,
                                         IDigitalWidgetStyle2View view) {
-        super(context, widgetInteractor, view);
+        super(context);
         this.context = context;
         this.widgetInteractor = widgetInteractor;
         this.view = view;
@@ -63,14 +64,12 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
                 view.renderNumberList(digitalNumberList.getOrderClientNumbers());
                 if (digitalNumberList.getLastOrder() != null) {
                     LastOrder lastOrder = new LastOrder();
-                    LastOrderEntity lastOrderEntity = new LastOrderEntity();
-                    LastOrderEntity.AttributesBean attributesBean = new LastOrderEntity.AttributesBean();
-                    attributesBean.setClient_number(digitalNumberList.getLastOrder().getClientNumber());
-                    attributesBean.setCategory_id(Integer.valueOf(digitalNumberList.getLastOrder().getCategoryId()));
-                    attributesBean.setOperator_id(Integer.valueOf(digitalNumberList.getLastOrder().getOperatorId()));
-                    attributesBean.setProduct_id(Integer.valueOf(digitalNumberList.getLastOrder().getLastProduct()));
-                    lastOrderEntity.setAttributes(attributesBean);
-                    lastOrder.setData(lastOrderEntity);
+                    Attributes attributes = new Attributes();
+                    attributes.setClientNumber(digitalNumberList.getLastOrder().getClientNumber());
+                    attributes.setCategoryId(Integer.valueOf(digitalNumberList.getLastOrder().getCategoryId()));
+                    attributes.setOperatorId(Integer.valueOf(digitalNumberList.getLastOrder().getOperatorId()));
+                    attributes.setProductId(Integer.valueOf(digitalNumberList.getLastOrder().getLastProduct()));
+                    lastOrder.setAttributes(attributes);
 
                     view.renderLastOrder(lastOrder);
                 } else if (getLastClientNumberTyped(categoryId) != null){
@@ -109,8 +108,8 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
         widgetInteractor.getOperatorById(getOperatorModelSubscriber(), operatorId);
     }
 
-    private Subscriber<RechargeOperatorModel> getOperatorModelSubscriber() {
-        return new Subscriber<RechargeOperatorModel>() {
+    private Subscriber<Operator> getOperatorModelSubscriber() {
+        return new Subscriber<Operator>() {
             @Override
             public void onCompleted() {
 
@@ -122,7 +121,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
             }
 
             @Override
-            public void onNext(RechargeOperatorModel rechargeOperatorModel) {
+            public void onNext(Operator rechargeOperatorModel) {
                 view.renderOperator(rechargeOperatorModel);
             }
         };
@@ -162,8 +161,8 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
         widgetInteractor.getOperatorsFromCategory(getOperatorByCategorySubscriber(), categoryId);
     }
 
-    private Subscriber<List<RechargeOperatorModel>> getOperatorByCategorySubscriber() {
-        return new Subscriber<List<RechargeOperatorModel>>() {
+    private Subscriber<List<Operator>> getOperatorByCategorySubscriber() {
+        return new Subscriber<List<Operator>>() {
             @Override
             public void onCompleted() {
 
@@ -175,7 +174,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
             }
 
             @Override
-            public void onNext(List<RechargeOperatorModel> rechargeOperatorModels) {
+            public void onNext(List<Operator> rechargeOperatorModels) {
                 if (rechargeOperatorModels.size() > 0)
                     view.renderOperators(rechargeOperatorModels);
                 else

@@ -42,8 +42,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
-import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -59,6 +57,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.activity.DigitalUssdActivity;
@@ -263,7 +262,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         IProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
         IDigitalWidgetRepository digitalWidgetRepository =
-                new DigitalWidgetRepository(new RechargeService(), digitalEndpointService, new FavoriteNumberListDataMapper());
+                new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
         IDigitalCategoryRepository digitalCategoryRepository =
                 new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
         ILastOrderNumberRepository lastOrderNumberRepository =

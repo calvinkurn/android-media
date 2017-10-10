@@ -1,8 +1,8 @@
 package com.tokopedia.digital.product.domain;
 
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.data.entity.response.ResponseLastOrderData;
 import com.tokopedia.digital.product.data.entity.response.ResponseRecentNumberData;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;

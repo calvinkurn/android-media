@@ -5,15 +5,18 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.tokopedia.core.database.model.category.CategoryData;
-import com.tokopedia.core.database.recharge.status.Status;
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
+import com.tokopedia.digital.widget.model.category.Category;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.status.Status;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
-import com.tokopedia.tkpd.home.recharge.util.CategoryComparator;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 
-import java.util.Collections;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -29,7 +32,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     private Activity activity;
     private RechargeCategoryView view;
     private RechargeNetworkInteractor rechargeNetworkInteractor;
-    private CategoryData categoryData;
+    private List<Category> categoryList;
 
     public RechargeCategoryPresenterImpl(Activity activity, RechargeCategoryView view,
                                          RechargeNetworkInteractor rechargeNetworkInteractor) {
@@ -41,11 +44,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     @Override
     public void fetchDataRechargeCategory() {
         rechargeNetworkInteractor.getStatus(getStatusSubscriber());
-    }
-
-    @Override
-    public void fetchStatusDigitalProductData() {
-        rechargeNetworkInteractor.getStatusResume(getStatusSubscriber());
     }
 
     private Subscriber<Status> getStatusSubscriber() {
@@ -66,11 +64,8 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
             @Override
             public void onNext(Status status) {
-                SessionHandler sessionHandler = new SessionHandler(activity);
                 if (status != null) {
-                    if (sessionHandler.isV4Login(activity)) {
-                    }
-                    if (status.getData().getAttributes().getIsMaintenance() || !isVersionMatch(status)) {
+                    if (status.getAttributes().isMaintenance() || !isVersionMatch(status)) {
                         view.failedRenderDataRechargeCategory();
                     } else {
                         rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber());
@@ -80,8 +75,8 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
         };
     }
 
-    private Subscriber<CategoryData> getCategoryDataSubscriber() {
-        return new Subscriber<CategoryData>() {
+    private Subscriber<List<Category>> getCategoryDataSubscriber() {
+        return new Subscriber<List<Category>>() {
             @Override
             public void onCompleted() {
 
@@ -93,21 +88,17 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
             }
 
             @Override
-            public void onNext(CategoryData data) {
-                categoryData = data;
+            public void onNext(List<Category> data) {
+                categoryList = data;
                 finishPrepareRechargeModule();
             }
         };
     }
 
-    public void onNetworkError() {
-        view.renderErrorNetwork();
-    }
-
     private boolean isVersionMatch(Status status) {
         try {
             int minApiSupport = Integer.parseInt(
-                    status.getData().getAttributes().getVersion().getMinimumAndroidBuild()
+                    status.getAttributes().getVersion().getMinimumAndroidBuild()
             );
             Log.d(TAG, "version code : " + getVersionCode());
             return getVersionCode() >= minApiSupport;
@@ -119,9 +110,8 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
     private void finishPrepareRechargeModule() {
         if (activity != null && view != null) {
-            if (categoryData != null) {
-                Collections.sort(categoryData.getData(), new CategoryComparator());
-                view.renderDataRechargeCategory(categoryData);
+            if (categoryList != null) {
+                view.renderDataRechargeCategory(categoryList);
             } else {
                 view.failedRenderDataRechargeCategory();
             }
