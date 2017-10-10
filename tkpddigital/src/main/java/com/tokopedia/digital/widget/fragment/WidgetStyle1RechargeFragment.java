@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -76,7 +78,9 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                 new CompositeSubscription(),
                 new DigitalWidgetRepository(new DigitalEndpointService()),
                 new ProductMapper(),
-                new OperatorMapper());
+                new OperatorMapper(),
+                new JobExecutor(),
+                new UIThread());
         presenter = new DigitalWidgetStyle1Presenter(getActivity(), interactor, this);
         presenter.fetchRecentNumber(category.getId());
 
@@ -120,7 +124,9 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void saveAndDisplayPhoneNumber(String phoneNumber) {
         widgetClientNumberView.setText(phoneNumber);
-        //save to last input key
+        String temp = validateTextPrefix(phoneNumber);
+        presenter.validatePhonePrefix(temp, category.getId(),
+                category.getAttributes().isValidatePrefix());
     }
 
     @Override
@@ -142,13 +148,9 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                     clearHolder(holderWidgetWrapperBuy);
                 } else {
                     if (category.getAttributes().isValidatePrefix()) {
-                        if ((temp.length() >= 3 || temp.length() <= 4) || temp.length() > minLengthDefaultOperator) {
+                        if ((temp.length() >= 3 && temp.length() <= 4)) {
                             presenter.validatePhonePrefix(temp, category.getId(),
                                     category.getAttributes().isValidatePrefix());
-                        } else {
-                            widgetClientNumberView.setImgOperatorInvisible();
-                            clearHolder(holderWidgetSpinnerProduct);
-                            clearHolder(holderWidgetWrapperBuy);
                         }
                     } else {
                         if (s.length() >= minLengthDefaultOperator) {
