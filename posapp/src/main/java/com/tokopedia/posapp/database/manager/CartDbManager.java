@@ -82,7 +82,7 @@ public class CartDbManager extends PosDbOperation<CartDomain, CartDb> {
     public Observable<DataStatus> delete(CartDomain data) {
         return executeDelete(
                 CartDb.class,
-                ConditionGroup.clause().and(CartDb_Table.id.eq(data.getId()))
+                ConditionGroup.clause().and(CartDb_Table.productId.eq(data.getProductId()))
         );
     }
 }

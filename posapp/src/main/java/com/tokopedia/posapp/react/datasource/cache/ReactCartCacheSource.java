@@ -53,7 +53,7 @@ public class ReactCartCacheSource implements ReactCacheSource {
     @Override
     public Observable<String> deleteItem(String id) {
         CartDomain cartDomain = new CartDomain();
-        cartDomain.setId(Long.parseLong(id));
+        cartDomain.setProductId(Integer.parseInt(id));
         return cartFactory.local().deleteCartProduct(cartDomain).map(getDbOperationMapper());
     }
 
