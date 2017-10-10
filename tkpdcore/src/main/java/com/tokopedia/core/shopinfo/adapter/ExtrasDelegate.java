@@ -1,5 +1,7 @@
 package com.tokopedia.core.shopinfo.adapter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.router.SellerAppRouter;
 
 /**
  * Created by Tkpd_Eka on 10/13/2015.
@@ -48,8 +52,21 @@ public class ExtrasDelegate {
     }
 
     public RecyclerView.ViewHolder onCreateViewHolderNoResult(ViewGroup parent){
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result, parent, false);
+        Context context = parent.getContext().getApplicationContext();
+        if(context != null && context instanceof TkpdCoreRouter){
+            if(parent.getContext() != null && parent.getContext() instanceof Activity){
+                ((TkpdCoreRouter)context).goToAddProduct(((Activity) parent.getContext()));
+            }
+        }
+
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result_shop_info, parent, false);
         ImageHandler.loadImageWithId(((ImageView)view.findViewById(R.id.no_result_image)), R.drawable.status_no_result);
+        view.findViewById(R.id.button_add_product).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         return new RecyclerView.ViewHolder(view) {
             @Override
             public String toString() {
