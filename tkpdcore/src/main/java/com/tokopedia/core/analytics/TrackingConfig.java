@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IGTMContainer;
 import com.tokopedia.core.analytics.container.ILocalyticsContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
+import com.tokopedia.core.analytics.container.IPerformanceMonitoring;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.SessionHandler;
@@ -60,6 +61,14 @@ public abstract class TrackingConfig {
      */
     static IMoengageContainer getMoEngine(){
         return Jordan.init(MainApplication.getAppContext()).getMoEngageContainer();
+    }
+
+    /**
+     * Get Firebase Performance Monitoring Engine Instance
+     * @return FPM Instance
+     */
+    static IPerformanceMonitoring getFPMEngine(String traceName){
+        return Jordan.init(MainApplication.getAppContext()).getFirebasePerformanceContainer(traceName);
     }
 
     /**
