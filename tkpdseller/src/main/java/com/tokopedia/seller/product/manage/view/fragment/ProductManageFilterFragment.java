@@ -36,6 +36,7 @@ import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
+import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 
 import java.util.ArrayList;
@@ -305,8 +306,8 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
         } else {
             categoryId = 0;
         }
-        ArrayList<CategoryViewModel> categoryViewModels = new ArrayList<>();
-        categoryViewModels.add(new CategoryViewModel(getString(R.string.product_manage_filter_menu_category_all), ProductManageConstant.FILTER_ALL_CATEGORY, false));
+        ArrayList<ProductManageCategoryViewModel> categoryViewModels = new ArrayList<>();
+        categoryViewModels.add(new ProductManageCategoryViewModel(getString(R.string.product_manage_filter_menu_category_all), ProductManageConstant.FILTER_ALL_CATEGORY, false));
         Intent intent = CategoryDynamicPickerActivity.createIntent(getActivity(), categoryId, categoryViewModels);
         startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_CATEGORY);
     }

@@ -5,6 +5,7 @@ package com.tokopedia.seller.product.manage.constant;
  */
 
 public class ProductManageConstant {
+    public static final String ACTION_COMPLETED_ADD_PRODUCT = "action_completed_add_product";
     public static final String EXTRA_SORT_SELECTED = "extra_sort_selected";
     public static final String EXTRA_FILTER_SELECTED = "extra_filter_selected";
     public static final int REQUEST_CODE_CATEGORY = 2789;

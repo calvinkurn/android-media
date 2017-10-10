@@ -808,7 +808,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_cat_gift">Souvenir, Kado &amp; Hadiah</string>
     <string name="title_cat_sport">Olahraga</string>
     <string name="title_activity_browse_category">Direktori</string>
-    <string name="title_activity_manage_product">Pengaturan Produk</string>
+    <string name="title_activity_manage_product">Daftar Produk</string>
     <string name="title_activity_choose_address">Alamat</string>
     <string name="title_activity_cart">Keranjang</string>
     <string name="title_activity_shop_editor">Ubah Informasi Toko</string>

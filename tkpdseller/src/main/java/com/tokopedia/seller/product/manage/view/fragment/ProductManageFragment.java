@@ -4,8 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -14,6 +17,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.ActionMode;
@@ -38,7 +42,9 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.seller.BuildConfig;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
@@ -102,6 +108,25 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private Boolean goldMerchant;
     private PopupWindow addProductPopupWindow;
 
+    private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)) {
+                if (intent.hasExtra(TkpdState.ProductService.STATUS_FLAG)) {
+                    if (intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) ==
+                            TkpdState.ProductService.STATUS_DONE) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                resetPageAndRefresh();
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    };
+
     @Override
     protected void initInjector() {
         super.initInjector();
@@ -123,6 +148,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
+
 
     @Override
     protected void initView(View view) {
@@ -301,8 +327,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             case ProductManageConstant.REQUEST_CODE_FILTER:
                 if (resultCode == Activity.RESULT_OK) {
                     productManageFilterModel = intent.getParcelableExtra(ProductManageConstant.EXTRA_FILTER_SELECTED);
-                    resetPageAndSearch();
-                    swipeToRefresh.setRefreshing(true);
+                    resetPageAndRefresh();
                     filtered = true;
                     setSearchMode(true);
                 }
@@ -311,14 +336,18 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 if (resultCode == Activity.RESULT_OK) {
                     ProductManageSortModel productManageSortModel = intent.getParcelableExtra(ProductManageConstant.EXTRA_SORT_SELECTED);
                     sortProductOption = productManageSortModel.getId();
-                    resetPageAndSearch();
-                    swipeToRefresh.setRefreshing(true);
+                    resetPageAndRefresh();
                 }
                 break;
             default:
                 break;
         }
         super.onActivityResult(requestCode, resultCode, intent);
+    }
+
+    protected void resetPageAndRefresh() {
+        resetPageAndSearch();
+        swipeToRefresh.setRefreshing(true);
     }
 
     private void onActivityResultFromGallery(Intent intent) {
@@ -503,9 +532,24 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(addProductReceiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
+        getActivity().registerReceiver(addProductReceiver, intentFilter);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         productManagePresenter.detachView();
+        if (addProductReceiver.isOrderedBroadcast()) getActivity().unregisterReceiver(addProductReceiver);
     }
 
     @Override

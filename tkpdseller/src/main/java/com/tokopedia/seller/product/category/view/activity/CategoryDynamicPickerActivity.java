@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerDynamicFragment;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerFragment;
+import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by zulfikarrahman on 10/9/17.
@@ -19,11 +18,9 @@ public class CategoryDynamicPickerActivity extends CategoryPickerActivity {
 
     public static final String ADDITIONAL_OPTION = "additional_option";
 
-    public static Intent createIntent(Context context, long depId, ArrayList<CategoryViewModel> categoryViewModels) {
+    public static Intent createIntent(Context context, long depId, ArrayList<ProductManageCategoryViewModel> categoryViewModels) {
         Intent intent = new Intent(context, CategoryDynamicPickerActivity.class);
-        if (depId > 0) {
-            intent.putExtra(CATEGORY_ID_INIT_SELECTED, depId);
-        }
+        intent.putExtra(CATEGORY_ID_INIT_SELECTED, depId);
         intent.putParcelableArrayListExtra(ADDITIONAL_OPTION, categoryViewModels);
         return intent;
     }
@@ -31,7 +28,7 @@ public class CategoryDynamicPickerActivity extends CategoryPickerActivity {
     @Override
     protected Fragment getNewFragment() {
         long selectedCategoryId = getIntent().getLongExtra(CATEGORY_ID_INIT_SELECTED, CategoryPickerFragment.INIT_UNSELECTED);
-        ArrayList<CategoryViewModel> categoryViewModels = getIntent().getParcelableArrayListExtra(ADDITIONAL_OPTION);
+        ArrayList<ProductManageCategoryViewModel> categoryViewModels = getIntent().getParcelableArrayListExtra(ADDITIONAL_OPTION);
         return CategoryPickerDynamicFragment.createInstance(selectedCategoryId, categoryViewModels);
     }
 }
