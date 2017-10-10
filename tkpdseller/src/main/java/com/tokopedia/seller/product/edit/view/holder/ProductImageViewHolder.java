@@ -12,11 +12,9 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
-import com.tokopedia.seller.common.imageeditor.ImageEditorFragment;
 import com.tokopedia.seller.product.edit.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.upload.ImageProductInputViewModel;
@@ -122,7 +120,11 @@ public class ProductImageViewHolder extends ProductViewHolder {
         if (requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY && data != null) {
             String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
             if (!TextUtils.isEmpty(imageUrl)) {
-                listener.onImageEditor(imageUrl);
+                if (imagesSelectView.getSelectedImageIndex() < 0) {
+                    imagesSelectView.addImageString(imageUrl);
+                } else {
+                    imagesSelectView.changeImagePath(imageUrl);
+                }
             } else {
                 ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
                 if (imageUrls != null) {

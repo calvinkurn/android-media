@@ -3,10 +3,8 @@ package com.tokopedia.seller.common.imageeditor;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +24,12 @@ import com.tokopedia.seller.R;
 
 import java.io.File;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by User on 9/25/2017.
  */
@@ -38,9 +42,8 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
     private String localPath;
 
     OnImageEditorFragmentListener onImageEditorFragmentListener;
-    protected Bitmap myBitmap;
 
-    public interface OnImageEditorFragmentListener{
+    public interface OnImageEditorFragmentListener {
         void onSuccessCrop(CropImageView.CropResult cropResult);
     }
 
@@ -75,31 +78,54 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
         mCropImageView.setOnCropImageCompleteListener(this);
 
         File imgFile = new File(localPath);
-        if(imgFile.exists()){
-            myBitmap = null;
-            BitmapFactory.Options options;
+        if (imgFile.exists()) {
+//            mCropImageView.setImageUriAsync(Uri.fromFile(imgFile));
+            Observable.just(imgFile)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .flatMap(new Func1<File, Observable<Bitmap>>() {
+                        @Override
+                        public Observable<Bitmap> call(File file) {
+                            BitmapFactory.Options options;
+                            Bitmap bitmap = null;
+                            try {
+                                bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                            } catch (OutOfMemoryError e) {
+                                try {
+                                    options = new BitmapFactory.Options();
+                                    options.inSampleSize = 2;
+                                    bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+                                } catch (Exception ef) {
+                                    return null;
+                                }
+                            }
+                            return Observable.just(bitmap);
+                        }
+                    }).subscribe(new Subscriber<Bitmap>() {
+                        @Override
+                        public void onCompleted() {
 
-            try {
-                myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            } catch (OutOfMemoryError e) {
-                try {
-                    options = new BitmapFactory.Options();
-                    options.inSampleSize = 2;
-                    myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath(), options);
-                } catch(Exception ef) {
+                        }
 
-                }
-            }
-            if (myBitmap != null) {
-                mCropImageView.setImageBitmap(myBitmap);
-            }
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Bitmap bitmap) {
+                            if (bitmap != null) {
+                                mCropImageView.setImageBitmap(bitmap);
+                            }
+                        }
+            });
         }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_image_editor,menu);
+        inflater.inflate(R.menu.menu_image_editor, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

@@ -88,7 +88,6 @@ import static com.tkpd.library.utils.CommonUtils.checkNotNull;
  */
 @RuntimePermissions
 public class GalleryActivity extends TActivity implements ImageGalleryView {
-    public static final String ADD_PRODUCT_IMAGE_LOCATION = "ADD_PRODUCT_IMAGE_LOCATION";
     public static final String FORCE_OPEN_CAMERA = "FORCE_OPEN_CAMERA";
     public static final String MAX_IMAGE_SELECTION = "MAX_IMAGE_SELECTION";
     public static final String COMPRESS_TO_TKPD = "CMPRS_TKPD";
@@ -206,7 +205,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static void moveToImageGalleryCamera(Activity context, int position, boolean forceOpenCamera,
                                                 int maxImageSelection,
                                                 boolean compressToTkpd) {
-        Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection, compressToTkpd);
+        Intent imageGallery = createIntent(context, forceOpenCamera, maxImageSelection, compressToTkpd);
         context.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
@@ -215,7 +214,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                                 boolean forceOpenCamera,
                                                 int maxImageSelection,
                                                 boolean compressToTkpd) {
-        Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection, compressToTkpd);
+        Intent imageGallery = createIntent(context, forceOpenCamera, maxImageSelection, compressToTkpd);
         fragment.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
@@ -224,17 +223,16 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                                 boolean forceOpenCamera,
                                                 int maxImageSelection,
                                                 boolean compressToTkpd) {
-        Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection, compressToTkpd);
+        Intent imageGallery = createIntent(context, forceOpenCamera, maxImageSelection, compressToTkpd);
         fragment.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
-    private static Intent createIntent(Context context, int position,
+    protected static Intent createIntent(Context context,
                                        boolean forceOpenCamera,
                                        int maxImageSelection,
                                        boolean compressToTkpd) {
         Intent imageGallery = new Intent(context, GalleryActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putInt(ADD_PRODUCT_IMAGE_LOCATION, position);
         bundle.putString(FRAGMENT_TO_SHOW, ImageGalleryAlbumFragment.FRAGMENT_TAG);
         bundle.putBoolean(FORCE_OPEN_CAMERA, forceOpenCamera);
         bundle.putInt(MAX_IMAGE_SELECTION, maxImageSelection);
@@ -434,21 +432,17 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public void sendResultImageGallery(String path) {
         Fragment fragment = supportFragmentManager.findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment && path != null) {
-            Intent intent = new Intent();
             if (compressToTkpd) {
                 String fileNameToMove = FileUtils.generateUniqueFileName();
                 File photo = FileUtils.writeImageToTkpdPath(
                         FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                         fileNameToMove);
                 if (photo != null) {
-                    intent.putExtra(GalleryActivity.IMAGE_URL, photo.getAbsolutePath());
+                    finishWithSingleImage(photo.getAbsolutePath());
                 }
             } else {
-                intent.putExtra(GalleryActivity.IMAGE_URL, path);
+                finishWithSingleImage(path);
             }
-            intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
-            setResult(GalleryActivity.RESULT_CODE, intent);
-            finish();
         }
     }
 
@@ -472,14 +466,11 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                     }
                 }
                 if (tkpdPaths.size() > 0) {
-                    intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, tkpdPaths);
+                    finishWithMultipleImage(new ArrayList<>(paths));
                 }
             } else {
-                intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, new ArrayList<>(paths));
+                finishWithMultipleImage(new ArrayList<>(paths));
             }
-            intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
-            setResult(GalleryActivity.RESULT_CODE, intent);
-            finish();
         }
     }
 
@@ -590,7 +581,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                 } else {
                                     intent.putExtra(GalleryActivity.IMAGE_URL, imagePathCamera);
                                 }
-                                intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
                                 setResult(GalleryActivity.RESULT_CODE, intent);
                                 finish();
                             }
@@ -621,11 +611,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                 @Override
                                 public void onSuccess(ArrayList<String> resultLocalPaths) {
                                     hideProgressDialog();
-                                    Intent intent = new Intent();
-                                    intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, resultLocalPaths);
-                                    intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
-                                    setResult(GalleryActivity.RESULT_CODE, intent);
-                                    finish();
+                                    finishWithMultipleImage(resultLocalPaths);
                                 }
                             });
                     break;
@@ -634,6 +620,21 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                     break;
             }
         }
+    }
+
+    // will be overriden in ImageEditorActivity
+    public void finishWithSingleImage(String imageUrl){
+        Intent intent = new Intent();
+        intent.putExtra(GalleryActivity.IMAGE_URL, imageUrl);
+        setResult(GalleryActivity.RESULT_CODE, intent);
+        finish();
+    }
+
+    public void finishWithMultipleImage(ArrayList<String> imageUrls){
+        Intent intent = new Intent();
+        intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, imageUrls);
+        setResult(GalleryActivity.RESULT_CODE, intent);
+        finish();
     }
 
     private void showProgressDialog(){
