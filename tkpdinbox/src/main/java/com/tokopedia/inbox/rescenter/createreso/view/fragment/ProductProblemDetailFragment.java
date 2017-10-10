@@ -55,6 +55,8 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     TkpdTextInputLayout tilComplainReason;
     EditText etComplainReason;
 
+    TimeTickerUtil timeTickerUtil;
+
     ProductProblemDetailFragmentPresenter presenter;
     Dialog dialog;
 
@@ -338,8 +340,10 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             String shippingName = productProblemViewModel.getOrder().getShipping().getName() + " " +
                     productProblemViewModel.getOrder().getShipping().getDetail().getName();
             View timeTickerView = dialog.findViewById(R.id.time_ticker);
-            final TimeTickerUtil timeTickerUtil = TimeTickerUtil.createInstance(timeTickerView,
-                    getTimeTickerListener());
+            if (timeTickerUtil == null) {
+                timeTickerUtil = TimeTickerUtil.createInstance(timeTickerView,
+                        getTimeTickerListener());
+            }
             long duration = presenter.getDuration(
                     presenter.getDeliveryDate
                             (productProblemViewModel.getStatusList()));
@@ -374,6 +378,20 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             ServerErrorHandler.showTimezoneErrorSnackbar();
         } else if (dialog != null) {
             dialog.show();
+            if (timeTickerUtil == null) {
+                View timeTickerView = dialog.findViewById(R.id.time_ticker);
+                timeTickerUtil = TimeTickerUtil.createInstance(timeTickerView,
+                        getTimeTickerListener());
+            }
+            long duration = presenter.getDuration(
+                    presenter.getDeliveryDate
+                            (productProblemViewModel.getStatusList()));
+            if (duration > 0) {
+                timeTickerUtil.startTimer(duration);
+            } else {
+                setProductAlreadyArrive();
+            }
+            timeTickerUtil.startTimer(duration);
         }
     }
 
