@@ -469,7 +469,7 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
     cc_expired_year: parseInt(exp_year),
     cc_cvv: parseInt(data.cvv),
     inst_term: data.installment_term,
-    gateway_code: 'CICILAN', // gateway_code,
+    gateway_code: gateway_code,
     payment_amount: parseFloat(checkout_data.data.payment_amount),
     merchant_code: checkout_data.data.merchant_code,
     profile_code: checkout_data.data.profile_code,
