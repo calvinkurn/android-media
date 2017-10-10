@@ -121,6 +121,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final int INIT_REQUEST = 1;
     public static final int RE_REQUEST = 2;
 
+    private static final int SCROLL_ELEVATION = 324;
+
     private static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
     private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
@@ -1042,7 +1044,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
                 intColor = - verticalOffset;
-                if (intColor>=255 && isAdded()) {
+                if (intColor>=SCROLL_ELEVATION+toolbar.getHeight() && isAdded()) {
                     initToolbarLight();
                     initStatusBarLight();
                     fabWishlist.hide();
@@ -1059,7 +1061,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     private void initToolbarLight() {
         toolbar.getBackground().setAlpha(255);
-        toolbar.setAlpha(1);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
         if (menu != null && menu.size() > 2) {
             menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share));
