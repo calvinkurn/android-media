@@ -7,6 +7,7 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdreactnative.react.data.ReactNetworkRepositoryImpl;
 import com.tokopedia.tkpdreactnative.react.data.factory.ReactNetworkAuthFactory;
 import com.tokopedia.tkpdreactnative.react.data.factory.ReactNetworkDefaultAuthFactory;
@@ -15,6 +16,11 @@ import com.tokopedia.tkpdreactnative.react.di.qualifier.ReactDefaultAuthQualifie
 import com.tokopedia.tkpdreactnative.react.di.qualifier.ReactDynamicAuthQualifier;
 import com.tokopedia.tkpdreactnative.react.di.qualifier.ReactNoAuthQualifier;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;
+import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkBearerDataSource;
+import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkDataSource;
+import com.tokopedia.tkpdreactnative.react.domain.UnifyReactNetworkRepository;
+import com.tokopedia.tkpdreactnative.react.data.UnifyReactNetworkRepositoryImpl;
+import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkWsAuthDataSource;
 
 import dagger.Module;
 import dagger.Provides;
@@ -123,9 +129,36 @@ public class ReactNativeNetworkModule {
 
     @Provides
     @ReactNativeNetworkScope
+    UnifyReactNetworkDataSource provideUnifyReactNetworkDataSource(Retrofit.Builder retrofitBuilder) {
+        return new UnifyReactNetworkDataSource(retrofitBuilder);
+    }
+
+    @Provides
+    @ReactNativeNetworkScope
+    UnifyReactNetworkWsAuthDataSource provideUnifyReactNetworkWsAuthDataSource(Retrofit.Builder retrofitBuilder) {
+        return new UnifyReactNetworkWsAuthDataSource(retrofitBuilder);
+    }
+
+    @Provides
+    @ReactNativeNetworkScope
+    UnifyReactNetworkBearerDataSource provideUnifyReactNetworkBearerDataSource(Retrofit.Builder retrofitBuilder,
+                                                                               SessionHandler sessionHandler) {
+        return new UnifyReactNetworkBearerDataSource(retrofitBuilder, sessionHandler);
+    }
+
+    @Provides
+    @ReactNativeNetworkScope
+    UnifyReactNetworkRepository provideUnifyReactNetworkRepository(UnifyReactNetworkDataSource unifyReactNetworkDataSource,
+                                                                   UnifyReactNetworkWsAuthDataSource unifyReactNetworkWsAuthDataSource,
+                                                                   UnifyReactNetworkBearerDataSource unifyReactNetworkBearerDataSource) {
+        return new UnifyReactNetworkRepositoryImpl(unifyReactNetworkDataSource, unifyReactNetworkWsAuthDataSource, unifyReactNetworkBearerDataSource);
+    }
+
+    @Provides
+    @ReactNativeNetworkScope
     ReactNetworkRepository provideReactNetworkRepository(@ApplicationContext Context context, ReactNetworkAuthFactory reactNetworkAuthFactory,
                                                          ReactNetworkFactory reactNetworkFactory,
-                                                         ReactNetworkDefaultAuthFactory reactNetworkDefaultAuthFactory){
+                                                         ReactNetworkDefaultAuthFactory reactNetworkDefaultAuthFactory) {
         return new ReactNetworkRepositoryImpl(context, reactNetworkAuthFactory, reactNetworkFactory, reactNetworkDefaultAuthFactory);
     }
 }
