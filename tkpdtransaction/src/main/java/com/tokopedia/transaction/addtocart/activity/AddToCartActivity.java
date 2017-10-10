@@ -1001,4 +1001,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         }
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }
