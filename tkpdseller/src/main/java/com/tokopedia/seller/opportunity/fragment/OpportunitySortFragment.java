@@ -154,6 +154,13 @@ public class OpportunitySortFragment extends BasePresenterFragment {
             @Override
             public void onItemSelected(int adapterPosition, SimpleCheckListItemModel item) {
 
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.SUBMIT,
+                        item.getTitle()
+                );
+
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
                 FilterPass filterPass = new FilterPass(item.getKey(), item.getValue(), item
@@ -163,13 +170,6 @@ public class OpportunitySortFragment extends BasePresenterFragment {
                 intent.putExtras(bundle);
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
-
-                UnifyTracking.eventOpportunity(
-                        OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
-                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
-                        AppEventTracking.Action.SUBMIT,
-                        item.getTitle()
-                );
 
             }
         };

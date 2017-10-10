@@ -205,16 +205,17 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                         }.getType()));
                 cacheManager.store();
 
-                Intent intent = new Intent();
-                setResult(Activity.RESULT_OK, intent);
-                finish();
-
                 UnifyTracking.eventOpportunity(
                         OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
                         OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                         AppEventTracking.Action.SUBMIT,
                         trackingEventLabel
                 );
+
+                Intent intent = new Intent();
+                setResult(Activity.RESULT_OK, intent);
+                finish();
+
             }
         };
     }
@@ -222,10 +223,11 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     private ArrayList<FilterPass> getSelectedFilterList() {
         ArrayList<FilterPass> list = new ArrayList<>();
 
-        for (FilterViewModel filterViewModel : listFilter) {
-            if (filterViewModel.isActive()) {
-                addSelectedFilterToList(list, filterViewModel.getListChild());
-                trackingEventLabel += "~";
+        for (int i = 0; i < listFilter.size(); i++) {
+            if (listFilter.get(i).isActive()) {
+                addSelectedFilterToList(list, listFilter.get(i).getListChild());
+                if (i > 0)
+                    trackingEventLabel += "~";
             }
         }
         return list;
@@ -233,7 +235,9 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
     private void addSelectedFilterToList(ArrayList<FilterPass> list,
                                          ArrayList<OptionViewModel> listChild) {
-        for (OptionViewModel optionViewModel : listChild) {
+
+        for (int i = 0; i < listChild.size(); i++) {
+            OptionViewModel optionViewModel = listChild.get(i);
             if (optionViewModel.getListChild().size() > 0 && !optionViewModel.isExpanded()) {
                 addSelectedFilterToList(list, optionViewModel.getListChild());
             } else if (optionViewModel.isSelected()) {
@@ -242,8 +246,10 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                         optionViewModel.getValue(),
                         optionViewModel.getName()));
 
-                trackingEventLabel += optionViewModel.getKey() + " " + optionViewModel.getValue()
-                        + ";";
+                trackingEventLabel += optionViewModel.getKey() + " " + optionViewModel
+                        .getValue();
+                if (i != listChild.size() - 1)
+                    trackingEventLabel += ";";
             }
         }
     }
