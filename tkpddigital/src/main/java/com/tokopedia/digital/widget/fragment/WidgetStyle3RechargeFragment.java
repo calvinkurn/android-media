@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -78,7 +80,9 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
                 new CompositeSubscription(),
                 new DigitalWidgetRepository(new DigitalEndpointService()),
                 new ProductMapper(),
-                new OperatorMapper());
+                new OperatorMapper(),
+                new JobExecutor(),
+                new UIThread());
         presenter = new DigitalWidgetStyle2Presenter(getActivity(), interactor, this);
         presenter.fetchRecentNumber(category.getId());
 
