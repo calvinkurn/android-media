@@ -24,6 +24,4 @@ public interface IDigitalWidgetInteractor {
     void getProductById(Subscriber<Product> subscriber, String categoryId, String operatorId, String productId);
 
     void getRecentData(Subscriber<List<String>> subscriber, int categoryId);
-
-    void onDestroy();
 }

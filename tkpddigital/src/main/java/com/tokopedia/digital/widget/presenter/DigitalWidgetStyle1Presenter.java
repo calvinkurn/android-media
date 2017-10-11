@@ -199,9 +199,4 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             }
         };
     }
-
-    @Override
-    public void onDestroy() {
-        widgetInteractor.onDestroy();
-    }
 }

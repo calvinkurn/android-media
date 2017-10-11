@@ -304,10 +304,4 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
             }
         };
     }
-
-    @Override
-    public void onDestroy() {
-        if (compositeSubscription != null)
-            compositeSubscription.unsubscribe();
-    }
 }
