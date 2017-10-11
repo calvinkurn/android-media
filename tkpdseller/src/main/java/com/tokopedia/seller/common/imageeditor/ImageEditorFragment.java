@@ -79,46 +79,6 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
 
         File imgFile = new File(localPath);
         if (imgFile.exists()) {
-//            mCropImageView.setImageUriAsync(Uri.fromFile(imgFile));
-//            Observable.just(imgFile)
-//                    .subscribeOn(Schedulers.newThread())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .flatMap(new Func1<File, Observable<Bitmap>>() {
-//                        @Override
-//                        public Observable<Bitmap> call(File file) {
-//                            BitmapFactory.Options options;
-//                            Bitmap bitmap = null;
-//                            try {
-//                                bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-//                            } catch (OutOfMemoryError e) {
-//                                try {
-//                                    options = new BitmapFactory.Options();
-//                                    options.inSampleSize = 2;
-//                                    bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-//                                } catch (Exception ef) {
-//                                    return null;
-//                                }
-//                            }
-//                            return Observable.just(bitmap);
-//                        }
-//                    }).subscribe(new Subscriber<Bitmap>() {
-//                        @Override
-//                        public void onCompleted() {
-//
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onNext(Bitmap bitmap) {
-//                            if (bitmap != null) {
-//                                mCropImageView.setImageBitmap(bitmap);
-//                            }
-//                        }
-//            });
             mCropImageView.setImageUriAsync(Uri.fromFile(imgFile));
         }
     }
