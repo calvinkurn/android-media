@@ -26,7 +26,6 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
     private PromotedProductViewModel promotedProductViewModel;
 
     public PromotedProductAdapter(Context context, FeedPlus.View viewListener) {
-        Context context1 = context;
         this.viewListener = viewListener;
     }
 
