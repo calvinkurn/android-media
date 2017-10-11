@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.seller.R;
 
 import java.io.File;
@@ -45,6 +46,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
 
     public interface OnImageEditorFragmentListener {
         void onSuccessCrop(CropImageView.CropResult cropResult);
+        void onSuccessCrop(String localPath);
     }
 
     public static ImageEditorFragment newInstance(String localPath) {
@@ -93,7 +95,14 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.main_action_crop) {
-            mCropImageView.getCroppedImageAsync();
+            // no need to crop if the rect is same and in local tkpd already
+            if (mCropImageView.getRotation() == 0 &&
+                   mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect()) &&
+                    FileUtils.isInTkpdCache(new File(localPath))) {
+                onImageEditorFragmentListener.onSuccessCrop(localPath);
+            } else {
+                mCropImageView.getCroppedImageAsync();
+            }
             return true;
         } else if (item.getItemId() == R.id.main_action_rotate) {
             mCropImageView.rotateImage(90);
