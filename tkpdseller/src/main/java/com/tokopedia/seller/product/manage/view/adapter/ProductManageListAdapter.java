@@ -1,11 +1,13 @@
 package com.tokopedia.seller.product.manage.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class ProductManageListAdapter extends BaseMultipleCheckListAdapter<Produ
 
     public interface ClickOptionCallback {
         void onClickOptionItem(ProductManageViewModel productManageViewModel);
+        boolean isActionModeActive();
     }
 
     private ClickOptionCallback clickOptionCallback;
@@ -54,8 +57,21 @@ public class ProductManageListAdapter extends BaseMultipleCheckListAdapter<Produ
     }
 
     @Override
-    protected void bindData(int position, RecyclerView.ViewHolder viewHolder) {
+    protected void bindData(final int position, final RecyclerView.ViewHolder viewHolder) {
         super.bindData(position, viewHolder);
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (callback != null) {
+                    callback.onItemClicked(data.get(position));
+                }
+                if(clickOptionCallback != null && clickOptionCallback.isActionModeActive()) {
+                    boolean checked = ((BaseMultipleCheckViewHolder<ProductManageViewModel>) viewHolder).isChecked();
+                    ((BaseMultipleCheckViewHolder<ProductManageViewModel>) viewHolder).setChecked(!checked);
+                    updateChecked(data.get(position), position, !checked);
+                }
+            }
+        });
         ((ProductManageListViewHolder) viewHolder).bindFeaturedProduct(isFeaturedProduct(data.get(position).getProductId()));
         ((ProductManageListViewHolder) viewHolder).bindActionMode(isActionMode);
     }
