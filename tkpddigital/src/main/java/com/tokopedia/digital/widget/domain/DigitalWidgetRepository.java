@@ -10,7 +10,9 @@ import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.data.entity.operator.OperatorEntity;
 import com.tokopedia.digital.widget.data.entity.product.ProductEntity;
+import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteList;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteNumber;
+import com.tokopedia.digital.widget.data.entity.response.ResponseMeta;
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
 import com.tokopedia.digital.widget.data.mapper.IFavoriteNumberMapper;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
@@ -301,42 +303,48 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     @Override
     public Observable<DigitalNumberList> getObservableNumberList(TKPDMapParam<String, String> param) {
         return digitalEndpointService.getApi().getNumberList(param)
-                .map(getFuncTransformNumberList())
-                .flatMap(new Func1<List<OrderClientNumber>, Observable<DigitalNumberList>>() {
-                    @Override
-                    public Observable<DigitalNumberList> call(final List<OrderClientNumber> orderClientNumbers) {
-                        if (!orderClientNumbers.isEmpty()) {
-                            final List<OrderClientNumber> originalClientNumbers = new ArrayList<>();
-                            originalClientNumbers.addAll(orderClientNumbers);
-
-                            return Observable.just(orderClientNumbers)
-                                    .flatMapIterable(getSortedNumberList())
-                                    .first(getLastOrder())
-                                    .flatMap(new Func1<OrderClientNumber, Observable<OrderClientNumber>>() {
-                                        @Override
-                                        public Observable<OrderClientNumber> call(OrderClientNumber orderClientNumber) {
-                                            if (orderClientNumber == null) {
-                                                return Observable.just(originalClientNumbers)
-                                                        .flatMapIterable(getSortedNumberList())
-                                                        .first();
-                                            } else {
-                                                return Observable.just(orderClientNumber);
-                                            }
-                                        }
-                                    })
-                                    .map(new Func1<OrderClientNumber, DigitalNumberList>() {
-                                        @Override
-                                        public DigitalNumberList call(OrderClientNumber orderClientNumber) {
-                                            return new DigitalNumberList(originalClientNumbers, orderClientNumber);
-                                        }
-                                    });
-                        } else {
-                            return Observable.just(new DigitalNumberList(
-                                    new ArrayList<OrderClientNumber>(), null));
-                        }
-                    }
-                });
+                .map(getFuncTransformNumberList());
     }
+
+//    @Override
+//    public Observable<DigitalNumberList> getObservableNumberList(TKPDMapParam<String, String> param) {
+//        return digitalEndpointService.getApi().getNumberList(param)
+//                .map(getFuncTransformNumberList())
+//                .flatMap(new Func1<List<OrderClientNumber>, Observable<DigitalNumberList>>() {
+//                    @Override
+//                    public Observable<DigitalNumberList> call(final List<OrderClientNumber> orderClientNumbers) {
+//                        if (!orderClientNumbers.isEmpty()) {
+//                            final List<OrderClientNumber> originalClientNumbers = new ArrayList<>();
+//                            originalClientNumbers.addAll(orderClientNumbers);
+//
+//                            return Observable.just(orderClientNumbers)
+//                                    .flatMapIterable(getSortedNumberList())
+//                                    .first(getLastOrder())
+//                                    .flatMap(new Func1<OrderClientNumber, Observable<OrderClientNumber>>() {
+//                                        @Override
+//                                        public Observable<OrderClientNumber> call(OrderClientNumber orderClientNumber) {
+//                                            if (orderClientNumber == null) {
+//                                                return Observable.just(originalClientNumbers)
+//                                                        .flatMapIterable(getSortedNumberList())
+//                                                        .first();
+//                                            } else {
+//                                                return Observable.just(orderClientNumber);
+//                                            }
+//                                        }
+//                                    })
+//                                    .map(new Func1<OrderClientNumber, DigitalNumberList>() {
+//                                        @Override
+//                                        public DigitalNumberList call(OrderClientNumber orderClientNumber) {
+//                                            return new DigitalNumberList(originalClientNumbers, orderClientNumber);
+//                                        }
+//                                    });
+//                        } else {
+//                            return Observable.just(new DigitalNumberList(
+//                                    new ArrayList<OrderClientNumber>(), null));
+//                        }
+//                    }
+//                });
+//    }
 
     private Func1<OrderClientNumber, Boolean> getLastOrder() {
         return new Func1<OrderClientNumber, Boolean>() {
@@ -362,14 +370,29 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
         };
     }
 
-    private Func1<Response<TkpdDigitalResponse>, List<OrderClientNumber>> getFuncTransformNumberList() {
-        return new Func1<Response<TkpdDigitalResponse>, List<OrderClientNumber>>() {
+//    private Func1<Response<TkpdDigitalResponse>, List<OrderClientNumber>> getFuncTransformNumberList() {
+//        return new Func1<Response<TkpdDigitalResponse>, List<OrderClientNumber>>() {
+//            @Override
+//            public List<OrderClientNumber> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+//                List<ResponseFavoriteNumber> responseFavoriteNumbers = tkpdDigitalResponseResponse
+//                        .body().convertDataList(ResponseFavoriteNumber[].class);
+//                return favoriteNumberMapper
+//                        .transformDigitalFavoriteNumberItemDataList(responseFavoriteNumbers);
+//            }
+//        };
+//    }
+
+    private Func1<Response<TkpdDigitalResponse>, DigitalNumberList> getFuncTransformNumberList() {
+        return new Func1<Response<TkpdDigitalResponse>, DigitalNumberList>() {
             @Override
-            public List<OrderClientNumber> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+            public DigitalNumberList call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                ResponseMeta responseMeta = tkpdDigitalResponseResponse.body()
+                        .convertDataObj(ResponseMeta.class);
                 List<ResponseFavoriteNumber> responseFavoriteNumbers = tkpdDigitalResponseResponse
                         .body().convertDataList(ResponseFavoriteNumber[].class);
+                ResponseFavoriteList responseFavoriteList =  new ResponseFavoriteList(responseMeta, responseFavoriteNumbers);
                 return favoriteNumberMapper
-                        .transformDigitalFavoriteNumberItemDataList(responseFavoriteNumbers);
+                        .transformDigitalFavoriteNumberItemDataList(responseFavoriteList);
             }
         };
     }

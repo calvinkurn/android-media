@@ -1,10 +1,7 @@
 package com.tokopedia.digital.widget.data.mapper;
 
-import com.tokopedia.digital.product.model.OrderClientNumber;
-import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteNumber;
-import com.tokopedia.digital.widget.data.entity.response.ResponseNumberList;
-
-import java.util.List;
+import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteList;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 /**
  * @author rizkyfadillah on 10/2/2017.
@@ -12,6 +9,6 @@ import java.util.List;
 
 public interface IFavoriteNumberMapper {
 
-    List<OrderClientNumber> transformDigitalFavoriteNumberItemDataList(List<ResponseFavoriteNumber> responseFavoriteNumbers);
+    DigitalNumberList transformDigitalFavoriteNumberItemDataList(ResponseFavoriteList responseFavoriteNumbers);
 
 }
