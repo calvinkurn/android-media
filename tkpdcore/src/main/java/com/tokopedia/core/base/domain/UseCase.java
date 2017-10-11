@@ -72,7 +72,6 @@ public abstract class UseCase<T> implements Interactor<T> {
         return createObservable(requestParams);
     }
 
-    @Override
     public Observable<T> getExecuteObservableAsync(RequestParams requestParams){
         return createObservable(requestParams)
                 .subscribeOn(Schedulers.from(this.threadExecutor))

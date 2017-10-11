@@ -12,6 +12,4 @@ public interface Interactor<T> {
     void execute(RequestParams requestParams,Subscriber<T> subscriber);
 
     Observable<T> getExecuteObservable(RequestParams requestParams);
-
-    Observable<T> getExecuteObservableAsync(RequestParams requestParams);
 }
