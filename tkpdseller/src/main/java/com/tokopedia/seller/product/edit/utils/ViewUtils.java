@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
-import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
+import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 
@@ -41,8 +41,8 @@ public class ViewUtils {
     }
 
     public static String getGeneralErrorMessage(@NonNull Context context, Throwable t) {
-        if (t instanceof ResponseErrorListStringException) {
-            return ((ResponseErrorListStringException) t).getErrorList().get(0);
+        if (t instanceof ResponseV4ErrorException) {
+            return ((ResponseV4ErrorException) t).getErrorList().get(0);
         } else if (t instanceof ResponseErrorException) {
             return getErrorMessage(t);
         } else if (t instanceof UnknownHostException) {
