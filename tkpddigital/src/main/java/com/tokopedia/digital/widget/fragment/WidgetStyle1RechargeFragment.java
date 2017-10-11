@@ -142,14 +142,17 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                 temp = validateTextPrefix(temp);
 
                 if (before == 1 && count == 0) {
+                    selectedOperator = null;
                     widgetClientNumberView.setImgOperatorInvisible();
                     clearHolder(holderWidgetSpinnerProduct);
                     clearHolder(holderWidgetWrapperBuy);
                 } else {
                     if (category.getAttributes().isValidatePrefix()) {
-                        if ((temp.length() >= 3 && temp.length() <= 4) || temp.length() > minLengthDefaultOperator) {
-                            presenter.validatePhonePrefix(temp, category.getId(),
-                                    category.getAttributes().isValidatePrefix());
+                        if (selectedOperator == null) {
+                            if ((temp.length() >= 3 && temp.length() <= 4) || temp.length() > minLengthDefaultOperator) {
+                                presenter.validatePhonePrefix(temp, category.getId(),
+                                        category.getAttributes().isValidatePrefix());
+                            }
                         }
                     } else {
                         if (s.length() >= minLengthDefaultOperator) {
@@ -171,6 +174,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
             @Override
             public void onRechargeTextClear() {
+                selectedOperator = null;
                 clearHolder(holderWidgetSpinnerProduct);
                 clearHolder(holderWidgetWrapperBuy);
             }
