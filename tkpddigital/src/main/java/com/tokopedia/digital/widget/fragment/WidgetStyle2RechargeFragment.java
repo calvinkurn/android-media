@@ -308,7 +308,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetSpinnerOperator);
         removeRechargeEditTextCallback(widgetClientNumberView);
-        if (compositeSubscription != null)
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
         unbinder.unbind();
         super.onDestroy();
