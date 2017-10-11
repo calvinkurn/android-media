@@ -57,6 +57,7 @@ public class TkpdBaseURL {
     public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
+    public static String WALLET_DOMAIN = "https://wallet.tokopedia.id/";
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
         public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
@@ -746,6 +747,10 @@ public class TkpdBaseURL {
         public static final String PATH_WALLET = "api/v1/wallet/balance";
         public static final String PATH_REQUEST_OTP_WALLET = "api/v1/wallet/otp/request";
         public static final String PATH_LINK_WALLET_TO_TOKOCASH = "api/v1/wallet/link";
+        public static final String GET_TOKEN_WALLET = "api/v1/wallet/token";
+    }
+
+    public static class Wallet {
         public static final String GET_HISTORY = "api/v1/me/history";
     }
 

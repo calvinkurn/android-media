@@ -19,17 +19,17 @@ import android.widget.Toast;
 
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
+import com.tokopedia.digital.tokocash.HistoryTokoCashService;
 import com.tokopedia.digital.tokocash.adapter.FilterTokoCashAdapter;
 import com.tokopedia.digital.tokocash.adapter.HistoryTokoCashAdapter;
-import com.tokopedia.digital.tokocash.domain.ITokoCashRepository;
-import com.tokopedia.digital.tokocash.domain.TokoCashRepository;
+import com.tokopedia.digital.tokocash.domain.HistoryTokoCashRepository;
+import com.tokopedia.digital.tokocash.domain.IHistoryTokoCashRepository;
 import com.tokopedia.digital.tokocash.interactor.ITokoCashHistoryInteractor;
 import com.tokopedia.digital.tokocash.interactor.TokoCashHistoryInteractor;
 import com.tokopedia.digital.tokocash.listener.TokoCashHistoryListener;
@@ -57,7 +57,7 @@ public class HistoryTokocashActivity extends BaseDigitalPresenterActivity<ITokoC
 
     private static final int SELECTION_TYPE_PERIOD_DATE = 0;
     private static final int EXTRA_INTENT_DATE_PICKER = 50;
-    private static final String FORMAT_DATE = "dd+MMM+YYYY";
+    private static final String FORMAT_DATE = "dd+MMM+yyyy";
     private static final String ALL_TRANSACTION_TYPE = "all";
     private static final String EXTRA_START_DATE = "EXTRA_START_DATE";
     private static final String EXTRA_END_DATE = "EXTRA_END_DATE";
@@ -121,7 +121,10 @@ public class HistoryTokocashActivity extends BaseDigitalPresenterActivity<ITokoC
     @Override
     protected void initialPresenter() {
         SessionHandler sessionHandler = new SessionHandler(this);
-        ITokoCashRepository repository = new TokoCashRepository(new TokoCashService(sessionHandler.getAccessToken()));
+        IHistoryTokoCashRepository repository = new HistoryTokoCashRepository(
+                new HistoryTokoCashService(
+                        sessionHandler.getAccessTokenTokoCash(getApplicationContext()))
+        );
         ITokoCashHistoryInteractor interactor = new TokoCashHistoryInteractor(repository, new CompositeSubscription());
         presenter = new TokoCashHistoryPresenter(interactor, this);
     }

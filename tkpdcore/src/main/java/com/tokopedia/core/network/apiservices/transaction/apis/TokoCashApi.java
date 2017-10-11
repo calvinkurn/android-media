@@ -30,11 +30,6 @@ public interface TokoCashApi {
     @GET(TkpdBaseURL.TokoCash.PATH_LINK_WALLET_TO_TOKOCASH)
     Observable<Response<TkpdResponse>> linkedWalletToTokocash(@Query("otp") String otp);
 
-    @GET(TkpdBaseURL.TokoCash.GET_HISTORY)
-    Observable<Response<TkpdDigitalResponse>> getHistoryTokocash(
-            @Query("type") String type,
-            @Query("start_date") String startDate,
-            @Query("end_date") String endDate,
-            @Query("after_id") String afterId
-    );
+    @GET(TkpdBaseURL.TokoCash.GET_TOKEN_WALLET)
+    Observable<Response<TkpdResponse>> getTokenWallet();
 }
