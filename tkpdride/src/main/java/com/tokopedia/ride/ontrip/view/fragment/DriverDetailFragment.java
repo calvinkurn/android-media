@@ -184,13 +184,13 @@ public class DriverDetailFragment extends BaseFragment {
 
     @OnClick(R2.id.icon_call)
     public void actionCallDriver() {
-        RideGATracking.eventClickCall(AppScreen.SCREEN_RIDE_ONTRIP);
+        RideGATracking.eventClickCall(status);
         DriverDetailFragmentPermissionsDispatcher.openCallIntentWithCheck(this, driver.getPhoneNumber());
     }
 
     @OnClick(R2.id.icon_message)
     public void actionSMSDriver() {
-        RideGATracking.eventClickSMS(AppScreen.SCREEN_RIDE_ONTRIP);
+        RideGATracking.eventClickSMS(status);
         openSmsIntent(driver.getPhoneNumber());
     }
 
@@ -222,13 +222,13 @@ public class DriverDetailFragment extends BaseFragment {
 
     @OnClick(R2.id.layout_cancel_ride)
     public void actionCancelRideBtnClicked() {
-        RideGATracking.eventClickCancel(AppScreen.SCREEN_RIDE_ONTRIP);
+        RideGATracking.eventClickCancel(status);
         onFragmentInteractionListener.actionCancelRide();
     }
 
     @OnClick(R2.id.help_layout)
     public void actionShareRideBtnClicked() {
-        RideGATracking.eventClickShareEta(AppScreen.SCREEN_RIDE_ONTRIP);
+        RideGATracking.eventClickShareEta(status);
         onFragmentInteractionListener.actionShareEta();
     }
 }

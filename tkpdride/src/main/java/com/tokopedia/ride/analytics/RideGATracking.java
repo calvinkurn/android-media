@@ -1,7 +1,9 @@
 package com.tokopedia.ride.analytics;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.ride.common.configuration.RideStatus;
 
 /**
  * Created by sandeepgoyal on 10/10/17.
@@ -103,8 +105,8 @@ public class RideGATracking extends UnifyTracking {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventChangeDestiantionMap, screenName),
-                RideAppEventTracking.Label.No_Label
+                RideAppEventTracking.Action.EventChangeDestiantionMap,
+                screenName
         ).getEvent());
     }
 
@@ -116,41 +118,41 @@ public class RideGATracking extends UnifyTracking {
 
     }
 
-    public static void eventClickCall(String screenName) {
+    public static void eventClickCall(String rideStatus) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickCall, screenName),
-                RideAppEventTracking.Label.No_Label
+                RideAppEventTracking.Action.EventClickCall,
+                rideStatus
         ).getEvent());
 
     }
 
-    public static void eventClickSMS(String screenName) {
+    public static void eventClickSMS(String rideStatus) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickSmS, screenName),
-                RideAppEventTracking.Label.No_Label
+                RideAppEventTracking.Action.EventClickSmS,
+                rideStatus
         ).getEvent());
 
     }
 
-    public static void eventClickShareEta(String screenName) {
+    public static void eventClickShareEta(String rideStatus) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickShareEta, screenName),
-                RideAppEventTracking.Label.No_Label
+                RideAppEventTracking.Action.EventClickShareEta,
+                rideStatus
         ).getEvent());
     }
 
-    public static void eventClickCancel(String screenName) {
+    public static void eventClickCancel(String rideStatus) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickCancel, screenName),
-                RideAppEventTracking.Label.No_Label
+                RideAppEventTracking.Action.EventClickCancel,
+                rideStatus
         ).getEvent());
     }
 
@@ -159,7 +161,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventClickSubmit),
-                String.format("%s - %s" , rating , suggestions)
+                String.format(AppScreen.SCREEN_RIDE_COMPLETED + "- %s - %s" , rating , suggestions)
         ).getEvent());
     }
 
@@ -168,7 +170,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventClickTNC),
-                RideAppEventTracking.Label.No_Label
+                AppScreen.SCREEN_RIDE_COMPLETED
         ).getEvent());
     }
 }

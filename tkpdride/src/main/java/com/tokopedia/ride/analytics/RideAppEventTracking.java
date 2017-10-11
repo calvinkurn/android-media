@@ -36,11 +36,11 @@ public interface RideAppEventTracking extends AppEventTracking {
         String EventClickReadOfferDetails = "click read offer details";
         String EventClickCancelRequestRide = "click cancel request ride";
         String EventSelectCancelReason = "select cancel %s";
-        String EventChangeDestiantionMap = "click change destination open map on %s";
-        String EventClickCall = "click call on %s";
-        String EventClickSmS  = "click sms on %s";
-        String EventClickShareEta = "click share on %s";
-        String EventClickCancel = "click cancel on  %s";
+        String EventChangeDestiantionMap = "click change destination open map";
+        String EventClickCall = "click call";
+        String EventClickSmS  = "click sms";
+        String EventClickShareEta = "click share eta";
+        String EventClickCancel = "click cancel";
         String EventClickSubmit  = "click submit";
         String EventClickTNC = "click tnc";
 
