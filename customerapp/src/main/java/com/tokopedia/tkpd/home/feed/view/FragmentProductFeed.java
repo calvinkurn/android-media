@@ -48,7 +48,6 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
-import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
@@ -536,7 +535,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) getActivity().getApplication()).startInstopedActivityForResult(getContext(),
                     FragmentProductFeed.this,
-                    INSTAGRAM_SELECT_REQUEST_CODE, ManageProductSeller.MAX_INSTAGRAM_SELECT);
+                    INSTAGRAM_SELECT_REQUEST_CODE, 10);
         }
     }
 
