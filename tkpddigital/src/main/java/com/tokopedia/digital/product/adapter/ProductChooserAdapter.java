@@ -171,23 +171,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 tvProductDescription.setVisibility(View.GONE);
             } else {
                 tvProductDescription.setVisibility(View.VISIBLE);
-                CharSequence detail = MethodChecker.fromHtml(product.getDetail());
-                SpannableStringBuilder strBuilderDetail = new SpannableStringBuilder(detail);
-                URLSpan[] urls = strBuilderDetail.getSpans(0, detail.length(), URLSpan.class);
-                for (final URLSpan span : urls) {
-                    int start = strBuilderDetail.getSpanStart(span);
-                    int end = strBuilderDetail.getSpanEnd(span);
-                    int flags = strBuilderDetail.getSpanFlags(span);
-                    ClickableSpan clickable = new ClickableSpan() {
-                        public void onClick(View view) {
-                            actionListener.onProductLinkClicked(span.getURL());
-                        }
-                    };
-                    strBuilderDetail.setSpan(clickable, start, end, flags);
-                    strBuilderDetail.removeSpan(span);
-                }
-                tvProductDescription.setText(strBuilderDetail);
-                tvProductDescription.setMovementMethod(LinkMovementMethod.getInstance());
+                tvProductDescription.setText(product.getDetail());
             }
         }
 
@@ -249,23 +233,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 tvProductPromoDescription.setVisibility(View.GONE);
             } else {
                 tvProductPromoDescription.setVisibility(View.VISIBLE);
-                CharSequence detail = MethodChecker.fromHtml(product.getDetail());
-                SpannableStringBuilder strBuilderDetail = new SpannableStringBuilder(detail);
-                URLSpan[] urls = strBuilderDetail.getSpans(0, detail.length(), URLSpan.class);
-                for (final URLSpan span : urls) {
-                    int start = strBuilderDetail.getSpanStart(span);
-                    int end = strBuilderDetail.getSpanEnd(span);
-                    int flags = strBuilderDetail.getSpanFlags(span);
-                    ClickableSpan clickable = new ClickableSpan() {
-                        public void onClick(View view) {
-                            actionListener.onProductLinkClicked(span.getURL());
-                        }
-                    };
-                    strBuilderDetail.setSpan(clickable, start, end, flags);
-                    strBuilderDetail.removeSpan(span);
-                }
-                tvProductPromoDescription.setText(strBuilderDetail);
-                tvProductPromoDescription.setMovementMethod(LinkMovementMethod.getInstance());
+                tvProductPromoDescription.setText(product.getDetail());
             }
             if (TextUtils.isEmpty(product.getPromo().getTag())) {
                 tvProductPromoTag.setVisibility(View.GONE);
