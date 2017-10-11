@@ -1,5 +1,6 @@
 package com.tokopedia.digital.tokocash.interactor;
 
+import com.tokopedia.digital.tokocash.model.WalletToken;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 
 import rx.Subscriber;
@@ -11,6 +12,8 @@ import rx.Subscriber;
 public interface ITokoCashBalanceInteractor {
 
     void getBalanceTokoCash(Subscriber<TokoCashData> subscriber);
+
+    void getTokenWallet(Subscriber<WalletToken> subscriber);
 
     void onDestroy();
 }

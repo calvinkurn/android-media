@@ -1,19 +1,27 @@
 package com.tokopedia.digital.tokocash.presenter;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.model.ProductDigitalData;
+import com.tokopedia.digital.tokocash.errorhandle.ResponseTokoCashRuntimeException;
 import com.tokopedia.digital.tokocash.interactor.ITokoCashBalanceInteractor;
 import com.tokopedia.digital.tokocash.listener.TopUpTokoCashListener;
+import com.tokopedia.digital.tokocash.model.WalletToken;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
 
@@ -33,17 +41,21 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
     private final static String PARAM_IS_RESELLER = "is_reseller";
     private final static String VALUE_RESSELER = "1";
     private final static String CATEGORY_ID = "category_id";
+    private SessionHandler sessionHandler;
+    private Context context;
 
     private final IProductDigitalInteractor productDigitalInteractor;
     private final ITokoCashBalanceInteractor balanceInteractor;
     private final TopUpTokoCashListener view;
 
-    public TopUpTokocashPresenter(IProductDigitalInteractor productDigitalInteractor,
+    public TopUpTokocashPresenter(Context context, IProductDigitalInteractor productDigitalInteractor,
                                   ITokoCashBalanceInteractor balanceInteractor,
                                   TopUpTokoCashListener view) {
         this.productDigitalInteractor = productDigitalInteractor;
         this.balanceInteractor = balanceInteractor;
         this.view = view;
+        this.context = context;
+        sessionHandler = new SessionHandler(context);
     }
 
     @Override
@@ -162,6 +174,35 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
         } else {
             view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         }
+    }
+
+    @Override
+    public void getTokenWallet() {
+        balanceInteractor.getTokenWallet(getSubscriberWalletToken());
+    }
+
+    private Subscriber<WalletToken> getSubscriberWalletToken() {
+        return new Subscriber<WalletToken>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e instanceof ResponseTokoCashRuntimeException) {
+                    ServerErrorHandler.showForceLogoutDialog();
+                } else {
+                    errorNetworkHandler(e);
+                }
+            }
+
+            @Override
+            public void onNext(WalletToken walletToken) {
+                sessionHandler.setTokenTokoCash(walletToken.getToken());
+                Log.d("TOKEN TOKOCASH", "onNext: " + sessionHandler.getAccessTokenTokoCash(context));
+            }
+        };
     }
 
     @Override

@@ -12,6 +12,8 @@ public interface ITopUpTokocashPresenter {
 
     void processGetBalanceTokoCash();
 
+    void getTokenWallet();
+
     void processAddToCartProduct(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct);
 
     void onDestroy();

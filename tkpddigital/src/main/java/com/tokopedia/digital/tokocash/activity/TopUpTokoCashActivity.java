@@ -123,7 +123,7 @@ public class TopUpTokoCashActivity extends BaseDigitalPresenterActivity<TopUpTok
                 sessionHandler.getAccessToken(this)));
         ITokoCashBalanceInteractor balanceInteractor = new TokoCashBalanceInteractor(balanceRepository,
                 new CompositeSubscription());
-        presenter = new TopUpTokocashPresenter(productDigitalInteractor, balanceInteractor, this);
+        presenter = new TopUpTokocashPresenter(getApplicationContext(), productDigitalInteractor, balanceInteractor, this);
     }
 
     @Override
@@ -138,6 +138,7 @@ public class TopUpTokoCashActivity extends BaseDigitalPresenterActivity<TopUpTok
         balanceTokoCashView = new BalanceTokoCashView(this);
         receivedTokoCashView = new ReceivedTokoCashView(this);
         bottomSheetTokoCashView = new BottomSheetView(this);
+        presenter.getTokenWallet();
         presenter.processGetBalanceTokoCash();
         presenter.processGetCategoryTopUp();
     }

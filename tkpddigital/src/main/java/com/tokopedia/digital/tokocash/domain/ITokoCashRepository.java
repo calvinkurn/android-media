@@ -1,6 +1,6 @@
 package com.tokopedia.digital.tokocash.domain;
 
-import com.tokopedia.digital.tokocash.entity.TokoCashHistoryEntity;
+import com.tokopedia.digital.tokocash.entity.WalletTokenEntity;
 import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 
@@ -16,8 +16,7 @@ public interface ITokoCashRepository {
 
     Observable<ActivateTokoCashData> linkedWalletToTokoCash(String otpCode);
 
-    Observable<TokoCashHistoryEntity> getTokoCashHistoryData(String type, String startDate,
-                                                             String endDate, String afterId);
-
     Observable<TokoCashData> getBalanceTokoCash();
+
+    Observable<WalletTokenEntity> getWalletToken();
 }
