@@ -296,7 +296,7 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
         List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getWhiteList();
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
-        cacheApiWhiteListUseCase.execute(requestParams, new Subscriber<Boolean>() {
+        cacheApiWhiteListUseCase.executeSync(requestParams, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 

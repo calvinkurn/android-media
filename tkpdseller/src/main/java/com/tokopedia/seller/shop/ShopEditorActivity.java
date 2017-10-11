@@ -265,7 +265,7 @@ public class ShopEditorActivity extends TActivity implements
     @Override
     public void deleteCacheShopInfov2() {
         if (deleteShopInfoUseCase!= null) {
-            deleteShopInfoUseCase.execute(RequestParams.EMPTY);
+            deleteShopInfoUseCase.executeSync(RequestParams.EMPTY);
         }
     }
 }
