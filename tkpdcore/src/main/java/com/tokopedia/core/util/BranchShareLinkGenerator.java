@@ -23,6 +23,7 @@ public class BranchShareLinkGenerator {
     private static final String BRANCH_DESKTOP_URL_KEY = "$desktop_url";
     private static final String URI_REDIRECT_MODE_KEY = "$uri_redirect_mode";
     private static final String URI_REDIRECT_MODE_VALUE = "2";
+    private static final String CAMPAIGN_NAME = "Android App";
     private static String extraDescription = "";
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
@@ -77,11 +78,14 @@ public class BranchShareLinkGenerator {
         } else {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }
-        linkProperties.setChannel(channel);
+
         if (desktopUrl == null) {
             linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
 
         }
+
+        linkProperties.setCampaign(CAMPAIGN_NAME);
+        linkProperties.setChannel(channel);
         linkProperties.setFeature(data.getType());
         linkProperties.addControlParameter(URI_REDIRECT_MODE_KEY, URI_REDIRECT_MODE_VALUE);
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));

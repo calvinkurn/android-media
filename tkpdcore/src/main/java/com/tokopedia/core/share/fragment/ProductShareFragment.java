@@ -267,6 +267,10 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         if (StringUtils.isNotBlank(productUri)) {
             shareData.setUri(productUri);
         }
+        String productId = data.getString(TkpdState.ProductService.PRODUCT_ID);
+        if (StringUtils.isNotBlank(productId)) {
+            shareData.setId(productId);
+        }
     }
 
     public void addingProduct(boolean isAdding) {

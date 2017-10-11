@@ -91,7 +91,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         super.onResume();
 //        new DiscoveryInteractorImpl().editProductDetail(this, "45469593", "", "");
         handleBranchDefferedDeeplink();
-      //  moveToHome();
+        //  moveToHome();
     }
 
     private void moveToHome() {
@@ -241,29 +241,33 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     private void handleBranchDefferedDeeplink() {
         Branch branch = Branch.getInstance();
-        branch.initSession(new Branch.BranchReferralInitListener() {
-            @Override
-            public void onInitFinished(JSONObject referringParams, BranchError error) {
-                if (error == null) {
-                    CommonUtils.dumper(referringParams.toString());
-                    try {
-                        String deeplink = referringParams.getString("$android_deeplink_path");
-                        Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(uri);
-                        startActivity(intent);
-                        finish();
+        if (branch == null){
+            moveToHome();
+        }else {
+            branch.initSession(new Branch.BranchReferralInitListener() {
+                @Override
+                public void onInitFinished(JSONObject referringParams, BranchError error) {
+                    if (error == null) {
+                        CommonUtils.dumper(referringParams.toString());
+                        try {
+                            String deeplink = referringParams.getString("$android_deeplink_path");
+                            Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(uri);
+                            startActivity(intent);
+                            finish();
 
-                    } catch (JSONException e) {
+                        } catch (JSONException e) {
+                            moveToHome();
+
+                        }
+                    } else {
+                        Log.d("deffered deeplink", "" + error.getMessage());
                         moveToHome();
-
                     }
-                } else {
-                    Log.d("deffered deeplink", "" + error.getMessage());
-                    moveToHome();
                 }
-            }
-        }, this.getIntent().getData(), this);
+            }, this.getIntent().getData(), this);
+        }
     }
 
 }
