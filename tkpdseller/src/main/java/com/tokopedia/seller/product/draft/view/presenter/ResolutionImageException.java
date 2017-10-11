@@ -13,17 +13,6 @@ public class ResolutionImageException extends RuntimeException {
         this.failedPositionArrayList = failedPositionArrayList;
     }
 
-    public String getFailedPositionString() {
-        String failedPosString = "";
-        for (int i = 0, sizei = failedPositionArrayList.size(); i<sizei; i++ ) {
-            if (i > 0) {
-                failedPosString += ", ";
-            }
-            failedPosString += (i + 1);
-        }
-        return failedPosString;
-    }
-
     public ArrayList<Integer> getFailedPositionArrayList() {
         return failedPositionArrayList;
     }
