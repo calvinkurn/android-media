@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.PopupWindowCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.ActionMode;
@@ -91,7 +92,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private static final int MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY = 5;
     private static final int MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA = -1;
     private static final int DEFAULT_IMAGE_GALLERY_POSITION = 0;
-    private static final int POPUP_WINDOW_ELEVATION = 10;
 
     @Inject
     ProductManagePresenter productManagePresenter;
@@ -106,7 +106,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private ProductManageFilterModel productManageFilterModel;
     private ActionMode actionMode;
     private Boolean goldMerchant;
-    private PopupWindow addProductPopupWindow;
 
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
@@ -192,57 +191,31 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.add_product_menu) {
-            showAddProductPopupWindow();
+            item.getSubMenu().findItem(R.id.label_view_added_from_camera).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    onAddFromCamera();
+                    return true;
+                }
+            });
+            item.getSubMenu().findItem(R.id.label_view_added_from_gallery).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    onAddFromGallery();
+                    return true;
+                }
+            });
+            item.getSubMenu().findItem(R.id.label_view_import_from_instagram).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    importFromInstagram();
+                    return false;
+                }
+            });
         } else if (itemId == R.id.checklist_product_menu) {
             getActivity().startActionMode(getCallbackActionMode());
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void showAddProductPopupWindow() {
-        View view = getActivity().findViewById(R.id.add_product_menu);
-        if (view != null && addProductPopupWindow == null) {
-            LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
-            View popupView = layoutInflater.inflate(R.layout.partial_product_manage_add_product_popup_window, null);
-            popupView.findViewById(R.id.label_view_added_from_camera).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onAddFromCamera();
-                    closeAddProductPopupWindow();
-                }
-            });
-            popupView.findViewById(R.id.label_view_added_from_gallery).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onAddFromGallery();
-                    closeAddProductPopupWindow();
-                }
-            });
-            popupView.findViewById(R.id.label_view_import_from_instagram).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    importFromInstagram();
-                    closeAddProductPopupWindow();
-                }
-            });
-            addProductPopupWindow = new PopupWindow(popupView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            addProductPopupWindow.setOutsideTouchable(true);
-            addProductPopupWindow.setFocusable(true);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                addProductPopupWindow.setElevation(POPUP_WINDOW_ELEVATION);
-            }
-            addProductPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-        }
-        Rect location = ViewUtils.locateView(view);
-        if (addProductPopupWindow != null && !addProductPopupWindow.isShowing() && location != null) {
-            addProductPopupWindow.showAtLocation(view, Gravity.TOP | Gravity.START, location.left, location.top);
-        }
-    }
-
-    private void closeAddProductPopupWindow() {
-        if (addProductPopupWindow != null && addProductPopupWindow.isShowing()) {
-            addProductPopupWindow.dismiss();
-        }
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
