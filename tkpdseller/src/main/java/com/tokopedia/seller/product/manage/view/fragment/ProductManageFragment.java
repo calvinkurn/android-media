@@ -71,6 +71,7 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
+import com.tokopedia.seller.product.picker.view.adapter.ProductListPickerSearchAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -442,6 +443,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void onItemClicked(ProductManageViewModel productManageViewModel) {
         if (actionMode == null) {
+            ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), false);
+            adapter.notifyDataSetChanged();
             ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productManageViewModel.getProductUrl());
         }
     }
@@ -453,6 +456,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             actionMode.setTitle(String.valueOf(totalChecked));
             MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
             deleteMenuItem.setVisible(totalChecked > 0);
+        }else{
+            ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), checked);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -553,6 +559,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void onClickOptionItem(ProductManageViewModel productManageViewModel) {
         showActionProductDialog(productManageViewModel);
+    }
+
+    @Override
+    public boolean isActionModeActive() {
+        return actionMode!=null;
     }
 
     @Override

@@ -7,7 +7,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
@@ -63,13 +62,13 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
     public void bindObject(final ProductManageViewModel productManageViewModel, boolean checked) {
         bindObject(productManageViewModel);
         setChecked(checked);
-        setBackground(checked);
         checkBoxProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkedCallback != null) {
                     checkedCallback.onItemChecked(productManageViewModel, checkBoxProduct.isChecked());
                 }
+                setChecked(checkBoxProduct.isChecked());
             }
         });
     }
@@ -113,9 +112,9 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
             cashbackTextView.setVisibility(View.GONE);
         }
 
-        if(productManageViewModel.getProductStatus().equals(EMPTY_STOCK_STATUS)){
+        if (productManageViewModel.getProductStatus().equals(EMPTY_STOCK_STATUS)) {
             tagEmptyStock.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             tagEmptyStock.setVisibility(View.GONE);
         }
 
