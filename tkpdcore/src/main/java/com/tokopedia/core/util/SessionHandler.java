@@ -77,6 +77,8 @@ public class SessionHandler {
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
     private static final String USER_DATA = "USER_DATA";
     private static final String KEY_IV = "tokopedia1234567";
+    private static final String TOKOCASH_SESSION = "TOKOCASH_SESSION";
+    private static final String ACCESS_TOKEN_TOKOCASH = "ACCESS_TOKEN_TOKOCASH";
 
 
     private Context context;
@@ -131,6 +133,7 @@ public class SessionHandler {
         editor.putString(PHONE_NUMBER, null);
         editor.putString(USER_DATA, null);
         editor.putString(REFRESH_TOKEN, null);
+        editor.putString(ACCESS_TOKEN_TOKOCASH, null);
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
@@ -627,6 +630,18 @@ public class SessionHandler {
     public String getUUID() {
         return new LocalCacheHandler(context, LOGIN_UUID_KEY)
                 .getString(UUID_KEY, DEFAULT_UUID_VALUE);
+    }
+
+    public void setTokenTokoCash(String token) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(TOKOCASH_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        saveToSharedPref(editor, ACCESS_TOKEN_TOKOCASH, token);
+        editor.apply();
+    }
+
+    public String getAccessTokenTokoCash(Context context) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(TOKOCASH_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(ACCESS_TOKEN_TOKOCASH, "");
     }
 
     public interface onLogoutListener {
