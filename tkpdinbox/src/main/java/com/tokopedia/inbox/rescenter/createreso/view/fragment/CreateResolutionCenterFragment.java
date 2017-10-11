@@ -482,4 +482,10 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             }
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 }
