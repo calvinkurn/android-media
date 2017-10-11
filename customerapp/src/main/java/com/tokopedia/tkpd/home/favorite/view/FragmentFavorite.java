@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -72,10 +73,12 @@ public class FragmentFavorite extends BaseDaggerFragment
     private boolean isTopAdsShopNetworkFailed;
     private View favoriteShopViewSelected;
     private TopAdsShopItem shopItemSelected;
+    private Trace trace;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        trace = TrackingUtils.startTrace("favorite_trace");
         super.onCreate(savedInstanceState);
     }
 
@@ -97,6 +100,11 @@ public class FragmentFavorite extends BaseDaggerFragment
         super.onDestroyView();
         unbinder.unbind();
         favoritePresenter.detachView();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -219,6 +227,8 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void hideRefreshLoading() {
         swipeToRefresh.setRefreshing(false);
         recylerviewScrollListener.resetState();
+        if(trace!=null)
+            trace.stop();
     }
 
 
