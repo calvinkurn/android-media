@@ -71,14 +71,7 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
     }
 
     public void deleteProblemResult(ProductProblemViewModel productProblemViewModel) {
-        List<ProblemResult> tempList = new ArrayList<>();
-        for (ProblemResult problemObject : problemResultList) {
-            if (!problemObject.name.equals(productProblemViewModel.getProblem().getName())) {
-                tempList.add(problemObject);
-            }
-        }
-        problemResultList = tempList;
-        updateProblemResultList();
+        removeProblemResult(productProblemViewModel);
     }
 
     public void updateProblemResultList() {
@@ -93,7 +86,7 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
 
     public ProblemResult getProblemResultItem(ProductProblemViewModel productProblemViewModel) {
         for (ProblemResult problemResult : problemResultList) {
-            if (problemResult.name.equals(productProblemViewModel.getProblem().getName())) {
+            if (problemResult.id == productProblemViewModel.getOrder().getDetail().getId()) {
                 return problemResult;
             }
          }
@@ -102,13 +95,19 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
 
     @Override
     public void removeProblemResult(ProductProblemViewModel productProblemViewModel) {
-        List<ProblemResult> tempResultList = new ArrayList<>();
+        List<ProblemResult> tempList = new ArrayList<>();
         for (ProblemResult problemObject : problemResultList) {
-            if (!problemObject.name.equals(productProblemViewModel.getProblem().getName())) {
-                tempResultList.add(problemObject);
+            if (problemObject.type == 1) {
+                if (!problemObject.name.equals(productProblemViewModel.getProblem().getName())) {
+                    tempList.add(problemObject);
+                }
+            } else {
+                if (productProblemViewModel.getOrder() == null || problemObject.id != productProblemViewModel.getOrder().getDetail().getId()) {
+                    tempList.add(problemObject);
+                }
             }
         }
-        problemResultList = tempResultList;
+        problemResultList = tempList;
         updateProblemResultList();
     }
 
@@ -142,7 +141,7 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
     public void updateResultList(ProblemResult problemResult) {
         List<ProblemResult> tempList = new ArrayList<>();
         for(ProblemResult problemObject : problemResultList) {
-            tempList.add((problemObject.name.equals(problemResult.name)) ? problemResult : problemObject);
+            tempList.add((problemObject.id == problemResult.id) ? problemResult : problemObject);
         }
         problemResultList = tempList;
     }

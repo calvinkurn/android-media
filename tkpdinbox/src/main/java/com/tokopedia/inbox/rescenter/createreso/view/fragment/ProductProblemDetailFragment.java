@@ -138,7 +138,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         buttonDisabled(btnSaveAndChooseOther);
         buttonDisabled(btnSave);
         if (problemResult != null) {
-            buttonSelected(btnSaveAndChooseOther);
+            buttonBottomSelected(btnSaveAndChooseOther);
             buttonCanSelected(btnSave);
         }
 
@@ -247,7 +247,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     }
 
     @Override
-    public void updateArriveStatusButton(boolean isArrived, boolean canShowInfo) {
+    public void updateArriveStatusButton(boolean isDelivered, boolean canShowInfo) {
         btnInfo.setVisibility(View.GONE);
         if (canShowInfo) {
             presenter.updateSpinner(true);
@@ -255,8 +255,8 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             buttonDisabled(btnNotArrived);
             buttonSelected(btnArrived);
         } else {
-            presenter.updateSpinner(isArrived);
-            if (isArrived) {
+            presenter.updateSpinner(isDelivered);
+            if (isDelivered) {
                 buttonCanSelected(btnNotArrived);
                 buttonSelected(btnArrived);
             } else {
@@ -274,6 +274,13 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     }
 
     public void buttonSelected(Button button) {
+        button.setClickable(false);
+        button.setEnabled(false);
+        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
+        button.setTextColor(Color.parseColor("#ffffff"));
+    }
+
+    public void buttonBottomSelected(Button button) {
         button.setClickable(true);
         button.setEnabled(true);
         button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
@@ -400,7 +407,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         buttonDisabled(btnSaveAndChooseOther);
         buttonDisabled(btnSave);
         if (isEnabled) {
-            buttonSelected(btnSaveAndChooseOther);
+            buttonBottomSelected(btnSaveAndChooseOther);
             buttonCanSelected(btnSave);
         }
     }
