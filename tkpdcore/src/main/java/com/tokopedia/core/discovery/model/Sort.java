@@ -83,11 +83,9 @@ public class Sort implements Serializable, Parcelable {
     }
 
 
-    protected Sort(Parcel in) {
-        name = in.readString();
-        key = in.readString();
-        value = in.readString();
-        inputType = in.readString();
+    @Override
+    public String toString() {
+        return getName();
     }
 
     @Override
@@ -97,17 +95,26 @@ public class Sort implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(key);
-        dest.writeString(value);
-        dest.writeString(inputType);
+        dest.writeString(this.name);
+        dest.writeString(this.key);
+        dest.writeString(this.value);
+        dest.writeString(this.inputType);
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Sort> CREATOR = new Parcelable.Creator<Sort>() {
+    public Sort() {
+    }
+
+    protected Sort(Parcel in) {
+        this.name = in.readString();
+        this.key = in.readString();
+        this.value = in.readString();
+        this.inputType = in.readString();
+    }
+
+    public static final Creator<Sort> CREATOR = new Creator<Sort>() {
         @Override
-        public Sort createFromParcel(Parcel in) {
-            return new Sort(in);
+        public Sort createFromParcel(Parcel source) {
+            return new Sort(source);
         }
 
         @Override
@@ -115,9 +122,4 @@ public class Sort implements Serializable, Parcelable {
             return new Sort[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return getName();
-    }
 }
