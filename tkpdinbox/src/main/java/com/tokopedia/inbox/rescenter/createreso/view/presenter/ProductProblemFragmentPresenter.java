@@ -93,7 +93,7 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
 
     public ProblemResult getProblemResultItem(ProductProblemViewModel productProblemViewModel) {
         for (ProblemResult problemResult : problemResultList) {
-            if (problemResult.name.equals(productProblemViewModel.getProblem().getName())) {
+            if (problemResult.id == productProblemViewModel.getOrder().getDetail().getId()) {
                 return problemResult;
             }
          }
