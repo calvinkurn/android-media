@@ -125,6 +125,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void saveAndDisplayPhoneNumber(String phoneNumber) {
+        selectedOperator = null;
         widgetClientNumberView.setText(phoneNumber);
     }
 
