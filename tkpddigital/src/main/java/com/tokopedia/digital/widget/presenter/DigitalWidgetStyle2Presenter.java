@@ -1,11 +1,11 @@
 package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.widget.data.entity.lastorder.LastOrderEntity;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle2View;
 import com.tokopedia.digital.widget.model.lastorder.Attributes;
@@ -56,6 +56,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
+                Log.d("DigitalWidgetStyle2Presenter", e.getMessage());
                 view.renderDefaultError();
             }
 
@@ -117,6 +118,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
+                Log.d("DigitalWidgetStyle2Presenter", e.getMessage());
                 view.renderDefaultError();
             }
 
@@ -170,6 +172,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
+                Log.d("DigitalWidgetStyle2Presenter", e.getMessage());
                 view.renderDefaultError();
             }
 

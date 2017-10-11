@@ -360,7 +360,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     public void renderNumberList(List<OrderClientNumber> results) {
         if (SessionHandler.isV4Login(getActivity())) {
             for (OrderClientNumber orderClientNumber : results) {
-                Log.d("WidgetStyle1RechargeFragment",
+                Log.d("WidgetStyle2RechargeFragment",
                         orderClientNumber.getCategoryId() + " " +
                                 orderClientNumber.getName() + " " +
                                 orderClientNumber.getLastUpdated());
@@ -395,7 +395,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
             }
         }
     }
-
 
     private WidgetRadioChooserView.RadioChoserListener getRadioChoserListener() {
         return new WidgetRadioChooserView.RadioChoserListener() {

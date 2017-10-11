@@ -98,7 +98,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void initialViewRendered() {
-        presenter.fetchOperatorByCategory(category.getId());
         ClientNumber clientNumber = category.getAttributes().getClientNumber();
 
         clearHolder(holderWidgetClientNumber);
@@ -120,6 +119,8 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
             setRechargeEditTextCallback(widgetClientNumberView);
             setRechargeEditTextTouchCallback(widgetClientNumberView);
         }
+
+        presenter.fetchOperatorByCategory(category.getId());
     }
 
     private WidgetClientNumberView.OnButtonPickerListener getButtonPickerListener() {
@@ -322,12 +323,13 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderOperators(List<Operator> operatorModels) {
-        Log.d("WidgetStyle3RechargeFragment", "renderOperators");
+        Log.d("WidgetStyle3RechargeFragment", "renderOperators: " + String.valueOf(operatorModels.size()));
         clearHolder(holderWidgetSpinnerOperator);
         widgetOperatorChooserView.setListener(getOperatorChoserListener());
         widgetOperatorChooserView.renderDataView(operatorModels, lastOrder, category.getId(),
                 lastOperatorSelected);
         holderWidgetSpinnerOperator.addView(widgetOperatorChooserView);
+        Log.d("WidgetStyle3RechargeFragment", "add view");
     }
 
     private WidgetOperatorChooserView.OperatorChoserListener getOperatorChoserListener() {
@@ -373,6 +375,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderProduct(Product product) {
+        Log.d("WidgetStyle3RechargeFragment", "renderProduct");
         selectedProduct = product;
         if (SessionHandler.isV4Login(getActivity())) {
             if (widgetProductChooserView.checkStockProduct(selectedProduct))
@@ -394,6 +397,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderOperator(Operator rechargeOperatorModel) {
+        Log.d("WidgetStyle3RechargeFragment", "renderOperator");
         selectedOperator = rechargeOperatorModel;
         selectedOperatorId = String.valueOf(selectedOperator.getId());
         widgetClientNumberView.setText(lastClientNumberTyped);
@@ -402,8 +406,9 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderNumberList(List<OrderClientNumber> results) {
         if (SessionHandler.isV4Login(getActivity())) {
+            Log.d("WidgetStyle3RechargeFragment", "renderNumberList");
             for (OrderClientNumber orderClientNumber : results) {
-                Log.d("WidgetStyle1RechargeFragment",
+                Log.d("WidgetStyle3RechargeFragment",
                         orderClientNumber.getCategoryId() + " " +
                                 orderClientNumber.getName() + " " +
                                 orderClientNumber.getLastUpdated());
@@ -414,6 +419,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderLastTypedClientNumber() {
+        Log.d("WidgetStyle3RechargeFragment", "renderLastTypeClientNumber");
         if (category.getAttributes().isValidatePrefix()) {
             widgetClientNumberView.setText(lastClientNumberTyped);
         } else {
@@ -423,7 +429,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderLastOrder(LastOrder lastOrder) {
-        Log.d("WidgetStyle3RechargeFragment", "renderOperators");
+        Log.d("WidgetStyle3RechargeFragment", "renderLastOrder");
         if (presenter != null) {
             this.lastOrder = lastOrder;
             if (lastOrder != null && lastOrder.getAttributes() != null && category != null) {

@@ -870,12 +870,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         }
     }
 
-    private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
-        historyClientNumberState.setLastOrderClientNumber(orderClientNumber);
-        digitalProductView.renderData(categoryDataState, historyClientNumberState);
-        digitalProductView.clearFocusOnClientNumber();
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_digital_product_detail, menu);
@@ -990,6 +984,30 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private void renderContactDataToClientNumber(ContactData contactData) {
         digitalProductView.renderClientNumberFromContact(contactData.getContactNumber());
+    }
+
+    private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
+//        historyClientNumberState.setLastOrderClientNumber(orderClientNumber);
+//        digitalProductView.renderData(categoryDataState, historyClientNumberState);
+//        digitalProductView.clearFocusOnClientNumber();
+
+        Product orderProduct = null;
+
+        for (Operator operator : categoryDataState.getOperatorList()) {
+            if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
+                for (Product product : operator.getProductList()) {
+                    if (orderClientNumber.getProductId().equals(product.getProductId())) {
+                        orderProduct = product;
+                    }
+//                    return;
+                }
+//                return;
+            }
+        }
+
+        digitalProductView.renderClientNumberFromContact(orderClientNumber.getClientNumber());
+        digitalProductView.renderUpdateProductSelected(orderProduct);
+        digitalProductView.clearFocusOnClientNumber();
     }
 
     private void handleCallBackProductChooser(Product product) {

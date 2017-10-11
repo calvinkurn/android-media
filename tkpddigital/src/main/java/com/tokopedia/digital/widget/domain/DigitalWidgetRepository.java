@@ -305,30 +305,35 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                 .flatMap(new Func1<List<OrderClientNumber>, Observable<DigitalNumberList>>() {
                     @Override
                     public Observable<DigitalNumberList> call(final List<OrderClientNumber> orderClientNumbers) {
-                        final List<OrderClientNumber> originalClientNumbers = new ArrayList<>();
-                        originalClientNumbers.addAll(orderClientNumbers);
+                        if (!orderClientNumbers.isEmpty()) {
+                            final List<OrderClientNumber> originalClientNumbers = new ArrayList<>();
+                            originalClientNumbers.addAll(orderClientNumbers);
 
-                        return Observable.just(orderClientNumbers)
-                                .flatMapIterable(getSortedNumberList())
-                                .first(getLastOrder())
-                                .flatMap(new Func1<OrderClientNumber, Observable<OrderClientNumber>>() {
-                                    @Override
-                                    public Observable<OrderClientNumber> call(OrderClientNumber orderClientNumber) {
-                                        if (orderClientNumber == null) {
-                                            return Observable.just(originalClientNumbers)
-                                                    .flatMapIterable(getSortedNumberList())
-                                                    .first();
-                                        } else {
-                                            return Observable.just(orderClientNumber);
+                            return Observable.just(orderClientNumbers)
+                                    .flatMapIterable(getSortedNumberList())
+                                    .first(getLastOrder())
+                                    .flatMap(new Func1<OrderClientNumber, Observable<OrderClientNumber>>() {
+                                        @Override
+                                        public Observable<OrderClientNumber> call(OrderClientNumber orderClientNumber) {
+                                            if (orderClientNumber == null) {
+                                                return Observable.just(originalClientNumbers)
+                                                        .flatMapIterable(getSortedNumberList())
+                                                        .first();
+                                            } else {
+                                                return Observable.just(orderClientNumber);
+                                            }
                                         }
-                                    }
-                                })
-                                .map(new Func1<OrderClientNumber, DigitalNumberList>() {
-                                    @Override
-                                    public DigitalNumberList call(OrderClientNumber orderClientNumber) {
-                                        return new DigitalNumberList(originalClientNumbers, orderClientNumber);
-                                    }
-                                });
+                                    })
+                                    .map(new Func1<OrderClientNumber, DigitalNumberList>() {
+                                        @Override
+                                        public DigitalNumberList call(OrderClientNumber orderClientNumber) {
+                                            return new DigitalNumberList(originalClientNumbers, orderClientNumber);
+                                        }
+                                    });
+                        } else {
+                            return Observable.just(new DigitalNumberList(
+                                    new ArrayList<OrderClientNumber>(), null));
+                        }
                     }
                 });
     }

@@ -14,6 +14,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.widget.adapter.WidgetOperatorAdapter;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
 import com.tokopedia.digital.widget.model.operator.Operator;
 
 import java.util.List;
@@ -97,6 +98,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
                                               LastOrder lastOrder, int categoryId,
                                               String lastOperatorSelected) {
         if (SessionHandler.isV4Login(getContext()) &&
+                lastOrder != null &&
                 lastOrder.getAttributes().getCategoryId() == categoryId) {
             for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
                 Operator model = operators.get(i);
