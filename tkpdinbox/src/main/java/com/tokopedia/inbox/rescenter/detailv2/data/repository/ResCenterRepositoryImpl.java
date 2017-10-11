@@ -164,4 +164,7 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
                 .createCloudActionResCenterDataStore()
                 .generateTokenHost(parameters);
     }
+
+    //chat section
+
 }
