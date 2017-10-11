@@ -213,8 +213,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_ULASAN);
-                Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
-                startActivity(intent);
+                startActivity(new Intent(getContext(), InboxReputationActivity.class));
             }
         });
         shopScoreWidget.setOnClickListener(new View.OnClickListener() {
