@@ -82,6 +82,10 @@ public interface ResolutionApi {
                                                    @PartMap Map<String, RequestBody> params,
                                                    @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile);
 
+
+    @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_CONVERSATION_V2)
+    Observable<Response<TkpdResponse>> getConversation(@Path("resolution_id") String resoId);
+
     //Version 1
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_DETAIL)
     Observable<Response<TkpdResponse>> getResCenterDetail(@Path("resolution_id") String resolutionID,

@@ -15,6 +15,7 @@ import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetDetailResChatMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
@@ -26,6 +27,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolution
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResChatUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
@@ -205,6 +207,16 @@ public class ResolutionDetailModule {
 
     @ResolutionDetailScope
     @Provides
+    GetResChatUseCase provideGetResChatUseCase(ThreadExecutor threadExecutor,
+                                               PostExecutionThread postExecutionThread,
+                                               ResCenterRepository resCenterRepository){
+        return new GetResChatUseCase(threadExecutor,
+                postExecutionThread,
+                resCenterRepository);
+    }
+
+    @ResolutionDetailScope
+    @Provides
     ResCenterRepository provideResCenterRepository(ResCenterDataSourceFactory resCenterDataSourceFactory) {
         return new ResCenterRepositoryImpl(resCenterDataSourceFactory);
     }
@@ -225,7 +237,8 @@ public class ResolutionDetailModule {
             DiscussionResCenterMapper discussionResCenterMapper,
             LoadMoreMapper loadMoreMapper,
             ReplyResolutionMapper replyResolutionMapper,
-            ReplyResolutionSubmitMapper replyResolutionSubmitMapper) {
+            ReplyResolutionSubmitMapper replyResolutionSubmitMapper,
+            GetDetailResChatMapper getDetailResChatMapper) {
 
         return new ResCenterDataSourceFactory(
                 context,
@@ -241,7 +254,8 @@ public class ResolutionDetailModule {
                 discussionResCenterMapper,
                 loadMoreMapper,
                 replyResolutionMapper,
-                replyResolutionSubmitMapper
+                replyResolutionSubmitMapper,
+                getDetailResChatMapper
         );
     }
 
@@ -267,6 +281,12 @@ public class ResolutionDetailModule {
     @Provides
     ResCenterActApi provideResCenterActService(@UploadWsV4Qualifier Retrofit retrofit) {
         return retrofit.create(ResCenterActApi.class);
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    GetDetailResChatMapper provideGetDetailResChatMapper() {
+        return new GetDetailResChatMapper();
     }
 
     @ResolutionDetailScope

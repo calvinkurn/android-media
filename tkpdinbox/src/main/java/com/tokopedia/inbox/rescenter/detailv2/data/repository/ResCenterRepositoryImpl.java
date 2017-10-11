@@ -1,11 +1,13 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.repository;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.NewReplyDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.generatehost.GenerateHostModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionModel;
@@ -167,4 +169,10 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
 
     //chat section
 
+    @Override
+    public Observable<DetailResChatDomain> getConversation(RequestParams requestParams) {
+        return resCenterDataSourceFactory
+                .createResChatCloudSource()
+                .getDetailResChatCloud(requestParams);
+    }
 }
