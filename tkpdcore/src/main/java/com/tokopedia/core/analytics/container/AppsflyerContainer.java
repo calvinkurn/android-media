@@ -16,6 +16,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import rx.Observable;
@@ -35,6 +36,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     private static final String TAG = AppsflyerContainer.class.getSimpleName();
     private Context context;
     public static final String APPSFLYER_KEY = "SdSopxGtYr9yK8QEjFVHXL";
+    private static final String KEY_INSTALL_SOURCE = "install_source";
 
     public interface AFAdsIDCallback {
         void onGetAFAdsID(String string);
@@ -70,7 +72,10 @@ public class AppsflyerContainer implements IAppsflyerContainer {
 
     @Override
     public void setUserID(String userID) {
+        HashMap<String, Object> addData = initAdditionalData();
+        addData.put(KEY_INSTALL_SOURCE, getInstallSource());
         AppsFlyerLib.getInstance().setCustomerUserId(userID);
+        AppsFlyerLib.getInstance().setAdditionalData(addData);
         CommonUtils.dumper(TAG + " appsflyer initiated with UID " + userID);
     }
 
@@ -80,6 +85,16 @@ public class AppsflyerContainer implements IAppsflyerContainer {
             AppsFlyerLib.getInstance().setAndroidIdData(androidID);
             CommonUtils.dumper(TAG + " appsflyer sent android ID " + androidID + " ids");
         }
+    }
+
+    private HashMap<String, Object> initAdditionalData(){
+        return new HashMap<>();
+    }
+
+    private String getInstallSource(){
+        String installer = context.getPackageManager().getInstallerPackageName(
+                context.getPackageName());
+        return installer;
     }
 
     private void setGCMId(String gcmID) {
