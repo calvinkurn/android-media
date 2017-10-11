@@ -288,4 +288,11 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
                 statusInfoDomain.getDate());
     }
 
+    @Override
+    public void detachView() {
+        super.detachView();
+        getProductProblemUseCase.unsubscribe();
+        createResoWithoutAttachmentUseCase.unsubscribe();
+        createResoWithAttachmentUseCase.unsubscribe();
+    }
 }
