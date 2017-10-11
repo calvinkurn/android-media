@@ -14,12 +14,13 @@ public class DetailResChatActivityPresenter implements DetailResChatActivityList
 
     private String resolutionId;
 
-    public DetailResChatActivityPresenter(String resolutionId) {
+    public DetailResChatActivityPresenter(DetailResChatActivityListener.View mainView, String resolutionId) {
+        this.mainView = mainView;
         this.resolutionId = resolutionId;
     }
 
     @Override
-    public void attachView(DetailResChatActivityListener.View view) {
+    public void attachView(DetailResChatActivityListener.View mainView) {
         this.mainView = mainView;
 
     }

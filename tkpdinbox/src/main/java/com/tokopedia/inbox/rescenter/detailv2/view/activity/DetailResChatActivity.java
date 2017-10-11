@@ -55,7 +55,7 @@ public class DetailResChatActivity
 
     @Override
     protected void initialPresenter() {
-        presenter = new DetailResChatActivityPresenter(resolutionId);
+        presenter = new DetailResChatActivityPresenter(this, resolutionId);
     }
 
     @Override
@@ -65,6 +65,7 @@ public class DetailResChatActivity
 
     @Override
     protected void initView() {
+        presenter.initFragment();
 
     }
 

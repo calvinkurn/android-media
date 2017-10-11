@@ -12,6 +12,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inbox.facade.Facade;
 import com.tokopedia.inbox.rescenter.inbox.facade.FacadeImpl;
@@ -62,7 +63,8 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
 
     @Override
     public void setActionOnItemListClickListener(Context context, String resolutionID) {
-        context.startActivity(DetailResCenterActivity.newInstance(context, resolutionID));
+//        context.startActivity(DetailResCenterActivity.newInstance(context, resolutionID));
+        context.startActivity(DetailResChatActivity.newInstance(context, resolutionID));
         UnifyTracking.eventResolutionDetail(getResCenterTabModel().titleFragment);
     }
 
