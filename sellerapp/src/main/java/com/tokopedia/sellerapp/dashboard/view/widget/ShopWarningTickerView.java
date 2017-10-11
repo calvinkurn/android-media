@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.sellerapp.R;
 
 /**
@@ -76,7 +77,7 @@ public class ShopWarningTickerView extends FrameLayout {
 
     public void setDescription(String descriptionString) {
         if (!TextUtils.isEmpty(descriptionString)) {
-            tvDescription.setText(descriptionString);
+            tvDescription.setText(MethodChecker.fromHtml(descriptionString));
             tvDescription.setVisibility(View.VISIBLE);
         } else {
             tvDescription.setVisibility(View.GONE);
