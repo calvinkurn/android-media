@@ -42,8 +42,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
+import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
-import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
@@ -53,6 +53,7 @@ import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListView;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
+import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
@@ -242,13 +243,13 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
-        GalleryActivity.moveToImageGalleryCamera(getActivity(), ProductDraftListFragment.this, 0, false, 5);
+        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), ProductDraftListFragment.this, 0, false, 5);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     public void onAddFromCamera() {
-        GalleryActivity.moveToImageGalleryCamera(getActivity(), ProductDraftListFragment.this, 0, true, -1);
+        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), ProductDraftListFragment.this, 0, true, -1);
     }
 
     @Override
@@ -361,18 +362,11 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                                     productDraftListPresenter.saveInstagramToDraft(getActivity(),
                                             localPaths, imageDescriptionList);
                                     // goto onSaveBulkDraftSuccess
-                                    // goto onSaveBulkDraftError
+                                    // goto onErrorSaveBulkDraft
                                 }
                             });
                 }
                 break;
-            case ImageEditorActivity.REQUEST_CODE: {
-                if (intent!= null && intent.hasExtra(ImageEditorActivity.RESULT_IMAGE_PATH)) {
-                    ProductAddActivity.start(ProductDraftListFragment.this,getContext(),
-                            intent.getStringArrayListExtra(ImageEditorActivity.RESULT_IMAGE_PATH));
-                }
-            }
-            break;
             default: {
                 ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
                     @Override
@@ -384,7 +378,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                     public void onSuccess(String path) {
                         ArrayList<String> imageUrls = new ArrayList<>();
                         imageUrls.add(path);
-                        ImageEditorActivity.start(getContext(), ProductDraftListFragment.this, imageUrls, null, true);
+                        ProductAddActivity.start(ProductDraftListFragment.this, getActivity(), imageUrls);
                     }
 
                     @Override
@@ -535,16 +529,21 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     }
 
     @Override
-    public void onSaveBulkDraftError(Throwable throwable) {
+    public void onErrorSaveBulkDraft(Throwable throwable) {
         hideProgressDialog();
-        NetworkErrorHelper.showCloseSnackbar(getActivity(),
-                getString(R.string.product_instagram_draft_error_save_unknown));
+        if (throwable instanceof ResolutionImageException) {
+            String failedPositionString = ((ResolutionImageException) throwable).getFailedPositionString();
+            NetworkErrorHelper.showCloseSnackbar(getActivity(),
+                    getString(R.string.product_instagram_draft_error_save_resolution, failedPositionString));
+        } else {
+            NetworkErrorHelper.showCloseSnackbar(getActivity(),
+                    getString(R.string.product_instagram_draft_error_save_unknown));
+        }
     }
 
     @Override
-    public void onSaveInstagramResolutionError(int position, String localPath) {
-        CommonUtils.UniversalToast(getActivity(),
-                getString(R.string.product_instagram_draft_error_save_resolution, position));
+    public void hideDraftLoading() {
+        hideProgressDialog();
     }
 
     @Override

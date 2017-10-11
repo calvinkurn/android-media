@@ -196,17 +196,18 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     private void finishEditing(boolean isResultOK) {
         Intent intent = new Intent();
         if (isResultOK) {
+            setResult(Activity.RESULT_OK, intent);
             intent.putExtra(RESULT_IMAGE_PATH, resultImageUrls);
             if (getIntent().getBooleanExtra(EXTRA_DELETE_CACHE_WHEN_EXIT, true)) {
                 deleteAllTkpdFilesNotInResult(savedCroppedPaths, resultImageUrls);
             }
         } else {
+            setResult(Activity.RESULT_CANCELED, intent);
             intent.putExtra(RESULT_IMAGE_PATH, getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS));
             if (getIntent().getBooleanExtra(EXTRA_DELETE_CACHE_WHEN_EXIT, true)) {
                 deleteAllTkpdFilesNotInResult(savedCroppedPaths, getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS));
             }
         }
-        setResult(Activity.RESULT_OK, intent);
         finish();
     }
 

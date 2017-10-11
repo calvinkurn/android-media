@@ -2,7 +2,6 @@ package com.tokopedia.seller.myproduct;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -55,6 +54,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
+import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
@@ -83,6 +83,7 @@ import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.myproduct.adapter.ListViewManageProdAdapter;
 import com.tokopedia.seller.myproduct.model.ManageProductModel;
@@ -368,13 +369,13 @@ public class ManageProduct extends TkpdActivity implements
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
-        GalleryActivity.moveToImageGalleryCamera(ManageProduct.this, 0, false, 5);
+        GalleryCropActivity.moveToImageGalleryCamera(ManageProduct.this, 0, false, 5);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     public void onAddFromCamera() {
-        GalleryActivity.moveToImageGalleryCamera(this, 0, true, -1);
+        GalleryCropActivity.moveToImageGalleryCamera(this, 0, true, -1);
     }
 
     private void checkLogin() {
@@ -1564,14 +1565,7 @@ public class ManageProduct extends TkpdActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case ImageEditorActivity.REQUEST_CODE: {
-                if (data!= null && data.hasExtra(ImageEditorActivity.RESULT_IMAGE_PATH)) {
-                    ProductAddActivity.start(ManageProduct.this,
-                            data.getStringArrayListExtra(ImageEditorActivity.RESULT_IMAGE_PATH));
-                }
-            }
-            break;
-            default: {
+            case ImageGallery.TOKOPEDIA_GALLERY: {
                 ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
                     @Override
                     public void onSuccess(ArrayList<String> imageUrls) {
@@ -1582,7 +1576,7 @@ public class ManageProduct extends TkpdActivity implements
                     public void onSuccess(String path) {
                         ArrayList<String> imageUrls = new ArrayList<>();
                         imageUrls.add(path);
-                        ImageEditorActivity.start(ManageProduct.this, imageUrls, null, true);
+                        ProductAddActivity.start(ManageProduct.this, imageUrls);
                     }
 
                     @Override

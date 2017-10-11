@@ -27,10 +27,10 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
@@ -547,7 +547,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
             @Override
             public void clickEditImagePath(int position) {
-                GalleryActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
+                GalleryCropActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
             }
 
             @Override
@@ -631,7 +631,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
+        GalleryCropActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
     }
 
     @Override
