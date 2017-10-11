@@ -125,7 +125,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void saveAndDisplayPhoneNumber(String phoneNumber) {
-        validateClientNumber(phoneNumber);
+        widgetClientNumberView.setText(phoneNumber);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                     clearHolder(holderWidgetWrapperBuy);
                 } else {
                     if (category.getAttributes().isValidatePrefix()) {
-                        if ((temp.length() >= 3 && temp.length() <= 4)) {
+                        if ((temp.length() >= 3 && temp.length() <= 4) || temp.length() > minLengthDefaultOperator) {
                             presenter.validatePhonePrefix(temp, category.getId(),
                                     category.getAttributes().isValidatePrefix());
                         }
@@ -280,7 +280,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             lastOrder = presenter.getLastOrderFromCache();
             if (lastOrder != null && category != null) {
                 if (lastOrder.getAttributes().getCategoryId() == category.getId()) {
-                    validateClientNumber(lastOrder.getAttributes().getClientNumber());
+                    widgetClientNumberView.setText(lastOrder.getAttributes().getClientNumber());
                 }
             }
         }
@@ -301,23 +301,16 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                 && TextUtils.isEmpty(lastClientNumberTyped)
                 && (category.getId() == 1 || category.getId() == 2)
                 && !TextUtils.isEmpty(defaultPhoneNumber)) {
-            validateClientNumber(defaultPhoneNumber);
+            widgetClientNumberView.setText(defaultPhoneNumber);
         } else if (!sessionHandler.isV4Login(getActivity())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
             renderLastTypeClientNumber();
         }
     }
 
-    private void validateClientNumber(String clientNumberText) {
-        widgetClientNumberView.setText(clientNumberText);
-        String temp = validateTextPrefix(clientNumberText);
-        presenter.validatePhonePrefix(temp, category.getId(),
-                category.getAttributes().isValidatePrefix());
-    }
-
     private void renderLastTypeClientNumber() {
         if (category.getAttributes().isValidatePrefix())
-            validateClientNumber(lastClientNumberTyped);
+            widgetClientNumberView.setText(lastClientNumberTyped);
         else
             presenter.getOperatorById(lastOperatorSelected);
     }
@@ -333,7 +326,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         clearHolder(holderWidgetWrapperBuy);
         clearHolder(holderWidgetSpinnerProduct);
         removeRechargeEditTextCallback(widgetClientNumberView);
-        if (compositeSubscription != null)
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
         unbinder.unbind();
         super.onDestroy();
@@ -405,7 +398,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     public void renderOperator(Operator operatorModel) {
         selectedOperator = operatorModel;
         selectedOperatorId = String.valueOf(selectedOperator.getId());
-        validateClientNumber(lastClientNumberTyped);
+        widgetClientNumberView.setText(lastClientNumberTyped);
     }
 
     @Override
