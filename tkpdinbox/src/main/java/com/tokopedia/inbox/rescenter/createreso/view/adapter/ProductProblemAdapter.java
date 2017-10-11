@@ -78,8 +78,14 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
             holder.llFreeReturn.setVisibility(View.GONE);
             holder.checkBox.setChecked(false);
             for (ProblemResult problemResult : selectedProblemResultList) {
-                if (problemResult.name.equals(productProblem.getProblem().getName())) {
-                    holder.checkBox.setChecked(true);
+                if (productProblem.getProblem().getType() == 1) {
+                    if (problemResult.name.equals(productProblem.getProblem().getName())) {
+                        holder.checkBox.setChecked(true);
+                    }
+                } else {
+                    if (problemResult.id == productProblem.getOrder().getDetail().getId()) {
+                        holder.checkBox.setChecked(true);
+                    }
                 }
             }
             if (productProblem.getProblem().getType() == 1) {

@@ -77,6 +77,7 @@ public class ProductProblemDetailFragmentPresenter
         getCanShowNotArrived();
         problemResult.trouble = 0;
         problemResult.remark = "";
+        problemResult.id = productProblemViewModel.getOrder().getDetail().getId();
         problemResult.quantity = productProblemViewModel.getOrder().getProduct().getQuantity();
         problemResult.name = productProblemViewModel.getProblem().getName();
         problemResult.order.detail.id = productProblemViewModel.getOrder().getDetail().getId();

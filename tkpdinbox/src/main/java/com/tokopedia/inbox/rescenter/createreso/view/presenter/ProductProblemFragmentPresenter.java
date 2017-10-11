@@ -117,7 +117,7 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
         boolean isContain = false;
         List<ProblemResult> tempResultList = new ArrayList<>();
         for (ProblemResult problemObject : problemResultList) {
-            if (problemObject.name.equals(problemResult.name)) {
+            if (problemObject.id == problemResult.id) {
                 isContain = true;
                 tempResultList.add(problemResult);
             } else {
