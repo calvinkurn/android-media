@@ -186,6 +186,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         return new WidgetClientNumberView.OnButtonPickerListener() {
             @Override
             public void onButtonContactClicked() {
+                selectedOperator = null;
                 BaseWidgetRechargeFragmentPermissionsDispatcher
                         .doLaunchContactPickerWithCheck(WidgetStyle1RechargeFragment.this);
             }
