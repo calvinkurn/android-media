@@ -123,10 +123,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void saveAndDisplayPhoneNumber(String phoneNumber) {
-        widgetClientNumberView.setText(phoneNumber);
-        String temp = validateTextPrefix(phoneNumber);
-        presenter.validatePhonePrefix(temp, category.getId(),
-                category.getAttributes().isValidatePrefix());
+        validateClientNumber(phoneNumber);
     }
 
     @Override
@@ -281,7 +278,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             lastOrder = presenter.getLastOrderFromCache();
             if (lastOrder != null && category != null) {
                 if (lastOrder.getAttributes().getCategoryId() == category.getId()) {
-                    widgetClientNumberView.setText(lastOrder.getAttributes().getClientNumber());
+                    validateClientNumber(lastOrder.getAttributes().getClientNumber());
                 }
             }
         }
@@ -302,16 +299,23 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                 && TextUtils.isEmpty(lastClientNumberTyped)
                 && (category.getId() == 1 || category.getId() == 2)
                 && !TextUtils.isEmpty(defaultPhoneNumber)) {
-            widgetClientNumberView.setText(defaultPhoneNumber);
+            validateClientNumber(defaultPhoneNumber);
         } else if (!sessionHandler.isV4Login(getActivity())
                 && !TextUtils.isEmpty(lastClientNumberTyped)) {
             renderLastTypeClientNumber();
         }
     }
 
+    private void validateClientNumber(String clientNumberText) {
+        widgetClientNumberView.setText(clientNumberText);
+        String temp = validateTextPrefix(clientNumberText);
+        presenter.validatePhonePrefix(temp, category.getId(),
+                category.getAttributes().isValidatePrefix());
+    }
+
     private void renderLastTypeClientNumber() {
         if (category.getAttributes().isValidatePrefix())
-            widgetClientNumberView.setText(lastClientNumberTyped);
+            validateClientNumber(lastClientNumberTyped);
         else
             presenter.getOperatorById(lastOperatorSelected);
     }
@@ -398,7 +402,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     public void renderOperator(Operator operatorModel) {
         selectedOperator = operatorModel;
         selectedOperatorId = String.valueOf(selectedOperator.getId());
-        widgetClientNumberView.setText(lastClientNumberTyped);
+        validateClientNumber(lastClientNumberTyped);
     }
 
     @Override
