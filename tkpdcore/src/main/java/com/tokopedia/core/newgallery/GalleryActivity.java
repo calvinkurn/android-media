@@ -88,9 +88,12 @@ import static com.tkpd.library.utils.CommonUtils.checkNotNull;
  */
 @RuntimePermissions
 public class GalleryActivity extends TActivity implements ImageGalleryView {
+    public static final String ADD_PRODUCT_IMAGE_LOCATION = "ADD_PRODUCT_IMAGE_LOCATION";
     public static final String FORCE_OPEN_CAMERA = "FORCE_OPEN_CAMERA";
     public static final String MAX_IMAGE_SELECTION = "MAX_IMAGE_SELECTION";
     public static final String COMPRESS_TO_TKPD = "CMPRS_TKPD";
+
+    public static final int ADD_PRODUCT_IMAGE_LOCATION_DEFAULT = 0;
 
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     public static final int INSTAGRAM_SELECT_REQUEST_CODE = 101;
@@ -205,7 +208,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static void moveToImageGalleryCamera(Activity context, int position, boolean forceOpenCamera,
                                                 int maxImageSelection,
                                                 boolean compressToTkpd) {
-        Intent imageGallery = createIntent(context, forceOpenCamera, maxImageSelection, compressToTkpd);
+        Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection, compressToTkpd);
         context.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
@@ -214,7 +217,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                                 boolean forceOpenCamera,
                                                 int maxImageSelection,
                                                 boolean compressToTkpd) {
-        Intent imageGallery = createIntent(context, forceOpenCamera, maxImageSelection, compressToTkpd);
+        Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection, compressToTkpd);
         fragment.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
@@ -223,17 +226,18 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                                 boolean forceOpenCamera,
                                                 int maxImageSelection,
                                                 boolean compressToTkpd) {
-        Intent imageGallery = createIntent(context, forceOpenCamera, maxImageSelection, compressToTkpd);
+        Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection, compressToTkpd);
         fragment.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
-    protected static Intent createIntent(Context context,
+    protected static Intent createIntent(Context context, int position,
                                        boolean forceOpenCamera,
                                        int maxImageSelection,
                                        boolean compressToTkpd) {
         Intent imageGallery = new Intent(context, GalleryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(FRAGMENT_TO_SHOW, ImageGalleryAlbumFragment.FRAGMENT_TAG);
+        bundle.putInt(ADD_PRODUCT_IMAGE_LOCATION, position);
         bundle.putBoolean(FORCE_OPEN_CAMERA, forceOpenCamera);
         bundle.putInt(MAX_IMAGE_SELECTION, maxImageSelection);
         bundle.putBoolean(COMPRESS_TO_TKPD, compressToTkpd);
@@ -374,6 +378,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
             }
             Bundle bundle = intent.getExtras();
 
+            position = bundle.getInt(ADD_PRODUCT_IMAGE_LOCATION, ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
             forceOpenCamera = bundle.getBoolean(FORCE_OPEN_CAMERA, false);
             maxSelection = bundle.getInt(MAX_IMAGE_SELECTION, -1);
             compressToTkpd = bundle.getBoolean(COMPRESS_TO_TKPD, false);
@@ -626,6 +631,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public void finishWithSingleImage(String imageUrl){
         Intent intent = new Intent();
         intent.putExtra(GalleryActivity.IMAGE_URL, imageUrl);
+        intent.putExtra(GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION, position);
         setResult(GalleryActivity.RESULT_CODE, intent);
         finish();
     }
@@ -633,6 +639,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public void finishWithMultipleImage(ArrayList<String> imageUrls){
         Intent intent = new Intent();
         intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, imageUrls);
+        intent.putExtra(GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION, position);
         setResult(GalleryActivity.RESULT_CODE, intent);
         finish();
     }

@@ -238,9 +238,8 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
     public void onErrorSaveBulkDraft(Throwable throwable) {
         hideProgressDialog();
         if (throwable instanceof ResolutionImageException) {
-            String failedPositionString = ((ResolutionImageException) throwable).getFailedPositionString();
             NetworkErrorHelper.showCloseSnackbar(getActivity(),
-                    getString(R.string.product_instagram_draft_error_save_resolution, failedPositionString));
+                    getString(R.string.product_instagram_draft_error_save_resolution));
         } else {
             NetworkErrorHelper.showCloseSnackbar(getActivity(),
                     getString(R.string.product_instagram_draft_error_save_unknown));

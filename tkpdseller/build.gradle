@@ -134,6 +134,7 @@ dependencies {
     compile (rootProject.ext.miscDependencies.imagecropper){
         exclude group: "com.android.support"
     }
+    compile rootProject.ext.supportLibDependencies.exifinterface
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler

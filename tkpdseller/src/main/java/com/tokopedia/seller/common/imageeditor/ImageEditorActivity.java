@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -172,24 +173,32 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     @Override
     public void onSuccessCrop(CropImageView.CropResult cropResult) {
         Bitmap bitmap = cropResult.getBitmap();
-        if (bitmap != null) {
+        if (bitmap == null) {
+            Uri uri = cropResult.getUri();
+            if (uri!= null) {
+                onSuccessCrop(FileUtils.getPath(this, uri));
+            }
+        } else {
             File file = FileUtils.writeImageToTkpdPath(bitmap, FileUtils.generateUniqueFileName());
             if (file != null && file.exists()) {
                 String path = file.getAbsolutePath();
-
-                // save the new path
-                resultImageUrls.set(imageIndex, path);
-                savedCroppedPaths.add(path);
-                imageIndex++;
-                if (imageIndex == imageUrls.size()) {
-                    finishEditing(true);
-                } else {
-                    // continue to next image index
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    replaceEditorFragment(fragmentManager);
-                    setUpToolbarTitle();
-                }
+                onSuccessCrop(path);
             }
+        }
+    }
+
+    private void onSuccessCrop(String path){
+        // save the new path
+        resultImageUrls.set(imageIndex, path);
+        savedCroppedPaths.add(path);
+        imageIndex++;
+        if (imageIndex == imageUrls.size()) {
+            finishEditing(true);
+        } else {
+            // continue to next image index
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            replaceEditorFragment(fragmentManager);
+            setUpToolbarTitle();
         }
     }
 
