@@ -59,6 +59,7 @@ public class PosApplication extends PosRouterApplication {
         TkpdBaseURL.GRAPHQL_DOMAIN = PosAppBaseUrl.GRAPHQL_DOMAIN;
         TkpdBaseURL.SCROOGE_DOMAIN = PosAppBaseUrl.SCROOGE_DOMAIN;
         TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = PosAppBaseUrl.SCROOGE_CREDIT_CARD_DOMAIN;
+        TkpdBaseURL.PAYMENT_DOMAIN = PosAppBaseUrl.PAYMENT_DOMAIN;
     }
 
     private void initReact() {

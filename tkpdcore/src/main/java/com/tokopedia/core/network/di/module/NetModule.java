@@ -8,8 +8,10 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
+import com.tokopedia.core.network.di.qualifier.PaymentNoAuth;
 import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardOkHttp;
 import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardRetrofit;
+import com.tokopedia.core.network.di.qualifier.ScroogeNoAuth;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
@@ -176,6 +178,28 @@ public class NetModule {
                                                      Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder
                 .baseUrl(TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @ScroogeNoAuth
+    @ApplicationScope
+    @Provides
+    public Retrofit provideScroogeNoAuthRetrofit(@NoAuth OkHttpClient okHttpClient,
+                                                 Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder
+                .baseUrl(TkpdBaseURL.SCROOGE_DOMAIN)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @PaymentNoAuth
+    @ApplicationScope
+    @Provides
+    public Retrofit providePaymentNoAuthRetrofit(@NoAuth OkHttpClient okHttpClient,
+                                                 Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder
+                .baseUrl(TkpdBaseURL.PAYMENT_DOMAIN)
                 .client(okHttpClient)
                 .build();
     }

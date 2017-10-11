@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.di.module;
 
+import com.readystatesoftware.chuck.Chuck;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
@@ -12,7 +13,9 @@ import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
+import com.tokopedia.core.network.di.qualifier.PaymentNoAuth;
 import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardOkHttp;
+import com.tokopedia.core.network.di.qualifier.ScroogeNoAuth;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
 import com.tokopedia.core.network.di.qualifier.TopAdsAuth;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
@@ -230,4 +233,4 @@ public class OkHttpClientModule {
         return OkHttpFactory.create()
                 .buildDaggerClientCreditCardAuth(fingerprintInterceptor, creditCardInterceptor);
     }
-}
+ }

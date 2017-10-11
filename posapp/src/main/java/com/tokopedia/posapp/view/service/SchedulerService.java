@@ -45,11 +45,16 @@ public class SchedulerService extends IntentService {
 
     private void handleActionStart() {
 //        if(isAlarmManagerNotRunning()) {
-            Intent intentService = CacheService.getServiceIntent(getApplicationContext());
-            PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(),
-                    CACHE_SERVICE_REQUEST_CODE, intentService, PendingIntent.FLAG_UPDATE_CURRENT);
+            startService(CacheService.getServiceIntent(getApplicationContext()));
+
+            PendingIntent pendingIntent = PendingIntent.getService(
+                    getApplicationContext(),
+                    CACHE_SERVICE_REQUEST_CODE,
+                    CacheService.getServiceIntent(getApplicationContext()),
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
             AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, new Date().getTime(), SIX_HOUR, pendingIntent);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, new Date().getTime() + SIX_HOUR, SIX_HOUR, pendingIntent);
 //        }
     }
 

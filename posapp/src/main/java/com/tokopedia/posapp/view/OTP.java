@@ -1,5 +1,6 @@
 package com.tokopedia.posapp.view;
 
+import com.tokopedia.posapp.domain.model.payment.PaymentStatusDomain;
 import com.tokopedia.posapp.view.viewmodel.otp.OTPData;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface OTP {
     interface Presenter {
         void initializeData(String jsonData);
 
-        void checkPaymentState(String url);
+        void checkPaymentState();
     }
 
     interface View {
@@ -23,5 +24,9 @@ public interface OTP {
         void onLoadDataError(Throwable e);
 
         void onLoadDataError(List<String> errorList);
+
+        void onPaymentError(Throwable e);
+
+        void onPaymentCompleted(PaymentStatusDomain paymentStatusDomain);
     }
 }

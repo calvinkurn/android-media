@@ -15,6 +15,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -75,7 +76,6 @@ public class AuthUtil {
         public static final String KEY_KEROPPI = "Keroppi";
         public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
         public static String KEY_CREDIT_CARD_VAULT = "AdKc1ag2NmYgRUF97eQQ8J";
-        public static final String KEY_PAYMENT = "PdsU23He0aJ828P1st8";
     }
 
     public static Map<String, String> generateHeadersWithXUserId(
@@ -434,6 +434,28 @@ public class AuthUtil {
             e.printStackTrace();
             return "";
         }
+    }
+
+    public static String calculateHmacSHA1(String authString, String authKey) {
+        try {
+            SecretKeySpec signingKey = new SecretKeySpec(authKey.getBytes(), MAC_ALGORITHM);
+            Mac mac = Mac.getInstance(MAC_ALGORITHM);
+            mac.init(signingKey);
+            return toHexString(mac.doFinal(authString.getBytes()));
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private static String toHexString(byte[] bytes) {
+        Formatter formatter = new Formatter();
+
+        for (byte b : bytes) {
+            formatter.format("%02x", b);
+        }
+
+        return formatter.toString().trim();
     }
 
     private static String generateContentMd5(String s) {

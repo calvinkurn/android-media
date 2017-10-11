@@ -14,23 +14,31 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.deeplink.Constants;
+import com.tokopedia.posapp.di.component.DaggerPaymentComponent;
+import com.tokopedia.posapp.domain.model.payment.PaymentStatusDomain;
 import com.tokopedia.posapp.view.OTP;
 import com.tokopedia.posapp.view.presenter.OTPPresenter;
 import com.tokopedia.posapp.view.viewmodel.otp.OTPData;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by okasurya on 10/4/17.
@@ -42,6 +50,12 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     private WebView scroogeWebView;
     private ProgressBar progressBar;
+
+    @Inject
+    OTPPresenter otpPresenter;
+
+    @Inject
+    Gson gson;
 
     @DeepLink(Constants.Applinks.OTP)
     public static Intent newInstance(Context context, Bundle extras) {
@@ -71,7 +85,15 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     @Override
     protected void initialPresenter() {
-        presenter = new OTPPresenter(this);
+        AppComponent appComponent = ((MainApplication) getApplication()).getAppComponent();
+        DaggerPaymentComponent daggerPaymentComponent =
+                (DaggerPaymentComponent) DaggerPaymentComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
+
+        daggerPaymentComponent.inject(this);
+
+        otpPresenter.attachView(this);
     }
 
     @Override
@@ -93,7 +115,8 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         scroogeWebView.getSettings().setDomStorageEnabled(true);
         scroogeWebView.getSettings().setBuiltInZoomControls(false);
         scroogeWebView.getSettings().setDisplayZoomControls(true);
-        scroogeWebView.getSettings().setAppCacheEnabled(true);
+        scroogeWebView.getSettings().setAppCacheEnabled(false);
+        scroogeWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         scroogeWebView.setWebViewClient(new OTPWebViewClient());
         scroogeWebView.setWebChromeClient(new OTPWebViewChromeClient());
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
@@ -106,7 +129,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     @Override
     protected void setActionVar() {
-        presenter.initializeData(getIntent().getStringExtra("extras"));
+        otpPresenter.initializeData(getIntent().getStringExtra("extras"));
     }
 
     @Override
@@ -128,7 +151,6 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     private void goToCart() {
         finish();
-        startActivity(LocalCartActivity.newTopInstance(this));
     }
 
     @Override
@@ -137,10 +159,19 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         goToCart();
     }
 
+    @Override
+    public void onPaymentError(Throwable e) {
+        e.printStackTrace();
+    }
+
+    @Override
+    public void onPaymentCompleted(PaymentStatusDomain paymentStatusDomain) {
+        startActivity(ThankYouActivity.newTopIntent(this, gson.toJson(paymentStatusDomain)));
+    }
+
     private class OTPWebViewClient extends WebViewClient {
         private boolean timeout = true;
 
-        @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             CommonUtils.UniversalToast(OTPActivity.this, url);
@@ -174,6 +205,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            Log.d("pos o2o", "intercept url = " + url);
             return super.shouldInterceptRequest(view, url);
         }
 
@@ -183,7 +215,8 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
             Log.d("pos o2o", "initial url = " + url);
             progressBar.setVisibility(View.VISIBLE);
             if(url.contains("/payment/thanks")) {
-                presenter.checkPaymentState(url);
+                otpPresenter.checkPaymentState();
+                scroogeWebView.stopLoading();
                 return;
             }
             super.onPageStarted(view, url, favicon);

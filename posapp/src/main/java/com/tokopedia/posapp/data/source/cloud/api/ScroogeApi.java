@@ -1,7 +1,6 @@
 package com.tokopedia.posapp.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.Map;
 
@@ -16,5 +15,5 @@ import rx.Observable;
 
 public interface ScroogeApi {
     @GET(TkpdBaseURL.Payment.PATH_PAYMENT_STATUS)
-    Observable<Response<TkpdResponse>> getPaymentStatus(@QueryMap Map<String, String> param);
+    Observable<Response<String>> getPaymentStatus(@QueryMap Map<String, String> param);
 }

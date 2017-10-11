@@ -843,6 +843,7 @@ public class TkpdBaseURL {
         public static final String PATH_CC_BIN = "credit-card/bins";
         public static final String PATH_PAYMENT = "v1/api/payments";
         public static final String PATH_PAYMENT_STATUS = "v1/payment/status";
+        public static final String PATH_O2O_PAYMENT_ACTION = "/o2o/payment_action";
     }
 
     public static class FinTech {

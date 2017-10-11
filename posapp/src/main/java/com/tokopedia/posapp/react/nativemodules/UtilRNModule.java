@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.google.gson.Gson;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.posapp.PosConstants;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -53,7 +54,7 @@ public class UtilRNModule extends ReactContextBaseJavaModule {
 
     private String getSecretKey(String url) {
         if(url.equals(TkpdBaseURL.SCROOGE_DOMAIN + TkpdBaseURL.Payment.PATH_PAYMENT)) {
-            return AuthUtil.KEY.KEY_PAYMENT;
+            return PosConstants.KEY_PAYMENT;
         }
 
         return AuthUtil.KEY.KEY_WSV4;
