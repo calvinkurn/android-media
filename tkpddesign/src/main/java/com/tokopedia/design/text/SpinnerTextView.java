@@ -93,7 +93,7 @@ public class SpinnerTextView extends BaseCustomView {
             textInputLayout.setHint(hintText);
         }
         if (entries != null) {
-            updateEntries(ConverterUtils.convertCharSequenceToString(entries));
+            updateEntries(ConverterUtils.convertCharSequenceToString(entries), selectionIndex);
         }
         if (hintTextAppearance != 0) {
             textInputLayout.setHintTextAppearance(hintTextAppearance);
@@ -144,7 +144,11 @@ public class SpinnerTextView extends BaseCustomView {
     }
 
     public void setEntries(String[] entries) {
-        updateEntries(entries);
+        setEntries(entries, selectionIndex);
+    }
+
+    public void setEntries(String[] entries, int position) {
+        updateEntries(entries, position);
         invalidate();
         requestLayout();
     }
@@ -218,11 +222,13 @@ public class SpinnerTextView extends BaseCustomView {
         textInputLayout.setError(error);
     }
 
-    private void updateEntries(String[] entries) {
+
+    private void updateEntries(String[] entries, int position) {
         if (entries != null) {
             this.entries = entries;
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text, entries);
             textAutoComplete.setAdapter(adapter);
+            selectionIndex = position;
             if (selectionIndex >= 0) {
                 textAutoComplete.setText(entries[selectionIndex]);
                 updateOnItemChanged(selectionIndex);
