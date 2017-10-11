@@ -1,5 +1,7 @@
 package com.tokopedia.digital.widget.domain;
 
+import android.util.Log;
+
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -11,6 +13,7 @@ import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.data.entity.operator.OperatorEntity;
 import com.tokopedia.digital.widget.data.entity.product.ProductEntity;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteNumber;
+import com.tokopedia.digital.widget.data.entity.response.ResponseMetaFavoriteNumber;
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
 import com.tokopedia.digital.widget.data.mapper.IFavoriteNumberMapper;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
@@ -368,6 +371,11 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
             public List<OrderClientNumber> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
                 List<ResponseFavoriteNumber> responseFavoriteNumbers = tkpdDigitalResponseResponse
                         .body().convertDataList(ResponseFavoriteNumber[].class);
+
+                ResponseMetaFavoriteNumber responseMetaFavoriteNumber =
+                        tkpdDigitalResponseResponse.body().convertMetaObj(ResponseMetaFavoriteNumber.class);
+
+                Log.d(this.getClass().getSimpleName(), responseMetaFavoriteNumber.toString());
                 return favoriteNumberMapper
                         .transformDigitalFavoriteNumberItemDataList(responseFavoriteNumbers);
             }
