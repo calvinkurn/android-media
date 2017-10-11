@@ -64,6 +64,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     private String selectedOperatorId;
     private int minLengthDefaultOperator;
     private boolean showPrice = true;
+    private CompositeSubscription compositeSubscription;
 
     public static WidgetStyle2RechargeFragment newInstance(Category category, int position) {
         WidgetStyle2RechargeFragment fragment = new WidgetStyle2RechargeFragment();
@@ -76,8 +77,9 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void initialVariable() {
+        compositeSubscription = new CompositeSubscription();
         DigitalWidgetInteractor interactor = new DigitalWidgetInteractor(
-                new CompositeSubscription(),
+                compositeSubscription,
                 new DigitalWidgetRepository(new DigitalEndpointService()),
                 new ProductMapper(),
                 new OperatorMapper(),
@@ -306,7 +308,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetSpinnerOperator);
         removeRechargeEditTextCallback(widgetClientNumberView);
-        presenter.onDestroy();
+        if (compositeSubscription != null)
+            compositeSubscription.unsubscribe();
         unbinder.unbind();
         super.onDestroy();
     }
