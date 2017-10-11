@@ -28,23 +28,24 @@ public class GalleryCropActivity extends GalleryActivity {
                                                 boolean forceOpenCamera,
                                                 int maxImageSelection,
                                                 boolean compressToTkpd) {
-        Intent imageGallery = createIntent(context, forceOpenCamera, maxImageSelection, compressToTkpd);
+        Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection, compressToTkpd);
         fragment.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
     public static void moveToImageGalleryCamera(Activity context, int position, boolean forceOpenCamera,
                                                 int maxImageSelection,
                                                 boolean compressToTkpd) {
-        Intent imageGallery = createIntent(context, forceOpenCamera, maxImageSelection, compressToTkpd);
+        Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection, compressToTkpd);
         context.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
-    protected static Intent createIntent(Context context,
+    protected static Intent createIntent(Context context, int position,
                                        boolean forceOpenCamera,
                                        int maxImageSelection,
                                        boolean compressToTkpd) {
         Intent imageGallery = new Intent(context, GalleryCropActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putInt(ADD_PRODUCT_IMAGE_LOCATION, position);
         bundle.putString(FRAGMENT_TO_SHOW, ImageGalleryAlbumFragment.FRAGMENT_TAG);
         bundle.putBoolean(FORCE_OPEN_CAMERA, forceOpenCamera);
         bundle.putInt(MAX_IMAGE_SELECTION, maxImageSelection);

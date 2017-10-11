@@ -132,7 +132,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.roundCornerProgressBar
     compile rootProject.ext.miscDependencies.loaderviewlibrary
     compile (rootProject.ext.miscDependencies.imagecropper){
-        exclude group: "com.android.support"
+        exclude group: "com.android.support", module: 'appcompat'
     }
 
     compile rootProject.ext.miscDependencies.dagger
