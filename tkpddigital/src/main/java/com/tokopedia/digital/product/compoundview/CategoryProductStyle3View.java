@@ -192,7 +192,7 @@ public class CategoryProductStyle3View extends
         }
     }
 
-    private void renderClientNumberInputForm() {
+    private void renderClientNumberInputForm(Operator data) {
         clearHolder(holderClientNumber);
         clearHolder(holderChooserProduct);
         clearHolder(holderAdditionalInfoProduct);
@@ -263,9 +263,8 @@ public class CategoryProductStyle3View extends
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
-
                 if (!data.getClientNumberList().isEmpty()) {
-                    renderClientNumberInputForm();
+                    renderClientNumberInputForm(data);
                 } else {
                     renderProductChooserOptions();
                 }

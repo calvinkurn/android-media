@@ -98,7 +98,7 @@ public class CategoryProductStyle2View extends
             for (Operator operator : data.getOperatorList()) {
                 if (operator.getOperatorId().equalsIgnoreCase(data.getDefaultOperatorId())) {
                     operatorSelected = operator;
-                    renderClientNumberInputForm();
+                    renderClientNumberInputForm(operatorSelected);
                 }
             }
         }
@@ -196,19 +196,19 @@ public class CategoryProductStyle2View extends
         }
     }
 
-    private void renderClientNumberInputForm() {
+    private void renderClientNumberInputForm(Operator data) {
         clearHolder(holderClientNumber);
         clearHolder(holderChooserProduct);
         clearHolder(holderAdditionalInfoProduct);
         clearHolder(holderPriceInfoProduct);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInput());
-        clientNumberInputView.renderData(operatorSelected.getClientNumberList().get(0));
+        clientNumberInputView.renderData(this.operatorSelected.getClientNumberList().get(0));
         holderClientNumber.addView(clientNumberInputView);
         clientNumberInputView.resetInputTyped();
 
         if (hasLastOrderHistoryData()) {
             if (historyClientNumber.getLastOrderClientNumber().getOperatorId().equalsIgnoreCase(
-                    operatorSelected.getOperatorId())) {
+                    this.operatorSelected.getOperatorId())) {
                 if (!TextUtils.isEmpty(historyClientNumber
                         .getLastOrderClientNumber().getClientNumber())) {
                     clientNumberInputView.setText(
@@ -270,7 +270,7 @@ public class CategoryProductStyle2View extends
             public void onUpdateDataDigitalRadioChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
                 if (!data.getClientNumberList().isEmpty())
-                    renderClientNumberInputForm();
+                    renderClientNumberInputForm(operatorSelected);
             }
         };
     }
