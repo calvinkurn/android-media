@@ -1,28 +1,22 @@
 package com.tokopedia.digital.widget.domain;
 
-import android.util.Log;
-
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.data.entity.operator.OperatorEntity;
 import com.tokopedia.digital.widget.data.entity.product.ProductEntity;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteList;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteNumber;
 import com.tokopedia.digital.widget.data.entity.response.ResponseMetaFavoriteNumber;
-import com.tokopedia.digital.widget.data.entity.response.ResponseMeta;
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
 import com.tokopedia.digital.widget.data.mapper.IFavoriteNumberMapper;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Response;
@@ -349,29 +343,29 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
 //                });
 //    }
 
-    private Func1<OrderClientNumber, Boolean> getLastOrder() {
-        return new Func1<OrderClientNumber, Boolean>() {
-            @Override
-            public Boolean call(OrderClientNumber orderClientNumber) {
-                return orderClientNumber.getLastProduct() != null;
-            }
-        };
-    }
+//    private Func1<OrderClientNumber, Boolean> getLastOrder() {
+//        return new Func1<OrderClientNumber, Boolean>() {
+//            @Override
+//            public Boolean call(OrderClientNumber orderClientNumber) {
+//                return orderClientNumber.getLastProduct() != null;
+//            }
+//        };
+//    }
 
-    private Func1<List<OrderClientNumber>, List<OrderClientNumber>> getSortedNumberList() {
-        return new Func1<List<OrderClientNumber>, List<OrderClientNumber>>() {
-            @Override
-            public List<OrderClientNumber> call(List<OrderClientNumber> orderClientNumbers) {
-                Collections.sort(orderClientNumbers, new Comparator<OrderClientNumber>() {
-                    @Override
-                    public int compare(OrderClientNumber o1, OrderClientNumber o2) {
-                        return o2.getLastUpdated().compareTo(o1.getLastUpdated());
-                    }
-                });
-                return orderClientNumbers;
-            }
-        };
-    }
+//    private Func1<List<OrderClientNumber>, List<OrderClientNumber>> getSortedNumberList() {
+//        return new Func1<List<OrderClientNumber>, List<OrderClientNumber>>() {
+//            @Override
+//            public List<OrderClientNumber> call(List<OrderClientNumber> orderClientNumbers) {
+//                Collections.sort(orderClientNumbers, new Comparator<OrderClientNumber>() {
+//                    @Override
+//                    public int compare(OrderClientNumber o1, OrderClientNumber o2) {
+//                        return o2.getLastUpdated().compareTo(o1.getLastUpdated());
+//                    }
+//                });
+//                return orderClientNumbers;
+//            }
+//        };
+//    }
 
 //    private Func1<Response<TkpdDigitalResponse>, List<OrderClientNumber>> getFuncTransformNumberList() {
 //        return new Func1<Response<TkpdDigitalResponse>, List<OrderClientNumber>>() {
@@ -389,16 +383,15 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
         return new Func1<Response<TkpdDigitalResponse>, DigitalNumberList>() {
             @Override
             public DigitalNumberList call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
-                ResponseMeta responseMeta = tkpdDigitalResponseResponse.body()
-                        .convertDataObj(ResponseMeta.class);
                 List<ResponseFavoriteNumber> responseFavoriteNumbers = tkpdDigitalResponseResponse
                         .body().convertDataList(ResponseFavoriteNumber[].class);
 
                 ResponseMetaFavoriteNumber responseMetaFavoriteNumber =
                         tkpdDigitalResponseResponse.body().convertMetaObj(ResponseMetaFavoriteNumber.class);
 
-                Log.d(this.getClass().getSimpleName(), responseMetaFavoriteNumber.toString());
-                ResponseFavoriteList responseFavoriteList =  new ResponseFavoriteList(responseMeta, responseFavoriteNumbers);
+                ResponseFavoriteList responseFavoriteList =  new ResponseFavoriteList(responseMetaFavoriteNumber,
+                        responseFavoriteNumbers);
+
                 return favoriteNumberMapper
                         .transformDigitalFavoriteNumberItemDataList(responseFavoriteList);
             }

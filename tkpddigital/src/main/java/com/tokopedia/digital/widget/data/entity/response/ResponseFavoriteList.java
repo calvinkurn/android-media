@@ -7,15 +7,15 @@ import java.util.List;
  */
 
 public class ResponseFavoriteList {
-    private ResponseMeta responseMeta;
+    private ResponseMetaFavoriteNumber responseMeta;
     private List<ResponseFavoriteNumber> responseNumberList;
 
-    public ResponseFavoriteList(ResponseMeta responseMeta, List<ResponseFavoriteNumber> responseFavoriteList) {
+    public ResponseFavoriteList(ResponseMetaFavoriteNumber responseMeta, List<ResponseFavoriteNumber> responseNumberList) {
         this.responseMeta = responseMeta;
         this.responseNumberList = responseNumberList;
     }
 
-    public ResponseMeta getResponseMeta() {
+    public ResponseMetaFavoriteNumber getResponseMeta() {
         return responseMeta;
     }
 
