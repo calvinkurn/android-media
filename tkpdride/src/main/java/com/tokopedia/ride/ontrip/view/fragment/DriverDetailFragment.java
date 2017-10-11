@@ -19,8 +19,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Driver;
@@ -182,11 +184,13 @@ public class DriverDetailFragment extends BaseFragment {
 
     @OnClick(R2.id.icon_call)
     public void actionCallDriver() {
+        RideGATracking.eventClickCall(AppScreen.SCREEN_RIDE_ONTRIP);
         DriverDetailFragmentPermissionsDispatcher.openCallIntentWithCheck(this, driver.getPhoneNumber());
     }
 
     @OnClick(R2.id.icon_message)
     public void actionSMSDriver() {
+        RideGATracking.eventClickSMS(AppScreen.SCREEN_RIDE_ONTRIP);
         openSmsIntent(driver.getPhoneNumber());
     }
 
@@ -218,11 +222,13 @@ public class DriverDetailFragment extends BaseFragment {
 
     @OnClick(R2.id.layout_cancel_ride)
     public void actionCancelRideBtnClicked() {
+        RideGATracking.eventClickCancel(AppScreen.SCREEN_RIDE_ONTRIP);
         onFragmentInteractionListener.actionCancelRide();
     }
 
     @OnClick(R2.id.help_layout)
     public void actionShareRideBtnClicked() {
+        RideGATracking.eventClickShareEta(AppScreen.SCREEN_RIDE_ONTRIP);
         onFragmentInteractionListener.actionShareEta();
     }
 }

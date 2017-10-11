@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
@@ -57,6 +58,11 @@ public class CompleteTripActivity extends BaseActivity implements CompleteTripFr
         } else {
             replaceFragment(R.id.container, CompleteTripFragment.newInstance(requestId, viewModel));
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_COMPLETED;
     }
 
     private void clearActiveRequest() {

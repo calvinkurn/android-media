@@ -60,6 +60,7 @@ import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
@@ -1048,6 +1049,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @OnClick({R2.id.crux_cabs_destination, R2.id.tv_destination_change})
     public void actionDestinationButtonClicked() {
+        RideGATracking.eventClickChangeDestinationOpenMap(AppScreen.SCREEN_RIDE_ONTRIP);
+
         Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity(), R.drawable.marker_red_old);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_SOURCE, source);
