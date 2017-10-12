@@ -1,7 +1,9 @@
 package com.tokopedia.ride.analytics;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.ride.common.configuration.RideStatus;
 
 /**
  * Created by sandeepgoyal on 10/10/17.
@@ -205,8 +207,8 @@ public class RideGATracking extends UnifyTracking {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventChangeDestiantionMap),
-                        String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                RideAppEventTracking.Action.EventChangeDestiantionMap,
+                screenName
         ).getEvent());
     }
 
@@ -228,59 +230,59 @@ public class RideGATracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventClickCall(String screenName) {
+    public static void eventClickCall(String rideStatus) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickCall),
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                RideAppEventTracking.Action.EventClickCall,
+                rideStatus
         ).getEvent());
 
     }
 
-    public static void eventClickSMS(String screenName) {
+    public static void eventClickSMS(String rideStatus) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickSmS),
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                RideAppEventTracking.Action.EventClickSmS,
+                rideStatus
         ).getEvent());
 
     }
 
-    public static void eventClickShareEta(String screenName) {
+    public static void eventClickShareEta(String rideStatus) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickShareEta),
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                RideAppEventTracking.Action.EventClickShareEta,
+                rideStatus
         ).getEvent());
     }
 
-    public static void eventClickCancel(String screenName) {
+    public static void eventClickCancel(String rideStatus) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickCancel),
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                RideAppEventTracking.Action.EventClickCancel,
+                rideStatus
         ).getEvent());
     }
 
-    public static void eventClickSubmit(String screenName,String rating, String suggestions) {
+    public static void eventClickSubmit(String rating, String suggestions) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventClickSubmit),
-                String.format(RideAppEventTracking.Label.RateSuggestion , screenName,rating , suggestions)
+                String.format(AppScreen.SCREEN_RIDE_COMPLETED + "- %s - %s" , rating , suggestions)
         ).getEvent());
     }
 
-    public static void eventClickTNC(String screenName) {
+    public static void eventClickTNC() {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventClickTNC),
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                AppScreen.SCREEN_RIDE_COMPLETED
         ).getEvent());
     }
 }

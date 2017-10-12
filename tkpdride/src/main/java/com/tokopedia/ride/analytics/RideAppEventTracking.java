@@ -40,7 +40,7 @@ public interface RideAppEventTracking extends AppEventTracking {
         String EventChangeDestiantionMap = "click change destination open map";
         String EventClickCall = "click call";
         String EventClickSmS  = "click sms";
-        String EventClickShareEta = "click share";
+        String EventClickShareEta = "click share eta";
         String EventClickCancel = "click cancel";
         String EventClickSubmit  = "click submit";
         String EventClickTNC = "click tnc";
