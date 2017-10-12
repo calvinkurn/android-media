@@ -1,8 +1,6 @@
 import { PosCacheModule } from 'NativeModules'
 
 
-
-
 export const BANK_SELECTED = 'BANK_SELECTED'
 export const selectBank = (id) => {
   return {
