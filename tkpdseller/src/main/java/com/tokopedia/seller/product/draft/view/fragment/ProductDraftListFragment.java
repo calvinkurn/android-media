@@ -167,7 +167,9 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @Override
     public void onSearchLoaded(@NonNull List<ProductDraftViewModel> list, int totalItem) {
         super.onSearchLoaded(list, totalItem);
-        menuDelete.setVisible(totalItem > 0);
+        if (menuDelete!= null) {
+            menuDelete.setVisible(totalItem > 0);
+        }
     }
 
     @Override

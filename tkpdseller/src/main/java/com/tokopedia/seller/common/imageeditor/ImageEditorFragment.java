@@ -96,7 +96,8 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
         if (item.getItemId() == R.id.main_action_crop) {
             // no need to crop if the rect is same and in local tkpd already
             if (mCropImageView.getRotation() == 0 &&
-                    mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect()) &&
+                    (mCropImageView.getCropRect() == null ||
+                    mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect())) &&
                     FileUtils.isInTkpdCache(new File(localPath))) {
                 onImageEditorFragmentListener.onSuccessCrop(localPath);
             } else {
