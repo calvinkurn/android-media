@@ -10,6 +10,7 @@
     <string name="label_yes">Ya</string>
     <string name="label_no">Tidak</string>
     <string name="label_try_again">Coba Lagi</string>
+    <string name="label_subscribe">Berlangganan</string>
 
     <string name="price_format_text">%1$s %2$s</string>
 

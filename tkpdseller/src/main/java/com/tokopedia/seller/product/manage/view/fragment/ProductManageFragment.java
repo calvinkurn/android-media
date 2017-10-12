@@ -47,6 +47,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.seller.BuildConfig;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
@@ -587,7 +588,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 } else if (itemId == R.id.share_product_menu) {
                     goToShareProduct(productManageViewModel);
                 } else if (itemId == R.id.set_cashback_product_menu) {
-                    showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencySymbol());
+                    if (goldMerchant) {
+                        showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencySymbol());
+                    } else {
+                        showDialogActionGoToGMSubscribe();
+                    }
                 }
             }
         };
@@ -670,6 +675,22 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         alertDialog.setTitle(R.string.label_delete);
         alertDialog.setMessage(R.string.dialog_delete_product);
         alertDialog.setPositiveButton(R.string.label_delete, onClickListener);
+        alertDialog.setNegativeButton(R.string.title_cancel, null);
+        alertDialog.show();
+    }
+
+    private void showDialogActionGoToGMSubscribe() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle(R.string.product_manage_cashback_title);
+        alertDialog.setMessage(R.string.product_manage_cashback_not_subscribe_message);
+        alertDialog.setPositiveButton(R.string.label_subscribe, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (getActivity().getApplication() instanceof SellerModuleRouter) {
+                    ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
+                }
+            }
+        });
         alertDialog.setNegativeButton(R.string.title_cancel, null);
         alertDialog.show();
     }
