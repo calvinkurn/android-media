@@ -24,7 +24,7 @@
                 android:hint="@string/input_number"
                 android:imeOptions="actionSearch"
                 android:inputType="number"
-                android:padding="@dimen/digital_padding_16"
+                android:padding="@dimen/digital_padding_12"
                 android:singleLine="true"
                 android:textColor="#212121"
                 android:textColorHint="@color/black_38"

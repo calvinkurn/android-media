@@ -32,7 +32,7 @@ import butterknife.BindView;
  */
 
 public class DigitalSearchNumberFragment extends BasePresenterFragment<ISearchNumberDigitalPresenter>
-        implements ISearchNumberDigitalView, NumberListAdapter.OnClientNumberClickListener {
+        implements NumberListAdapter.OnClientNumberClickListener {
 
     @BindView(R2.id.recyclerview_number_list)
     RecyclerView rvNumberList;
@@ -178,18 +178,6 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment<ISearchNu
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-            TKPDMapParam<String, String> originParams) {
-        return AuthUtil.generateParamsNetwork(getActivity(), originParams);
-    }
-
-    @Override
-    public void renderNumberList(List<OrderClientNumber> orderClientNumbers) {
-//        this.clientNumbers.clear();
-//        this.clientNumbers.addAll(orderClientNumbers);
     }
 
     @Override
