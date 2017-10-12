@@ -59,4 +59,14 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
     public void getCurrentUserId(Promise promise) {
         promise.resolve(SessionHandler.getLoginID(context));
     }
+
+    @ReactMethod
+    public void setTitleToolbar(Promise promise, String title) {
+        if (getCurrentActivity() != null && getCurrentActivity().getActionBar() != null) {
+            getCurrentActivity().getActionBar().setTitle(title);
+            promise.resolve("OK");
+        } else {
+            promise.resolve("NOT OK");
+        }
+    }
 }

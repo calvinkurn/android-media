@@ -51,12 +51,11 @@ public class ReactNativeActivity extends BasePresenterActivity {
 
     public static Intent createBannerReactNativeActivity(Context context,
                                                          String reactScreenName,
-                                                         String pageTitle,
                                                          String url) {
         Intent intent = new Intent(context, ReactNativeActivity.class);
         Bundle extras = new Bundle();
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
-        extras.putString(EXTRA_TITLE, pageTitle);
+        extras.putString(EXTRA_TITLE, "");
         extras.putString(EXTRA_URL, url);
         intent.putExtras(extras);
         return intent;

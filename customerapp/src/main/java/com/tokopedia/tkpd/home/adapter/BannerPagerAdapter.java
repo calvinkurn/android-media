@@ -285,7 +285,6 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                     ReactNativeActivity.createBannerReactNativeActivity(
                             context,
                             ReactConst.Screen.PROMO,
-                            context.getString(R.string.header_react_promo_page),
                             url
                     )
             );
