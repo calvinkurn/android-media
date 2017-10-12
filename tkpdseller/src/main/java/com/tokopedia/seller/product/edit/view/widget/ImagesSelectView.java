@@ -206,8 +206,8 @@ public class ImagesSelectView extends BaseCustomView {
         if (successHandleResolution(path)) {
             if (!path.equals(getSelectedImage().getUriOrPath())) {
                 onCheckResolutionListener.removePreviousPath(getSelectedImage().getUriOrPath());
+                imageSelectorAdapter.changeImagePath(path);
             }
-            imageSelectorAdapter.changeImagePath(path);
         }
     }
 
