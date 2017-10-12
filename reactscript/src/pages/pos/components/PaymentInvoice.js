@@ -10,11 +10,10 @@ import PopUp from '../common/TKPPopupModal'
 import { Text } from '../common/TKPText'
 
 class PaymentInvoice extends Component {
-
   constructor(props) {
-
     super(props);
 
+    console.log(this.props)
     this.state = {
       email: "",
       emailErrorMessage: ""
@@ -33,7 +32,7 @@ class PaymentInvoice extends Component {
     });
   };
 
-  _renderProductList(rowData: string, sectionID: number, rowID: number) {
+  _renderProductList(rowData, sectionID, rowID) {
     return (
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%' }}>
         <View style={{ width: "12%", height: '20%' }}>
@@ -53,6 +52,7 @@ class PaymentInvoice extends Component {
   }
 
   render() {
+    console.log(this.props)
     return (
       <View style={{ flex: 1 }}>
         {/* <View style={{
@@ -315,3 +315,4 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps)(PaymentInvoice)
+
