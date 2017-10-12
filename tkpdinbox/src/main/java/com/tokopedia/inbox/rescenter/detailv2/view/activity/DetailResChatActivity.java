@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatActivityPresenter;
@@ -17,7 +18,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatActivi
 
 public class DetailResChatActivity
         extends BasePresenterActivity<DetailResChatActivityListener.Presenter>
-        implements DetailResChatActivityListener.View {
+        implements DetailResChatActivityListener.View, HasComponent {
 
     public static final String RESOLUTION_ID = "resolution_id";
 
@@ -82,5 +83,10 @@ public class DetailResChatActivity
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public Object getComponent() {
+        return getApplicationComponent();
     }
 }

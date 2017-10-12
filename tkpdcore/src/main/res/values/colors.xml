@@ -7,6 +7,7 @@
     <color name="selection">#905eba46</color>
     <color name="selector_lv">#64cdf4</color>
     <color name="white">#ffffff</color>
+    <color name="white_three">#fafafa</color>
     <color name="holder_error">#FFADAD</color>
 
     <color name="colorGreen">#42B459</color>
