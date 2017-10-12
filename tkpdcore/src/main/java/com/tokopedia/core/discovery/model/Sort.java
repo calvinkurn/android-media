@@ -6,12 +6,10 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
 /**
  * @author kulomady on 12/22/16.
  */
-public class Sort implements Serializable, Parcelable {
+public class Sort implements Parcelable {
 
     @SerializedName("name")
     @Expose

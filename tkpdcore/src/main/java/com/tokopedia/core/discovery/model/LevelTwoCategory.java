@@ -14,7 +14,7 @@ import java.util.List;
  * Created by henrypriyono on 8/7/17.
  */
 
-public class LevelTwoCategory implements Serializable, Parcelable {
+public class LevelTwoCategory implements Parcelable {
 
     @SerializedName("name")
     @Expose

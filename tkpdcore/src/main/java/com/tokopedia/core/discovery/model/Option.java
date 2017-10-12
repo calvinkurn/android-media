@@ -6,13 +6,12 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author kulomady on 12/22/16.
  */
-public class Option implements Serializable, Parcelable {
+public class Option implements Parcelable {
 
     public static final String KEY_PRICE_MIN = "pmin";
     public static final String KEY_PRICE_MAX = "pmax";

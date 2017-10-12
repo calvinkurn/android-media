@@ -6,14 +6,13 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author kulomady on 12/22/16.
  */
-public class DataValue implements Serializable, Parcelable {
+public class DataValue implements Parcelable {
 
 
     String selected;

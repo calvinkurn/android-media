@@ -6,12 +6,10 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
 /**
  * @author kulomady on 12/22/16.
  */
-public class Search implements Serializable, Parcelable {
+public class Search implements Parcelable {
 
     @SerializedName("searchable")
     @Expose

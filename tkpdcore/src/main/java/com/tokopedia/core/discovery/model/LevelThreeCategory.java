@@ -12,7 +12,7 @@ import java.io.Serializable;
  * Created by henrypriyono on 8/7/17.
  */
 
-public class LevelThreeCategory implements Serializable, Parcelable {
+public class LevelThreeCategory implements Parcelable {
 
     @SerializedName("name")
     @Expose
