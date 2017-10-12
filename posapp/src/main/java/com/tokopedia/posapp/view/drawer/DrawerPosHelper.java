@@ -3,12 +3,15 @@ package com.tokopedia.posapp.view.drawer;
 import android.app.Activity;
 import android.content.Intent;
 import android.preference.Preference;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
@@ -140,7 +143,7 @@ public class DrawerPosHelper extends DrawerHelper
 
                                 @Override
                                 public void onError(String message) {
-
+                                    SnackbarManager.make(context, message, Snackbar.LENGTH_LONG).show();
                                 }
                             }
                     );
@@ -157,7 +160,7 @@ public class DrawerPosHelper extends DrawerHelper
 
                                 @Override
                                 public void onError(String message) {
-
+                                    SnackbarManager.make(context, message, Snackbar.LENGTH_LONG).show();
                                 }
                             }
                     );
