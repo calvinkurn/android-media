@@ -494,7 +494,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @OnClick(R2.id.tv_signup_tnc)
     public void actionTermsClicked() {
-        RideGATracking.eventClickTNC();
+        RideGATracking.eventClickTNC(getScreenName());
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("uber_singup_dialog");
@@ -508,7 +508,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @OnClick(R2.id.rate_confirmation)
     public void actionRateConfirmClicked() {
-        RideGATracking.eventClickSubmit(getRateStars(), getRateComment());
+        RideGATracking.eventClickSubmit(getScreenName(),getRateStars(), getRateComment());
         presenter.actionSubmitRatingAndDriverTip();
     }
 

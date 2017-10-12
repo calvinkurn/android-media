@@ -18,6 +18,7 @@ import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.webview.fragment.BaseWebViewClient;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
 import butterknife.BindView;
@@ -48,7 +49,6 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
         unbinder = ButterKnife.bind(this);
         rideHistory = getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
         setupToolbar();
-
         init();
     }
 
@@ -88,6 +88,7 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            RideGATracking.eventBackPress(getScreenName());
             onBackPressed();
             return true;
         } else {

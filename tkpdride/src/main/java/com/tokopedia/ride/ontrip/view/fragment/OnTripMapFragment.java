@@ -51,6 +51,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -448,6 +449,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @OnClick(R2.id.cabs_processing_cancel_button)
     public void actionCancelButtonClicked() {
         showCancelPanel();
+        RideGATracking.eventClickCancelRequestRide(getScreenName());
         presenter.actionCancelButtonClicked();
     }
 

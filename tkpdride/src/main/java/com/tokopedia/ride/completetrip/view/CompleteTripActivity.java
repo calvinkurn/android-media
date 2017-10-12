@@ -15,6 +15,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
@@ -93,6 +94,7 @@ public class CompleteTripActivity extends BaseActivity implements CompleteTripFr
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                RideGATracking.eventBackPress(getScreenName());
                 onBackPressed();
                 return true;
             default:

@@ -15,6 +15,7 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.view.fragment.ApplyPromoFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
@@ -74,9 +75,11 @@ public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragme
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            RideGATracking.eventBackPress(getScreenName());
             onBackPressed();
             return true;
         } else if (i == R.id.action_remove) {
+            RideGATracking.eventDeletePromotion(getScreenName(),confirmBookingViewModel.getPromoCode());
             confirmBookingViewModel.setPromoCode("");
             confirmBookingViewModel.setPromoDescription("");
 

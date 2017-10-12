@@ -8,120 +8,232 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
  */
 
 public class RideGATracking extends UnifyTracking {
-    public void eventBackPress(String screenName) {
+    public static void eventBackPress(String screenName) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickBack, screenName),
-                RideAppEventTracking.Label.No_Label
+                String.format(RideAppEventTracking.Action.EventClickBack),
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
         ).getEvent());
     }
 
-    public void eventClickOnTrip() {
-
+    public static void eventClickOnTrip(String screenName) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventClickOnYourTrips,
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+        ).getEvent());
     }
 
-    public void eventClickSource() {
-
+    public static void eventClickSource(String screenName) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventClickSource,
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+        ).getEvent());
     }
 
-    public void eventClickDestination() {
-
+    public static void eventClickDestination(String screenName) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventClickDestination,
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+        ).getEvent());
     }
 
-    public void eventClickDeleteDestination(String addressDeleted) {
-
-    }
-
-
-    public void eventSelectRideOption(String optionType, String time, String fare) {
-
-    }
-
-    public void eventDeletePromotion(String promotionName) {
-
-    }
-
-    public void eventClickRequestRideOption(String rideOption) {
-
-    }
-
-    public void eventClickAutDetectLocation() {
-
-    }
-
-    public void eventClickSourceOpenMap(String screenName, String AddressSelected) {
-
-    }
-
-    public void eventClickSourceRecentAddress(String screenName) {
-
-    }
-
-    public void eventClickDoneSourceMap(String addressSelected) {
-
-    }
-
-    public void eventClickDestinationOpenMap(String screenName) {
-
+    public static void eventClickDeleteDestination(String addressDeleted) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventClickDeleteDestination,
+                String.format(RideAppEventTracking.Label.AddressDeleted,addressDeleted)
+        ).getEvent());
     }
 
 
-    public void eventClickDestinationRecentAddress(String screenName, String AddressSelected) {
+    public static void eventSelectRideOption(String optionType,String time, String fare) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventSelectRideOption,
+                String.format(RideAppEventTracking.Label.RideDetail,optionType,time,fare)
+        ).getEvent());
+    }
+
+    public static void eventDeletePromotion(String screenName,String promotionName) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventDeletePromotion,
+                String.format(RideAppEventTracking.Label.PromotionName,screenName,promotionName)
+        ).getEvent());
+    }
+
+    public static void eventClickRequestRideOption(String screenName,String rideOption) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                String.format(RideAppEventTracking.Action.EventClickRideOption,rideOption),
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+        ).getEvent());
+    }
+
+    public static void eventClickAutDetectLocation(String screenName,String addressSelected) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                String.format(RideAppEventTracking.Action.EventAutoDetectCurrentLocation),
+                String.format(RideAppEventTracking.Label.AddressSelected,screenName,addressSelected)
+        ).getEvent());
+    }
+
+    public static void eventClickSourceOpenMap(String screenName) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                String.format(RideAppEventTracking.Action.EventClickSourceOpenMap),
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+        ).getEvent());
+    }
+
+    public static void eventClickSourceRecentAddress(String screenName,String addressSelected) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                String.format(RideAppEventTracking.Action.EventClickSourceRecentAddress),
+                String.format(RideAppEventTracking.Label.AddressSelected,screenName,addressSelected)
+        ).getEvent());
+    }
+
+    public static void eventClickDoneSourceMap(String screenName,String addressSelected) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventClickDoneSourceMap,
+                String.format(RideAppEventTracking.Label.AddressSelected,screenName,addressSelected)
+        ).getEvent());
+    }
+
+    public static void eventClickDestinationOpenMap(String screenName) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                String.format(RideAppEventTracking.Action.EventClickDestinationOpenMap),
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+        ).getEvent());
+    }
+
+
+
+    public static void eventClickDestinationRecentAddress(String screenName,String addressSelected) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                String.format(RideAppEventTracking.Action.EventClickDestinationRecentAddress),
+                String.format(RideAppEventTracking.Label.AddressSelected,screenName,addressSelected)
+        ).getEvent());
 
     }
 
-    public void eventClickHelpTrip(String date, String fare, String bookingStatus) {
-
+    public static void eventClickHelpTrip(String screenName,String date,String fare,String bookingStatus) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventClickHelpTrip,
+                String.format(RideAppEventTracking.Label.BookingDetails,screenName,date,fare,bookingStatus)
+        ).getEvent());
+    }
+    public static void eventSelectHelpOption(String helpOption) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventSelectHelpOption,
+                String.format(RideAppEventTracking.Label.HelpOption,helpOption)
+        ).getEvent());
     }
 
-    public void eventSelectHelpOption(String helpOption) {
-
+    public static void eventClickApplyPromoSearch(String screenName,String promoSearchValue) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventClickApplyPromoSearch,
+                String.format(RideAppEventTracking.Label.PromoSearchValue,screenName,promoSearchValue)
+        ).getEvent());
     }
 
-    public void eventClickApplyPromoSearch(String promoSearchValue) {
-
+    public static void eventClickApplyOffers(String screenName,String promoCode) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventClickApplyOffers,
+                String.format(RideAppEventTracking.Label.PromoCode,screenName,promoCode)
+        ).getEvent());
     }
 
-    public void eventClickApplyOffers(String promoCode) {
-
+    public static void eventClickReadOfferDetails(String screenName,String promoCode) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventClickReadOfferDetails,
+                String.format(RideAppEventTracking.Label.PromoCode,screenName,promoCode)
+        ).getEvent());
     }
 
-    public void eventClickReadOfferDetails(String promoCode) {
-
+    public static void eventClickCancelRequestRide(String screenName) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventClickCancelRequestRide,
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+        ).getEvent());
     }
 
-    public void eventClickCancelRequestRide() {
-
+    public static void eventClickCancelReason(String screenName,String reason) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                RideAppEventTracking.Action.EventSelectCancelReason,
+                String.format(RideAppEventTracking.Label.CancelReason,screenName,reason)
+        ).getEvent());
     }
 
-    public void eventClickCancelReason(String reason) {
-
-    }
 
     public static void eventClickChangeDestinationOpenMap(String screenName) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventChangeDestiantionMap, screenName),
-                RideAppEventTracking.Label.No_Label
+                String.format(RideAppEventTracking.Action.EventChangeDestiantionMap),
+                        String.format(RideAppEventTracking.Label.ScreenName,screenName)
         ).getEvent());
     }
 
-    public static void eventClickDoneDestinationMap() {
-
+    public static void eventClickDoneDestinationMap(String screenName,String addressSelected) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                String.format(RideAppEventTracking.Action.EventDoneOnDestinationMap),
+                String.format(RideAppEventTracking.Label.AddressSelected,screenName,addressSelected)
+        ).getEvent());
     }
 
-    public static void eventClickReceipt(String date, String fare, String bookingStatus) {
-
+    public static void eventClickReceipt(String screenName,String date, String fare, String bookingStatus) {
+        sendGTMEvent(new EventTracking(
+                RideAppEventTracking.Event.GenericUberEvent,
+                RideAppEventTracking.Category.EventCategory,
+                String.format(RideAppEventTracking.Action.EventClickReceipt),
+                String.format(RideAppEventTracking.Label.BookingDetails,screenName,date,fare,bookingStatus)
+        ).getEvent());
     }
 
     public static void eventClickCall(String screenName) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickCall, screenName),
-                RideAppEventTracking.Label.No_Label
+                String.format(RideAppEventTracking.Action.EventClickCall),
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
         ).getEvent());
 
     }
@@ -130,8 +242,8 @@ public class RideGATracking extends UnifyTracking {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickSmS, screenName),
-                RideAppEventTracking.Label.No_Label
+                String.format(RideAppEventTracking.Action.EventClickSmS),
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
         ).getEvent());
 
     }
@@ -140,8 +252,8 @@ public class RideGATracking extends UnifyTracking {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickShareEta, screenName),
-                RideAppEventTracking.Label.No_Label
+                String.format(RideAppEventTracking.Action.EventClickShareEta),
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
         ).getEvent());
     }
 
@@ -149,26 +261,26 @@ public class RideGATracking extends UnifyTracking {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
-                String.format(RideAppEventTracking.Action.EventClickCancel, screenName),
-                RideAppEventTracking.Label.No_Label
+                String.format(RideAppEventTracking.Action.EventClickCancel),
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
         ).getEvent());
     }
 
-    public static void eventClickSubmit(String rating, String suggestions) {
+    public static void eventClickSubmit(String screenName,String rating, String suggestions) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventClickSubmit),
-                String.format("%s - %s" , rating , suggestions)
+                String.format(RideAppEventTracking.Label.RateSuggestion , screenName,rating , suggestions)
         ).getEvent());
     }
 
-    public static void eventClickTNC() {
+    public static void eventClickTNC(String screenName) {
         sendGTMEvent(new EventTracking(
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventClickTNC),
-                RideAppEventTracking.Label.No_Label
+                String.format(RideAppEventTracking.Label.ScreenName,screenName)
         ).getEvent());
     }
 }

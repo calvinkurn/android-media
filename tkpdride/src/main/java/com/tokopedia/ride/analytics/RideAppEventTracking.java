@@ -11,10 +11,10 @@ public interface RideAppEventTracking extends AppEventTracking {
         String GenericUberEvent = "GenericUberEvent";
     }
     interface  Category {
-        String EventCategory ="uber";
+        String EventCategory ="digital-uber";
     }
     interface Action {
-        String EventClickBack = "click back on %s";
+        String EventClickBack = "click back on";
         String EventClickOnYourTrips = "click on your trips";
         String EventClickSource = "click source";
         String EventClickDestination = "click destination";
@@ -22,11 +22,12 @@ public interface RideAppEventTracking extends AppEventTracking {
         String EventSelectRideOption = "select ride option";
         String EventDeletePromotion = "delete promotion";
         String EventClickRideOption = "click reqeust %s";
-        String EventAutoDetectCurrentLocation  = "click autodetect current location on %s";
-        String EventClickSourceOpenMap = "click source open map on %s";
+        String EventAutoDetectCurrentLocation  = "click autodetect current location";
+        String EventClickSourceOpenMap = "click source open map on";
+        String EventClickSourceRecentAddress = "click source recent addresses";
         String EventClickDoneSourceMap = "click done on source map";
-        String EventClickDestinationOpenMap = "click destiantion open map on %s";
-        String EventClickDestinationRecentAddress = "click destination recent addresses on %s";
+        String EventClickDestinationOpenMap = "click destiantion open map";
+        String EventClickDestinationRecentAddress = "click destination recent addresses";
         String EventDoneOnDestinationMap = "click done on destination map";
         String EventClickReceipt = "click receipt";
         String EventClickHelpTrip ="click help for trip details";
@@ -36,27 +37,28 @@ public interface RideAppEventTracking extends AppEventTracking {
         String EventClickReadOfferDetails = "click read offer details";
         String EventClickCancelRequestRide = "click cancel request ride";
         String EventSelectCancelReason = "select cancel %s";
-        String EventChangeDestiantionMap = "click change destination open map on %s";
-        String EventClickCall = "click call on %s";
-        String EventClickSmS  = "click sms on %s";
-        String EventClickShareEta = "click share on %s";
-        String EventClickCancel = "click cancel on  %s";
+        String EventChangeDestiantionMap = "click change destination open map";
+        String EventClickCall = "click call";
+        String EventClickSmS  = "click sms";
+        String EventClickShareEta = "click share";
+        String EventClickCancel = "click cancel";
         String EventClickSubmit  = "click submit";
         String EventClickTNC = "click tnc";
 
     }
     interface  Label {
         String No_Label = "";
-        String AddressDeleted = "AddressDeleted";
+        String ScreenName = "%s";
+        String AddressDeleted = "%s";
         String RideDetail = "%s - %s -%s";
-        String PromotionName = "%s";
-        String AddressSelected = "AddressSelected";
-        String BookingDetails = "%s - %s - %s";
+        String PromotionName = ScreenName + "- %s";
+        String AddressSelected = ScreenName + "- %s";
+        String BookingDetails = ScreenName + "-%s - %s - %s";
         String HelpOption = "%s";
-        String PromoSearchValue = "%s";
-        String PromoCode = "%s";
-        String CancelReason = "%s";
-        String RateSuggestion ="%s - %s";
+        String PromoSearchValue = ScreenName + "-%s";
+        String PromoCode = ScreenName + "-%s";
+        String CancelReason = ScreenName + "-%s";
+        String RateSuggestion =ScreenName + "-%s - %s";
 
 
     }

@@ -22,6 +22,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
@@ -234,6 +235,7 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
 
     @Override
     public void onItemClicked(String reason) {
+        RideGATracking.eventClickCancelReason(getScreenName(),reason);  //23
         adapter.setSelectedReason(reason);
         adapter.setReasons(this.reasons);
         this.selectedReason = reason;
@@ -263,6 +265,7 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            RideGATracking.eventBackPress(getScreenName());
             onBackPressed();
             return true;
         } else {

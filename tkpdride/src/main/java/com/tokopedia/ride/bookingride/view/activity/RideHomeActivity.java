@@ -58,6 +58,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.view.RideHomeContract;
@@ -777,6 +778,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void actionRequestRide(ConfirmBookingViewModel confirmBookingViewModel) {
+        RideGATracking.eventClickRequestRideOption(getScreenName(),confirmBookingViewModel.getProductDisplayName());
         Intent intent = OnTripActivity.getCallingIntent(this, confirmBookingViewModel);
         startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_REQUEST_CODE);
     }
@@ -785,9 +787,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            RideGATracking.eventBackPress(getScreenName());
             onBackPressed();
             return true;
         } else if (i == R.id.action_history) {
+            RideGATracking.eventClickOnTrip(getScreenName());
             actionNavigateToHistory();
             return true;
         } else {
