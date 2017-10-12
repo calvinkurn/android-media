@@ -343,7 +343,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                         public void onError(Throwable e) {
                             hideProgressDialog();
                             CommonUtils.UniversalToast(getActivity(),
-                                    ErrorHandler.getErrorMessage(e, getActivity()));
+                                    ErrorHandler.getErrorMessage(e));
                         }
 
                         @Override

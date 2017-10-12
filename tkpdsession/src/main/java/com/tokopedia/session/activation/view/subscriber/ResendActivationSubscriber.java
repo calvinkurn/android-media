@@ -26,7 +26,7 @@ public class ResendActivationSubscriber extends Subscriber<ResendActivationModel
     @Override
     public void onError(Throwable e) {
         viewListener.onErrorResendActivation(ErrorHandler
-                .getErrorMessage(e, viewListener.getActivity()));
+                .getErrorMessage(e));
     }
 
     @Override

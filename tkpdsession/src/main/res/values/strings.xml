@@ -82,4 +82,6 @@
     <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
     <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
     <string name="see_your_profile">Lihat Profil Anda</string>
+    <string name="error_empty_provider">Gagal mendownload provider.</string>
+    <string name="facebook_error_not_authorized">Gagal login facebook. Silahkan coba lagi.</string>
 </resources>

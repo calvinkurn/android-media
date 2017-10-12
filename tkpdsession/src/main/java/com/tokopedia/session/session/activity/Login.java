@@ -66,7 +66,8 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
-import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
+import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
+import com.tokopedia.session.register.view.fragment.OldRegisterInitialFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.fragment.RegisterPassPhoneFragment;
 import com.tokopedia.session.session.intentservice.LoginResultReceiver;
@@ -453,13 +454,8 @@ public class Login extends BaseActivity implements SessionView
 
     @Override
     public void moveToRegisterInitial() {
-        Fragment fragment = RegisterInitialFragment.newInstance();
-        moveToFragment(fragment, false, REGISTER_INITIAL, TkpdState.DrawerPosition.REGISTER_INITIAL);
-
-        // Change the header
-        session.setWhichFragment(TkpdState.DrawerPosition.REGISTER_INITIAL);
-        setToolbarTitle();
-        invalidateOptionsMenu();
+        finish();
+        startActivity(RegisterInitialActivity.getCallingIntent(this));
     }
 
     @Override
@@ -511,14 +507,9 @@ public class Login extends BaseActivity implements SessionView
                 break;
             case TkpdState.DrawerPosition.REGISTER:
                 if (isFragmentCreated(REGISTER_FRAGMENT_TAG)) {
-                    Fragment fragment = RegisterInitialFragment.newInstance();
-                    moveToFragment(fragment, true, REGISTER_FRAGMENT_TAG, TkpdState.DrawerPosition.REGISTER);
-
-                    session.setWhichFragment(TkpdState.DrawerPosition.REGISTER);
-                    setToolbarTitle();
-                    invalidateOptionsMenu();
+                    moveToRegisterInitial();
                 } else {
-                    Log.d(TAG, messageTAG + RegisterInitialFragment.class.getSimpleName() + " is not created !!!");
+                    Log.d(TAG, messageTAG + OldRegisterInitialFragment.class.getSimpleName() + " is not created !!!");
                 }
                 break;
             case TkpdState.DrawerPosition.SECURITY_QUESTION:
@@ -635,12 +626,12 @@ public class Login extends BaseActivity implements SessionView
                 ((LoginFragment) fragment).startLoginWithGoogle(LoginModel.GoogleType, model);
             }
 
-            // [START] pass some data to register fragment
-            fragment = supportFragmentManager.findFragmentById(R.id.login_fragment);
-            if (fragment instanceof RegisterInitialFragment && fragment.isVisible()) {
-                ((RegisterInitialFragment) fragment).startLoginWithGoogle(LoginModel.GoogleType, model);
-            }
-            // [END] pass some data to register fragment
+//            // [START] pass some data to register fragment
+//            fragment = supportFragmentManager.findFragmentById(R.id.login_fragment);
+//            if (fragment instanceof RegisterInitialFragment && fragment.isVisible()) {
+//                ((RegisterInitialFragment) fragment).startLoginWithGoogle(LoginModel.GoogleType, model);
+//            }
+//            // [END] pass some data to register fragment
 
         } else {
             // Show signed-out message and clear email field

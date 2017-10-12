@@ -83,7 +83,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
                         public void onError(Throwable e) {
                             hideProgressDialog();
                             NetworkErrorHelper.showCloseSnackbar(
-                                    getActivity(),  ErrorHandler.getErrorMessage(e, getActivity()));
+                                    getActivity(),  ErrorHandler.getErrorMessage(e));
                         }
 
                         @Override
