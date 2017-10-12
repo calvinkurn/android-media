@@ -213,6 +213,7 @@
     <string name="top_ads_keyword_title_keyword_edit_keyword">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_cost_per_click">Biaya Per Klik</string>
+    <string name="top_ads_keyword_cost_per_click_desc">Kosongkan biaya per klik jika ingin disesuaikan dengan biaya grup sebesar Rp %1$d</string>
 
     <string name="top_ads_keyword_label_type">Tipe Kata Kunci</string>
     <string name="top_ads_keyword_title_delete">Hapus Kata Kunci?</string>
