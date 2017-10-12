@@ -36,9 +36,6 @@ public class DrawerPosHelper extends DrawerHelper
         implements DrawerItemDataBinder.DrawerItemListener,
         DrawerPosHeaderDataBinder.DrawerHeaderListener {
 
-    private TextView shopName;
-    private TextView shopLabel;
-    private ImageView shopIcon;
     private View shopLayout;
     private View footerShadow;
     private SessionHandler sessionHandler;
@@ -49,9 +46,6 @@ public class DrawerPosHelper extends DrawerHelper
         super(activity);
         this.sessionHandler = sessionHandler;
         this.drawerCache = drawerCache;
-        shopName = activity.findViewById(R.id.label);
-        shopLabel = activity.findViewById(R.id.sublabel);
-        shopIcon = activity.findViewById(R.id.icon);
         shopLayout = activity.findViewById(R.id.drawer_shop);
         footerShadow = activity.findViewById(R.id.drawer_footer_shadow);
         shopLayout.setVisibility(View.GONE);
@@ -81,7 +75,7 @@ public class DrawerPosHelper extends DrawerHelper
                 TkpdState.DrawerPosition.POS_OUTLET,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),
-                R.drawable.ic_menu_logout,
+                R.drawable.icon_logout,
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
 
