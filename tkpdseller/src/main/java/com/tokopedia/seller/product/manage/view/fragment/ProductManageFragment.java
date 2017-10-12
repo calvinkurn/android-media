@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.PopupWindowCompat;
 import android.support.v7.app.AlertDialog;
@@ -430,7 +431,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             actionMode.setTitle(String.valueOf(totalChecked));
             MenuItem deleteMenuItem = actionMode.getMenu().findItem(R.id.delete_product_menu);
             deleteMenuItem.setVisible(totalChecked > 0);
-        }else{
+        } else {
             ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), checked);
             adapter.notifyDataSetChanged();
         }
@@ -477,7 +478,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void onErrorSetCashback(Throwable t, final String productId, final int cashback) {
         NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
-                ViewUtils.getErrorMessage(getActivity(), t), new NetworkErrorHelper.RetryClickedListener() {
+                ViewUtils.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
                         productManagePresenter.setCashback(productId, cashback);
@@ -496,7 +497,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             resetPageAndSearch();
         }
         NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
-                ViewUtils.getErrorMessage(getActivity(), t), new NetworkErrorHelper.RetryClickedListener() {
+                ViewUtils.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
                         productManagePresenter.deleteProduct(productIdFailToDeleteList);
@@ -527,7 +528,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public void onDestroy() {
         super.onDestroy();
         productManagePresenter.detachView();
-        if (addProductReceiver.isOrderedBroadcast()) getActivity().unregisterReceiver(addProductReceiver);
+        if (addProductReceiver.isOrderedBroadcast()) {
+            getActivity().unregisterReceiver(addProductReceiver);
+        }
     }
 
     @Override
@@ -537,7 +540,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public boolean isActionModeActive() {
-        return actionMode!=null;
+        return actionMode != null;
     }
 
     @Override
