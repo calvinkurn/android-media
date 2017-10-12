@@ -25,25 +25,39 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
-public class ReactNativeOfficialStoresActivity extends BasePresenterActivity {
+public class ReactNativeActivity extends BasePresenterActivity {
     public static final String USER_ID = "User_ID";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    public static final String EXTRA_URL = "EXTRA_URL";
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORES})
     public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
-        return ReactNativeOfficialStoresActivity.createReactNativeActivity(
+        return ReactNativeActivity.createOfficialStoresReactNativeActivity(
                 context, ReactConst.Screen.OFFICIAL_STORE,
                 context.getString(com.tokopedia.tkpd.R.string.react_native_banner_official_title)
         ).putExtras(bundle);
     }
 
-    public static Intent createReactNativeActivity(Context context,
-                                                   String reactScreenName,
-                                                   String pageTitle) {
-        Intent intent = new Intent(context, ReactNativeOfficialStoresActivity.class);
+    public static Intent createOfficialStoresReactNativeActivity(Context context,
+                                                                 String reactScreenName,
+                                                                 String pageTitle) {
+        Intent intent = new Intent(context, ReactNativeActivity.class);
         Bundle extras = new Bundle();
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(EXTRA_TITLE, pageTitle);
+        intent.putExtras(extras);
+        return intent;
+    }
+
+    public static Intent createBannerReactNativeActivity(Context context,
+                                                         String reactScreenName,
+                                                         String pageTitle,
+                                                         String url) {
+        Intent intent = new Intent(context, ReactNativeActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
+        extras.putString(EXTRA_TITLE, pageTitle);
+        extras.putString(EXTRA_URL, url);
         intent.putExtras(extras);
         return intent;
     }

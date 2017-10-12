@@ -206,7 +206,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.tokopedia.tkpd.home.ReactNativeOfficialStoresActivity"
+            android:name="com.tokopedia.tkpd.home.ReactNativeActivity"
             android:screenOrientation="portrait" />
         <service
             android:name="com.tokopedia.digital.product.service.USSDAccessibilityService"

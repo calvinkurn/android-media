@@ -28,7 +28,9 @@ import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.ReactNativeActivity;
 import com.tokopedia.tkpd.home.customview.BannerView;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import org.json.JSONObject;
 
@@ -279,9 +281,14 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
 
     public void openWebViewURL(String url, Context context) {
         if (url != "" && context != null) {
-            Intent intent = new Intent(context, BannerWebView.class);
-            intent.putExtra("url", url);
-            context.startActivity(intent);
+            context.startActivity(
+                    ReactNativeActivity.createBannerReactNativeActivity(
+                            context,
+                            ReactConst.Screen.PROMO,
+                            context.getString(R.string.header_react_promo_page),
+                            url
+                    )
+            );
         }
     }
 }
