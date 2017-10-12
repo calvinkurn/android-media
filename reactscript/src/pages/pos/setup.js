@@ -6,6 +6,8 @@ import Setup_cart from './setup_cart'
 import Setup_processing from './setup_processing'
 import Setup_history from './setup_history'
 import DetailCicilan from './setup_cicilan'
+import Invoice from './setup_invoice'
+
 
 class Root extends Component {
   componentWillMount() {
@@ -26,6 +28,8 @@ class Root extends Component {
       return <Setup_history />
     } else if (POS_PAGE === 'CICILAN'){
       return <DetailCicilan />
+    } else if (POS_PAGE === 'INVOICE'){
+      return <Invoice />
     }
   }
 }

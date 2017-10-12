@@ -67,19 +67,10 @@ const getGatewayCode = (data) => {
 }
 
 const makePaymentV2 = (api_url, data, gateway_code) => {
-  // console.log(api_url)
-  // console.log(data)
-  console.log(gateway_code)
-
   const checkout_data = data.checkout_data
-  // const jsonData = JSON.parse(data.checkout_data)
-  // console.log(jsonData)
   const exp_month = (data.expiry_date).substring(0, (data.expiry_date).indexOf('/'))
-  // console.log(exp_month)
   const exp_year = (data.expiry_date).substring((data.expiry_date).indexOf("/") + 1)
-  // console.log(exp_year)
   const cc_card_no_without_spaces = (data.cc_no).replace(/\s/g, '')
-  // console.log(cc_card_no_without_spaces)
 
   const data_params = {
     cc_card_no: cc_card_no_without_spaces,

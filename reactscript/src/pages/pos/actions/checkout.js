@@ -37,9 +37,6 @@ const doPayment = async () => {
     }
     const paymentToNative_getParams = await makePaymentToNativeStepOne(data_payment)
     const paymentToNative_secondStep = await makePaymentToNativeStepTwo(paymentToNative_getParams, data_payment, local_cart)
-    // console.log(data_payment)
-    // console.log(paymentToNative_getParams)  
-    // console.log(paymentToNative_secondStep)
     return paymentToNative_secondStep
   } catch (err){
     console.log(err)
