@@ -22,12 +22,6 @@ public class PaymentCloudSource {
     private static final String PARAM_TRANSACTION_ID = "transaction_id";
     private static final String PARAM_IP_ADDRESS = "ip_address";
     private static final String PARAM_MERCHANT_CODE = "merchant_code";
-    private static final String PARAM_PROFILE_CODE = "profile_code";
-    private static final String PARAM_CURRENCY = "currency";
-    private static final String PARAM_AMOUNT = "amount";
-    private static final String PARAM_GATEWAY_CODE = "gateway_code";
-    private static final String PARAM_STATE = "state";
-    private static final String PARAM_USER_DEFINED_STRING = "user_defined_string";
     public static final String CREATE_ORDER_PARAMETER = "CREATE_ORDER_PARAMETER";
     private String PARAM_SIGNATURE = "signature";
 
@@ -64,10 +58,10 @@ public class PaymentCloudSource {
         CreateOrderParameter orderParam =
                 (CreateOrderParameter) requestParams.getObject(CREATE_ORDER_PARAMETER);
 
-        String signatureInput = requestParams.getString(PARAM_MERCHANT_CODE, "") +
-                requestParams.getString(PARAM_PROFILE_CODE, "") +
+        String signatureInput = orderParam.getMerchantCode() +
+                orderParam.getProfileCode() +
                 orderParam.getTransactionId() +
-                requestParams.getString(PARAM_CURRENCY, "") +
+                orderParam.getCurrency() +
                 orderParam.getAmount() +
                 orderParam.getGatewayCode() +
                 orderParam.getState() +
@@ -77,6 +71,8 @@ public class PaymentCloudSource {
             AuthUtil.calculateHmacSHA1(signatureInput, PosConstants.KEY_PAYMENT)
         );
 
-        return paymentApi.createOrder(new Gson().toJson(orderParam)).map(createOrderMapper);
+        return paymentApi
+                .createOrder(new Gson().toJson(orderParam))
+                .map(createOrderMapper);
     }
 }

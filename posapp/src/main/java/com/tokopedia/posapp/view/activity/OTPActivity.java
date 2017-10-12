@@ -166,7 +166,8 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     @Override
     public void onPaymentCompleted(PaymentStatusDomain paymentStatusDomain) {
-        startActivity(ThankYouActivity.newTopIntent(this, gson.toJson(paymentStatusDomain)));
+        startActivity(InvoiceActivity.newTopIntent(this, gson.toJson(paymentStatusDomain)));
+        finish();
     }
 
     private class OTPWebViewClient extends WebViewClient {
@@ -215,7 +216,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
             Log.d("pos o2o", "initial url = " + url);
             progressBar.setVisibility(View.VISIBLE);
             if(url.contains("/payment/thanks")) {
-                otpPresenter.checkPaymentState();
+                otpPresenter.processPayment();
                 scroogeWebView.stopLoading();
                 return;
             }

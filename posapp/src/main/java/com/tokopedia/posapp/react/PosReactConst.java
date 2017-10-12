@@ -17,7 +17,7 @@ public interface PosReactConst {
         String PAYMENT_PROCESSING = "PROCESSING";
         String TRANSACTION_HISTORY = "HISTORY";
         String INSTALLMENT = "CICILAN";
-        String THANK_YOU = "THANK_YOU";
+        String INVOICE = "INVOICE";
     }
 
     interface CacheTable {

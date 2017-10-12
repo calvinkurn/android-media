@@ -12,12 +12,12 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity;
  * Created by okasurya on 10/11/17.
  */
 
-public class ThankYouActivity extends ReactNativeActivity {
+public class InvoiceActivity extends ReactNativeActivity {
 
     public static final String DATA = "data";
 
     public static Intent newTopIntent(Context context, String data) {
-        return new Intent(context, PaymentActivity.class)
+        return new Intent(context, InvoiceActivity.class)
                 .putExtra(DATA, data)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     }
@@ -26,8 +26,9 @@ public class ThankYouActivity extends ReactNativeActivity {
     protected Bundle getPropsBundle() {
         Bundle bundle = new Bundle();
         bundle.putString(ReactConst.KEY_SCREEN, PosReactConst.Screen.MAIN_POS_O2O);
-        bundle.putString(PosReactConst.Screen.PARAM_POS_PAGE, PosReactConst.Page.THANK_YOU);
-        bundle.putString(DATA, getIntent().getExtras().getString(DATA));
+        bundle.putString(PosReactConst.Screen.PARAM_POS_PAGE, PosReactConst.Page.INVOICE);
+
+        bundle.putString(DATA, getIntent().getStringExtra(DATA));
 
         return bundle;
     }

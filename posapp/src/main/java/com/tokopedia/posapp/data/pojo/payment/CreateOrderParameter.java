@@ -24,13 +24,10 @@ public class CreateOrderParameter {
     private OrderCartParameter cart;
     @SerializedName("amount")
     @Expose
-    private double amount;
+    private int amount;
     @SerializedName("gateway_code")
     @Expose
     private String gatewayCode;
-    @SerializedName("paymentDetails")
-    @Expose
-    private List<PaymentDetail> paymentDetails;
     @SerializedName("user_defined_string")
     @Expose
     private String userDefinedString;
@@ -40,6 +37,16 @@ public class CreateOrderParameter {
     @SerializedName("ip_address")
     @Expose
     private String ipAddress;
+    @SerializedName("merchant_code")
+    @Expose
+    private String merchantCode;
+    @SerializedName("profile_code")
+    @Expose
+    private String profileCode;
+    @SerializedName("currency")
+    @Expose
+    private String currency;
+
 
     public Integer getUserId() {
         return userId;
@@ -73,11 +80,11 @@ public class CreateOrderParameter {
         this.cart = cart;
     }
 
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
@@ -87,14 +94,6 @@ public class CreateOrderParameter {
 
     public void setGatewayCode(String gatewayCode) {
         this.gatewayCode = gatewayCode;
-    }
-
-    public List<PaymentDetail> getPaymentDetails() {
-        return paymentDetails;
-    }
-
-    public void setPaymentDetails(List<PaymentDetail> paymentDetails) {
-        this.paymentDetails = paymentDetails;
     }
 
     public String getUserDefinedString() {
@@ -119,5 +118,29 @@ public class CreateOrderParameter {
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+    }
+
+    public String getMerchantCode() {
+        return merchantCode;
+    }
+
+    public void setMerchantCode(String merchantCode) {
+        this.merchantCode = merchantCode;
+    }
+
+    public String getProfileCode() {
+        return profileCode;
+    }
+
+    public void setProfileCode(String profileCode) {
+        this.profileCode = profileCode;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

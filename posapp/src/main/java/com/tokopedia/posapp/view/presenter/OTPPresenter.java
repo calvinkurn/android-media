@@ -135,7 +135,7 @@ public class OTPPresenter implements OTP.Presenter {
     }
 
     @Override
-    public void checkPaymentState() {
+    public void processPayment() {
         if(otpData != null && otpData.getOtpDetailTransaction() != null) {
             RequestParams requestParams = RequestParams.create();
             requestParams.putString(PARAM_MERCHANT_CODE, PosConstants.Payment.MERCHANT_CODE);
@@ -208,12 +208,15 @@ public class OTPPresenter implements OTP.Presenter {
         createOrderParameter.setUserId(Integer.parseInt(SessionHandler.getLoginID(context)));
         createOrderParameter.setTransactionId(paymentStatusDomain.getTransactionId());
         createOrderParameter.setState(paymentStatusDomain.getState()+"");
-        createOrderParameter.setAmount(paymentStatusDomain.getAmount());
+        createOrderParameter.setAmount((int) paymentStatusDomain.getAmount());
         createOrderParameter.setGatewayCode(paymentStatusDomain.getGatewayCode());
         createOrderParameter.setUserDefinedString(paymentStatusDomain.getUserDefinedValue());
         createOrderParameter.setIpAddress("");
+        createOrderParameter.setMerchantCode(paymentStatusDomain.getMerchantCode());
+        createOrderParameter.setProfileCode(paymentStatusDomain.getProfileCode());
+        createOrderParameter.setCurrency(paymentStatusDomain.getCurrency());
 
-        OrderCartParameter orderCartParameter = new OrderCartParameter();
+        OrderCartParameter cart = new OrderCartParameter();
         List<CartDetail> cartDetails = new ArrayList<>();
         for(PaymentStatusItemDomain item : paymentStatusDomain.getItems()) {
             CartDetail cartDetail = new CartDetail();
@@ -221,19 +224,10 @@ public class OTPPresenter implements OTP.Presenter {
             cartDetail.setQty(item.getQuantity());
             cartDetails.add(cartDetail);
         }
-        orderCartParameter.setDetails(cartDetails);
-        orderCartParameter.setShopId(Integer.parseInt(SessionHandler.getShopID(context)));
-        orderCartParameter.setAddressId(Integer.parseInt(PosSessionHandler.getOutletId(context)));
-        createOrderParameter.setCart(orderCartParameter);
-
-        List<PaymentDetail> paymentDetails = new ArrayList<>();
-        for(PaymentDetailDomain domain : paymentStatusDomain.getPaymentDetails()) {
-            PaymentDetail paymentDetail = new PaymentDetail();
-            paymentDetail.setName(domain.getName());
-            paymentDetail.setAmount(domain.getAmount());
-            paymentDetails.add(paymentDetail);
-        }
-        createOrderParameter.setPaymentDetails(paymentDetails);
+        cart.setDetails(cartDetails);
+        cart.setShopId(Integer.parseInt(SessionHandler.getShopID(context)));
+        cart.setAddressId(Integer.parseInt(PosSessionHandler.getOutletId(context)));
+        createOrderParameter.setCart(cart);
         return createOrderParameter;
     }
 

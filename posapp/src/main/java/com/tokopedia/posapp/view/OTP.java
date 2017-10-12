@@ -13,7 +13,7 @@ public interface OTP {
     interface Presenter {
         void initializeData(String jsonData);
 
-        void checkPaymentState();
+        void processPayment();
     }
 
     interface View {

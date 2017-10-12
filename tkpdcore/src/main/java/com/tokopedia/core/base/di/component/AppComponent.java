@@ -88,7 +88,6 @@ public interface AppComponent {
     Retrofit mojitoRetrofit();
 
     @HadesQualifier
-
     Retrofit hadesRetrofit();
 
     @YoutubeQualifier
