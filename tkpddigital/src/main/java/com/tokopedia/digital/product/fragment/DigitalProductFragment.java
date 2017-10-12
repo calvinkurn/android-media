@@ -118,6 +118,7 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import rx.subscriptions.CompositeSubscription;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static com.tokopedia.digital.product.activity.DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER;
 
 /**
@@ -865,6 +866,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     OrderClientNumber orderClientNumber = data.getParcelableExtra(EXTRA_CALLBACK_CLIENT_NUMBER);
                     handleCallbackSearchNumber(orderClientNumber);
+                } else {
+                    handleCallbackSearchNumberCancel();
                 }
                 break;
         }
@@ -1003,6 +1006,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 }
             }
         }
+    }
+
+    private void handleCallbackSearchNumberCancel() {
+        digitalProductView.clearFocusOnClientNumber();
     }
 
     private void handleCallBackProductChooser(Product product) {
