@@ -1,9 +1,11 @@
 package com.tokopedia.transaction.purchase.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -32,11 +34,14 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.TxProductListAdapter;
 import com.tokopedia.transaction.purchase.listener.TxDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
+import com.tokopedia.transaction.purchase.model.response.txlist.OrderDriver;
 import com.tokopedia.transaction.purchase.presenter.TxDetailPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxDetailPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
@@ -46,10 +51,17 @@ import java.text.MessageFormat;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * @author by Angga.Prasetiyo on 28/04/2016.
  */
+@RuntimePermissions
 public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> implements
         TxDetailViewListener, TxProductListAdapter.ActionListener {
     private static final String EXTRA_ORDER_DATA = "EXTRA_ORDER_DATA";
@@ -112,6 +124,8 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     TextView driverLicense;
     @BindView(R2.id.driver_info_border)
     TextView driverInfoBorder;
+    @BindView(R2.id.btn_call_driver)
+    TextView btnCallOnDemandDriver;
 
     private OrderData orderData;
     private TkpdProgressDialog progressDialog;
@@ -218,13 +232,22 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         tvDestinationDetail.setText(orderData.getOrderDestination().getDetailDestination()
                 .replace("&amp;", "&"));
 
-        if(orderData.getDriverInfo() != null
+        OrderDriver orderDriver = new OrderDriver();
+        orderDriver.setDriverName("Joko Widodo");
+        orderDriver.setDriverPhone("http://vovworld.vn/Uploaded/tuthuy/2015_06_25/widodo-photo.jpg");
+        orderDriver.setDriverPhone("087885985095");
+        orderDriver.setLicenseNumber("License Number Coy");
+
+        orderData.setDriverInfo(orderDriver);
+
+        if (orderData.getDriverInfo() != null
                 && !orderData.getDriverInfo().getDriverName().isEmpty()) {
             instantCourierDriverLayout.setVisibility(View.VISIBLE);
             ImageHandler.loadImageCircle2(this, driverPhoto, orderData.getDriverInfo().getDriverPhoto());
             driverName.setText(orderData.getDriverInfo().getDriverName());
             driverPhone.setText(orderData.getDriverInfo().getDriverPhone());
-            if(orderData.getDriverInfo().getLicenseNumber().isEmpty()) {
+            btnCallOnDemandDriver.setOnClickListener(getClickListenerCallDriver());
+            if (orderData.getDriverInfo().getLicenseNumber().isEmpty()) {
                 driverLicense.setVisibility(View.GONE);
                 driverInfoBorder.setVisibility(View.GONE);
             } else {
@@ -233,6 +256,54 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                 driverLicense.setText(orderData.getDriverInfo().getLicenseNumber());
             }
         } else instantCourierDriverLayout.setVisibility(View.GONE);
+    }
+
+    @NonNull
+    private View.OnClickListener getClickListenerCallDriver() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new BottomSheetCallAction.Builder(TxDetailActivity.this)
+                        .actionListener(new BottomSheetCallAction.ActionListener() {
+                            @Override
+                            public void onPhoneCallerClicked(BottomSheetCallAction.CallActionData callActionData) {
+                                openDialCaller(callActionData.getPhoneNumber());
+                            }
+
+                            @Override
+                            public void onPhoneMessageClicked(BottomSheetCallAction.CallActionData callActionData) {
+                                openSmsApplication(callActionData.getPhoneNumber());
+                            }
+                        })
+                        .callActionData(new BottomSheetCallAction.CallActionData().setPhoneNumber(
+                                orderData.getDriverInfo().getDriverPhone()
+                        )).build()
+                        .show();
+            }
+        };
+    }
+
+    @NeedsPermission(Manifest.permission.SEND_SMS)
+    private void openSmsApplication(String phoneNumber) {
+        Intent smsIntent = new Intent(android.content.Intent.ACTION_VIEW);
+        smsIntent.setType("vnd.android-dir/mms-sms");
+        smsIntent.putExtra("address", phoneNumber);
+        try {
+            startActivity(Intent.createChooser(smsIntent, "SMS:"));
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @NeedsPermission(Manifest.permission.CALL_PHONE)
+    private void openDialCaller(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void renderActionButton() {
@@ -530,6 +601,50 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                                     .getPreorderProcessTimeTypeString()
                     );
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        TxDetailActivityPermissionsDispatcher.onRequestPermissionsResult(
+                this, requestCode, grantResults
+        );
+    }
+
+    @OnPermissionDenied(Manifest.permission.CALL_PHONE)
+    void showDeniedForCallPhone() {
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.CALL_PHONE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CALL_PHONE)
+    void showNeverAskForCallPhone() {
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.CALL_PHONE);
+    }
+
+    @OnShowRationale(Manifest.permission.CALL_PHONE)
+    void showRationaleForCallPhone(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(
+                this, request, Manifest.permission.CALL_PHONE
+        );
+    }
+
+
+    @OnPermissionDenied(Manifest.permission.SEND_SMS)
+    void showDeniedForSendSms() {
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.SEND_SMS);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.SEND_SMS)
+    void showNeverAskForSendSms() {
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.SEND_SMS);
+    }
+
+    @OnShowRationale(Manifest.permission.SEND_SMS)
+    void showRationaleForSendSms(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(
+                this, request, Manifest.permission.SEND_SMS
+        );
     }
 
 
