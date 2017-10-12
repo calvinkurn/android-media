@@ -235,7 +235,7 @@ public class FileUtils {
     }
 
     @NonNull
-    private static File getTkpdImageCacheFile(String fileName) {
+    public static File getTkpdImageCacheFile(String fileName) {
         File tkpdCachedirectory = getTkpdCacheDirectory();
         return new File(tkpdCachedirectory.getAbsolutePath() + "/"+ fileName + ".jpg");
     }

@@ -171,23 +171,6 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     }
 
     @Override
-    public void onSuccessCrop(CropImageView.CropResult cropResult) {
-        Bitmap bitmap = cropResult.getBitmap();
-        if (bitmap == null) {
-            Uri uri = cropResult.getUri();
-            if (uri!= null) {
-                onSuccessCrop(FileUtils.getPath(this, uri));
-            }
-        } else {
-            File file = FileUtils.writeImageToTkpdPath(bitmap, FileUtils.generateUniqueFileName());
-            if (file != null && file.exists()) {
-                String path = file.getAbsolutePath();
-                onSuccessCrop(path);
-            }
-        }
-    }
-
-    @Override
     public void onSuccessCrop(String path){
         // save the new path
         resultImageUrls.set(imageIndex, path);

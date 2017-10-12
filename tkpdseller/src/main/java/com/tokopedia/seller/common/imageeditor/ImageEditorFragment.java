@@ -4,12 +4,12 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,12 +25,6 @@ import com.tokopedia.seller.R;
 
 import java.io.File;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-
 /**
  * Created by User on 9/25/2017.
  */
@@ -38,14 +32,16 @@ import rx.schedulers.Schedulers;
 public class ImageEditorFragment extends Fragment implements CropImageView.OnSetImageUriCompleteListener, CropImageView.OnCropImageCompleteListener {
     public static final String TAG = ImageEditorFragment.class.getSimpleName();
     protected static final String ARG_LOCAL_PATH = "loc_pth";
+    private static final String SAVED_PATH = "svd_path";
+    private static final int CROP_COMPRESSION = 100;
 
     protected CropImageView mCropImageView;
     private String localPath;
 
     OnImageEditorFragmentListener onImageEditorFragmentListener;
+    private String croppedPath;
 
     public interface OnImageEditorFragmentListener {
-        void onSuccessCrop(CropImageView.CropResult cropResult);
         void onSuccessCrop(String localPath);
     }
 
@@ -62,6 +58,9 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
         super.onCreate(savedInstanceState);
         localPath = getArguments().getString(ARG_LOCAL_PATH);
         setHasOptionsMenu(true);
+        if (savedInstanceState != null) {
+            croppedPath = savedInstanceState.getString(SAVED_PATH);
+        }
     }
 
     @Nullable
@@ -97,11 +96,14 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
         if (item.getItemId() == R.id.main_action_crop) {
             // no need to crop if the rect is same and in local tkpd already
             if (mCropImageView.getRotation() == 0 &&
-                   mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect()) &&
+                    mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect()) &&
                     FileUtils.isInTkpdCache(new File(localPath))) {
                 onImageEditorFragmentListener.onSuccessCrop(localPath);
             } else {
-                mCropImageView.getCroppedImageAsync();
+                File file = FileUtils.getTkpdImageCacheFile(FileUtils.generateUniqueFileName());
+                croppedPath = file.getAbsolutePath();
+                mCropImageView.startCropWorkerTask(0, 0, CropImageView.RequestSizeOptions.NONE,
+                        Uri.fromFile(file), Bitmap.CompressFormat.JPEG, CROP_COMPRESSION);
             }
             return true;
         } else if (item.getItemId() == R.id.main_action_rotate) {
@@ -132,7 +134,21 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
 
     private void handleCropResult(CropImageView.CropResult result) {
         if (result.getError() == null) {
-            onImageEditorFragmentListener.onSuccessCrop(result);
+            Uri uri = result.getUri();
+            if (uri == null) {
+                Bitmap bitmap = result.getBitmap();
+                if (bitmap != null) {
+                    File file = FileUtils.writeImageToTkpdPath(bitmap, FileUtils.generateUniqueFileName());
+                    if (file != null && file.exists()) {
+                        String path = file.getAbsolutePath();
+                        onImageEditorFragmentListener.onSuccessCrop(path);
+                    }
+                }
+            } else {
+                if (!TextUtils.isEmpty(croppedPath)) {
+                    onImageEditorFragmentListener.onSuccessCrop(croppedPath);
+                }
+            }
         } else {
             Log.e("AIC", "Failed to crop image", result.getError());
             Toast.makeText(getActivity(), "Image crop failed: " + result.getError().getMessage(), Toast.LENGTH_LONG).show();
@@ -159,4 +175,9 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
         onImageEditorFragmentListener = (OnImageEditorFragmentListener) context;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SAVED_PATH, croppedPath);
+    }
 }
