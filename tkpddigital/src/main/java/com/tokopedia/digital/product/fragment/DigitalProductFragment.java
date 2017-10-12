@@ -913,7 +913,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         } else {
             return super.onOptionsItemSelected(item);
         }
-
     }
 
     @Override
@@ -994,9 +993,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             for (Operator operator : categoryDataState.getOperatorList()) {
                 if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
                     for (Product product : operator.getProductList()) {
-                        if (orderClientNumber.getProductId().equals(product.getProductId())) {
-                            Product orderProduct = product;
-                            digitalProductView.renderUpdateProductSelected(orderProduct);
+                        if (orderClientNumber.getProductId() != null) {
+                            if (orderClientNumber.getProductId().equals(product.getProductId())) {
+                                Product orderProduct = product;
+                                digitalProductView.renderUpdateProductSelected(orderProduct);
+                            }
                         }
                     }
                 }
