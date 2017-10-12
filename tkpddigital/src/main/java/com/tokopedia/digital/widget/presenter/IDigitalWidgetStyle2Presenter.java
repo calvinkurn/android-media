@@ -16,6 +16,4 @@ public interface IDigitalWidgetStyle2Presenter {
     void fetchDefaultProduct(String categoryId, String operatorId, String productId);
 
     void fetchOperatorByCategory(int categoryId);
-
-    void onDestroy();
 }

@@ -7,6 +7,8 @@ import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -66,6 +68,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     private int minLengthDefaultOperator;
     private boolean showPrice = true;
 
+    private CompositeSubscription compositeSubscription;
+
     public static WidgetStyle1RechargeFragment newInstance(Category category, int position) {
         WidgetStyle1RechargeFragment fragment = new WidgetStyle1RechargeFragment();
         Bundle bundle = new Bundle();
@@ -77,11 +81,14 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void initialVariable() {
+        compositeSubscription = new CompositeSubscription();
         DigitalWidgetInteractor interactor = new DigitalWidgetInteractor(
                 new CompositeSubscription(),
                 new DigitalWidgetRepository(new DigitalEndpointService(), new FavoriteNumberListDataMapper()),
                 new ProductMapper(),
-                new OperatorMapper());
+                new OperatorMapper(),
+                new JobExecutor(),
+                new UIThread());
         presenter = new DigitalWidgetStyle1Presenter(getActivity(), interactor, this);
 
         lastClientNumberTyped = presenter.getLastClientNumberTyped(String.valueOf(category.getId()));
@@ -123,8 +130,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void saveAndDisplayPhoneNumber(String phoneNumber) {
+        selectedOperator = null;
         widgetClientNumberView.setText(phoneNumber);
-        //save to last input key
     }
 
     @Override
@@ -141,20 +148,17 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
                 temp = validateTextPrefix(temp);
 
                 if (before == 1 && count == 0) {
+                    selectedOperator = null;
                     widgetClientNumberView.setImgOperatorInvisible();
                     clearHolder(holderWidgetSpinnerProduct);
                     clearHolder(holderWidgetWrapperBuy);
                 } else {
                     if (category.getAttributes().isValidatePrefix()) {
-                        if (temp.length() >= 3) {
-                            if (s.length() >= 3) {
+                        if (selectedOperator == null) {
+                            if ((temp.length() >= 3 && temp.length() <= 4) || temp.length() > minLengthDefaultOperator) {
                                 presenter.validatePhonePrefix(temp, category.getId(),
                                         category.getAttributes().isValidatePrefix());
                             }
-                        } else {
-                            widgetClientNumberView.setImgOperatorInvisible();
-                            clearHolder(holderWidgetSpinnerProduct);
-                            clearHolder(holderWidgetWrapperBuy);
                         }
                     } else {
                         if (s.length() >= minLengthDefaultOperator) {
@@ -176,6 +180,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
             @Override
             public void onRechargeTextClear() {
+                selectedOperator = null;
                 clearHolder(holderWidgetSpinnerProduct);
                 clearHolder(holderWidgetWrapperBuy);
             }
@@ -292,8 +297,9 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
 
             @Override
             public void trackingProduct() {
-                UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
-                        selectedProduct.getAttributes().getPrice());
+                if (selectedProduct != null)
+                    UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                            selectedProduct.getAttributes().getPrice());
             }
         };
     }
@@ -309,7 +315,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         clearHolder(holderWidgetWrapperBuy);
         clearHolder(holderWidgetSpinnerProduct);
         removeRechargeEditTextCallback(widgetClientNumberView);
-        presenter.onDestroy();
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
         unbinder.unbind();
         super.onDestroy();
     }
@@ -346,7 +353,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
             widgetProductChooserView.setTitleProduct(operatorModel.getAttributes().getRule().getProductText());
             widgetProductChooserView.setVisibilityProduct(operatorModel.getAttributes().getRule().isShowProduct());
             if (!operatorModel.getAttributes().getRule().isShowPrice()) showPrice = false;
-            if (operatorModel.getAttributes().getRule().isShowProduct()) {
+            if (!operatorModel.getAttributes().getRule().isShowProduct()) {
                 clearHolder(holderWidgetWrapperBuy);
                 holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
             }
@@ -382,7 +389,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         }
     }
 
-    @Override
     public void renderLastTypedClientNumber() {
         if (category.getAttributes().isValidatePrefix()) {
             widgetClientNumberView.setText(lastClientNumberTyped);

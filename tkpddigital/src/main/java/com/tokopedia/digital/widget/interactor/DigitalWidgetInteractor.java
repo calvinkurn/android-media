@@ -3,6 +3,9 @@ package com.tokopedia.digital.widget.interactor;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.model.mapper.OperatorMapper;
 import com.tokopedia.digital.widget.model.mapper.ProductMapper;
@@ -15,7 +18,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -37,15 +39,21 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
 
     private ProductMapper productMapper;
     private OperatorMapper operatorMapper;
+    private ThreadExecutor threadExecutor;
+    private PostExecutionThread postExecutionThread;
 
     public DigitalWidgetInteractor(CompositeSubscription compositeSubscription,
                                    DigitalWidgetRepository digitalWidgetRepository,
                                    ProductMapper productMapper,
-                                   OperatorMapper operatorMapper) {
+                                   OperatorMapper operatorMapper,
+                                   JobExecutor jobExecutor,
+                                   PostExecutionThread postExecutionThread) {
         this.compositeSubscription = compositeSubscription;
         this.digitalWidgetRepository = digitalWidgetRepository;
         this.operatorMapper = operatorMapper;
         this.productMapper = productMapper;
+        this.threadExecutor = jobExecutor;
+        this.postExecutionThread = postExecutionThread;
     }
 
     @Override
@@ -80,9 +88,9 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                             }
                         })
 
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
     }
 
@@ -122,8 +130,7 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     public void getOperatorsFromCategory(Subscriber<List<Operator>> subscriber, final int categoryId) {
         compositeSubscription.add(Observable.zip(
                 digitalWidgetRepository.getObservableOperators().map(operatorMapper),
-                getIdOperators(categoryId),
-                new Func2<List<Operator>, List<Integer>, List<Operator>>() {
+                getIdOperators(categoryId), new Func2<List<Operator>, List<Integer>, List<Operator>>() {
                     @Override
                     public List<Operator> call(List<Operator> operators, final List<Integer> integers) {
                         return Observable.just(operators)
@@ -144,9 +151,9 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                 .single();
                     }
                 })
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.from(threadExecutor))
+                .subscribeOn(Schedulers.from(threadExecutor))
+                .observeOn(postExecutionThread.getScheduler())
                 .subscribe(subscriber));
     }
 
@@ -192,9 +199,9 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         })
                         .filter(isProductValidToOperator(categoryId, Integer.parseInt(operatorId)))
                         .toList()
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
     }
 
@@ -215,9 +222,9 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                 return String.valueOf(operator.getId()).equals(operatorId);
                             }
                         })
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
     }
 
@@ -242,9 +249,9 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                 return products.get(0);
                             }
                         })
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
     }
 

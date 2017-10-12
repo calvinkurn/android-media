@@ -18,6 +18,4 @@ public interface IDigitalWidgetStyle1Presenter {
     void validateOperatorWithoutProducts(int categoryId, String operatorId);
 
     void fetchDefaultProduct(String categoryId, String operatorId, String productId);
-
-    void onDestroy();
 }

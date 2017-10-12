@@ -6,6 +6,8 @@ import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -67,6 +69,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
     private String selectedOperatorId;
     private int minLengthDefaultOperator;
     private boolean showPrice = true;
+    private CompositeSubscription compositeSubscription;
 
     public static WidgetStyle3RechargeFragment newInstance(Category category, int position) {
         WidgetStyle3RechargeFragment fragment = new WidgetStyle3RechargeFragment();
@@ -79,11 +82,14 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void initialVariable() {
+        compositeSubscription = new CompositeSubscription();
         DigitalWidgetInteractor interactor = new DigitalWidgetInteractor(
-                new CompositeSubscription(),
+                compositeSubscription,
                 new DigitalWidgetRepository(new DigitalEndpointService(), new FavoriteNumberListDataMapper()),
                 new ProductMapper(),
-                new OperatorMapper());
+                new OperatorMapper(),
+                new JobExecutor(),
+                new UIThread());
         presenter = new DigitalWidgetStyle2Presenter(getActivity(), interactor, this);
 
         lastClientNumberTyped = presenter.getLastClientNumberTyped(String.valueOf(category.getId()));
@@ -279,8 +285,9 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
             @Override
             public void trackingProduct() {
-                UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
-                        selectedProduct.getAttributes().getPrice());
+                if (selectedProduct != null)
+                    UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                            selectedProduct.getAttributes().getPrice());
             }
         };
     }
@@ -297,7 +304,8 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetSpinnerOperator);
         removeRechargeEditTextCallback(widgetClientNumberView);
-        presenter.onDestroy();
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
         unbinder.unbind();
         super.onDestroy();
     }

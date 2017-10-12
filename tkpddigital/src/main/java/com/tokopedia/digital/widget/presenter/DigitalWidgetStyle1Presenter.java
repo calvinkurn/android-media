@@ -139,8 +139,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
     private void processOperatorById(List<Product> products) {
         String operatorId = String.valueOf(
-                products.get(0).getRelationships().getOperator().getData().getId()
-        );
+                products.get(0).getRelationships().getOperator().getData().getId());
         widgetInteractor.getOperatorById(getOperatorSubscriber(), operatorId);
     }
 
@@ -223,10 +222,5 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                 view.renderProduct(product);
             }
         };
-    }
-
-    @Override
-    public void onDestroy() {
-        widgetInteractor.onDestroy();
     }
 }
