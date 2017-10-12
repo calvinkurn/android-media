@@ -36,6 +36,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     private ImageView ivGoldShop;
     private ImageView ivOfficialStore;
     private ImageView ivLuckyShop;
+    private ImageView ivLocation;
     private TextView tvShopName;
     private TextView tvShopLoc;
     private TextView tvLastOnline;
@@ -93,13 +94,19 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
         llRating = (LinearLayout) findViewById(R.id.l_rating);
         llReputationMedal = (LinearLayout) findViewById(R.id.l_medal);
         lastOnlineImageView = (ImageView) findViewById(R.id.last_online_icon);
+        ivLocation = (ImageView) findViewById(R.id.icon_location);
     }
 
     @SuppressLint("DefaultLocale")
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
         tvShopName.setText(MethodChecker.fromHtml(data.getShopInfo().getShopName()));
-        tvShopLoc.setText(data.getShopInfo().getShopLocation());
+        if (data.getShopInfo().getShopIsOfficial()==1) {
+            ivLocation.setImageDrawable(ContextCompat.getDrawable(getContext(),com.tokopedia.core.R.drawable.ic_official_store_badge));
+            tvShopLoc.setText(getResources().getString(com.tokopedia.core.R.string.authorized));
+        } else {
+            tvShopLoc.setText(data.getShopInfo().getShopLocation());
+        }
         if (data.getShopInfo().getShopStats().getShopBadge() != null) generateMedal(data);
         ImageHandler.loadImage2(ivShopAva, data.getShopInfo().getShopAvatar(),
                 R.drawable.ic_default_shop_ava);

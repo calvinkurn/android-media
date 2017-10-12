@@ -179,7 +179,12 @@ public class BrowseShopAdapter extends ProductAdapter {
                     shopView.startShopInfoActivity(shopModel.getShopId());
                 }
             });
-            shopLocation.setText(shopModel.getLocation());
+            if (shopModel.isOfficial()) {
+                shopLocation.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_official_store_badge, 0, 0, 0);
+                shopLocation.setText(context.getResources().getString(R.string.authorized));
+            } else {
+                shopLocation.setText(shopModel.getLocation());
+            }
             ImageHandler.LoadImage(reputationView, shopModel.getReputationImageUrl());
 
             try{

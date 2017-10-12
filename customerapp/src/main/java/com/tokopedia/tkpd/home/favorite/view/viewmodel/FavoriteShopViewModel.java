@@ -59,4 +59,5 @@ public class FavoriteShopViewModel implements Visitable<FavoriteTypeFactory> {
     public void setFavoriteShop(boolean favoriteShop) {
         isFavoriteShop = favoriteShop;
     }
+
 }
