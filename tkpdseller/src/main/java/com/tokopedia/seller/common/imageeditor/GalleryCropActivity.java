@@ -39,6 +39,13 @@ public class GalleryCropActivity extends GalleryActivity {
         context.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
+    public static void moveToImageGalleryCamera(Context context, Fragment fragment,
+                                                int position,
+                                                boolean forceOpenCamera,
+                                                int maxImageSelection) {
+        moveToImageGalleryCamera(context, fragment, position, forceOpenCamera, maxImageSelection, false);
+    }
+
     protected static Intent createIntent(Context context, int position,
                                        boolean forceOpenCamera,
                                        int maxImageSelection,
