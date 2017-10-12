@@ -60,10 +60,13 @@ import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
+import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
+import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
@@ -597,7 +600,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public void goToAddProduct(Activity activity){
-        if(activity != null)
+        if(activity != null) {
             ProductAddActivity.start(activity);
+        }
     }
 }
