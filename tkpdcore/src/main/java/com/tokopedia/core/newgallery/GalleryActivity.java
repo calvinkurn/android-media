@@ -577,17 +577,14 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                             FileUtils.compressImage(imagePathCamera, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                                             fileNameToMove);
                                     if (photo != null) {
-                                        intent.putExtra(GalleryActivity.IMAGE_URL, photo.getAbsolutePath());
-
                                         FileUtils.deleteAllCacheTkpdFile(imagePathCamera);
+                                        finishWithSingleImage(photo.getAbsolutePath());
                                     } else {
-                                        intent.putExtra(GalleryActivity.IMAGE_URL, imagePathCamera);
+                                        finishWithSingleImage(imagePathCamera);
                                     }
                                 } else {
-                                    intent.putExtra(GalleryActivity.IMAGE_URL, imagePathCamera);
+                                    finishWithSingleImage(imagePathCamera);
                                 }
-                                setResult(GalleryActivity.RESULT_CODE, intent);
-                                finish();
                             }
                             break;
                     }

@@ -127,7 +127,7 @@ public class FileUtils {
     public static File writeTempStateStoreBitmap(Context context, Bitmap bitmap) {
         try {
             File file = File.createTempFile(CROP_TEMP + (System.currentTimeMillis() / 1000L), JPG, context.getCacheDir());
-            writeBitmapToUri(context, bitmap, Uri.fromFile(file), Bitmap.CompressFormat.JPEG, 95);
+            writeBitmapToUri(context, bitmap, Uri.fromFile(file), Bitmap.CompressFormat.JPEG, 100);
             return file;
         } catch (Exception e) {
             Log.w("AIC", "Failed to write bitmap to temp file for image-cropper save instance state", e);
@@ -152,7 +152,7 @@ public class FileUtils {
                 needSave = false;
             }
             if (needSave) {
-                writeBitmapToUri(context, bitmap, uri, Bitmap.CompressFormat.JPEG, 95);
+                writeBitmapToUri(context, bitmap, uri, Bitmap.CompressFormat.JPEG, 100);
             }
             return uri;
         } catch (Exception e) {
@@ -174,18 +174,22 @@ public class FileUtils {
         }
     }
 
+    public static boolean isInTkpdCache(File file){
+        File tkpdCacheDirectory = getTkpdCacheDirectory();
+        String tkpdcacheDirPath = tkpdCacheDirectory.getAbsolutePath();
+        if (file.getAbsolutePath().contains(tkpdcacheDirPath) && file.exists()) {
+            return true;
+        }
+        return false;
+    }
+
     public static void deleteAllCacheTkpdFiles(ArrayList<String> filesToDelete) {
         if (filesToDelete == null || filesToDelete.size() == 0) {
             return;
         }
-        File tkpdCacheDirectory = getTkpdCacheDirectory();
-        String tkpdcacheDirPath = tkpdCacheDirectory.getAbsolutePath();
         for (int i = 0, sizei = filesToDelete.size(); i<sizei; i++) {
             String filePathToDelete = filesToDelete.get(i);
-            File fileToDelete = new File(filePathToDelete);
-            if (fileToDelete.getAbsolutePath().contains(tkpdcacheDirPath) && fileToDelete.exists()) {
-                fileToDelete.delete();
-            }
+            deleteAllCacheTkpdFile(filePathToDelete);
         }
     }
 
@@ -193,10 +197,8 @@ public class FileUtils {
         if (TextUtils.isEmpty(fileToDeletePath)) {
             return;
         }
-        File tkpdCacheDirectory = getTkpdCacheDirectory();
-        String tkpdcacheDirPath = tkpdCacheDirectory.getAbsolutePath();
         File fileToDelete = new File(fileToDeletePath);
-        if (fileToDelete.getAbsolutePath().contains(tkpdcacheDirPath) && fileToDelete.exists()) {
+        if (isInTkpdCache(fileToDelete)) {
             fileToDelete.delete();
         }
     }
