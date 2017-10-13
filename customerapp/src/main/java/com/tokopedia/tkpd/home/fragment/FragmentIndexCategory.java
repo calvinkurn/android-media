@@ -273,9 +273,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         topPicksPresenter.fetchTopPicks();
         brandsPresenter.fetchBrands();
         fetchRemoteConfig();
-//        if (SessionHandler.isV4Login(getActivity())) {
-//            rechargeCategoryPresenter.fetchLastOrder();
-//        }
     }
 
     private void fetchRemoteConfig() {
@@ -827,9 +824,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     homeCatMenuPresenter.fetchHomeCategoryMenu(true);
                     topPicksPresenter.fetchTopPicks();
                     brandsPresenter.fetchBrands();
-//                    if (SessionHandler.isV4Login(getActivity())) {
-//                        rechargeCategoryPresenter.fetchLastOrder();
-//                    }
                 }
             });
         }
