@@ -110,8 +110,8 @@ public class Stats {
         return shopTotalProduct;
     }
 
-    public int getShopReputationScore() {
-        return Integer.valueOf(shopReputationScore);
+    public String getShopReputationScore() {
+        return shopReputationScore;
     }
 
     public String getShopTotalTransactionCanceled() {

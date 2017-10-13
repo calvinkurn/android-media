@@ -71,6 +71,7 @@ import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
@@ -571,6 +572,17 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
+        if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
+                || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {
+            actionApplink(activity, Constants.Applinks.SellerApp.SELLER_APP_HOME);
+        } else {
+            actionApplink(activity, appLinkScheme);
+        }
+
+    }
+
+    @Override
     public Observable<Boolean> setCashBack(String productId, int cashback) {
         SetCashbackUseCase setCashbackUseCase = getGMComponent().getSetCashbackUseCase();
         return setCashbackUseCase.getExecuteObservableAsync(SetCashbackUseCase.createRequestParams(productId, cashback));
@@ -580,5 +592,10 @@ public abstract class SellerRouterApplication extends MainApplication
     public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
         GetCashbackUseCase getCashbackUseCase = getGMComponent().getCashbackUseCase();
         return getCashbackUseCase.getExecuteObservable(GetCashbackUseCase.createRequestParams(productIds));
+    }
+
+    public void goToAddProduct(Activity activity){
+        if(activity != null)
+            ProductAddActivity.start(activity);
     }
 }

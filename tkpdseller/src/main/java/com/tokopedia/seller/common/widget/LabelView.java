@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,9 +39,9 @@ public class LabelView extends BaseCustomView {
     private boolean showArrow;
     private int maxLines;
     private float textSize;
+    private int minTitleWidth;
 
     private boolean enabled;
-    private boolean weighted;
 
     public LabelView(Context context) {
         super(context);
@@ -70,7 +71,7 @@ public class LabelView extends BaseCustomView {
             maxLines = styledAttributes.getInt(R.styleable.LabelView_content_max_lines, 1);
             textSize = styledAttributes.getDimension(R.styleable.LabelView_lv_font_size,
                     getResources().getDimension(com.tokopedia.design.R.dimen.font_subheading));
-            weighted = styledAttributes.getBoolean(R.styleable.LabelView_weighted, false);
+            minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_lv_min_title_width, 0);
         } finally {
             styledAttributes.recycle();
         }
@@ -78,12 +79,7 @@ public class LabelView extends BaseCustomView {
     }
 
     private void init() {
-        View view;
-        if (weighted) {
-            view = inflate(getContext(), R.layout.widget_label_view_weighted, this);
-        } else {
-            view = inflate(getContext(), R.layout.widget_label_view, this);
-        }
+        View view = inflate(getContext(), R.layout.widget_label_view, this);
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         contentTextView = (TextView) view.findViewById(R.id.content_text_view);
         arrow = (ImageView) view.findViewById(R.id.arrow_left);
@@ -101,6 +97,7 @@ public class LabelView extends BaseCustomView {
         setVisibleArrow(showArrow);
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        titleTextView.setMinWidth(minTitleWidth);
         invalidate();
         requestLayout();
     }

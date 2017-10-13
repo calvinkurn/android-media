@@ -22,6 +22,6 @@ public class CheckWhiteListUseCase extends BaseApiCacheInterceptorUseCase<Boolea
 
     @Override
     public Observable<Boolean> createChildObservable(RequestParams requestParams) {
-        return apiCacheRepository.isInWhiteList(paramsCacheApiData.getHost(), paramsCacheApiData.getPath());
+        return apiCacheRepository.isInWhiteList(cacheApiData.getHost(), cacheApiData.getPath());
     }
 }

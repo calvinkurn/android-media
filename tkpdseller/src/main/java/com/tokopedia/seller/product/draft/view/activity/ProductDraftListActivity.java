@@ -24,6 +24,7 @@ import com.tokopedia.seller.product.draft.di.module.ProductDraftSaveBulkModule;
 import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftSaveBulkView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenter;
+import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 
 import java.util.ArrayList;
@@ -88,6 +89,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
 
                         @Override
                         public void onSuccess(ArrayList<String> localPaths) {
+                            hideProgressDialog();
                             // if the path is different with the original,
                             // means no all draft is saved to local for some reasons
                             if (localPaths == null || localPaths.size() == 0 ||
@@ -101,6 +103,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
                                     .build()
                                     .inject(ProductDraftListActivity.this);
                             productDraftSaveBulkPresenter.attachView(ProductDraftListActivity.this);
+                            showProgressDialog();
                             productDraftSaveBulkPresenter.saveInstagramToDraft(ProductDraftListActivity.this,
                                     localPaths, imageDescriptionList);
                         }
@@ -227,14 +230,20 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
     }
 
     @Override
-    public void onSaveBulkDraftError(Throwable throwable) {
+    public void hideDraftLoading(){
         hideProgressDialog();
-        NetworkErrorHelper.showCloseSnackbar(this, getString(R.string.product_instagram_draft_error_save_unknown));
     }
 
     @Override
-    public void onSaveInstagramResolutionError(int position, String localPath) {
-        CommonUtils.UniversalToast(this,
-                getString(R.string.product_instagram_draft_error_save_resolution, position));
+    public void onErrorSaveBulkDraft(Throwable throwable) {
+        hideProgressDialog();
+        if (throwable instanceof ResolutionImageException) {
+            NetworkErrorHelper.showCloseSnackbar(getActivity(),
+                    getString(R.string.product_instagram_draft_error_save_resolution));
+        } else {
+            NetworkErrorHelper.showCloseSnackbar(getActivity(),
+                    getString(R.string.product_instagram_draft_error_save_unknown));
+        }
     }
+
 }

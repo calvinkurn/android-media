@@ -97,7 +97,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_prompt_change_price_product, container, false);
+        View view = inflater.inflate(R.layout.fragment_dialog_product_manage_edit_price, container, false);
         spinnerCounterInputViewPrice = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_price);
         saveButton = (TextView) view.findViewById(R.id.string_picker_dialog_confirm);
         cancelButton = (TextView) view.findViewById(R.id.string_picker_dialog_cancel);

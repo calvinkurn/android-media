@@ -210,7 +210,7 @@ public class ShopEditorActivity extends TActivity implements
             }
 
             @Override
-            public void onSuccess(String path, int position) {
+            public void onSuccess(String path) {
                 File file = writeImageToTkpdPath(compressImage(path));
                 Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
                 if (fragment != null && file != null) {
@@ -324,7 +324,7 @@ public class ShopEditorActivity extends TActivity implements
     @Override
     public void deleteCacheShopInfov2() {
         if (deleteShopInfoUseCase!= null) {
-            deleteShopInfoUseCase.execute(RequestParams.EMPTY);
+            deleteShopInfoUseCase.executeSync(RequestParams.EMPTY);
         }
     }
 }

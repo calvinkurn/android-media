@@ -68,16 +68,21 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
                                       @NonNull ArrayList<String> instagramDescList) {
         ArrayList<String> correctResolutionLocalPathList = new ArrayList<>();
         ArrayList<String> correctResolutionInstagramDescList = new ArrayList<>();
+        ArrayList<Integer> failedPositionArrayList = new ArrayList<>();
         for (int i=0, sizei = localPathList.size(); i < sizei ; i++) {
             String localPath = localPathList.get(i);
             if (!isResolutionCorrect(localPath)) {
-                getView().onSaveInstagramResolutionError(i + 1, localPath);
+                failedPositionArrayList.add(i+1);
                 continue;
             }
             correctResolutionLocalPathList.add(localPath);
             correctResolutionInstagramDescList.add(instagramDescList.get(i));
         }
-        if (correctResolutionLocalPathList.size() == 0) {
+        if (failedPositionArrayList.size() > 0) {
+            getView().onErrorSaveBulkDraft(new ResolutionImageException(failedPositionArrayList));
+        }
+        if (correctResolutionLocalPathList.size() == 0 ) {
+            getView().hideDraftLoading();
             return;
         }
         saveBulkDraftProductUseCase.execute(
@@ -120,7 +125,7 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
             @Override
             public void onError(Throwable e) {
                 if(isViewAttached()) {
-                    getView().onSaveBulkDraftError(e);
+                    getView().onErrorSaveBulkDraft(e);
                 }
             }
 

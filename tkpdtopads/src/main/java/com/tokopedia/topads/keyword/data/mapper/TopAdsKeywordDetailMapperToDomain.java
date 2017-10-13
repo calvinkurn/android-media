@@ -51,6 +51,7 @@ public class TopAdsKeywordDetailMapperToDomain implements Func1<PageDataResponse
         keywordDetailDomain.setStatTotalCtr(datum.getStatTotalCtr());
         keywordDetailDomain.setStatTotalImpression(datum.getStatTotalImpression());
         keywordDetailDomain.setStatTotalSpent(datum.getStatTotalSpent());
+        keywordDetailDomain.setGroupBid(datum.getGroupBid());
         return keywordDetailDomain;
     }
 }

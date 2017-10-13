@@ -64,6 +64,7 @@ import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
@@ -72,6 +73,8 @@ import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -586,6 +589,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
+        if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
+                || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {
+            actionApplink(activity, Constants.Applinks.HOME);
+        } else {
+            actionApplink(activity, appLinkScheme);
+        }
+
+    }
+
+    @Override
     public Observable<Boolean> setCashBack(String productId, int cashback) {
         return Observable.just(false);
     }
@@ -594,5 +608,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
         List<DataCashbackModel> dataCashbackModels = new ArrayList<>();
         return Observable.just(dataCashbackModels);
+    }
+
+    public void goToAddProduct(Activity activity){
+        if(activity != null) {
+            ProductAddActivity.start(activity);
+        }
     }
 }

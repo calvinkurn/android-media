@@ -78,4 +78,5 @@ public interface TkpdCoreRouter {
 
     void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber);
 
+    void goToAddProduct(Activity activity);
 }
