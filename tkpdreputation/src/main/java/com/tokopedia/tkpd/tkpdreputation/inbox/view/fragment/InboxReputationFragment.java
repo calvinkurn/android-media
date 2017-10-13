@@ -25,6 +25,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFilterActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationAdapter;
@@ -371,7 +372,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
         searchView.setVisibility(View.GONE);
         filterButton.setVisibility(View.GONE);
         adapter.clearList();
-        if (GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()
+                || getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
             adapter.showEmpty(getString(R.string.inbox_reputation_empty_title));
         } else {
             adapter.showEmpty(getString(R.string.inbox_reputation_empty_title),

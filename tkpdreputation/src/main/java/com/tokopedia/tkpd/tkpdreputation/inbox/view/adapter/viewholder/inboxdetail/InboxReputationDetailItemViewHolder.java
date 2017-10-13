@@ -311,7 +311,7 @@ public class InboxReputationDetailItemViewHolder extends
         sellerReplyTime.setText(getFormattedTime(reviewResponseViewModel.getResponseCreateTime()));
         sellerReply.setText(MethodChecker.fromHtml(reviewResponseViewModel.getResponseMessage()));
         sellerAddReplyEditText.setText("");
-        if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+        if (canShowReplyOverflow(element)) {
             seeReplyLayout.setVisibility(View.VISIBLE);
             replyOverflow.setVisibility(View.VISIBLE);
             replyOverflow.setOnClickListener(new View.OnClickListener() {
@@ -394,6 +394,12 @@ public class InboxReputationDetailItemViewHolder extends
 
     private String getReviewerNameText(String reviewerName) {
         return MainApplication.getAppContext().getString(R.string.by) + " " + reviewerName;
+    }
+
+    private boolean canShowReplyOverflow(InboxReputationDetailItemViewModel element) {
+        return element.isReviewIsEditable()
+                || element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
+                || !TextUtils.isEmpty(element.getProductName());
     }
 
     private View.OnClickListener onReviewOverflowClicked(final InboxReputationDetailItemViewModel element) {
