@@ -444,6 +444,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_update_insurance">Ganti Asuransi</string>
     <string name="title_delete">Hapus</string>
     <string name="action_edit">Ubah</string>
+    <string name="action_editor">Olah</string>
     <string name="title_confirm">Konfirmasi</string>
     <string name="title_confirm_otp">Verifikasi</string>
     <string name="title_copy">Salin Invoice</string>
