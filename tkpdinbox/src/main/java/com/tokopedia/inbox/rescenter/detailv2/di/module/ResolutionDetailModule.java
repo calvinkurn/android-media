@@ -29,8 +29,10 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolut
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResChatUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.view.fragment.DetailResChatFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
+import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatFragmentPresenter;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
@@ -96,7 +98,6 @@ public class ResolutionDetailModule {
                 editAddressUseCase
         );
     }
-
     @ResolutionDetailScope
     @Provides
     GetResCenterDetailUseCase provideGetResCenterDetailUseCase(

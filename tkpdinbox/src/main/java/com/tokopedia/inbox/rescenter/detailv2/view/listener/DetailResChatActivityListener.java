@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.listener;
 
-import android.support.v4.app.Fragment;
+
+import android.app.Fragment;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -16,6 +17,6 @@ public interface DetailResChatActivityListener {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void initFragment();
+        void initFragment(boolean isSeller);
     }
 }

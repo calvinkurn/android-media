@@ -1,10 +1,10 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.activity;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -20,28 +20,49 @@ public class DetailResChatActivity
         extends BasePresenterActivity<DetailResChatActivityListener.Presenter>
         implements DetailResChatActivityListener.View, HasComponent {
 
-    public static final String RESOLUTION_ID = "resolution_id";
+    public static final String PARAM_RESOLUTION_ID = "resolution_id";
+    public static final String PARAM_SHOP_NAME = "shop_name";
+    public static final String PARAM_USER_NAME = "user_name";
+    public static final String PARAM_IS_SELLER = "is_seller";
 
     private String resolutionId;
+    private String shopName;
+    private String userName;
+    private boolean isSeller;
 
-    public static Intent newInstance(Context context, String resolutionId) {
+    public static Intent newBuyerInstance(Context context, String resolutionId, String shopName) {
         Intent intent = new Intent(context, DetailResChatActivity.class);
-        intent.putExtra(RESOLUTION_ID, resolutionId);
+        intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
+        intent.putExtra(PARAM_SHOP_NAME, shopName);
+        intent.putExtra(PARAM_IS_SELLER, false);
+        return intent;
+    }
+
+    public static Intent newSellerInstance(Context context, String resolutionId, String username) {
+        Intent intent = new Intent(context, DetailResChatActivity.class);
+        intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
+        intent.putExtra(PARAM_USER_NAME, username);
+        intent.putExtra(PARAM_IS_SELLER, true);
         return intent;
     }
 
     @Override
     public void inflateFragment(Fragment fragment, String TAG) {
-        if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
-            getSupportFragmentManager().beginTransaction()
+        if (getFragmentManager().findFragmentByTag(TAG) != null) {
+            getFragmentManager().beginTransaction()
                     .replace(com.tokopedia.core.R.id.container,
-                            getSupportFragmentManager().findFragmentByTag(TAG))
+                            getFragmentManager().findFragmentByTag(TAG))
                     .commit();
         } else {
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .add(com.tokopedia.core.R.id.container, fragment, TAG)
                     .commit();
         }
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 
     @Override
@@ -51,7 +72,13 @@ public class DetailResChatActivity
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        resolutionId = extras.getString(RESOLUTION_ID);
+        resolutionId = extras.getString(PARAM_RESOLUTION_ID);
+        isSeller = extras.getBoolean(PARAM_IS_SELLER);
+        if (isSeller) {
+            userName = extras.getString(PARAM_USER_NAME);
+        } else {
+            shopName = extras.getString(PARAM_SHOP_NAME);
+        }
     }
 
     @Override
@@ -66,7 +93,12 @@ public class DetailResChatActivity
 
     @Override
     protected void initView() {
-        presenter.initFragment();
+        if (isSeller) {
+            toolbar.setTitle("Kompalin dari " + userName);
+        } else {
+            toolbar.setTitle("Komplain ke " + shopName);
+        }
+        presenter.initFragment(isSeller);
 
     }
 
@@ -89,4 +121,6 @@ public class DetailResChatActivity
     public Object getComponent() {
         return getApplicationComponent();
     }
+
+
 }

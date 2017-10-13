@@ -12,9 +12,13 @@ public interface DetailResChatFragmentListener {
 
     interface View extends CustomerView {
 
-        void populateView();
+        void populateView(DetailResChatDomain detailResChatDomain);
 
         void successGetConversation(DetailResChatDomain detailResChatDomain);
+
+        void showProgressBar();
+
+        void dismissProgressBar();
 
         void errorGetConversation(String error);
     }

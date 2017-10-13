@@ -28,7 +28,7 @@ public class GetResChatUseCase extends UseCase<DetailResChatDomain> {
 
     @Override
     public Observable<DetailResChatDomain> createObservable(RequestParams requestParams) {
-        return null;
+        return resCenterRepository.getConversation(requestParams);
     }
 
     public RequestParams getResChatUseCaseParam(String resolutionId) {

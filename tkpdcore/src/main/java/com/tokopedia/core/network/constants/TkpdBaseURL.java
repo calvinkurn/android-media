@@ -802,7 +802,7 @@ public class TkpdBaseURL {
         public static final String BASE_RESOLUTION_VERSION_2 = "v2/";
         public static final String BASE_INBOX_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "inbox";
         public static final String BASE_DETAIL_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
-        public static final String BASE_DETAIL_RESOLUTION_V2 = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
+        public static final String BASE_DETAIL_RESOLUTION_V2 = BASE_RESOLUTION_VERSION_2 + "detail/{resolution_id}";
 
         public static final String GET_RESOLUTION_LIST = BASE_INBOX_RESOLUTION;
         public static final String GET_RESOLUTION_DETAIL = BASE_DETAIL_RESOLUTION;

@@ -42,6 +42,7 @@ public class DetailResChatFragmentPresenter
     }
 
     public void loadConversation(String resolutionId) {
+        mainView.showProgressBar();
         getResChatUseCase.execute(
                 getResChatUseCase.getResChatUseCaseParam(String.valueOf(resolutionId)),
                 new GetDetailResChatSubscriber(mainView));

@@ -74,10 +74,10 @@ public class ButtonResponse {
     @SerializedName("acceptSolutionAdminReturText")
     private String acceptByAdminReturnText;
 
-    @SerializedName("")
+    @SerializedName("recomplaint")
     private int recomplaint;
 
-    @SerializedName("")
+    @SerializedName("recomplaintText")
     private String recomplaintText;
 
     public int getReport() {

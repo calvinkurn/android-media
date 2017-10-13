@@ -11,6 +11,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -62,9 +63,14 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
     }
 
     @Override
-    public void setActionOnItemListClickListener(Context context, String resolutionID) {
-//        context.startActivity(DetailResCenterActivity.newInstance(context, resolutionID));
-        context.startActivity(DetailResChatActivity.newInstance(context, resolutionID));
+    public void setActionOnItemListClickListener(Context context, String resolutionID, String shopName, String username) {
+        if (username.equals("")) {
+            //current user as buyer, need seller shopname
+            context.startActivity(DetailResChatActivity.newBuyerInstance(context, resolutionID, shopName));
+        } else {
+            //current user as seller, need buyer username
+            context.startActivity(DetailResChatActivity.newSellerInstance(context, resolutionID, username));
+        }
         UnifyTracking.eventResolutionDetail(getResCenterTabModel().titleFragment);
     }
 

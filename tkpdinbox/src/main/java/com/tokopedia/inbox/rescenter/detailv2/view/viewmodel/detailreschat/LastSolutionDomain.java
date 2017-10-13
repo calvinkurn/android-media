@@ -6,10 +6,10 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat;
 
 public class LastSolutionDomain {
     private int id;
-    private int name;
+    private String name;
     private int amount;
 
-    public LastSolutionDomain(int id, int name, int amount) {
+    public LastSolutionDomain(int id, String name, int amount) {
         this.id = id;
         this.name = name;
         this.amount = amount;
@@ -23,11 +23,11 @@ public class LastSolutionDomain {
         this.id = id;
     }
 
-    public int getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(int name) {
+    public void setName(String name) {
         this.name = name;
     }
 

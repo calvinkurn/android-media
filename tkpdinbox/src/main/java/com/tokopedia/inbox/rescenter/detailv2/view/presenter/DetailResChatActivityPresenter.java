@@ -31,8 +31,14 @@ public class DetailResChatActivityPresenter implements DetailResChatActivityList
     }
 
     @Override
-    public void initFragment() {
-        mainView.inflateFragment(DetailResChatFragment.newInstance(resolutionId),
-                DetailResChatFragment.class.getSimpleName());
+    public void initFragment(boolean isSeller) {
+        if (isSeller) {
+
+            mainView.inflateFragment(DetailResChatFragment.newSellerInstance(resolutionId),
+                    DetailResChatFragment.class.getSimpleName());
+        } else {
+            mainView.inflateFragment(DetailResChatFragment.newBuyerInstance(resolutionId),
+                    DetailResChatFragment.class.getSimpleName());
+        }
     }
 }

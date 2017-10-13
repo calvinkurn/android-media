@@ -25,12 +25,14 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
 
     @Override
     public void onError(Throwable e) {
+        mainView.dismissProgressBar();
         e.printStackTrace();
         mainView.errorGetConversation(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(DetailResChatDomain detailResChatDomain) {
+        mainView.dismissProgressBar();
         mainView.successGetConversation(detailResChatDomain);
     }
 }
