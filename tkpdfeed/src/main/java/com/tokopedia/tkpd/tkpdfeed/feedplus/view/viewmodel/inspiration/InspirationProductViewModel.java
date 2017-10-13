@@ -10,14 +10,16 @@ public class InspirationProductViewModel {
     private String price;
     private String imageSource;
     private String url;
+    private int page;
 
     public InspirationProductViewModel(String productId, String name, String price, String
-            imageSource, String url) {
+            imageSource, String url, int page) {
         this.productId = productId;
         this.name = name;
         this.price = price;
         this.imageSource = imageSource;
         this.url = url;
+        this.page = page;
     }
 
     public String getProductId() {
@@ -58,5 +60,9 @@ public class InspirationProductViewModel {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public int getPage() {
+        return page;
     }
 }

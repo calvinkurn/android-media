@@ -184,7 +184,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                                 url,
                                 title,
                                 imageUrl,
-                                description));
+                                description,
+                                getArguments().getString(FeedPlusDetailActivity
+                                        .EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")));
                 shareBottomDialog.show();
             }
         };
@@ -196,13 +198,17 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             presenter.addToWishlist(adapterPosition, String.valueOf(productId));
             UnifyTracking.eventFeedClickProduct(
                     String.valueOf(productId),
-                    FeedTrackingEventLabel.Click.ADD_TO_WISHLIST +
+                    getArguments().getString(FeedPlusDetailActivity
+                            .EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
+                            + FeedTrackingEventLabel.Click.ADD_TO_WISHLIST +
                             FeedTrackingEventLabel.PAGE_PRODUCT_LIST);
         } else {
             presenter.removeFromWishlist(adapterPosition, String.valueOf(productId));
             UnifyTracking.eventFeedClickProduct(
                     String.valueOf(productId),
-                    FeedTrackingEventLabel.Click.REMOVE_WISHLIST +
+                    getArguments().getString(FeedPlusDetailActivity
+                            .EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
+                            + FeedTrackingEventLabel.Click.REMOVE_WISHLIST +
                             FeedTrackingEventLabel.PAGE_PRODUCT_LIST);
         }
     }
@@ -211,7 +217,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     public void onGoToShopDetail(Integer shopId) {
         goToShopDetail(shopId);
         UnifyTracking.eventFeedViewShop(String.valueOf(shopId),
-                FeedTrackingEventLabel.View.PRODUCTLIST_SHOP);
+                getArguments().getString(FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
+                        + FeedTrackingEventLabel.View.PRODUCTLIST_SHOP);
 
     }
 
@@ -314,7 +321,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 goToShopDetail(shopId);
                 UnifyTracking.eventFeedClickShop(String.valueOf(shopId),
-                        FeedTrackingEventLabel.Click.VISIT_SHOP);
+                        getArguments().getString(FeedPlusDetailActivity
+                                .EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
+                                + FeedTrackingEventLabel.Click.VISIT_SHOP);
             }
         };
     }
@@ -379,8 +388,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         if (getActivity().getApplication() instanceof PdpRouter) {
             ((PdpRouter) getActivity().getApplication()).goToProductDetailForResult(this,
                     productId, adapterPosition, REQUEST_OPEN_PDP);
-            UnifyTracking.eventFeedViewProduct(productId, FeedTrackingEventLabel.View
-                    .PRODUCTLIST_PDP);
+            UnifyTracking.eventFeedViewProduct(productId,
+                    getArguments().getString(FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
+                            + FeedTrackingEventLabel.View.PRODUCTLIST_PDP);
         }
     }
 
