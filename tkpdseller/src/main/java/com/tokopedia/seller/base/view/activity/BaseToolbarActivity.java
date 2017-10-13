@@ -27,6 +27,7 @@ import com.tokopedia.seller.common.utils.MenuTintUtils;
 
 abstract class BaseToolbarActivity extends BaseActivity {
 
+    private final static int TOOLBAR_ELEVATION = 10;
     private final static int TEXT_COLOR_BACKGROUND_WHITE = R.color.black;
     protected Toolbar toolbar;
 
@@ -59,7 +60,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
 
     protected void setToolbarColorWhite() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
+            toolbar.setElevation(TOOLBAR_ELEVATION);
         }
         int textColor = ContextCompat.getColor(this, TEXT_COLOR_BACKGROUND_WHITE);
         toolbar.setTitleTextColor(textColor);
