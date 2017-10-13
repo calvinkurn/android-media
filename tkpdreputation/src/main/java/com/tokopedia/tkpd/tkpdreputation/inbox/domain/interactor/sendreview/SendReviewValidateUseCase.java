@@ -64,8 +64,7 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
                                          String shopId,
                                          String rating,
                                          String reviewMessage,
-                                         boolean isAnonymous,
-                                         int hasAttachment) {
+                                         boolean isAnonymous) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_REVIEW_ID, reviewId);
         params.putString(PARAM_PRODUCT_ID, productId);
@@ -73,7 +72,7 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
         params.putString(PARAM_SHOP_ID, shopId);
         params.putString(PARAM_RATING, rating);
         params.putString(PARAM_REVIEW_MESSAGE, reviewMessage);
-        params.putInt(PARAM_HAS_PRODUCT_REVIEW_PHOTO, hasAttachment);
+        params.putInt(PARAM_HAS_PRODUCT_REVIEW_PHOTO, DEFAULT_NO_IMAGE);
         if(isAnonymous)
             params.putInt(PARAM_ANONYMOUS, DEFAULT_IS_ANONYMOUS);
 
