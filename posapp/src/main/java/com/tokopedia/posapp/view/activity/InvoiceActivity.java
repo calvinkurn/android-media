@@ -1,18 +1,20 @@
 package com.tokopedia.posapp.view.activity;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.posapp.react.PosReactConst;
-import com.tokopedia.tkpdreactnative.react.ReactConst;
-import com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity;
+import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.view.fragment.InvoiceFragment;
 
 /**
  * Created by okasurya on 10/11/17.
  */
 
-public class InvoiceActivity extends ReactNativeActivity {
+public class InvoiceActivity extends BasePresenterActivity {
 
     public static final String DATA = "data";
 
@@ -23,18 +25,59 @@ public class InvoiceActivity extends ReactNativeActivity {
     }
 
     @Override
-    protected Bundle getPropsBundle() {
-        Bundle bundle = new Bundle();
-        bundle.putString(ReactConst.KEY_SCREEN, PosReactConst.Screen.MAIN_POS_O2O);
-        bundle.putString(PosReactConst.Screen.PARAM_POS_PAGE, PosReactConst.Page.INVOICE);
+    protected void setupURIPass(Uri data) {
 
-        bundle.putString(DATA, getIntent().getStringExtra(DATA));
-
-        return bundle;
     }
 
     @Override
-    public void onBackPressed() {
+    protected void setupBundlePass(Bundle extras) {
+
+    }
+
+    @Override
+    protected void initialPresenter() {
+
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_simple_fragment;
+    }
+
+    @Override
+    protected void initView() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        getSupportActionBar().setTitle("Invoice");
+
+        InvoiceFragment fragment = InvoiceFragment.newInstance(getIntent().getStringExtra(DATA));
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        if (getSupportFragmentManager().findFragmentByTag(
+                InvoiceFragment.class.getSimpleName()) == null) {
+            fragmentTransaction.replace(R.id.container,
+                    fragment,
+                    fragment.getClass().getSimpleName());
+        } else {
+            fragmentTransaction.replace(R.id.container,
+                    getFragmentManager().findFragmentByTag(InvoiceFragment.class.getSimpleName()));
+        }
+
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void setViewListener() {
+
+    }
+
+    @Override
+    protected void initVar() {
+
+    }
+
+    @Override
+    protected void setActionVar() {
 
     }
 }

@@ -24,7 +24,7 @@ import retrofit2.Retrofit;
  * Created by okasurya on 9/5/17.
  */
 @PaymentScope
-@Module
+@Module(includes = CartModule.class)
 public class PaymentModule {
     @Provides
     ScroogeApi provideScroogeApi(@ScroogeNoAuth Retrofit retrofit) {

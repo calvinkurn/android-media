@@ -1,5 +1,7 @@
 package com.tokopedia.posapp.data.mapper;
 
+import android.util.Log;
+
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.posapp.data.pojo.payment.PaymentAction;
 import com.tokopedia.posapp.domain.model.CreateOrderDomain;
@@ -17,6 +19,7 @@ public class CreateOrderMapper implements Func1<Response<TkpdResponse>, CreateOr
 
     @Override
     public CreateOrderDomain call(Response<TkpdResponse> response) {
+        Log.d("o2o", response.body().getStrResponse());
         CreateOrderDomain createOrderDomain = new CreateOrderDomain();
         if(response.isSuccessful()
                 && response.body() != null

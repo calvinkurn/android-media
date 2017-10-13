@@ -1,5 +1,7 @@
 package com.tokopedia.posapp.data.source.cloud;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -62,7 +64,7 @@ public class PaymentCloudSource {
                 orderParam.getProfileCode() +
                 orderParam.getTransactionId() +
                 orderParam.getCurrency() +
-                orderParam.getAmount() +
+                String.format("%.02f", orderParam.getAmount()) +
                 orderParam.getGatewayCode() +
                 orderParam.getState() +
                 orderParam.getUserDefinedString();
@@ -70,6 +72,8 @@ public class PaymentCloudSource {
         orderParam.setSignature(
             AuthUtil.calculateHmacSHA1(signatureInput, PosConstants.KEY_PAYMENT)
         );
+
+        Log.d("o2o", "create order request" + new Gson().toJson(orderParam));
 
         return paymentApi
                 .createOrder(new Gson().toJson(orderParam))

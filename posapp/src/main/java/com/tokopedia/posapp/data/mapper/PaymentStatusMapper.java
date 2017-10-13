@@ -1,5 +1,7 @@
 package com.tokopedia.posapp.data.mapper;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.tokopedia.posapp.data.pojo.payment.PaymentDetail;
 import com.tokopedia.posapp.data.pojo.payment.PaymentStatusItem;
@@ -28,6 +30,7 @@ public class PaymentStatusMapper implements Func1<Response<String>, PaymentStatu
     @Override
     public PaymentStatusDomain call(Response<String> response) {
         if (response.isSuccessful() && response.body() != null) {
+            Log.d("o2o", response.body());
             PaymentStatusResponse data = gson.fromJson(response.body(), PaymentStatusResponse.class);
             if (data != null && data.getData() != null && data.getData().size() != 0) {
                 PaymentStatusDomain domain = new PaymentStatusDomain();

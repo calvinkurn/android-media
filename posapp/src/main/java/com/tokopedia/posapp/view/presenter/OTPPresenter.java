@@ -10,13 +10,13 @@ import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.data.pojo.payment.CartDetail;
 import com.tokopedia.posapp.data.pojo.payment.CreateOrderParameter;
 import com.tokopedia.posapp.data.pojo.payment.OrderCartParameter;
-import com.tokopedia.posapp.data.pojo.payment.PaymentDetail;
 import com.tokopedia.posapp.domain.model.CreateOrderDomain;
-import com.tokopedia.posapp.domain.model.payment.PaymentDetailDomain;
+import com.tokopedia.posapp.domain.model.cart.CartDomain;
 import com.tokopedia.posapp.domain.model.payment.PaymentStatusDomain;
 import com.tokopedia.posapp.domain.model.payment.PaymentStatusItemDomain;
 import com.tokopedia.posapp.domain.usecase.CheckPaymentStatusUseCase;
 import com.tokopedia.posapp.domain.usecase.CreateOrderUseCase;
+import com.tokopedia.posapp.domain.usecase.GetAllCartUseCase;
 import com.tokopedia.posapp.view.OTP;
 import com.tokopedia.posapp.view.viewmodel.otp.OTPData;
 import com.tokopedia.posapp.view.viewmodel.otp.OTPDetailTransaction;
@@ -65,14 +65,17 @@ public class OTPPresenter implements OTP.Presenter {
 
     private CheckPaymentStatusUseCase checkPaymentStatusUseCase;
     private CreateOrderUseCase createOrderUseCase;
+    private GetAllCartUseCase getAllCartUseCase;
     private Context context;
 
     @Inject
     public OTPPresenter(CheckPaymentStatusUseCase checkPaymentStatusUseCase,
                         CreateOrderUseCase createOrderUseCase,
+                        GetAllCartUseCase getAllCartUseCase,
                         @ApplicationContext Context context) {
         this.checkPaymentStatusUseCase = checkPaymentStatusUseCase;
         this.createOrderUseCase = createOrderUseCase;
+        this.getAllCartUseCase = getAllCartUseCase;
         this.context = context;
     }
 
@@ -82,13 +85,13 @@ public class OTPPresenter implements OTP.Presenter {
 
     @Override
     public void initializeData(String jsonData) {
-        if(jsonData != null) {
+        if (jsonData != null) {
             try {
                 JSONObject response = new JSONObject(jsonData);
-                if(!response.isNull("errors")) {
+                if (!response.isNull("errors")) {
                     JSONArray errors = response.getJSONArray("errors");
                     List<String> errorList = new ArrayList<>();
-                    for(int i = 0; i < errors.length(); i ++) {
+                    for (int i = 0; i < errors.length(); i++) {
                         JSONObject error = errors.getJSONObject(i);
                         errorList.add(error.getString("detail"));
                     }
@@ -97,7 +100,7 @@ public class OTPPresenter implements OTP.Presenter {
                 }
 
                 JSONObject data = response.getJSONObject("data");
-                if(data != null
+                if (data != null
                         && !data.getString(PARAM_URL).isEmpty()) {
                     otpData = new OTPData();
                     otpData.setUrl(data.getString(PARAM_URL));
@@ -122,13 +125,13 @@ public class OTPPresenter implements OTP.Presenter {
 
     private OTPDetailTransaction getDetailTransaction(JSONObject form) throws JSONException {
         OTPDetailTransaction detailTransaction = new OTPDetailTransaction();
-        if(form.has(PARAM_SIGNATURE)) {
+        if (form.has(PARAM_SIGNATURE)) {
             detailTransaction.setSignature(getFormItem(PARAM_SIGNATURE, form));
         }
-        if(form.has(PARAM_TRANSACTION_ID)) {
+        if (form.has(PARAM_TRANSACTION_ID)) {
             detailTransaction.setTransactionId(getFormItem(PARAM_TRANSACTION_ID, form));
         }
-        if(form.has(PARAM_ID)) {
+        if (form.has(PARAM_ID)) {
             detailTransaction.setId(getFormItem(PARAM_ID, form));
         }
         return detailTransaction;
@@ -136,7 +139,7 @@ public class OTPPresenter implements OTP.Presenter {
 
     @Override
     public void processPayment() {
-        if(otpData != null && otpData.getOtpDetailTransaction() != null) {
+        if (otpData != null && otpData.getOtpDetailTransaction() != null) {
             RequestParams requestParams = RequestParams.create();
             requestParams.putString(PARAM_MERCHANT_CODE, PosConstants.Payment.MERCHANT_CODE);
             requestParams.putString(PARAM_TRANSACTION_ID, otpData.getOtpDetailTransaction().getTransactionId());
@@ -144,7 +147,8 @@ public class OTPPresenter implements OTP.Presenter {
             Observable.just(requestParams)
                     .delay(6, TimeUnit.SECONDS)
                     .subscribeOn(Schedulers.newThread())
-                    .flatMap(checkStatus())
+                    .flatMap(checkPaymentStatus())
+                    .flatMap(getCartItem())
                     .flatMap(createOrder())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<PaymentStatusDomain>() {
@@ -168,7 +172,7 @@ public class OTPPresenter implements OTP.Presenter {
         }
     }
 
-    private Func1<RequestParams, Observable<PaymentStatusDomain>> checkStatus() {
+    private Func1<RequestParams, Observable<PaymentStatusDomain>> checkPaymentStatus() {
         return new Func1<RequestParams, Observable<PaymentStatusDomain>>() {
             @Override
             public Observable<PaymentStatusDomain> call(RequestParams requestParams) {
@@ -183,16 +187,13 @@ public class OTPPresenter implements OTP.Presenter {
             public Observable<PaymentStatusDomain> call(PaymentStatusDomain paymentStatusDomain) {
                 RequestParams requestParams = RequestParams.create();
                 requestParams.putObject(CREATE_ORDER_PARAMETER, getCreateOrderParam(paymentStatusDomain));
-                requestParams.putString(PARAM_MERCHANT_CODE, paymentStatusDomain.getMerchantCode());
-                requestParams.putString(PARAM_PROFILE_CODE, paymentStatusDomain.getProfileCode());
-                requestParams.putString(PARAM_CURRENCY, paymentStatusDomain.getCurrency());
                 return Observable.zip(
                         Observable.just(paymentStatusDomain),
                         createOrderUseCase.execute(requestParams),
                         new Func2<PaymentStatusDomain, CreateOrderDomain, PaymentStatusDomain>() {
                             @Override
                             public PaymentStatusDomain call(PaymentStatusDomain paymentStatusDomain, CreateOrderDomain createOrderDomain) {
-                                if(createOrderDomain.isStatus()) {
+                                if (createOrderDomain.isStatus()) {
                                     paymentStatusDomain.setOrderId(createOrderDomain.getOrderId());
                                 }
                                 return paymentStatusDomain;
@@ -207,9 +208,15 @@ public class OTPPresenter implements OTP.Presenter {
         CreateOrderParameter createOrderParameter = new CreateOrderParameter();
         createOrderParameter.setUserId(Integer.parseInt(SessionHandler.getLoginID(context)));
         createOrderParameter.setTransactionId(paymentStatusDomain.getTransactionId());
-        createOrderParameter.setState(paymentStatusDomain.getState()+"");
-        createOrderParameter.setAmount((int) paymentStatusDomain.getAmount());
-        createOrderParameter.setGatewayCode(paymentStatusDomain.getGatewayCode());
+        createOrderParameter.setState(paymentStatusDomain.getState() + "");
+        createOrderParameter.setAmount(paymentStatusDomain.getAmount());
+        if (paymentStatusDomain.getGatewayCode().equals("CREDITCARD")) {
+            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.CREDITCARD + "");
+        } else if (paymentStatusDomain.getGatewayCode().equals("INSTALLMENT")) {
+            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.INSTALLMENT + "");
+        } else {
+            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.PAYMENTGLOBAL + "");
+        }
         createOrderParameter.setUserDefinedString(paymentStatusDomain.getUserDefinedValue());
         createOrderParameter.setIpAddress("");
         createOrderParameter.setMerchantCode(paymentStatusDomain.getMerchantCode());
@@ -218,7 +225,7 @@ public class OTPPresenter implements OTP.Presenter {
 
         OrderCartParameter cart = new OrderCartParameter();
         List<CartDetail> cartDetails = new ArrayList<>();
-        for(PaymentStatusItemDomain item : paymentStatusDomain.getItems()) {
+        for (PaymentStatusItemDomain item : paymentStatusDomain.getItems()) {
             CartDetail cartDetail = new CartDetail();
             cartDetail.setProductId(item.getId());
             cartDetail.setQty(item.getQuantity());
@@ -234,21 +241,49 @@ public class OTPPresenter implements OTP.Presenter {
     private String getQueryParam(JSONObject form) throws JSONException, UnsupportedEncodingException {
         String queryParam = "";
         Iterator<String> keys = form.keys();
-        while(keys.hasNext()) {
+        while (keys.hasNext()) {
             String key = keys.next();
             queryParam += key + "=" + URLEncoder.encode(getFormItem(key, form), UTF_8);
-            if(keys.hasNext()) queryParam += "&";
+            if (keys.hasNext()) queryParam += "&";
         }
         return queryParam;
     }
 
-    private String getFormItem(String key, JSONObject form) throws JSONException{
-        if(form.get(key) instanceof String) {
+    private String getFormItem(String key, JSONObject form) throws JSONException {
+        if (form.get(key) instanceof String) {
             return form.getString(key);
-        } else if(form.get(key) instanceof JSONArray) {
+        } else if (form.get(key) instanceof JSONArray) {
             JSONArray jsonArray = form.getJSONArray(key);
             return jsonArray.getString(0);
         }
         return "";
+    }
+
+    public Func1<PaymentStatusDomain, Observable<PaymentStatusDomain>> getCartItem() {
+        return new Func1<PaymentStatusDomain, Observable<PaymentStatusDomain>>() {
+            @Override
+            public Observable<PaymentStatusDomain> call(PaymentStatusDomain paymentStatusDomain) {
+                return Observable.zip(
+                    Observable.just(paymentStatusDomain),
+                    getAllCartUseCase.execute(RequestParams.create()),
+                    new Func2<PaymentStatusDomain, List<CartDomain>, PaymentStatusDomain>() {
+                        @Override
+                        public PaymentStatusDomain call(PaymentStatusDomain paymentStatusDomain, List<CartDomain> cartDomains) {
+                            List<PaymentStatusItemDomain> items = new ArrayList<>();
+                            for (CartDomain cartItem : cartDomains) {
+                                PaymentStatusItemDomain paymentItem = new PaymentStatusItemDomain();
+                                paymentItem.setId(cartItem.getProductId());
+                                paymentItem.setPrice(cartItem.getProduct().getProductPriceUnformatted());
+                                paymentItem.setQuantity(cartItem.getQuantity());
+                                paymentItem.setName(cartItem.getProduct().getProductName());
+                                items.add(paymentItem);
+                            }
+                            paymentStatusDomain.setItems(items);
+                            return paymentStatusDomain;
+                        }
+                    }
+                );
+            }
+        };
     }
 }

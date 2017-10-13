@@ -175,9 +175,8 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            CommonUtils.UniversalToast(OTPActivity.this, url);
-            Log.d("pos o2o otp url", url);
-            return super.shouldOverrideUrlLoading(view, url);
+            Log.d("o2o override ", url);
+            return true;
         }
 
         @Override
@@ -206,19 +205,17 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-            Log.d("pos o2o", "intercept url = " + url);
+            Log.d("o2o", "intercept " + url);
             return super.shouldInterceptRequest(view, url);
         }
 
 
         @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
-            Log.d("pos o2o", "initial url = " + url);
+            Log.d("o2o", "initial " + url);
             progressBar.setVisibility(View.VISIBLE);
             if(url.contains("/payment/thanks")) {
                 otpPresenter.processPayment();
-                scroogeWebView.stopLoading();
-                return;
             }
             super.onPageStarted(view, url, favicon);
         }

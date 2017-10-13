@@ -32,6 +32,9 @@ import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.core.network.apiservices.ace.apis.BrowseApi.START;
+import static com.tokopedia.seller.product.edit.domain.interactor.GetCategoryRecommUseCase.ROW;
+
 /**
  * Created by okasurya on 8/29/17.
  */
@@ -59,6 +62,8 @@ public class CachePresenter implements Cache.Presenter {
     // TODO: 9/5/17 this state is ugly, try somethin else
     private boolean isRequestNextProduct;
     private int productPage;
+
+    private int defaultRowPerPage = 10;
 
     @Inject
     public CachePresenter(@ApplicationContext Context context,
@@ -164,6 +169,14 @@ public class CachePresenter implements Cache.Presenter {
         params.putString(PER_PAGE, "5");
         params.putString(WHOLESALE, "1");
 
+        return params;
+    }
+
+    private RequestParams getPosProductParam(int page) {
+        RequestParams params = RequestParams.create();
+        params.putString(SHOP_ID, SessionHandler.getShopID(context));
+        params.putInt(START, defaultRowPerPage * page);
+        params.putInt(ROW, defaultRowPerPage);
         return params;
     }
 

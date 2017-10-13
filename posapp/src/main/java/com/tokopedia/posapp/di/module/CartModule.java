@@ -8,6 +8,7 @@ import com.tokopedia.posapp.data.repository.CartRepository;
 import com.tokopedia.posapp.data.repository.CartRepositoryImpl;
 import com.tokopedia.posapp.di.scope.CartScope;
 import com.tokopedia.posapp.domain.usecase.AddToCartUseCase;
+import com.tokopedia.posapp.domain.usecase.GetAllCartUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -39,5 +40,12 @@ public class CartModule {
                                              PostExecutionThread postExecutionThread,
                                              CartRepository cartRepository) {
         return new AddToCartUseCase(threadExecutor, postExecutionThread, cartRepository);
+    }
+
+    @Provides
+    GetAllCartUseCase provideGetAllCartUseCase(ThreadExecutor threadExecutor,
+                                               PostExecutionThread postExecutionThread,
+                                               CartRepository cartRepository) {
+        return new GetAllCartUseCase(threadExecutor, postExecutionThread, cartRepository);
     }
 }

@@ -24,7 +24,7 @@ public class CreateOrderParameter {
     private OrderCartParameter cart;
     @SerializedName("amount")
     @Expose
-    private int amount;
+    private double amount;
     @SerializedName("gateway_code")
     @Expose
     private String gatewayCode;
@@ -80,11 +80,11 @@ public class CreateOrderParameter {
         this.cart = cart;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 

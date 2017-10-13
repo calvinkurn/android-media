@@ -121,6 +121,6 @@ public class CardDetailFragment extends BaseDaggerFragment implements CardDetail
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        Log.d("pos o2o", e.getMessage());
+        Log.d("o2o", e.getMessage());
     }
 }

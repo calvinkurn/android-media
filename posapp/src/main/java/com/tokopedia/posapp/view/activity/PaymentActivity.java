@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 
@@ -24,6 +25,8 @@ public class PaymentActivity extends ReactNativeActivity {
     @DeepLink(Constants.Applinks.PAYMENT_CHECKOUT)
     public static Intent getIntentFromDeeplink(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
+        Log.d("o2o", "PaymentBank.js uri : " + uri.toString());
+        Log.d("o2o", "PaymentBank.js payload : " + uri.getQueryParameter(CHECKOUT_DATA));
         extras.putString(CHECKOUT_DATA, uri.getQueryParameter(CHECKOUT_DATA));
 
 
