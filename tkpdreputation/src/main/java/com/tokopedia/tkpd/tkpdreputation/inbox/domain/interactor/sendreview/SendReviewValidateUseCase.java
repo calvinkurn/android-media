@@ -42,8 +42,8 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
     private static final String PARAM_FILE_DESC = "file_desc";
     private static final String PARAM_IS_DELETED = "is_deleted";
 
-    private static final String DEFAULT_NO_IMAGE = "0";
-    private static final String DEFAULT_HAS_IMAGE = "1";
+    public static final int DEFAULT_NO_IMAGE = 0;
+    public static final int DEFAULT_HAS_IMAGE = 1;
 
     protected ReputationRepository reputationRepository;
 
@@ -64,7 +64,8 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
                                          String shopId,
                                          String rating,
                                          String reviewMessage,
-                                         boolean isAnonymous) {
+                                         boolean isAnonymous,
+                                         int hasAttachment) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_REVIEW_ID, reviewId);
         params.putString(PARAM_PRODUCT_ID, productId);
@@ -72,7 +73,7 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
         params.putString(PARAM_SHOP_ID, shopId);
         params.putString(PARAM_RATING, rating);
         params.putString(PARAM_REVIEW_MESSAGE, reviewMessage);
-        params.putString(PARAM_HAS_PRODUCT_REVIEW_PHOTO, DEFAULT_NO_IMAGE);
+        params.putInt(PARAM_HAS_PRODUCT_REVIEW_PHOTO, hasAttachment);
         if(isAnonymous)
             params.putInt(PARAM_ANONYMOUS, DEFAULT_IS_ANONYMOUS);
 
@@ -95,7 +96,7 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
         params.putString(PARAM_SHOP_ID, shopId);
         params.putString(PARAM_RATING, rating);
         params.putString(PARAM_REVIEW_MESSAGE, reviewMessage);
-        params.putString(PARAM_HAS_PRODUCT_REVIEW_PHOTO, DEFAULT_HAS_IMAGE);
+        params.putInt(PARAM_HAS_PRODUCT_REVIEW_PHOTO, DEFAULT_HAS_IMAGE);
         params.putString(PARAM_REVIEW_PHOTO_ALL, getReviewPhotos(list, deletedList));
         params.putString(PARAM_REVIEW_PHOTO_OBJ, getReviewPhotosObj(list, deletedList));
         if(isAnonymous)

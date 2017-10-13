@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.reputation.ReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
@@ -60,7 +61,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     @Override
     public void bind(final InboxReputationItemViewModel element) {
 
-        name.setText(element.getRevieweeName());
+        name.setText(MethodChecker.fromHtml(element.getRevieweeName()));
         date.setText(getDate(element.getCreateTime()));
         invoice.setText(element.getInvoice());
         ImageHandler.LoadImage(avatar, element.getRevieweePicture());

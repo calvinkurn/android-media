@@ -135,7 +135,8 @@ public class InboxReputationFormPresenter
                 shopId,
                 String.valueOf(rating),
                 review,
-                isAnonymous
+                isAnonymous,
+                SendReviewValidateUseCase.DEFAULT_NO_IMAGE
         ), new SendReviewWithoutImageSubscriber(viewListener, shareFb, new ShareModel(
                 productName,
                 review,
@@ -201,7 +202,7 @@ public class InboxReputationFormPresenter
         viewListener.showLoadingProgress();
         if (list.isEmpty()) {
             editReviewWithoutImage(reviewId, reputationId, productId, shopId, review, rating,
-                    shareFb, productName, productAvatar, productUrl, isAnonymous);
+                    shareFb, productName, productAvatar, productUrl, isAnonymous, deletedList);
         } else {
             editReviewWithImage(reviewId, reputationId, productId, shopId, review, rating, list,
                     deletedList, shareFb, isAnonymous, productName, productAvatar, productUrl);
@@ -230,11 +231,14 @@ public class InboxReputationFormPresenter
     private void editReviewWithoutImage(String reviewId, String reputationId,
                                         String productId, String shopId,
                                         String review, float rating, boolean shareFb,
-                                        String productName, String productAvatar, String productUrl, boolean isAnonymous) {
+                                        String productName, String productAvatar, String productUrl, boolean isAnonymous, List<ImageUpload> deletedList) {
         editReviewValidateUseCase.execute(EditReviewValidateUseCase.getParam(
                 reviewId, productId,
                 reputationId, shopId,
-                String.valueOf(rating), review, isAnonymous),
+                String.valueOf(rating), review, isAnonymous,
+                deletedList.size() > 0 ? SendReviewValidateUseCase.DEFAULT_HAS_IMAGE :
+                        SendReviewValidateUseCase.DEFAULT_NO_IMAGE
+                ),
                 new EditReviewWithoutImageSubscriber(viewListener, shareFb, new ShareModel(
                         productName,
                         review,
