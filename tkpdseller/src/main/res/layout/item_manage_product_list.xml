@@ -33,7 +33,7 @@
         <FrameLayout
             android:id="@+id/view_product_on_supervision"
             android:visibility="gone"
-            android:background="@color/redTransparant"
+            android:background="@drawable/bg_rect_red_round"
             android:layout_width="@dimen/image_width_xl"
             android:layout_height="@dimen/image_width_xl">
             <ImageView

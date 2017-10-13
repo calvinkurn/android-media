@@ -80,7 +80,6 @@ public class GMModule {
         return new GMFeaturedProductRepositoryImpl(gmFeaturedProductDataSource, shopInfoRepository, gmFeaturedProductMapper, gmFeaturedProductSubmitMapper);
     }
 
-    // FOR SHOP_INFO
     @GMScope
     @Provides
     ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource) {
