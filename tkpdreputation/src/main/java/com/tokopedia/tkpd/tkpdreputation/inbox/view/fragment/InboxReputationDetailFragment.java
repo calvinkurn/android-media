@@ -348,20 +348,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessSendSmiley(int score) {
-        if (adapter.getHeader() != null) {
-            InboxReputationDetailHeaderViewModel header = adapter.getHeader();
-            header.getReputationDataViewModel()
-                    .setReviewerScore(score);
-            header.getReputationDataViewModel()
-                    .setInserted(true);
-            header.getReputationDataViewModel()
-                    .setEditable(score != InboxReputationDetailHeaderViewHolder.SMILEY_GOOD);
-            adapter.getList().remove(0);
-            adapter.getList().add(0, header);
-            adapter.notifyItemChanged(0);
-            getActivity().setResult(Activity.RESULT_OK);
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.given_smiley));
-        }
+        refreshPage();
     }
 
     @Override

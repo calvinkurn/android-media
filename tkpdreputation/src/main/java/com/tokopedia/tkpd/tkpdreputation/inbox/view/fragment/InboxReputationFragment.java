@@ -374,7 +374,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         adapter.clearList();
         if (GlobalConfig.isSellerApp()
                 || getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
-            adapter.showEmpty(getString(R.string.inbox_reputation_empty_title));
+            adapter.showEmpty(getString(R.string.inbox_reputation_seller_empty_title));
         } else {
             adapter.showEmpty(getString(R.string.inbox_reputation_empty_title),
                     getString(R.string.inbox_reputation_empty_button),

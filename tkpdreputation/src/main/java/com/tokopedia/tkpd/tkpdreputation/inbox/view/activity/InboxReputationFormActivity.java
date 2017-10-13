@@ -22,6 +22,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFormFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
@@ -117,10 +118,12 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         String productId = getIntent().getExtras().getString(ARGS_PRODUCT_ID, "");
         String shopId = getIntent().getExtras().getString(ARGS_SHOP_ID, "");
         String productAvatar = getIntent().getExtras().getString(ARGS_PRODUCT_AVATAR, "");
-        String productName = getIntent().getExtras().getString(ARGS_PRODUCT_NAME, "");
+        String productName = MethodChecker.fromHtml(getIntent().getExtras().getString(ARGS_PRODUCT_NAME,
+                "")).toString();
         String productUrl = getIntent().getExtras().getString(ARGS_PRODUCT_URL, "");
         boolean isAnonymous = getIntent().getExtras().getBoolean(ARGS_ANONYMOUS, false);
-        String revieweeName = getIntent().getExtras().getString(ARGS_REVIEWEE_NAME, "");
+        String revieweeName = MethodChecker.fromHtml(getIntent().getExtras().getString
+                (ARGS_REVIEWEE_NAME, "")).toString();
 
         int rating = getIntent().getExtras().getInt(ARGS_RATING);
         String review = getIntent().getExtras().getString(ARGS_REVIEW, "");

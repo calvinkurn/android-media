@@ -106,5 +106,6 @@
     <string name="review_auto_scored">Waktu penilaian telah habis, nilai terisi otomatis</string>
     <string name="review_is_saved">Penilaian sudah disimpan</string>
     <string name="hint_write_reply">Tulis balasan...</string>
+    <string name="inbox_reputation_seller_empty_title">Belum ada ulasan dari pembeli.\nPastikan Produk Anda sudah terjual.</string>
 
 </resources>

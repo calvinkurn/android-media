@@ -37,9 +37,8 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
     private static final String FILTER_THIS_MONTH = "3";
     private static final String FILTER_LAST_3_MONTH = "4";
 
-    private static final String FILTER_GIVEN_SCORE = "1";
-    private static final String FILTER_NO_SCORE = "2";
-
+    private static final String FILTER_NO_SCORE = "1";
+    private static final String FILTER_GIVEN_SCORE = "2";
 
     public static final String SELECTED_TIME_FILTER = "SELECTED_TIME_FILTER";
     public static final String SELECTED_SCORE_FILTER = "SELECTED_SCORE_FILTER";

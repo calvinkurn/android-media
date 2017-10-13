@@ -35,7 +35,7 @@ public class GetInboxReputationUseCase extends UseCase<InboxReputationDomain> {
     protected static final String DEFAULT_TIME_FILTER = "1";
     private static final String PARAM_KEYWORD = "keyword";
 
-    public final static String PARAM_TAB = "TAB";
+    public final static String PARAM_TAB = "tab";
     public static final String PARAM_REPUTATION_ID = "reputation_id";
 
     protected ReputationRepository reputationRepository;
