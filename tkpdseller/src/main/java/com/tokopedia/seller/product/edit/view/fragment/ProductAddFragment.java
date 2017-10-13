@@ -46,7 +46,7 @@ import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActiv
 import com.tokopedia.seller.product.edit.view.activity.YoutubeAddVideoActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ImageDescriptionDialog;
-import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ImageEditProductDialogFragment;
 import com.tokopedia.seller.product.edit.view.holder.ProductAdditionalInfoViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductDetailViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductImageViewHolder;
@@ -65,7 +65,6 @@ import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantDataSubmit;
@@ -570,9 +569,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onImagePickerItemClicked(int position, boolean isPrimary, boolean allowDelete) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        DialogFragment dialogFragment = ImageEditDialogFragment.newInstance(position, isPrimary,allowDelete);
-        dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
-        ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
+        DialogFragment dialogFragment = ImageEditProductDialogFragment.newInstance(position, isPrimary,allowDelete);
+        dialogFragment.show(fm, ImageEditProductDialogFragment.FRAGMENT_TAG);
+        ((ImageEditProductDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditProductDialogFragment.OnImageEditListener() {
 
             @Override
             public void clickEditImagePathFromCamera(int position) {

@@ -18,41 +18,28 @@ public class ImageEditDialogFragment extends DialogFragment {
     public static final String FRAGMENT_TAG = ImageEditDialogFragment.class.getSimpleName();
     public static final String IMAGE_PRODUCT_POSITION = "IMAGE_PRODUCT_POSITION";
 
-    public static final String IMAGE_IS_PRIMARY = "IMAGE_IS_PRIMARY";
-    public static final String ALLOW_DELETE = "ALLOW_DELETE";
-
     private CharSequence imageMenu[];
-    private OnImageEditListener mListener;
-    boolean allowDelete;
+    private OnImageAddListener mListener;
 
-    public interface OnImageEditListener {
-        void clickEditImagePathFromCamera(int position);
-        void clickEditImagePathFromGallery(int position);
-        void clickEditImagePathFromInstagram(int position);
+    public interface OnImageAddListener {
+        void clickEditProductFromCamera(int position);
 
-        void clickImageEditor(int position);
+        void clickEditProductFromGallery(int position);
 
-        void clickEditImageDesc(int position);
-
-        void clickEditImagePrimary(int position);
-
-        void clickRemoveImage(int positions);
+        void clickEditProductFromInstagram(int position);
     }
 
     public int position;
-    public boolean isPrimary;
 
-    public static DialogFragment newInstance(int position, boolean isPrimary, boolean allowDelete) {
+    public static ImageEditDialogFragment newInstance(int position) {
         ImageEditDialogFragment f = new ImageEditDialogFragment();
         Bundle args = new Bundle();
         args.putInt(IMAGE_PRODUCT_POSITION, position);
-        args.putBoolean(IMAGE_IS_PRIMARY, isPrimary);
-        args.putBoolean(ALLOW_DELETE, allowDelete);
         f.setArguments(args);
         return f;
     }
 
-    public void setOnImageEditListener(OnImageEditListener listener) {
+    public void setOnImageAddListener(OnImageAddListener listener) {
         this.mListener = listener;
     }
 
@@ -60,8 +47,6 @@ public class ImageEditDialogFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         position = getArguments().getInt(IMAGE_PRODUCT_POSITION);
-        isPrimary = getArguments().getBoolean(IMAGE_IS_PRIMARY);
-        allowDelete = getArguments().getBoolean(ALLOW_DELETE);
     }
 
 
@@ -69,36 +54,10 @@ public class ImageEditDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        if (isPrimary) {
-            if (allowDelete) { // primary image and allow delete
-                imageMenu = new CharSequence[]{
-                        getString(R.string.title_img_delete),
-                        getString(R.string.edit_from_camera_text_description),
-                        getString(R.string.edit_from_gallery_text_description),
-                        getString(R.string.edit_from_instagram_text_description),
-                        getString(R.string.action_editor),
-                        getString(R.string.title_img_desc)};
-            } else { // primary image and not allow delete
-                imageMenu = new CharSequence[]{
-                        getString(R.string.title_img_desc)};
-            }
-
-        } else {
-            if (allowDelete) { // not primary image and allow delete
-                imageMenu = new CharSequence[]{
-                        getString(R.string.title_img_delete),
-                        getString(R.string.edit_from_camera_text_description),
-                        getString(R.string.edit_from_gallery_text_description),
-                        getString(R.string.edit_from_instagram_text_description),
-                        getString(R.string.action_editor),
-                        getString(R.string.title_img_desc),
-                        getString(R.string.title_img_default)};
-            } else { // not primary image and not allow delete
-                imageMenu = new CharSequence[]{
-                        getString(R.string.title_img_desc),
-                        getString(R.string.title_img_default)};
-            }
-        }
+        imageMenu = new CharSequence[]{
+                getString(R.string.edit_from_camera_text_description),
+                getString(R.string.edit_from_gallery_text_description),
+                getString(R.string.edit_from_instagram_text_description)};
         builder.setItems(imageMenu, getImageAddProductListener());
         return builder.create();
     }
@@ -109,20 +68,12 @@ public class ImageEditDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 if (mListener != null) {
                     CharSequence stringClicked = imageMenu[which];
-                    if (stringClicked.equals(getString(R.string.title_img_delete))) {
-                        mListener.clickRemoveImage(position);
-                    } else if (stringClicked.equals(getString(R.string.edit_from_camera_text_description))) {
-                        mListener.clickEditImagePathFromCamera(position);
+                    if (stringClicked.equals(getString(R.string.edit_from_camera_text_description))) {
+                        mListener.clickEditProductFromCamera(position);
                     } else if (stringClicked.equals(getString(R.string.edit_from_gallery_text_description))) {
-                        mListener.clickEditImagePathFromGallery(position);
+                        mListener.clickEditProductFromGallery(position);
                     } else if (stringClicked.equals(getString(R.string.edit_from_instagram_text_description))) {
-                        mListener.clickEditImagePathFromInstagram(position);
-                    } else if (stringClicked.equals(getString(R.string.action_editor))) {
-                        mListener.clickImageEditor(position);
-                    } else if (stringClicked.equals(getString(R.string.title_img_desc))) {
-                        mListener.clickEditImageDesc(position);
-                    } else if (stringClicked.equals(getString(R.string.title_img_default))) {
-                        mListener.clickEditImagePrimary(position);
+                        mListener.clickEditProductFromInstagram(position);
                     }
                 }
             }
