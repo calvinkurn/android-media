@@ -198,7 +198,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
-        return new BaseRetryDataBinder(adapter, R.drawable.ic_gm_statistic_error);
+        return new BaseRetryDataBinder(adapter, R.drawable.ic_cloud_error);
     }
 
     @Override
