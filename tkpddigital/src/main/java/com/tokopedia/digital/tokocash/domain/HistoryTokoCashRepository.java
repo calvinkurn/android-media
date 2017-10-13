@@ -1,7 +1,7 @@
 package com.tokopedia.digital.tokocash.domain;
 
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-import com.tokopedia.digital.tokocash.HistoryTokoCashService;
+import com.tokopedia.digital.tokocash.network.apiservice.HistoryTokoCashService;
 import com.tokopedia.digital.tokocash.entity.TokoCashHistoryEntity;
 
 import retrofit2.Response;

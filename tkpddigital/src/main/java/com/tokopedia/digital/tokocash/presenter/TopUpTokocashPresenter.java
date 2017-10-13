@@ -200,7 +200,7 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
             @Override
             public void onNext(WalletToken walletToken) {
                 sessionHandler.setTokenTokoCash(walletToken.getToken());
-                Log.d("TOKEN TOKOCASH", "onNext: " + sessionHandler.getAccessTokenTokoCash(context));
+                Log.d("TOKEN TOKOCASH", "onNext: " + sessionHandler.getAccessTokenTokoCash());
             }
         };
     }

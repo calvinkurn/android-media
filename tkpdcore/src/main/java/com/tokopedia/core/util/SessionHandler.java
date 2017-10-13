@@ -639,8 +639,8 @@ public class SessionHandler {
         editor.apply();
     }
 
-    public String getAccessTokenTokoCash(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(TOKOCASH_SESSION, Context.MODE_PRIVATE);
+    public static String getAccessTokenTokoCash() {
+        SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(TOKOCASH_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN_TOKOCASH, "");
     }
 

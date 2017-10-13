@@ -25,7 +25,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
-import com.tokopedia.digital.tokocash.HistoryTokoCashService;
+import com.tokopedia.digital.tokocash.network.apiservice.HistoryTokoCashService;
 import com.tokopedia.digital.tokocash.adapter.FilterTokoCashAdapter;
 import com.tokopedia.digital.tokocash.adapter.HistoryTokoCashAdapter;
 import com.tokopedia.digital.tokocash.domain.HistoryTokoCashRepository;
@@ -123,7 +123,7 @@ public class HistoryTokocashActivity extends BaseDigitalPresenterActivity<ITokoC
         SessionHandler sessionHandler = new SessionHandler(this);
         IHistoryTokoCashRepository repository = new HistoryTokoCashRepository(
                 new HistoryTokoCashService(
-                        sessionHandler.getAccessTokenTokoCash(getApplicationContext()))
+                        sessionHandler.getAccessTokenTokoCash())
         );
         ITokoCashHistoryInteractor interactor = new TokoCashHistoryInteractor(repository, new CompositeSubscription());
         presenter = new TokoCashHistoryPresenter(interactor, this);
