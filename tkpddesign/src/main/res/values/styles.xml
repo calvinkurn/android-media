@@ -111,5 +111,4 @@
         <item name="android:textSize">@dimen/font_subheading</item>
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
-
 </resources>
