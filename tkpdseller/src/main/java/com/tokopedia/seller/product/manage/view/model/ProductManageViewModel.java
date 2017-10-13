@@ -26,10 +26,37 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
     private int productPreorder;
     private int productCashback;
     private int productCashbackAmount;
+    private int productWholesale;
+    private int productUsingStock;
+    private int productStock;
 
     @Override
     public int getType() {
         return TYPE;
+    }
+
+    public int getProductWholesale() {
+        return productWholesale;
+    }
+
+    public void setProductWholesale(int productWholesale) {
+        this.productWholesale = productWholesale;
+    }
+
+    public int getProductUsingStock() {
+        return productUsingStock;
+    }
+
+    public void setProductUsingStock(int productUsingStock) {
+        this.productUsingStock = productUsingStock;
+    }
+
+    public int getProductStock() {
+        return productStock;
+    }
+
+    public void setProductStock(int productStock) {
+        this.productStock = productStock;
     }
 
     public String getProductPricePlain() {
@@ -176,6 +203,9 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         dest.writeInt(this.productPreorder);
         dest.writeInt(this.productCashback);
         dest.writeInt(this.productCashbackAmount);
+        dest.writeInt(this.productWholesale);
+        dest.writeInt(this.productUsingStock);
+        dest.writeInt(this.productStock);
     }
 
     protected ProductManageViewModel(Parcel in) {
@@ -192,6 +222,9 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productPreorder = in.readInt();
         this.productCashback = in.readInt();
         this.productCashbackAmount = in.readInt();
+        this.productWholesale = in.readInt();
+        this.productUsingStock = in.readInt();
+        this.productStock = in.readInt();
     }
 
     public static final Creator<ProductManageViewModel> CREATOR = new Creator<ProductManageViewModel>() {

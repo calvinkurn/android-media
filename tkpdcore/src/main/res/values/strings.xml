@@ -488,8 +488,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
 
     <string-array name="sort_option">
         <item>Posisi</item>
-        <item>Pembaruan Terakhir</item>
         <item>Produk Baru</item>
+        <item>Pembaruan Terakhir</item>
         <item>Nama Produk</item>
         <item>Dilihat Terbanyak</item>
         <item>Diskusi Terbanyak</item>

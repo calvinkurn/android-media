@@ -313,6 +313,15 @@ public class ProductListSellerModel {
         @SerializedName("product_returnable")
         @Expose
         private int productReturnable;
+        @SerializedName("product_is_wholesale")
+        @Expose
+        private int productWholesale;
+        @SerializedName("product_using_stock")
+        @Expose
+        private int productUsingStock;
+        @SerializedName("product_stock")
+        @Expose
+        private int productStock;
         @SerializedName("product_rating_point")
         @Expose
         private String productRatingPoint;
@@ -822,6 +831,30 @@ public class ProductListSellerModel {
 
         public int getProductCashbackAmount() {
             return productCashbackAmount;
+        }
+
+        public int getProductWholesale() {
+            return productWholesale;
+        }
+
+        public void setProductWholesale(int productWholesale) {
+            this.productWholesale = productWholesale;
+        }
+
+        public int getProductUsingStock() {
+            return productUsingStock;
+        }
+
+        public void setProductUsingStock(int productUsingStock) {
+            this.productUsingStock = productUsingStock;
+        }
+
+        public int getProductStock() {
+            return productStock;
+        }
+
+        public void setProductStock(int productStock) {
+            this.productStock = productStock;
         }
     }
 

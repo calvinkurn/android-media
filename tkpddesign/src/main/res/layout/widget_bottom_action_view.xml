@@ -7,8 +7,8 @@
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/padding_vs"
-    android:paddingLeft="@dimen/padding_med"
-    android:paddingRight="@dimen/padding_med"
+    android:paddingLeft="@dimen/large_dp"
+    android:paddingRight="@dimen/large_dp"
     android:paddingTop="@dimen/padding_vs">
 
     <LinearLayout
@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:minHeight="@dimen/image_width_m">
+        android:minHeight="@dimen/image_width_s">
 
         <ImageView
             android:id="@+id/image_view_icon_1"
@@ -35,7 +35,7 @@
     <View
         android:id="@+id/view_separator"
         android:layout_width="2dp"
-        android:layout_height="@dimen/image_width_m"
+        android:layout_height="@dimen/image_width_s"
         android:layout_marginLeft="@dimen/margin_med"
         android:layout_marginRight="@dimen/margin_med"
         android:background="@color/grey_300"
@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:minHeight="@dimen/image_width_m"
+        android:minHeight="@dimen/image_width_s"
         android:visibility="gone">
 
         <ImageView

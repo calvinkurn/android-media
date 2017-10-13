@@ -23,6 +23,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -33,12 +35,16 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
+import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
@@ -59,6 +65,7 @@ import com.tokopedia.seller.product.manage.di.ProductManageModule;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageFilterActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
+import com.tokopedia.seller.product.manage.view.adapter.ProductManageListViewHolder;
 import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
 import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
@@ -144,6 +151,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     protected void initView(View view) {
         super.initView(view);
+        searchInputView.clearFocus();
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -162,6 +170,39 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_FILTER);
             }
         });
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewNoResultBinder() {
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_variant_empty);
+        emptyDataBinder.setEmptyTitleText(getString(R.string.title_no_result));
+        emptyDataBinder.setEmptyContentText(getString(R.string.product_manage_label_change_search));
+        return emptyDataBinder;
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
+        emptyDataBinder.setEmptyTitleText(getString(R.string.product_manage_label_product_list_empty));
+        emptyDataBinder.setEmptyContentText(getString(R.string.product_manage_label_add_product_to_sell));
+        emptyDataBinder.setEmptyButtonItemText(getString(R.string.product_manage_label_add_product));
+        emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
+            @Override
+            public void onEmptyContentItemTextClicked() {
+                // do nothing
+            }
+
+            @Override
+            public void onEmptyButtonClicked() {
+                startActivity(ProductAddActivity.getCallingIntent(getActivity()));
+            }
+        });
+        return emptyDataBinder;
+    }
+
+    @Override
+    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
+        return new BaseRetryDataBinder(adapter, R.drawable.ic_cloud_error);
     }
 
     @Override
@@ -540,8 +581,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(productManageViewModel.getProductName())
-                .setMenu(R.menu.menu_product_manage_action_item);
+                .addTitleItem(productManageViewModel.getProductName());
+
+        if(GlobalConfig.isSellerApp()){
+            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item);
+        }else{
+            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_main_app);
+        }
 
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
@@ -554,6 +600,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         return new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem item) {
+                if(productManageViewModel.getProductStatus().equals(ProductManageListViewHolder.SUPERVISION_STATUS)){
+                    NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.product_manage_desc_product_on_supervision, productManageViewModel.getProductName()));
+                    return;
+                }
+
                 int itemId = item.getItemId();
                 if (itemId == R.id.edit_product_menu) {
                     goToEditProduct(productManageViewModel.getId());

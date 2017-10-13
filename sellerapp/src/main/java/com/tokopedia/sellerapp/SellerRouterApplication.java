@@ -595,7 +595,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     public void goToAddProduct(Activity activity){
-        if(activity != null)
+        if(activity != null) {
             ProductAddActivity.start(activity);
+        }
     }
 }

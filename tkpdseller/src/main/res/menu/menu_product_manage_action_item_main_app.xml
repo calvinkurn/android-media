@@ -18,10 +18,6 @@
 
     <group>
         <item
-            android:title="@string/product_manage_menu_set_cashback"
-            android:id="@+id/set_cashback_product_menu"
-            android:icon="@drawable/ic_set_cashback_menu"/>
-        <item
             android:id="@+id/change_price_product_menu"
             android:icon="@drawable/ic_menu_set_price"
             android:title="@string/product_manage_menu_set_price" />

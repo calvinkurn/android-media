@@ -55,8 +55,11 @@ public class GetProductListManageMapperView {
             productListPickerViewModel.setProductReturnable(product.getProductReturnable());
             productListPickerViewModel.setProductPreorder(product.getProductPreorder());
             productListPickerViewModel.setProductPricePlain(product.getProductNoIdrPrice());
+            productListPickerViewModel.setProductWholesale(product.getProductWholesale());
             productListPickerViewModel.setProductCashback(product.getProductCashback());
             productListPickerViewModel.setProductCashbackAmount(product.getProductCashbackAmount());
+            productListPickerViewModel.setProductStock(product.getProductStock());
+            productListPickerViewModel.setProductUsingStock(product.getProductUsingStock());
             productManageViewModels.add(productListPickerViewModel);
         }
         return productManageViewModels;
