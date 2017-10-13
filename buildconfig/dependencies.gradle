@@ -71,7 +71,8 @@ ext {
             places          : "com.google.android.gms:play-services-places:${playServiceVersion}",
             mapsUtils       : "com.google.maps.android:android-maps-utils:0.4",
             remoteConfig    : "com.google.firebase:firebase-config:${playServiceVersion}",
-            perfMon         : "com.google.firebase:firebase-perf:${playServiceVersion}"
+            perfMon         : "com.google.firebase:firebase-perf:${playServiceVersion}",
+            ads             : "com.google.android.gms:play-services-ads:${playServiceVersion}"
     ]
 
     butterKnifeDependencies = [

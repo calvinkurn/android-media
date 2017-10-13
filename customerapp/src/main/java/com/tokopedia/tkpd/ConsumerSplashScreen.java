@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
@@ -31,16 +30,15 @@ public class ConsumerSplashScreen extends SplashScreen {
             taskStackBuilder.addNextIntent(RideHomeActivity.getCallingIntent(this));
             taskStackBuilder.startActivities();
         }
-        fetchRemoteConfig(this);
+        fetchRemoteConfig();
         finish();
     }
 
     /**
      * This method is for fetch Remote config file and save some data in to cache (specially for drawer menu)
-     * @param activity
      */
-    private void fetchRemoteConfig(Activity activity) {
-        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(activity);
+    private void fetchRemoteConfig() {
+        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(this);
         remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
             @Override
             public void onComplete(FirebaseRemoteConfig firebaseRemoteConfig) {
