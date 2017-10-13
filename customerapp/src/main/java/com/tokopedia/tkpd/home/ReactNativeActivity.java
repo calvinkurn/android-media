@@ -14,13 +14,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.facebook.react.ReactApplication;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -149,5 +152,16 @@ public class ReactNativeActivity extends BasePresenterActivity {
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (GlobalConfig.isAllowDebuggingTools()
+                && keyCode == KeyEvent.KEYCODE_MENU
+                && ((ReactApplication) getApplication()).getReactNativeHost().getReactInstanceManager() != null) {
+            ((ReactApplication) getApplication()).getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 }
