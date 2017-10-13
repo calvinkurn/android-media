@@ -312,7 +312,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderDataProducts(List<Product> products) {
-        Log.d("WidgetStyle3RechargeFragment", "renderDataProducts");
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetWrapperBuy);
         widgetProductChooserView.setListener(getProductChoserListener());
@@ -323,7 +322,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderEmptyProduct(String message) {
-        Log.d("WidgetStyle3RechargeFragment", "renderEmptyOperator");
         widgetClientNumberView.setImgOperatorInvisible();
         clearHolder(holderWidgetWrapperBuy);
         clearHolder(holderWidgetSpinnerProduct);
@@ -331,13 +329,11 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderOperators(List<Operator> operatorModels) {
-        Log.d("WidgetStyle3RechargeFragment", "renderOperators: " + String.valueOf(operatorModels.size()));
         clearHolder(holderWidgetSpinnerOperator);
         widgetOperatorChooserView.setListener(getOperatorChoserListener());
         widgetOperatorChooserView.renderDataView(operatorModels, lastOrder, category.getId(),
                 lastOperatorSelected);
         holderWidgetSpinnerOperator.addView(widgetOperatorChooserView);
-        Log.d("WidgetStyle3RechargeFragment", "add view");
     }
 
     private WidgetOperatorChooserView.OperatorChoserListener getOperatorChoserListener() {
@@ -383,7 +379,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderProduct(Product product) {
-        Log.d("WidgetStyle3RechargeFragment", "renderProduct");
         selectedProduct = product;
         if (SessionHandler.isV4Login(getActivity())) {
             if (widgetProductChooserView.checkStockProduct(selectedProduct))
@@ -405,7 +400,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderOperator(Operator rechargeOperatorModel) {
-        Log.d("WidgetStyle3RechargeFragment", "renderOperator");
         selectedOperator = rechargeOperatorModel;
         selectedOperatorId = String.valueOf(selectedOperator.getId());
         widgetClientNumberView.setText(lastClientNumberTyped);

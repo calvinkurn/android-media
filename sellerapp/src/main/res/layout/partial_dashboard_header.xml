@@ -155,7 +155,7 @@
 
             <TextView
                 style="@style/TextView.Body1.Bold.BlackSecondary"
-                android:text="@string/gm_statistic_title_transaction_success" />
+                android:text="@string/transaction_success" />
 
             <TextView
                 android:id="@+id/text_view_transaction_success"

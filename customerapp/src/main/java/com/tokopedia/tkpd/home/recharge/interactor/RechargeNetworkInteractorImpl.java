@@ -23,7 +23,6 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
 
     private CompositeSubscription compositeSubscription;
     private DigitalWidgetRepository repository;
-
     private CategoryMapper categoryMapper;
     private StatusMapper statusMapper;
 

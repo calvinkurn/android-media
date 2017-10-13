@@ -397,7 +397,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
         }
     }
 
-    @Override
     public void renderLastOrder(LastOrder lastOrder) {
         if (presenter != null) {
             this.lastOrder = lastOrder;

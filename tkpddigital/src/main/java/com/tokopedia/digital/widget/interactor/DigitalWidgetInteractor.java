@@ -1,5 +1,8 @@
 package com.tokopedia.digital.widget.interactor;
 
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
@@ -18,7 +21,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -88,7 +90,6 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                 return Observable.just(new ArrayList<Product>());
                             }
                         })
-
                         .unsubscribeOn(Schedulers.from(threadExecutor))
                         .subscribeOn(Schedulers.from(threadExecutor))
                         .observeOn(postExecutionThread.getScheduler())
@@ -311,11 +312,5 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         product.getAttributes().getStatus() != STATE_CATEGORY_NON_ACTIVE;
             }
         };
-    }
-
-    @Override
-    public void onDestroy() {
-        if (compositeSubscription != null)
-            compositeSubscription.unsubscribe();
     }
 }

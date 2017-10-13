@@ -14,6 +14,8 @@ public class BlogViewModel implements Visitable<FeedPlusTypeFactory> {
     private String url;
     private String title;
     private String content;
+    private String page;
+    private String rowNumber;
 
     public BlogViewModel() {
     }
@@ -64,4 +66,19 @@ public class BlogViewModel implements Visitable<FeedPlusTypeFactory> {
     }
 
 
+    public String getPage() {
+        return page;
+    }
+
+    public void setPage(String page) {
+        this.page = page;
+    }
+
+    public String getRowNumber() {
+        return rowNumber;
+    }
+
+    public void setRowNumber(String rowNumber) {
+        this.rowNumber = rowNumber;
+    }
 }

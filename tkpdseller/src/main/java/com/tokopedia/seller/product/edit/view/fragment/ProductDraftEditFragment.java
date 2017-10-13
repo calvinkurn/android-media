@@ -140,7 +140,9 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         for (int i = 0; i < photos.size(); i++) {
             ImageProductInputViewModel viewModel = photos.get(i);
             try {
+                String imageDesc = viewModel.getImageDescription();
                 viewModel = findImage(viewModel, productPhotosBeforeEdit.getPhotos());
+                viewModel.setImageDescription(imageDesc);
             } catch (RuntimeException e) {
                 isChanging = true;
                 viewModel.setStatus(ImageStatusTypeDef.WILL_BE_UPLOADED);

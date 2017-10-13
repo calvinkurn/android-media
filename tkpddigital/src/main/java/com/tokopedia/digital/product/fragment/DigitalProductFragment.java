@@ -422,17 +422,19 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void renderCheckPulsaBalance(PulsaBalance pulsaBalance) {
         holderCheckBalance.removeAllViews();
         for (int i = 0; i < 2; i++) {
-            String phoneNumber = presenter.getDeviceMobileNumber(i);
+            String  phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
             Operator operator = presenter.getSelectedUssdOperator(i);
-            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
-                    operator, phoneNumber)) {
-                phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
-            }
             if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                     operator, phoneNumber)) {
                 phoneNumber = "";
                 presenter.storeUssdPhoneNumber(i, phoneNumber);
+                phoneNumber = presenter.getDeviceMobileNumber(i);
+                if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                        operator, phoneNumber)) {
+                    phoneNumber = "";
+                }
             }
+
             String ussdCode = operator.getUssdCode();
             if (ussdCode != null && !"".equalsIgnoreCase(ussdCode.trim())) {
                 CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
@@ -1187,9 +1189,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     operator, phoneNumber)) {
                 phoneNumber = "";
                 presenter.storeUssdPhoneNumber(selectedSimIndex, phoneNumber);
-            } else {
-                selectedCheckPulsaBalanceView.renderData(selectedSimIndex, operator.getUssdCode(), phoneNumber);
+                phoneNumber = presenter.getDeviceMobileNumber(selectedSimIndex);
+
+                if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                        operator, phoneNumber)) {
+                    phoneNumber = "";
+                }
             }
+            selectedCheckPulsaBalanceView.renderData(selectedSimIndex, operator.getUssdCode(), phoneNumber);
         }
     }
 

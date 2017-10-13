@@ -282,4 +282,9 @@ public class InboxReputationDetailActivity extends
         }
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
 }

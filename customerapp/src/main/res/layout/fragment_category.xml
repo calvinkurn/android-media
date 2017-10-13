@@ -13,8 +13,8 @@
         android:id="@+id/wrapperLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:focusableInTouchMode="true" >
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
 
         <com.tokopedia.core.home.customview.TokoCashHeaderView
             android:id="@+id/toko_cash_header_layout"
