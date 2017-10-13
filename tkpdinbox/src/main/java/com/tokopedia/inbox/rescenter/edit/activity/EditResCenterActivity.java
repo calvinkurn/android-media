@@ -241,4 +241,9 @@ public class EditResCenterActivity extends BasePresenterActivity<EditResCenterPr
             super.onBackPressed();
         }
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

@@ -151,4 +151,9 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }
