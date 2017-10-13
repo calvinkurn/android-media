@@ -1,5 +1,6 @@
 package com.tokopedia.design.bottomsheet;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
@@ -16,22 +17,15 @@ import com.tokopedia.design.R;
  */
 
 public class BottomSheetCallAction extends BottomSheetDialog {
-    public static final String DEFAULT_LABEL_ACTION_1 = "Call";
-    public static final String DEFAULT_LABEL_ACTION_2 = "Message";
-    public static final String DEFAULT_LABEL_TITLE = "Hubungi";
-    public static final int DEFAULT_ICON_ACTION_1 = R.drawable.ic_phone_black_36dp;
-    public static final int DEFAULT_ICON_ACTION_2 = R.drawable.ic_textsms_action;
-
-    private View btnAction1;
-    private View btnAction2;
-    private ImageView ivAction1;
-    private ImageView ivAction2;
-    private TextView tvLabel;
-    private TextView tvLabelAction1;
-    private TextView tvLabelAction2;
+    private static final String DEFAULT_LABEL_ACTION_1 = "Call";
+    private static final String DEFAULT_LABEL_ACTION_2 = "Message";
+    private static final String DEFAULT_LABEL_TITLE = "Hubungi";
+    private static final int DEFAULT_ICON_ACTION_1 = R.drawable.ic_phone_black_36dp;
+    private static final int DEFAULT_ICON_ACTION_2 = R.drawable.ic_textsms_action;
 
     private CallActionData callActionData;
     private ActionListener actionListener;
+    private boolean dismissActionClicked;
 
     public BottomSheetCallAction(@NonNull Context context) {
         super(context);
@@ -61,63 +55,128 @@ public class BottomSheetCallAction extends BottomSheetDialog {
         super(context);
         callActionData = builder.callActionData;
         actionListener = builder.actionListener;
+        dismissActionClicked = builder.dismissActionClicked;
         initialView(context);
     }
 
     private void initialView(Context context) {
-        View view = LayoutInflater.from(context).inflate(
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(context).inflate(
                 R.layout.widget_bottom_sheet_dialog_logistic_caller, null
         );
         setContentView(view);
-        btnAction1 = view.findViewById(R.id.btn_action_1);
-        btnAction2 = view.findViewById(R.id.btn_action_2);
+        View btnAction1 = view.findViewById(R.id.btn_action_1);
+        View btnAction2 = view.findViewById(R.id.btn_action_2);
+        TextView tvLabel = (TextView) view.findViewById(R.id.tv_title);
+        TextView tvLabelAction1 = (TextView) view.findViewById(R.id.tv_label_action_1);
+        TextView tvLabelAction2 = (TextView) view.findViewById(R.id.tv_label_action_2);
+        ImageView ivAction1 = (ImageView) view.findViewById(R.id.iv_icon_action_1);
+        ImageView ivAction2 = (ImageView) view.findViewById(R.id.iv_icon_action_2);
 
-        tvLabel = (TextView) view.findViewById(R.id.tv_title);
-        tvLabelAction1 = (TextView) view.findViewById(R.id.tv_label_action_1);
-        tvLabelAction2 = (TextView) view.findViewById(R.id.tv_label_action_2);
-        ivAction1 = (ImageView) view.findViewById(R.id.iv_icon_action_1);
-        ivAction2 = (ImageView) view.findViewById(R.id.iv_icon_action_2);
+        tvLabel.setText(
+                callActionData.getLabelTitle() != null ?
+                        callActionData.getLabelTitle() : DEFAULT_LABEL_TITLE
+        );
+        tvLabelAction1.setText(
+                callActionData.getLabelAction1() != null ?
+                        callActionData.getLabelAction1() : DEFAULT_LABEL_ACTION_1
+        );
+        tvLabelAction2.setText(
+                callActionData.getLabelAction2() != null ?
+                        callActionData.getLabelAction2() : DEFAULT_LABEL_ACTION_2
+        );
 
-        tvLabel.setText(DEFAULT_LABEL_TITLE);
-        tvLabelAction1.setText(DEFAULT_LABEL_ACTION_1);
-        tvLabelAction2.setText(DEFAULT_LABEL_ACTION_2);
-
-        ivAction1.setImageResource(DEFAULT_ICON_ACTION_1);
-        ivAction2.setImageResource(DEFAULT_ICON_ACTION_2);
+        ivAction1.setImageResource(
+                callActionData.getIconAction1() != 0 ?
+                        callActionData.getIconAction1() : DEFAULT_ICON_ACTION_1
+        );
+        ivAction2.setImageResource(
+                callActionData.getIconAction2() != 0 ?
+                        callActionData.getIconAction2() : DEFAULT_ICON_ACTION_2
+        );
 
         btnAction1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionListener.onPhoneCallerClicked(callActionData);
+                actionListener.onCallAction1Clicked(callActionData);
+                if (dismissActionClicked && isShowing()) dismiss();
             }
         });
         btnAction2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionListener.onPhoneMessageClicked(callActionData);
+                actionListener.onCallAction2Clicked(callActionData);
+                if (dismissActionClicked && isShowing()) dismiss();
             }
         });
     }
 
     public static class CallActionData {
         private String phoneNumber;
-
-        public String getPhoneNumber() {
-            return phoneNumber;
-        }
+        private String labelTitle;
+        private String labelAction1;
+        private String labelAction2;
+        private int iconAction1;
+        private int iconAction2;
 
         public CallActionData setPhoneNumber(String phoneNumber) {
             this.phoneNumber = phoneNumber;
             return this;
         }
 
+        public CallActionData setLabelTitle(String labelTitle) {
+            this.labelTitle = labelTitle;
+            return this;
+        }
 
+        public CallActionData setLabelAction1(String labelAction1) {
+            this.labelAction1 = labelAction1;
+            return this;
+        }
+
+        public CallActionData setLabelAction2(String labelAction2) {
+            this.labelAction2 = labelAction2;
+            return this;
+        }
+
+        public CallActionData setIconAction1(int iconAction1) {
+            this.iconAction1 = iconAction1;
+            return this;
+        }
+
+        public CallActionData setIconAction2(int iconAction2) {
+            this.iconAction2 = iconAction2;
+            return this;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        String getLabelTitle() {
+            return labelTitle;
+        }
+
+        String getLabelAction1() {
+            return labelAction1;
+        }
+
+        String getLabelAction2() {
+            return labelAction2;
+        }
+
+        int getIconAction1() {
+            return iconAction1;
+        }
+
+        int getIconAction2() {
+            return iconAction2;
+        }
     }
 
     public interface ActionListener {
-        void onPhoneCallerClicked(CallActionData callActionData);
+        void onCallAction1Clicked(CallActionData callActionData);
 
-        void onPhoneMessageClicked(CallActionData callActionData);
+        void onCallAction2Clicked(CallActionData callActionData);
     }
 
 
@@ -125,6 +184,7 @@ public class BottomSheetCallAction extends BottomSheetDialog {
         private Context context;
         private CallActionData callActionData;
         private ActionListener actionListener;
+        private boolean dismissActionClicked = true;
 
         public Builder(Context context) {
             this.context = context;
@@ -137,6 +197,11 @@ public class BottomSheetCallAction extends BottomSheetDialog {
 
         public Builder actionListener(ActionListener val) {
             actionListener = val;
+            return this;
+        }
+
+        public Builder dismissActionClicked(boolean val) {
+            dismissActionClicked = val;
             return this;
         }
 

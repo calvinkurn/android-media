@@ -168,7 +168,9 @@
                     android:layout_marginLeft="@dimen/margin_small"
                     android:layout_marginStart="@dimen/margin_small"
                     android:layout_toEndOf="@+id/driver_photo"
+                    android:layout_toLeftOf="@+id/btn_call_driver"
                     android:layout_toRightOf="@+id/driver_photo"
+                    android:layout_toStartOf="@+id/btn_call_driver"
                     android:gravity="center_vertical"
                     android:orientation="vertical">
 
@@ -225,9 +227,12 @@
                     android:layout_gravity="center_vertical"
                     android:background="@drawable/border_button_rounded"
                     android:gravity="center"
-                    android:padding="3dp"
-                    android:textColor="@color/label_color"
-                    tools:text="Hubungi"/>
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="2dp"
+                    android:text="@string/label_call_ondemand_driver_logistic"
+                    android:textColor="@color/label_color"/>
             </RelativeLayout>
 
         </LinearLayout>
