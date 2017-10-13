@@ -26,6 +26,7 @@ public class ToppicksViewHolder extends AbstractViewHolder<ToppicksViewModel> {
     private TextView seeAll;
     private ToppicksAdapter adapter;
     private FeedPlus.View.Toppicks toppicksListener;
+    private ToppicksViewModel toppicksViewModel;
 
     public ToppicksViewHolder(View itemView, final FeedPlus.View.Toppicks toppicksListener) {
         super(itemView);
@@ -41,13 +42,16 @@ public class ToppicksViewHolder extends AbstractViewHolder<ToppicksViewModel> {
     }
 
     @Override
-    public void bind(ToppicksViewModel element) {
-        adapter.setList(element.getList());
+    public void bind(final ToppicksViewModel toppicksViewModel) {
+        this.toppicksViewModel = toppicksViewModel;
+        this.toppicksViewModel.setRowNumber(getAdapterPosition());
+        adapter.setData(this.toppicksViewModel);
 
         seeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toppicksListener.onSeeAllToppicks();
+                toppicksListener.onSeeAllToppicks(toppicksViewModel.getPage(),
+                        toppicksViewModel.getRowNumber());
             }
         });
     }
