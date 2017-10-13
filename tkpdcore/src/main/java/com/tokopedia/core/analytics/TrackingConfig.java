@@ -1,6 +1,5 @@
 package com.tokopedia.core.analytics;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IGTMContainer;
@@ -59,7 +58,6 @@ public abstract class TrackingConfig {
      * @param what type container (GTM, Appsflyer, MoEngage)
      */
     public static void runFirstTime(AnalyticsKind what){
-        CommonUtils.dumper("runfirstime");
         switch (what){
             case GTM:
                 getGTMEngine().loadContainer();

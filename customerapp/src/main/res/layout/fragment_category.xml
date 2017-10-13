@@ -13,8 +13,8 @@
         android:id="@+id/wrapperLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:focusableInTouchMode="true" >
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
 
         <com.tokopedia.core.home.customview.TokoCashHeaderView
             android:id="@+id/toko_cash_header_layout"
@@ -33,7 +33,6 @@
             android:id="@+id/banner_container_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             />
 
         <android.support.v7.widget.CardView
@@ -45,8 +44,7 @@
             android:layout_marginTop="2dp"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="3dp"
-            app:cardUseCompatPadding="true"
-            android:visibility="gone">
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -62,12 +60,51 @@
                     app:tabMode="fixed"
                     app:tabSelectedTextColor="@color/tkpd_main_green"
                     app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-                    app:tabTextColor="@color/tkpd_dark_gray" />
+                    app:tabTextColor="@color/tkpd_dark_gray"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
                     android:background="@color/grey_100" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/pulsa_place_holders"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_small">
+                    <ProgressBar
+                        android:id="@+id/recharge_progressbar"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="12dp"
+                        android:layout_gravity="center"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/dummy_view_1"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/keyline_1"
+                        android:textSize="@dimen/fontvs"
+                        android:background="@color/grey_200"
+                        android:layout_marginRight="@dimen/keyline_1"
+                        android:visibility="visible" />
+
+
+                    <View
+                        android:id="@+id/dummy_view_2"
+                        android:layout_width="match_parent"
+                        android:layout_below="@id/dummy_view_1"
+                        android:background="@color/grey_200"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="@dimen/keyline_1"
+                        android:layout_marginRight="@dimen/keyline_1"
+                        android:layout_height="16dp" />
+
+                </RelativeLayout>
+
+
 
                 <com.tokopedia.core.customView.WrapContentViewPager
                     android:id="@+id/viewpager_pulsa"
@@ -80,9 +117,9 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
-                    android:background="@color/grey_100"
+                    android:layout_marginBottom="@dimen/margin_small"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:layout_marginBottom="@dimen/margin_small" />
+                    android:background="@color/grey_100" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -94,11 +131,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:drawableRight="@drawable/ic_arrow_right"
-                        android:textColor="@color/tkpd_main_green"
-                        android:drawablePadding="@dimen/padding_small"
                         android:layout_marginRight="@dimen/margin_small"
-                        android:text="@string/lihat_semua_product" />
+                        android:drawablePadding="@dimen/padding_small"
+                        android:drawableRight="@drawable/ic_arrow_right"
+                        android:text="@string/lihat_semua_product"
+                        android:textColor="@color/tkpd_main_green" />
 
                 </RelativeLayout>
 

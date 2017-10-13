@@ -90,4 +90,9 @@ public class PeopleFavoritedShop extends BasePresenterActivity<PeopleFavoritedSh
 		}
 
 	}
+
+	@Override
+	protected boolean isLightToolbarThemes() {
+		return true;
+	}
 }
