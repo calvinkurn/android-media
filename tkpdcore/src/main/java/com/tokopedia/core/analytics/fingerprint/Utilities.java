@@ -151,7 +151,11 @@ public class Utilities {
         Calendar mCalendar = new GregorianCalendar();
         TimeZone mTimeZone = mCalendar.getTimeZone();
         int mGMTOffset = mTimeZone.getRawOffset();
-        return "GMT+"+TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
+        long offset = TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
+        if(offset<0)
+            return "GMT"+TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
+        else
+            return "GMT+"+TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
     }
 
     public static String toBase64(String text, int mode) throws UnsupportedEncodingException {
