@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
-import com.tokopedia.core.R;
+import com.tokopedia.seller.R;
 
 /**
  * Created by Toped18 on 5/30/2016.
@@ -26,7 +26,9 @@ public class ImageEditDialogFragment extends DialogFragment {
     boolean allowDelete;
 
     public interface OnImageEditListener {
-        void clickEditImagePath(int position);
+        void clickEditImagePathFromCamera(int position);
+        void clickEditImagePathFromGallery(int position);
+        void clickEditImagePathFromInstagram(int position);
 
         void clickImageEditor(int position);
 
@@ -71,7 +73,9 @@ public class ImageEditDialogFragment extends DialogFragment {
             if (allowDelete) { // primary image and allow delete
                 imageMenu = new CharSequence[]{
                         getString(R.string.title_img_delete),
-                        getString(R.string.action_edit),
+                        getString(R.string.edit_from_camera_text_description),
+                        getString(R.string.edit_from_gallery_text_description),
+                        getString(R.string.edit_from_instagram_text_description),
                         getString(R.string.action_editor),
                         getString(R.string.title_img_desc)};
             } else { // primary image and not allow delete
@@ -83,7 +87,9 @@ public class ImageEditDialogFragment extends DialogFragment {
             if (allowDelete) { // not primary image and allow delete
                 imageMenu = new CharSequence[]{
                         getString(R.string.title_img_delete),
-                        getString(R.string.action_edit),
+                        getString(R.string.edit_from_camera_text_description),
+                        getString(R.string.edit_from_gallery_text_description),
+                        getString(R.string.edit_from_instagram_text_description),
                         getString(R.string.action_editor),
                         getString(R.string.title_img_desc),
                         getString(R.string.title_img_default)};
@@ -105,8 +111,12 @@ public class ImageEditDialogFragment extends DialogFragment {
                     CharSequence stringClicked = imageMenu[which];
                     if (stringClicked.equals(getString(R.string.title_img_delete))) {
                         mListener.clickRemoveImage(position);
-                    } else if (stringClicked.equals(getString(R.string.action_edit))) {
-                        mListener.clickEditImagePath(position);
+                    } else if (stringClicked.equals(getString(R.string.edit_from_camera_text_description))) {
+                        mListener.clickEditImagePathFromCamera(position);
+                    } else if (stringClicked.equals(getString(R.string.edit_from_gallery_text_description))) {
+                        mListener.clickEditImagePathFromGallery(position);
+                    } else if (stringClicked.equals(getString(R.string.edit_from_instagram_text_description))) {
+                        mListener.clickEditImagePathFromInstagram(position);
                     } else if (stringClicked.equals(getString(R.string.action_editor))) {
                         mListener.clickImageEditor(position);
                     } else if (stringClicked.equals(getString(R.string.title_img_desc))) {

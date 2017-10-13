@@ -96,7 +96,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static final int ADD_PRODUCT_IMAGE_LOCATION_DEFAULT = 0;
 
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-    public static final int INSTAGRAM_SELECT_REQUEST_CODE = 101;
+    public static final int INSTAGRAM_SELECT_REQUEST_CODE = 200;
 
     public static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
     public static final String PRODUCT_SOC_MED_DATA = "PRODUCT_SOC_MED_DATA";
@@ -300,28 +300,30 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 //                }
 //            });
 
-        fabSpeedDial.setListenerFabClick(new ListenerFabClick() {
-            @Override
-            public void onFabClick() {
-                if (!fabSpeedDial.isShown()) {
-                    fabSpeedDial.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+//        fabSpeedDial.setListenerFabClick(new ListenerFabClick() {
+//            @Override
+//            public void onFabClick() {
+//                if (!fabSpeedDial.isShown()) {
+//                    fabSpeedDial.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
+//
+//        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+//            @Override
+//            public boolean onMenuItemSelected(MenuItem menuItem) {
+//                int id = menuItem.getItemId();
+//
+//                if (id == R.id.action_instagram) {
+//                    GalleryActivityPermissionsDispatcher.onInstagramClickedWithCheck(GalleryActivity.this);
+//                } else if (id == R.id.action_camera) {
+//                    onCameraClicked();
+//                }
+//                return false;
+//            }
+//        });
 
-        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
-            @Override
-            public boolean onMenuItemSelected(MenuItem menuItem) {
-                int id = menuItem.getItemId();
-
-                if (id == R.id.action_instagram) {
-                    GalleryActivityPermissionsDispatcher.onInstagramClickedWithCheck(GalleryActivity.this);
-                } else if (id == R.id.action_camera) {
-                    onCameraClicked();
-                }
-                return false;
-            }
-        });
+        fabSpeedDial.setVisibility(View.GONE);
     }
 
     private void onCameraClicked() {

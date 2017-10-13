@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -27,6 +28,7 @@ import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPre
 import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,24 +38,38 @@ import javax.inject.Inject;
  * Created by User on 6/19/2017.
  */
 
-public class ProductDraftListActivity extends DrawerPresenterActivity implements HasComponent<ProductComponent>,ProductDraftSaveBulkView {
+public class ProductDraftListActivity extends DrawerPresenterActivity implements HasComponent<ProductComponent>, ProductDraftSaveBulkView {
     public static final String TAG = ProductDraftListActivity.class.getSimpleName();
 
     private static final String INSTAGRAM_MEDIA_LIST = "insta_media_list";
+    private static final String LOCAL_PATH_IMAGE_LIST = "loca_img_list";
+    private static final String DESC_IMAGE_LIST = "desc_img_list";
 
     private TkpdProgressDialog progressDialog;
 
     @Inject
     ProductDraftSaveBulkPresenter productDraftSaveBulkPresenter;
 
+    public static void startInstagramSaveBulkFromLocal(Context context, ArrayList<String> instagramLocalPaths, ArrayList<String> instagramDescList) {
+        Intent intent = createInstanceFromLocalPaths(context, instagramLocalPaths, instagramDescList);
+        context.startActivity(intent);
+    }
+
     public static void startInstagramSaveBulk(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList) {
         Intent intent = createInstance(context, instagramMediaModelList);
         context.startActivity(intent);
     }
 
-    public static Intent createInstance(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList){
+    public static Intent createInstance(Context context, ArrayList<InstagramMediaModel> instagramMediaModelList) {
         Intent intent = new Intent(context, ProductDraftListActivity.class);
         intent.putParcelableArrayListExtra(INSTAGRAM_MEDIA_LIST, instagramMediaModelList);
+        return intent;
+    }
+
+    public static Intent createInstanceFromLocalPaths(Context context, ArrayList<String> localPathImagelist, ArrayList<String> instagramDescList) {
+        Intent intent = new Intent(context, ProductDraftListActivity.class);
+        intent.putStringArrayListExtra(LOCAL_PATH_IMAGE_LIST, localPathImagelist);
+        intent.putStringArrayListExtra(DESC_IMAGE_LIST, instagramDescList);
         return intent;
     }
 
@@ -66,7 +82,11 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
                     .replace(R.id.container, ProductDraftListFragment.newInstance(), TAG)
                     .commit();
         }
-        if (getIntent().hasExtra(INSTAGRAM_MEDIA_LIST)) {
+        if (getIntent().hasExtra(LOCAL_PATH_IMAGE_LIST)) {
+            ArrayList<String> localPathList = getIntent().getStringArrayListExtra(LOCAL_PATH_IMAGE_LIST);
+            ArrayList<String> descList = getIntent().getStringArrayListExtra(DESC_IMAGE_LIST);
+            saveValidImagesToDraft(localPathList, descList);
+        } else if (getIntent().hasExtra(INSTAGRAM_MEDIA_LIST)) {
             showProgressDialog();
             List<InstagramMediaModel> images = getIntent().getParcelableArrayListExtra(INSTAGRAM_MEDIA_LIST);
             final ArrayList<String> standardResoImageUrlList = new ArrayList<>();
@@ -84,7 +104,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
                         public void onError(Throwable e) {
                             hideProgressDialog();
                             NetworkErrorHelper.showCloseSnackbar(
-                                    getActivity(),  ErrorHandler.getErrorMessage(e, getActivity()));
+                                    getActivity(), ErrorHandler.getErrorMessage(e, getActivity()));
                         }
 
                         @Override
@@ -96,32 +116,36 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
                                     localPaths.size() != standardResoImageUrlList.size()) {
                                 throw new NullPointerException();
                             }
-                            DaggerProductDraftSaveBulkComponent
-                                    .builder()
-                                    .productDraftSaveBulkModule(new ProductDraftSaveBulkModule())
-                                    .productComponent(((SellerModuleRouter) getApplication()).getProductComponent())
-                                    .build()
-                                    .inject(ProductDraftListActivity.this);
-                            productDraftSaveBulkPresenter.attachView(ProductDraftListActivity.this);
-                            showProgressDialog();
-                            productDraftSaveBulkPresenter.saveInstagramToDraft(ProductDraftListActivity.this,
-                                    localPaths, imageDescriptionList);
+                            saveValidImagesToDraft(localPaths, imageDescriptionList);
                         }
                     });
         }
     }
 
-    private void showProgressDialog(){
+    private void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList) {
+        DaggerProductDraftSaveBulkComponent
+                .builder()
+                .productDraftSaveBulkModule(new ProductDraftSaveBulkModule())
+                .productComponent(((SellerModuleRouter) getApplication()).getProductComponent())
+                .build()
+                .inject(ProductDraftListActivity.this);
+        productDraftSaveBulkPresenter.attachView(ProductDraftListActivity.this);
+        showProgressDialog();
+        productDraftSaveBulkPresenter.saveInstagramToDraft(ProductDraftListActivity.this,
+                localPaths, imageDescriptionList);
+    }
+
+    private void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
             progressDialog.setCancelable(false);
         }
-        if (! progressDialog.isProgress()) {
+        if (!progressDialog.isProgress()) {
             progressDialog.showDialog();
         }
     }
 
-    private void hideProgressDialog(){
+    private void hideProgressDialog() {
         if (progressDialog != null && progressDialog.isProgress()) {
             progressDialog.dismiss();
         }
@@ -219,18 +243,18 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
             ProductDraftAddActivity.start(this,
                     productIds.get(0).toString());
         } else {
-            CommonUtils.UniversalToast(this,getString(R.string.product_draft_instagram_save_success,
+            CommonUtils.UniversalToast(this, getString(R.string.product_draft_instagram_save_success,
                     productIds.size()));
             ProductDraftListFragment productDraftListFragment =
                     (ProductDraftListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
-            if (productDraftListFragment!= null) {
+            if (productDraftListFragment != null) {
                 productDraftListFragment.resetPageAndSearch();
             }
         }
     }
 
     @Override
-    public void hideDraftLoading(){
+    public void hideDraftLoading() {
         hideProgressDialog();
     }
 
