@@ -82,8 +82,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     private void setAndroidID() {
         String androidID = GCMHandler.getRegistrationId(context);
         if (!TextUtils.isEmpty(androidID)) {
-            AppsFlyerLib.getInstance().setAndroidIdData(androidID);
-            CommonUtils.dumper(TAG + " appsflyer sent android ID " + androidID + " ids");
+
         }
     }
 
