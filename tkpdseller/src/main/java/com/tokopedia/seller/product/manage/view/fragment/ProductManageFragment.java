@@ -31,6 +31,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.PopupWindow;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.ImageGallery;
@@ -42,12 +44,17 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.seller.BuildConfig;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
+import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
@@ -154,6 +161,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     protected void initView(View view) {
         super.initView(view);
+        searchInputView.clearFocus();
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator_layout);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -172,6 +180,39 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_FILTER);
             }
         });
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewNoResultBinder() {
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_variant_empty);
+        emptyDataBinder.setEmptyTitleText(getString(R.string.title_no_result));
+        emptyDataBinder.setEmptyContentText(getString(R.string.product_manage_label_change_search));
+        return emptyDataBinder;
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
+        emptyDataBinder.setEmptyTitleText(getString(R.string.product_manage_label_product_list_empty));
+        emptyDataBinder.setEmptyContentText(getString(R.string.product_manage_label_add_product_to_sell));
+        emptyDataBinder.setEmptyButtonItemText(getString(R.string.product_manage_label_add_product));
+        emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
+            @Override
+            public void onEmptyContentItemTextClicked() {
+                // do nothing
+            }
+
+            @Override
+            public void onEmptyButtonClicked() {
+                startActivity(ProductAddActivity.getCallingIntent(getActivity()));
+            }
+        });
+        return emptyDataBinder;
+    }
+
+    @Override
+    public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
+        return new BaseRetryDataBinder(adapter, R.drawable.ic_gm_statistic_error);
     }
 
     @Override
@@ -583,8 +624,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(productManageViewModel.getProductName())
-                .setMenu(R.menu.menu_product_manage_action_item);
+                .addTitleItem(productManageViewModel.getProductName());
+
+        if(GlobalConfig.isSellerApp()){
+            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item);
+        }else{
+            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_main_app);
+        }
 
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
@@ -616,10 +662,28 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 } else if (itemId == R.id.share_product_menu) {
                     goToShareProduct(productManageViewModel);
                 } else if (itemId == R.id.set_cashback_product_menu) {
-                    showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencySymbol());
+                    if(goldMerchant) {
+                        showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencySymbol());
+                    }else{
+                        showGoldMerchantDialog();
+                    }
                 }
             }
         };
+    }
+
+    private void showGoldMerchantDialog() {
+        AlertDialog.Builder alerdDialog = new AlertDialog.Builder(getActivity());
+        alerdDialog.setTitle(R.string.product_manage_menu_set_cashback);
+        alerdDialog.setMessage(R.string.product_manage_alert_gold_merchant);
+        alerdDialog.setNegativeButton(R.string.label_cancel, null);
+        alerdDialog.setPositiveButton(R.string.product_manage_label_subscribe_gold_merchant, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ((SellerModuleRouter)getActivity().getApplication()).goToGMSubscribe(getActivity());
+            }
+        });
+        alerdDialog.show();
     }
 
     private void showOptionCashback(String productId, String productPrice, String productPriceSymbol) {

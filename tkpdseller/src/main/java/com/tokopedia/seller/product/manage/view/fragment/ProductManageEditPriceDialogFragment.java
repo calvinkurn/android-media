@@ -102,8 +102,6 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
         saveButton = (TextView) view.findViewById(R.id.string_picker_dialog_confirm);
         cancelButton = (TextView) view.findViewById(R.id.string_picker_dialog_cancel);
 
-        spinnerCounterInputViewPrice.setCounterValue(Double.valueOf(productPrice));
-        spinnerCounterInputViewPrice.setSpinnerValue(String.valueOf(productCurrencyId));
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,6 +178,8 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
             }
         });
 
+        spinnerCounterInputViewPrice.setSpinnerValue(String.valueOf(productCurrencyId));
+        spinnerCounterInputViewPrice.setCounterValue(Double.valueOf(productPrice));
         return view;
     }
 

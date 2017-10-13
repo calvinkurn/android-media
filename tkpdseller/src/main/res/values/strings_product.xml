@@ -209,5 +209,11 @@
     <string name="product_manage_filter_preorder">Preorder</string>
     <string name="product_manage_filter_all_showcase">Semua Etalase</string>
     <string name="product_manage_stock_empty">Kosong</string>
+    <string name="product_manage_label_change_search">Ubah pencarian produk Anda</string>
+    <string name="product_manage_label_product_list_empty">Daftar Produk Kosong</string>
+    <string name="product_manage_title_duplicate_product_menu">Duplikat</string>
+    <string name="product_manage_alert_gold_merchant">Berikan bonus belanja berupa TokoCash kepada pembeli hingga 5&#37; dari harga produk. Dapatkan akses Atur Cashback dengan berlangganan Gold Merchant.</string>
+    <string name="product_manage_label_subscribe_gold_merchant">Berlangganan</string>
+    <string name="product_manage_label_stock_counter">Stok %1$d</string>
 
 </resources>
