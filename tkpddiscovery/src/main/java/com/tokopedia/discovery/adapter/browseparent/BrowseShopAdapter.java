@@ -180,9 +180,10 @@ public class BrowseShopAdapter extends ProductAdapter {
                 }
             });
             if (shopModel.isOfficial()) {
-                shopLocation.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_official_store_badge, 0, 0, 0);
+                shopLocation.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_authorize_grey, 0, 0, 0);
                 shopLocation.setText(context.getResources().getString(R.string.authorized));
             } else {
+                shopLocation.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_location_grey, 0, 0, 0);
                 shopLocation.setText(shopModel.getLocation());
             }
             ImageHandler.LoadImage(reputationView, shopModel.getReputationImageUrl());
