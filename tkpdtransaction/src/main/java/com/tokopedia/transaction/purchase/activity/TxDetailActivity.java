@@ -39,7 +39,6 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.TxProductListAdapter;
 import com.tokopedia.transaction.purchase.listener.TxDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
-import com.tokopedia.transaction.purchase.model.response.txlist.OrderDriver;
 import com.tokopedia.transaction.purchase.presenter.TxDetailPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxDetailPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
@@ -222,15 +221,6 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                 orderData.getOrderShipment().getShipmentProduct()));
         tvDestinationDetail.setText(orderData.getOrderDestination().getDetailDestination()
                 .replace("&amp;", "&"));
-
-        OrderDriver orderDriver = new OrderDriver();
-        orderDriver.setDriverName("Joko Widodo");
-        orderDriver.setDriverPhone("http://vovworld.vn/Uploaded/tuthuy/2015_06_25/widodo-photo.jpg");
-        orderDriver.setDriverPhone("087885985095");
-        orderDriver.setLicenseNumber("License Number Coy");
-
-        orderData.setDriverInfo(orderDriver);
-
         if (orderData.getDriverInfo() != null
                 && !orderData.getDriverInfo().getDriverName().isEmpty()) {
             instantCourierDriverLayout.setVisibility(View.VISIBLE);
