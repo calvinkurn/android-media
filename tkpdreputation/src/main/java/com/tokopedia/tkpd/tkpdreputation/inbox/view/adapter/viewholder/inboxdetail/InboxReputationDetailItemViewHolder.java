@@ -239,7 +239,13 @@ public class InboxReputationDetailItemViewHolder extends
 
                 }
             });
-            reviewOverflow.setOnClickListener(onReviewOverflowClicked(element));
+
+            if (canShowOverflow(element)) {
+                reviewOverflow.setVisibility(View.VISIBLE);
+                reviewOverflow.setOnClickListener(onReviewOverflowClicked(element));
+            } else {
+                reviewOverflow.setVisibility(View.GONE);
+            }
 
             if (element.getReviewResponseViewModel() != null
                     && !TextUtils.isEmpty(element.getReviewResponseViewModel().getResponseMessage())) {
@@ -311,7 +317,7 @@ public class InboxReputationDetailItemViewHolder extends
         sellerReplyTime.setText(getFormattedTime(reviewResponseViewModel.getResponseCreateTime()));
         sellerReply.setText(MethodChecker.fromHtml(reviewResponseViewModel.getResponseMessage()));
         sellerAddReplyEditText.setText("");
-        if (canShowReplyOverflow(element)) {
+        if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
             seeReplyLayout.setVisibility(View.VISIBLE);
             replyOverflow.setVisibility(View.VISIBLE);
             replyOverflow.setOnClickListener(new View.OnClickListener() {
@@ -396,7 +402,7 @@ public class InboxReputationDetailItemViewHolder extends
         return MainApplication.getAppContext().getString(R.string.by) + " " + reviewerName;
     }
 
-    private boolean canShowReplyOverflow(InboxReputationDetailItemViewModel element) {
+    private boolean canShowOverflow(InboxReputationDetailItemViewModel element) {
         return element.isReviewIsEditable()
                 || element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
                 || !TextUtils.isEmpty(element.getProductName());
