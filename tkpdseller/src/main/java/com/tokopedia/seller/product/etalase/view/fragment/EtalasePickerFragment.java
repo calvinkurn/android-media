@@ -19,6 +19,7 @@ import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.etalase.di.component.DaggerEtalasePickerComponent;
@@ -222,6 +223,9 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
         inflater.inflate(R.menu.menu_product_etalase_picker, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setOnQueryTextListener(this);
+        if (getActivity() instanceof BaseSimpleActivity) {
+            ((BaseSimpleActivity) getActivity()).updateOptionMenuColor(menu);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
