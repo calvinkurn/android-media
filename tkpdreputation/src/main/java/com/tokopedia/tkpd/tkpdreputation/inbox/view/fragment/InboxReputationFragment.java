@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,9 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -68,6 +71,9 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Inject
     GlobalCacheManager cacheManager;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     public static Fragment createInstance(int tab) {
         InboxReputationFragment fragment = new InboxReputationFragment();
@@ -374,7 +380,14 @@ public class InboxReputationFragment extends BaseDaggerFragment
         adapter.clearList();
         if (GlobalConfig.isSellerApp()
                 || getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
-            adapter.showEmpty(getString(R.string.inbox_reputation_seller_empty_title));
+            adapter.showEmpty(getString(R.string.inbox_reputation_seller_empty_title),
+                    getString(R.string.see_my_shop),
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            goToMyShop();
+                        }
+                    });
         } else {
             adapter.showEmpty(getString(R.string.inbox_reputation_empty_title),
                     getString(R.string.inbox_reputation_empty_button),
@@ -386,6 +399,15 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     });
         }
         adapter.notifyDataSetChanged();
+    }
+
+    private void goToMyShop() {
+        if (sessionHandler != null && TextUtils.isEmpty(sessionHandler.getShopID())) {
+            Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+            intent.putExtras(ShopInfoActivity.createBundle(sessionHandler.getShopID(), ""));
+            startActivity(intent);
+            getActivity().finish();
+        }
     }
 
     private void goToHotlist() {
