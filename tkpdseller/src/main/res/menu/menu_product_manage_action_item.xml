@@ -24,7 +24,7 @@
         <item
             android:id="@+id/change_price_product_menu"
             android:icon="@drawable/ic_menu_set_price"
-            android:title="@string/title_edit_price" />
+            android:title="@string/product_manage_menu_set_price" />
         <item
             android:id="@+id/share_product_menu"
             android:icon="@drawable/ic_share_menu"
