@@ -167,7 +167,6 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
                         instagramMedia.getSelectedModel()
                 );
             }
-            instagramMedia.clearSelectedModel();
         }
         return true;
     }

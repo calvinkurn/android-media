@@ -44,6 +44,7 @@ import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
@@ -70,6 +71,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
+
+import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 
 /**
  * Created by zulfikarrahman on 9/22/17.
@@ -220,10 +223,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     public void importFromInstagram() {
-        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) getActivity().getApplication()).startInstopedActivityForResult(getActivity(), this,
-                    GalleryCropActivity.INSTAGRAM_SELECT_REQUEST_CODE, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA);
-        }
+        InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductManageFragment.this,
+                INSTAGRAM_SELECT_REQUEST_CODE, ProductManageSellerFragment.MAX_INSTAGRAM_SELECT);
         UnifyTracking.eventClickInstoped();
     }
 
@@ -279,11 +280,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             case ImageGallery.TOKOPEDIA_GALLERY:
                 onActivityResultFromGallery(intent);
                 break;
-            case GalleryCropActivity.INSTAGRAM_SELECT_REQUEST_CODE:
-                if (resultCode == Activity.RESULT_OK) {
-                    onActivityResultFromInstagram(intent);
-                }
-                break;
             case ProductManageConstant.REQUEST_CODE_FILTER:
                 if (resultCode == Activity.RESULT_OK) {
                     productManageFilterModel = intent.getParcelableExtra(ProductManageConstant.EXTRA_FILTER_SELECTED);
@@ -300,9 +296,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 }
                 break;
             default:
+                super.onActivityResult(requestCode, resultCode, intent);
                 break;
         }
-        super.onActivityResult(requestCode, resultCode, intent);
     }
 
     protected void resetPageAndRefresh() {
@@ -320,11 +316,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             ArrayList<String> imageUrls = new ArrayList<>();
             imageUrls.add(imageUrl);
             ProductAddActivity.start(getActivity(), imageUrls);
-        }
-
-        ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryCropActivity.IMAGE_URLS);
-        if (imageUrls != null) {
-            ProductAddActivity.start(getActivity(), imageUrls);
+        } else {
+            ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryCropActivity.IMAGE_URLS);
+            if (imageUrls != null) {
+                ProductAddActivity.start(getActivity(), imageUrls);
+            }
         }
     }
 

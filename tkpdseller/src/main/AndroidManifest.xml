@@ -49,6 +49,12 @@
         <activity
             android:name=".instoped.InstopedActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".instoped.InstopedSellerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".instoped.InstopedSellerCropperActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".common.datepicker.view.activity.DatePickerActivity"

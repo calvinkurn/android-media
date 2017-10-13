@@ -76,7 +76,11 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
                 continue;
             }
             correctResolutionLocalPathList.add(localPath);
-            correctResolutionInstagramDescList.add(instagramDescList.get(i));
+            try {
+                correctResolutionInstagramDescList.add(instagramDescList.get(i));
+            }catch (Exception e) {
+                correctResolutionInstagramDescList.add("");
+            }
         }
         if (failedPositionArrayList.size() > 0) {
             getView().onErrorSaveBulkDraft(new ResolutionImageException(failedPositionArrayList));

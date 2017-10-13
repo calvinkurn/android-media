@@ -153,4 +153,8 @@
     <string name="import_from_instagram_text_description">Impor dari Instagram</string>
     <string name="added_from_gallery_text_description">Tambah dari Galeri</string>
     <string name="added_from_camera_text_description">Tambah dari Kamera</string>
+
+    <string name="edit_from_instagram_text_description">Ubah dari Instagram</string>
+    <string name="edit_from_gallery_text_description">Ubah dari Galeri</string>
+    <string name="edit_from_camera_text_description">Ubah dari Kamera</string>
 </resources>

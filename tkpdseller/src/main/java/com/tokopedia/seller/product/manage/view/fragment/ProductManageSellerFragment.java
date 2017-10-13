@@ -20,12 +20,16 @@ import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.instoped.InstopedSellerActivity;
+import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListCountComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListCountModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.service.UploadProductService;
 
 import java.util.ArrayList;
@@ -79,34 +83,24 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
         productDraftListCountPresenter.detachView();
     }
 
-//    @Override
-//    protected void onFabMenuItemClicked(int menuItemId) {
-//        super.onFabMenuItemClicked(menuItemId);
-//        if (menuItemId == R.id.action_instagram) {
-//            ManageProductSellerPermissionsDispatcher.onInstagramClickedWithCheck(ProductManageSellerFragment.this);
-//        }
-//    }
-
-    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void onInstagramClicked() {
-        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) getActivity().getApplication()).startInstopedActivityForResult(getActivity(),
-                    INSTAGRAM_SELECT_REQUEST_CODE, MAX_INSTAGRAM_SELECT);
-        }
+    @Override
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    public void importFromInstagram() {
+        InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductManageSellerFragment.this,
+                INSTAGRAM_SELECT_REQUEST_CODE, ProductManageSellerFragment.MAX_INSTAGRAM_SELECT);
+        UnifyTracking.eventClickInstoped();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK && intent != null) {
-            ArrayList<InstagramMediaModel> images = intent.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
-            if (images == null || images.size() == 0) {
-                return;
+            ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
+            ArrayList<String> imageDescList = intent.getStringArrayListExtra(InstopedSellerActivity.EXTRA_IMAGE_DESC_LIST);
+            if (imageUrls != null) {
+                ProductDraftListActivity.startInstagramSaveBulkFromLocal(getContext(), imageUrls, imageDescList);
             }
-            if (getActivity().getApplication() instanceof SellerModuleRouter) {
-                ((SellerModuleRouter) getActivity().getApplication()).goMultipleInstagramAddProduct(getActivity(),
-                        images);
-            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, intent);
         }
     }
 
