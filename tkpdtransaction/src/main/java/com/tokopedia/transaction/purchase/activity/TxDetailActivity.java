@@ -1,6 +1,5 @@
 package com.tokopedia.transaction.purchase.activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -34,7 +33,6 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -51,17 +49,10 @@ import java.text.MessageFormat;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 /**
  * @author by Angga.Prasetiyo on 28/04/2016.
  */
-@RuntimePermissions
 public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> implements
         TxDetailViewListener, TxProductListAdapter.ActionListener {
     private static final String EXTRA_ORDER_DATA = "EXTRA_ORDER_DATA";
@@ -266,12 +257,12 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                 new BottomSheetCallAction.Builder(TxDetailActivity.this)
                         .actionListener(new BottomSheetCallAction.ActionListener() {
                             @Override
-                            public void onPhoneCallerClicked(BottomSheetCallAction.CallActionData callActionData) {
+                            public void onCallAction1Clicked(BottomSheetCallAction.CallActionData callActionData) {
                                 openDialCaller(callActionData.getPhoneNumber());
                             }
 
                             @Override
-                            public void onPhoneMessageClicked(BottomSheetCallAction.CallActionData callActionData) {
+                            public void onCallAction2Clicked(BottomSheetCallAction.CallActionData callActionData) {
                                 openSmsApplication(callActionData.getPhoneNumber());
                             }
                         })
@@ -283,26 +274,24 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         };
     }
 
-    @NeedsPermission(Manifest.permission.SEND_SMS)
-    private void openSmsApplication(String phoneNumber) {
-        Intent smsIntent = new Intent(android.content.Intent.ACTION_VIEW);
-        smsIntent.setType("vnd.android-dir/mms-sms");
-        smsIntent.putExtra("address", phoneNumber);
+    void openSmsApplication(String phoneNumber) {
+        Intent smsIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + phoneNumber));
         try {
-            startActivity(Intent.createChooser(smsIntent, "SMS:"));
+            startActivity(smsIntent);
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
+            showToastMessage(getString(R.string.error_message_sms_app_not_found));
         }
     }
 
-    @NeedsPermission(Manifest.permission.CALL_PHONE)
-    private void openDialCaller(String phoneNumber) {
+    void openDialCaller(String phoneNumber) {
         Intent intent = new Intent(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:" + phoneNumber));
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
+            showToastMessage(getString(R.string.error_message_phone_dialer_app_not_found));
         }
     }
 
@@ -601,50 +590,6 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                                     .getPreorderProcessTimeTypeString()
                     );
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        TxDetailActivityPermissionsDispatcher.onRequestPermissionsResult(
-                this, requestCode, grantResults
-        );
-    }
-
-    @OnPermissionDenied(Manifest.permission.CALL_PHONE)
-    void showDeniedForCallPhone() {
-        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.CALL_PHONE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CALL_PHONE)
-    void showNeverAskForCallPhone() {
-        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.CALL_PHONE);
-    }
-
-    @OnShowRationale(Manifest.permission.CALL_PHONE)
-    void showRationaleForCallPhone(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(
-                this, request, Manifest.permission.CALL_PHONE
-        );
-    }
-
-
-    @OnPermissionDenied(Manifest.permission.SEND_SMS)
-    void showDeniedForSendSms() {
-        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.SEND_SMS);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.SEND_SMS)
-    void showNeverAskForSendSms() {
-        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.SEND_SMS);
-    }
-
-    @OnShowRationale(Manifest.permission.SEND_SMS)
-    void showRationaleForSendSms(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(
-                this, request, Manifest.permission.SEND_SMS
-        );
     }
 
 
