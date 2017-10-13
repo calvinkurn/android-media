@@ -64,6 +64,7 @@ import com.tokopedia.seller.product.manage.di.ProductManageModule;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageFilterActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
+import com.tokopedia.seller.product.manage.view.adapter.ProductManageListViewHolder;
 import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
 import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
@@ -198,7 +199,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
-        return new BaseRetryDataBinder(adapter, R.drawable.ic_gm_statistic_error);
+        return new BaseRetryDataBinder(adapter, R.drawable.ic_cloud_error);
     }
 
     @Override
@@ -603,6 +604,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         return new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem item) {
+                if(productManageViewModel.getProductStatus().equals(ProductManageListViewHolder.SUPERVISION_STATUS)){
+                    NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.product_manage_desc_product_on_supervision, productManageViewModel.getProductName()));
+                    return;
+                }
+
                 int itemId = item.getItemId();
                 if (itemId == R.id.edit_product_menu) {
                     goToEditProduct(productManageViewModel.getId());
