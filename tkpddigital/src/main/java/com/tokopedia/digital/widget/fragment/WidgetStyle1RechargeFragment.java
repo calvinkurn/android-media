@@ -379,12 +379,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderNumberList(List<OrderClientNumber> results) {
         if (SessionHandler.isV4Login(getActivity())) {
-            for (OrderClientNumber orderClientNumber : results) {
-                Log.d("WidgetStyle1RechargeFragment",
-                        orderClientNumber.getCategoryId() + " " +
-                                orderClientNumber.getName() + " " +
-                                orderClientNumber.getLastUpdated());
-            }
             widgetClientNumberView.setDropdownAutoComplete(results);
         }
     }

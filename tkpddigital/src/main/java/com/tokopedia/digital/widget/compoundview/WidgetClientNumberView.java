@@ -10,11 +10,11 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -27,11 +27,9 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.adapter.AutoCompleteTVAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;

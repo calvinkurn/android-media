@@ -263,9 +263,9 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
         if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
             compositeSubscription.add(
                     digitalWidgetRepository.getObservableNumberList(param)
-                            .subscribeOn(Schedulers.newThread())
-                            .unsubscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.from(threadExecutor))
+                            .unsubscribeOn(Schedulers.from(threadExecutor))
+                            .observeOn(postExecutionThread.getScheduler())
                             .subscribe(subscriber));
         }
     }

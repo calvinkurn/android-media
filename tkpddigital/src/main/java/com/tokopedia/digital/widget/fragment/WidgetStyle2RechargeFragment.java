@@ -114,8 +114,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         setRechargeEditTextTouchCallback(widgetClientNumberView);
 
         if (category.getAttributes().getClientNumber().isShown()) {
-            presenter.fetchNumberList(String.valueOf(category.getId()));
-
             widgetClientNumberView.setClientNumberLabel(clientNumber.getText());
             widgetClientNumberView.setHint(clientNumber.getPlaceholder());
             widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
@@ -366,12 +364,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderNumberList(List<OrderClientNumber> results) {
         if (SessionHandler.isV4Login(getActivity())) {
-            for (OrderClientNumber orderClientNumber : results) {
-                Log.d("WidgetStyle2RechargeFragment",
-                        orderClientNumber.getCategoryId() + " " +
-                                orderClientNumber.getName() + " " +
-                                orderClientNumber.getLastUpdated());
-            }
             widgetClientNumberView.setDropdownAutoComplete(results);
         }
     }
@@ -382,6 +374,10 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment imp
         widgetRadioChooserView.setListener(getRadioChoserListener());
         widgetRadioChooserView.renderDataView(operatorModels, lastOrder, lastOperatorSelected);
         holderWidgetSpinnerOperator.addView(widgetRadioChooserView);
+
+        if (category.getAttributes().getClientNumber().isShown()) {
+            presenter.fetchNumberList(String.valueOf(category.getId()));
+        }
     }
 
     @Override

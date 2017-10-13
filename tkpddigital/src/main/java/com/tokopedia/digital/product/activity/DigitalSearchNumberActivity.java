@@ -100,9 +100,4 @@ public class DigitalSearchNumberActivity extends BasePresenterActivity implement
         finish();
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_CLIENT_NUMBER, new OrderClientNumber()));
-//        super.onBackPressed();
-//    }
 }

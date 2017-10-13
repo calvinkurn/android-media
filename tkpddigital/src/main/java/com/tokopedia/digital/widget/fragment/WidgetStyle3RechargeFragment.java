@@ -113,8 +113,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
                 category.getAttributes().isInstantCheckoutAvailable());
 
         if (category.getAttributes().getClientNumber().isShown()) {
-            presenter.fetchNumberList(String.valueOf(category.getId()));
-
             widgetClientNumberView.setButtonPickerListener(getButtonPickerListener());
             widgetClientNumberView.setRechargeEditTextListener(getEditTextListener());
             widgetClientNumberView.setClientNumberLabel(clientNumber.getText());
@@ -334,6 +332,10 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
         widgetOperatorChooserView.renderDataView(operatorModels, lastOrder, category.getId(),
                 lastOperatorSelected);
         holderWidgetSpinnerOperator.addView(widgetOperatorChooserView);
+
+        if (category.getAttributes().getClientNumber().isShown()) {
+            presenter.fetchNumberList(String.valueOf(category.getId()));
+        }
     }
 
     private WidgetOperatorChooserView.OperatorChoserListener getOperatorChoserListener() {
@@ -408,20 +410,12 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
     @Override
     public void renderNumberList(List<OrderClientNumber> results) {
         if (SessionHandler.isV4Login(getActivity())) {
-            Log.d("WidgetStyle3RechargeFragment", "renderNumberList");
-            for (OrderClientNumber orderClientNumber : results) {
-                Log.d("WidgetStyle3RechargeFragment",
-                        orderClientNumber.getCategoryId() + " " +
-                                orderClientNumber.getName() + " " +
-                                orderClientNumber.getLastUpdated());
-            }
             widgetClientNumberView.setDropdownAutoComplete(results);
         }
     }
 
     @Override
     public void renderLastTypedClientNumber() {
-        Log.d("WidgetStyle3RechargeFragment", "renderLastTypeClientNumber");
         if (category.getAttributes().isValidatePrefix()) {
             widgetClientNumberView.setText(lastClientNumberTyped);
         } else {
@@ -431,7 +425,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
 
     @Override
     public void renderLastOrder(LastOrder lastOrder) {
-        Log.d("WidgetStyle3RechargeFragment", "renderLastOrder");
         if (presenter != null) {
             this.lastOrder = lastOrder;
             if (lastOrder != null && lastOrder.getAttributes() != null && category != null) {
