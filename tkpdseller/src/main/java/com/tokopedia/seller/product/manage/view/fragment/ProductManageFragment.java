@@ -489,7 +489,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void onErrorEditPrice(Throwable t, final String productId, final String price, final String currencyId, final String currencyText) {
         NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
-                ViewUtils.getErrorMessage(getActivity(), t), new NetworkErrorHelper.RetryClickedListener() {
+                ViewUtils.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
                         productManagePresenter.editPrice(productId, price, currencyId, currencyText);
