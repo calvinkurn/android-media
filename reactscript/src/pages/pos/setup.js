@@ -29,7 +29,7 @@ class Root extends Component {
     } else if (POS_PAGE === 'CICILAN'){
       return <DetailCicilan />
     } else if (POS_PAGE === 'INVOICE'){
-      return <Invoice />
+      return <Invoice data={this.props.data} />
     }
   }
 }

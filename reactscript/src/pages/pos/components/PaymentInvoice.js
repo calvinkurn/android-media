@@ -14,6 +14,8 @@ class PaymentInvoice extends Component {
     super(props);
 
     console.log(this.props)
+    console.log(this.props.screenProps.data.data)
+    console.log(JSON.parse(this.props.screenProps.data.data))
     this.state = {
       email: "",
       emailErrorMessage: ""
