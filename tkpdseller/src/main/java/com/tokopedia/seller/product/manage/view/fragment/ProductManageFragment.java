@@ -9,44 +9,32 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.PopupWindowCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.ActionMode;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.PopupWindow;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
-import com.tokopedia.seller.BuildConfig;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
@@ -55,6 +43,7 @@ import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
+import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
@@ -74,7 +63,6 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
-import com.tokopedia.seller.product.picker.view.adapter.ProductListPickerSearchAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,8 +70,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
-
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 /**
  * Created by zulfikarrahman on 9/22/17.
@@ -223,20 +209,20 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
-        GalleryActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
+        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
                 false, MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY);
     }
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     public void onAddFromCamera() {
-        GalleryActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
+        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
                 true, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA);
     }
 
     public void importFromInstagram() {
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) getActivity().getApplication()).startInstopedActivityForResult(getActivity(), this,
-                    GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA);
+                    GalleryCropActivity.INSTAGRAM_SELECT_REQUEST_CODE, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA);
         }
         UnifyTracking.eventClickInstoped();
     }
@@ -293,7 +279,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             case ImageGallery.TOKOPEDIA_GALLERY:
                 onActivityResultFromGallery(intent);
                 break;
-            case GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE:
+            case GalleryCropActivity.INSTAGRAM_SELECT_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     onActivityResultFromInstagram(intent);
                 }
@@ -328,22 +314,22 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         if (intent == null) {
             return;
         }
-        int position = intent.getIntExtra(GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION, GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
-        String imageUrl = intent.getStringExtra(GalleryActivity.IMAGE_URL);
+        int position = intent.getIntExtra(GalleryCropActivity.ADD_PRODUCT_IMAGE_LOCATION, GalleryCropActivity.ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
+        String imageUrl = intent.getStringExtra(GalleryCropActivity.IMAGE_URL);
         if (!TextUtils.isEmpty(imageUrl)) {
             ArrayList<String> imageUrls = new ArrayList<>();
             imageUrls.add(imageUrl);
             ProductAddActivity.start(getActivity(), imageUrls);
         }
 
-        ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
+        ArrayList<String> imageUrls = intent.getStringArrayListExtra(GalleryCropActivity.IMAGE_URLS);
         if (imageUrls != null) {
             ProductAddActivity.start(getActivity(), imageUrls);
         }
     }
 
     private void onActivityResultFromInstagram(Intent intent) {
-        List<InstagramMediaModel> images = intent.getParcelableArrayListExtra(GalleryActivity.PRODUCT_SOC_MED_DATA);
+        List<InstagramMediaModel> images = intent.getParcelableArrayListExtra(GalleryCropActivity.PRODUCT_SOC_MED_DATA);
 
         ArrayList<String> standardResoImageUrlList = new ArrayList<>();
         for (int i = 0; i < images.size(); i++) {
@@ -363,7 +349,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                     public void onSuccess(ArrayList<String> resultLocalPaths) {
                         showLoadingProgress();
                         Intent intent = new Intent();
-                        intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, resultLocalPaths);
+                        intent.putStringArrayListExtra(GalleryCropActivity.IMAGE_URLS, resultLocalPaths);
                         ProductAddActivity.start(getActivity(), resultLocalPaths);
                         getActivity().finish();
                     }
