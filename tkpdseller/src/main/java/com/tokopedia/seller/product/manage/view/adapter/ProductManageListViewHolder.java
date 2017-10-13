@@ -13,6 +13,8 @@ import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHo
 import com.tokopedia.seller.product.common.utils.CurrencyUtils;
 import com.tokopedia.seller.product.edit.constant.FreeReturnTypeDef;
 import com.tokopedia.seller.product.manage.constant.ProductManagePreOrderDef;
+import com.tokopedia.seller.product.manage.constant.ProductManageStockDef;
+import com.tokopedia.seller.product.manage.constant.ProductManageWholesaleDef;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 
 /**
@@ -22,6 +24,7 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<ProductManageViewModel> {
 
     public static final String EMPTY_STOCK_STATUS = "3";
+    public static final String SUPERVISION_STATUS = "-1";
 
     public interface ClickOptionCallbackHolder {
         void onClickOptionItem(ProductManageViewModel productManageViewModel);
@@ -39,6 +42,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
     private ImageButton optionImageButton;
     private CheckBox checkBoxProduct;
     private TextView tagEmptyStock;
+    private View viewSuperVision;
     private ClickOptionCallbackHolder clickOptionCallbackHolder;
 
     public ProductManageListViewHolder(View layoutView) {
@@ -56,6 +60,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         checkBoxProduct = (CheckBox) layoutView.findViewById(R.id.check_box_product);
         tagEmptyStock = (TextView) layoutView.findViewById(R.id.tag_empty_product);
         optionImageButton = (ImageButton) layoutView.findViewById(R.id.image_button_option);
+        viewSuperVision = layoutView.findViewById(R.id.view_product_on_supervision);
     }
 
     @Override
@@ -118,6 +123,8 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
             tagEmptyStock.setVisibility(View.GONE);
         }
 
+        viewSuperVision.setVisibility(productManageViewModel.getProductStatus().equals(SUPERVISION_STATUS) ? View.VISIBLE : View.GONE);
+
         preOrderTextView.setVisibility(
                 productManageViewModel.getProductPreorder() == ProductManagePreOrderDef.PRE_ORDER ? View.VISIBLE : View.GONE);
         freeReturnImageView.setVisibility(
@@ -130,6 +137,13 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
                 }
             }
         });
+        wholesaleTextView.setVisibility(productManageViewModel.getProductWholesale() == ProductManageWholesaleDef.WHOLESALE ? View.VISIBLE : View.GONE);
+        if(productManageViewModel.getProductUsingStock() == ProductManageStockDef.USING_STOCK) {
+            stockTextView.setVisibility(View.VISIBLE);
+            stockTextView.setText(itemView.getContext().getString(R.string.product_manage_label_stock_counter, productManageViewModel.getProductStock()));
+        }else{
+            stockTextView.setVisibility(View.GONE);
+        }
     }
 
     public void bindFeaturedProduct(boolean isFeaturedProduct) {

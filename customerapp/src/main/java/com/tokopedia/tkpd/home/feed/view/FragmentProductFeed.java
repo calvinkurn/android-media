@@ -86,6 +86,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         TopAdsItemClickListener {
 
     private static final String TAG = "FragmentProductFeed";
+    public static final int MAX_CHOOSEN_IMAGE = 10;
 
     @BindView(R.id.index_main_recycler_view)
     RecyclerView contentRecyclerView;
@@ -535,7 +536,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) getActivity().getApplication()).startInstopedActivityForResult(getContext(),
                     FragmentProductFeed.this,
-                    INSTAGRAM_SELECT_REQUEST_CODE, 10);
+                    INSTAGRAM_SELECT_REQUEST_CODE, MAX_CHOOSEN_IMAGE);
         }
     }
 

@@ -22,4 +22,6 @@
     <color name="colorSheetTitle">#8A000000</color>
     <color name="colorSheetDivider">#3f717171</color>
     <color name="colorStockEmpty">#fff7bc</color>
+
+    <color name="redTransparant">#ffd50000</color>
 </resources>

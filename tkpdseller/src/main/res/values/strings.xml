@@ -153,4 +153,7 @@
     <string name="import_from_instagram_text_description">Impor dari Instagram</string>
     <string name="added_from_gallery_text_description">Tambah dari Galeri</string>
     <string name="added_from_camera_text_description">Tambah dari Kamera</string>
+    <string name="product_manage_label_add_product_to_sell">Tambah produk Anda untuk dapat mulai berjualan.</string>
+    <string name="product_manage_label_add_product">+ Tambah Produk</string>
+    <string name="product_manage_label_supervision">Pengawasan</string>
 </resources>
