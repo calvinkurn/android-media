@@ -41,7 +41,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
@@ -280,11 +279,12 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             rechargeCategoryPresenter.fetchLastOrder();
         }
     }
+
     private void loadDummyPromos() {
-                List<FacadePromo.PromoItem> dummyPromoList = new ArrayList<>();
-                dummyPromoList.add(new FacadePromo.PromoItem());
-                setBanner(dummyPromoList);
-            }
+        List<FacadePromo.PromoItem> dummyPromoList = new ArrayList<>();
+        dummyPromoList.add(new FacadePromo.PromoItem());
+        setBanner(dummyPromoList);
+    }
 
     private void fetchRemoteConfig() {
         remoteConfigFetcher = new RemoteConfigFetcher(getActivity());
@@ -1071,7 +1071,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(trace!=null)
+        if (trace != null)
             trace.stop();
     }
 }
