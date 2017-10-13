@@ -129,6 +129,9 @@ public class InstopedSellerActivity extends InstopedActivity {
 
     public void finishWithMultipleImage(ArrayList<String> imageUrls, ArrayList<String> imageDescriptionList){
         Intent intent = new Intent();
+        if (imageUrls!= null && imageUrls.size() == 1) {
+            intent.putExtra(GalleryActivity.IMAGE_URL, imageUrls.get(0));
+        }
         intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, imageUrls);
         intent.putStringArrayListExtra(EXTRA_IMAGE_DESC_LIST, imageDescriptionList);
         setResult(Activity.RESULT_OK, intent);

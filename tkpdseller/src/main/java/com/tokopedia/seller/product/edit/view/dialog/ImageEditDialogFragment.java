@@ -19,9 +19,9 @@ public class ImageEditDialogFragment extends DialogFragment {
     public static final String IMAGE_PRODUCT_POSITION = "IMAGE_PRODUCT_POSITION";
 
     private CharSequence imageMenu[];
-    private OnImageAddListener mListener;
+    private OnImageEditListener mListener;
 
-    public interface OnImageAddListener {
+    public interface OnImageEditListener {
         void clickEditProductFromCamera(int position);
 
         void clickEditProductFromGallery(int position);
@@ -39,7 +39,7 @@ public class ImageEditDialogFragment extends DialogFragment {
         return f;
     }
 
-    public void setOnImageAddListener(OnImageAddListener listener) {
+    public void setOnImageEditListener(OnImageEditListener listener) {
         this.mListener = listener;
     }
 

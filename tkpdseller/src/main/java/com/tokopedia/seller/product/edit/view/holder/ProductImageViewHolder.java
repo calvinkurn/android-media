@@ -119,8 +119,8 @@ public class ProductImageViewHolder extends ProductViewHolder {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if ((requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY ||
-                requestCode == INSTAGRAM_SELECT_REQUEST_CODE) &&
+        if ((requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY || (
+                requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK)) &&
                 data != null) {
             String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
             if (!TextUtils.isEmpty(imageUrl)) {
