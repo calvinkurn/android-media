@@ -68,7 +68,7 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/check_box_margin"
         android:layout_marginRight="@dimen/check_box_margin"
-        android:theme="@style/checkBoxStyle" />
+        android:theme="@style/checkBoxStyleSeller" />
 
     <View
         android:layout_width="match_parent"
