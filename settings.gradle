@@ -1,4 +1,6 @@
-include ':customerapp', ':react-native-codepush'
+include ':tkpdusecase'
+include ':customerapp'
+include ':react-native-codepush'
 include ':tkpdreactnative'
 include ':tkpdride'
 include ':tkpdfeed'

@@ -25,6 +25,7 @@ ext {
     compileSdkVersion = 25
     minSdkVersion = 16
     targetSdkVersion = 25
+    buildToolsVersion = "25.0.0"
     espressoVersion = "2.2.2"
     runnerVersion = "0.5"
     rulesVersion = "0.5"

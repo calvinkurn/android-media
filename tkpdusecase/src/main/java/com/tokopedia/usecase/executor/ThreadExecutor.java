@@ -1,8 +1,7 @@
-package com.tokopedia.core.base.domain.executor;
+package com.tokopedia.usecase.executor;
 
 import java.util.concurrent.Executor;
 
-@Deprecated
 public interface ThreadExecutor extends Executor {
 
 }

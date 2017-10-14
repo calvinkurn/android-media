@@ -1,7 +1,7 @@
-package com.tokopedia.core.base.domain;
+package com.tokopedia.usecase;
 
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.usecase.executor.PostExecutionThread;
+import com.tokopedia.usecase.executor.ThreadExecutor;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -14,7 +14,6 @@ import rx.subscriptions.Subscriptions;
  * @author Kulomady on 2/1/17.
  */
 
-@Deprecated
 public abstract class UseCase<T> implements Interactor<T> {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
@@ -39,6 +38,7 @@ public abstract class UseCase<T> implements Interactor<T> {
         return createObservable(requestParams).defaultIfEmpty(null).toBlocking().first();
     }
 
+    @Override
     public final void execute(RequestParams requestParams, Subscriber<T> subscriber) {
         execute(requestParams, subscriber, false);
     }

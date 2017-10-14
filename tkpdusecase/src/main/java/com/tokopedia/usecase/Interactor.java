@@ -1,4 +1,4 @@
-package com.tokopedia.core.base.domain;
+package com.tokopedia.usecase;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -7,10 +7,9 @@ import rx.Subscriber;
  * @author Kulomady on 12/7/16.
  */
 
-@Deprecated
 public interface Interactor<T> {
 
-    void execute(RequestParams requestParams,Subscriber<T> subscriber);
+    void execute(RequestParams requestParams, Subscriber<T> subscriber);
 
     Observable<T> getExecuteObservable(RequestParams requestParams);
 }

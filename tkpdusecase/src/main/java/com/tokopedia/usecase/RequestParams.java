@@ -1,13 +1,12 @@
-package com.tokopedia.core.base.domain;
+package com.tokopedia.usecase;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.usecase.utils.TKPDMapParam;
 
 import java.util.Map;
 
 /**
  * @author kulomady on 12/24/16.
  */
-@Deprecated
 public class RequestParams {
     public static final RequestParams EMPTY = RequestParams.create();
 

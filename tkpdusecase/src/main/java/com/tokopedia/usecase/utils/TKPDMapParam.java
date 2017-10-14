@@ -1,4 +1,4 @@
-package com.tokopedia.core.network.retrofit.utils;
+package com.tokopedia.usecase.utils;
 
 import java.util.HashMap;
 
@@ -6,7 +6,6 @@ import java.util.HashMap;
  * TKPDMapParam
  * Created by anggaprasetiyo on 10/5/16.
  */
-@Deprecated
 public class TKPDMapParam<K, V> extends HashMap<K, V> {
     /**
      * @param key   key parameter
@@ -15,7 +14,9 @@ public class TKPDMapParam<K, V> extends HashMap<K, V> {
      */
     @Override
     public V put(K key, V value) {
-        if (value == null) throw new RuntimeException("Value ga boleh null coy!! |KEY = " + key);
+        if (value == null) {
+            throw new RuntimeException("Value ga boleh null coy!! |KEY = " + key);
+        }
         return super.put(key, value);
     }
 }
