@@ -9,6 +9,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 /**
  * @author kulomady on 1/9/17.
  */
+@Deprecated
 public abstract class BaseDaggerFragment extends TkpdBaseV4Fragment {
 
     @Override

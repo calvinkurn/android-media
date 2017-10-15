@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 /**
  * Created by Nisie on 2/26/16.
  */
+@Deprecated
 abstract public class DataBindAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override

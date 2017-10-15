@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">abstraction</string>
+
+    <string name="label_next">Selanjutnya</string>
+    <string name="label_choose">Pilih</string>
+    <string name="title_no_result">Tidak ada hasil</string>
+    <string name="title_loading">Loading</string>
+    <string name="product_etalase_picker_add_etalase_add_button_dialog">Tambah</string>
+    <string name="product_etalase_picker_add_etalase_cancel_button_dialog">Batal</string>
+    <string name="msg_network_error">Terjadi kesalahan koneksi, silahkan coba lagi </string>
+    <string name="msg_network_error_1">Terjadi kesalahan koneksi</string>
+    <string name="msg_network_error_2">Silahkan coba lagi </string>
+    <string name="title_try_again_caps">COBA LAGI</string>
+    <string name="title_try_again">Coba Lagi</string>
+    <string name="top_ads_label_stepper">%1$d dari %2$d step</string>
+    <string name="msg_no_connection">Tidak ada koneksi internet</string>
+    <string name="error_no_connection2">Mohon periksa koneksi internet Anda</string>
+    <string name="close">Tutup</string>
+</resources>

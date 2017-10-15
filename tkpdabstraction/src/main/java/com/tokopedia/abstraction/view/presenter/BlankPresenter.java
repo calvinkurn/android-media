@@ -1,0 +1,10 @@
+package com.tokopedia.abstraction.view.presenter;
+
+/**
+ * Created by nathan on 7/21/17.
+ * Temporary class to manipulate old presenter fragment
+ */
+
+@Deprecated
+public class BlankPresenter {
+}

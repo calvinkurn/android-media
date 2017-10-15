@@ -14,6 +14,7 @@ import com.tokopedia.core.util.DataBinder;
 /**
  * Created by Nisie on 2/26/16.
  */
+@Deprecated
 public class RetryDataBinder extends DataBinder<RetryDataBinder.ViewHolder> {
     boolean isFullScreen = false;
 
