@@ -10,6 +10,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.view.fragment.PlaceAutocompleteFragment;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.fragment.SelectLocationOnMapFragment;
@@ -79,6 +80,11 @@ public class GooglePlacePickerActivity extends BaseActivity implements PlaceAuto
 
     @Override
     public void handleSelectDestinationOnMap(PlacePassViewModel destination) {
+        if(getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
+            RideGATracking.eventClickDoneDestinationMap(getScreenName(), destination.getAddress()); // 15
+        }else {
+            RideGATracking.eventClickDoneSourceMap(getScreenName(), destination.getAddress()); // 12
+        }
         if (destination != null) {
             Intent intent = getIntent();
             intent.putExtra(EXTRA_SELECTED_PLACE, destination);

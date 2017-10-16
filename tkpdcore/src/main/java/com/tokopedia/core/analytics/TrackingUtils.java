@@ -569,7 +569,7 @@ public class TrackingUtils extends TrackingConfig {
         getLocaEngine().sendEventSearchProduct(keyword,"product",null,null);
     }
 
-    static void sendGTMEvent(Map<String, Object> dataLayers){
+    public static void sendGTMEvent(Map<String, Object> dataLayers){
         getGTMEngine().sendEvent(dataLayers);
     }
 

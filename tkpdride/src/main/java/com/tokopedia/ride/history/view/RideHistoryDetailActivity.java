@@ -12,6 +12,7 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
@@ -59,6 +60,7 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            RideGATracking.eventBackPress(getScreenName());
             onBackPressed();
             return true;
         } else {
