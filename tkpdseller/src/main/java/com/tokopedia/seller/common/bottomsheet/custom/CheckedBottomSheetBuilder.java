@@ -51,8 +51,10 @@ public class CheckedBottomSheetBuilder extends BottomSheetBuilder {
     }
 
     public BottomSheetBuilder setSelection(String menuTitle) {
-        for (int i = 0; i < menu.size(); i++) {
-            boolean titleSelected = !TextUtils.isEmpty(menuTitle) && menuTitle.equalsIgnoreCase(menu.getItem(i).getTitle().toString());
+        int menuLength = menu != null ? menu.size() : mAdapterBuilder.getItems().size();
+        for (int i = 0; i < menuLength; i++) {
+            String menuItem = menu != null ? menu.getItem(i).getTitle().toString() : mAdapterBuilder.getItems().get(i).getTitle();
+            boolean titleSelected = !TextUtils.isEmpty(menuTitle) && menuTitle.equalsIgnoreCase(menuItem);
             if (mAdapterBuilder != null && mAdapterBuilder instanceof CheckedAdapterBottomSheetBuilder) {
                 ((CheckedAdapterBottomSheetBuilder) mAdapterBuilder).addSelection(i, titleSelected);
             }

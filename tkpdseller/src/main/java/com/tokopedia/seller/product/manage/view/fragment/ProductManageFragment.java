@@ -50,6 +50,7 @@ import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.seller.common.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -625,7 +626,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                     goToShareProduct(productManageViewModel);
                 } else if (itemId == R.id.set_cashback_product_menu) {
                     if (goldMerchant) {
-                        showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencySymbol());
+                        showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductCashback());
                     } else {
                         showDialogActionGoToGMSubscribe();
                     }
@@ -634,7 +635,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         };
     }
 
-    private void showOptionCashback(String productId, String productPrice, String productPriceSymbol) {
+    private void showOptionCashback(String productId, String productPrice, String productPriceSymbol, int productCashback) {
         double productPricePlain = Double.parseDouble(productPrice);
 
         BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
@@ -645,6 +646,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 .addItem(CashbackOption.CASHBACK_OPTION_5, getCashbackMenuText(CashbackOption.CASHBACK_OPTION_5, productPriceSymbol, productPricePlain), null)
                 .addItem(CashbackOption.CASHBACK_OPTION_NONE, getString(R.string.product_manage_cashback_option_none), null);
 
+        String selection = "";
+        if(productCashback == CashbackOption.CASHBACK_OPTION_NONE){
+            selection =  getString(R.string.product_manage_cashback_option_none);
+        }else{
+            selection = getCashbackMenuText(productCashback, productPriceSymbol, productPricePlain);
+        }
+        ((CheckedBottomSheetBuilder) bottomSheetBuilder).setSelection(selection);
+
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionCashbackClicked(productId))
                 .createDialog();
@@ -653,7 +662,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     private String getCashbackMenuText(int cashback, String productPriceSymbol, double productPricePlain) {
         return getString(R.string.product_manage_cashback_option, String.valueOf(cashback),
-                productPriceSymbol, (int) ((cashback / 100.0f) * productPricePlain));
+                productPriceSymbol,
+                KMNumbers.formatDouble2PCheckRound( ((double) cashback  * productPricePlain / 100f), !productPriceSymbol.equals("Rp")));
     }
 
     private BottomSheetItemClickListener onOptionCashbackClicked(final String productId) {
