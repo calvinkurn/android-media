@@ -81,17 +81,15 @@ public class ProductAdditionalInfoView extends RelativeLayout {
     }
 
     @SuppressWarnings("deprecation")
-    public void convertDetailWithHtml(Product product) {
-        final String detailUrl = "http://www.tokopedia.com";
-        String detailUrlText = "Klik di sini";
-
-        Spanned detail = Html.fromHtml(product.getDetail() + "<a href=\"" + detailUrl + "\"> " + detailUrlText + "</a>");
+    public void convertDetailWithHtml(final Product product) {
+        Spanned detail = Html.fromHtml(product.getDetail() + "<a href=\"" + product.getDetailUrl() + "\"> " +
+                product.getDetailUrlText() + "</a>");
         tvInfo.setText(detail);
         tvInfo.setMovementMethod(LinkMovementMethod.getInstance());
         tvInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionListener.onProductLinkClicked(detailUrl);
+                actionListener.onProductLinkClicked(product.getDetailUrl());
             }
         });
     }
