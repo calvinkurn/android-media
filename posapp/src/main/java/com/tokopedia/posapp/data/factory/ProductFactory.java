@@ -6,6 +6,8 @@ import com.tokopedia.posapp.data.mapper.GetProductMapper;
 import com.tokopedia.posapp.data.source.cloud.ProductCloudSource;
 import com.tokopedia.posapp.data.source.cloud.api.AceApi;
 import com.tokopedia.posapp.data.source.cloud.api.ProductApi;
+import com.tokopedia.posapp.data.source.cloud.api.pos.PosProductApi;
+import com.tokopedia.posapp.data.source.cloud.pos.PosProductCloudSource;
 import com.tokopedia.posapp.data.source.local.ProductLocalSource;
 
 /**
@@ -13,6 +15,7 @@ import com.tokopedia.posapp.data.source.local.ProductLocalSource;
  */
 
 public class ProductFactory {
+    private PosProductApi posProductApi;
     private ProductApi productApi;
     private MojitoApi mojitoApi;
     private AceApi aceApi;
@@ -33,6 +36,10 @@ public class ProductFactory {
 
     public ProductCloudSource cloud() {
         return new ProductCloudSource(productApi, mojitoApi, aceApi, getProductMapper, getProductListMapper);
+    }
+
+    public PosProductCloudSource cloudGateway() {
+        return new PosProductCloudSource(posProductApi, getProductListMapper);
     }
 
     public ProductLocalSource local() {

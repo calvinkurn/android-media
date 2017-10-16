@@ -18,10 +18,17 @@ import rx.Observable;
  */
 
 public interface PosProductApi {
-    @GET(TkpdBaseURL.Pos.GET_PRODUCT_LIST)
-    Observable<Response<TkpdResponse>> getProductList(@Path("shopId") String shopId,
-                                                      @Path("startOffset") int start,
-                                                      @Path("rowOffset") int offset);
 
+    String SHOP_ID = "shopId";
+    String START_OFFSET = "startOffset";
+    String ROW_OFFSET = "rowOffset";
+
+    @GET(TkpdBaseURL.Pos.GET_PRODUCT_LIST)
+    Observable<Response<TkpdResponse>> getProductList(@Path(SHOP_ID) String shopId,
+                                                      @Path(START_OFFSET) int start,
+                                                      @Path(ROW_OFFSET) int offset);
+
+    @GET(TkpdBaseURL.Pos.GET_ETALASE)
+    Observable<Response<TkpdResponse>> getEtalase(@Path(SHOP_ID) String shopId);
 
 }
