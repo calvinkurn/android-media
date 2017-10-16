@@ -256,10 +256,15 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                                 openSmsApplication(callActionData.getPhoneNumber());
                             }
                         })
-                        .callActionData(new BottomSheetCallAction.CallActionData().setPhoneNumber(
-                                orderData.getDriverInfo().getDriverPhone()
-                        )).build()
-                        .show();
+                        .callActionData(
+                                new BottomSheetCallAction.CallActionData().setPhoneNumber(
+                                        orderData.getDriverInfo().getDriverPhone()
+                                ).setLabelAction1(
+                                        getString(R.string.label_call_ondemand_driver_logistic_action_1)
+                                ).setLabelAction2(
+                                        getString(R.string.label_call_ondemand_driver_logistic_action_2)
+                                )
+                        ).build().show();
             }
         };
     }
