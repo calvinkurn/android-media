@@ -291,7 +291,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         button.setClickable(false);
         button.setEnabled(false);
         button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
-        button.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_70));
+        button.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_38));
     }
 
     @Override

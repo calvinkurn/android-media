@@ -214,6 +214,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             updateProductProblemString(resultViewModel.problem, tvChooseProductProblem);
             tvSolution.setTextColor(context.getResources().getColor(R.color.black_70));
             tvSolutionTitle.setTextColor(context.getResources().getColor(R.color.black_70));
+            ivChooseProductProblem.setAlpha(1f);
+            ivSolution.setAlpha(0.7f);
         } else {
             ffSolution.setEnabled(false);
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(),
@@ -223,6 +225,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             tvChooseProductProblem.setText(context.getResources().getString(R.string.string_choose_product_problem));
             tvSolution.setTextColor(context.getResources().getColor(R.color.black_38));
             tvSolutionTitle.setTextColor(context.getResources().getColor(R.color.black_38));
+            ivChooseProductProblem.setAlpha(0.7f);
+            ivSolution.setAlpha(0.38f);
+            ivUploadProve.setAlpha(0.38f);
         }
 
         if (resultViewModel.solution != 0) {
@@ -236,14 +241,17 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                 ffUploadProve.setEnabled(false);
                 tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_38));
                 tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_38));
+                ivUploadProve.setAlpha(0.38f);
             } else {
                 ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(),
                         R.drawable.chevron_thin_right));
                 ffUploadProve.setEnabled(true);
                 tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_70));
                 tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_70));
+                ivUploadProve.setAlpha(0.7f);
             }
             updateSolutionString(resultViewModel, tvSolution);
+            ivSolution.setAlpha(1f);
         } else {
             ffUploadProve.setEnabled(false);
             ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(),
@@ -253,6 +261,11 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             tvSolution.setText(context.getResources().getString(R.string.string_choose_solution));
             tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_38));
             tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_38));
+            if (resultViewModel.problem.size() != 0) {
+                ivSolution.setAlpha(0.7f);
+            } else {
+                ivSolution.setAlpha(0.38f);
+            }
         }
 
         btnCreateResolution.setEnabled(false);
@@ -269,6 +282,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                     ffUploadProve.setBackground(ContextCompat.getDrawable(getActivity(),
                             R.drawable.bg_layout_enable_with_green));
                     btnCreateResolution.setTextColor(context.getResources().getColor(R.color.white));
+                    ivUploadProve.setAlpha(1f);
                 }
             } else {
                 btnCreateResolution.setEnabled(true);
