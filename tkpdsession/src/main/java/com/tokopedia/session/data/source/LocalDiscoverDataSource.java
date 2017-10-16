@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
 
 import rx.Observable;
@@ -32,7 +31,7 @@ public class LocalDiscoverDataSource {
                     public DiscoverViewModel call(String s) {
                         if (getCache() != null) {
                             return CacheUtil.convertStringToModel(getCache(),
-                                    new TypeToken<ProfileModel>() {
+                                    new TypeToken<DiscoverViewModel>() {
                                     }.getType());
                         } else
                             throw new RuntimeException(CACHE_EXPIRED);
