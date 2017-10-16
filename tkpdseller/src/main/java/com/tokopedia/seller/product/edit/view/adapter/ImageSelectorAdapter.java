@@ -113,6 +113,10 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         notifyDataSetChanged();
     }
 
+    public void setCurrentSelectedIndex(int currentSelectedIndex) {
+        this.currentSelectedIndex = currentSelectedIndex;
+    }
+
     private void switchPrimaryImageIfNeeded(int prevSize, @NonNull List<ImageSelectModel> imageSelectModelList) {
         int previousPrimaryImageIndex = currentPrimaryImageIndex;
         for (int i = 0, sizei = imageSelectModelList.size(); i < sizei; i++) {

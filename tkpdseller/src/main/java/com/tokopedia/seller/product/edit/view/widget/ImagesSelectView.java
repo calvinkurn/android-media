@@ -27,6 +27,7 @@ import java.util.List;
 public class ImagesSelectView extends BaseCustomView {
 
     private static final String SAVED_IMAGES = "saved_images";
+    private static final String SAVED_SELECTED_INDEX = "saved_index";
     public static final String SAVED = "ss";
 
     ArrayList <ImageSelectModel> imageSelectModelList;
@@ -300,6 +301,7 @@ public class ImagesSelectView extends BaseCustomView {
         ArrayList<ImageSelectModel> imageSelectModelList = getImageList();
 
         bundle.putParcelableArrayList(SAVED_IMAGES, imageSelectModelList);
+        bundle.putInt(SAVED_SELECTED_INDEX, imageSelectorAdapter.getSelectedImageIndex());
         return bundle;
     }
 
@@ -310,7 +312,9 @@ public class ImagesSelectView extends BaseCustomView {
         {
             Bundle bundle = (Bundle) state;
             imageSelectModelList = bundle.getParcelableArrayList(SAVED_IMAGES);
+            int currentSelectedIndex = bundle.getInt(SAVED_SELECTED_INDEX, -1);
             restoreAdapterData();
+            imageSelectorAdapter.setCurrentSelectedIndex(currentSelectedIndex);
             state = bundle.getParcelable(SAVED);
         }
         super.onRestoreInstanceState(state);
