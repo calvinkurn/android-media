@@ -205,10 +205,9 @@ public class TkpdCache {
         public static final String KEY_USSD_SIM1 = "KEY_USSD_SIM1";
         public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
 
-        public static final String VERSION_NAME_IN_CACHE = "VERSION_NAME_IN_CACHE";
-
         public static final String SHOW_HIDE_APP_SHARE_BUTTON_KEY = "SHOW_HIDE_APP_SHARE_BUTTON_KEY";
         public static final String APP_SHARE_DESCRIPTION_KEY = "APP_SHARE_DESCRIPTION_KEY";
+        public static final String MAINAPP_ACTIVATE_BRANCH_LINKS_KEY = "MAINAPP_ACTIVATE_BRANCH_LINKS_KEY";
     }
 
 }

@@ -246,6 +246,13 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             public boolean onQueryTextSubmit(String query) {
                 opportunityParam.setQuery(query);
                 resetOpportunityList();
+
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.SUBMIT,
+                        query
+                );
                 return false;
             }
 
