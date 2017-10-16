@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.seller.common.bottomsheet.adapter.BottomSheetItemClickListener;
@@ -143,7 +144,7 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
         if (TextUtils.isEmpty(productManageFilterModel.getEtalaseProductOptionName())) {
             productManageFilterModel.setEtalaseProductOptionName(getString(R.string.product_manage_filter_menu_etalase_all));
         }
-        etalaseLabelView.setContent(productManageFilterModel.getEtalaseProductOptionName());
+        etalaseLabelView.setContent(MethodChecker.fromHtml(productManageFilterModel.getEtalaseProductOptionName()));
         if (TextUtils.isEmpty(productManageFilterModel.getCategoryName())) {
             productManageFilterModel.setCategoryName(getString(R.string.product_manage_filter_menu_category_all));
         }

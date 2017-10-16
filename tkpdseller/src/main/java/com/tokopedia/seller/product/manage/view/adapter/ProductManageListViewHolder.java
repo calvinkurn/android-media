@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.seller.product.common.utils.CurrencyUtils;
@@ -104,7 +105,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
                 productImageView,
                 productManageViewModel.getImageUrl()
         );
-        titleTextView.setText(productManageViewModel.getProductName());
+        titleTextView.setText(MethodChecker.fromHtml(productManageViewModel.getProductName()));
         priceTextView.setText(priceTextView.getContext().getString(
                 R.string.price_format_text, productManageViewModel.getProductCurrencySymbol(),
                 CurrencyUtils.getPriceFormatted(productManageViewModel.getProductCurrencyId(), productManageViewModel.getProductPricePlain())));

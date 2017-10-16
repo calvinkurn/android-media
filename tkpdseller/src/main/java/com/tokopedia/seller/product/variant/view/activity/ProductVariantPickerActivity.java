@@ -43,11 +43,11 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     public void onCreate(@Nullable Bundle savedInstanceState) {
         productVariantByCatModel = getIntent().getParcelableExtra(ProductVariantConstant.EXTRA_PRODUCT_VARIANT_CATEGORY);
         super.onCreate(savedInstanceState);
-        toolbar.setTitle(getString(R.string.product_variant_option_x, productVariantByCatModel.getName()) );
+        toolbar.setTitle(getString(R.string.product_variant_option_x, productVariantByCatModel.getName()));
         updateBottomSheetInfo();
     }
 
-    public String getVariantName(){
+    public String getVariantName() {
         return productVariantByCatModel.getName();
     }
 
@@ -167,6 +167,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_product_variant_item_picker, menu);
+        updateOptionMenuColor(menu);
         return true;
     }
 
@@ -180,13 +181,13 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         }
     }
 
-    private boolean isMaxVariantReached(){
+    private boolean isMaxVariantReached() {
         return ((ProductVariantPickerCacheFragment) getCacheListFragment()).getItemList().size()
                 >= ProductVariantConstant.MAX_LIMIT_VARIANT;
     }
 
-    private void showMaxVariantReachedMessage(){
-        NetworkErrorHelper.showCloseSnackbar(this,getString(R.string.product_variant_max_variant_has_been_reached));
+    private void showMaxVariantReachedMessage() {
+        NetworkErrorHelper.showCloseSnackbar(this, getString(R.string.product_variant_max_variant_has_been_reached));
     }
 
     public void showAddDialog(String stringToAdd) {
@@ -207,7 +208,7 @@ public class ProductVariantPickerActivity extends BasePickerMultipleItemActivity
         dialogFragment.show(getSupportFragmentManager(), DIALOG_ADD_VARIANT_TAG);
     }
 
-    public void showAddDialog(){
+    public void showAddDialog() {
         showAddDialog("");
     }
 

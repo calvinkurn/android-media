@@ -163,7 +163,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/margin_ms"
-            android:theme="@style/checkBoxStyle"
+            android:theme="@style/checkBoxStyleSeller"
             android:visibility="gone"
             tools:visibility="visible"/>
 
