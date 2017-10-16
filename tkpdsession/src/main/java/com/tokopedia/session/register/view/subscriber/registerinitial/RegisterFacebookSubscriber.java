@@ -1,8 +1,8 @@
-package com.tokopedia.session.register.view.subscriber;
+package com.tokopedia.session.register.view.subscriber.registerinitial;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.session.register.domain.model.RegisterFacebookDomain;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
-import com.tokopedia.session.register.view.viewmodel.RegisterFacebookDomain;
 
 import rx.Subscriber;
 
@@ -25,10 +25,16 @@ public class RegisterFacebookSubscriber extends Subscriber<RegisterFacebookDomai
     @Override
     public void onError(Throwable e) {
         viewListener.onErrorRegisterFacebook(ErrorHandler.getErrorMessage(e));
+        viewListener.clearToken();
     }
 
     @Override
     public void onNext(RegisterFacebookDomain registerFacebookDomain) {
-        viewListener.onSuccessRegisterFacebook();
+        if (registerFacebookDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
+            viewListener.onGoToLogin();
+        } else {
+            viewListener.onGoToCreatePasswordPage(registerFacebookDomain.getInfo()
+                    .getGetUserInfoDomainData());
+        }
     }
 }

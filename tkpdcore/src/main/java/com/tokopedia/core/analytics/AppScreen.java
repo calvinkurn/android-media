@@ -246,6 +246,7 @@ public final class AppScreen {
     public static final String SCREEN_OPPORTUNITY_DETAIL = "Replacement Detail Page";
     public static final String SCREEN_OPPORTUNITY_TAB= "Replacement Main Page";
     public static final String SCREEN_INITIAL_REGISTER = "Register - Initial Page";
+    public static final String SCREEN_CREATE_PASSWORD = "Register - Create Password";
 
     private AppScreen() {
 

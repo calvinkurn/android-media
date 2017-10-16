@@ -32,13 +32,16 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
 import com.tokopedia.session.di.DaggerSessionComponent;
+import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
+import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordModel;
 import com.tokopedia.session.session.activity.Login;
 
 import java.util.ArrayList;
@@ -55,6 +58,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final int REQUEST_LOGIN_WEBVIEW = 100;
     private static final int REQUEST_REGISTER_EMAIL = 101;
     private static final int REQUEST_LOGIN = 102;
+    private static final int REQUEST_CREATE_PASSWORD = 103;
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
@@ -102,8 +106,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_register_initial, container, false);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
+            savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_register_initial, parent, false);
 
         linearLayout = (LinearLayout) view.findViewById(R.id.linearLayout);
         registerButton = (LoginTextView) view.findViewById(R.id.register);
@@ -189,6 +194,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             getActivity().finish();
         } else if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK) {
             getActivity().finish();
+        } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+            getActivity().finish();
         }
     }
 
@@ -270,7 +277,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 loginTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onRegisterFacebookClick(discoverItemViewModel);
+                        onRegisterFacebookClick();
                     }
                 });
                 break;
@@ -293,7 +300,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         }
     }
 
-    private void onRegisterFacebookClick(DiscoverItemViewModel discoverItemViewModel) {
+    private void onRegisterFacebookClick() {
         UnifyTracking.eventRegisterChannel(AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
         UserAuthenticationAnalytics.setActiveAuthenticationMedium(
                 AppEventTracking.GTMCacheValue.FACEBOOK);
@@ -303,12 +310,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
 
     }
-
-//    private void processFacebookLogin() {
-//        presenter.doFacebookLogin(this, callbackManager);
-//        UnifyTracking.eventMoRegistrationStart(
-//                com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
-//    }
 
     private void onRegisterGooglelick(DiscoverItemViewModel discoverItemViewModel) {
 //        RegisterInitialFragmentPermissionsDispatcher
@@ -380,8 +381,26 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessRegisterFacebook() {
+    public void onGoToLogin() {
 
+    }
+
+    @Override
+    public void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData) {
+        startActivityForResult(CreatePasswordActivity.getCallingIntent(getActivity(),
+                new CreatePasswordModel(
+                        userInfoDomainData.getEmail(),
+                        userInfoDomainData.getFullName(),
+                        userInfoDomainData.getBdayYear(),
+                        userInfoDomainData.getBdayMonth(),
+                        userInfoDomainData.getBdayDay(),
+                        userInfoDomainData.getCreatePasswordList())),
+                REQUEST_CREATE_PASSWORD);
+    }
+
+    @Override
+    public void clearToken() {
+        presenter.clearToken();
     }
 
     @Override

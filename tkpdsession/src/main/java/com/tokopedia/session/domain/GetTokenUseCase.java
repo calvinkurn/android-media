@@ -1,16 +1,10 @@
 package com.tokopedia.session.domain;
 
-import android.content.Context;
-import android.os.Parcelable;
-
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.session.model.AccountsParameter;
-import com.tokopedia.core.session.model.FacebookModel;
-import com.tokopedia.session.domain.model.TokenViewModel;
+import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.register.data.repository.SessionRepository;
 
 import rx.Observable;
@@ -23,7 +17,6 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
 
     public static final String GRANT_TYPE = "grant_type";
     public static final String SOCIAL_TYPE = "social_type";
-    public static final String SOCIAL_ID = "social_id";
     public static final String ACCESS_TOKEN = "access_token";
 
     public static final int SOCIAL_TYPE_FACEBOOK = 1;

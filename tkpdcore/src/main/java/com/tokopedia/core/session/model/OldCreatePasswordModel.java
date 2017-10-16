@@ -7,8 +7,9 @@ import java.util.List;
 /**
  * Created by Nisie on 3/28/16.
  */
+@Deprecated
 @Parcel
-public class CreatePasswordModel {
+public class OldCreatePasswordModel {
 
     String email;
     int bdayDay;

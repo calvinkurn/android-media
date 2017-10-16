@@ -1,4 +1,4 @@
-package com.tokopedia.session.domain.model;
+package com.tokopedia.session.domain.pojo.token;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -14,7 +14,7 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.session.model.CreatePasswordModel;
+import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.session.session.model.RegisterSuccessModel;
 import com.tokopedia.core.session.model.RegisterViewModel;
 import com.tokopedia.session.session.presenter.Login;
@@ -68,7 +68,7 @@ public class RegisterService extends IntentService implements DownloadServiceCon
                 intent.putExtra(REGISTER_MODEL_KEY, Parcels.wrap(registerViewModel));
                 break;
             case REGISTER_PASS_PHONE:
-                CreatePasswordModel model = Parcels.unwrap(bundle.getParcelable(CREATE_PASSWORD_MODEL_KEY));
+                OldCreatePasswordModel model = Parcels.unwrap(bundle.getParcelable(CREATE_PASSWORD_MODEL_KEY));
                 intent.putExtra(CREATE_PASSWORD_MODEL_KEY, Parcels.wrap(model));
                 break;
             default:
@@ -137,7 +137,7 @@ public class RegisterService extends IntentService implements DownloadServiceCon
                 running.putBoolean(LOGIN_SHOW_DIALOG, true);
                 receiver.send(STATUS_RUNNING, running);
 
-                CreatePasswordModel model = Parcels.unwrap(intent.getParcelableExtra(CREATE_PASSWORD_MODEL_KEY));
+                OldCreatePasswordModel model = Parcels.unwrap(intent.getParcelableExtra(CREATE_PASSWORD_MODEL_KEY));
 
                 params = AuthUtil.generateParams(getApplicationContext(),params);
                 params.put(RegisterPassPhone.BIRTHDAY, String.valueOf(model.getBdayDay()));

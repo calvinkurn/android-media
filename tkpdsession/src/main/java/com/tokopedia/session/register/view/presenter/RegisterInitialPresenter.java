@@ -6,15 +6,17 @@ import android.support.v4.app.FragmentActivity;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.session.register.domain.interactor.usecase.DiscoverUseCase;
-import com.tokopedia.session.register.domain.interactor.usecase.registerinitial.GetFacebookCredentialUseCase;
-import com.tokopedia.session.register.domain.interactor.usecase.registerinitial.RegisterFacebookUseCase;
-import com.tokopedia.session.register.view.subscriber.GetFacebookCredentialSubscriber;
-import com.tokopedia.session.register.view.subscriber.RegisterDiscoverSubscriber;
-import com.tokopedia.session.register.view.subscriber.RegisterFacebookSubscriber;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.session.domain.interactor.DiscoverUseCase;
+import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
+import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterFacebookUseCase;
+import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
+import com.tokopedia.session.register.view.subscriber.registerinitial.RegisterDiscoverSubscriber;
+import com.tokopedia.session.register.view.subscriber.registerinitial.RegisterFacebookSubscriber;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 
 import javax.inject.Inject;
@@ -29,12 +31,15 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
     private final DiscoverUseCase discoverUseCase;
     private final GetFacebookCredentialUseCase getFacebookCredentialUseCase;
     private final RegisterFacebookUseCase registerFacebookUseCase;
+    private final SessionHandler sessionHandler;
     private RegisterInitial.View viewListener;
 
     @Inject
-    public RegisterInitialPresenter(DiscoverUseCase discoverUseCase,
+    public RegisterInitialPresenter(SessionHandler sessionHandler,
+                                    DiscoverUseCase discoverUseCase,
                                     GetFacebookCredentialUseCase getFacebookCredentialUseCase,
                                     RegisterFacebookUseCase registerFacebookUseCase) {
+        this.sessionHandler = sessionHandler;
         this.discoverUseCase = discoverUseCase;
         this.getFacebookCredentialUseCase = getFacebookCredentialUseCase;
         this.registerFacebookUseCase = registerFacebookUseCase;
@@ -56,6 +61,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
     public void detachView() {
         super.detachView();
         discoverUseCase.unsubscribe();
+        registerFacebookUseCase.unsubscribe();
     }
 
     @Override
@@ -83,5 +89,10 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
                 RegisterFacebookUseCase.getParam(accessToken),
                 new RegisterFacebookSubscriber(viewListener)
         );
+    }
+
+    @Override
+    public void clearToken() {
+        sessionHandler.clearUserData(MainApplication.getAppContext());
     }
 }

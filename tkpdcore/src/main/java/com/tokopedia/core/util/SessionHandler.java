@@ -131,6 +131,8 @@ public class SessionHandler {
         editor.putString(PHONE_NUMBER, null);
         editor.putString(USER_DATA, null);
         editor.putString(REFRESH_TOKEN, null);
+        editor.putString(TOKEN_TYPE, null);
+        editor.putString(ACCESS_TOKEN, null);
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);

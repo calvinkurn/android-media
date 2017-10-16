@@ -24,7 +24,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.session.model.AccountsParameter;
-import com.tokopedia.core.session.model.CreatePasswordModel;
+import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static android.R.attr.data;
 import static com.tokopedia.core.service.constant.DownloadServiceConstant.LOGIN_ACCOUNTS_TOKEN;
 
 /**
@@ -499,11 +498,11 @@ public class LoginImpl implements Login {
                 if (infoModel.isCreatedPassword()) {
                     ((SessionView) mContext).sendDataFromInternet(DownloadService.MAKE_LOGIN, data);
                 } else {
-                    CreatePasswordModel createPasswordModel = new CreatePasswordModel();
-                    createPasswordModel = setModelFromParcelable(createPasswordModel, parcelable, infoModel);
+                    OldCreatePasswordModel oldCreatePasswordModel = new OldCreatePasswordModel();
+                    oldCreatePasswordModel = setModelFromParcelable(oldCreatePasswordModel, parcelable, infoModel);
                     data.putBoolean(DownloadServiceConstant.LOGIN_MOVE_REGISTER_THIRD, true);
-                    data.putParcelable(DownloadServiceConstant.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(createPasswordModel));
-                    ((SessionView) mContext).moveToRegisterPassPhone(createPasswordModel, infoModel.getCreatePasswordList(), data);
+                    data.putParcelable(DownloadServiceConstant.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(oldCreatePasswordModel));
+                    ((SessionView) mContext).moveToRegisterPassPhone(oldCreatePasswordModel, infoModel.getCreatePasswordList(), data);
                 }
                 break;
             case DownloadServiceConstant.DISCOVER_LOGIN:
@@ -514,12 +513,12 @@ public class LoginImpl implements Login {
         }
     }
 
-    private CreatePasswordModel setModelFromParcelable(CreatePasswordModel createPasswordModel, Parcelable parcelable, InfoModel infoModel) {
-        createPasswordModel.setFullName(infoModel.getName());
-        createPasswordModel.setEmail(infoModel.getEmail());
+    private OldCreatePasswordModel setModelFromParcelable(OldCreatePasswordModel oldCreatePasswordModel, Parcelable parcelable, InfoModel infoModel) {
+        oldCreatePasswordModel.setFullName(infoModel.getName());
+        oldCreatePasswordModel.setEmail(infoModel.getEmail());
         if (infoModel.getPhone() != null)
-            createPasswordModel.setMsisdn(infoModel.getPhone());
-        return createPasswordModel;
+            oldCreatePasswordModel.setMsisdn(infoModel.getPhone());
+        return oldCreatePasswordModel;
     }
 
     @Override

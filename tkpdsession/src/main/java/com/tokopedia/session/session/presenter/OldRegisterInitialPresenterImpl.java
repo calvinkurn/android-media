@@ -18,7 +18,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.session.model.CreatePasswordModel;
+import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
@@ -149,11 +149,11 @@ public class OldRegisterInitialPresenterImpl extends OldRegisterInitialPresenter
                 if (infoModel.isCreatedPassword()) {
                     ((SessionView) context).sendDataFromInternet(DownloadService.MAKE_LOGIN, data);
                 } else {
-                    CreatePasswordModel createPasswordModel = new CreatePasswordModel();
-                    createPasswordModel = setModelFromParcelable(createPasswordModel,parcelable,infoModel);
+                    OldCreatePasswordModel oldCreatePasswordModel = new OldCreatePasswordModel();
+                    oldCreatePasswordModel = setModelFromParcelable(oldCreatePasswordModel,parcelable,infoModel);
                     data.putBoolean(DownloadServiceConstant.LOGIN_MOVE_REGISTER_THIRD, true);
-                    data.putParcelable(DownloadServiceConstant.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(createPasswordModel));
-                    ((SessionView) context).moveToRegisterPassPhone(createPasswordModel, infoModel.getCreatePasswordList(), data);
+                    data.putParcelable(DownloadServiceConstant.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(oldCreatePasswordModel));
+                    ((SessionView) context).moveToRegisterPassPhone(oldCreatePasswordModel, infoModel.getCreatePasswordList(), data);
                 }
                 break;
 
@@ -224,12 +224,12 @@ public class OldRegisterInitialPresenterImpl extends OldRegisterInitialPresenter
         });
     }
 
-    private CreatePasswordModel setModelFromParcelable(CreatePasswordModel createPasswordModel, Parcelable parcelable, InfoModel infoModel) {
-        createPasswordModel.setFullName(infoModel.getName());
-        createPasswordModel.setEmail(infoModel.getEmail());
+    private OldCreatePasswordModel setModelFromParcelable(OldCreatePasswordModel oldCreatePasswordModel, Parcelable parcelable, InfoModel infoModel) {
+        oldCreatePasswordModel.setFullName(infoModel.getName());
+        oldCreatePasswordModel.setEmail(infoModel.getEmail());
         if (infoModel.getPhone() != null)
-            createPasswordModel.setMsisdn(infoModel.getPhone());
-        return createPasswordModel;
+            oldCreatePasswordModel.setMsisdn(infoModel.getPhone());
+        return oldCreatePasswordModel;
     }
 
     @Override

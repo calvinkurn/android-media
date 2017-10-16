@@ -11,12 +11,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.session.model.CreatePasswordModel;
+import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
@@ -158,11 +156,11 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
                 if (infoModel.isCreatedPassword()) {
                     ((SessionView) context).sendDataFromInternet(DownloadService.MAKE_LOGIN, data);
                 } else {
-                    CreatePasswordModel createPasswordModel = new CreatePasswordModel();
-                    createPasswordModel = setModelFromParcelable(createPasswordModel,parcelable,infoModel);
+                    OldCreatePasswordModel oldCreatePasswordModel = new OldCreatePasswordModel();
+                    oldCreatePasswordModel = setModelFromParcelable(oldCreatePasswordModel,parcelable,infoModel);
                     data.putBoolean(DownloadServiceConstant.LOGIN_MOVE_REGISTER_THIRD, true);
-                    data.putParcelable(DownloadServiceConstant.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(createPasswordModel));
-                    ((SessionView) context).moveToRegisterPassPhone(createPasswordModel, infoModel.getCreatePasswordList(),data);
+                    data.putParcelable(DownloadServiceConstant.LOGIN_GOOGLE_MODEL_KEY, Parcels.wrap(oldCreatePasswordModel));
+                    ((SessionView) context).moveToRegisterPassPhone(oldCreatePasswordModel, infoModel.getCreatePasswordList(),data);
                 }
             break;
 
@@ -174,44 +172,44 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
         }
     }
 
-    private CreatePasswordModel setModelFromParcelable(CreatePasswordModel createPasswordModel, Parcelable parcelable, InfoModel infoModel) {
+    private OldCreatePasswordModel setModelFromParcelable(OldCreatePasswordModel oldCreatePasswordModel, Parcelable parcelable, InfoModel infoModel) {
         if (Parcels.unwrap(parcelable) instanceof LoginGoogleModel) {
             LoginGoogleModel loginGoogleModel = Parcels.unwrap(parcelable);
             if (loginGoogleModel.getFullName() != null) {
-                createPasswordModel.setFullName(loginGoogleModel.getFullName());
+                oldCreatePasswordModel.setFullName(loginGoogleModel.getFullName());
             }
             if (loginGoogleModel.getGender().contains("male")) {
-                createPasswordModel.setGender(RegisterViewModel.GENDER_MALE + "");
+                oldCreatePasswordModel.setGender(RegisterViewModel.GENDER_MALE + "");
             } else {
-                createPasswordModel.setGender(RegisterViewModel.GENDER_FEMALE + "");
+                oldCreatePasswordModel.setGender(RegisterViewModel.GENDER_FEMALE + "");
             }
             if (loginGoogleModel.getBirthday() != null) {
-                createPasswordModel.setDateText(loginGoogleModel.getBirthday());
+                oldCreatePasswordModel.setDateText(loginGoogleModel.getBirthday());
             }
             if (loginGoogleModel.getEmail() != null) {
-                createPasswordModel.setEmail(loginGoogleModel.getEmail());
+                oldCreatePasswordModel.setEmail(loginGoogleModel.getEmail());
             }
         }else if(Parcels.unwrap(parcelable) instanceof LoginFacebookViewModel){
             LoginFacebookViewModel loginFacebookViewModel = Parcels.unwrap(parcelable);
             if (loginFacebookViewModel.getFullName() != null) {
-                createPasswordModel.setFullName(loginFacebookViewModel.getFullName());
+                oldCreatePasswordModel.setFullName(loginFacebookViewModel.getFullName());
             }
             if (loginFacebookViewModel.getGender().contains("male")) {
-                createPasswordModel.setGender(RegisterViewModel.GENDER_MALE + "");
+                oldCreatePasswordModel.setGender(RegisterViewModel.GENDER_MALE + "");
             } else {
-                createPasswordModel.setGender(RegisterViewModel.GENDER_FEMALE + "");
+                oldCreatePasswordModel.setGender(RegisterViewModel.GENDER_FEMALE + "");
             }
             if (loginFacebookViewModel.getBirthday() != null) {
-                createPasswordModel.setDateText(loginFacebookViewModel.getBirthday());
+                oldCreatePasswordModel.setDateText(loginFacebookViewModel.getBirthday());
             }
             if (loginFacebookViewModel.getEmail() != null) {
-                createPasswordModel.setEmail(loginFacebookViewModel.getEmail());
+                oldCreatePasswordModel.setEmail(loginFacebookViewModel.getEmail());
             }
         }else{
-            createPasswordModel.setFullName(infoModel.getName());
-            createPasswordModel.setEmail(infoModel.getEmail());
+            oldCreatePasswordModel.setFullName(infoModel.getName());
+            oldCreatePasswordModel.setEmail(infoModel.getEmail());
         }
-        return createPasswordModel;
+        return oldCreatePasswordModel;
     }
 
     @Override

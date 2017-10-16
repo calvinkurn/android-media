@@ -6,8 +6,8 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.domain.GetTokenUseCase;
-import com.tokopedia.session.domain.model.TokenViewModel;
-import com.tokopedia.session.register.view.viewmodel.RegisterFacebookDomain;
+import com.tokopedia.session.domain.pojo.token.TokenViewModel;
+import com.tokopedia.session.register.domain.model.RegisterFacebookDomain;
 
 import rx.Observable;
 import rx.functions.Func1;

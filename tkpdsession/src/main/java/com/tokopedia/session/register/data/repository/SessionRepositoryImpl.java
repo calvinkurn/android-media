@@ -1,7 +1,7 @@
 package com.tokopedia.session.register.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.session.domain.model.TokenViewModel;
+import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.register.data.factory.SessionFactory;
 import com.tokopedia.session.register.data.model.DiscoverViewModel;
 

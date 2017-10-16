@@ -51,7 +51,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.session.model.CreatePasswordModel;
+import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginViewModel;
@@ -340,7 +340,7 @@ public class Login extends BaseActivity implements SessionView
     }
 
     @Override
-    public void moveToRegisterPassPhone(CreatePasswordModel
+    public void moveToRegisterPassPhone(OldCreatePasswordModel
                                                 model, List<String> createPasswordList, Bundle bundle) {
         Log.d(TAG, messageTAG + " moveToRegisterThird : " + model);
         if (isFragmentCreated(REGISTER_THIRD)) {
@@ -741,7 +741,7 @@ public class Login extends BaseActivity implements SessionView
                     ((BaseView) fragment).ariseRetry(type, retry);
                 } else {
                     if (resultData.getBoolean(DownloadService.LOGIN_MOVE_REGISTER_THIRD, false)) {// register new for third party
-                        CreatePasswordModel model = Parcels.unwrap(resultData.getParcelable(DownloadService.LOGIN_GOOGLE_MODEL_KEY));
+                        OldCreatePasswordModel model = Parcels.unwrap(resultData.getParcelable(DownloadService.LOGIN_GOOGLE_MODEL_KEY));
                         moveToRegisterPassPhone(model, null, resultData);
                     } else {
                         session.sendGTMEvent(resultData, type);

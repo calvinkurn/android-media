@@ -84,4 +84,9 @@
     <string name="see_your_profile">Lihat Profil Anda</string>
     <string name="error_empty_provider">Gagal mendownload provider.</string>
     <string name="facebook_error_not_authorized">Gagal login facebook. Silahkan coba lagi.</string>
+    <string name="default_datepicker">Tanggal / Bulan / Tahun</string>
+    <string name="terms_and_conditions">Syarat dan Ketentuan</string>
+    <string name="privacy">Kebijakan Privasi</string>
+    <string name="i_have_read_and_understand">Saya sudah membaca dan menyetujui</string>
+    <string name="you_must_agree">Untuk dapat menggunakan layanan Tokopedia, anda harus menyetujui Syarat dan Ketentuan dari Tokopedia</string>
 </resources>

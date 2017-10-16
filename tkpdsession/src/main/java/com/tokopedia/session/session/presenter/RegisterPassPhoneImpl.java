@@ -9,8 +9,8 @@ import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.session.session.service.RegisterService;
 
 import org.parceler.Parcels;
@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUtil.onDateSelectedListener {
     public static final String DEMO_EMAIL = "pentolan.jakarta@gmail.com";
-    CreatePasswordModel createPassModel;
+    OldCreatePasswordModel createPassModel;
     RegisterService registerService;
     boolean isValidateEmail;
 

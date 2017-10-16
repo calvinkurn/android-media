@@ -3,7 +3,6 @@ package com.tokopedia.session.session.fragment;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,11 +28,10 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.session.base.BaseFragment;
-import com.tokopedia.core.session.model.CreatePasswordModel;
+import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.session.session.presenter.RegisterNew;
@@ -43,7 +41,6 @@ import com.tokopedia.session.session.presenter.RegisterNewNextView;
 import com.tokopedia.session.session.presenter.RegisterPassPhoneImpl;
 import com.tokopedia.session.session.presenter.RegisterThird;
 import com.tokopedia.session.session.presenter.RegisterThirdView;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -65,9 +62,9 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     private static final String CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED";
     private List<String> allowedFieldList;
 
-    public static Fragment newInstance(CreatePasswordModel createPasswordModel, List<String> createPasswordList, Bundle bundle) {
+    public static Fragment newInstance(OldCreatePasswordModel oldCreatePasswordModel, List<String> createPasswordList, Bundle bundle) {
         RegisterPassPhoneFragment registerPassPhoneFragment = new RegisterPassPhoneFragment();
-        bundle.putParcelable(RegisterNew.DATA, Parcels.wrap(createPasswordModel));
+        bundle.putParcelable(RegisterNew.DATA, Parcels.wrap(oldCreatePasswordModel));
         registerPassPhoneFragment.setArguments(bundle);
         registerPassPhoneFragment.allowedFieldList = createPasswordList;
         return registerPassPhoneFragment;

@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.session.register.data.RegisterEmailModel;
+import com.tokopedia.session.register.data.model.RegisterEmailModel;
 import com.tokopedia.session.register.data.mapper.RegisterEmailMapper;
 
 import rx.Observable;

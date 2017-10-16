@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.google.android.gms.plus.model.people.Person;
-import com.tokopedia.core.session.model.CreatePasswordModel;
+import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public interface SessionView {
 
     String getBirthdayFromGoogle(Person user);
 
-    void moveToRegisterPassPhone(CreatePasswordModel model, List<String> createPasswordList, Bundle data);
+    void moveToRegisterPassPhone(OldCreatePasswordModel model, List<String> createPasswordList, Bundle data);
 
     void moveToRegister();
 
