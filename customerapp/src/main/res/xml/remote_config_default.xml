@@ -45,4 +45,8 @@
         <key>app_share_description</key>
         <value>Hai. Aku udah nyobain beli &amp; bayar ini itu di aplikasi Tokopedia, gampang banget! Mau beli barang idaman, isi pulsa, token listrik, bayar semua tagihan, sampai beli tiket liburan, semua bisa lewat 1 aplikasi. Yuk, ikut nikmati kemudahannya, download aja di </value>
     </entry>
+    <entry>
+        <key>mainapp_activate_branch_links</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
