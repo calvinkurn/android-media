@@ -38,7 +38,9 @@ import javax.inject.Inject;
  * Created by User on 6/19/2017.
  */
 
-public class ProductDraftListActivity extends DrawerPresenterActivity implements HasComponent<ProductComponent>, ProductDraftSaveBulkView {
+public class ProductDraftListActivity extends DrawerPresenterActivity
+        implements HasComponent<ProductComponent>, ProductDraftSaveBulkView,
+        ProductDraftListFragment.OnProductDraftListFragmentListener {
     public static final String TAG = ProductDraftListActivity.class.getSimpleName();
 
     private static final String INSTAGRAM_MEDIA_LIST = "insta_media_list";
@@ -122,7 +124,7 @@ public class ProductDraftListActivity extends DrawerPresenterActivity implements
         }
     }
 
-    private void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList) {
+    public void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList) {
         DaggerProductDraftSaveBulkComponent
                 .builder()
                 .productDraftSaveBulkModule(new ProductDraftSaveBulkModule())
