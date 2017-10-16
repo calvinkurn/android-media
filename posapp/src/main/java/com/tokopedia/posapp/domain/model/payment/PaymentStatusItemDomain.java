@@ -12,6 +12,7 @@ public class PaymentStatusItemDomain {
     private String name;
     private int quantity;
     private double price;
+    private String imageUrl;
 
     public int getId() {
         return id;
@@ -43,5 +44,13 @@ public class PaymentStatusItemDomain {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
