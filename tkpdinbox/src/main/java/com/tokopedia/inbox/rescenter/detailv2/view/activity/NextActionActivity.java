@@ -65,6 +65,11 @@ public class NextActionActivity
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    @Override
     protected void initialPresenter() {
         presenter = new NextActionActivityPresenter(this, resolutionId, nextActionDomain);
     }
@@ -76,7 +81,8 @@ public class NextActionActivity
 
     @Override
     protected void initView() {
-
+        toolbar.setTitle(getResources().getString(R.string.string_title_next_step));
+        presenter.initFragment();
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.NextActionFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 
+import javax.inject.Inject;
+
 /**
  * Created by yoasfs on 16/10/17.
  */
@@ -13,6 +15,10 @@ public class NextActionFragmentPresenter
         implements NextActionFragmentListener.Presenter {
 
     NextActionFragmentListener.View mainView;
+
+    @Inject
+    public NextActionFragmentPresenter() {
+    }
 
     @Override
     public void attachView(NextActionFragmentListener.View view) {
@@ -27,7 +33,7 @@ public class NextActionFragmentPresenter
 
     @Override
     public void initPresenter(NextActionDomain nextActionDomain) {
-
+        mainView.populateMainView(nextActionDomain);
     }
 
     @Override

@@ -127,6 +127,7 @@
     <string name="string_edit_button">Ubah</string>
 
     <!--detail reso-->
+    <string name="string_title_next_step">Langkah Selanjutnya</string>
     <string name="string_detail_problem">Masalah</string>
     <string name="string_buyer_solution">Solusi dari Pembeli</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.NextActionActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatFragmentPresenter;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
@@ -37,8 +39,10 @@ public class DetailResChatFragment
     RecyclerView rvChat;
     ProgressBar progressBar;
     LinearLayout mainView;
+    CardView cvNextStep;
 
     private String resolutionId;
+    private DetailResChatDomain detailResChatDomain;
 
     @Inject
     DetailResChatFragmentPresenter presenter;
@@ -117,6 +121,7 @@ public class DetailResChatFragment
         rvChat = (RecyclerView) view.findViewById(R.id.rv_chat);
         mainView = (LinearLayout) view.findViewById(R.id.main_view);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
+        cvNextStep = (CardView) view.findViewById(R.id.cv_next_step);
         mainView.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
 
@@ -125,6 +130,15 @@ public class DetailResChatFragment
 
     @Override
     protected void setViewListener() {
+        cvNextStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(NextActionActivity.newInstance(
+                        getActivity(),
+                        resolutionId,
+                        detailResChatDomain.getNextAction()));
+            }
+        });
 
     }
 
@@ -144,11 +158,14 @@ public class DetailResChatFragment
 
     @Override
     public void populateView(DetailResChatDomain detailResChatDomain) {
+        this.detailResChatDomain = detailResChatDomain;
+        mainView.setVisibility(View.VISIBLE);
         initNextStep(detailResChatDomain.getNextAction());
     }
 
     @Override
     public void successGetConversation(DetailResChatDomain detailResChatDomain) {
+        this.detailResChatDomain = detailResChatDomain;
         mainView.setVisibility(View.VISIBLE);
         initNextStep(detailResChatDomain.getNextAction());
     }

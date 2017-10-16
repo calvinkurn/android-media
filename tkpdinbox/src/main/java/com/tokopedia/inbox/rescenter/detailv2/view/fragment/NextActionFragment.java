@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.NextActionActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.NextActionAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.NextActionFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.NextActionFragmentPresenter;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
@@ -33,6 +35,7 @@ public class NextActionFragment
 
     private TextView tvProblem, tvSolution;
     private RecyclerView rvNextAction;
+    private NextActionAdapter adapter;
     private ProgressBar progressBar;
 
     @Inject
@@ -110,6 +113,10 @@ public class NextActionFragment
         tvSolution = (TextView) view.findViewById(R.id.tv_solution);
         rvNextAction = (RecyclerView) view.findViewById(R.id.rv_next_step);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        adapter = new NextActionAdapter(getActivity());
+
+        rvNextAction.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvNextAction.setAdapter(adapter);
 
         presenter.initPresenter(nextActionDomain);
 
@@ -136,7 +143,10 @@ public class NextActionFragment
 
     @Override
     public void populateMainView(NextActionDomain nextActionDomain) {
-        tvProblem.setText(nextActionDomain.getDetail().getLast().getProblem());
-        tvSolution.setText(nextActionDomain.getDetail().getLast().getSolution().getName());
+        if (nextActionDomain.getDetail().getLast() != null) {
+            tvProblem.setText(nextActionDomain.getDetail().getLast().getProblem());
+            tvSolution.setText(nextActionDomain.getDetail().getLast().getSolution().getName());
+        }
+        adapter.populateAdapter(nextActionDomain.getDetail().getStep());
     }
 }
