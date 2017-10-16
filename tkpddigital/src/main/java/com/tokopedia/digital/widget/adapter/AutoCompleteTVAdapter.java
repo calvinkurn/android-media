@@ -97,7 +97,11 @@ public class AutoCompleteTVAdapter extends ArrayAdapter<OrderClientNumber> imple
 
     @Override
     public int getCount() {
-        return orderClientNumbers.size();
+        if (orderClientNumbers != null) {
+            return orderClientNumbers.size();
+        } else {
+            return 0;
+        }
     }
 
     @Nullable
