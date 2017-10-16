@@ -4,12 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
-    android:orientation="horizontal"
-    android:padding="@dimen/margin_sm">
+    android:orientation="horizontal">
 
     <FrameLayout
         android:layout_width="@dimen/image_width_xl"
-        android:layout_height="@dimen/image_width_xl">
+        android:layout_height="@dimen/image_width_xl"
+        android:layout_marginLeft="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginBottom="@dimen/margin_sm">
 
         <ImageView
             android:id="@+id/image_view_product"
@@ -56,6 +58,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_marginBottom="@dimen/margin_sm"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -134,21 +138,34 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
-        <ImageButton
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/image_button_option"
-            android:layout_width="@dimen/image_width_xxs"
-            android:layout_height="@dimen/image_width_m"
-            android:layout_alignParentTop="true"
-            android:background="?selectableItemBackground"
-            android:src="@drawable/ic_more_vert_grey" />
+            android:paddingLeft="@dimen/padding_ms"
+            android:paddingStart="@dimen/padding_ms"
+            android:paddingRight="@dimen/padding_ms"
+            android:foreground="?selectableItemBackground"
+            android:clickable="true">
+            <ImageView
+                android:layout_width="@dimen/image_width_xs"
+                android:layout_height="@dimen/image_width_l"
+                android:layout_marginTop="@dimen/padding_vvvs"
+                android:src="@drawable/ic_more_vert_grey"
+                tools:src="@drawable/ic_more_vert_grey"
+                android:layout_gravity="center_horizontal"/>
+        </FrameLayout>
+
 
         <android.support.v7.widget.AppCompatCheckBox
             android:id="@+id/check_box_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_ms"
             android:theme="@style/checkBoxStyle"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </RelativeLayout>
 </LinearLayout>

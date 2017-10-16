@@ -39,7 +39,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
     private TextView wholesaleTextView;
     private TextView preOrderTextView;
     private ImageView freeReturnImageView;
-    private ImageButton optionImageButton;
+    private View optionImageButton;
     private CheckBox checkBoxProduct;
     private TextView tagEmptyStock;
     private View viewSuperVision;
@@ -59,7 +59,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         freeReturnImageView = (ImageView) layoutView.findViewById(R.id.image_view_free_return);
         checkBoxProduct = (CheckBox) layoutView.findViewById(R.id.check_box_product);
         tagEmptyStock = (TextView) layoutView.findViewById(R.id.tag_empty_product);
-        optionImageButton = (ImageButton) layoutView.findViewById(R.id.image_button_option);
+        optionImageButton = layoutView.findViewById(R.id.image_button_option);
         viewSuperVision = layoutView.findViewById(R.id.view_product_on_supervision);
     }
 
