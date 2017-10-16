@@ -10,13 +10,14 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
-import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterFacebookUseCase;
+import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterWithSosmedUseCase;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.subscriber.registerinitial.RegisterDiscoverSubscriber;
-import com.tokopedia.session.register.view.subscriber.registerinitial.RegisterFacebookSubscriber;
+import com.tokopedia.session.register.view.subscriber.registerinitial.RegisterSosmedSubscriber;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 
 import javax.inject.Inject;
@@ -30,7 +31,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
 
     private final DiscoverUseCase discoverUseCase;
     private final GetFacebookCredentialUseCase getFacebookCredentialUseCase;
-    private final RegisterFacebookUseCase registerFacebookUseCase;
+    private final RegisterWithSosmedUseCase registerSosmedUseCase;
     private final SessionHandler sessionHandler;
     private RegisterInitial.View viewListener;
 
@@ -38,11 +39,11 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
     public RegisterInitialPresenter(SessionHandler sessionHandler,
                                     DiscoverUseCase discoverUseCase,
                                     GetFacebookCredentialUseCase getFacebookCredentialUseCase,
-                                    RegisterFacebookUseCase registerFacebookUseCase) {
+                                    RegisterWithSosmedUseCase registerSosmedUseCase) {
         this.sessionHandler = sessionHandler;
         this.discoverUseCase = discoverUseCase;
         this.getFacebookCredentialUseCase = getFacebookCredentialUseCase;
-        this.registerFacebookUseCase = registerFacebookUseCase;
+        this.registerSosmedUseCase = registerSosmedUseCase;
     }
 
     @Override
@@ -61,7 +62,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
     public void detachView() {
         super.detachView();
         discoverUseCase.unsubscribe();
-        registerFacebookUseCase.unsubscribe();
+        registerSosmedUseCase.unsubscribe();
     }
 
     @Override
@@ -85,14 +86,22 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
 
     @Override
     public void registerFacebook(AccessToken accessToken) {
-        registerFacebookUseCase.execute(
-                RegisterFacebookUseCase.getParam(accessToken),
-                new RegisterFacebookSubscriber(viewListener)
+        registerSosmedUseCase.execute(
+                RegisterWithSosmedUseCase.getParamFacebook(accessToken),
+                new RegisterSosmedSubscriber(viewListener)
         );
     }
 
     @Override
     public void clearToken() {
         sessionHandler.clearUserData(MainApplication.getAppContext());
+    }
+
+    @Override
+    public void registerGoogle(LoginGoogleModel model) {
+        registerSosmedUseCase.execute(
+                RegisterWithSosmedUseCase.getParamGoogle(model.getAccessToken()),
+                new RegisterSosmedSubscriber(viewListener)
+        );
     }
 }

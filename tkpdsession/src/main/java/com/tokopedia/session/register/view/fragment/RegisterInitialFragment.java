@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -33,9 +34,11 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
+import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
 import com.tokopedia.session.di.DaggerSessionComponent;
+import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
@@ -43,10 +46,15 @@ import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordModel;
 import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.session.session.model.LoginModel;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
+import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
 /**
  * @author by nisie on 10/10/17.
@@ -196,6 +204,22 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             getActivity().finish();
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
             getActivity().finish();
+        } else if (requestCode == RC_SIGN_IN_GOOGLE){
+            if (data != null) {
+                GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
+                String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
+
+                LoginGoogleModel model = new LoginGoogleModel();
+                model.setFullName(googleSignInAccount.getDisplayName());
+                model.setGoogleId(googleSignInAccount.getId());
+                model.setEmail(googleSignInAccount.getEmail());
+                model.setAccessToken(accessToken);
+
+                UnifyTracking.eventMoRegistrationStart(
+                        AppEventTracking.GTMCacheValue.GMAIL);
+
+                presenter.registerGoogle(model);
+            }
         }
     }
 
@@ -312,17 +336,14 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     private void onRegisterGooglelick(DiscoverItemViewModel discoverItemViewModel) {
-//        RegisterInitialFragmentPermissionsDispatcher
-//                .onGoogleClickWithCheck(OldRegisterInitialFragment.this);
-//        UnifyTracking.eventRegisterChannel(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
-//        onGoogleClickd();
+        UnifyTracking.eventRegisterChannel(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(
+                AppEventTracking.GTMCacheValue.GMAIL);
+
+        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
+        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+
     }
-
-//    private void onGoogleClickd() {
-//        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
-//        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
-//    }
-
 
     private void onRegisterWebviewClick(DiscoverItemViewModel discoverItemViewModel) {
         WebViewLoginFragment newFragment = WebViewLoginFragment
@@ -376,7 +397,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorRegisterFacebook(String errorMessage) {
+    public void onErrorRegisterSosmed(String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 

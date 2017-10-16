@@ -29,7 +29,7 @@ import com.tokopedia.session.domain.mapper.CreatePasswordMapper;
 import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
-import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterFacebookUseCase;
+import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterWithSosmedUseCase;
 import com.tokopedia.session.register.domain.interactor.registerthird.CreatePasswordUseCase;
 
 import javax.inject.Named;
@@ -210,11 +210,11 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    RegisterFacebookUseCase provideRegisterFacebookUseCase(ThreadExecutor threadExecutor,
-                                                           PostExecutionThread postExecutionThread,
-                                                           GetTokenUseCase getTokenUseCase,
-                                                           GetUserInfoUseCase getUserInfoUseCase) {
-        return new RegisterFacebookUseCase(
+    RegisterWithSosmedUseCase provideRegisterFacebookUseCase(ThreadExecutor threadExecutor,
+                                                             PostExecutionThread postExecutionThread,
+                                                             GetTokenUseCase getTokenUseCase,
+                                                             GetUserInfoUseCase getUserInfoUseCase) {
+        return new RegisterWithSosmedUseCase(
                 threadExecutor, postExecutionThread,
                 getTokenUseCase, getUserInfoUseCase);
     }

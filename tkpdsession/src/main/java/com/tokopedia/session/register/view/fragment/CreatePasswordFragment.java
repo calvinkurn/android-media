@@ -163,7 +163,8 @@ public class CreatePasswordFragment extends BaseDaggerFragment
 
         if (model.getBdayDay() != 0
                 && model.getBdayMonth() != 0
-                && model.getBdayYear() != 0) {
+                && model.getBdayYear() != 0
+                && String.valueOf(model.getBdayYear()).length() == 4) {
             String birthDay = model.getBdayDay() + " / " +
                     model.getBdayMonth() + " / " + model.getBdayYear();
             vBDay.setText(birthDay);

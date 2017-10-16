@@ -7,7 +7,7 @@ import com.tokopedia.session.domain.pojo.token.TokenViewModel;
  * @author by nisie on 10/11/17.
  */
 
-public class RegisterFacebookDomain {
+public class RegisterSosmedDomain {
     private TokenViewModel tokenModel;
     private GetUserInfoDomainModel info;
 

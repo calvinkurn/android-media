@@ -9,9 +9,7 @@ import com.facebook.CallbackManager;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
-import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.core.session.model.FacebookModel;
-import com.tokopedia.session.register.domain.model.RegisterFacebookDomain;
+import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 
 import java.util.ArrayList;
@@ -39,7 +37,7 @@ public interface RegisterInitial {
 
         void dismissProgressBar();
 
-        void onErrorRegisterFacebook(String errorMessage);
+        void onErrorRegisterSosmed(String errorMessage);
 
         void onGoToLogin();
 
@@ -56,8 +54,10 @@ public interface RegisterInitial {
 
         void getFacebookCredential(Fragment fragment, CallbackManager callbackManager);
 
-        void registerFacebook(AccessToken facebookModel);
+        void registerFacebook(AccessToken accessToken);
 
         void clearToken();
+
+        void registerGoogle(LoginGoogleModel model);
     }
 }
