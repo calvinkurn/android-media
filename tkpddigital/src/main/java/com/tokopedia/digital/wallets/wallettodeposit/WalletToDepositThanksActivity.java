@@ -6,14 +6,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 
 /**
  * @author anggaprasetiyo on 8/21/17.
  */
 
-public class WalletToDepositThanksActivity extends BaseDigitalPresenterActivity
+public class WalletToDepositThanksActivity extends BasePresenterActivity
         implements WalletToDepositThanksFragment.ActionListener {
     private static final String EXTRA_WALLET_TO_DEPOSIT_THANKS_PASS_DATA =
             "EXTRA_WALLET_TO_DEPOSIT_THANKS_PASS_DATA";

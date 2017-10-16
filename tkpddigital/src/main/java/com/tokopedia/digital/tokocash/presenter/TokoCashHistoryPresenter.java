@@ -6,14 +6,12 @@ import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.digital.tokocash.interactor.ITokoCashHistoryInteractor;
 import com.tokopedia.digital.tokocash.listener.TokoCashHistoryListener;
-import com.tokopedia.digital.tokocash.model.HeaderHistory;
 import com.tokopedia.digital.tokocash.model.TokoCashHistoryData;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 import rx.Subscriber;
 
@@ -50,7 +48,7 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
             @Override
             public void onError(Throwable e) {
                 if (e instanceof ResponseDataNullException) {
-                    view.renderEmptyTokoCashHistory(new ArrayList<HeaderHistory>());
+                    view.renderErrorMessage("Empty data list");
                 } else {
                     errorNetworkHandler(e);
                 }
@@ -60,14 +58,19 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
             public void onNext(TokoCashHistoryData tokoCashHistoryData) {
                 view.hideLoading();
                 view.hideLoadingHistory();
-                if (tokoCashHistoryData.getItemHistoryList().size() > 0) {
+                if (tokoCashHistoryData.getItemHistoryList().size() == 0 && !tokoCashHistoryData.isNext_uri()) {
                     view.renderDataTokoCashHistory(tokoCashHistoryData, true);
-                    afterId = String.valueOf(tokoCashHistoryData.getItemHistoryList()
-                            .get(tokoCashHistoryData.getItemHistoryList().size() - 1)
-                            .getTransactionDetailId());
-                    view.setHasNextPage(tokoCashHistoryData.isNext_uri());
-                } else {
                     view.renderEmptyTokoCashHistory(tokoCashHistoryData.getHeaderHistory());
+                } else {
+                    if (tokoCashHistoryData.getItemHistoryList().size() > 0) {
+                        view.renderDataTokoCashHistory(tokoCashHistoryData, true);
+                        afterId = String.valueOf(tokoCashHistoryData.getItemHistoryList()
+                                .get(tokoCashHistoryData.getItemHistoryList().size() - 1)
+                                .getTransactionDetailId());
+                        view.setHasNextPage(tokoCashHistoryData.isNext_uri());
+                    } else {
+                        view.renderEmptyTokoCashHistory(tokoCashHistoryData.getHeaderHistory());
+                    }
                 }
             }
         };

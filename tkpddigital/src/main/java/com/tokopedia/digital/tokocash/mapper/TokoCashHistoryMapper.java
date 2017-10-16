@@ -27,9 +27,9 @@ public class TokoCashHistoryMapper implements Func1<TokoCashHistoryEntity, TokoC
     private TokoCashHistoryData mappingData(TokoCashHistoryEntity tokoCashHistoryEntity) {
         TokoCashHistoryData tokoCashHistoryData = new TokoCashHistoryData();
 
-        List<HeaderHistory> headerHistoryList = new ArrayList<>();
-        List<ItemHistory> itemHistoryList = new ArrayList<>();
         if (tokoCashHistoryEntity != null) {
+            List<HeaderHistory> headerHistoryList = new ArrayList<>();
+
             for (int i = 0; i < tokoCashHistoryEntity.getHeader().size(); i++) {
                 HeaderHistory headerHistory = new HeaderHistory();
                 if (tokoCashHistoryEntity.getHeader() != null) {
@@ -39,8 +39,10 @@ public class TokoCashHistoryMapper implements Func1<TokoCashHistoryEntity, TokoC
                 }
                 headerHistoryList.add(headerHistory);
             }
+            tokoCashHistoryData.setHeaderHistory(headerHistoryList);
 
             if (tokoCashHistoryEntity.getItems() != null) {
+                List<ItemHistory> itemHistoryList = new ArrayList<>();
                 for (int i = 0; i < tokoCashHistoryEntity.getItems().size(); i++) {
                     ItemHistory itemHistory = new ItemHistory();
                     itemHistory.setTransactionId(tokoCashHistoryEntity.getItems()
@@ -87,9 +89,8 @@ public class TokoCashHistoryMapper implements Func1<TokoCashHistoryEntity, TokoC
                     itemHistory.setActionHistoryList(actionHistoryList);
                     itemHistoryList.add(itemHistory);
                 }
+                tokoCashHistoryData.setItemHistoryList(itemHistoryList);
             }
-            tokoCashHistoryData.setHeaderHistory(headerHistoryList);
-            tokoCashHistoryData.setItemHistoryList(itemHistoryList);
             tokoCashHistoryData.setNext_uri(tokoCashHistoryEntity.isNext_uri());
         }
         return tokoCashHistoryData;

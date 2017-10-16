@@ -14,9 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 import com.tokopedia.digital.tokocash.model.ItemHistory;
 
 import butterknife.BindView;
@@ -25,7 +25,7 @@ import butterknife.BindView;
  * Created by nabillasabbaha on 8/24/17.
  */
 
-public class DetailTransactionActivity extends BaseDigitalPresenterActivity {
+public class DetailTransactionActivity extends BasePresenterActivity {
 
     private static final String ITEM_HISTORY_KEY = "item_history";
 
@@ -49,6 +49,7 @@ public class DetailTransactionActivity extends BaseDigitalPresenterActivity {
     TextView notesItem;
 
     private ItemHistory itemHistory;
+
 
     public static Intent newInstance(Context context, ItemHistory itemHistory) {
         Intent intent = new Intent(context, DetailTransactionActivity.class);
@@ -83,7 +84,22 @@ public class DetailTransactionActivity extends BaseDigitalPresenterActivity {
 
     @Override
     protected void initView() {
+
+    }
+
+    @Override
+    protected void setViewListener() {
+        bantuanBtn.setOnClickListener(getHelpListener());
+        opsiBtn.setOnClickListener(getOpsiListener(itemHistory));
+    }
+
+    @Override
+    protected void initVar() {
         toolbar.setTitle(getString(R.string.title_detail_transaction));
+    }
+
+    @Override
+    protected void setActionVar() {
         titleItem.setText(itemHistory.getTitle());
         descItem.setText(itemHistory.getDescription());
         dateItem.setText(itemHistory.getTransactionInfoDate());
@@ -113,22 +129,6 @@ public class DetailTransactionActivity extends BaseDigitalPresenterActivity {
             bantuanBtn.setBackground(ContextCompat.getDrawable(this, R.color.medium_green));
             bantuanBtn.setTextColor(ContextCompat.getColor(this, R.color.white));
         }
-    }
-
-    @Override
-    protected void setViewListener() {
-        bantuanBtn.setOnClickListener(getHelpListener());
-        opsiBtn.setOnClickListener(getOpsiListener(itemHistory));
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @NonNull

@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
@@ -24,8 +25,6 @@ import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
-import com.tokopedia.digital.tokocash.network.apiservice.HistoryTokoCashService;
 import com.tokopedia.digital.tokocash.adapter.FilterTokoCashAdapter;
 import com.tokopedia.digital.tokocash.adapter.HistoryTokoCashAdapter;
 import com.tokopedia.digital.tokocash.domain.HistoryTokoCashRepository;
@@ -36,6 +35,7 @@ import com.tokopedia.digital.tokocash.listener.TokoCashHistoryListener;
 import com.tokopedia.digital.tokocash.model.HeaderHistory;
 import com.tokopedia.digital.tokocash.model.ItemHistory;
 import com.tokopedia.digital.tokocash.model.TokoCashHistoryData;
+import com.tokopedia.digital.tokocash.network.apiservice.HistoryTokoCashService;
 import com.tokopedia.digital.tokocash.presenter.ITokoCashHistoryPresenter;
 import com.tokopedia.digital.tokocash.presenter.TokoCashHistoryPresenter;
 
@@ -52,7 +52,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by nabillasabbaha on 8/21/17.
  */
 
-public class HistoryTokocashActivity extends BaseDigitalPresenterActivity<ITokoCashHistoryPresenter>
+public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHistoryPresenter>
         implements TokoCashHistoryListener {
 
     private static final int SELECTION_TYPE_PERIOD_DATE = 0;

@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
@@ -28,7 +29,6 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.base.BaseDigitalPresenterActivity;
 import com.tokopedia.digital.product.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
@@ -63,7 +63,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by nabillasabbaha on 8/18/17.
  */
 
-public class TopUpTokoCashActivity extends BaseDigitalPresenterActivity<TopUpTokocashPresenter>
+public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPresenter>
         implements TopUpTokoCashListener {
 
     @BindView(R2.id.balance_tokocash_layout)
