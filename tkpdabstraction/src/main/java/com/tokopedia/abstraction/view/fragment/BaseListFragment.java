@@ -30,7 +30,7 @@ import java.util.List;
  * @author normansyahputa on 5/17/17.
  */
 
-public abstract class BaseListFragment<P, T extends ItemType> extends BasePresenterFragment<P> implements
+public abstract class BaseListFragment<T extends ItemType> extends BaseDaggerFragment implements
         BaseListViewListener<T>, BaseListAdapter.Callback<T> {
 
     private static final int START_PAGE = 1;
@@ -94,17 +94,22 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        initialVar();
+        setViewListener();
+        setActionVar();
+    }
+
     protected void initView(View view) {
-        super.initView(view);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
     }
 
-    @Override
     protected void setViewListener() {
-        super.setViewListener();
         onScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -136,9 +141,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         }
     }
 
-    @Override
     protected void initialVar() {
-        super.initialVar();
         currentPage = getStartPage();
         searchMode = false;
         adapter = getNewAdapter();
@@ -157,9 +160,7 @@ public abstract class BaseListFragment<P, T extends ItemType> extends BasePresen
         adapter.setRetryView(retryDataBinder);
     }
 
-    @Override
     protected void setActionVar() {
-        super.setActionVar();
         loadData();
     }
 
