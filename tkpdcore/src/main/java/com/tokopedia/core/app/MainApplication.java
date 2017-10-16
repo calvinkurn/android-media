@@ -35,6 +35,7 @@ import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 
 import java.util.List;
@@ -288,6 +289,8 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
         TooLargeTool.startLogging(this);
 
         addToWhiteList();
+        // initialize the Branch object
+        initBranch();
     }
 
 
@@ -392,5 +395,12 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
 
     public void initStetho() {
         if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
+    }
+
+    private void initBranch() {
+        Branch.getAutoInstance(this);
+        //Set userId to Branch.io sdk, userId, 127 chars or less
+        if(SessionHandler.isV4Login(this))
+            Branch.getInstance().setIdentity(SessionHandler.getLoginID(this));
     }
 }

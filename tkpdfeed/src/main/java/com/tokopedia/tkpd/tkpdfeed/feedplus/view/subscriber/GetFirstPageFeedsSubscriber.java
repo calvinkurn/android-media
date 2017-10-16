@@ -240,7 +240,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     }
 
     private ToppicksViewModel convertToToppicksViewModel(DataFeedDomain domain) {
-        return new ToppicksViewModel(convertToListTopPicks(domain));
+        return new ToppicksViewModel(convertToListTopPicks(domain), page);
     }
 
     private ArrayList<ToppicksItemViewModel> convertToListTopPicks(DataFeedDomain domain) {
@@ -368,7 +368,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 recommendationDomain.getName(),
                 recommendationDomain.getPrice(),
                 recommendationDomain.getImage_url(),
-                recommendationDomain.getUrl());
+                recommendationDomain.getUrl(),
+                page);
     }
 
     protected ActivityCardViewModel convertToActivityViewModel(DataFeedDomain domain) {
@@ -417,7 +418,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     }
 
     private PromoCardViewModel convertToPromoViewModel(DataFeedDomain domain) {
-        return new PromoCardViewModel(convertToPromoListViewModel(domain));
+        return new PromoCardViewModel(convertToPromoListViewModel(domain), page);
     }
 
     private ArrayList<PromoViewModel> convertToPromoListViewModel(DataFeedDomain dataFeedDomain) {
