@@ -61,7 +61,8 @@ public class PromotedProductViewHolder extends AbstractViewHolder<PromotedProduc
     @Override
     public void bind(PromotedProductViewModel promotedProductViewModel) {
         this.promotedProductViewModel = promotedProductViewModel;
-        adapter.setList(this.promotedProductViewModel.getListProduct());
+        this.promotedProductViewModel.setRowNumber(getAdapterPosition());
+        adapter.setData(this.promotedProductViewModel);
         infoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

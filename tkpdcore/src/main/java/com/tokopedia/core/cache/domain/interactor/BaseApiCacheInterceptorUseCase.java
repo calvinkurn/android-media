@@ -1,19 +1,11 @@
 package com.tokopedia.core.cache.domain.interactor;
 
-import android.net.Uri;
-
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
-import com.tokopedia.core.cache.util.UrlEncodedQueryString;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import rx.Observable;
 
@@ -23,12 +15,13 @@ import rx.Observable;
 
 public abstract class BaseApiCacheInterceptorUseCase<E> extends UseCase<E> {
 
-    public static final String METHOD = "METHOD";
-    public static final String FULL_URL = "FULL_URL";
+    public static final String PARAM_METHOD = "PARAM_METHOD";
+    public static final String PARAM_HOST = "PARAM_HOST";
+    public static final String PARAM_PATH = "PARAM_PATH";
+    public static final String PARAM_REQUEST_PARAM = "PARAM_REQUEST_PARAM";
+
     protected final ApiCacheRepository apiCacheRepository;
-    protected String method;
-    protected String url;
-    protected CacheApiData paramsCacheApiData;
+    protected CacheApiData cacheApiData;
 
     public BaseApiCacheInterceptorUseCase(
             ThreadExecutor threadExecutor,
@@ -38,50 +31,21 @@ public abstract class BaseApiCacheInterceptorUseCase<E> extends UseCase<E> {
         this.apiCacheRepository = apiCacheRepository;
     }
 
-    public BaseApiCacheInterceptorUseCase(ApiCacheRepositoryImpl apiCacheRepository) {
-        this.apiCacheRepository = apiCacheRepository;
-    }
-
     @Override
     public final Observable<E> createObservable(RequestParams requestParams) {
+        String method = requestParams.getString(PARAM_METHOD, "");
+        String host = requestParams.getString(PARAM_HOST, "");
+        String path = requestParams.getString(PARAM_PATH, "");
+        String requestParam = requestParams.getString(PARAM_REQUEST_PARAM, "");
 
-        method = requestParams.getString(METHOD, "");
-        url = requestParams.getString(FULL_URL, "");
-
-        paramsCacheApiData = new CacheApiData();
-        paramsCacheApiData.setMethod(method); // get method
-        paramsCacheApiData = setUrl(paramsCacheApiData, url);
+        cacheApiData = new CacheApiData();
+        cacheApiData.setMethod(method);
+        cacheApiData.setHost(host);
+        cacheApiData.setPath(path);
+        cacheApiData.setRequestParam(requestParam);
 
         return createChildObservable(requestParams);
     }
 
     public abstract Observable<E> createChildObservable(RequestParams requestParams);
-
-    /**
-     * set host, path and request param to {@link CacheApiData} objet and remove param that is not unique.
-     *
-     * @param cacheApiData
-     * @param url
-     * @return
-     */
-    private CacheApiData setUrl(CacheApiData cacheApiData, String url) {
-        Uri uri = Uri.parse(url);
-        cacheApiData.setHost(uri.getHost());
-        cacheApiData.setPath(uri.getPath());
-        cacheApiData.setRequestParam(((uri.getQuery() != null) ? "?" + uri.getQuery().trim() : ""));
-
-        URI uri2 = null;
-        try {
-            uri2 = new URI(url);
-            UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(uri2);
-            queryString.remove("hash");
-            queryString.remove("device_time");
-            CommonUtils.dumper("sample : " + queryString);
-            cacheApiData.setRequestParam(((queryString != null) ? "?" + queryString.toString().trim() : ""));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        return cacheApiData;
-    }
 }

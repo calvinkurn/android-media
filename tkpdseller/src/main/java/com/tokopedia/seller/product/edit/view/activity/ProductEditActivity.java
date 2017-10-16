@@ -50,4 +50,9 @@ public class ProductEditActivity extends ProductDraftEditActivity {
         String productId = getIntent().getStringExtra(PRODUCT_ID);
         return ProductEditFragment.createInstance(productId);
     }
+
+    @Override
+    protected boolean needDeleteCacheOnBack() {
+        return true;
+    }
 }

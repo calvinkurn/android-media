@@ -1,23 +1,29 @@
 package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.edit.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
 import com.tokopedia.seller.product.edit.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.variant.repository.ProductVariantRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 4/10/17.
@@ -34,6 +40,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     private final UploadProductRepository uploadProductRepository;
 
     private AddProductNotificationListener listener;
+    private UploadProductInputDomainModel uploadProductInputDomainModel;
 
     @Inject
     public UploadProductUseCase(
@@ -66,23 +73,43 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         if (productId == UNSELECTED_PRODUCT_ID) {
             throw new RuntimeException("Input model is missing");
         }
-        return Observable.just(productId)
-                .flatMap(new GetProductModelObservable())
+        uploadProductInputDomainModel = productDraftRepository.getDraft(productId).toBlocking().first();
+        if (uploadProductInputDomainModel == null) {
+            throw new RuntimeException("Draft is already deleted");
+        }
+
+        return Observable.just(uploadProductInputDomainModel)
                 .flatMap(new UploadProduct(productId, listener, generateHostRepository,
                         uploadProductRepository, imageProductUploadRepository,
                         new ProductDraftUpdate(productDraftRepository, productId)))
-                .doOnNext(new DeleteProductDraft(productId, productDraftRepository));
+                .doOnNext(new DeleteProductDraft(productId, productDraftRepository))
+                .doOnNext(new DeleteImageCacheDraftFile());
     }
 
-    private class GetProductModelObservable implements Func1<Long, Observable<UploadProductInputDomainModel>> {
-
+    private class DeleteImageCacheDraftFile implements Action1<AddProductDomainModel> {
         @Override
-        public Observable<UploadProductInputDomainModel> call(Long productId) {
-            return productDraftRepository.getDraft(productId);
+        public void call(AddProductDomainModel addProductDomainModel) {
+            ProductPhotoListDomainModel productPhotoListDomainModel = uploadProductInputDomainModel.getProductPhotos();
+            List<ImageProductInputDomainModel> imageProductInputDomainModelList = productPhotoListDomainModel.getPhotos();
+            if (imageProductInputDomainModelList == null || imageProductInputDomainModelList.size() == 0) {
+                return;
+            }
+            ArrayList<String> pathToDelete = new ArrayList<>();
+            for (int i = 0, sizei = imageProductInputDomainModelList.size(); i<sizei; i++) {
+                ImageProductInputDomainModel imageProductInputDomainModel = imageProductInputDomainModelList.get(i);
+                if (imageProductInputDomainModel == null) {
+                    continue;
+                }
+                String imagePath = imageProductInputDomainModel.getImagePath();
+                if (!TextUtils.isEmpty(imagePath)) {
+                    pathToDelete.add(imagePath);
+                }
+            }
+            if (pathToDelete.size() > 0) {
+                FileUtils.deleteAllCacheTkpdFiles(pathToDelete);
+            }
         }
-
     }
-
 
     private static class DeleteProductDraft implements Action1<AddProductDomainModel> {
         private final long productId;
@@ -113,4 +140,5 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
             productDraftRepository.updateDraft(productId, domainModel);
         }
     }
+
 }

@@ -28,6 +28,7 @@ public class OfficialStoreBrandsViewHolder extends AbstractViewHolder<OfficialSt
     RecyclerView recyclerView;
     TextView seeAllButton;
     BrandsAdapter adapter;
+    private OfficialStoreBrandsViewModel officialStoreBrandsViewModel;
 
     public OfficialStoreBrandsViewHolder(View itemView, final FeedPlus.View viewListener) {
         super(itemView);
@@ -44,13 +45,18 @@ public class OfficialStoreBrandsViewHolder extends AbstractViewHolder<OfficialSt
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onSeeAllOfficialStoresFromBrands();
+                viewListener.onSeeAllOfficialStoresFromBrands(
+                        officialStoreBrandsViewModel.getPage(),
+                        officialStoreBrandsViewModel.getRowNumber()
+                );
             }
         });
     }
 
     @Override
-    public void bind(OfficialStoreBrandsViewModel element) {
-        adapter.setList(element.getListStore());
+    public void bind(OfficialStoreBrandsViewModel officialStoreBrandsViewModel) {
+        this.officialStoreBrandsViewModel = officialStoreBrandsViewModel;
+        this.officialStoreBrandsViewModel.setRowNumber(getAdapterPosition());
+        adapter.setData(this.officialStoreBrandsViewModel);
     }
 }
