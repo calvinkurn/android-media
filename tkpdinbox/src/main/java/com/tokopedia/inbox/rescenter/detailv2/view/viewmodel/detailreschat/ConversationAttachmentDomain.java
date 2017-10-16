@@ -1,10 +1,13 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by yoasfs on 10/10/17.
  */
 
-public class ConversationAttachmentDomain {
+public class ConversationAttachmentDomain implements Parcelable {
 
     private String type;
     private String thumb;
@@ -39,4 +42,34 @@ public class ConversationAttachmentDomain {
     public void setFull(String full) {
         this.full = full;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.type);
+        dest.writeString(this.thumb);
+        dest.writeString(this.full);
+    }
+
+    protected ConversationAttachmentDomain(Parcel in) {
+        this.type = in.readString();
+        this.thumb = in.readString();
+        this.full = in.readString();
+    }
+
+    public static final Parcelable.Creator<ConversationAttachmentDomain> CREATOR = new Parcelable.Creator<ConversationAttachmentDomain>() {
+        @Override
+        public ConversationAttachmentDomain createFromParcel(Parcel source) {
+            return new ConversationAttachmentDomain(source);
+        }
+
+        @Override
+        public ConversationAttachmentDomain[] newArray(int size) {
+            return new ConversationAttachmentDomain[size];
+        }
+    };
 }

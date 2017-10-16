@@ -1,10 +1,13 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by yoasfs on 10/10/17.
  */
 
-public class NextActionDetailStepDomain {
+public class NextActionDetailStepDomain implements Parcelable {
 
     private int status;
 
@@ -30,4 +33,32 @@ public class NextActionDetailStepDomain {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.status);
+        dest.writeString(this.name);
+    }
+
+    protected NextActionDetailStepDomain(Parcel in) {
+        this.status = in.readInt();
+        this.name = in.readString();
+    }
+
+    public static final Parcelable.Creator<NextActionDetailStepDomain> CREATOR = new Parcelable.Creator<NextActionDetailStepDomain>() {
+        @Override
+        public NextActionDetailStepDomain createFromParcel(Parcel source) {
+            return new NextActionDetailStepDomain(source);
+        }
+
+        @Override
+        public NextActionDetailStepDomain[] newArray(int size) {
+            return new NextActionDetailStepDomain[size];
+        }
+    };
 }

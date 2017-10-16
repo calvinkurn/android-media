@@ -1,12 +1,15 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by yoasfs on 10/10/17.
  */
 
-public class DetailResChatDomain {
+public class DetailResChatDomain implements Parcelable {
 
     private NextActionDomain nextAction;
     private ShopDomain shop;
@@ -118,4 +121,48 @@ public class DetailResChatDomain {
     public void setSuccess(boolean success) {
         this.success = success;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.nextAction, flags);
+        dest.writeParcelable(this.shop, flags);
+        dest.writeParcelable(this.customer, flags);
+        dest.writeParcelable(this.resolution, flags);
+        dest.writeParcelable(this.button, flags);
+        dest.writeInt(this.actionBy);
+        dest.writeTypedList(this.conversation);
+        dest.writeParcelable(this.order, flags);
+        dest.writeParcelable(this.last, flags);
+        dest.writeByte(this.success ? (byte) 1 : (byte) 0);
+    }
+
+    protected DetailResChatDomain(Parcel in) {
+        this.nextAction = in.readParcelable(NextActionDomain.class.getClassLoader());
+        this.shop = in.readParcelable(ShopDomain.class.getClassLoader());
+        this.customer = in.readParcelable(CustomerDomain.class.getClassLoader());
+        this.resolution = in.readParcelable(ResolutionDomain.class.getClassLoader());
+        this.button = in.readParcelable(ButtonDomain.class.getClassLoader());
+        this.actionBy = in.readInt();
+        this.conversation = in.createTypedArrayList(ConversationDomain.CREATOR);
+        this.order = in.readParcelable(OrderDomain.class.getClassLoader());
+        this.last = in.readParcelable(LastDomain.class.getClassLoader());
+        this.success = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<DetailResChatDomain> CREATOR = new Parcelable.Creator<DetailResChatDomain>() {
+        @Override
+        public DetailResChatDomain createFromParcel(Parcel source) {
+            return new DetailResChatDomain(source);
+        }
+
+        @Override
+        public DetailResChatDomain[] newArray(int size) {
+            return new DetailResChatDomain[size];
+        }
+    };
 }

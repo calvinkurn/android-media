@@ -1,12 +1,16 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by yoasfs on 10/10/17.
  */
 
-public class ConversationDomain {
+public class ConversationDomain implements Parcelable {
 
     private int resConvId;
     private ConversationActionDomain action;
@@ -142,4 +146,53 @@ public class ConversationDomain {
     public void setFlag(ConversationFlagDomain flag) {
         this.flag = flag;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.resConvId);
+        dest.writeParcelable(this.action, flags);
+        dest.writeString(this.message);
+        dest.writeParcelable(this.address, flags);
+        dest.writeParcelable(this.shippingDetail, flags);
+        dest.writeParcelable(this.createTime, flags);
+        dest.writeTypedList(this.attachment);
+        dest.writeParcelable(this.trouble, flags);
+        dest.writeParcelable(this.solution, flags);
+        dest.writeList(this.product);
+        dest.writeParcelable(this.button, flags);
+        dest.writeParcelable(this.flag, flags);
+    }
+
+    protected ConversationDomain(Parcel in) {
+        this.resConvId = in.readInt();
+        this.action = in.readParcelable(ConversationActionDomain.class.getClassLoader());
+        this.message = in.readString();
+        this.address = in.readParcelable(ConversationAddressDomain.class.getClassLoader());
+        this.shippingDetail = in.readParcelable(ConversationShippingDetailDomain.class.getClassLoader());
+        this.createTime = in.readParcelable(ConversationCreateTimeDomain.class.getClassLoader());
+        this.attachment = in.createTypedArrayList(ConversationAttachmentDomain.CREATOR);
+        this.trouble = in.readParcelable(ConversationTroubleDomain.class.getClassLoader());
+        this.solution = in.readParcelable(ConversationSolutionDomain.class.getClassLoader());
+        this.product = new ArrayList<ConversationProductDomain>();
+        in.readList(this.product, ConversationProductDomain.class.getClassLoader());
+        this.button = in.readParcelable(ConversationButtonDomain.class.getClassLoader());
+        this.flag = in.readParcelable(ConversationFlagDomain.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<ConversationDomain> CREATOR = new Parcelable.Creator<ConversationDomain>() {
+        @Override
+        public ConversationDomain createFromParcel(Parcel source) {
+            return new ConversationDomain(source);
+        }
+
+        @Override
+        public ConversationDomain[] newArray(int size) {
+            return new ConversationDomain[size];
+        }
+    };
 }

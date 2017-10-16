@@ -123,9 +123,13 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
     }
 
     private NextActionDetailDomain mappingNextActionDetailDomain(NextActionDetailResponse response) {
-        return new NextActionDetailDomain(response.getSolution(), response.getStep() != null ?
-                mappingNextActionDetailStepDomainList(response.getStep())
-                : null);
+        return new NextActionDetailDomain(response.getSolution(),
+                response.getLast() != null ?
+                        mappingLastDomain(response.getLast()) :
+                        null,
+                response.getStep() != null ?
+                        mappingNextActionDetailStepDomainList(response.getStep()) :
+                        null);
     }
 
     private List<NextActionDetailStepDomain> mappingNextActionDetailStepDomainList(

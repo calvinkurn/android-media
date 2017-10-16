@@ -1,10 +1,13 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by yoasfs on 10/10/17.
  */
 
-public class ButtonDomain {
+public class ButtonDomain implements Parcelable {
 
     private int report;
     private String reportText;
@@ -272,4 +275,76 @@ public class ButtonDomain {
     public void setRecomplaintText(String recomplaintText) {
         this.recomplaintText = recomplaintText;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.report);
+        dest.writeString(this.reportText);
+        dest.writeInt(this.cancel);
+        dest.writeString(this.cancelText);
+        dest.writeInt(this.edit);
+        dest.writeString(this.editText);
+        dest.writeInt(this.inputAddress);
+        dest.writeString(this.inputAddressText);
+        dest.writeInt(this.appeal);
+        dest.writeString(this.appealText);
+        dest.writeInt(this.inputAWB);
+        dest.writeString(this.inputAWBText);
+        dest.writeInt(this.accept);
+        dest.writeString(this.acceptText);
+        dest.writeInt(this.acceptReturn);
+        dest.writeString(this.acceptReturnText);
+        dest.writeInt(this.finish);
+        dest.writeString(this.finishText);
+        dest.writeInt(this.acceptByAdmin);
+        dest.writeString(this.acceptByAdminText);
+        dest.writeInt(this.acceptByAdminReturn);
+        dest.writeString(this.acceptByAdminReturnText);
+        dest.writeInt(this.recomplaint);
+        dest.writeString(this.recomplaintText);
+    }
+
+    protected ButtonDomain(Parcel in) {
+        this.report = in.readInt();
+        this.reportText = in.readString();
+        this.cancel = in.readInt();
+        this.cancelText = in.readString();
+        this.edit = in.readInt();
+        this.editText = in.readString();
+        this.inputAddress = in.readInt();
+        this.inputAddressText = in.readString();
+        this.appeal = in.readInt();
+        this.appealText = in.readString();
+        this.inputAWB = in.readInt();
+        this.inputAWBText = in.readString();
+        this.accept = in.readInt();
+        this.acceptText = in.readString();
+        this.acceptReturn = in.readInt();
+        this.acceptReturnText = in.readString();
+        this.finish = in.readInt();
+        this.finishText = in.readString();
+        this.acceptByAdmin = in.readInt();
+        this.acceptByAdminText = in.readString();
+        this.acceptByAdminReturn = in.readInt();
+        this.acceptByAdminReturnText = in.readString();
+        this.recomplaint = in.readInt();
+        this.recomplaintText = in.readString();
+    }
+
+    public static final Parcelable.Creator<ButtonDomain> CREATOR = new Parcelable.Creator<ButtonDomain>() {
+        @Override
+        public ButtonDomain createFromParcel(Parcel source) {
+            return new ButtonDomain(source);
+        }
+
+        @Override
+        public ButtonDomain[] newArray(int size) {
+            return new ButtonDomain[size];
+        }
+    };
 }

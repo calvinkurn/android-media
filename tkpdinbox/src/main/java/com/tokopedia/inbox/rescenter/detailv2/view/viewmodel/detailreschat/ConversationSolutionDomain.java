@@ -1,10 +1,13 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by yoasfs on 10/10/17.
  */
 
-public class ConversationSolutionDomain {
+public class ConversationSolutionDomain implements Parcelable {
 
     private int id;
     private String name;
@@ -49,4 +52,36 @@ public class ConversationSolutionDomain {
     public void setString(String string) {
         this.string = string;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.name);
+        dest.writeInt(this.amount);
+        dest.writeString(this.string);
+    }
+
+    protected ConversationSolutionDomain(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.amount = in.readInt();
+        this.string = in.readString();
+    }
+
+    public static final Parcelable.Creator<ConversationSolutionDomain> CREATOR = new Parcelable.Creator<ConversationSolutionDomain>() {
+        @Override
+        public ConversationSolutionDomain createFromParcel(Parcel source) {
+            return new ConversationSolutionDomain(source);
+        }
+
+        @Override
+        public ConversationSolutionDomain[] newArray(int size) {
+            return new ConversationSolutionDomain[size];
+        }
+    };
 }

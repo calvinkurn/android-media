@@ -1,10 +1,13 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by yoasfs on 10/10/17.
  */
 
-public class ConversationAddressDomain {
+public class ConversationAddressDomain implements Parcelable {
 
     private int addressId;
     private String address;
@@ -107,4 +110,46 @@ public class ConversationAddressDomain {
     public void setReceiver(String receiver) {
         this.receiver = receiver;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.addressId);
+        dest.writeString(this.address);
+        dest.writeString(this.district);
+        dest.writeString(this.city);
+        dest.writeString(this.province);
+        dest.writeString(this.phone);
+        dest.writeString(this.country);
+        dest.writeString(this.postalCode);
+        dest.writeString(this.receiver);
+    }
+
+    protected ConversationAddressDomain(Parcel in) {
+        this.addressId = in.readInt();
+        this.address = in.readString();
+        this.district = in.readString();
+        this.city = in.readString();
+        this.province = in.readString();
+        this.phone = in.readString();
+        this.country = in.readString();
+        this.postalCode = in.readString();
+        this.receiver = in.readString();
+    }
+
+    public static final Parcelable.Creator<ConversationAddressDomain> CREATOR = new Parcelable.Creator<ConversationAddressDomain>() {
+        @Override
+        public ConversationAddressDomain createFromParcel(Parcel source) {
+            return new ConversationAddressDomain(source);
+        }
+
+        @Override
+        public ConversationAddressDomain[] newArray(int size) {
+            return new ConversationAddressDomain[size];
+        }
+    };
 }

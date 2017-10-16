@@ -13,6 +13,9 @@ public class NextActionDetailResponse {
     @SerializedName("solution")
     private String solution;
 
+    @SerializedName("last")
+    private LastResponse last;
+
     @SerializedName("step")
     private List<NextActionDetailStepResponse> step;
 
@@ -30,5 +33,13 @@ public class NextActionDetailResponse {
 
     public void setStep(List<NextActionDetailStepResponse> step) {
         this.step = step;
+    }
+
+    public LastResponse getLast() {
+        return last;
+    }
+
+    public void setLast(LastResponse last) {
+        this.last = last;
     }
 }

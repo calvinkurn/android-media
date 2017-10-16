@@ -33,7 +33,6 @@ public class DetailResChatActivityPresenter implements DetailResChatActivityList
     @Override
     public void initFragment(boolean isSeller) {
         if (isSeller) {
-
             mainView.inflateFragment(DetailResChatFragment.newSellerInstance(resolutionId),
                     DetailResChatFragment.class.getSimpleName());
         } else {
