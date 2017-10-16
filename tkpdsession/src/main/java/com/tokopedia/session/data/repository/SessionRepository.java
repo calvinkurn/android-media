@@ -3,6 +3,7 @@ package com.tokopedia.session.data.repository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
+import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
 
 import rx.Observable;
 
@@ -18,4 +19,6 @@ public interface SessionRepository {
     Observable<DiscoverViewModel> getDiscoverFromLocal();
 
     Observable<TokenViewModel> getAccessToken(RequestParams params);
+
+    Observable<CreatePasswordViewModel> createPassword(RequestParams requestParams);
 }

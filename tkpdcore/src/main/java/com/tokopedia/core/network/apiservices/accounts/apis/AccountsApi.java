@@ -6,6 +6,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -58,7 +59,11 @@ public interface AccountsApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.CREATE_PASSWORD)
-    Observable<Response<TkpdResponse>> createPassword(@FieldMap Map<String, String> params);
+    Observable<Response<TkpdResponse>> oldCreatePassword(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.CREATE_PASSWORD)
+    Observable<Response<TkpdResponse>> createPassword(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.RESET_PASSWORD)

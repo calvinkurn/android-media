@@ -357,9 +357,8 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
         }
 
         String mPhone = vPhoneNumber.getText().toString();
-        boolean validatePhoneNumber = RegisterNewNextImpl.validatePhoneNumber(mPhone);
+        boolean validatePhoneNumber = RegisterNewNextImpl.isValidPhoneNumber(mPhone);
         Log.e(RegisterNewNextView.TAG, messageTAG + " valid nomornya : " + validatePhoneNumber);
-        RegisterNewNextImpl.testPhoneNumberValidation();
         if (vPhoneNumber.length() == 0) {
             vPhoneNumber.setError(getText(R.string.error_field_required));
             vPhoneNumber.requestFocus();

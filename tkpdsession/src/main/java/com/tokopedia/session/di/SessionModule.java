@@ -17,15 +17,20 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.session.data.factory.SessionFactory;
 import com.tokopedia.session.data.repository.SessionRepository;
 import com.tokopedia.session.data.repository.SessionRepositoryImpl;
+import com.tokopedia.session.data.source.CloudDiscoverDataSource;
+import com.tokopedia.session.data.source.CreatePasswordDataSource;
+import com.tokopedia.session.data.source.GetTokenDataSource;
+import com.tokopedia.session.data.source.LocalDiscoverDataSource;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
+import com.tokopedia.session.domain.mapper.CreatePasswordMapper;
 import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterFacebookUseCase;
+import com.tokopedia.session.register.domain.interactor.registerthird.CreatePasswordUseCase;
 
 import javax.inject.Named;
 
@@ -91,22 +96,47 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    SessionFactory provideSessionFactory(GlobalCacheManager globalCacheManager,
-                                         SessionHandler sessionHandler,
-                                         @Named(HMAC_SERVICE) AccountsService accountsService,
-                                         @Named(BASIC_SERVICE) AccountsService accountsBasicService,
-                                         @Named(BEARER_SERVICE) AccountsService
-                                                 accountsBearerService,
-                                         DiscoverMapper discoverMapper,
-                                         TokenMapper tokenMapper) {
-        return new SessionFactory(globalCacheManager, sessionHandler, accountsService,
-                accountsBasicService, accountsBearerService, discoverMapper, tokenMapper);
+    SessionRepository provideSessionRepository(CloudDiscoverDataSource cloudDiscoverDataSource,
+                                               LocalDiscoverDataSource localDiscoverDataSource,
+                                               GetTokenDataSource getTokenDataSource,
+                                               CreatePasswordDataSource createPasswordDataSource) {
+        return new SessionRepositoryImpl(cloudDiscoverDataSource,
+                localDiscoverDataSource, getTokenDataSource, createPasswordDataSource);
+    }
+
+
+    @SessionScope
+    @Provides
+    CloudDiscoverDataSource provideCloudDiscoverDataSource(GlobalCacheManager globalCacheManager,
+                                                           @Named(HMAC_SERVICE) AccountsService
+                                                                   accountsService,
+                                                           DiscoverMapper discoverMapper) {
+        return new CloudDiscoverDataSource(globalCacheManager, accountsService, discoverMapper);
     }
 
     @SessionScope
     @Provides
-    SessionRepository provideSessionRepository(SessionFactory sessionFactory) {
-        return new SessionRepositoryImpl(sessionFactory);
+    LocalDiscoverDataSource provideLocalDiscoverDataSource(GlobalCacheManager globalCacheManager) {
+        return new LocalDiscoverDataSource(globalCacheManager);
+    }
+
+
+    @SessionScope
+    @Provides
+    GetTokenDataSource provideGetTokenDataSource(@Named(BASIC_SERVICE) AccountsService
+                                                         accountsService,
+                                                 TokenMapper tokenMapper,
+                                                 SessionHandler sessionHandler) {
+        return new GetTokenDataSource(accountsService, tokenMapper, sessionHandler);
+    }
+
+
+    @SessionScope
+    @Provides
+    CreatePasswordDataSource provideCreatePasswordDataSource(@Named(BEARER_SERVICE) AccountsService
+                                                                     accountsService,
+                                                             CreatePasswordMapper createPasswordMapper) {
+        return new CreatePasswordDataSource(accountsService, createPasswordMapper);
     }
 
     @SessionScope
@@ -154,10 +184,12 @@ public class SessionModule {
     ProfileSourceFactory provideProfileSourceFactory(@ApplicationContext Context context,
                                                      @Named(BEARER_SERVICE) AccountsService accountsService,
                                                      GetUserInfoMapper getUserInfoMapper,
-                                                     EditUserInfoMapper editUserInfoMapper) {
+                                                     EditUserInfoMapper editUserInfoMapper,
+                                                     SessionHandler sessionHandler) {
         return new ProfileSourceFactory(
                 context, accountsService,
-                getUserInfoMapper, editUserInfoMapper);
+                getUserInfoMapper, editUserInfoMapper,
+                sessionHandler);
     }
 
     @SessionScope
@@ -185,6 +217,23 @@ public class SessionModule {
         return new RegisterFacebookUseCase(
                 threadExecutor, postExecutionThread,
                 getTokenUseCase, getUserInfoUseCase);
+    }
+
+
+    @SessionScope
+    @Provides
+    CreatePasswordMapper provideCreatePasswordMapper() {
+        return new CreatePasswordMapper();
+    }
+
+    @SessionScope
+    @Provides
+    CreatePasswordUseCase provideCreatePasswordUseCase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutionThread,
+                                                       SessionRepository sessionRepository) {
+        return new CreatePasswordUseCase(
+                threadExecutor, postExecutionThread,
+                sessionRepository);
     }
 
 }

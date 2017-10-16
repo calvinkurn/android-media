@@ -4,8 +4,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.session.register.data.mapper.DiscoverMapper;
-import com.tokopedia.session.register.data.model.DiscoverViewModel;
+import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
+import com.tokopedia.session.domain.mapper.DiscoverMapper;
 
 import rx.Observable;
 import rx.functions.Action1;

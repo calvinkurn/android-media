@@ -1,13 +1,18 @@
 package com.tokopedia.session.register.view.fragment;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -15,10 +20,16 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.TermPrivacy;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.PasswordView;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.session.R;
 import com.tokopedia.session.di.DaggerSessionComponent;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
@@ -36,6 +47,7 @@ import javax.inject.Inject;
 public class CreatePasswordFragment extends BaseDaggerFragment
         implements CreatePassword.View {
 
+    private static final String CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED";
     EditText vName;
     TextView vBDay;
     PasswordView vPassword;
@@ -94,6 +106,13 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
+        TrackingUtils.fragmentBasedAFEvent(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
@@ -131,7 +150,102 @@ public class CreatePasswordFragment extends BaseDaggerFragment
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setData();
+    }
+
+    private void setData() {
+        if (!TextUtils.isEmpty(model.getFullName())) {
+            vName.setText(model.getFullName().toUpperCase().contains(CHARACTER_NOT_ALLOWED) ? "" : model.getFullName());
+        }
+
+        if (model.getBdayDay() != 0
+                && model.getBdayMonth() != 0
+                && model.getBdayYear() != 0) {
+            String birthDay = model.getBdayDay() + " / " +
+                    model.getBdayMonth() + " / " + model.getBdayYear();
+            vBDay.setText(birthDay);
+        } else {
+            vBDay.setText(R.string.day_month_year);
+        }
+
+    }
+
     private void setViewListener() {
+        vName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                model.setFullName(vName.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        vPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                model.setNewPass(vPassword.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        vPasswordRetype.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                model.setConfirmPass(vPasswordRetype.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        vPhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                model.setMsisdn(vPhoneNumber.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        vTos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                model.setRegisterTos(isChecked ? "1" : "0");
+            }
+        });
         termAndCond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -198,5 +312,71 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(CreatePasswordActivity.ARGS_FORM_DATA, model);
+    }
+
+    @Override
+    public void resetError() {
+        vName.setError(null);
+        vPassword.setError(null);
+        vPhoneNumber.setError(null);
+        vPasswordRetype.setError(null);
+        vBDay.setError(null);
+        vError.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showErrorName(int resId) {
+        vName.setError(getText(resId));
+        vName.requestFocus();
+        UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.FULLNAME);
+    }
+
+    @Override
+    public void showErrorPassword(int resId) {
+        vPassword.setError(getText(resId));
+        vPassword.requestFocus();
+        UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.PASSWORD);
+
+    }
+
+    @Override
+    public void showErrorConfirmPassword(int resId) {
+        vPasswordRetype.setError(getText(resId));
+        vPasswordRetype.requestFocus();
+        UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.PASSWORD_CONFIRMATION);
+
+    }
+
+    @Override
+    public void showErrorPhoneNumber(int resId) {
+        vPhoneNumber.setError(getText(resId));
+        vPhoneNumber.requestFocus();
+        UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.HANDPHONE);
+    }
+
+    @Override
+    public void showErrorBday(int resId) {
+        vBDay.setError(getText(resId));
+        vBDay.requestFocus();
+        UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.BIRTHDATE);
+
+    }
+
+    @Override
+    public void showErrorTOS() {
+        vError.setVisibility(View.VISIBLE);
+        vError.requestFocus();
+        UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.TOS);
+    }
+
+    @Override
+    public void onSuccessCreatePassword() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+    }
+
+    @Override
+    public void onErrorCreatePassword(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 }

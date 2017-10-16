@@ -12,6 +12,23 @@ public interface CreatePassword {
 
     interface View extends CustomerView {
 
+        void resetError();
+
+        void showErrorName(int resId);
+
+        void showErrorPassword(int resId);
+
+        void showErrorConfirmPassword(int resId);
+
+        void showErrorPhoneNumber(int resId);
+
+        void showErrorBday(int resId);
+
+        void showErrorTOS();
+
+        void onSuccessCreatePassword();
+
+        void onErrorCreatePassword(String errorMessage);
     }
 
     interface Presenter extends CustomerPresenter<View> {

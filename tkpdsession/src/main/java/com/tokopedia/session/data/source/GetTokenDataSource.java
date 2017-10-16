@@ -18,14 +18,14 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * @author by nisie on 10/11/17.
  */
 
-public class CloudTokenDataSource {
+public class GetTokenDataSource {
     private final AccountsService accountsService;
     private final TokenMapper tokenMapper;
     private final SessionHandler sessionHandler;
 
-    public CloudTokenDataSource(AccountsService accountsService,
-                                TokenMapper tokenMapper,
-                                SessionHandler sessionHandler) {
+    public GetTokenDataSource(AccountsService accountsService,
+                              TokenMapper tokenMapper,
+                              SessionHandler sessionHandler) {
         this.accountsService = accountsService;
         this.tokenMapper = tokenMapper;
         this.sessionHandler = sessionHandler;

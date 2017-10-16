@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
-import com.tokopedia.session.register.data.model.DiscoverViewModel;
+import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
 
 import rx.Observable;
 import rx.functions.Func1;

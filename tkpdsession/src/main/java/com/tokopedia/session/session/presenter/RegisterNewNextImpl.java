@@ -256,29 +256,20 @@ public class RegisterNewNextImpl extends RegisterNewNext implements DatePickerUt
     }
 
     public static void testPhoneNumberValidation() {
-        Log.d(TAG, "Phone number 1234567890 validation result: " + validatePhoneNumber("1234567890"));
-        Log.d(TAG, "Phone number 123-456-7890 validation result: " + validatePhoneNumber("123-456-7890"));
-        Log.d(TAG, "Phone number 123-456-7890 x1234 validation result: " + validatePhoneNumber("123-456-7890 x1234"));
-        Log.d(TAG, "Phone number 123-456-7890 ext1234 validation result: " + validatePhoneNumber("123-456-7890 ext1234"));
-        Log.d(TAG, "Phone number (123)-456-7890 validation result: " + validatePhoneNumber("(123)-456-7890"));
-        Log.d(TAG, "Phone number 123.456.7890 validation result: " + validatePhoneNumber("123.456.7890"));
-        Log.d(TAG, "Phone number 123 456 7890 validation result: " + validatePhoneNumber("123 456 7890"));
+        Log.d(TAG, "Phone number 1234567890 validation result: " + isValidPhoneNumber("1234567890"));
+        Log.d(TAG, "Phone number 123-456-7890 validation result: " + isValidPhoneNumber("123-456-7890"));
+        Log.d(TAG, "Phone number 123-456-7890 x1234 validation result: " + isValidPhoneNumber("123-456-7890 x1234"));
+        Log.d(TAG, "Phone number 123-456-7890 ext1234 validation result: " + isValidPhoneNumber("123-456-7890 ext1234"));
+        Log.d(TAG, "Phone number (123)-456-7890 validation result: " + isValidPhoneNumber("(123)-456-7890"));
+        Log.d(TAG, "Phone number 123.456.7890 validation result: " + isValidPhoneNumber("123.456.7890"));
+        Log.d(TAG, "Phone number 123 456 7890 validation result: " + isValidPhoneNumber("123 456 7890"));
     }
 
-    public static boolean validatePhoneNumber(String phoneNo) {
+    public static boolean isValidPhoneNumber(String phoneNo) {
         Log.d(TAG, "Phone number " + phoneNo + " start validating");
-        //validate phone numbers of format "1234567890"
         for (int i = MIN_PHONE_NUMBER; i <= MAX_PHONE_NUMBER; i++) {
             if (phoneNo.matches("\\d{" + i + "}")) return true;
         }
-        //validating phone number with -, . or spaces
-//        else if(phoneNo.matches("\\d{3}[-\\.\\s]\\d{3}[-\\.\\s]\\d{4}")) return true;
-        //validating phone number with extension length from 3 to 5
-//        else if(phoneNo.matches("\\d{3}-\\d{3}-\\d{4}\\s(x|(ext))\\d{3,5}")) return true;
-        //validating phone number where area code is in braces ()
-//        else if(phoneNo.matches("\\(\\d{3}\\)-\\d{3}-\\d{4}")) return true;
-        //return false if nothing matches the input
-//        else
         return false;
 
     }

@@ -52,8 +52,9 @@ public class CreatePasswordActivity extends TActivity implements HasComponent {
 
     public static Intent getCallingIntent(Context context, CreatePasswordModel createPasswordModel) {
         Bundle bundle = new Bundle();
-        Intent intent = new Intent(context, CreatePasswordActivity.class);
         bundle.putParcelable(ARGS_FORM_DATA, createPasswordModel);
+        Intent intent = new Intent(context, CreatePasswordActivity.class);
+        intent.putExtras(bundle);
         return intent;
     }
 

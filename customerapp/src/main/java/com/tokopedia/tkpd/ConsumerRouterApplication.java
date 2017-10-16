@@ -126,7 +126,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                 .appComponent(getApplicationComponent())
-        .reactNativeModule(new ReactNativeModule(this));
+                .reactNativeModule(new ReactNativeModule(this));
     }
 
     @Override
@@ -383,7 +383,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         this,
                         accountsService,
                         new GetUserInfoMapper(),
-                        null
+                        null,
+                        sessionHandler
                 );
 
         GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
@@ -564,7 +565,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,customSubject, source);
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
     }
 
     @Override

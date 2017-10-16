@@ -157,7 +157,7 @@ public class RegisterService extends IntentService implements DownloadServiceCon
                 bundle.putString(AccountsService.AUTH_KEY, authKey);
 
                 accountsService = new AccountsService(bundle);
-                accountsService.getApi().createPassword(params)
+                accountsService.getApi().oldCreatePassword(params)
                         .subscribeOn(Schedulers.immediate())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber(getApplicationContext(),type,receiver,sessionHandler));

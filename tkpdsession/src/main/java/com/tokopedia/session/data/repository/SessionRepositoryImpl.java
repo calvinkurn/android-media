@@ -1,9 +1,13 @@
 package com.tokopedia.session.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.session.data.source.CreatePasswordDataSource;
+import com.tokopedia.session.data.source.CloudDiscoverDataSource;
+import com.tokopedia.session.data.source.GetTokenDataSource;
+import com.tokopedia.session.data.source.LocalDiscoverDataSource;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
-import com.tokopedia.session.data.factory.SessionFactory;
 import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
+import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
 
 import rx.Observable;
 
@@ -13,24 +17,39 @@ import rx.Observable;
 
 public class SessionRepositoryImpl implements SessionRepository {
 
-    SessionFactory sessionFactory;
 
-    public SessionRepositoryImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    private final CloudDiscoverDataSource cloudDiscoverDataSource;
+    private final LocalDiscoverDataSource localDiscoverDataSource;
+    private final GetTokenDataSource getTokenDataSource;
+    private final CreatePasswordDataSource createPasswordDataSource;
+
+    public SessionRepositoryImpl(CloudDiscoverDataSource cloudDiscoverDataSource,
+                                 LocalDiscoverDataSource localDiscoverDataSource,
+                                 GetTokenDataSource getTokenDataSource,
+                                 CreatePasswordDataSource createPasswordDataSource) {
+        this.cloudDiscoverDataSource = cloudDiscoverDataSource;
+        this.localDiscoverDataSource = localDiscoverDataSource;
+        this.getTokenDataSource = getTokenDataSource;
+        this.createPasswordDataSource = createPasswordDataSource;
     }
 
     @Override
     public Observable<DiscoverViewModel> getDiscoverFromCloud() {
-        return sessionFactory.createCloudDiscoverDataSource().getDiscover();
+        return cloudDiscoverDataSource.getDiscover();
     }
 
     @Override
     public Observable<DiscoverViewModel> getDiscoverFromLocal() {
-        return sessionFactory.createLocalDiscoverDataSource().getDiscover();
+        return localDiscoverDataSource.getDiscover();
     }
 
     @Override
     public Observable<TokenViewModel> getAccessToken(RequestParams params) {
-        return sessionFactory.createCloudTokenDataSource().getAccessToken(params);
+        return getTokenDataSource.getAccessToken(params);
+    }
+
+    @Override
+    public Observable<CreatePasswordViewModel> createPassword(RequestParams params) {
+        return createPasswordDataSource.createPassword(params);
     }
 }

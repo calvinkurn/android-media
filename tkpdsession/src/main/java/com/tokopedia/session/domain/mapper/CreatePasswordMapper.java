@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.data.mapper;
+package com.tokopedia.session.domain.mapper;
 
 import android.text.TextUtils;
 
@@ -7,31 +7,26 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.data.model.DiscoverViewModel;
-import com.tokopedia.session.register.data.pojo.DiscoverItemPojo;
-import com.tokopedia.session.register.data.pojo.DiscoverPojo;
-import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.tokopedia.session.domain.pojo.CreatePasswordPojo;
+import com.tokopedia.session.domain.pojo.discover.DiscoverPojo;
+import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
 
 import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * @author by nisie on 10/10/17.
+ * @author by nisie on 10/16/17.
  */
 
-public class DiscoverMapper implements Func1<Response<TkpdResponse>, DiscoverViewModel> {
+public class CreatePasswordMapper implements Func1<Response<TkpdResponse>, CreatePasswordViewModel> {
     @Override
-    public DiscoverViewModel call(Response<TkpdResponse> response) {
-
+    public CreatePasswordViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals(""))
                     || (!response.body().isNullData()
                     && response.body().getErrorMessages() == null)) {
-                DiscoverPojo pojo = response.body().convertDataObj(DiscoverPojo.class);
+                CreatePasswordPojo pojo = response.body().convertDataObj(CreatePasswordPojo.class);
                 return mappingToViewModel(pojo);
             } else {
                 if (response.body().getErrorMessages() != null
@@ -52,22 +47,7 @@ public class DiscoverMapper implements Func1<Response<TkpdResponse>, DiscoverVie
         }
     }
 
-    private DiscoverViewModel mappingToViewModel(DiscoverPojo pojo) {
-        return new DiscoverViewModel(
-                convertToDiscoverItem(pojo.getProviders()),
-                pojo.getUrlBackground()
-        );
-    }
-
-    private ArrayList<DiscoverItemViewModel> convertToDiscoverItem(List<DiscoverItemPojo> providers) {
-        ArrayList<DiscoverItemViewModel> list = new ArrayList<>();
-        for (DiscoverItemPojo pojo : providers) {
-            list.add(new DiscoverItemViewModel(pojo.getId(),
-                    pojo.getName(),
-                    pojo.getUrl(),
-                    pojo.getImage(),
-                    pojo.getColor()));
-        }
-        return list;
+    private CreatePasswordViewModel mappingToViewModel(CreatePasswordPojo pojo) {
+        return new CreatePasswordViewModel(pojo.getIsSuccess() == 1);
     }
 }
