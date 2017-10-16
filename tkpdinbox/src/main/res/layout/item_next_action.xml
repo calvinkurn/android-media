@@ -3,7 +3,7 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content">
     
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="25dp"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -12,17 +12,19 @@
             android:visibility="visible"
             android:id="@+id/iv_indicator_arrow"
             android:layout_width="6dp"
-            android:layout_gravity="center"
-            android:layout_height="48dp"
-            android:layout_marginTop="@dimen/margin_vs"/>
+            android:layout_centerHorizontal="true"
+            android:paddingRight="2dp"
+            android:layout_height="43dp"
+            android:layout_marginTop="@dimen/margin_vvvs"/>
 
         <ImageView
             android:id="@+id/iv_indicator_circle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_vs"/>
-    </LinearLayout>
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_vvvs"
+            android:layout_below="@id/iv_indicator_arrow"/>
+    </RelativeLayout>
 
     <TextView
         android:layout_marginLeft="@dimen/margin_small"
