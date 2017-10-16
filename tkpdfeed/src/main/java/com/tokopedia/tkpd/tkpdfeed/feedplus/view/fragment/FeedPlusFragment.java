@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -38,11 +39,13 @@ import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -61,8 +64,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabe
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
@@ -111,7 +112,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
-    private ShareBottomDialog shareBottomDialog;
     private CallbackManager callbackManager;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
@@ -340,21 +340,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onShareButtonClicked(String shareUrl,
                                      String title,
                                      String imgUrl,
-                                     String contentMessage) {
+                                     String contentMessage,
+                                     String pageRowNumber) {
 
-        if (shareBottomDialog == null) {
-            shareBottomDialog = new ShareBottomDialog(
-                    FeedPlusFragment.this,
-                    callbackManager);
-        }
+        ShareData shareData = ShareData.Builder.aShareData()
+                               .setName(title)
+                                .setDescription(contentMessage)
+                                .setImgUri(imgUrl)
+                                .setUri(shareUrl)
+                                .setType(ShareData.FEED_TYPE)
+                                .build();
+               onProductShareClicked(shareData);
 
-        shareBottomDialog.setShareModel(
-                new ShareModel(shareUrl,
-                        title,
-                        imgUrl,
-                        contentMessage));
-
-        shareBottomDialog.show();
     }
 
     private void goToProductDetail(String productId) {
@@ -364,9 +361,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(int page, String productId) {
+    public void onGoToProductDetail(int rowNumber, int page, String productId) {
         goToProductDetail(productId);
-        UnifyTracking.eventFeedViewProduct(productId, FeedTrackingEventLabel.View.FEED_PDP);
+        UnifyTracking.eventFeedViewProduct(productId,
+                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_PDP);
     }
 
     @Override
@@ -377,40 +375,45 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetailFromInspiration(String productId) {
+    public void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId) {
         goToProductDetail(productId);
         UnifyTracking.eventR3Product(productId, AppEventTracking.Action.CLICK,
-                FeedTrackingEventLabel.Click.FEED_RECOMMENDATION_PDP);
+                getFeedAnalyticsHeader(page, rowNumber)
+                        + FeedTrackingEventLabel.Click.FEED_RECOMMENDATION_PDP);
     }
 
 
     @Override
-    public void onGoToFeedDetail(int page, String feedId) {
+    public void onGoToFeedDetail(int page, int rowNumber, String feedId) {
         Intent intent = FeedPlusDetailActivity.getIntent(
                 getActivity(),
-                feedId);
+                feedId,
+                getFeedAnalyticsHeader(page, rowNumber));
         startActivityForResult(intent, OPEN_DETAIL);
-        UnifyTracking.eventFeedView(FeedTrackingEventLabel.View.FEED_PRODUCT_LIST);
+        UnifyTracking.eventFeedView(
+                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_PRODUCT_LIST);
 
     }
 
     @Override
-    public void onGoToShopDetail(Integer shopId, String url) {
+    public void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url) {
         Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
         Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
         intent.putExtras(bundle);
         startActivity(intent);
-        UnifyTracking.eventFeedViewShop(String.valueOf(shopId), FeedTrackingEventLabel.View.FEED_SHOP);
+        UnifyTracking.eventFeedViewShop(String.valueOf(shopId),
+                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
 
     }
 
     @Override
-    public void onCopyClicked(String id, String code, String name) {
+    public void onCopyClicked(int page, int rowNumber, String id, String code, String name) {
         ClipboardHandler.CopyToClipboard(getActivity(), code);
         SnackbarManager.make(getActivity(), getResources().getString(R.string.copy_promo_success),
                 Snackbar.LENGTH_SHORT).show();
         UnifyTracking.eventFeedClickPromo(id, AppEventTracking.Action.COPY_CODE,
-                FeedTrackingEventLabel.Click.PROMO_COPY + name);
+                getFeedAnalyticsHeader(page, rowNumber)
+                        + FeedTrackingEventLabel.Click.PROMO_COPY + name);
 
     }
 
@@ -469,9 +472,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onViewMorePromoClicked() {
+    public void onViewMorePromoClicked(int page, int rowNumber) {
         goToAllPromo();
-        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.PROMO_MORE);
+        UnifyTracking.eventFeedClick(
+                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.Click.PROMO_MORE);
 
     }
 
@@ -556,9 +560,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToPromoPageFromHeader() {
+    public void onGoToPromoPageFromHeader(int page, int rowNumber) {
         goToAllPromo();
-        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.PROMO_PAGE_HEADER);
+        UnifyTracking.eventFeedClick(
+                getFeedAnalyticsHeader(page, rowNumber)
+                        + FeedTrackingEventLabel.Click.PROMO_PAGE_HEADER);
 
     }
 
@@ -654,9 +660,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
 
     @Override
-    public void onSeePromo(String id, String link, String name) {
+    public void onSeePromo(int page, int rowNumber, String id, String link, String name) {
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), link);
-        UnifyTracking.eventFeedClickPromo(id, FeedTrackingEventLabel.Click.PROMO_SPECIFIC + name);
+        UnifyTracking.eventFeedClickPromo(id,
+                getFeedAnalyticsHeader(page, rowNumber)
+                        + FeedTrackingEventLabel.Click.PROMO_SPECIFIC + name);
     }
 
     @Override
@@ -771,11 +779,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onBrandClicked(OfficialStoreViewModel officialStoreViewModel) {
+    public void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel officialStoreViewModel) {
         UnifyTracking.eventFeedClickShop(
                 String.valueOf(officialStoreViewModel.getShopId()),
-                FeedTrackingEventLabel.Click
-                        .OFFICIAL_STORE_BRAND +
+                getFeedAnalyticsHeader(page, rowNumber) +
+                        FeedTrackingEventLabel.Click
+                                .OFFICIAL_STORE_BRAND +
                         officialStoreViewModel.getShopName());
 
         Intent intent = ShopInfoActivity.getCallingIntent(
@@ -783,37 +792,50 @@ public class FeedPlusFragment extends BaseDaggerFragment
         getActivity().startActivity(intent);
     }
 
+    private String getFeedAnalyticsHeader(int page, int rowNumber) {
+        return page + "." + rowNumber + " ";
+    }
+
     @Override
-    public void onSeeAllOfficialStoresFromCampaign(String redirectUrl) {
-        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SEE_ALL);
+    public void onSeeAllOfficialStoresFromCampaign(int page, int rowNumber, String redirectUrl) {
+        UnifyTracking.eventFeedClick(
+                getFeedAnalyticsHeader(page, rowNumber) +
+                        FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SEE_ALL);
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), redirectUrl);
     }
 
     @Override
-    public void onGoToCampaign(String redirectUrl, String title) {
-        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN + title);
+    public void onGoToCampaign(int page, int rowNumber, String redirectUrl, String title) {
+        UnifyTracking.eventFeedClick(
+                getFeedAnalyticsHeader(page, rowNumber)
+                        + FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN + title);
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), redirectUrl);
 
     }
 
     @Override
-    public void onSeeAllOfficialStoresFromBrands() {
-        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_BRAND_SEE_ALL);
+    public void onSeeAllOfficialStoresFromBrands(int page, int rowNumber) {
+        UnifyTracking.eventFeedClick(
+                getFeedAnalyticsHeader(page, rowNumber) +
+                        FeedTrackingEventLabel.Click.OFFICIAL_STORE_BRAND_SEE_ALL);
         openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
     }
 
     @Override
-    public void onGoToProductDetailFromCampaign(String productId) {
+    public void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId) {
         UnifyTracking.eventFeedClickProduct(
                 productId,
-                FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_PDP);
+                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.Click
+                        .OFFICIAL_STORE_CAMPAIGN_PDP);
         goToProductDetail(productId);
 
     }
 
     @Override
-    public void onGoToShopDetailFromCampaign(String shopUrl) {
-        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SHOP);
+    public void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl) {
+        UnifyTracking.eventFeedClick(
+                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.Click
+                        .OFFICIAL_STORE_CAMPAIGN_SHOP);
         ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), shopUrl);
     }
 
@@ -825,8 +847,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
 
     @Override
-    public void onToppicksClicked(String name, String url) {
-        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOPPICKS + name);
+    public void onToppicksClicked(int page, int rowNumber, String name, String url) {
+        UnifyTracking.eventFeedClick(
+                getFeedAnalyticsHeader(page, rowNumber) +
+                        FeedTrackingEventLabel.Click.TOPPICKS + name);
         switch ((DeepLinkChecker.getDeepLinkType(url))) {
             case DeepLinkChecker.BROWSE:
                 DeepLinkChecker.openBrowse(url, getActivity());
@@ -846,9 +870,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSeeAllToppicks() {
+    public void onSeeAllToppicks(int page, int rowNumber) {
         startActivity(TopPicksWebView.newInstance(getActivity(), TkpdBaseURL.URL_TOPPICKS));
-        UnifyTracking.eventFeedClick(FeedTrackingEventLabel.Click.TOPPICKS_SEE_ALL);
+        UnifyTracking.eventFeedClick(
+                getFeedAnalyticsHeader(page, rowNumber) +
+                        FeedTrackingEventLabel.Click.TOPPICKS_SEE_ALL);
     }
-
+    private void onProductShareClicked(@NonNull ShareData data) {
+                Intent intent = new Intent(getActivity(), ShareActivity.class);
+                intent.putExtra(ShareData.TAG, data);
+                startActivity(intent);
+            }
 }

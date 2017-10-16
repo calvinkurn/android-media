@@ -125,4 +125,9 @@ public class InboxTicketDetailActivity extends BasePresenterActivity<InboxTicket
                 throw new UnsupportedOperationException("Invalid Type Action");
         }
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

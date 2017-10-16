@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.edit.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.product.draft.data.source.db.model.DraftNotFoundException;
 import com.tokopedia.seller.product.edit.data.exception.UploadProductException;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.edit.domain.interactor.uploadproduct.UploadProductUseCase;
@@ -50,6 +51,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
 
         private String productDraftId;
         private boolean isAdd;
+
         public AddProductSubscriber(String productDraftId, boolean isAdd) {
             this.productDraftId = productDraftId;
             this.isAdd = isAdd;
@@ -66,29 +68,31 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
             if (!isViewAttached()) {
                 return;
             }
-            updateUploadingDraftProductUseCase.execute(
-                    UpdateUploadingDraftProductUseCase.createRequestParams(
-                            this.productDraftId, false), new Subscriber<Boolean>() {
-                @Override
-                public void onCompleted() {
-                    // no op
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    // no op
-                }
-
-                @Override
-                public void onNext(Boolean aBoolean) {
-                    // no op
-                }
-            });
-            getView().onFailedAddProduct();
-            if (uploadThrowable instanceof UploadProductException){
+            if (uploadThrowable instanceof UploadProductException) {
                 e = ((UploadProductException) uploadThrowable).getThrowable();
             }
-            getView().notificationFailed(e, this.productDraftId, isAdd? ProductStatus.ADD: ProductStatus.EDIT);
+            if (!(e instanceof DraftNotFoundException)) {
+                updateUploadingDraftProductUseCase.execute(
+                        UpdateUploadingDraftProductUseCase.createRequestParams(
+                                this.productDraftId, false), new Subscriber<Boolean>() {
+                            @Override
+                            public void onCompleted() {
+                                // no op
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                // no op
+                            }
+
+                            @Override
+                            public void onNext(Boolean aBoolean) {
+                                // no op
+                            }
+                        });
+            }
+            getView().onFailedAddProduct();
+            getView().notificationFailed(e, this.productDraftId, isAdd ? ProductStatus.ADD : ProductStatus.EDIT);
             getView().sendFailedBroadcast(e);
         }
 
