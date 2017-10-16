@@ -51,14 +51,14 @@ public interface RideAppEventTracking extends AppEventTracking {
         String ScreenName = "%s";
         String AddressDeleted = "%s";
         String RideDetail = "%s - %s -%s";
-        String PromotionName = ScreenName + "- %s";
-        String AddressSelected = ScreenName + "- %s";
-        String BookingDetails = ScreenName + "-%s - %s - %s";
+        String PromotionName = ScreenName + " - %s";
+        String AddressSelected = ScreenName + " - %s";
+        String BookingDetails = ScreenName + " -%s - %s - %s";
         String HelpOption = "%s";
-        String PromoSearchValue = ScreenName + "-%s";
-        String PromoCode = ScreenName + "-%s";
-        String CancelReason = ScreenName + "-%s";
-        String RateSuggestion =ScreenName + "-%s - %s";
+        String PromoSearchValue = ScreenName + " -%s";
+        String PromoCode = ScreenName + " -%s";
+        String CancelReason = ScreenName + " -%s";
+        String RateSuggestion =ScreenName + " -%s - %s";
 
 
     }

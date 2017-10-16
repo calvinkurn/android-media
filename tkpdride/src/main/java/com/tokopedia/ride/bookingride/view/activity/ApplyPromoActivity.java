@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -92,6 +93,11 @@ public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragme
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_APPLYPROMO;
     }
 
     @Override

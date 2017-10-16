@@ -813,7 +813,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_RIDE_HOME;
+        if (getFragmentManager() != null && (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment)) {
+            return AppScreen.SCREEN_RIDE_BOOKING;
+        }else {
+            return AppScreen.SCREEN_RIDE_HOME;
+        }
     }
 
     @Override

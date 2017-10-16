@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
@@ -66,6 +67,11 @@ public class RideHistoryDetailActivity extends BaseActivity implements RideHisto
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_HISTORY_DETAIL;
     }
 
     public void setTitle(int resId) {
