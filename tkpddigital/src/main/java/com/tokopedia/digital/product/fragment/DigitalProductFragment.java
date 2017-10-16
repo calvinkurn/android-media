@@ -7,6 +7,7 @@ import android.app.Application;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.IntentService;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
@@ -414,17 +415,19 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void renderCheckPulsaBalance(PulsaBalance pulsaBalance) {
         holderCheckBalance.removeAllViews();
         for (int i = 0; i < 2; i++) {
-            String phoneNumber = presenter.getDeviceMobileNumber(i);
+            String  phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
             Operator operator = presenter.getSelectedUssdOperator(i);
-            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
-                    operator, phoneNumber)) {
-                phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
-            }
             if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                     operator, phoneNumber)) {
                 phoneNumber = "";
                 presenter.storeUssdPhoneNumber(i, phoneNumber);
+                phoneNumber = presenter.getDeviceMobileNumber(i);
+                if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                        operator, phoneNumber)) {
+                    phoneNumber = "";
+                }
             }
+
             String ussdCode = operator.getUssdCode();
             if (ussdCode != null && !"".equalsIgnoreCase(ussdCode.trim())) {
                 CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
@@ -564,7 +567,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public String getCategoryId() {
-        return categoryId;
+        return categoryId == null ? "" : categoryId;
     }
 
     @Override
@@ -894,9 +897,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         );
-        navigateToActivityRequest(
-                contactPickerIntent, IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER
-        );
+        try {
+            navigateToActivityRequest(
+                    contactPickerIntent, IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER
+            );
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            NetworkErrorHelper.showSnackbar(getActivity(),
+                    getString(R.string.error_message_contact_not_found));
+        }
     }
 
     @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
@@ -1118,9 +1127,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     operator, phoneNumber)) {
                 phoneNumber = "";
                 presenter.storeUssdPhoneNumber(selectedSimIndex, phoneNumber);
-            } else {
-                selectedCheckPulsaBalanceView.renderData(selectedSimIndex, operator.getUssdCode(), phoneNumber);
+                phoneNumber = presenter.getDeviceMobileNumber(selectedSimIndex);
+
+                if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                        operator, phoneNumber)) {
+                    phoneNumber = "";
+                }
             }
+            selectedCheckPulsaBalanceView.renderData(selectedSimIndex, operator.getUssdCode(), phoneNumber);
         }
     }
 

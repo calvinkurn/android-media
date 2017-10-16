@@ -17,7 +17,6 @@ import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -379,8 +378,13 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment imp
     }
 
     @Override
-    public void renderErrorMessage(String message) {
+    public void renderErrorProduct(String message) {
         showSnackbarErrorMessage(message);
+    }
+
+    @Override
+    public void renderDefaultError() {
+
     }
 
     @Override

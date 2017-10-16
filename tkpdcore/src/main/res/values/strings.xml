@@ -6,6 +6,7 @@
 
     <!--<string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>-->
     <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
+    <string name="BRANCH_SDK_KEY">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="app_id">126665634029576</string>
     <string name="app_name">Tokopedia</string>
     <string name="action_settings">Pengaturan</string>
@@ -443,6 +444,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_update_insurance">Ganti Asuransi</string>
     <string name="title_delete">Hapus</string>
     <string name="action_edit">Ubah</string>
+    <string name="action_editor">Olah</string>
     <string name="title_confirm">Konfirmasi</string>
     <string name="title_confirm_otp">Verifikasi</string>
     <string name="title_copy">Salin Invoice</string>
@@ -995,7 +997,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_payment_confirmation">KONFIRMASI</string>
     <!-- <string name="title_payment_verification">VERIFIKASI</string> -->
-    <string name="title_payment_verification">Ubah Pembayaran</string>
+    <string name="title_payment_verification">Status Pembayaran</string>
     <string name="title_payment_status">Status Pembayaran</string>
     <string name="title_order_status">Status Pemesanan</string>
     <string name="title_receive_confirmation">Konfirmasi Penerimaan</string>
@@ -1811,7 +1813,7 @@ di Tokopedia Sekarang!</string>
     <string name="error_empty_home_menu">Data Home Menu Kosong</string>
     <string name="error_home_menu">Home Menu Error</string>
     <string name="title_home">Home</string>
-    <string name="try_again">Terjadi kesalahan. Mohon coba kembali.</string>
+    <string name="toast_try_again">Terjadi kesalahan. Mohon coba kembali.</string>
 
     <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan?</string>
     <string name="need_permission_storage">Aplikasi ini membutuhkan izin untuk mengakses Media Penyimpanan. Perbolehkan?</string>
@@ -1994,6 +1996,7 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_inbox">Kotak Masuk</string>
     <string name="drawer_title_product">Produk</string>
     <string name="drawer_title_gold_merchant">Gold Merchant</string>
+    <string name="drawer_title_featured_product">Produk Unggulan</string>
     <string name="drawer_title_setting">Pengaturan</string>
     <string name="drawer_title_statistic">Statistik</string>
     <string name="drawer_title_mitra_toppers">Mitra Toppers</string>
@@ -2058,5 +2061,11 @@ di Tokopedia Sekarang!</string>
     <string name="shop_product_list_header_featured_product_title">Produk Unggulan</string>
     <string name="cari_produk_atau_toko">Cari produk atau toko</string>
     <string name="search_shop_info_hint">Cari produk di toko ini</string>
+    <string name="drawer_title_appshare">Share ke Teman</string>
+    <string name="app_share_title">Tokopedia, Satu Aplikasi untuk Semua Kebutuhan</string>
+    <string name="app_share_contents"><![CDATA[Mudahnya beli produk idaman, pulsa, token listrik, tiket liburan, hingga bayar berbagai tagihan, semua dimulai dari aplikasi Tokopedia. Kamu juga bisa mulai & kembangkan bisnis di sini. Yuk, download sekarang!]]></string>
+    <string name="app_share_label">Share ke Temanmu, Yuk!</string>
+    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli & bayar ini itu lewat aplikasi Tokopedia]]></string>
+    <string name="app_share_btn_label">Undang Teman</string>
 
 </resources>

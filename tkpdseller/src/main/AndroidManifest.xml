@@ -55,6 +55,16 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
+            android:name="com.tokopedia.seller.common.imageeditor.ImageEditorActivity"
+            android:label="@string/title_activity_image_edit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat"/>
+
+        <activity
+            android:name=".common.imageeditor.GalleryCropActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
             android:name=".product.edit.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
             android:screenOrientation="portrait">

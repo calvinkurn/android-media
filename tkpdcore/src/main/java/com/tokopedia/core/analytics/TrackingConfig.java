@@ -7,12 +7,12 @@ import android.support.v4.app.NotificationCompat;
 import com.localytics.android.MessagingListener;
 import com.localytics.android.PlacesCampaign;
 import com.localytics.android.PushCampaign;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IGTMContainer;
 import com.tokopedia.core.analytics.container.ILocalyticsContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
+import com.tokopedia.core.analytics.container.IPerformanceMonitoring;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.SessionHandler;
@@ -63,11 +63,18 @@ public abstract class TrackingConfig {
     }
 
     /**
+     * Get Firebase Performance Monitoring Engine Instance
+     * @return FPM Instance
+     */
+    static IPerformanceMonitoring getFPMEngine(String traceName){
+        return Jordan.init(MainApplication.getAppContext()).getFirebasePerformanceContainer(traceName);
+    }
+
+    /**
      * Initialize container to start at first time apps launched
      * @param what type container (GTM, Appsflyer, Localytics)
      */
     public static void runFirstTime(AnalyticsKind what){
-        CommonUtils.dumper("runfirstime");
         switch (what){
             case GTM:
                 getGTMEngine().loadContainer();
@@ -79,22 +86,22 @@ public abstract class TrackingConfig {
                 Jordan.init(MainApplication.getAppContext()).getLocalyticsContainer().register((Application) MainApplication.getAppContext(), "673352445777", new MessagingListener() {
                     @Override
                     public void localyticsWillDisplayInAppMessage() {
-                        CommonUtils.dumper("LocalyticsWillDisplayInAppMessage");
+
                     }
 
                     @Override
                     public void localyticsDidDisplayInAppMessage() {
-                        CommonUtils.dumper("localyticsDidDisplayInAppMessage");
+
                     }
 
                     @Override
                     public void localyticsWillDismissInAppMessage() {
-                        CommonUtils.dumper("localyticsWillDismissInAppMessage");
+
                     }
 
                     @Override
                     public void localyticsDidDismissInAppMessage() {
-                        CommonUtils.dumper("localyticsDidDismissInAppMessage");
+
                     }
 
                     @Override

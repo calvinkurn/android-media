@@ -59,8 +59,6 @@ public class ChangeEmailActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
 
-        setToolbar();
-
         ChangeEmailFragment fragment = ChangeEmailFragment.createInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
@@ -107,5 +105,10 @@ public class ChangeEmailActivity extends BasePresenterActivity {
         Intent intent = new Intent(context, ChangeEmailActivity.class);
         intent.putExtra(ChangeEmailFragment.EXTRA_EMAIL, oldEmail);
         return intent;
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

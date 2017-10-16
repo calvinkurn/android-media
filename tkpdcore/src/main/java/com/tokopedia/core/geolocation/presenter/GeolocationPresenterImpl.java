@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
 import com.tokopedia.core.geolocation.listener.GeolocationView;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 
 /**
  * Created by hangnadi on 1/29/16.
