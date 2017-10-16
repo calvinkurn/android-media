@@ -6,9 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
@@ -95,5 +97,15 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                     SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
             return intent;
         }
+    }
+
+    @DeepLink(Constants.Applinks.SellerApp.BROWSER)
+    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
+        String webUrl = extras.getString(
+                Constants.ARG_NOTIFICATION_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
+        );
+        Intent destination = new Intent(Intent.ACTION_VIEW);
+        destination.setData(Uri.parse(webUrl));
+        return destination;
     }
 }
