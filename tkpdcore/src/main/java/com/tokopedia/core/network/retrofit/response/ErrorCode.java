@@ -11,8 +11,9 @@ public interface ErrorCode {
     int IO_EXCEPTION = 1003;
     int WS_ERROR = 1004;
     int EMPTY_PROVIDER = 1100;
-    int FACEBOOK_CANCEL = 1120;
     int FACEBOOK_AUTHORIZATION_EXCEPTION = 1121;
     int FACEBOOK_EXCEPTION = 1122;
     int EMPTY_ACCESS_TOKEN = 1123;
+    int ERROR_BUNDLE_WEBVIEW = 1124;
+
 }

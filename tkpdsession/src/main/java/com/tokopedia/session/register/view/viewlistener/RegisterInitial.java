@@ -1,5 +1,6 @@
 package com.tokopedia.session.register.view.viewlistener;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -44,13 +45,15 @@ public interface RegisterInitial {
         void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData);
 
         void clearToken();
+
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void getProvider();
 
-        void registerWebview(FragmentActivity activity, Bundle bundle);
+        void registerWebview(FragmentActivity activity, Intent data);
 
         void getFacebookCredential(Fragment fragment, CallbackManager callbackManager);
 

@@ -24,12 +24,14 @@ public class RegisterSosmedSubscriber extends Subscriber<RegisterSosmedDomain> {
 
     @Override
     public void onError(Throwable e) {
+        viewListener.dismissProgressBar();
         viewListener.onErrorRegisterSosmed(ErrorHandler.getErrorMessage(e));
         viewListener.clearToken();
     }
 
     @Override
     public void onNext(RegisterSosmedDomain registerSosmedDomain) {
+        viewListener.dismissProgressBar();
         if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
             viewListener.onGoToLogin();
         } else {

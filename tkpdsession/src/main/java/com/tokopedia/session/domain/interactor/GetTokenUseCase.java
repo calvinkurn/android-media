@@ -49,50 +49,20 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
     public Observable<TokenViewModel> createObservable(RequestParams requestParams) {
         return repository.getAccessToken(requestParams);
     }
-//
-//    private RequestParams getLoginParam(Context context, AccountsParameter parameter) {
-//        RequestParams params = RequestParams.create();
-//        params.putString(GetTokenUseCase.GRANT_TYPE, parameter.getGrantType());
-//
-//        switch (parameter.getGrantType()) {
-//            case Login.GRANT_PASSWORD:
-//                params.putString(GetTokenUseCase.USER_NAME, parameter.getEmail());
-//                params.putString(GetTokenUseCase.PASSWORD, parameter.getPassword());
-//                break;
-//            case Login.GRANT_SDK:
-//                Parcelable parcelable = parameter.getParcelable();
-//                params.putString(GetTokenUseCase.SOCIAL_TYPE, String.valueOf(parameter.getSocialType()));
-//                if (parcelable instanceof GoogleSignInAccount) {
-//                    GoogleSignInAccount account = (GoogleSignInAccount) parcelable;
-//                    params.putString(GetTokenUseCase.SOCIAL_ID, account.getId());
-//                    params.putString(GetTokenUseCase.EMAIL_ACCOUNTS, account.getEmail());
-//                    params.putString(GetTokenUseCase.PICTURE_ACCOUNTS, String.valueOf(account.getPhotoUrl()));
-//                    params.putString(GetTokenUseCase.FULL_NAME, account.getDisplayName());
-//                } else if (parcelable instanceof FacebookModel) {
-//                    FacebookModel account = (FacebookModel) parcelable;
-//                    params.putString(GetTokenUseCase.SOCIAL_ID, account.getId());
-//                    params.putString(GetTokenUseCase.EMAIL_ACCOUNTS, account.getEmail());
-//                    params.putString(GetTokenUseCase.FULL_NAME, account.getName());
-//                    params.putString(GetTokenUseCase.BIRTHDATE, account.getBirthday());
-//                    params.putString(GetTokenUseCase.GENDER_ACCOUNTS, account.getGender());
-//                }
-//                break;
-//            case Login.GRANT_WEBVIEW:
-//                params.putString(GetTokenUseCase.CODE, parameter.getCode());
-//                params.putString(GetTokenUseCase.REDIRECT_URI, parameter.getRedirectUri());
-//                break;
-//            default:
-//                throw new RuntimeException("Invalid Observable to get Token");
-//        }
-//
-//        return params;
-//    }
 
     public static RequestParams getParamRegisterThirdParty(int socialType, String accessToken) {
         RequestParams params = RequestParams.create();
         params.putString(GRANT_TYPE, GRANT_SDK);
         params.putInt(SOCIAL_TYPE, socialType);
         params.putString(ACCESS_TOKEN, accessToken);
+        return params;
+    }
+
+    public static RequestParams getParamRegisterWebview(String code, String redirectUri) {
+        RequestParams params = RequestParams.create();
+        params.putString(GRANT_TYPE, GRANT_WEBVIEW);
+        params.putString(CODE, code);
+        params.putString(REDIRECT_URI, redirectUri);
         return params;
     }
 }

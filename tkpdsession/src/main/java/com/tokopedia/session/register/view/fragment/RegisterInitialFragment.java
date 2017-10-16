@@ -33,6 +33,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.util.MethodChecker;
@@ -71,8 +72,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
     private static final String COLOR_WHITE = "#FFFFFF";
-
-    private static final String ARGS_MESSAGE = "message";
 
     LinearLayout linearLayout;
     LoginTextView registerButton;
@@ -204,7 +203,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             getActivity().finish();
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
             getActivity().finish();
-        } else if (requestCode == RC_SIGN_IN_GOOGLE){
+        } else if (requestCode == RC_SIGN_IN_GOOGLE) {
             if (data != null) {
                 GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
                 String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
@@ -227,12 +226,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         if (resultCode == Activity.RESULT_CANCELED) {
             KeyboardHandler.DropKeyboard(getActivity(), getView());
         } else {
-            Bundle bundle = data.getBundleExtra("bundle");
-            if (bundle.getString("path").contains("error")) {
-                NetworkErrorHelper.showSnackbar(getActivity(), bundle.getString(ARGS_MESSAGE));
-            } else if (bundle.getString("path").contains("code")) {
-                presenter.registerWebview(getActivity(), bundle);
-            }
+            presenter.registerWebview(getActivity(), data);
         }
     }
 

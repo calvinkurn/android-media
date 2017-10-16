@@ -1,0 +1,46 @@
+package com.tokopedia.session.register.domain.interactor.registerinitial;
+
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.session.domain.interactor.GetTokenUseCase;
+import com.tokopedia.session.register.domain.model.RegisterSosmedDomain;
+
+import rx.Observable;
+import rx.functions.Func1;
+
+/**
+ * @author by nisie on 10/16/17.
+ */
+
+public class RegisterWebviewUseCase extends RegisterWithSosmedUseCase {
+
+
+    public RegisterWebviewUseCase(ThreadExecutor threadExecutor,
+                                  PostExecutionThread postExecutionThread,
+                                  GetTokenUseCase getTokenUseCase,
+                                  GetUserInfoUseCase getUserInfoUseCase) {
+        super(threadExecutor, postExecutionThread, getTokenUseCase, getUserInfoUseCase);
+    }
+
+    @Override
+    public Observable<RegisterSosmedDomain> createObservable(RequestParams requestParams) {
+        RegisterSosmedDomain registerSosmedDomain = new RegisterSosmedDomain();
+        return getToken(registerSosmedDomain,
+                GetTokenUseCase.getParamRegisterWebview(
+                        requestParams.getString(GetTokenUseCase.CODE, ""),
+                        requestParams.getString(GetTokenUseCase.REDIRECT_URI, "")
+                ))
+                .flatMap(new Func1<RegisterSosmedDomain, Observable<RegisterSosmedDomain>>() {
+                    @Override
+                    public Observable<RegisterSosmedDomain> call(RegisterSosmedDomain registerSosmedDomain) {
+                        return getInfo(registerSosmedDomain);
+                    }
+                });
+    }
+
+    public static RequestParams getParamWebview(String code, String redirectUri) {
+        return GetTokenUseCase.getParamRegisterWebview(code, redirectUri);
+    }
+}

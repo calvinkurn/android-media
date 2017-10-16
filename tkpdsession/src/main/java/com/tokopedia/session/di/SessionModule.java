@@ -29,6 +29,7 @@ import com.tokopedia.session.domain.mapper.CreatePasswordMapper;
 import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
+import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterWebviewUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterWithSosmedUseCase;
 import com.tokopedia.session.register.domain.interactor.registerthird.CreatePasswordUseCase;
 
@@ -222,6 +223,17 @@ public class SessionModule {
 
     @SessionScope
     @Provides
+    RegisterWebviewUseCase provideRegisterWebviewUseCase(ThreadExecutor threadExecutor,
+                                                         PostExecutionThread postExecutionThread,
+                                                         GetTokenUseCase getTokenUseCase,
+                                                         GetUserInfoUseCase getUserInfoUseCase) {
+        return new RegisterWebviewUseCase(
+                threadExecutor, postExecutionThread,
+                getTokenUseCase, getUserInfoUseCase);
+    }
+
+    @SessionScope
+    @Provides
     CreatePasswordMapper provideCreatePasswordMapper() {
         return new CreatePasswordMapper();
     }
@@ -235,5 +247,6 @@ public class SessionModule {
                 threadExecutor, postExecutionThread,
                 sessionRepository);
     }
+
 
 }

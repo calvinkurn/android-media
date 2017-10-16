@@ -20,8 +20,8 @@ import rx.functions.Func1;
 
 public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
 
-    private final GetTokenUseCase getTokenUseCase;
-    private final GetUserInfoUseCase getUserInfoUseCase;
+    protected final GetTokenUseCase getTokenUseCase;
+    protected final GetUserInfoUseCase getUserInfoUseCase;
 
     public RegisterWithSosmedUseCase(ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
@@ -49,7 +49,8 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
                 });
     }
 
-    private Observable<RegisterSosmedDomain> getInfo(final RegisterSosmedDomain registerSosmedDomain) {
+    protected Observable<RegisterSosmedDomain> getInfo(final RegisterSosmedDomain
+                                                           registerSosmedDomain) {
         return getUserInfoUseCase.createObservable(RequestParams.EMPTY)
                 .flatMap(new Func1<GetUserInfoDomainModel, Observable<RegisterSosmedDomain>>() {
                     @Override
@@ -60,9 +61,9 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
                 });
     }
 
-    private Observable<RegisterSosmedDomain> getToken(final RegisterSosmedDomain registerSosmedDomain,
-                                                      RequestParams paramRegisterThirdParty) {
-        return getTokenUseCase.createObservable(paramRegisterThirdParty)
+    protected Observable<RegisterSosmedDomain> getToken(final RegisterSosmedDomain registerSosmedDomain,
+                                                      RequestParams params) {
+        return getTokenUseCase.createObservable(params)
                 .flatMap(new Func1<TokenViewModel, Observable<RegisterSosmedDomain>>() {
                     @Override
                     public Observable<RegisterSosmedDomain> call(TokenViewModel tokenViewModel) {
@@ -73,7 +74,7 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
     }
 
 
-    private static RequestParams getTokenParam(int socialType, String accessToken) {
+    private static RequestParams getParamRegisterThirdParty(int socialType, String accessToken) {
         return GetTokenUseCase.getParamRegisterThirdParty(
                 socialType,
                 accessToken
@@ -83,7 +84,7 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
     public static RequestParams getParamFacebook(AccessToken accessToken) {
         RequestParams params = RequestParams.create();
         params.putAll(
-                getTokenParam(GetTokenUseCase.SOCIAL_TYPE_FACEBOOK,
+                getParamRegisterThirdParty(GetTokenUseCase.SOCIAL_TYPE_FACEBOOK,
                         accessToken.getToken())
                         .getParameters());
         return params;
@@ -92,7 +93,7 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
     public static RequestParams getParamGoogle(String accessToken) {
         RequestParams params = RequestParams.create();
         params.putAll(
-                getTokenParam(GetTokenUseCase.SOCIAL_TYPE_GPLUS,
+                getParamRegisterThirdParty(GetTokenUseCase.SOCIAL_TYPE_GPLUS,
                         accessToken)
                         .getParameters());
         return params;
