@@ -11,16 +11,17 @@
         <ImageView
             android:visibility="visible"
             android:id="@+id/iv_indicator_arrow"
-            android:layout_width="15dp"
+            android:layout_width="6dp"
             android:layout_gravity="center"
-            android:layout_height="50dp"
-            android:src="@color/black"/>
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/margin_vs"/>
 
         <ImageView
             android:id="@+id/iv_indicator_circle"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@color/green_200"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_vs"/>
     </LinearLayout>
 
     <TextView

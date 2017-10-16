@@ -75,16 +75,16 @@ public class NextActionAdapter extends RecyclerView.Adapter<NextActionAdapter.It
     private void setView(ItemHolder holder, int currentStepStatus) {
         if (currentStepStatus == STEP_BEFORE_CURRENT) {
             setTextStyle(holder.tvAction, false);
-            holder.ivIndicatorArrow.setBackgroundColor(context.getResources().getColor(R.color.red_200));
-            holder.ivIndicatorCircle.setBackgroundColor(context.getResources().getColor(R.color.black));
+            holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
+            holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_past));
         } else if (currentStepStatus == STEP_CURRENT) {
             setTextStyle(holder.tvAction, true);
-            holder.ivIndicatorArrow.setBackgroundColor(context.getResources().getColor(R.color.black));
-            holder.ivIndicatorCircle.setBackgroundColor(context.getResources().getColor(R.color.green_200));
+            holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_arrow_past));
+            holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_current));
         } else if (currentStepStatus == STEP_AFTER_CURRENT) {
             setTextStyle(holder.tvAction, false);
-            holder.ivIndicatorArrow.setBackgroundColor(context.getResources().getColor(R.color.blue));
-            holder.ivIndicatorCircle.setBackgroundColor(context.getResources().getColor(R.color.grey));
+            holder.ivIndicatorArrow.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_arrow_dotted));
+            holder.ivIndicatorCircle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_step_next));
         }
     }
 

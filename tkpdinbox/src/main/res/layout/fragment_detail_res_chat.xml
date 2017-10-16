@@ -42,7 +42,8 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_gravity="center" />
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_step_current"/>
 
                     <TextView
                         android:id="@+id/tv_next_step"
@@ -50,6 +51,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:gravity="center|left"
                         android:textSize="@dimen/text_size_s_medium"
                         android:paddingLeft="@dimen/padding_small"
                         android:paddingRight="@dimen/padding_small"
