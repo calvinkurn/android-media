@@ -242,7 +242,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         button.setClickable(false);
         button.setEnabled(false);
         button.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disable));
-        button.setTextColor(ContextCompat.getColor(context, R.color.black_70));
+        button.setTextColor(ContextCompat.getColor(context, R.color.black_38));
     }
 
     @Override

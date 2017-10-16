@@ -142,14 +142,14 @@
             android:id="@+id/til_complain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_large">
+            android:layout_marginTop="@dimen/margin_large"
+            app:errorTextAppearance="@style/error_appearance"
+            app:hintTextAppearance="@style/error_appearance">
 
             <EditText
                 android:id="@+id/et_complain"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:errorTextAppearance="@style/error_appearance"
-                app:hintTextAppearance="@style/error_appearance"/>
+                android:layout_height="match_parent"/>
         </com.tokopedia.design.text.TkpdTextInputLayout>
 
 
