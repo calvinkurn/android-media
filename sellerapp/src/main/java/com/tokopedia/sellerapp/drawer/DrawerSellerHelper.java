@@ -1,8 +1,10 @@
 package com.tokopedia.sellerapp.drawer;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.view.GravityCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,6 +37,7 @@ import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.fintech.mitratoppers.view.activity.MitraToppersActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
@@ -255,12 +258,10 @@ public class DrawerSellerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
                 drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                 0));
-        if(isGoldMerchant) {
-            gmMenu.add(new DrawerItem(context.getString(com.tokopedia.seller.R.string.featured_product_title),
-                    TkpdState.DrawerPosition.FEATURED_PRODUCT,
-                    true
-            ));
-        }
+        gmMenu.add(new DrawerItem(context.getString(com.tokopedia.seller.R.string.featured_product_title),
+                TkpdState.DrawerPosition.FEATURED_PRODUCT,
+                true
+        ));
         return gmMenu;
     }
 
@@ -394,9 +395,13 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
-                    UnifyTracking.eventClickMenuFeaturedProduct();
-                    intent = new Intent(context, GMFeaturedProductActivity.class);
-                    context.startActivity(intent);
+                    if(SessionHandler.isGoldMerchant(context)) {
+                        UnifyTracking.eventClickMenuFeaturedProduct();
+                        intent = new Intent(context, GMFeaturedProductActivity.class);
+                        context.startActivity(intent);
+                    }else{
+                        showDialogActionGoToGMSubscribe();
+                    }
                     break;
                 default:
                     super.onItemClicked(item);
@@ -408,6 +413,22 @@ public class DrawerSellerHelper extends DrawerHelper
             }
             closeDrawer();
         }
+    }
+
+    private void showDialogActionGoToGMSubscribe() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle(R.string.featured_product_title);
+        alertDialog.setMessage(R.string.featured_product_desc_should_gold_merchant);
+        alertDialog.setPositiveButton(R.string.label_subscribe, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (context.getApplication() instanceof SellerModuleRouter) {
+                    ((SellerModuleRouter) context.getApplication()).goToGMSubscribe(context);
+                }
+            }
+        });
+        alertDialog.setNegativeButton(R.string.title_cancel, null);
+        alertDialog.show();
     }
 
     @Override
