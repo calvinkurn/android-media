@@ -106,6 +106,7 @@ public interface Constants {
         String OFFICIAL_STORES = "tokopedia://official-stores";
         String RESCENTER = "tokopedia://resolution/{resolution_id}";
         String REFERRAL = "tokopedia://referral";
+        String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
 
         interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";
