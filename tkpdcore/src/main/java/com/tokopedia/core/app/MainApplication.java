@@ -35,13 +35,14 @@ import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 
@@ -50,7 +51,7 @@ import rx.Subscriber;
  *
  * @author Trey Robinson
  */
-public class MainApplication extends TkpdMultiDexApplication{
+public abstract class MainApplication extends TkpdMultiDexApplication{
 
 	public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
@@ -73,6 +74,13 @@ public class MainApplication extends TkpdMultiDexApplication{
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
+
+    /**
+     * Get list of white list
+     *
+     * @return
+     */
+    protected abstract List<CacheApiWhiteListDomain> getWhiteList();
 
     public static MainApplication getInstance() {
         return instance;
@@ -281,15 +289,17 @@ public class MainApplication extends TkpdMultiDexApplication{
         TooLargeTool.startLogging(this);
 
         addToWhiteList();
+        // initialize the Branch object
+        initBranch();
     }
 
 
 
     public void addToWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getAddedWhiteList();
+        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getWhiteList();
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
-        cacheApiWhiteListUseCase.execute(requestParams, new Subscriber<Boolean>() {
+        cacheApiWhiteListUseCase.executeSync(requestParams, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -305,16 +315,6 @@ public class MainApplication extends TkpdMultiDexApplication{
                 Log.i(TAG, aBoolean.toString());
             }
         });
-    }
-
-
-    /**
-     * leave empty for mainapplication.
-     *
-     * @return
-     */
-    protected List<CacheApiWhiteListDomain> getAddedWhiteList() {
-        return new ArrayList<>();
     }
 
     @Override
@@ -395,5 +395,12 @@ public class MainApplication extends TkpdMultiDexApplication{
 
     public void initStetho() {
         if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
+    }
+
+    private void initBranch() {
+        Branch.getAutoInstance(this);
+        //Set userId to Branch.io sdk, userId, 127 chars or less
+        if(SessionHandler.isV4Login(this))
+            Branch.getInstance().setIdentity(SessionHandler.getLoginID(this));
     }
 }

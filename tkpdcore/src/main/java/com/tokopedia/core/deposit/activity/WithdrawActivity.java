@@ -70,4 +70,9 @@ public class WithdrawActivity extends BasePresenterActivity<WithdrawPresenter>{
     protected void setActionVar() {
 
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

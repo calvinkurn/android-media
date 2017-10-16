@@ -88,6 +88,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     private boolean ussdTimeOut = false;
 
     private final String PARAM_IS_RESELLER = "is_reseller";
+    private final static String balance = "balance";
 
     public ProductDigitalPresenter(IProductDigitalView view,
                                    IProductDigitalInteractor productDigitalInteractor) {
@@ -316,12 +317,12 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         if (categoryData.isSupportedStyle()) {
             switch (categoryData.getOperatorStyle()) {
                 case CategoryData.STYLE_PRODUCT_CATEGORY_1:
-                case CategoryData.STYLE_PRODUCT_CATEGORY_99:
                     view.renderCategoryProductDataStyle1(
                             categoryData, historyClientNumber
                     );
                     break;
                 case CategoryData.STYLE_PRODUCT_CATEGORY_2:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_99:
                     view.renderCategoryProductDataStyle2(
                             categoryData, historyClientNumber
                     );
@@ -352,7 +353,10 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
             );
         }
 
-        if (view.isUserLoggedIn() && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)) {
+        if (!GlobalConfig.isSellerApp()
+                && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)
+                && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && view.isUserLoggedIn()) {
             renderCheckPulsaBalanceDataToView();
         }
     }
@@ -369,7 +373,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 dailUssdToCheckBalance(simSlot, ussdCode);
             } else {
                 view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed), view.getActivity().getString(R.string.message_ussd_title));
-
             }
 
         } else {
@@ -492,12 +495,12 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     private RequestBodyPulsaBalance getRequestBodyPulsaBalance(String message, int selectedSim) {
-        String number = getDeviceMobileNumber(selectedSim);
+        String number = getUssdPhoneNumberFromCache(selectedSim);
         if (number == null || "".equalsIgnoreCase(number.trim())) {
-            number = getUssdPhoneNumberFromCache(selectedSim);
+            number = getDeviceMobileNumber(selectedSim);
         }
         RequestBodyPulsaBalance requestBodyPulsaBalance = new RequestBodyPulsaBalance();
-        requestBodyPulsaBalance.setType("balance");
+        requestBodyPulsaBalance.setType(balance);
         Attributes attributes = new Attributes();
         attributes.setOperatorId(parseStringToInt(getSelectedUssdOperator(selectedSim).getOperatorId()));
         attributes.setMessage(message);
@@ -525,9 +528,9 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
     @Override
     public Operator getSelectedUssdOperator(int selectedSim) {
-        String number = getDeviceMobileNumber(selectedSim);
+        String number = getUssdPhoneNumberFromCache(selectedSim);
         if (number == null || "".equalsIgnoreCase(number.trim())) {
-            number = getUssdPhoneNumberFromCache(selectedSim);
+            number = getDeviceMobileNumber(selectedSim);
         }
         List<Operator> selectedOperatorList = getSelectedUssdOperatorList(selectedSim);
         for (Operator operator : selectedOperatorList) {
@@ -597,7 +600,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
     @Override
     public void storeUssdPhoneNumber(int selectedSim, String number) {
-        number=DeviceUtil.formatPrefixClientNumber(number);
+        number = DeviceUtil.formatPrefixClientNumber(number);
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.DIGITAL_USSD_MOBILE_NUMBER);
         if (selectedSim == 0) {
             localCacheHandler.putString(TkpdCache.Key.KEY_USSD_SIM1, number);

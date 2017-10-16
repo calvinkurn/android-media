@@ -3,10 +3,10 @@ package com.tokopedia.seller.opportunity.domain.param;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFirstTimeUseCase;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by nisie on 3/2/17.
@@ -14,18 +14,15 @@ import java.util.HashMap;
 public class GetOpportunityListParam implements Parcelable {
     private String page;
     private String query;
-    private String sort;
-    private String keySort;
     private ArrayList<FilterPass> listFilter;
 
     public GetOpportunityListParam() {
+        this.listFilter = new ArrayList<>();
     }
 
     protected GetOpportunityListParam(Parcel in) {
         page = in.readString();
         query = in.readString();
-        sort = in.readString();
-        keySort = in.readString();
         listFilter = in.createTypedArrayList(FilterPass.CREATOR);
     }
 
@@ -57,30 +54,20 @@ public class GetOpportunityListParam implements Parcelable {
         this.query = query;
     }
 
-    public String getSort() {
-        return sort;
-    }
-
-    public void setSort(String keySort, String sort) {
-        this.keySort = keySort;
-        this.sort = sort;
-    }
-
     public ArrayList<FilterPass> getListFilter() {
         return listFilter;
     }
 
-    public void setListFilter(ArrayList<FilterPass> listFilter) {
-        this.listFilter = listFilter;
+    public void setFilter(ArrayList<FilterPass> listFilter) {
+        for (FilterPass filterPass : this.listFilter) {
+            if (filterPass.getKey().equals(GetOpportunityFirstTimeUseCase.ORDER_BY)) {
+                listFilter.add(filterPass);
+            }
+        }
+        this.listFilter.clear();
+        this.listFilter.addAll(listFilter);
     }
 
-    public String getKeySort() {
-        return keySort;
-    }
-
-    public void setKeySort(String keySort) {
-        this.keySort = keySort;
-    }
 
     @Override
     public int describeContents() {
@@ -91,8 +78,19 @@ public class GetOpportunityListParam implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(page);
         dest.writeString(query);
-        dest.writeString(sort);
-        dest.writeString(keySort);
         dest.writeTypedList(listFilter);
+    }
+
+    public void setSort(FilterPass sort) {
+        int index = -1;
+        for (int i = 0; i < this.listFilter.size(); i++) {
+            if (this.listFilter.get(i).getKey().equals(sort.getKey())) {
+                index = i;
+                break;
+            }
+        }
+        if (index != -1)
+            this.listFilter.remove(index);
+        this.listFilter.add(sort);
     }
 }

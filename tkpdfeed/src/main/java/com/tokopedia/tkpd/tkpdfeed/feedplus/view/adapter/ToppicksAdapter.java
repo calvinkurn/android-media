@@ -10,6 +10,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksItemViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 
 import java.util.ArrayList;
 
@@ -20,21 +21,19 @@ import java.util.ArrayList;
 public class ToppicksAdapter extends RecyclerView.Adapter<ToppicksAdapter.ViewHolder> {
 
     private final FeedPlus.View.Toppicks toppicksListener;
-    private ArrayList<ToppicksItemViewModel> list;
+    private ToppicksViewModel toppicksViewModel;
 
     public ToppicksAdapter(FeedPlus.View.Toppicks toppicksListener) {
         this.toppicksListener = toppicksListener;
-        this.list = new ArrayList<>();
     }
 
-    public void setList(ArrayList<ToppicksItemViewModel> list) {
-        this.list.clear();
-        this.list.addAll(list);
+    public void setData(ToppicksViewModel toppicksViewModel) {
+        this.toppicksViewModel = toppicksViewModel;
         notifyDataSetChanged();
     }
 
     public ArrayList<ToppicksItemViewModel> getList() {
-        return list;
+        return toppicksViewModel.getList();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -48,8 +47,10 @@ public class ToppicksAdapter extends RecyclerView.Adapter<ToppicksAdapter.ViewHo
                 @Override
                 public void onClick(View v) {
                     toppicksListener.onToppicksClicked(
-                            list.get(getAdapterPosition()).getName(),
-                            list.get(getAdapterPosition()).getUrl());
+                            toppicksViewModel.getPage(),
+                            toppicksViewModel.getRowNumber(),
+                            toppicksViewModel.getList().get(getAdapterPosition()).getName(),
+                            toppicksViewModel.getList().get(getAdapterPosition()).getUrl());
                 }
             });
         }
@@ -64,13 +65,14 @@ public class ToppicksAdapter extends RecyclerView.Adapter<ToppicksAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ToppicksAdapter.ViewHolder holder, int position) {
-        ImageHandler.LoadImage(holder.image, list.get(position).getImage());
+        ImageHandler.LoadImage(holder.image, toppicksViewModel.getList().get(position).getImage());
     }
 
     @Override
     public int getItemCount() {
-        if (list != null && !list.isEmpty())
-            return list.size();
+        if (toppicksViewModel.getList() != null
+                && !toppicksViewModel.getList().isEmpty())
+            return toppicksViewModel.getList().size();
         else
             return 0;
     }

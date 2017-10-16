@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -432,6 +433,11 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     @Override
     public void hideClearButton() {
         clearFieldImageView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showErrorNoInternetConnectionMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R2.id.iv_cross)

@@ -1,8 +1,11 @@
 package com.tokopedia.seller.shop.fragment;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -57,6 +60,11 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     TextView desc_status;
     TextView about_gm;
     private TkpdProgressDialog mProgressDialog;
+
+    OnShopEditorFragmentListener onShopEditorFragmentListener;
+    public interface OnShopEditorFragmentListener{
+        void deleteCacheShopInfov2();
+    }
 
     public void uploadImage(View view) {
         ImageGalleryEntry.moveToImageGallery((AppCompatActivity)getActivity(), 0, 1);
@@ -252,6 +260,11 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     }
 
     @Override
+    public void deleteShopCachev2() {
+        onShopEditorFragmentListener.deleteCacheShopInfov2();
+    }
+
+    @Override
     public void showButtonSend() {
         mBtnSend.setVisibility(View.VISIBLE);
     }
@@ -365,5 +378,25 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
         status_gold.setText("Regular Merchant");
         desc_status.setText("Anda Belum Berlangganan Gold Merchant");
         about_gm.setText("Tentang Gold Merchant");
+    }
+
+    @TargetApi(23)
+    @Override
+    public final void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachToContext(context);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public final void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachToContext(activity);
+        }
+    }
+
+    protected void onAttachToContext(Context context) {
+        onShopEditorFragmentListener = (OnShopEditorFragmentListener) context;
     }
 }

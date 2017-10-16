@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
@@ -18,28 +17,29 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping;
-import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
-import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
-import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
-import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.Router;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
+import com.tokopedia.seller.shop.di.component.DaggerDeleteCacheComponent;
+import com.tokopedia.seller.shop.di.component.DeleteCacheComponent;
 import com.tokopedia.seller.shop.fragment.ShopCreateFragment;
 import com.tokopedia.seller.shop.fragment.ShopEditorFragment;
 import com.tokopedia.seller.shop.presenter.ShopCreateView;
 import com.tokopedia.seller.shop.presenter.ShopEditorView;
 import com.tokopedia.seller.shop.presenter.ShopSettingView;
+import com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping;
+import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
+import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.inject.Inject;
 
 import static com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping.RESUME_OPEN_SHOP_KEY;
 
@@ -47,13 +47,16 @@ import static com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping.RE
  * Created by Zulfikar on 5/19/2016.
  */
 public class ShopEditorActivity extends TActivity implements
-        ShopSettingView {
+        ShopSettingView, ShopEditorFragment.OnShopEditorFragmentListener {
 
     FragmentManager supportFragmentManager;
     String FRAGMENT;
 
     FrameLayout container;
     private String onBack;
+
+    @Inject
+    DeleteShopInfoUseCase deleteShopInfoUseCase;
 
     @Override
     public String getScreenName() {
@@ -70,8 +73,11 @@ public class ShopEditorActivity extends TActivity implements
         fetchExtras(getIntent(), savedInstanceState);
 
         supportFragmentManager = getSupportFragmentManager();
-        if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
+        if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null) {
             initFragment(FRAGMENT);
+        }
+        DeleteCacheComponent deleteCacheComponent = DaggerDeleteCacheComponent.builder().appComponent(getApplicationComponent()).build();
+        deleteCacheComponent.inject(this);
     }
 
     @Override
@@ -167,7 +173,9 @@ public class ShopEditorActivity extends TActivity implements
     }
 
     public static void finishActivity(Bundle bundle, Activity activity) {
-        Router.goToHome(activity);
+        if (activity.getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) activity.getApplication()).goToHome(activity);
+        }
         Intent intent = new Intent(activity, ShopInfoActivity.class);
         intent.putExtras(bundle);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -196,7 +204,7 @@ public class ShopEditorActivity extends TActivity implements
             }
 
             @Override
-            public void onSuccess(String path, int position) {
+            public void onSuccess(String path) {
                 File file = UploadPhotoTask.writeImageToTkpdPath(AddProductFragment.compressImage(path));
                 Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
                 if (fragment != null && file != null) {
@@ -252,5 +260,12 @@ public class ShopEditorActivity extends TActivity implements
         outState.putString(FRAGMENT_TO_SHOW, FRAGMENT);
         outState.putString(ON_BACK, onBack);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void deleteCacheShopInfov2() {
+        if (deleteShopInfoUseCase!= null) {
+            deleteShopInfoUseCase.executeSync(RequestParams.EMPTY);
+        }
     }
 }

@@ -16,6 +16,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +25,13 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -50,6 +53,7 @@ import com.tokopedia.seller.product.edit.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
+import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -228,6 +232,18 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         return !model.equalsDefault(firstTimeViewModel);
     }
 
+    public void deleteNotUsedTkpdCacheImage(){
+        ArrayList<ImageSelectModel> imageSelectModelArrayList = productImageViewHolder.getImagesSelectView().getImageList();
+        if (imageSelectModelArrayList == null || imageSelectModelArrayList.size() == 0) {
+            return;
+        }
+        ArrayList<String> uriArrayList = new ArrayList<>();
+        for (int i = 0, sizei = imageSelectModelArrayList.size(); i<sizei; i++) {
+            uriArrayList.add(imageSelectModelArrayList.get(i).getUriOrPath());
+        }
+        FileUtils.deleteAllCacheTkpdFiles(uriArrayList);
+    }
+
     public void saveDraft(boolean isUploading) {
         UploadProductInputViewModel viewModel = collectDataFromView();
         if (isUploading) {
@@ -272,6 +288,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
                 break;
             case ImageGallery.TOKOPEDIA_GALLERY:
+                productImageViewHolder.onActivityResult(requestCode, resultCode, data);
+                break;
+            case ImageEditorActivity.REQUEST_CODE:
                 productImageViewHolder.onActivityResult(requestCode, resultCode, data);
                 break;
             case ProductDetailViewHolder.REQUEST_CODE_ETALASE:
@@ -371,7 +390,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     public void goToGoldMerchantPage() {
-        startActivity(new Intent(getActivity(), GmSubscribeHomeActivity.class));
+        if (getActivity().getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
+        }
     }
 
     private void updateProductScoring() {
@@ -526,7 +547,15 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
             @Override
             public void clickEditImagePath(int position) {
-                GalleryActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
+                GalleryCropActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
+            }
+
+            @Override
+            public void clickImageEditor(int position) {
+                String uriOrPath = productImageViewHolder.getImagesSelectView().getImageAt(position).getUriOrPath();
+                if (!TextUtils.isEmpty(uriOrPath)) {
+                    onImageEditor(uriOrPath);
+                }
             }
 
             @Override
@@ -555,9 +584,34 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             @Override
             public void clickRemoveImage(int positions) {
                 ImagesSelectView imagesSelectView = productImageViewHolder.getImagesSelectView();
+                ImageSelectModel imageSelectModel = imagesSelectView.getSelectedImage();
+                if (imageSelectModel!= null) {
+                    String path = imageSelectModel.getUriOrPath();
+                    if (!TextUtils.isEmpty(path) && !isEdittingDraft()) {
+                        FileUtils.deleteAllCacheTkpdFile(path);
+                    }
+                }
                 imagesSelectView.removeImage();
             }
         });
+    }
+
+    private boolean isEdittingDraft(){
+        return ((getStatusUpload()== ProductStatus.EDIT) && (getProductDraftId() > 0));
+    }
+
+    @Override
+    public void onImageEditor(String uriOrPath) {
+        ArrayList<String> imageUrls = new ArrayList<>();
+        imageUrls.add(uriOrPath);
+        ImageEditorActivity.start(getContext(), ProductAddFragment.this, imageUrls, null, !isEdittingDraft());
+    }
+
+    @Override
+    public void onRemovePreviousPath(String uri) {
+        if (!TextUtils.isEmpty(uri) && !isEdittingDraft()) {
+            FileUtils.deleteAllCacheTkpdFile(uri);
+        }
     }
 
     private void clearFocus(){
@@ -577,7 +631,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
+        GalleryCropActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
     }
 
     @Override
@@ -632,6 +686,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onResolutionImageCheckFailed(String uri) {
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.error_image_resolution));
+        FileUtils.deleteAllCacheTkpdFile(uri);
     }
 
     @Override
@@ -788,7 +843,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @ProductStatus
-    protected int getStatusUpload() {
+    public int getStatusUpload() {
         return ProductStatus.ADD;
     }
 

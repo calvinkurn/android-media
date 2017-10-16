@@ -6,8 +6,8 @@
     android:background="@android:color/white"
     android:foreground="?android:attr/selectableItemBackground"
     android:paddingBottom="@dimen/margin_ms"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingLeft="@dimen/margin_sm"
+    android:paddingRight="@dimen/margin_sm"
     android:paddingTop="@dimen/margin_ms">
 
     <LinearLayout

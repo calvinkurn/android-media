@@ -1,3 +1,4 @@
+
 package com.tokopedia.core.drawer2.view.viewmodel;
 
 /**
@@ -12,6 +13,24 @@ public class DrawerItem {
     public boolean isExpanded = false;
     public int id;
     private int position;
+    private boolean isNew;
+
+    public DrawerItem(String label, int iconId, int id, boolean isExpanded,boolean isNew) {
+        this.id = id;
+        this.label = label;
+        this.iconId = iconId;
+        this.isExpanded = isExpanded;
+        this.notif = 0;
+        this.isNew=isNew;
+    }
+
+    public DrawerItem(String label, int id, boolean isExpanded,boolean isNew) {
+        this.id = id;
+        this.label = label;
+        this.isExpanded = isExpanded;
+        this.notif = 0;
+        this.isNew=isNew;
+    }
 
     public DrawerItem(String label, int iconId, int id, boolean isExpanded) {
         this.id = id;
@@ -92,4 +111,8 @@ public class DrawerItem {
     public int getPosition() {
         return position;
     }
+
+    public boolean isNew() {return isNew;}
+
+    public void setNew(boolean aNew) {isNew = aNew;}
 }

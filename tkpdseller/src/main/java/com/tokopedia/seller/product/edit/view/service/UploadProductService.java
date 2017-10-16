@@ -39,6 +39,7 @@ public class UploadProductService extends BaseService implements AddProductServi
     public static final String TAG = "upload_product";
     ;
     public static final String PRODUCT_DRAFT_ID = "PRODUCT_DRAFT_ID";
+    public static final String IS_ADD = "IS_ADD";
 
     public static final String ACTION_DRAFT_CHANGED = "com.tokopedia.draft.changed";
 
@@ -48,9 +49,10 @@ public class UploadProductService extends BaseService implements AddProductServi
     HashMap<String, NotificationCompat.Builder> notificationBuilderMap = new HashMap<>();
     HashMap<String, Integer> progressMap = new HashMap<>();
 
-    public static Intent getIntent(Context context, long productId) {
+    public static Intent getIntent(Context context, long productId, boolean isAdd) {
         Intent intent = new Intent(context, UploadProductService.class);
         intent.putExtra(PRODUCT_DRAFT_ID, productId);
+        intent.putExtra(IS_ADD, isAdd);
         return intent;
     }
 
@@ -72,7 +74,8 @@ public class UploadProductService extends BaseService implements AddProductServi
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         long productDraftId = intent.getLongExtra(PRODUCT_DRAFT_ID, -1);
-        presenter.uploadProduct(productDraftId);
+        boolean isAdd = intent.getBooleanExtra(IS_ADD, true);
+        presenter.uploadProduct(productDraftId, isAdd);
         return START_NOT_STICKY;
     }
 
@@ -171,6 +174,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         bundle.putString(TkpdState.ProductService.IMAGE_URI, domainModel.getProductPrimaryPic());
         bundle.putString(TkpdState.ProductService.PRODUCT_URI, domainModel.getProductUrl());
         bundle.putString(TkpdState.ProductService.PRODUCT_DESCRIPTION, domainModel.getProductDesc());
+        bundle.putString(TkpdState.ProductService.PRODUCT_ID, domainModel.getProductId() + "");
         result.putExtras(bundle);
         sendBroadcast(result);
     }
@@ -181,7 +185,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
         return new NotificationCompat.Builder(this)
                 .setContentTitle(title)
-                .setSmallIcon(getDrawableLargeIcon())
+                .setSmallIcon(getSmallDrawableIcon())
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableIcon()))
                 .setContentIntent(pIntent)
                 .setGroup(getString(R.string.product_group_notification));
@@ -203,12 +207,19 @@ public class UploadProductService extends BaseService implements AddProductServi
         }
     }
 
+    private int getSmallDrawableIcon() {
+            return R.drawable.ic_stat_notify_white;
+    }
+
     private Notification buildFailedNotification(String errorMessage, String productDraftId, @ProductStatus int productStatus) {
         Intent pendingIntent = ProductDraftAddActivity.createInstance(this, productDraftId);
         if (productStatus == ProductStatus.EDIT) {
             pendingIntent = ProductDraftEditActivity.createInstance(this, productDraftId);
         }
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if(notificationBuilderMap.get(productDraftId) == null){
+            createNotification(productDraftId, "");
+        }
         return notificationBuilderMap.get(productDraftId)
                 .setContentText(errorMessage)
                 .setStyle(new NotificationCompat

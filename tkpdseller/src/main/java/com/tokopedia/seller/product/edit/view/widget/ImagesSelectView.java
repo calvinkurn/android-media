@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.edit.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,12 +42,14 @@ public class ImagesSelectView extends BaseCustomView {
         boolean isResolutionCorrect(String uri);
 
         void resolutionCheckFailed(String uri);
+
+        void removePreviousPath(String uri);
     }
 
     public static final int DEFAULT_LIMIT = 5;
 
     private int recyclerViewPadding;
-    private Drawable addPictureDrawable;
+    private int addPictureDrawableRes;
     private ImageSelectorAdapter imageSelectorAdapter;
     private String primaryImageString;
     private int imageLimit;
@@ -93,7 +94,7 @@ public class ImagesSelectView extends BaseCustomView {
     private void applyAttrs(AttributeSet attrs) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ImagesSelectView);
         recyclerViewPadding = (int) a.getDimension(R.styleable.ImagesSelectView_recyclerviewPadding, 0);
-        addPictureDrawable = a.getDrawable(R.styleable.ImagesSelectView_addPictureSrc);
+        addPictureDrawableRes = a.getResourceId(R.styleable.ImagesSelectView_addPictureSrc, R.drawable.ic_add_product);
         primaryImageString = a.getString(R.styleable.ImagesSelectView_primaryImageString);
         imageLimit = a.getInt(R.styleable.ImagesSelectView_imageLimit, DEFAULT_LIMIT);
         titleString = a.getString(R.styleable.ImagesSelectView_titleString);
@@ -105,7 +106,7 @@ public class ImagesSelectView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_images_select_view, this);
 
         imageSelectorAdapter = new ImageSelectorAdapter(new ArrayList<ImageSelectModel>(),
-                imageLimit, addPictureDrawable, null, primaryImageString, addImageString);
+                imageLimit, addPictureDrawableRes, null, primaryImageString, addImageString);
 
         TextView textViewTitle = (TextView) view.findViewById(R.id.textViewTitle);
         if (TextUtils.isEmpty(titleString)) {
@@ -149,7 +150,7 @@ public class ImagesSelectView extends BaseCustomView {
     private void handleResolutionFromList(List<ImageSelectModel> imageSelectModelList) {
         for (int i = imageSelectModelList.size() - 1; i >= 0; i--) {
             ImageSelectModel imageSelectModel = imageSelectModelList.get(i);
-            if (!successHandleResolution(imageSelectModel.getUri())) {
+            if (!successHandleResolution(imageSelectModel.getUriOrPath())) {
                 imageSelectModelList.remove(i);
             }
         }
@@ -165,7 +166,7 @@ public class ImagesSelectView extends BaseCustomView {
     }
 
     public void addImage(ImageSelectModel imageSelectModel) {
-        if (successHandleResolution(imageSelectModel.getUri())) {
+        if (successHandleResolution(imageSelectModel.getUriOrPath())) {
             imageSelectorAdapter.addImage(imageSelectModel);
             updateTotalImageListener();
         }
@@ -203,7 +204,10 @@ public class ImagesSelectView extends BaseCustomView {
 
     public void changeImagePath(String path) {
         if (successHandleResolution(path)) {
-            imageSelectorAdapter.changeImagePath(path);
+            if (!path.equals(getSelectedImage().getUriOrPath())) {
+                onCheckResolutionListener.removePreviousPath(getSelectedImage().getUriOrPath());
+                imageSelectorAdapter.changeImagePath(path);
+            }
         }
     }
 
@@ -231,14 +235,14 @@ public class ImagesSelectView extends BaseCustomView {
     }
 
     public void changeImage(ImageSelectModel imageSelectModel) {
-        if (successHandleResolution(imageSelectModel.getUri())) {
+        if (successHandleResolution(imageSelectModel.getUriOrPath())) {
             imageSelectorAdapter.changeImage(imageSelectModel);
             updateTotalImageListener();
         }
     }
 
     public void changeImage(ImageSelectModel imageSelectModel, int position) {
-        if (successHandleResolution(imageSelectModel.getUri())) {
+        if (successHandleResolution(imageSelectModel.getUriOrPath())) {
             imageSelectorAdapter.changeImage(imageSelectModel, position);
             updateTotalImageListener();
         }

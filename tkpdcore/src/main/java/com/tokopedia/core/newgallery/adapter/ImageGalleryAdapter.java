@@ -96,7 +96,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             mImageView.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageWidth));
             ImageHandler.loadImageFit2(itemView.getContext(), mImageView,
                    imageModel.getPath());
-//            ImageHandler.LoadImageCustom(Uri.fromFile(new File(imageModel.getPath())).toString())
+//            ImageHandler.LoadImageCustom(Uri.fromFile(new File(imageModel.getPathFromMediaUri())).toString())
 //                    .fit()
 //                    .centerCrop().into(mImageView);
 
@@ -111,7 +111,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
 
         @Override
         public void onClick(View v) {
-            if (imageModel == null) {
+            if (imageModel == null || multiSelector == null) {
                 return;
             }
 
@@ -130,7 +130,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
                     Toast.makeText(itemView.getContext(), itemView.getContext().getString(R.string.maximum_instoped_limit), Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (checkNotNull(countTitle)) {
+                if (checkNotNull(countTitle) && checkNotNull(actionMode)) {
                     actionMode.setTitle(multiSelector.getSelectedPositions().size() + "");
                     countTitle.onTitleChanged(multiSelector.getSelectedPositions().size());
                 }

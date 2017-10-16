@@ -26,6 +26,8 @@ public interface IAppsflyerContainer {
      */
     void getAdsID(AppsflyerContainer.AFAdsIDCallback callback);
 
+    String getAdsIdDirect();
+
     String getUniqueId();
 
     void sendDeeplinkData(Activity activity);

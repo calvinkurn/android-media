@@ -16,11 +16,11 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.widget.DividerItemDecoration;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDetailActivity;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDetailAdapter;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDetailViewModel;
-import com.tokopedia.seller.topads.dashboard.view.widget.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;

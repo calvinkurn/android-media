@@ -1,18 +1,14 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.myproduct.ManageProductSeller;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
-import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.view.mapper.ProductDraftListMapper;
@@ -34,15 +30,18 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     private DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase;
     private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
     private SaveBulkDraftProductUseCase saveBulkDraftProductUseCase;
+    private ClearAllDraftProductUseCase clearAllDraftProductUseCase;
 
     public ProductDraftListPresenterImpl (FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
                                           DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
                                           UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
-                                          SaveBulkDraftProductUseCase saveBulkDraftProductUseCase){
+                                          SaveBulkDraftProductUseCase saveBulkDraftProductUseCase,
+                                          ClearAllDraftProductUseCase clearAllDraftProductUseCase){
         this.fetchAllDraftProductUseCase = fetchAllDraftProductUseCase;
         this.deleteSingleDraftProductUseCase = deleteSingleDraftProductUseCase;
         this.saveBulkDraftProductUseCase = saveBulkDraftProductUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
+        this.clearAllDraftProductUseCase = clearAllDraftProductUseCase;
     }
 
     @Override
@@ -69,22 +68,51 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
                                       @NonNull ArrayList<String> instagramDescList) {
         ArrayList<String> correctResolutionLocalPathList = new ArrayList<>();
         ArrayList<String> correctResolutionInstagramDescList = new ArrayList<>();
+        ArrayList<Integer> failedPositionArrayList = new ArrayList<>();
         for (int i=0, sizei = localPathList.size(); i < sizei ; i++) {
             String localPath = localPathList.get(i);
             if (!isResolutionCorrect(localPath)) {
-                getView().onSaveInstagramResolutionError(i + 1, localPath);
+                failedPositionArrayList.add(i+1);
                 continue;
             }
             correctResolutionLocalPathList.add(localPath);
             correctResolutionInstagramDescList.add(instagramDescList.get(i));
         }
-        if (correctResolutionLocalPathList.size() == 0) {
+        if (failedPositionArrayList.size() > 0) {
+            getView().onErrorSaveBulkDraft(new ResolutionImageException(failedPositionArrayList));
+        }
+        if (correctResolutionLocalPathList.size() == 0 ) {
+            getView().hideDraftLoading();
             return;
         }
         saveBulkDraftProductUseCase.execute(
                 SaveBulkDraftProductUseCase.generateUploadProductParam(
                         correctResolutionLocalPathList, correctResolutionInstagramDescList),
                 getSaveInstagramToDraftSubscriber());
+    }
+
+    @Override
+    public void clearAllDraftData() {
+        clearAllDraftProductUseCase.execute(RequestParams.EMPTY,getClearAllDraftSubscriber());
+    }
+
+    private Subscriber<Boolean> getClearAllDraftSubscriber() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onErrorDeleteAllDraft();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                getView().onSuccessDeleteAllDraft();
+            }
+        };
     }
 
     private Subscriber<List<Long>> getSaveInstagramToDraftSubscriber() {
@@ -97,7 +125,7 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
             @Override
             public void onError(Throwable e) {
                 if(isViewAttached()) {
-                    getView().onSaveBulkDraftError(e);
+                    getView().onErrorSaveBulkDraft(e);
                 }
             }
 

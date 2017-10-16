@@ -35,7 +35,13 @@ public class USSDAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        if (event == null) {
+            return;
+        }
         AccessibilityNodeInfo source = event.getSource();
+        if (source == null) {
+            return;
+        }
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && !String.valueOf(event.getClassName()).contains("AlertDialog")) {
             return;
         }
@@ -53,6 +59,8 @@ public class USSDAccessibilityService extends AccessibilityService {
         } else {
             eventText = Collections.singletonList(source.getText());
         }
+        if (eventText == null)
+            return;
 
         String result = processUSSDText(eventText);
         if (TextUtils.isEmpty(result))
@@ -108,24 +116,50 @@ public class USSDAccessibilityService extends AccessibilityService {
     }
 
     private void closeSystemDialog(AccessibilityNodeInfo source) {
-        List<AccessibilityNodeInfo> list = source
-                .findAccessibilityNodeInfosByText(getString(R.string.label_cancel));
-        boolean isClosed = false;
-        for (AccessibilityNodeInfo node : list) {
-            node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            isClosed = true;
+        if (source == null) {
+            return;
         }
+        boolean isClosed = checkAndClosed(source,getString(R.string.label_ussd_cancel));
+
         if (!isClosed) {
-            list = source
-                    .findAccessibilityNodeInfosByText(getString(R.string.ok));
-            for (AccessibilityNodeInfo node : list) {
-                node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                isClosed = true;
+            isClosed = checkAndClosed(source,getString(R.string.ussd_batal_label));
+        }
+
+        if (!isClosed) {
+            isClosed = checkAndClosed(source,getString(R.string.ok));
+        }
+
+        //this block is for in case system language is Indonesia then button text may be "Batal"
+        if (!isClosed) {
+            for (int i = 0; i < source.getChildCount(); i++) {
+                AccessibilityNodeInfo node = source.getChild(i);
+                if (node != null && node.getText() != null) {
+                    if (getString(R.string.label_ussd_cancel).equalsIgnoreCase(node.getText().toString()) ||
+                            getString(R.string.ok).equalsIgnoreCase(node.getText().toString()) ||
+                            getString(R.string.ussd_batal_label).equalsIgnoreCase(node.getText().toString())) {
+                        node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                        isClosed = true;
+                        break;
+                    }
+                }
             }
         }
         if (!isClosed && startFromApp && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN)
             performGlobalAction(GLOBAL_ACTION_BACK); // This works on 4.1+ only
+    }
 
-
+    private boolean checkAndClosed(AccessibilityNodeInfo source,String btnText) {
+        List<AccessibilityNodeInfo> list = source
+                .findAccessibilityNodeInfosByText(btnText);
+        boolean isClosed = false;
+        if (list != null) {
+            for (AccessibilityNodeInfo node : list) {
+                if (node != null) {
+                    node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    isClosed = true;
+                }
+            }
+        }
+        return isClosed;
     }
 }

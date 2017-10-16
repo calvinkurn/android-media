@@ -97,4 +97,9 @@ public class ResCenterDiscussionActivity extends BasePresenterActivity
                 .resolutionDetailModule(new ResolutionDetailModule())
                 .build();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

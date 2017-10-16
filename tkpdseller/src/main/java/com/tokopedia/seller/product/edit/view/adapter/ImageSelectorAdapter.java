@@ -35,7 +35,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
     private ArrayList<ImageSelectModel> imageSelectModelList;
     private int limit;
-    private Drawable addPictureDrawable;
+    private int addPictureDrawableRes;
     private OnImageSelectionListener onImageSelectionListener;
     private String mainPrimaryImageString;
     private String addProductString;
@@ -53,13 +53,13 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
     public ImageSelectorAdapter(@NonNull ArrayList<ImageSelectModel> imageSelectModelList,
                                 int limit,
-                                Drawable addPictureDrawable,
+                                int addPictureDrawableRes,
                                 OnImageSelectionListener onImageSelectionListener,
                                 String mainPrimaryImageString,
                                 String addProductString) {
         this.imageSelectModelList = imageSelectModelList;
         this.limit = limit;
-        this.addPictureDrawable = addPictureDrawable;
+        this.addPictureDrawableRes = addPictureDrawableRes;
         this.onImageSelectionListener = onImageSelectionListener;
         this.mainPrimaryImageString = mainPrimaryImageString;
         this.addProductString = addProductString;
@@ -161,7 +161,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
         final ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
         if (imageSelectModel.isValidURL()) {
-            ImageHandler.loadImageWithTarget(holder.imageView.getContext(), imageSelectModel.getUri(), new SimpleTarget<Bitmap>() {
+            ImageHandler.loadImageWithTarget(holder.imageView.getContext(), imageSelectModel.getUriOrPath(), new SimpleTarget<Bitmap>() {
                 @Override
                 public void onLoadStarted(Drawable placeholder) {
                     super.onLoadStarted(placeholder);
@@ -185,7 +185,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
             ImageHandler.loadImageFromFileFitCenter(
                     holder.itemView.getContext(),
                     holder.imageView,
-                    new File(imageSelectModel.getUri())
+                    new File(imageSelectModel.getUriOrPath())
             );
         }
 
@@ -240,13 +240,14 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
             super(itemView);
             addImageTextView = (TextView) itemView.findViewById(R.id.text_add_product);
             addImageTextView.setText(addProductString);
-            imageView.setImageDrawable(addPictureDrawable);
+            imageView.setImageResource(addPictureDrawableRes);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
+            currentSelectedIndex = -1;
             if (onImageSelectionListener != null) {
                 onImageSelectionListener.onAddClick(position);
             }
@@ -320,7 +321,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         if (position < 0 || position >= imageSelectModelList.size()) return;
 
         ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
-        imageSelectModel.setUri(path);
+        imageSelectModel.setUriOrPath(path);
         notifyItemChanged(position);
     }
 
@@ -409,7 +410,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         if (position < 0 || position >= imageSelectModelList.size()) return;
 
         ImageSelectModel imageSelectModelBefore = imageSelectModelList.get(position);
-        imageSelectModelBefore.setUri(imageSelectModelAfter.getUri());
+        imageSelectModelBefore.setUriOrPath(imageSelectModelAfter.getUriOrPath());
         imageSelectModelBefore.setDescription(imageSelectModelAfter.getDescription());
         changeImagePrimary(imageSelectModelAfter.isPrimary());
         notifyItemChanged(position);

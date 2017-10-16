@@ -15,6 +15,7 @@ public class Product implements Parcelable {
 
     private String desc;
     private String detail;
+    private String detailUrl;
     private String info;
     private String price;
     private int pricePlain;
@@ -26,6 +27,7 @@ public class Product implements Parcelable {
         setProductType(builder.productType);
         setDesc(builder.desc);
         setDetail(builder.detail);
+        setDetailUrl(builder.detailUrl);
         setInfo(builder.info);
         setPrice(builder.price);
         setPricePlain(builder.pricePlain);
@@ -47,6 +49,14 @@ public class Product implements Parcelable {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public String getDetailUrl() {
+        return detailUrl;
+    }
+
+    public void setDetailUrl(String detailUrl) {
+        this.detailUrl = detailUrl;
     }
 
     public String getInfo() {
@@ -117,6 +127,7 @@ public class Product implements Parcelable {
         dest.writeString(this.productType);
         dest.writeString(this.desc);
         dest.writeString(this.detail);
+        dest.writeString(this.detailUrl);
         dest.writeString(this.info);
         dest.writeString(this.price);
         dest.writeInt(this.pricePlain);
@@ -132,6 +143,7 @@ public class Product implements Parcelable {
         this.productType = in.readString();
         this.desc = in.readString();
         this.detail = in.readString();
+        this.detailUrl = in.readString();
         this.info = in.readString();
         this.price = in.readString();
         this.pricePlain = in.readInt();
@@ -157,6 +169,7 @@ public class Product implements Parcelable {
         private String productType;
         private String desc;
         private String detail;
+        private String detailUrl;
         private String info;
         private String price;
         private int pricePlain;
@@ -183,6 +196,11 @@ public class Product implements Parcelable {
 
         public Builder detail(String val) {
             detail = val;
+            return this;
+        }
+
+        public Builder detailUrl(String val) {
+            detailUrl = val;
             return this;
         }
 

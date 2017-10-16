@@ -123,9 +123,9 @@ public class ContactUsActivity extends BasePresenterActivity implements
                 getIntent().getExtras() != null
                         && getIntent().getExtras()
                         .getString(InboxRouter.PARAM_URL, "").equals(""))) {
-            setTitle(com.tokopedia.inbox.R.string.title_help);
+            toolbar.setTitle(com.tokopedia.inbox.R.string.title_help);
         } else {
-            setTitle(R.string.title_activity_contact_us);
+            toolbar.setTitle(R.string.title_activity_contact_us);
         }
     }
 
@@ -195,5 +195,10 @@ public class ContactUsActivity extends BasePresenterActivity implements
         outState.putString(PARAM_URL, url);
         outState.putBundle(PARAM_BUNDLE, bundleCreateTicket);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

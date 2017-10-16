@@ -30,6 +30,7 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.OtpRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -45,6 +46,7 @@ import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
+import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -54,7 +56,6 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
-import com.tokopedia.seller.goldmerchant.common.di.component.GoldMerchantComponent;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.myproduct.ManageProductSeller;
@@ -94,9 +95,9 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
  * @author normansyahputa on 12/15/16.
  */
 
-public class ConsumerRouterApplication extends MainApplication implements
+public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication {
+        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -108,10 +109,6 @@ public class ConsumerRouterApplication extends MainApplication implements
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
-
-    public GoldMerchantComponent getGoldMerchantComponent() {
-        throw new RuntimeException("method used in sellerapp only");
-    }
 
     @Override
     public void onCreate() {
@@ -536,5 +533,53 @@ public class ConsumerRouterApplication extends MainApplication implements
     public ReactNativeHost getReactNativeHost() {
         if (reactNativeHost == null) initDaggerInjector();
         return reactNativeHost;
+    }
+
+    @Override
+    public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
+                                    String customSubject, String customMessage, String source) {
+        return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
+                customSubject, customMessage, source);
+
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                     String customSubject, String customMessage, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+                customSubject, customMessage, source);
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source);
+    }
+
+    @Override
+    public Intent getAskUserIntent(Context context, String userId, String userName, String source) {
+        return SendMessageActivity.getAskUserIntent(context, userId, userName, source);
+    }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                     String customSubject, String source) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,customSubject, source);
+    }
+
+    @Override
+    public void goToGMSubscribe(Activity activity) {
+        Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
+        activity.startActivity(intent);
+    }
+
+    @Override
+    public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
+        if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
+                || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {
+            actionApplink(activity, Constants.Applinks.HOME);
+        } else {
+            actionApplink(activity, appLinkScheme);
+        }
+
     }
 }

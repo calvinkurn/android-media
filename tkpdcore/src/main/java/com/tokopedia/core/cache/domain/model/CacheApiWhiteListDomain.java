@@ -1,5 +1,9 @@
 package com.tokopedia.core.cache.domain.model;
 
+import android.text.TextUtils;
+
+import com.tokopedia.core.cache.util.CacheApiUtils;
+
 /**
  * Created by normansyahputa on 8/14/17.
  */
@@ -9,9 +13,25 @@ public class CacheApiWhiteListDomain {
     private String path;
 
     /**
-     * this field in minute
+     * this field in seconds
      */
     private long expireTime;
+
+    public CacheApiWhiteListDomain(String fullPath, long expireTime) {
+        String host = CacheApiUtils.getHost(fullPath);
+        String path = CacheApiUtils.getPath(fullPath);
+        if (!TextUtils.isEmpty(host) && !TextUtils.isEmpty(path)) {
+            this.host = host;
+            this.path = path;
+            this.expireTime = expireTime;
+        }
+    }
+
+    public CacheApiWhiteListDomain(String host, String path, long expireTime) {
+        this.host = CacheApiUtils.getHost(host);
+        this.path = CacheApiUtils.generateCachePath(path);
+        this.expireTime = expireTime;
+    }
 
     public String getHost() {
         return host;

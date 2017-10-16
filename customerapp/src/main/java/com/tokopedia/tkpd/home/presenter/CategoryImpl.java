@@ -168,45 +168,7 @@ public class CategoryImpl implements Category {
         tickerCacheHandler.putBoolean(TICKER_CLOSED_CACHE_KEY,false);
     }
 
-    @Override
-    public void fetchBanners(final FacadePromo.GetPromoListener listener) {
-        Subscriber<Response<Banner>> subscriber = new Subscriber<Response<Banner>>() {
-            @Override
-            public void onCompleted() {
-                Log.d(TAG, messageTAG + "onCompleted()");
-            }
 
-            @Override
-            public void onError(Throwable e) {
-                listener.OnError();
-            }
-
-            @Override
-            public void onNext(Response<Banner> bannerResponse) {
-                Banner b = bannerResponse.body();
-
-                if (bannerResponse.isSuccessful() && b.getData() != null)
-                     view.onSuccessFetchBanners(b);
-
-            }
-        };
-        subscription
-                .add(
-                        categoryApi.getBanners(
-                                SessionHandler.getLoginID(MainApplication.getAppContext()),
-                                CategoryApi.size,
-                                CategoryApi.ANDROID_DEVICE,
-                                CategoryApi.state,
-                                CategoryApi.newExpired,
-                                CategoryApi.TARGET_SLIDE_TYPE
-                        ).subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .unsubscribeOn(Schedulers.io())
-                                .subscribe(
-                                        subscriber
-                                )
-                );
-    }
 
     @Override
     public void subscribe() {

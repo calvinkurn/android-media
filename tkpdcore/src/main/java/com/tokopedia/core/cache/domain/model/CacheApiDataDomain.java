@@ -7,7 +7,11 @@ package com.tokopedia.core.cache.domain.model;
 public class CacheApiDataDomain {
     private String host;
     private String path;
-    private String param;
+
+    public CacheApiDataDomain(String host, String path) {
+        this.host = host;
+        this.path = path;
+    }
 
     public String getHost() {
         return host;
@@ -23,13 +27,5 @@ public class CacheApiDataDomain {
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public String getParam() {
-        return param;
-    }
-
-    public void setParam(String param) {
-        this.param = param;
     }
 }
