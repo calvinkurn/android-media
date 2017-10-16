@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     private static final int REQUEST_STEP3 = 1003;
 
     FrameLayout ffChooseProductProblem, ffSolution, ffUploadProve;
+    RelativeLayout rlProgress;
     TextView tvChooseProductProblem, tvChooseProductProblemTitle, tvSolution, tvSolutionTitle, tvUploadProve, tvUploadProveTitle;
     ImageView ivChooseProductProblem, ivSolution, ivUploadProve;
     Button btnCreateResolution;
@@ -157,6 +159,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
+        rlProgress = (RelativeLayout) view.findViewById(R.id.rl_progress);
         updateView(new ResultViewModel());
         presenter.loadProductProblem(orderId);
     }
@@ -349,14 +352,18 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             problemView.setVisibility(View.INVISIBLE);
             footer.setVisibility(View.INVISIBLE);
         }
-        if (progressBar.getVisibility() == View.GONE) {
-            progressBar.setVisibility(View.VISIBLE);
+        if (rlProgress.getVisibility() == View.GONE) {
+            rlProgress.setVisibility(View.VISIBLE);
         }
+        rlProgress.setEnabled(true);
+        rlProgress.setClickable(true);
     }
     public void dismissProgressBar() {
-        if (progressBar.getVisibility() == View.VISIBLE) {
-            progressBar.setVisibility(View.GONE);
+        if (rlProgress.getVisibility() == View.VISIBLE) {
+            rlProgress.setVisibility(View.GONE);
         }
+        rlProgress.setEnabled(false);
+        rlProgress.setClickable(false);
     }
 
     @Override
