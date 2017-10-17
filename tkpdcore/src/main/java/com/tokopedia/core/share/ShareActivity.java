@@ -1,6 +1,5 @@
 package com.tokopedia.core.share;
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -57,5 +56,10 @@ public class ShareActivity extends TActivity implements ShareView {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }
