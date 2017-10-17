@@ -9,10 +9,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
+import android.widget.LinearLayout;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppScreen;
@@ -23,7 +25,6 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -156,6 +157,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
             }
         });
 
+        setSearchviewTextSize(searchView, 12);
+        setQueryHint();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -169,6 +172,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() == 0) {
+                    setQueryHint();
                     presenter.getFilteredInboxReputation("",
                             timeFilter,
                             scoreFilter,
@@ -183,6 +187,35 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 openFilter();
             }
         });
+    }
+
+    private void setSearchviewTextSize(SearchView searchView, int fontSize) {
+        try {
+            AutoCompleteTextView autoCompleteTextViewSearch = (AutoCompleteTextView) searchView.findViewById(searchView.getContext().getResources().getIdentifier("app:id/search_src_text", null, null));
+            if (autoCompleteTextViewSearch != null) {
+                autoCompleteTextViewSearch.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+            } else {
+                LinearLayout linearLayout1 = (LinearLayout) searchView.getChildAt(0);
+                LinearLayout linearLayout2 = (LinearLayout) linearLayout1.getChildAt(2);
+                LinearLayout linearLayout3 = (LinearLayout) linearLayout2.getChildAt(1);
+                AutoCompleteTextView autoComplete = (AutoCompleteTextView) linearLayout3.getChildAt(0);
+                autoComplete.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+            }
+        } catch (Exception e) {
+            LinearLayout linearLayout1 = (LinearLayout) searchView.getChildAt(0);
+            LinearLayout linearLayout2 = (LinearLayout) linearLayout1.getChildAt(2);
+            LinearLayout linearLayout3 = (LinearLayout) linearLayout2.getChildAt(1);
+            AutoCompleteTextView autoComplete = (AutoCompleteTextView) linearLayout3.getChildAt(0);
+            autoComplete.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+        }
+    }
+
+    private void setQueryHint() {
+        if (getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
+            searchView.setQueryHint(getString(R.string.query_hint_review_seller));
+        } else {
+            searchView.setQueryHint(getString(R.string.query_hint_review_buyer));
+        }
     }
 
     public void refreshPage() {

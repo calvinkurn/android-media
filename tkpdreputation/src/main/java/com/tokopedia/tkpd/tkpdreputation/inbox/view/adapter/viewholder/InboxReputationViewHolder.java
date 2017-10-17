@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder;
 
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,7 +45,6 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private Locale locale = new Locale("in", "ID");
     private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", locale);
     private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM", locale);
-    private LabelUtils labelUtils;
 
     public InboxReputationViewHolder(View itemView, InboxReputation.View viewListener) {
         super(itemView);
@@ -56,7 +58,6 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         date = (TextView) itemView.findViewById(R.id.date);
         action = (TextView) itemView.findViewById(R.id.action);
         unreadNotification = (ImageView) itemView.findViewById(R.id.unread_notif);
-        labelUtils = LabelUtils.getInstance(itemView.getContext(), deadline);
         this.viewListener = viewListener;
 
     }
@@ -152,17 +153,34 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private void setIconDeadline(TextView deadline, String reputationDaysLeft) {
         deadline.setText(reputationDaysLeft + " " + MainApplication.getAppContext().getString(R.string.deadline_suffix));
 
+        Drawable background = MethodChecker.getDrawable(MainApplication
+                .getAppContext(), R.drawable.custom_label);
+
         switch (reputationDaysLeft) {
             case "1":
-                labelUtils.giveLabel(LabelUtils.COLOR_RED);
+                background.setColorFilter(new
+                        PorterDuffColorFilter(MethodChecker.getColor(MainApplication.getAppContext(), R
+                        .color.red_500),
+                        PorterDuff.Mode
+                                .MULTIPLY));
                 break;
             case "2":
-                labelUtils.giveLabel(LabelUtils.COLOR_YELLOW);
+                background.setColorFilter(new
+                        PorterDuffColorFilter(MethodChecker.getColor(MainApplication.getAppContext(), R
+                        .color.orange_300),
+                        PorterDuff.Mode
+                                .MULTIPLY));
                 break;
             default:
-                labelUtils.giveLabel(LabelUtils.COLOR_BLUE);
+                background.setColorFilter(new
+                        PorterDuffColorFilter(MethodChecker.getColor(MainApplication.getAppContext(), R
+                        .color.light_blue_300),
+                        PorterDuff.Mode
+                                .MULTIPLY));
                 break;
         }
+
+        MethodChecker.setBackground(deadline, background);
     }
 
 }

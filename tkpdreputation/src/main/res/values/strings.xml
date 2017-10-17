@@ -108,5 +108,7 @@
     <string name="hint_write_reply">Tulis balasan...</string>
     <string name="inbox_reputation_seller_empty_title">Belum ada ulasan dari pembeli.\nPastikan Produk Anda sudah terjual.</string>
     <string name="see_my_shop">Lihat Toko Saya</string>
+    <string name="query_hint_review_buyer">Invoice / Nama Penjual / Nama Produk</string>
+    <string name="query_hint_review_seller">Invoice / Nama Pembeli / Nama Produk</string>
 
 </resources>

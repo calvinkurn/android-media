@@ -87,14 +87,15 @@
         <TextView
             android:id="@+id/label_deadline"
             android:layout_width="@dimen/label_deadline_width"
-            android:layout_height="@dimen/label_deadline_height"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/fontvvs"
-            tools:text="3 hari lagi"
             android:gravity="center"
-            android:visibility="visible"/>
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_xsmall"
+            android:padding="@dimen/padding_vvs"
+            android:visibility="visible"
+            tools:text="3 hari lagi"/>
 
     </RelativeLayout>
 

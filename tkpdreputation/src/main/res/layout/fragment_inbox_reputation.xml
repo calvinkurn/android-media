@@ -12,6 +12,7 @@
         android:layout_marginBottom="@dimen/margin_vs"
         android:background="@drawable/cards_ui"
         android:hint="@string/hint_search_review"
+        android:textSize="@dimen/text_size_small"
         android:iconifiedByDefault="false"
         app:iconifiedByDefault="false"/>
 
