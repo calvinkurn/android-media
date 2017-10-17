@@ -45,6 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/nested_scroll_pdp"
+        android:clickable="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
@@ -52,7 +53,6 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/root_view"
             android:orientation="vertical"
-            android:clickable="true"
             android:layout_width="match_parent"
             android:paddingBottom="?attr/actionBarSize"
             android:layout_height="match_parent">

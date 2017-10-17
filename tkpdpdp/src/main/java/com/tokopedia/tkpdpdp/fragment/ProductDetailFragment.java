@@ -280,6 +280,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         });
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
         params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
+
     }
 
     @Override
