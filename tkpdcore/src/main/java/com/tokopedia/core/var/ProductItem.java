@@ -85,7 +85,7 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
     public String reviewCount;
 
     @SerializedName("official_store")
-    public Boolean isOfficial;
+    public boolean isOfficial = false;
 
     public boolean productAlreadyWishlist;
 
