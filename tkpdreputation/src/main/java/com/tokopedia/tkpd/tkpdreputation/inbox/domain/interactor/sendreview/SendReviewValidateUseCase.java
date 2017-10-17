@@ -109,7 +109,7 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
                                           List<ImageUpload> deletedImageUploads) {
         String allPhoto = "";
         for (int i = 0; i < imageUploads.size(); i++) {
-            if (i == imageUploads.size() - 1) {
+            if (imageUploads.size() == 1 || i == imageUploads.size() - 1) {
                 allPhoto += imageUploads.get(i).getImageId();
             } else {
                 allPhoto += imageUploads.get(i).getImageId() + "~";
@@ -121,10 +121,10 @@ public class SendReviewValidateUseCase extends UseCase<SendReviewValidateDomain>
         }
 
         for (int i = 0; i < deletedImageUploads.size(); i++) {
-            if (i == imageUploads.size() - 1) {
+            if (deletedImageUploads.size() == 1 || i == deletedImageUploads.size() - 1) {
                 allPhoto += deletedImageUploads.get(i).getImageId();
             } else {
-                allPhoto += deletedImageUploads.get(i).getImageId() + "~";
+                allPhoto += deletedImageUploads.get(i).getImageId()  + "~";
             }
         }
         return allPhoto;
