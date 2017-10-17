@@ -988,10 +988,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             price.setText(data.price);
             if (data.getShopLocation() != null) {
                 if (data.getOfficial()) {
-                    //location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_authorize_grey, 0, 0, 0);
                     location.setText(context.getResources().getString(com.tokopedia.core.R.string.authorized));
                 } else {
-                    //location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_location_grey, 0, 0, 0);
                     location.setText(MethodChecker.fromHtml(data.getShopLocation()));
                 }
             } else location.setVisibility(View.INVISIBLE);
