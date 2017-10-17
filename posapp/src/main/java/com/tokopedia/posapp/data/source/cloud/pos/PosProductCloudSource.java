@@ -21,7 +21,7 @@ public class PosProductCloudSource {
         this.getProductListMapper = getProductListMapper;
     }
 
-    Observable<ProductListDomain> getProductList(RequestParams params) {
+    public Observable<ProductListDomain> getProductList(RequestParams params) {
         return posProductApi.getProductList(
             params.getString("shop_id", params.getString("shop_id", "")),
             params.getInt("start", params.getInt("start", 0)),

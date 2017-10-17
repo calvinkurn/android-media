@@ -159,23 +159,9 @@ public class CachePresenter implements Cache.Presenter {
     }
 
     private RequestParams getProductParam(int page) {
-        RequestParams params = AuthUtil.generateRequestParamsNetwork(context);
-        params.putString(SHOP_ID, SessionHandler.getShopID(context));
-        params.putString(SHOP_DOMAIN, SessionHandler.getShopDomain(context));
-        params.putString(PAGE, String.valueOf(page));
-        params.putString(KEYWORD, "");
-        params.putString(ETALASE_ID, "etalase");
-        params.putString(ORDER_BY, "0");
-        params.putString(PER_PAGE, "5");
-        params.putString(WHOLESALE, "1");
-
-        return params;
-    }
-
-    private RequestParams getPosProductParam(int page) {
         RequestParams params = RequestParams.create();
         params.putString(SHOP_ID, SessionHandler.getShopID(context));
-        params.putInt(START, defaultRowPerPage * page);
+        params.putInt(START, 1 + (defaultRowPerPage * (page - 1)));
         params.putInt(ROW, defaultRowPerPage);
         return params;
     }
@@ -242,7 +228,7 @@ public class CachePresenter implements Cache.Presenter {
                 productPage++;
                 isRequestNextProduct = true;
             } else {
-                productPage = 0;
+                productPage = 1;
                 isRequestNextProduct = false;
             }
 

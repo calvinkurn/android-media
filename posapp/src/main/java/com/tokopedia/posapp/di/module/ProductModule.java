@@ -5,6 +5,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.di.qualifier.AceAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
+import com.tokopedia.core.network.di.qualifier.PosNoAuth;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.posapp.data.factory.ProductFactory;
 import com.tokopedia.posapp.data.mapper.GetProductListMapper;
@@ -13,6 +14,7 @@ import com.tokopedia.posapp.data.repository.ProductRepository;
 import com.tokopedia.posapp.data.repository.ProductRepositoryImpl;
 import com.tokopedia.posapp.data.source.cloud.api.AceApi;
 import com.tokopedia.posapp.data.source.cloud.api.ProductApi;
+import com.tokopedia.posapp.data.source.cloud.api.pos.PosProductApi;
 import com.tokopedia.posapp.di.scope.ProductScope;
 import com.tokopedia.posapp.domain.usecase.GetProductCampaignUseCase;
 import com.tokopedia.posapp.domain.usecase.GetProductListUseCase;
@@ -29,6 +31,11 @@ import retrofit2.Retrofit;
 @ProductScope
 @Module
 public class ProductModule {
+    @Provides
+    PosProductApi providePosProductApi(@PosNoAuth Retrofit retrofit) {
+        return retrofit.create(PosProductApi.class);
+    }
+
     @Provides
     ProductApi provideProductApi(@WsV4QualifierWithErrorHander Retrofit retrofit) {
         return retrofit.create(ProductApi.class);
@@ -55,12 +62,13 @@ public class ProductModule {
     }
 
     @Provides
-    ProductFactory provideProductFactory(ProductApi productApi,
+    ProductFactory provideProductFactory(PosProductApi posProductApi,
+                                         ProductApi productApi,
                                          MojitoApi mojitoApi,
                                          AceApi aceApi,
                                          GetProductMapper getProductMapper,
                                          GetProductListMapper getProductListMapper) {
-        return new ProductFactory(productApi, mojitoApi, aceApi, getProductMapper, getProductListMapper);
+        return new ProductFactory(posProductApi, productApi, mojitoApi, aceApi, getProductMapper, getProductListMapper);
     }
 
     @Provides

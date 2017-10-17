@@ -27,7 +27,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Observable<ProductListDomain> getProductList(RequestParams requestParams) {
-        return productFactory.cloud().getProductList(requestParams);
+        return productFactory.cloudGateway().getProductList(requestParams);
     }
 
     @Override

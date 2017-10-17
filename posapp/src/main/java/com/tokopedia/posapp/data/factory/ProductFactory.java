@@ -22,11 +22,13 @@ public class ProductFactory {
     private GetProductMapper getProductMapper;
     private GetProductListMapper getProductListMapper;
 
-    public ProductFactory(ProductApi productApi,
+    public ProductFactory(PosProductApi posProductApi,
+                          ProductApi productApi,
                           MojitoApi mojitoApi,
                           AceApi aceApi,
                           GetProductMapper getProductMapper,
                           GetProductListMapper getProductListMapper) {
+        this.posProductApi = posProductApi;
         this.productApi = productApi;
         this.mojitoApi = mojitoApi;
         this.aceApi = aceApi;
