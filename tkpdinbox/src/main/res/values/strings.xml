@@ -75,6 +75,7 @@
     <string name="string_return_rp">Kembalikan Rp </string>
     <string name="string_to_buyer"> ke Pembeli</string>
     <string name="string_returning">Kembalikan </string>
+    <string name="string_step3_complete">Bukti &amp; keterangan sudah diunggah</string>
 
     <!--step 1-->
     <string name="string_button_save_choose">Simpan dan Pilih Barang Lain</string>

@@ -286,6 +286,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                             R.drawable.bg_layout_enable_with_green));
                     btnCreateResolution.setTextColor(context.getResources().getColor(R.color.white));
                     ivUploadProve.setAlpha(1f);
+                    tvUploadProve.setText(context.getResources().getString(R.string.string_step3_complete));
                 }
             } else {
                 btnCreateResolution.setEnabled(true);
@@ -295,6 +296,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                         R.drawable.bg_layout_disable));
                 btnCreateResolution.setTextColor(context.getResources().getColor(R.color.white));
                 ffUploadProve.setEnabled(false);
+                tvUploadProve.setText(context.getResources().getString(R.string.string_upload_prove_information));
             }
         }
     }

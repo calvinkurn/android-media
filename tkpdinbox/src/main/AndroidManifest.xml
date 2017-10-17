@@ -108,6 +108,7 @@
 
         <activity
             android:name="com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemDetailActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
 
         <activity
@@ -117,6 +118,7 @@
         <activity
             android:name="com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionDetailActivity"
             android:label="@string/title_activity_solution_detail"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.inbox.rescenter.createreso.view.activity.AttachmentActivity"

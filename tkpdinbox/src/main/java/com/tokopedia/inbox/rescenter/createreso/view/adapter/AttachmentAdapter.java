@@ -58,17 +58,17 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
     }
 
     @Override
-    public void onBindViewHolder(final ItemHolder holder, final int position) {
-
-        if (attachmentViewModelList.size() < maxAttachmentCount && position == attachmentViewModelList.size()) {
+    public void onBindViewHolder(final ItemHolder holder, int position) {
+        final int itemPos = position - 1;
+        if (attachmentViewModelList.size() < maxAttachmentCount && position == 0) {
             holder.ivClose.setVisibility(View.GONE);
             holder.ivImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_attachment));
         } else {
             //show without upload image icon
             holder.ivClose.setVisibility(View.VISIBLE);
-            File file = new File(attachmentViewModelList.get(position).getFileLoc());
+            File file = new File(attachmentViewModelList.get(itemPos).getFileLoc());
             holder.ivImage.setImageURI(Uri.fromFile(file));
-            Glide.with(context).load(attachmentViewModelList.get(position).getFileLoc()).into(holder.ivImage);
+            Glide.with(context).load(attachmentViewModelList.get(itemPos).getFileLoc()).into(holder.ivImage);
             holder.ivImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 
@@ -86,7 +86,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
         holder.ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteAttachment(position);
+                deleteAttachment(itemPos);
             }
         });
     }
