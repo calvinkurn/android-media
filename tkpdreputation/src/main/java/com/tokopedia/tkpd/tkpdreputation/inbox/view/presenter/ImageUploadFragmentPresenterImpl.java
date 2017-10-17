@@ -179,7 +179,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
                 if (hasOnlyOneImage()) {
                     sendReviewPass.getListImage().clear();
                     sendReviewPass.getListDeleted().addAll(deletedImageUploads);
-                    setReviewFormCacheUseCase.execute(SetReviewFormCacheUseCase.getParam
+                    setReviewFormCacheUseCase.executeSync(SetReviewFormCacheUseCase.getParam
                             (sendReviewPass));
                     viewListener.getActivity().setResult(Activity.RESULT_OK);
                     viewListener.getActivity().finish();
@@ -224,7 +224,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
                 }
                 sendReviewPass.setListImage(list);
                 sendReviewPass.getListDeleted().addAll(deletedImageUploads);
-                setReviewFormCacheUseCase.execute(SetReviewFormCacheUseCase.getParam
+                setReviewFormCacheUseCase.executeSync(SetReviewFormCacheUseCase.getParam
                         (sendReviewPass));
 
             }
