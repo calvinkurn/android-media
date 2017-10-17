@@ -91,11 +91,13 @@ public class DetailResChatFragment
 
     @Override
     public void onSaveState(Bundle state) {
+        state.putString(DetailResChatActivity.PARAM_RESOLUTION_ID, resolutionId);
 
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
+        resolutionId = savedState.getString(DetailResChatActivity.PARAM_RESOLUTION_ID);
 
     }
 
@@ -187,7 +189,6 @@ public class DetailResChatFragment
             }
         }
     }
-
 
     @Override
     public void onDestroy() {
