@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -69,6 +70,7 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
@@ -169,6 +171,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     RemoteConfigFetcher remoteConfigFetcher;
     FirebaseRemoteConfig firebaseRemoteConfig;
+    private int cateogrySize;
 
     @Override
     public void onTopUpTokoCashClicked() {
@@ -1066,4 +1069,21 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         if (trace != null)
             trace.stop();
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        storeLastStateTabSelected();
+        super.onSaveInstanceState(outState);
+    }
+
+    protected void storeLastStateTabSelected() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(
+                getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
+        );
+        int position = holder.digitalWidgetView.getPosition();
+        localCacheHandler.putInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED,
+                position);
+        localCacheHandler.applyEditor();
+    }
+
 }

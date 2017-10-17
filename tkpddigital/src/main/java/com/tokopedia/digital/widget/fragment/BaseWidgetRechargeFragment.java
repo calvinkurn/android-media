@@ -11,17 +11,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -33,7 +30,6 @@ import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.model.WidgetContact;
 import com.tokopedia.digital.widget.model.category.Category;
 
-import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -47,13 +43,17 @@ import permissions.dispatcher.RuntimePermissions;
  */
 
 @RuntimePermissions
-public abstract class BaseWidgetRechargeFragment extends Fragment {
+public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmentV4<P> {
 
     protected static final String ARG_PARAM_CATEGORY = "ARG_PARAM_CATEGORY";
     protected static final String ARG_TAB_INDEX_POSITION = "ARG_TAB_INDEX_POSITION";
+
     private static final String EXTRA_CHECKOUT_PASS_DATA = "EXTRA_CHECKOUT_PASS_DATA";
+    private static final String STATE_CATEGORY = "STATE_CATEGORY";
+
     protected static final int CONTACT_PICKER_RESULT = 1001;
     protected static final int LOGIN_REQUEST_CODE = 198;
+
     private static final String PHONE_CODE = "62";
     private static final String PHONE_CODE_PLUS = "+62";
     private static final String DEFAULT_PREFIX_PHONE = "0";
@@ -68,14 +68,8 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
     protected String lastProductSelected = "";
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(false);
-        if (this.getArguments() != null) {
-            bundle = this.getArguments();
-            category = bundle.getParcelable(ARG_PARAM_CATEGORY);
-            currentPosition = bundle.getInt(ARG_TAB_INDEX_POSITION);
-        }
+    protected boolean isRetainInstance() {
+        return false;
     }
 
     @Override
@@ -86,37 +80,27 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
     }
 
     @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null)
-            digitalCheckoutPassDataState = savedInstanceState.getParcelable(
+    public void onSaveState(Bundle state) {
+//        storeLastStateTabSelected();
+        state.putParcelable(STATE_CATEGORY, category);
+        state.putParcelable(EXTRA_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+        if (savedState != null) {
+            category = savedState.getParcelable(STATE_CATEGORY);
+            digitalCheckoutPassDataState = savedState.getParcelable(
                     EXTRA_CHECKOUT_PASS_DATA
             );
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(getLayout(), container, false);
-        try {
-            unbinder = ButterKnife.bind(this, view);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        initialVariable();
-        return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initialViewRendered();
+    protected void setupArguments(Bundle arguments) {
+        category = arguments.getParcelable(ARG_PARAM_CATEGORY);
+        currentPosition = arguments.getInt(ARG_TAB_INDEX_POSITION);
+        bundle = arguments;
     }
 
     @Override
@@ -156,12 +140,6 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
             }
         }
     }
-
-    public abstract int getLayout();
-
-    public abstract void initialVariable();
-
-    public abstract void initialViewRendered();
 
     public abstract void saveAndDisplayPhoneNumber(String phoneNumber);
 
@@ -253,7 +231,7 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
 
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
     public void doLaunchContactPicker() {
-        storeLastStateTabSelected();
+//        storeLastStateTabSelected();
         Intent contactPickerIntent = new Intent(
                 Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI
@@ -284,7 +262,6 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
     @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
     void showNeverAskForContacts() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_CONTACTS);
-
     }
 
     @OnShowRationale(Manifest.permission.READ_CONTACTS)
@@ -356,13 +333,13 @@ public abstract class BaseWidgetRechargeFragment extends Fragment {
 
     protected abstract void trackingOnClientNumberFocusListener();
 
-    protected void storeLastStateTabSelected() {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(
-                getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
-        );
-        localCacheHandler.putInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED, currentPosition);
-        localCacheHandler.applyEditor();
-    }
+//    protected void storeLastStateTabSelected() {
+//        LocalCacheHandler localCacheHandler = new LocalCacheHandler(
+//                getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
+//        );
+//        localCacheHandler.putInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED, currentPosition);
+//        localCacheHandler.applyEditor();
+//    }
 
     protected void showSnackbarErrorMessage(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);

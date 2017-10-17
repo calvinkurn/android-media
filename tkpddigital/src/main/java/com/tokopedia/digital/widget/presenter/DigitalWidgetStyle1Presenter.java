@@ -40,15 +40,15 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
-    public void fetchNumberList(String categoryId) {
+    public void fetchNumberList(String categoryId, boolean b) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("category_id", categoryId);
         param.put("sort", "label");
-        widgetInteractor.getNumberList(getNumberListSubscriber(categoryId),
+        widgetInteractor.getNumberList(getNumberListSubscriber(categoryId, b),
                 AuthUtil.generateParamsNetwork(context, param));
     }
 
-    private Subscriber<DigitalNumberList> getNumberListSubscriber(final String categoryId) {
+    private Subscriber<DigitalNumberList> getNumberListSubscriber(final String categoryId, final boolean b) {
         return new Subscriber<DigitalNumberList>() {
             @Override
             public void onCompleted() {
@@ -63,18 +63,20 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             @Override
             public void onNext(DigitalNumberList digitalNumberList) {
                 view.renderNumberList(digitalNumberList.getOrderClientNumbers());
-                if (digitalNumberList.getLastOrder() != null) {
-                    LastOrder lastOrder = new LastOrder();
-                    Attributes attributes = new Attributes();
-                    attributes.setClientNumber(digitalNumberList.getLastOrder().getClientNumber());
-                    attributes.setCategoryId(Integer.valueOf(digitalNumberList.getLastOrder().getCategoryId()));
-                    attributes.setOperatorId(Integer.valueOf(digitalNumberList.getLastOrder().getOperatorId()));
-                    attributes.setProductId(Integer.valueOf(digitalNumberList.getLastOrder().getLastProduct()));
-                    lastOrder.setAttributes(attributes);
+                if (b) {
+                    if (digitalNumberList.getLastOrder() != null) {
+                        LastOrder lastOrder = new LastOrder();
+                        Attributes attributes = new Attributes();
+                        attributes.setClientNumber(digitalNumberList.getLastOrder().getClientNumber());
+                        attributes.setCategoryId(Integer.valueOf(digitalNumberList.getLastOrder().getCategoryId()));
+                        attributes.setOperatorId(Integer.valueOf(digitalNumberList.getLastOrder().getOperatorId()));
+                        attributes.setProductId(Integer.valueOf(digitalNumberList.getLastOrder().getLastProduct()));
+                        lastOrder.setAttributes(attributes);
 
-                    view.renderLastOrder(lastOrder);
-                } else if (getLastClientNumberTyped(categoryId) != null){
-                    view.renderLastTypedClientNumber();
+                        view.renderLastOrder(lastOrder);
+                    } else if (getLastClientNumberTyped(categoryId) != null) {
+                        view.renderLastTypedClientNumber();
+                    }
                 }
             }
         };

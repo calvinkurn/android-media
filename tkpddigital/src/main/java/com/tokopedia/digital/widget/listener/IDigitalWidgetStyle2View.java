@@ -16,7 +16,7 @@ public interface IDigitalWidgetStyle2View extends BaseDigitalWidgetView {
 
     void renderEmptyProduct(String message);
 
-    void renderOperators(List<Operator> operatorModels);
+    void renderOperators(List<Operator> operatorModels, boolean b);
 
     void renderEmptyOperators(String message);
 

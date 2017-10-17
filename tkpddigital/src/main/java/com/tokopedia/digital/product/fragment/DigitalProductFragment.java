@@ -444,7 +444,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 startShowCaseUSSD();
             }
         }
-
     }
 
     @Override
@@ -843,11 +842,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     );
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
-                if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
-                    String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
-                    if (!TextUtils.isEmpty(message)) {
-                        showToastMessage(message);
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                        String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+                        if (!TextUtils.isEmpty(message)) {
+                            showToastMessage(message);
+                        }
                     }
+                } else {
+                    presenter.processGetCategoryAndBannerData();
                 }
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER:
@@ -1000,8 +1003,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     for (Product product : operator.getProductList()) {
                         if (orderClientNumber.getProductId() != null) {
                             if (orderClientNumber.getProductId().equals(product.getProductId())) {
-                                Product orderProduct = product;
-                                digitalProductView.renderUpdateProductSelected(orderProduct);
+                                digitalProductView.renderUpdateProductSelected(product);
                             }
                         }
                     }

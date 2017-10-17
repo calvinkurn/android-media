@@ -125,6 +125,7 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment<ISearchNu
 
         if (clientNumber != null) {
             editTextSearchNumber.setText(clientNumber);
+            editTextSearchNumber.setSelection(clientNumber.length());
         }
         numberListAdapter = new NumberListAdapter(this, clientNumbers);
         rvNumberList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -141,6 +142,11 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment<ISearchNu
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    btnClearNumber.setVisibility(View.VISIBLE);
+                } else {
+                    btnClearNumber.setVisibility(View.GONE);
+                }
                 filterData(s.toString());
             }
 
