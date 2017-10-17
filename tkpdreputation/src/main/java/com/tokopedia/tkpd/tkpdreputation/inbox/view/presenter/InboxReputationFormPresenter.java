@@ -155,7 +155,7 @@ public class InboxReputationFormPresenter
 
     @Override
     public void setFormToCache(int position, SendReviewPass sendReviewPass) {
-        setReviewFormCacheUseCase.execute(SetReviewFormCacheUseCase.getParam(
+        setReviewFormCacheUseCase.executeSync(SetReviewFormCacheUseCase.getParam(
                 sendReviewPass));
     }
 
