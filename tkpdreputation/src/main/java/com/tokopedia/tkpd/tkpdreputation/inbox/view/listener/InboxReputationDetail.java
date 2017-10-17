@@ -80,6 +80,8 @@ public interface InboxReputationDetail {
         void onSmoothScrollToReplyView(int adapterPosition);
 
         void onGoToProfile(int reviewerId);
+
+        void onGoToShopInfo(int shopId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

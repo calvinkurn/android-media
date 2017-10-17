@@ -441,6 +441,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onGoToShopInfo(int shopId) {
+        Intent intent = new Intent(MainApplication.getAppContext(), ShopInfoActivity.class);
+        intent.putExtras(ShopInfoActivity.createBundle(String.valueOf(shopId), ""));
+        startActivity(intent);
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, passModel);

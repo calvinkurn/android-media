@@ -84,7 +84,7 @@ public class InboxReputationDetailItemViewHolder extends
     ImageView sendReplyButton;
 
     public InboxReputationDetailItemViewHolder(View itemView,
-                                               InboxReputationDetail.View viewListener) {
+                                               final InboxReputationDetail.View viewListener) {
         super(itemView);
         context = itemView.getContext();
         this.viewListener = viewListener;
@@ -322,6 +322,12 @@ public class InboxReputationDetailItemViewHolder extends
         ReviewResponseViewModel reviewResponseViewModel = element.getReviewResponseViewModel();
         sellerName.setText(MethodChecker.fromHtml(getFormattedReplyName(reviewResponseViewModel
                 .getResponseBy())));
+        sellerName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToShopInfo(element.getShopId());
+            }
+        });
         sellerReplyTime.setText(getFormattedTime(reviewResponseViewModel.getResponseCreateTime()));
         sellerReply.setText(MethodChecker.fromHtml(reviewResponseViewModel.getResponseMessage()));
         sellerAddReplyEditText.setText("");
