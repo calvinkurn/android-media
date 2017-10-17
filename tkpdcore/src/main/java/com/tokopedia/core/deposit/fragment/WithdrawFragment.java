@@ -444,10 +444,15 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @Override
     public void finishLoading() {
+        if (!isAdded()) {
+            return;
+        }
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
-        loadingLayout.setVisibility(View.GONE);
+        if (loadingLayout != null) {
+            loadingLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override

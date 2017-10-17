@@ -67,4 +67,9 @@ public class CatalogPickerActivity extends BaseSimpleActivity implements HasComp
                 .catalogPickerModule(new CatalogPickerModule())
                 .build();
     }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
 }
