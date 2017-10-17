@@ -1,12 +1,7 @@
 import React from 'react'
 import { View, Text, Image, FlatList, StyleSheet, Dimensions } from 'react-native'
-//import { icons } from '../../../icons/index'
 
 const { width } = Dimensions.get('window')
-
-// // Icon from Firebase
-// const iconCheck = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-gcheck.png?alt=media&token=a0a1e5de-c41e-4bd8-aa7e-9e8bfa98d518'
-// const iconUSP = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/icon-usp.png?alt=media&token=410c02e3-30c4-41f8-a24c-faf425286131'
 
 
 // Get Width of View Component

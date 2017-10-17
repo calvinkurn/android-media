@@ -11,9 +11,8 @@ import {
   Text,
   Linking,
 } from 'react-native'
-
 import Swiper from 'react-native-swiper'
-// import Carousel from 'react-native-looped-carousel'
+
 
 const { height, width } = Dimensions.get('window')
 
