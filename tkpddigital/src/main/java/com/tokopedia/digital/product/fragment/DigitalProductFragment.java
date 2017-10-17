@@ -407,20 +407,21 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void renderCheckPulsaBalanceData(PulsaBalance pulsaBalance) {
-        DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this, pulsaBalance);
+    public void renderCheckPulsaBalanceData() {
+        DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this);
     }
 
     @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
-    public void renderCheckPulsaBalance(PulsaBalance pulsaBalance) {
+    public void renderCheckPulsaBalance() {
         holderCheckBalance.removeAllViews();
         for (int i = 0; i < 2; i++) {
-            String  phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
             Operator operator = presenter.getSelectedUssdOperator(i);
+            if (operator.getName() == null || "".equalsIgnoreCase(operator.getName())) {
+                continue;
+            }
+            String phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
             if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                     operator, phoneNumber)) {
-                phoneNumber = "";
-                presenter.storeUssdPhoneNumber(i, phoneNumber);
                 phoneNumber = presenter.getDeviceMobileNumber(i);
                 if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                         operator, phoneNumber)) {
@@ -681,6 +682,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         } else {
             selectedSimIndex = simPosition;
             selectedCheckPulsaBalanceView = checkPulsaBalanceView;
+            Operator operator = presenter.getSelectedUssdOperator(simPosition);
+            String phoneNumber = presenter.getUssdPhoneNumberFromCache(simPosition);
+            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                    operator, phoneNumber)) {
+                presenter.storeUssdPhoneNumber(simPosition, "");
+            }
             DigitalProductFragmentPermissionsDispatcher.checkBalanceByUSSDWithCheck(this, simPosition, ussdCode);
         }
     }
@@ -1123,10 +1130,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             Operator operator = presenter.getSelectedUssdOperator(selectedSimIndex);
             String phoneNumber = presenter.getUssdPhoneNumberFromCache(selectedSimIndex);
 
+            if (operator.getName() == null || "".equalsIgnoreCase(operator.getName())) {
+                return;
+            }
             if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                     operator, phoneNumber)) {
-                phoneNumber = "";
-                presenter.storeUssdPhoneNumber(selectedSimIndex, phoneNumber);
                 phoneNumber = presenter.getDeviceMobileNumber(selectedSimIndex);
 
                 if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
