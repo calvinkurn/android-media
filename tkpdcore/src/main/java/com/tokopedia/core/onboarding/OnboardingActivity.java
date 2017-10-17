@@ -2,10 +2,14 @@ package com.tokopedia.core.onboarding;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.SessionHandler;
@@ -56,6 +60,7 @@ public class OnboardingActivity extends BaseOnboardingActivity {
         showStatusBar(false);
         setProgressButtonEnabled(true);
         showSkipButton(false);
+        ScreenTracking.screen(AppScreen.SCREEN_ONBOARDING+1);
     }
 
     @Override
@@ -91,6 +96,7 @@ public class OnboardingActivity extends BaseOnboardingActivity {
 //            this.setProgressButtonEnabled(true);
 //
 //        }
+        ScreenTracking.screen(AppScreen.SCREEN_ONBOARDING+(pager.getCurrentItem()+1));
     }
 
     @Override
