@@ -42,7 +42,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -58,6 +57,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
@@ -415,17 +415,19 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void renderCheckPulsaBalance(PulsaBalance pulsaBalance) {
         holderCheckBalance.removeAllViews();
         for (int i = 0; i < 2; i++) {
-            String phoneNumber = presenter.getDeviceMobileNumber(i);
+            String  phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
             Operator operator = presenter.getSelectedUssdOperator(i);
-            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
-                    operator, phoneNumber)) {
-                phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
-            }
             if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                     operator, phoneNumber)) {
                 phoneNumber = "";
                 presenter.storeUssdPhoneNumber(i, phoneNumber);
+                phoneNumber = presenter.getDeviceMobileNumber(i);
+                if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                        operator, phoneNumber)) {
+                    phoneNumber = "";
+                }
             }
+
             String ussdCode = operator.getUssdCode();
             if (ussdCode != null && !"".equalsIgnoreCase(ussdCode.trim())) {
                 CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
@@ -1125,9 +1127,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     operator, phoneNumber)) {
                 phoneNumber = "";
                 presenter.storeUssdPhoneNumber(selectedSimIndex, phoneNumber);
-            } else {
-                selectedCheckPulsaBalanceView.renderData(selectedSimIndex, operator.getUssdCode(), phoneNumber);
+                phoneNumber = presenter.getDeviceMobileNumber(selectedSimIndex);
+
+                if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                        operator, phoneNumber)) {
+                    phoneNumber = "";
+                }
             }
+            selectedCheckPulsaBalanceView.renderData(selectedSimIndex, operator.getUssdCode(), phoneNumber);
         }
     }
 

@@ -12,6 +12,7 @@
 
         <com.tokopedia.design.text.TkpdTextInputLayout
             android:id="@+id/til_amount"
+            android:layout_margin="@dimen/margin_small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:errorTextAppearance="@style/error_appearance"

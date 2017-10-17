@@ -2,7 +2,6 @@ package com.tokopedia.discovery.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -45,9 +44,11 @@ import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.intermediary.Child;
 import com.tokopedia.core.network.entity.intermediary.SimpleCategory;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.share.ShareActivity;
-import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.discovery.BuildConfig;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
@@ -56,7 +57,6 @@ import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.fragment.ShopFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.presenter.BrowsePresenter;
@@ -64,8 +64,6 @@ import com.tokopedia.discovery.presenter.BrowsePresenterImpl;
 import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.view.BrowseProductParentView;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -615,7 +613,15 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public void close() {
-        finish();
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            finish();
+        } else if (isTaskRoot()) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        } else {
+            finish();
+        }
     }
 
     @Override
@@ -794,7 +800,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void onBackPressed() {
         if (discoverySearchView.isSearchOpen()) {
             if (discoverySearchView.isFinishOnClose()) {
-                finish();
+               // finish();
+                close();
             } else {
                 discoverySearchView.closeSearch();
             }

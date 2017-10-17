@@ -111,4 +111,9 @@ public class PaymentPassData implements Parcelable {
                     return new PaymentPassData[size];
                 }
             };
+
+    @Override
+    public String toString() {
+        return "Payment ID = " + paymentId + " | " + "Redirect URL = " + redirectUrl;
+    }
 }

@@ -21,8 +21,6 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailListener;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailPresenter;
 
-import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
-
 /**
  * Created by zulfikarrahman on 8/14/17.
  */
@@ -56,7 +54,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
-        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 refreshAd();
@@ -139,7 +137,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
     @Override
     public void onLoadAdError() {
         hideLoading();
-        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 refreshAd();
