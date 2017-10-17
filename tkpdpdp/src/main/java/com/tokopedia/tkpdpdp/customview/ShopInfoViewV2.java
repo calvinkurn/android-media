@@ -26,6 +26,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
+import static com.tokopedia.core.product.model.productdetail.ProductShopInfo.SHOP_OFFICIAL_VALUE;
+
 
 /**
  * @author Angga.Prasetiyo on 27/10/2015.
@@ -101,7 +103,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
         tvShopName.setText(MethodChecker.fromHtml(data.getShopInfo().getShopName()));
-        if (data.getShopInfo().getShopIsOfficial()==1) {
+        if (data.getShopInfo().getShopIsOfficial()==SHOP_OFFICIAL_VALUE) {
             ivLocation.setImageDrawable(ContextCompat.getDrawable(getContext(),com.tokopedia.core.R.drawable.ic_official_store_badge));
             tvShopLoc.setText(getResources().getString(com.tokopedia.core.R.string.authorized));
         } else {

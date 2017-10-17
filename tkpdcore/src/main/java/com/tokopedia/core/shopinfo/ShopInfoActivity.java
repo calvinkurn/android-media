@@ -74,6 +74,7 @@ import java.net.URLEncoder;
 import java.util.List;
 
 import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
+import static com.tokopedia.core.shopinfo.models.shopmodel.Info.SHOP_OFFICIAL_VALUE;
 
 /**
  * Created by UNKNOWN on UNKNOWN DATE TIME
@@ -593,7 +594,7 @@ public class ShopInfoActivity extends BaseActivity
         ImageHandler.loadImageLucky2(this, holder.luckyShop, shopModel.info.shopLucky);
         setFreeReturn(holder, shopModel.info);
         holder.shopName.setText(MethodChecker.fromHtml(shopModel.info.shopName));
-        if (shopModel.info.shopIsOfficial == 1) {
+        if (shopModel.info.shopIsOfficial == SHOP_OFFICIAL_VALUE) {
             holder.location.setText(getResources().getString(R.string.authorized));
         } else {
             holder.location.setText(shopModel.info.shopLocation);
