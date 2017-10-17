@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.util;
+package com.tokopedia.core.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,7 +52,7 @@ public class TimeConverter {
             }
         } catch (ParseException e) {
             e.printStackTrace();
-            return "";
+            return postTime;
         }
 
     }
@@ -63,5 +63,32 @@ public class TimeConverter {
 
     private static long getDifference(Date currentTime, Date postDate) {
         return (currentTime.getTime() - postDate.getTime()) / 1000;
+    }
+
+    public static String generateTimeYearly(String postTime) {
+        Locale localeID = new Locale("in", "ID");
+        try {
+            SimpleDateFormat sdfDay = new SimpleDateFormat("dd MMM", localeID);
+            SimpleDateFormat sdfYear = new SimpleDateFormat("dd MMM yyyy", localeID);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", localeID);
+            Date postDate = sdf.parse(postTime);
+            Date currentTime = new Date();
+
+            Calendar calPostDate = Calendar.getInstance();
+            calPostDate.setTime(postDate);
+
+            Calendar calCurrentTime = Calendar.getInstance();
+            calCurrentTime.setTime(currentTime);
+
+            if (calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR))
+                return sdfDay.format(postDate);
+            else {
+                return sdfYear.format(postDate);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return postTime;
+        }
     }
 }

@@ -20,6 +20,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
@@ -29,11 +30,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageU
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ReviewResponseViewModel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * @author by nisie on 8/19/17.
@@ -49,9 +47,6 @@ public class InboxReputationDetailItemViewHolder extends
     private static final String BY = "Oleh";
 
     private final InboxReputationDetail.View viewListener;
-    private Locale locale = new Locale("in", "ID");
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", locale);
-    private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM ", locale);
     boolean isReplyOpened = false;
 
     TextView productName;
@@ -382,18 +377,14 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
     private String getFormattedTime(String reviewTime) {
-        try {
-            return newSdf.format(sdf.parse(reviewTime.replace("WIB", "")));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return reviewTime;
-        }
+        return TimeConverter.generateTimeYearly(reviewTime.replace("WIB", ""));
     }
 
     private Spanned getReview(String review) {
         if (MethodChecker.fromHtml(review).length() > MAX_CHAR) {
             String subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR);
-            return MethodChecker.fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
+            return MethodChecker
+                    .fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
                     + MORE_DESCRIPTION);
         } else {
             return MethodChecker.fromHtml(review);

@@ -13,6 +13,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.design.reputation.ReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
@@ -42,9 +43,6 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private TextView date;
     private TextView action;
     private ImageView unreadNotification;
-    private Locale locale = new Locale("in", "ID");
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", locale);
-    private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM", locale);
 
     public InboxReputationViewHolder(View itemView, InboxReputation.View viewListener) {
         super(itemView);
@@ -59,6 +57,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         action = (TextView) itemView.findViewById(R.id.action);
         unreadNotification = (ImageView) itemView.findViewById(R.id.unread_notif);
         this.viewListener = viewListener;
+
 
     }
 
@@ -100,12 +99,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     }
 
     private String getDate(String createTime) {
-        try {
-            return newSdf.format(sdf.parse(createTime));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return createTime;
-        }
+       return TimeConverter.generateTimeYearly(createTime);
     }
 
 
