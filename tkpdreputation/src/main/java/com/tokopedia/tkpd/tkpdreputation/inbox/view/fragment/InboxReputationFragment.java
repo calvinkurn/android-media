@@ -380,14 +380,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         adapter.clearList();
         if (GlobalConfig.isSellerApp()
                 || getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
-            adapter.showEmpty(getString(R.string.inbox_reputation_seller_empty_title),
-                    getString(R.string.see_my_shop),
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            goToMyShop();
-                        }
-                    });
+            adapter.showEmpty(getString(R.string.inbox_reputation_seller_empty_title));
         } else {
             adapter.showEmpty(getString(R.string.inbox_reputation_empty_title),
                     getString(R.string.inbox_reputation_empty_button),
@@ -399,15 +392,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     });
         }
         adapter.notifyDataSetChanged();
-    }
-
-    private void goToMyShop() {
-        if (sessionHandler != null && TextUtils.isEmpty(sessionHandler.getShopID())) {
-            Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-            intent.putExtras(ShopInfoActivity.createBundle(sessionHandler.getShopID(), ""));
-            startActivity(intent);
-            getActivity().finish();
-        }
     }
 
     private void goToHotlist() {
