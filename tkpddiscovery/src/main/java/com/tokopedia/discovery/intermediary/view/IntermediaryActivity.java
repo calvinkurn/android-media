@@ -2,12 +2,15 @@ package com.tokopedia.discovery.intermediary.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -101,8 +104,8 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     @Override
     protected void setupBundlePass(Bundle extras) {
         departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
-        if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME)!=null
-                && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length()>0)
+        if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME) != null
+                && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length() > 0)
             categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
     }
 
@@ -120,6 +123,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     protected void initView() {
         ButterKnife.bind(this);
         toolbar.setTitle(categoryName);
+        setLightToolbarStyle();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -147,7 +151,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         if (fragment == null) {
             fragment = IntermediaryFragment.createInstance(departmentId);
         } else if (fragment instanceof IntermediaryFragment) {
-            ((IntermediaryFragment)fragment).setDepartmentId(departmentId);
+            ((IntermediaryFragment) fragment).setDepartmentId(departmentId);
         }
         inflateFragment(
                 fragment,
@@ -215,5 +219,30 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     public FrameLayout getFrameLayout() {
         return frameLayout;
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    private void setLightToolbarStyle() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        }else {
+            toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
+        }
+        Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
+        drawable.setBounds(5, 5, 5, 5);
+        toolbar.setOverflowIcon(drawable);
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(
+                    com.tokopedia.core.R.drawable.ic_webview_back_button
+            );
+
+
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
     }
 }

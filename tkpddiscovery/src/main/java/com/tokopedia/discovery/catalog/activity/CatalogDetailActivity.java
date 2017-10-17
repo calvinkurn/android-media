@@ -151,4 +151,9 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

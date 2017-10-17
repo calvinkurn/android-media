@@ -243,4 +243,9 @@ public class SimpleHomeActivity extends TActivity
             }
         }
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }
