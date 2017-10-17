@@ -114,7 +114,8 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                 itemDomain.getProductData().getProductStatus() == PRODUCT_IS_DELETED,
                 !TextUtils.isEmpty(itemDomain.getReviewData().getReviewUpdateTime()
                         .getDateTimeFmt1()),
-                reviewDomain.getShopData().getShopName()
+                reviewDomain.getShopData().getShopName(),
+                reviewDomain.getUserData().getUserId()
         );
     }
 

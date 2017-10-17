@@ -39,7 +39,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationDetai
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactoryImpl;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail.InboxReputationDetailHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShareReviewDialog;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationDetailPresenter;
@@ -432,6 +431,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onSmoothScrollToReplyView(int adapterPosition) {
         listProduct.smoothScrollToPosition(adapterPosition);
+    }
+
+    @Override
+    public void onGoToProfile(int reviewerId) {
+        startActivity(
+                PeopleInfoNoDrawerActivity.createInstance(getActivity(), String.valueOf(reviewerId))
+        );
     }
 
     @Override

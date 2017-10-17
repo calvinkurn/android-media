@@ -49,8 +49,9 @@ public class InboxReputationDetailItemViewHolder extends
     private static final String BY = "Oleh";
 
     private final InboxReputationDetail.View viewListener;
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", Locale.getDefault());
-    private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM ", Locale.getDefault());
+    private Locale locale = new Locale("in", "ID");
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", locale);
+    private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM ", locale);
     boolean isReplyOpened = false;
 
     TextView productName;
@@ -218,6 +219,13 @@ public class InboxReputationDetailItemViewHolder extends
 
             reviewerName.setText(MethodChecker.fromHtml(getReviewerNameText(element
                     .getReviewerName())));
+            reviewerName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewListener.onGoToProfile(element.getReviewerId());
+                }
+            });
+
             String time;
 
             if (element.isReviewIsEdited()) {

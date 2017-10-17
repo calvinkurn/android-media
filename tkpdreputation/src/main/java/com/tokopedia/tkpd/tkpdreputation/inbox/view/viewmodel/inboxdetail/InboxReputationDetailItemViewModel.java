@@ -23,6 +23,7 @@ public class InboxReputationDetailItemViewModel implements
     private final ReviewResponseViewModel reviewResponseViewModel;
     private final int reputationId;
     private final boolean reviewIsEdited;
+    private final int reviewerId;
     String productId;
     String productName;
     String productAvatar;
@@ -56,7 +57,8 @@ public class InboxReputationDetailItemViewModel implements
                                               boolean reviewIsAnonymous,
                                               boolean isProductDeleted,
                                               boolean reviewIsEdited,
-                                              String revieweeName) {
+                                              String revieweeName,
+                                              int reviewerId) {
         this.reputationId = reputationId;
         this.productId = productId;
         this.productName = productName;
@@ -79,6 +81,7 @@ public class InboxReputationDetailItemViewModel implements
         this.isProductDeleted = isProductDeleted;
         this.reviewIsEdited = reviewIsEdited;
         this.revieweeName = revieweeName;
+        this.reviewerId = reviewerId;
     }
 
     public String getReviewId() {
@@ -184,5 +187,9 @@ public class InboxReputationDetailItemViewModel implements
 
     public String getRevieweeName() {
         return revieweeName;
+    }
+
+    public int getReviewerId() {
+        return reviewerId;
     }
 }

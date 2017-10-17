@@ -39,8 +39,9 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private TextView date;
     private TextView action;
     private ImageView unreadNotification;
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", Locale.getDefault());
-    private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM", Locale.getDefault());
+    private Locale locale = new Locale("in", "ID");
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", locale);
+    private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM", locale);
     private LabelUtils labelUtils;
 
     public InboxReputationViewHolder(View itemView, InboxReputation.View viewListener) {
