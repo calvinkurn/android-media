@@ -219,6 +219,11 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             tvSolutionTitle.setTextColor(context.getResources().getColor(R.color.black_70));
             ivChooseProductProblem.setAlpha(1f);
             ivSolution.setAlpha(0.7f);
+            tvUploadProve.setText(context.getResources()
+                    .getString(R.string.string_upload_prove_information));
+            ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(),
+                    R.drawable.chevron_thin_right));
+            ivUploadProve.setAlpha(0.38f);
         } else {
             ffSolution.setEnabled(false);
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(),
