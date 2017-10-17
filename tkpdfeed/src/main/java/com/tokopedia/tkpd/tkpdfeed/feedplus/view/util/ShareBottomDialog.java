@@ -25,8 +25,8 @@ import com.tokopedia.core.inboxreputation.model.ShareItem;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.ShareFeedAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
@@ -135,13 +135,17 @@ public class ShareBottomDialog {
 
     private String getTrackingLabel(String method) {
         if (fragmentV4 != null && fragmentV4 instanceof FeedPlusFragment) {
-            return FeedTrackingEventLabel.Click.SHARE
+            return shareModel.getPageRowNumber()
+                    + " "
+                    + FeedTrackingEventLabel.Click.SHARE
                     + " "
                     + FeedTrackingEventLabel.PAGE_FEED
                     + " / "
                     + method;
         } else if (fragmentV4 != null && fragmentV4 instanceof FeedPlusDetailFragment) {
-            return FeedTrackingEventLabel.Click.SHARE
+            return shareModel.getPageRowNumber()
+                    + " "
+                    + FeedTrackingEventLabel.Click.SHARE
                     + " "
                     + FeedTrackingEventLabel.PAGE_PRODUCT_LIST
                     + " / "

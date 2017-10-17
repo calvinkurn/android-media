@@ -57,6 +57,9 @@ public class HadesService extends IntentService implements DataReceiver {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        if (intent == null) {
+            return;
+        }
         IS_HADES_RUNNING = true;
         State = intent.getIntExtra(TYPE, 0);
         Log.i("HADES TAG", "LAGI JALAAAN NEEEH");

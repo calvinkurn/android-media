@@ -116,4 +116,9 @@ public class HistoryActionActivity extends BasePresenterActivity<HistoryAction>
                 .resolutionDetailModule(new ResolutionDetailModule())
                 .build();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

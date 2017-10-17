@@ -89,4 +89,9 @@ public class TokoCashWebViewActivity extends BasePresenterActivity
     public void onWebViewProgressLoad() {
 
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

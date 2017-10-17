@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class DataResponse<T> {
 
-    @SerializedName("data")
+    @SerializedName(value="data", alternate={"result"})
     @Expose
     private T data;
 

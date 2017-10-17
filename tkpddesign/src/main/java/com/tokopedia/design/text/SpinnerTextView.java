@@ -166,8 +166,19 @@ public class SpinnerTextView extends BaseCustomView {
         return values[selectionIndex].toString();
     }
 
+    public String getSpinnerEntry() {
+        if (values == null || selectionIndex < 0) {
+            return String.valueOf(DEFAULT_INDEX_NOT_SELECTED);
+        }
+        return entries[selectionIndex].toString();
+    }
+
     public String getSpinnerValue(int position) {
         return values[position].toString();
+    }
+
+    public String getSpinnerEntry(int position) {
+        return entries[position].toString();
     }
 
     public void setSpinnerPosition(int position) {

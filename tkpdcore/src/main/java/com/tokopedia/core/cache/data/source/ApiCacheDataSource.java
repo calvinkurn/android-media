@@ -1,259 +1,97 @@
 package com.tokopedia.core.cache.data.source;
 
-import android.util.Log;
-
-import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.sql.language.Where;
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.cache.data.source.cache.CacheApiVersionCache;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
-import com.tokopedia.core.cache.data.source.db.CacheApiData_Table;
+import com.tokopedia.core.cache.data.source.db.CacheApiDataManager;
 import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist;
-import com.tokopedia.core.cache.data.source.db.CacheApiWhitelist_Table;
-import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
-import java.util.Calendar;
-import java.util.List;
+import java.util.Collection;
 
-import okhttp3.Headers;
-import okhttp3.MediaType;
+import javax.inject.Inject;
+
 import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okhttp3.internal.http.HttpHeaders;
-import okio.Buffer;
-import okio.BufferedSource;
-import okio.GzipSource;
-import okio.Okio;
 import rx.Observable;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by normansyahputa on 8/9/17.
  */
 
 public class ApiCacheDataSource {
-    public static final long DIVIDE_FOR_SECONDS = 1000L;
-    public static final String HTTPS = "https://";
-    public static final String COM_WITH_SLASH = ".com/";
-    public static final String COM1 = ".com";
-    private static final String TAG = "CacheHelper";
-    private static final Charset UTF8 = Charset.forName("UTF-8");
-    private long maxContentLength = 250000L;
 
+    private CacheApiVersionCache cacheApiVersionCache;
+    private CacheApiDataManager cacheApiDataManager;
 
-    public ApiCacheDataSource() {
-
+    @Inject
+    public ApiCacheDataSource(CacheApiVersionCache cacheApiVersionCache, CacheApiDataManager cacheApiDataManager) {
+        this.cacheApiVersionCache = cacheApiVersionCache;
+        this.cacheApiDataManager = cacheApiDataManager;
     }
 
-    public static String generateCacheHost(String host) {
-        return (host.replace(HTTPS, "").replace(COM_WITH_SLASH, COM1));
-    }
-
-    public static String generateCachePath(String path) {
-        if (!path.startsWith("/")) {
-            return "/" + path;
-        } else {
-            return path;
-        }
-    }
-
-    public Observable<Boolean> addWhiteListData(CacheApiWhitelist cacheApiWhitelist) {
-        try {
-            if (cacheApiWhitelist == null) {
-                return Observable.just(false);
-            }
-
-            cacheApiWhitelist.save();
-
-            return Observable.just(true);
-        } catch (Exception e) {
-            return Observable.just(false);
-        }
-    }
-
-    public CacheApiWhitelist from(String host, String path, long expiredTime) {
-        CacheApiWhitelist cacheApiWhitelist = new CacheApiWhitelist();
-        cacheApiWhitelist.setHost(host);
-        cacheApiWhitelist.setPath(path);
-        cacheApiWhitelist.setExpiredTime(expiredTime);
-
-        return cacheApiWhitelist;
-    }
-
-    public boolean queryFrom(String host, String path) {
-        return queryFromRaw(host, path) != null;
-    }
-
-    public CacheApiWhitelist queryFromRaw(String host, String path) {
-        return new Select()
-                .from(CacheApiWhitelist.class)
-                .where(CacheApiWhitelist_Table.host.eq(host))
-                .and(CacheApiWhitelist_Table.path.eq(path))
-                .querySingle();
-    }
-
-    public boolean isInWhiteList(final String host, final String path) {
-        CacheApiWhitelist cacheApiWhitelist = queryFromRaw(host, path);
-        return cacheApiWhitelist != null;
-    }
-
-    public CacheApiData queryDataFrom(String host, String path, String param) {
-        Where<CacheApiData> and = new Select()
-                .from(CacheApiData.class)
-                .where(CacheApiData_Table.host.eq(host))
-                .and(CacheApiData_Table.path.eq(path))
-                .and(CacheApiData_Table.requestParam.eq(param));
-        Log.d(TAG, "queryDataFrom : " + and
-                .toString());
-        return and.querySingle();
-    }
-
-    public List<CacheApiData> queryDataFrom(String host, String path) {
-        Where<CacheApiData> and = new Select()
-                .from(CacheApiData.class)
-                .where(CacheApiData_Table.host.eq(host))
-                .and(CacheApiData_Table.path.eq(path));
-        Log.d(TAG, "queryDataFrom : " + and
-                .toString());
-        return and.queryList();
-    }
-
-    public boolean delete(String host, String path) {
-        new Delete()
-                .from(CacheApiData.class)
-                .where(CacheApiData_Table.host.eq(host))
-                .and(CacheApiData_Table.path.eq(path))
-                .execute();
-        return true;
-    }
-
-    public void clearTimeout() {
-        long currentTime = System.currentTimeMillis() / DIVIDE_FOR_SECONDS;
-        List<CacheApiData> cacheApiDatas = new Select().from(CacheApiData.class).where(CacheApiData_Table.expiredDate.lessThan(currentTime)).queryList();
-        for (int i = 0; i < cacheApiDatas.size(); i++) {
-            cacheApiDatas.get(i).delete();
-        }
-    }
-
-    public void updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response) {
-        Calendar instance = Calendar.getInstance();
-        instance.add(Calendar.SECOND, (int) cacheApiWhitelist.getExpiredTime());
-        cacheApiData.setResponseDate(System.currentTimeMillis() / DIVIDE_FOR_SECONDS);
-        cacheApiData.setExpiredDate(instance.getTimeInMillis() / DIVIDE_FOR_SECONDS);
-
-        try {
-            putResponseBody(cacheApiData, response);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        cacheApiData.save();
-    }
-
-    private void putResponseBody(CacheApiData cacheApiData, Response response) throws IOException {
-        ResponseBody responseBody = response.body();
-        if (HttpHeaders.hasBody(response)) {
-            BufferedSource source = getNativeSource(response);
-            source.request(Long.MAX_VALUE);
-            Buffer buffer = source.buffer();
-            Charset charset = UTF8;
-            MediaType contentType = responseBody.contentType();
-            if (contentType != null) {
-                try {
-                    charset = contentType.charset(UTF8);
-                } catch (UnsupportedCharsetException e) {
-//                    update(transaction, transactionUri);
+    public Observable<Boolean> bulkInsert(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
+        return cacheApiVersionCache.isWhiteListVersionUpdated().flatMap(new Func1<Boolean, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(Boolean aBoolean) {
+                CommonUtils.dumper(String.format("Need to update white list: %b", aBoolean));
+                if (!aBoolean) {
+                    return Observable.just(false);
                 }
+                return Observable.zip(deleteAllCacheData(), cacheApiDataManager.deleteAllWhiteListData(), new Func2<Boolean, Boolean, Boolean>() {
+                    @Override
+                    public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
+                        CommonUtils.dumper(String.format("Delete white list and cache finished"));
+                        return true;
+                    }
+                }).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Boolean aBoolean) {
+                        return cacheApiDataManager.insertWhiteList(cacheApiDatas).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                            @Override
+                            public Observable<Boolean> call(Boolean aBoolean) {
+                                if (!aBoolean) {
+                                    return Observable.just(false);
+                                }
+                                return cacheApiVersionCache.updateCacheWhiteListVersion();
+                            }
+                        });
+                    }
+                });
             }
-            if (isPlaintext(buffer)) {
-                cacheApiData.setResponseBody(readFromBuffer(buffer.clone(), charset));
-            }
-//            else {
-//                transaction.setResponseBodyIsPlainText(false);
-//            }
-//            transaction.setResponseContentLength(buffer.size());
-        }
+        });
     }
 
-    private String readFromBuffer(Buffer buffer, Charset charset) {
-        long bufferSize = buffer.size();
-        long maxBytes = Math.min(bufferSize, maxContentLength);
-        String body = "";
-        try {
-            body = buffer.readString(maxBytes, charset);
-        } catch (EOFException e) {
-//            body += context.getString(com.readystatesoftware.chuck.R.string.chuck_body_unexpected_eof);
-        }
-        if (bufferSize > maxContentLength) {
-//            body += context.getString(com.readystatesoftware.chuck.R.string.chuck_body_content_truncated);
-        }
-        return body;
+    public Observable<CacheApiWhitelist> getWhiteList(String host, String path) {
+        return cacheApiDataManager.getWhiteList(host, path);
     }
 
-    /**
-     * Returns true if the body in question probably contains human readable text. Uses a small sample
-     * of code points to detect unicode control characters commonly used in binary file signatures.
-     */
-    private boolean isPlaintext(Buffer buffer) {
-        try {
-            Buffer prefix = new Buffer();
-            long byteCount = buffer.size() < 64 ? buffer.size() : 64;
-            buffer.copyTo(prefix, 0, byteCount);
-            for (int i = 0; i < 16; i++) {
-                if (prefix.exhausted()) {
-                    break;
-                }
-                int codePoint = prefix.readUtf8CodePoint();
-                if (Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (EOFException e) {
-            return false; // Truncated UTF-8 sequence.
-        }
+    public Observable<Boolean> isInWhiteList(String host, String path) {
+        return cacheApiDataManager.isInWhiteList(host, path);
     }
 
-    private boolean bodyGzipped(Headers headers) {
-        String contentEncoding = headers.get("Content-Encoding");
-        return "gzip".equalsIgnoreCase(contentEncoding);
+    public Observable<String> getCachedResponse(String host, String path, String param) {
+        return cacheApiDataManager.getCachedResponse(host, path, param);
     }
 
-    private BufferedSource getNativeSource(Response response) throws IOException {
-        if (bodyGzipped(response.headers())) {
-            BufferedSource source = response.peekBody(maxContentLength).source();
-            if (source.buffer().size() < maxContentLength) {
-                return getNativeSource(source, true);
-            } else {
-                Log.w(TAG, "gzip encoded response was too long");
-            }
-        }
-        return response.body().source();
+    public Observable<Boolean> deleteAllCacheData() {
+        return cacheApiDataManager.deleteAllCacheData();
     }
 
-    private BufferedSource getNativeSource(BufferedSource input, boolean isGzipped) {
-        if (isGzipped) {
-            GzipSource source = new GzipSource(input);
-            return Okio.buffer(source);
-        } else {
-            return input;
-        }
+    public Observable<Boolean> deleteExpiredCachedData() {
+        return cacheApiDataManager.deleteExpiredCachedData();
     }
 
-    public boolean singleDataDelete(CacheApiDataDomain cacheApiDataDomain) {
-        if (cacheApiDataDomain == null) {
-            return false;
-        }
-
-        return delete(cacheApiDataDomain.getHost(), cacheApiDataDomain.getPath());
+    public Observable<Boolean> deleteCachedData(String host, String path) {
+        return cacheApiDataManager.deleteCachedData(host, path);
     }
 
-    public boolean singleDelete(CacheApiWhiteListDomain cacheApiWhiteListDomain) {
-        CacheApiWhitelist cacheApiWhitelist = queryFromRaw(cacheApiWhiteListDomain.getHost(), cacheApiWhiteListDomain.getPath());
-        cacheApiWhitelist.delete();
-        return false;
+    public Observable<Boolean> deleteWhiteList(String host, String path) {
+        return cacheApiDataManager.deleteWhiteList(host, path);
+    }
+
+    public Observable<Boolean> updateResponse(Response response, int expiredTime) {
+        return cacheApiDataManager.updateResponse(response, expiredTime);
     }
 }

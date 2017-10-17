@@ -74,7 +74,7 @@ public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.Vi
             ImageHandler.loadImageFit2(itemView.getContext(), mImageView,
                     folderModel.getImageModels().get(0).getPath());
             setMaxSelection(maxSelection);
-//            ImageHandler.LoadImageCustom(Uri.fromFile(new File(folderModel.getImageModels().get(0).getPath())).toString())
+//            ImageHandler.LoadImageCustom(Uri.fromFile(new File(folderModel.getImageModels().get(0).getPathFromMediaUri())).toString())
 //                    .fit()
 //                    .centerCrop().into(mImageView);
         }

@@ -34,13 +34,14 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
-import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
@@ -213,8 +214,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_ULASAN);
-                Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
-                startActivity(intent);
+                startActivity(new Intent(getContext(), InboxReputationActivity.class));
             }
         });
         shopScoreWidget.setOnClickListener(new View.OnClickListener() {
@@ -242,7 +242,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
     void onRefresh() {
-        if(!swipeRefreshLayout.isRefreshing()) {
+        if (!swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(true);
         }
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
@@ -277,13 +277,13 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_ERROR);
         headerShopInfoLoadingStateView.getContentView().setVisibility(View.INVISIBLE);
         View errorView = headerShopInfoLoadingStateView.getErrorView();
-        EmptyCardContentView emptyCardContentView= (EmptyCardContentView) errorView.findViewById(R.id.empty_card_content_view);
+        EmptyCardContentView emptyCardContentView = (EmptyCardContentView) errorView.findViewById(R.id.empty_card_content_view);
         emptyCardContentView.setTitleText(getString(R.string.msg_network_error_1));
         emptyCardContentView.setDescriptionText(getString(R.string.msg_network_error_2));
         emptyCardContentView.setContentText(null);
         swipeRefreshLayout.setRefreshing(false);
 
-        showSnackBarRetry();
+        showSnackBarRetry(ViewUtils.getErrorMessage(getActivity(), t));
     }
 
     @Override
@@ -295,6 +295,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         updateViewShopOpen(shopModel);
         shopScoreWidget.renderView(shopScoreViewModel);
         swipeRefreshLayout.setRefreshing(false);
+        hideSnackBarRetry();
     }
 
     private void updateReputation(final ShopModel shopModel) {
@@ -303,13 +304,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_SHOP_INFO,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_REPUTASI_TOKO);
-                startActivity(new Intent(getContext(),SellerReputationInfoActivity.class));
+                startActivity(new Intent(getContext(), SellerReputationInfoActivity.class));
             }
         });
         shopReputationView.setValue(shopModel.getStats().getShopBadgeLevel().getSet(),
                 shopModel.getStats().getShopBadgeLevel().getLevel(), shopModel.getStats().getShopReputationScore());
-        String formattedScore = KMNumbers.formatDecimalString(shopModel.getStats().getShopReputationScore(), false);
-        reputationPointTextView.setText(getString(R.string.dashboard_x_points, formattedScore));
+        reputationPointTextView.setText(getString(R.string.dashboard_x_points, shopModel.getStats().getShopReputationScore()));
     }
 
     private void updateTransaction(final ShopModel shopModel) {
@@ -338,7 +338,11 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private void updateShopInfo(ShopModel shopModel) {
         Info shopModelInfo = shopModel.info;
-        shopNameTextView.setText(shopModelInfo.getShopName());
+        String shopName = shopModelInfo.getShopName();
+        if (!TextUtils.isEmpty(shopName)) {
+            shopName = MethodChecker.fromHtml(shopName).toString();
+        }
+        shopNameTextView.setText(shopName);
         if (shopModelInfo.isGoldMerchant()) {
             gmIconImageView.setVisibility(View.VISIBLE);
             gmStatusTextView.setText(R.string.dashboard_label_gold_merchant);
@@ -389,7 +393,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private void showShopModerated(ShopModel shopModel) {
         shopWarningTickerView.setIcon(R.drawable.ic_moderasi);
         shopWarningTickerView.setTitle(getString(R.string.dashboard_your_shop_is_in_moderation));
-        shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopModel.closedInfo.reason) );
+        shopWarningTickerView.setDescription(getString(R.string.dashboard_reason_x, shopModel.closedInfo.reason));
         shopWarningTickerView.setTickerColor(ContextCompat.getColor(getContext(), R.color.yellow_ticker));
         shopWarningTickerView.setAction(null, null);
         shopWarningTickerView.setVisibility(View.VISIBLE);
@@ -442,7 +446,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public void onErrorGetNotifiction(String message) {
         // just show the content without the count
         footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
-        showSnackBarRetry();
+        showSnackBarRetry(message);
     }
 
     @Override
@@ -467,9 +471,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     }
 
-    private void showSnackBarRetry() {
+    private void showSnackBarRetry(String message) {
         if (snackBarRetry == null) {
-            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
                     DashboardFragment.this.onRefresh();
@@ -506,8 +510,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
     }
 
-    private void setCounterIfNotEmpty(LabelView labelView, int counter){
-        labelView.setContent(counter > 0? String.valueOf(counter) : null);
+    private void setCounterIfNotEmpty(LabelView labelView, int counter) {
+        labelView.setContent(counter > 0 ? String.valueOf(counter) : null);
     }
 
     @Override

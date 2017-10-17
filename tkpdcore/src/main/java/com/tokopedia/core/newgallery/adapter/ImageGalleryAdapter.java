@@ -96,7 +96,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
             mImageView.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageWidth));
             ImageHandler.loadImageFit2(itemView.getContext(), mImageView,
                    imageModel.getPath());
-//            ImageHandler.LoadImageCustom(Uri.fromFile(new File(imageModel.getPath())).toString())
+//            ImageHandler.LoadImageCustom(Uri.fromFile(new File(imageModel.getPathFromMediaUri())).toString())
 //                    .fit()
 //                    .centerCrop().into(mImageView);
 
