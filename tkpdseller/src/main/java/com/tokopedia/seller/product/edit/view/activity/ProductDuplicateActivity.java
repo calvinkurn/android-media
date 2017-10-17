@@ -43,6 +43,11 @@ public class ProductDuplicateActivity extends ProductDraftAddActivity {
     }
 
     @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
     protected boolean needDeleteCacheOnBack() {
         return true;
     }
