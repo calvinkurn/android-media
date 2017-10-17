@@ -24,6 +24,9 @@ import com.tokopedia.core.R;
 public class LabelUtils {
 
     public static final int DEFAULT_MAX_TEXT_LENGTH = 21;
+    public static final String COLOR_RED = "RED";
+    public static final String COLOR_YELLOW = "YELLOW";
+    public static final String COLOR_BLUE = "BLUE";
 
     private Context context;
     private TextView userName;
@@ -148,6 +151,15 @@ public class LabelUtils {
                 break;
             case "Administrator":
                 colorToParse = context.getResources().getColor(R.color.tkpd_dark_orange);
+                break;
+            case COLOR_RED:
+                colorToParse = context.getResources().getColor(R.color.red_500);
+                break;
+            case COLOR_YELLOW:
+                colorToParse = context.getResources().getColor(R.color.tkpd_dark_orange);
+                break;
+            case COLOR_BLUE:
+                colorToParse = context.getResources().getColor(R.color.label_buyer);
                 break;
         }
 

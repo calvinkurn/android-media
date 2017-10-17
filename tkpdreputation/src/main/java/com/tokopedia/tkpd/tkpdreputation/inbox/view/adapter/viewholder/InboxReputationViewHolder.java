@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.reputation.ReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -30,7 +31,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
 
     private View mainView;
     private TextView textDeadline;
-    private ImageView deadline;
+    private TextView deadline;
     private TextView invoice;
     private ImageView avatar;
     private TextView name;
@@ -40,13 +41,13 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
     private ImageView unreadNotification;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm", Locale.getDefault());
     private SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM", Locale.getDefault());
-
+    private LabelUtils labelUtils;
 
     public InboxReputationViewHolder(View itemView, InboxReputation.View viewListener) {
         super(itemView);
         mainView = itemView.findViewById(R.id.main_view);
         textDeadline = (TextView) itemView.findViewById(R.id.deadline_text);
-        deadline = (ImageView) itemView.findViewById(R.id.icon_deadline);
+        deadline = (TextView) itemView.findViewById(R.id.label_deadline);
         invoice = (TextView) itemView.findViewById(R.id.invoice);
         avatar = (ImageView) itemView.findViewById(R.id.avatar);
         name = (TextView) itemView.findViewById(R.id.name);
@@ -54,6 +55,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         date = (TextView) itemView.findViewById(R.id.date);
         action = (TextView) itemView.findViewById(R.id.action);
         unreadNotification = (ImageView) itemView.findViewById(R.id.unread_notif);
+        labelUtils = LabelUtils.getInstance(itemView.getContext(), deadline);
         this.viewListener = viewListener;
 
     }
@@ -146,16 +148,18 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
                 MainApplication.getAppContext().getString(R.string.deadline_suffix);
     }
 
-    private void setIconDeadline(ImageView deadline, String reputationDaysLeft) {
+    private void setIconDeadline(TextView deadline, String reputationDaysLeft) {
+        deadline.setText(reputationDaysLeft + " " + MainApplication.getAppContext().getString(R.string.deadline_suffix));
+
         switch (reputationDaysLeft) {
             case "1":
-                ImageHandler.loadImageWithId(deadline, R.drawable.one_day_left);
+                labelUtils.giveLabel(LabelUtils.COLOR_RED);
                 break;
             case "2":
-                ImageHandler.loadImageWithId(deadline, R.drawable.two_day_left);
+                labelUtils.giveLabel(LabelUtils.COLOR_YELLOW);
                 break;
-            case "3":
-                ImageHandler.loadImageWithId(deadline, R.drawable.three_day_left);
+            default:
+                labelUtils.giveLabel(LabelUtils.COLOR_BLUE);
                 break;
         }
     }

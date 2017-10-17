@@ -84,13 +84,16 @@
             android:src="@drawable/red_circle"
             android:visibility="gone"/>
 
-        <ImageView
-            android:id="@+id/icon_deadline"
+        <TextView
+            android:id="@+id/label_deadline"
             android:layout_width="@dimen/label_deadline_width"
             android:layout_height="@dimen/label_deadline_height"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/one_day_left"
+            android:textColor="@color/white"
+            android:textSize="@dimen/fontvvs"
+            tools:text="3 hari lagi"
+            android:gravity="center"
             android:visibility="visible"/>
 
     </RelativeLayout>
