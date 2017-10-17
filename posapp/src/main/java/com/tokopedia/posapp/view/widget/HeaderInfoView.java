@@ -14,8 +14,6 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.posapp.R;
-import com.tokopedia.posapp.view.widget.productquantity.ProductQuantity;
-import com.tokopedia.posapp.view.widget.productquantity.ProductQuantityView;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.text.SimpleDateFormat;
@@ -45,7 +43,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private TextView textDiscount;
     private LinearLayout linearDiscountTimerHolder;
     private TextView textDiscountTimer;
-    private ProductQuantityView productQuantityView;
 
     public HeaderInfoView(Context context) {
         super(context);
@@ -72,8 +69,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         textDiscount = (TextView) findViewById(R.id.text_discount);
         linearDiscountTimerHolder = (LinearLayout) findViewById(R.id.linear_discount_timer_holder);
         textDiscountTimer = (TextView) findViewById(R.id.text_discount_timer);
-        productQuantityView = findViewById(R.id.view_product_quantity);
-
     }
 
     @Override
@@ -104,7 +99,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             cashbackTextView.setText(getContext().getString(com.tokopedia.tkpdpdp.R.string.value_cashback)
                     .replace("X", data.getCashBack().getProductCashback()));
         }
-        productQuantityView.renderData(new ProductQuantity());
     }
 
     public void renderTempData(ProductPass productPass) {
@@ -188,13 +182,5 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         );
 
         return countdown;
-    }
-
-    public int getProductQuantity() {
-        if(productQuantityView != null) {
-            return productQuantityView.getProductQuantity();
-        }
-
-        return DEFAULT_PRODUCT_QUANTITY;
     }
 }
