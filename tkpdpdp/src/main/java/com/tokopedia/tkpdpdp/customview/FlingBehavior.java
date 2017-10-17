@@ -7,6 +7,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.ScrollerCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import java.lang.reflect.Field;
@@ -19,9 +20,9 @@ import java.lang.reflect.Method;
 public final class FlingBehavior extends AppBarLayout.Behavior {
     private static final String TAG = "SmoothScrollBehavior";
     //The higher this value is, the faster the user must scroll for the AppBarLayout to collapse by itself
-    private static final int SCROLL_SENSIBILITY = 5;
+    private static final int SCROLL_SENSIBILITY = 7;
     //The real fling velocity calculation seems complex, in this case it is simplified with a multiplier
-    private static final int FLING_VELOCITY_MULTIPLIER = 60;
+    private static final int FLING_VELOCITY_MULTIPLIER = 45;
 
     private boolean alreadyFlung = false;
     private boolean request = false;
@@ -58,20 +59,17 @@ public final class FlingBehavior extends AppBarLayout.Behavior {
         if(request) {
             NestedScrollView nestedScrollView = (NestedScrollView) coordinatorLayout.findViewById(nestedScrollViewId);
             if (expand) {
-                //No need to force expand if it is already ready expanding
                 if (nestedScrollView.getScrollY() > 0) {
                     int finalY = getPredictedScrollY(nestedScrollView);
-                    if (finalY <= 0) {
-                        //since onNestedFling does not work to expand the AppBarLayout, we need to manually expand it
+                    if (finalY <= 5) {
+                        nestedScrollView.smoothScrollTo(0,0);
                         expandAppBarLayoutWithVelocity(coordinatorLayout, appBarLayout, velocity);
                     }
                 }
             } else {
-                //onNestedFling will collapse the AppBarLayout with an animation time relative to the velocity
                 onNestedFling(coordinatorLayout, appBarLayout, target, 0, velocity, true);
 
                 if(!alreadyFlung) {
-                    //TODO wait for AppBarLayout to be collapsed before scrolling for even smoother visual
                     nestedScrollView.fling(velocity);
                 }
             }
@@ -83,7 +81,6 @@ public final class FlingBehavior extends AppBarLayout.Behavior {
     private int getPredictedScrollY(NestedScrollView nestedScrollView) {
         int finalY = 0;
         try {
-            //With reflection, we can get the ScrollerCompat from the NestedScrollView to predict where the scroll will end
             Field scrollerField = nestedScrollView.getClass().getDeclaredField("mScroller");
             scrollerField.setAccessible(true);
             Object object = scrollerField.get(nestedScrollView);
@@ -91,20 +88,17 @@ public final class FlingBehavior extends AppBarLayout.Behavior {
             finalY = scrollerCompat.getFinalY();
         } catch (Exception e ) {
             e.printStackTrace();
-            //If the reflection fails, it will return 0, which means the scroll has reached top
         }
         return finalY;
     }
 
     private void expandAppBarLayoutWithVelocity(CoordinatorLayout coordinatorLayout, AppBarLayout appBarLayout, float velocity) {
         try {
-            //With reflection, we can call the private method of Behavior that expands the AppBarLayout with specified velocity
             Method animateOffsetTo = getClass().getSuperclass().getDeclaredMethod("animateOffsetTo", CoordinatorLayout.class, AppBarLayout.class, int.class, float.class);
             animateOffsetTo.setAccessible(true);
             animateOffsetTo.invoke(this, coordinatorLayout, appBarLayout, 0, velocity);
         } catch (Exception e) {
             e.printStackTrace();
-            //If the reflection fails, we fall back to the public method setExpanded that expands the AppBarLayout with a fixed velocity
             appBarLayout.setExpanded(true, true);
         }
     }
