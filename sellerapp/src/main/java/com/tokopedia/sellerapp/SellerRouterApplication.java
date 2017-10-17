@@ -608,4 +608,15 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = new Intent(activity, GmSubscribeHomeActivity.class);
         activity.startActivity(intent);
     }
+
+    @Override
+    public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
+        if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
+                || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {
+            actionApplink(activity, Constants.Applinks.SellerApp.SELLER_APP_HOME);
+        } else {
+            actionApplink(activity, appLinkScheme);
+        }
+
+    }
 }

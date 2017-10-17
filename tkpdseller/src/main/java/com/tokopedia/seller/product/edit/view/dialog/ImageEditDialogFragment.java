@@ -28,6 +28,8 @@ public class ImageEditDialogFragment extends DialogFragment {
     public interface OnImageEditListener {
         void clickEditImagePath(int position);
 
+        void clickImageEditor(int position);
+
         void clickEditImageDesc(int position);
 
         void clickEditImagePrimary(int position);
@@ -70,10 +72,10 @@ public class ImageEditDialogFragment extends DialogFragment {
                 imageMenu = new CharSequence[]{
                         getString(R.string.title_img_delete),
                         getString(R.string.action_edit),
+                        getString(R.string.action_editor),
                         getString(R.string.title_img_desc)};
             } else { // primary image and not allow delete
                 imageMenu = new CharSequence[]{
-                        getString(R.string.action_edit),
                         getString(R.string.title_img_desc)};
             }
 
@@ -82,11 +84,11 @@ public class ImageEditDialogFragment extends DialogFragment {
                 imageMenu = new CharSequence[]{
                         getString(R.string.title_img_delete),
                         getString(R.string.action_edit),
+                        getString(R.string.action_editor),
                         getString(R.string.title_img_desc),
                         getString(R.string.title_img_default)};
             } else { // not primary image and not allow delete
                 imageMenu = new CharSequence[]{
-                        getString(R.string.action_edit),
                         getString(R.string.title_img_desc),
                         getString(R.string.title_img_default)};
             }
@@ -105,6 +107,8 @@ public class ImageEditDialogFragment extends DialogFragment {
                         mListener.clickRemoveImage(position);
                     } else if (stringClicked.equals(getString(R.string.action_edit))) {
                         mListener.clickEditImagePath(position);
+                    } else if (stringClicked.equals(getString(R.string.action_editor))) {
+                        mListener.clickImageEditor(position);
                     } else if (stringClicked.equals(getString(R.string.title_img_desc))) {
                         mListener.clickEditImageDesc(position);
                     } else if (stringClicked.equals(getString(R.string.title_img_default))) {

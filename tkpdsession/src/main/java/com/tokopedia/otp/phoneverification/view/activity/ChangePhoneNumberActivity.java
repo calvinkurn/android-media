@@ -81,4 +81,9 @@ public class ChangePhoneNumberActivity extends BasePresenterActivity {
         intent.putExtra(ChangePhoneNumberFragment.EXTRA_PHONE_NUMBER, phoneNumber);
         return intent;
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

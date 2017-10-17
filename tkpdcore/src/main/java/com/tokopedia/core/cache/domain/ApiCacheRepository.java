@@ -18,12 +18,9 @@ import rx.Observable;
 
 public interface ApiCacheRepository {
 
-    /**
-     * check version of api cache
-     *
-     * @return true if version is increased, otherwise false
-     */
-    Observable<Boolean> checkVersion();
+    Observable<CacheApiWhitelist> getWhiteList(String host, String path);
+
+    Observable<Boolean> isInWhiteList(String host, String path);
 
     /**
      * bulk insert
@@ -32,34 +29,28 @@ public interface ApiCacheRepository {
      * @param cacheApiWhiteListDomains
      * @return
      */
-    Observable<Boolean> bulkInsert(@Nullable Collection<CacheApiWhiteListDomain> cacheApiWhiteListDomains);
+    Observable<Boolean> insertWhiteList(@Nullable Collection<CacheApiWhiteListDomain> cacheApiWhiteListDomains);
 
     /**
      * bulk delete
      * {"ws.tokopedia.com","/konyol/coba.pl", 10},{"lucu.female.com","towel/doeng.pl", 100}
      *
-     * @param cacheApiWhiteListDomain
      * @return
      */
-    Observable<Boolean> singleDelete(@Nullable CacheApiWhiteListDomain cacheApiWhiteListDomain);
+    Observable<Boolean> deleteWhiteList(String host, String path);
+
+    Observable<Boolean> updateResponse(Response response, int expiredTime);
 
     /**
-     * delete data stored at whitelist cache data
+     * Delete cached data
      *
-     * @param cacheApiDataDomain {@link CacheApiDataDomain} object
      * @return true if delete operation success, false if param is null or data isn't available
      */
-    Observable<Boolean> singleDataDelete(@Nullable CacheApiDataDomain cacheApiDataDomain);
+    Observable<Boolean> deleteCachedData(String host, String path);
 
-    Observable<Boolean> isInWhiteList(String url, String method);
+    Observable<Boolean> deleteAllCacheData();
 
-    Observable<Boolean> deleteAllCache();
+    Observable<Boolean> deleteExpiredCachedData();
 
-    Observable<Boolean> clearTimeout();
-
-    Observable<CacheApiData> queryDataFrom(String host, String path, String requestParam);
-
-    Observable<Boolean> updateResponse(CacheApiData cacheApiData, CacheApiWhitelist cacheApiWhitelist, Response response);
-
-    Observable<CacheApiWhitelist> isInWhiteListRaw(final String host, final String path);
+    Observable<String> getCachedResponse(String host, String path, String requestParam);
 }

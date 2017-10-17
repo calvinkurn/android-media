@@ -27,8 +27,6 @@ public class InspirationViewHolder extends AbstractViewHolder<InspirationViewMod
 
     private InspirationAdapter adapter;
 
-    private InspirationViewModel inspirationViewModel;
-
     public InspirationViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
@@ -60,8 +58,8 @@ public class InspirationViewHolder extends AbstractViewHolder<InspirationViewMod
 
     @Override
     public void bind(InspirationViewModel inspirationViewModel) {
-        this.inspirationViewModel = inspirationViewModel;
-        adapter.setList(inspirationViewModel.getListProduct());
+        inspirationViewModel.setRowNumber(getAdapterPosition());
+        adapter.setData(inspirationViewModel);
         textView.setText(inspirationViewModel.getInspired());
     }
 

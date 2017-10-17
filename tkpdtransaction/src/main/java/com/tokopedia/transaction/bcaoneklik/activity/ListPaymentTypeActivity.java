@@ -395,4 +395,9 @@ public class ListPaymentTypeActivity extends TActivity
     public void onConfirmDelete(String tokenId) {
         presenter.onCreditCardDeleted(this, tokenId);
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

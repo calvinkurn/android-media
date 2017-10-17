@@ -135,13 +135,17 @@ public class ShareBottomDialog {
 
     private String getTrackingLabel(String method) {
         if (fragmentV4 != null && fragmentV4 instanceof FeedPlusFragment) {
-            return FeedTrackingEventLabel.Click.SHARE
+            return shareModel.getPageRowNumber()
+                    + " "
+                    + FeedTrackingEventLabel.Click.SHARE
                     + " "
                     + FeedTrackingEventLabel.PAGE_FEED
                     + " / "
                     + method;
         } else if (fragmentV4 != null && fragmentV4 instanceof FeedPlusDetailFragment) {
-            return FeedTrackingEventLabel.Click.SHARE
+            return shareModel.getPageRowNumber()
+                    + " "
+                    + FeedTrackingEventLabel.Click.SHARE
                     + " "
                     + FeedTrackingEventLabel.PAGE_PRODUCT_LIST
                     + " / "

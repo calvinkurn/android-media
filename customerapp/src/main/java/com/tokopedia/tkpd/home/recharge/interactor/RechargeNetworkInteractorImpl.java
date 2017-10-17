@@ -28,13 +28,13 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
     }
 
     @Override
-    public void getRecentNumbers(Map<String, String> params) {
+    public void getRecentNumbers(Subscriber<Boolean> subscriber, Map<String, String> params) {
         compositeSubscription.add(
                 repository.storeObservableRecentDataNetwork(params)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())
-                        .subscribe());
+                        .subscribe(subscriber));
     }
 
     @Override

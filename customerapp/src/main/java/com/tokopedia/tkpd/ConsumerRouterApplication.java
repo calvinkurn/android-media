@@ -635,4 +635,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
         activity.startActivity(intent);
     }
+
+    @Override
+    public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
+        if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
+                || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {
+            actionApplink(activity, Constants.Applinks.HOME);
+        } else {
+            actionApplink(activity, appLinkScheme);
+        }
+
+    }
 }
