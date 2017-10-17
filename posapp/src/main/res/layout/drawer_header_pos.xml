@@ -46,7 +46,9 @@
                 android:fontFamily="sans-serif-medium"
                 android:text="Loading.."
                 android:textColor="@color/black_70"
+                android:gravity="center_horizontal"
                 android:textSize="@dimen/text_size_l_medium"
+                android:lineSpacingExtra="4sp"
                 android:textStyle="normal"/>
 
             <TextView
