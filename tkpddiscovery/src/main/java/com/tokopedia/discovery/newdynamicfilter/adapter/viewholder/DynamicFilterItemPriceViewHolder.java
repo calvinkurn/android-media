@@ -73,9 +73,6 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
             defaultMaxValue = Integer.parseInt(savedMaxValue);
         }
 
-        priceRangeInputView.setData(minLabel, maxLabel, minBound, maxBound,
-                defaultMinValue, defaultMaxValue);
-
         priceRangeInputView.setOnValueChangedListener(new PriceRangeInputView.OnValueChangedListener() {
             @Override
             public void onValueChanged(int minValue, int maxValue) {
@@ -84,6 +81,8 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
             }
         });
 
+        priceRangeInputView.setData(minLabel, maxLabel, minBound, maxBound,
+                defaultMinValue, defaultMaxValue);
     }
 
     private void bindWholesaleOptionItem(final Option option) {
