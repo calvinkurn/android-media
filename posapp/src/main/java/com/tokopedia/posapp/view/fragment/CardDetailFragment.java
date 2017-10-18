@@ -1,6 +1,5 @@
 package com.tokopedia.posapp.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -11,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.CardDetail;
@@ -122,5 +122,26 @@ public class CardDetailFragment extends BaseDaggerFragment implements CardDetail
     public void onError(Throwable e) {
         e.printStackTrace();
         Log.d("o2o", e.getMessage());
+    }
+
+    @Override
+    public void onValidationError(int errorCode) {
+        Log.d("o2o", "validation error, code: " + errorCode);
+        switch (errorCode) {
+            case CardDetail.ERROR_CARD_NOT_VALID:
+                break;
+            case CardDetail.ERROR_CARD_NOT_MATCH_WITH_BANK:
+                break;
+            case CardDetail.ERROR_CARD_NOT_VALID_FOR_INSTALLMENT:
+                break;
+            case CardDetail.ERROR_DATE_NOT_VALID:
+                break;
+            case CardDetail.ERROR_EMPTY_DATE:
+                break;
+            case CardDetail.ERROR_INVALID_CVV:
+                break;
+            default:
+                Log.d("o2o", "validation error, unidentified");
+        }
     }
 }

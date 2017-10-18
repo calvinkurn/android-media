@@ -1,19 +1,13 @@
 package com.tokopedia.posapp.view.drawer;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.preference.Preference;
 import android.support.design.widget.Snackbar;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.view.LinearLayoutManager;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -26,8 +20,8 @@ import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.activity.OutletActivity;
-import com.tokopedia.posapp.view.activity.ProductListActivity;
 import com.tokopedia.posapp.view.activity.TransactionHistoryActivity;
+import com.tokopedia.posapp.view.fragment.DialogPasswordFragment;
 
 import java.util.ArrayList;
 
@@ -135,9 +129,10 @@ public class DrawerPosHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY:
                     posSessionHandler.showPasswordDialog(
                             context.getString(R.string.drawer_title_pos_riwayat_tx),
-                            new PosSessionHandler.PasswordListener() {
+                            new DialogPasswordFragment.PasswordListener() {
                                 @Override
-                                public void onSuccess() {
+                                public void onSuccess(DialogPasswordFragment dialog) {
+                                    dialog.dismiss();
                                     startIntent(context, TransactionHistoryActivity.class);
                                 }
 
@@ -151,9 +146,10 @@ public class DrawerPosHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.POS_OUTLET:
                     posSessionHandler.showPasswordDialog(
                             context.getString(R.string.drawer_title_pos_choose_outlet),
-                            new PosSessionHandler.PasswordListener() {
+                            new DialogPasswordFragment.PasswordListener() {
                                 @Override
-                                public void onSuccess() {
+                                public void onSuccess(DialogPasswordFragment dialog) {
+                                    dialog.dismiss();
                                     startIntent(context, OutletActivity.class);
                                     context.finish();
                                 }

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.support.v7.app.AppCompatActivity;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.database.manager.BankDbManager;
 import com.tokopedia.posapp.database.manager.CartDbManager;
@@ -54,7 +55,7 @@ public class PosSessionHandler extends SessionHandler {
         return sharedPrefs.getString(OUTLET_NAME, "");
     }
 
-    public void showPasswordDialog(String title, PosSessionHandler.PasswordListener listener) {
+    public void showPasswordDialog(String title, DialogPasswordFragment.PasswordListener listener) {
         if (getContext() != null && getContext() instanceof AppCompatActivity && getContext() instanceof onLogoutListener) {
             if (((AppCompatActivity) getContext()).getFragmentManager().findFragmentByTag(DialogPasswordFragment.FRAGMENT_TAG) == null) {
                 DialogPasswordFragment dialogPasswordFragment = DialogPasswordFragment.newInstance(title);
@@ -62,11 +63,5 @@ public class PosSessionHandler extends SessionHandler {
                 dialogPasswordFragment.show(((AppCompatActivity) getContext()).getSupportFragmentManager(), DialogPasswordFragment.FRAGMENT_TAG);
             }
         }
-    }
-
-    public interface PasswordListener {
-        void onSuccess();
-
-        void onError(String message);
     }
 }

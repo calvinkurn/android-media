@@ -12,8 +12,8 @@ public class CreditCardViewModel implements Parcelable {
     private String cardNumber;
     private String formattedCardNumber;
     private String redactedCardNumber;
-    private int expiryMonth;
-    private int expiryYear;
+    private Integer expiryMonth;
+    private Integer expiryYear;
     private String cvv;
     private String postalCode;
     private String cardholderName;
@@ -46,19 +46,19 @@ public class CreditCardViewModel implements Parcelable {
         this.redactedCardNumber = redactedCardNumber;
     }
 
-    public int getExpiryMonth() {
+    public Integer getExpiryMonth() {
         return expiryMonth;
     }
 
-    public void setExpiryMonth(int expiryMonth) {
+    public void setExpiryMonth(Integer expiryMonth) {
         this.expiryMonth = expiryMonth;
     }
 
-    public int getExpiryYear() {
+    public Integer getExpiryYear() {
         return expiryYear;
     }
 
-    public void setExpiryYear(int expiryYear) {
+    public void setExpiryYear(Integer expiryYear) {
         this.expiryYear = expiryYear;
     }
 

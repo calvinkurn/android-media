@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">O2O POS</string>
 
-    <string name="outlet_search_hint">Cari outlet</string>
+    <string name="outlet_search_hint">Cari nama outlet</string>
     <string name="outlet_chooser_dialog_title">Konfirmasi Pilih Outlet</string>
     <string name="outlet_chooser_dialog_message">Apakah anda yakin untuk mengganti Outlet</string>
 

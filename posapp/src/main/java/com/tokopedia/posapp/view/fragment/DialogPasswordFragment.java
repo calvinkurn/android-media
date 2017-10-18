@@ -32,12 +32,13 @@ public class DialogPasswordFragment extends DialogFragment implements DialogPass
     private  static final String TITLE = "TITLE";
     public static final String FRAGMENT_TAG = "DialogPasswordFragment";
 
-    private Button okButton;
     private TkpdProgressDialog progressDialog;
     private TextView title;
     private EditText password;
+    private Button buttonContinue;
+    private Button buttonCancel;
 
-    private PosSessionHandler.PasswordListener listener;
+    private PasswordListener listener;
 
     @Inject
     DialogPasswordPresenter presenter;
@@ -51,7 +52,7 @@ public class DialogPasswordFragment extends DialogFragment implements DialogPass
         return dialogPasswordFragment;
     }
 
-    public void setListener(PosSessionHandler.PasswordListener listener) {
+    public void setListener(PasswordListener listener) {
         this.listener = listener;
     }
 
@@ -64,18 +65,6 @@ public class DialogPasswordFragment extends DialogFragment implements DialogPass
 
         return new AlertDialog.Builder(getActivity())
                 .setView(getDialogView())
-                .setPositiveButton(R.string.password_action_continue, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        progressDialog.showDialog();
-                        presenter.checkPassword(password.getText().toString());
-                    }
-                })
-                .setNegativeButton(R.string.password_action_cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int i) {
-                        dismiss();
-                    }
-                })
                 .create();
     }
 
@@ -94,15 +83,32 @@ public class DialogPasswordFragment extends DialogFragment implements DialogPass
         View view = inflater.inflate(R.layout.fragment_password_dialog, null);
         title = view.findViewById(R.id.text_title);
         password = view.findViewById(R.id.edit_password);
-        title.setText(getArguments().getString(TITLE, "Masukkan Password"));
+        buttonCancel = view.findViewById(R.id.button_cancel);
+        buttonContinue = view.findViewById(R.id.button_continue);
+
+        title.setText(getArguments().getString(TITLE, getString(R.string.password_dialog_message)));
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+
+        buttonContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                progressDialog.showDialog();
+                presenter.checkPassword(password.getText().toString());
+            }
+        });
 
         return view;
     }
 
     @Override
     public void onCheckPasswordSuccess() {
-        progressDialog.dismiss();
-        listener.onSuccess();
+        listener.onSuccess(this);
     }
 
     @Override
@@ -115,5 +121,19 @@ public class DialogPasswordFragment extends DialogFragment implements DialogPass
     public void onCheckPasswordError(String message) {
         progressDialog.dismiss();
         listener.onError(message);
+    }
+
+    @Override
+    public void dismiss() {
+        if(!progressDialog.isProgress()) {
+            progressDialog.dismiss();
+            super.dismiss();
+        }
+    }
+
+    public interface PasswordListener {
+        void onSuccess(DialogPasswordFragment dialogPasswordFragment);
+
+        void onError(String message);
     }
 }

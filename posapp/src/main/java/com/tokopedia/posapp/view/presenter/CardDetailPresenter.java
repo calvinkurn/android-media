@@ -8,6 +8,7 @@ import com.tokopedia.posapp.view.CardDetail;
 import com.tokopedia.posapp.view.viewmodel.card.CreditCardViewModel;
 import com.tokopedia.posapp.view.viewmodel.card.PaymentViewModel;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -35,17 +36,66 @@ public class CardDetailPresenter implements CardDetail.Presenter {
     }
 
     private boolean isValid(PaymentViewModel paymentViewModel) {
-        if(paymentViewModel.getAllowInstallment()) {
-            return isBinMatch(
-                    paymentViewModel.getCreditCard().getCardNumber().replace(" ", ""),
-                    paymentViewModel.getInstallmentBin()
-            );
-        } else {
-            return isBinMatch(
-                    paymentViewModel.getCreditCard().getCardNumber().replace(" ", ""),
-                    paymentViewModel.getValidateBin()
-            );
+        return isCardValid(paymentViewModel.getCreditCard())
+                && isBinValid(paymentViewModel)
+                && isDateValid(paymentViewModel)
+                && isCvvValid(paymentViewModel);
+    }
+
+    private boolean isCardValid(CreditCardViewModel creditCard) {
+        if(creditCard != null
+                && creditCard.getCardNumber() != null
+                && creditCard.getCardNumber().length() == 16) {
+            return true;
         }
+        view.onValidationError(CardDetail.ERROR_CARD_NOT_VALID);
+        return false;
+    }
+
+    private boolean isBinValid(PaymentViewModel paymentViewModel) {
+        if(paymentViewModel.getAllowInstallment()) {
+            if(!isBinMatch(paymentViewModel.getCreditCard().getCardNumber(), paymentViewModel.getInstallmentBin())) {
+                view.onValidationError(CardDetail.ERROR_CARD_NOT_VALID_FOR_INSTALLMENT);
+                return false;
+            }
+        } else {
+            if(!isBinMatch(paymentViewModel.getCreditCard().getCardNumber(), paymentViewModel.getValidateBin())) {
+                view.onValidationError(CardDetail.ERROR_CARD_NOT_MATCH_WITH_BANK);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isDateValid(PaymentViewModel paymentViewModel) {
+        if(paymentViewModel.getCreditCard().getExpiryYear() != null
+            && paymentViewModel.getCreditCard().getExpiryMonth() != null) {
+
+            Calendar now = Calendar.getInstance();
+            Calendar expiryDate = Calendar.getInstance();
+            expiryDate.set(Calendar.YEAR, paymentViewModel.getCreditCard().getExpiryYear());
+            expiryDate.set(Calendar.MONTH, paymentViewModel.getCreditCard().getExpiryMonth());
+
+            if (expiryDate.before(now)) {
+                view.onValidationError(CardDetail.ERROR_DATE_NOT_VALID);
+                return false;
+            }
+
+            return true;
+        } else {
+            view.onValidationError(CardDetail.ERROR_EMPTY_DATE);
+            return false;
+        }
+
+    }
+
+    private boolean isCvvValid(PaymentViewModel paymentViewModel) {
+        if(paymentViewModel.getCreditCard().getCvv().length() != 3) {
+            view.onValidationError(CardDetail.ERROR_INVALID_CVV);
+            return false;
+        }
+        return true;
     }
 
     private boolean isBinMatch(String cardNo, List<String> bins) {
@@ -56,7 +106,7 @@ public class CardDetailPresenter implements CardDetail.Presenter {
         }
         view.onError(new Exception("Bank not match with card number"));
         return false;
-    };
+    }
 
     private String getPaymentData(PaymentViewModel paymentViewModel) {
         PaymentDataResponse payment = new PaymentDataResponse();
