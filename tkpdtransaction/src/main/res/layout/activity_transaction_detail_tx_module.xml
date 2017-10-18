@@ -181,39 +181,23 @@
                         android:textStyle="bold"
                         tools:text="Opang"/>
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/driver_phone"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:lines="1"
+                        android:textColor="@color/label_color"
+                        android:textIsSelectable="true"
+                        tools:text="08124566665"/>
 
-                        <TextView
-                            android:id="@+id/driver_phone"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:textColor="@color/label_color"
-                            android:textIsSelectable="true"
-                            tools:text="08124566665"/>
-
-                        <TextView
-                            android:id="@+id/driver_info_border"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="@dimen/margin_vs"
-                            android:layout_marginLeft="@dimen/margin_vs"
-                            android:layout_marginRight="@dimen/margin_vs"
-                            android:layout_marginStart="@dimen/margin_vs"
-                            android:text="@string/string_splitter"
-                            android:textColor="@color/label_color"
-                            android:textIsSelectable="true"/>
-
-                        <TextView
-                            android:id="@+id/driver_license"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:textColor="@color/label_color"
-                            android:textIsSelectable="true"
-                            tools:text="B4953773"/>
-
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/driver_license"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:lines="1"
+                        android:textColor="@color/label_color"
+                        android:textIsSelectable="true"
+                        tools:text="B 4953 AZ"/>
 
                 </LinearLayout>
 
