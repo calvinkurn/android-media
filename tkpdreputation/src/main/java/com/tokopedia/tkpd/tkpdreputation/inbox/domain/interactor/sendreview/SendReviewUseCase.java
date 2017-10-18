@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview;
 
+import com.drew.lang.annotations.Nullable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -68,12 +69,8 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         return getObservableValidateReview(getParamSendReviewValidation(requestParams),
                 sendReviewRequestModel)
                 .flatMap(getObservableGenerateHost(GenerateHostUseCase.getParam()))
-                .flatMap(addGenerateHostResultToRequestModel(sendReviewRequestModel))
-                .flatMap(getObservableUploadImages(
-                        getListImage(requestParams)))
-                .flatMap(addListImageUploadToRequestModel(sendReviewRequestModel))
-                .flatMap(getObservableSubmitReview(sendReviewRequestModel))
-                .flatMap(addSubmitImageResultToRequestModel(sendReviewRequestModel))
+                .flatMap(getObservableUploadImages(getListImage(requestParams)))
+                .flatMap(getObservableSubmitReview())
                 .flatMap(mappingResultToDomain());
     }
 
@@ -89,12 +86,18 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         };
     }
 
-    protected Func1<SendReviewRequestModel, Observable<SendReviewSubmitDomain>> getObservableSubmitReview(SendReviewRequestModel sendReviewRequestModel) {
-        return new Func1<SendReviewRequestModel, Observable<SendReviewSubmitDomain>>() {
+    protected Func1<SendReviewRequestModel, Observable<SendReviewRequestModel>>
+    getObservableSubmitReview() {
+        return new Func1<SendReviewRequestModel, Observable<SendReviewRequestModel>>() {
             @Override
-            public Observable<SendReviewSubmitDomain> call(SendReviewRequestModel sendReviewRequestModel) {
-                return sendReviewSubmitUseCase.createObservable(
-                        SendReviewSubmitUseCase.getParam(sendReviewRequestModel));
+            public Observable<SendReviewRequestModel> call(SendReviewRequestModel sendReviewRequestModel) {
+                if (sendReviewRequestModel.getPostKey().isEmpty()) {
+                    return Observable.just(sendReviewRequestModel);
+                } else {
+                    return sendReviewSubmitUseCase.createObservable(
+                            SendReviewSubmitUseCase.getParam(sendReviewRequestModel))
+                            .flatMap(addSubmitImageResultToRequestModel(sendReviewRequestModel));
+                }
             }
         };
     }
@@ -117,12 +120,15 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
     addListImageUploadToRequestModel(final SendReviewRequestModel sendReviewRequestModel) {
         return new Func1<List<UploadImageDomain>, Observable<SendReviewRequestModel>>() {
             @Override
-            public Observable<SendReviewRequestModel> call(List<UploadImageDomain> uploadImageDomains) {
-                for (int i = 0; i < uploadImageDomains.size(); i++) {
-                    sendReviewRequestModel.getListUpload().get(i).setPicObj(uploadImageDomains
-                            .get(i).getPicObj());
-                    sendReviewRequestModel.getListUpload().get(i).setPicSrc(uploadImageDomains
-                            .get(i).getPicSrc());
+            public Observable<SendReviewRequestModel> call(@Nullable List<UploadImageDomain>
+                                                                   uploadImageDomains) {
+                if (!sendReviewRequestModel.getPostKey().isEmpty()) {
+                    for (int i = 0; i < uploadImageDomains.size(); i++) {
+                        sendReviewRequestModel.getListUpload().get(i).setPicObj(uploadImageDomains
+                                .get(i).getPicObj());
+                        sendReviewRequestModel.getListUpload().get(i).setPicSrc(uploadImageDomains
+                                .get(i).getPicSrc());
+                    }
                 }
                 return Observable.just(sendReviewRequestModel);
             }
@@ -133,33 +139,42 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
         return (List<ImageUpload>) requestParams.getObject(PARAM_LIST_IMAGE);
     }
 
-    protected Func1<SendReviewRequestModel, Observable<List<UploadImageDomain>>>
+    protected Func1<SendReviewRequestModel, Observable<SendReviewRequestModel>>
     getObservableUploadImages(final List<ImageUpload> listImage) {
-        return new Func1<SendReviewRequestModel, Observable<List<UploadImageDomain>>>() {
+        return new Func1<SendReviewRequestModel, Observable<SendReviewRequestModel>>() {
             @Override
-            public Observable<List<UploadImageDomain>> call(final SendReviewRequestModel sendReviewRequestModel) {
+            public Observable<SendReviewRequestModel> call(final SendReviewRequestModel sendReviewRequestModel) {
                 return Observable.from(listImage)
                         .flatMap(new Func1<ImageUpload, Observable<UploadImageDomain>>() {
                             @Override
                             public Observable<UploadImageDomain> call(ImageUpload imageUpload) {
-                                return uploadImageUseCase.createObservable(
-                                        UploadImageUseCase.getParam(
-                                                sendReviewRequestModel,
-                                                imageUpload.getImageId(),
-                                                imageUpload.getFileLoc()
-                                        ));
+                                if (sendReviewRequestModel.getPostKey().isEmpty()) {
+                                    return Observable.just(null);
+                                } else {
+                                    return uploadImageUseCase.createObservable(
+                                            UploadImageUseCase.getParam(
+                                                    sendReviewRequestModel,
+                                                    imageUpload.getImageId(),
+                                                    imageUpload.getFileLoc()
+                                            ));
+                                }
                             }
-                        }).toList();
+                        }).toList()
+                        .flatMap(addListImageUploadToRequestModel(sendReviewRequestModel));
             }
         };
     }
 
-    protected Func1<SendReviewRequestModel, Observable<GenerateHostDomain>>
+    protected Func1<SendReviewRequestModel, Observable<SendReviewRequestModel>>
     getObservableGenerateHost(final RequestParams param) {
-        return new Func1<SendReviewRequestModel, Observable<GenerateHostDomain>>() {
+        return new Func1<SendReviewRequestModel, Observable<SendReviewRequestModel>>() {
             @Override
-            public Observable<GenerateHostDomain> call(SendReviewRequestModel sendReviewRequestModel) {
-                return generateHostUseCase.createObservable(param);
+            public Observable<SendReviewRequestModel> call(SendReviewRequestModel sendReviewRequestModel) {
+                if (!sendReviewRequestModel.getPostKey().isEmpty())
+                    return generateHostUseCase.createObservable(param)
+                            .flatMap(addGenerateHostResultToRequestModel(sendReviewRequestModel));
+                else
+                    return Observable.just(sendReviewRequestModel);
             }
         };
     }
@@ -168,9 +183,13 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
     addGenerateHostResultToRequestModel(final SendReviewRequestModel sendReviewRequestModel) {
         return new Func1<GenerateHostDomain, Observable<SendReviewRequestModel>>() {
             @Override
-            public Observable<SendReviewRequestModel> call(GenerateHostDomain generateHostDomain) {
-                sendReviewRequestModel.setUploadHost(generateHostDomain.getUploadHost());
-                sendReviewRequestModel.setServerId(generateHostDomain.getServerId());
+            public Observable<SendReviewRequestModel> call(@Nullable GenerateHostDomain
+                                                                   generateHostDomain) {
+                if (generateHostDomain != null) {
+                    sendReviewRequestModel.setUploadHost(generateHostDomain.getUploadHost());
+                    sendReviewRequestModel.setServerId(generateHostDomain.getServerId());
+                }
+
                 return Observable.just(sendReviewRequestModel);
             }
         };
@@ -181,9 +200,14 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
             @Override
             public Observable<SendReviewDomain> call(
                     SendReviewRequestModel sendReviewRequestModel) {
-                SendReviewDomain sendReviewDomain =
-                        new SendReviewDomain(sendReviewRequestModel.getIsSubmitSuccess() == 1);
-                return Observable.just(sendReviewDomain);
+                if (sendReviewRequestModel.getPostKey().isEmpty()) {
+                    return Observable.just(new SendReviewDomain(sendReviewRequestModel
+                            .isValidateSuccess()));
+                } else {
+                    return Observable.just(new SendReviewDomain(sendReviewRequestModel
+                            .getIsSubmitSuccess() == 1));
+                }
+
             }
         };
     }
