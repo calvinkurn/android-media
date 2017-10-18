@@ -33,9 +33,6 @@ import com.tokopedia.tkpd.home.presenter.SimpleHomeImpl;
 import com.tokopedia.tkpd.home.presenter.SimpleHomeView;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public class SimpleHomeActivity extends TActivity
         implements SimpleHomeView {
@@ -44,14 +41,9 @@ public class SimpleHomeActivity extends TActivity
     public static final int INVALID_FRAGMENT = 0;
     public static final int WISHLIST_FRAGMENT = 1;
     public static final int PRODUCT_HISTORY_FRAGMENT = 2;
-
-    @BindView(R.id.simple_home_toolbar)
-    Toolbar toolbar;
-
     SimpleHome simpleHome;
 
     FragmentManager supportFragmentManager;
-    private Unbinder unbinder;
 
     @DeepLink(Constants.Applinks.WISHLIST)
     public static Intent getWishlistApplinkIntent(Context context, Bundle extras) {
@@ -94,7 +86,7 @@ public class SimpleHomeActivity extends TActivity
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_simple_home);
-        unbinder = ButterKnife.bind(this);
+        initToolbar();
 
         supportFragmentManager = getSupportFragmentManager();
         supportFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -110,7 +102,7 @@ public class SimpleHomeActivity extends TActivity
         simpleHome = new SimpleHomeImpl(this);
         simpleHome.fetchExtras(getIntent());
         simpleHome.fetchDataAfterRotate(savedInstanceState);
-        initToolbar();
+
     }
 
     @Override
@@ -193,23 +185,7 @@ public class SimpleHomeActivity extends TActivity
 
     @Override
     public void initToolbar() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.cart_only, menu);
-        LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
-        int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
-        if (CartCache > 0) {
-            menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
-        } else {
-            menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart);
-        }
-        return true;
+        setupToolbar();
     }
 
     @Override
