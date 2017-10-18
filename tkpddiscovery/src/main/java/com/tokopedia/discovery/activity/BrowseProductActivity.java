@@ -2,8 +2,6 @@ package com.tokopedia.discovery.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -213,7 +211,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 }
             });
         }
-        setLightToolbarStyle();
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -559,7 +557,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             bundle.putString(EXTRA_TITLE, title);
         }
         intent.putExtras(bundle);
-        activity.startActivityForResult(intent, CategoryNavigationActivity.DESTROY_INTERMEDIARY);
+        activity.startActivityForResult(intent,CategoryNavigationActivity.DESTROY_INTERMEDIARY);
     }
 
     public static void moveToWithoutAnimation(Context context, String depId, String ad_src, String source, String title) {
@@ -802,7 +800,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void onBackPressed() {
         if (discoverySearchView.isSearchOpen()) {
             if (discoverySearchView.isFinishOnClose()) {
-                // finish();
+               // finish();
                 close();
             } else {
                 discoverySearchView.closeSearch();
@@ -819,25 +817,5 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         }
 
         return null;
-    }
-
-    private void setLightToolbarStyle() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
-            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
-        } else {
-            toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
-        }
-        Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
-        drawable.setBounds(5, 5, 5, 5);
-        toolbar.setOverflowIcon(drawable);
-
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setHomeAsUpIndicator(
-                    com.tokopedia.core.R.drawable.ic_webview_back_button
-            );
-
-
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
     }
 }

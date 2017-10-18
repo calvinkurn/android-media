@@ -123,10 +123,11 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     protected void initView() {
         ButterKnife.bind(this);
         toolbar.setTitle(categoryName);
-        setLightToolbarStyle();
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        setLightToolbarStyle();
     }
 
     @Override
@@ -193,7 +194,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
+        getMenuInflater().inflate(R.menu.menu_search_intermediary, menu);
         searchItem = menu.findItem(R.id.action_search);
         return true;
     }
