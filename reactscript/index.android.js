@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import codePush from "react-native-code-push";
+// import codePush from "react-native-code-push";
 import {
   AppRegistry,
   ActivityIndicator,
