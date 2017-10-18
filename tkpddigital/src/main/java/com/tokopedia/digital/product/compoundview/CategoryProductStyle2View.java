@@ -312,7 +312,6 @@ public class CategoryProductStyle2View extends
 
             @Override
             public void onClientNumberInputInvalid() {
-//                clientNumberInputView.disableImageOperator();
                 clearHolder(holderChooserProduct);
                 clearHolder(holderAdditionalInfoProduct);
                 clearHolder(holderPriceInfoProduct);
