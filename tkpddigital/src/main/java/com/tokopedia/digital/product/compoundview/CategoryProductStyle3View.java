@@ -100,7 +100,6 @@ public class CategoryProductStyle3View extends
         digitalProductChooserView.renderUpdateDataSelected(productSelected);
     }
 
-
     @Override
     protected void onUpdateSelectedOperatorData() {
         digitalOperatorChooserView.renderUpdateDataSelected(operatorSelected);
@@ -419,7 +418,6 @@ public class CategoryProductStyle3View extends
         return preCheckoutProduct;
     }
 
-
     private boolean hasLastOrderHistoryData() {
         return historyClientNumber != null && historyClientNumber.getLastOrderClientNumber() != null;
     }
@@ -428,4 +426,5 @@ public class CategoryProductStyle3View extends
     public void onProductLinkClicked(String url) {
         actionListener.onProductDetailLinkClicked(url);
     }
+
 }

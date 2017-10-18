@@ -999,6 +999,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (orderClientNumber.getOperatorId() != null) {
             for (Operator operator : categoryDataState.getOperatorList()) {
                 if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
+                    digitalProductView.renderUpdateOperatorSelected(operator);
                     for (Product product : operator.getProductList()) {
                         if (orderClientNumber.getProductId() != null) {
                             if (orderClientNumber.getProductId().equals(product.getProductId())) {
