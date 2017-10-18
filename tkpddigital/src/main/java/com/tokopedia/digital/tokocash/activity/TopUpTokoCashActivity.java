@@ -30,6 +30,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalChooserActivity;
+import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
@@ -294,7 +295,8 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
             startActivity(HistoryTokocashActivity.newInstance(this));
             return true;
         } else if (item.getItemId() == R.id.action_menu_help_tokocash) {
-            // TODO : add intent to help tokocash page
+            startActivity(DigitalWebActivity.newInstance(this,
+                    this.getString(R.string.url_help_center_tokocash)));
             return true;
         } else {
             return super.onOptionsItemSelected(item);

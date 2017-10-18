@@ -130,4 +130,15 @@
     <string name="error_message_operator">Operator tidak tersedia</string>
     <string name="error_message_not_found_product">Produk yang anda pilih saat ini tidak tersedia</string>
     <string name="ussd_batal_label">Batal</string>
+
+    <string name="title_help_history">Bantuan</string>
+    <string name="tokocash">Tokocash</string>
+    <string name="title_spinner_help_category">Pilih Kategori Kendala</string>
+    <string name="title_detail_help_category">Tulis Penjelasan Kendala Anda (Min. 30 Karakter)</string>
+    <string name="hint_detail_help_category">Isi Penjelasan kendala</string>
+    <string name="button_label_cancel">Batal</string>
+    <string name="button_label_send_help">Kirim Bantuan</string>
+    <string name="error_message_load_spinner_help">Gagal load data kategori kendala bantuan</string>
+    <string name="error_message_send_help">Gagal mengirimkan tiket bantuan</string>
+    <string name="success_message_send_help">Sukses mengirimkan tiket bantuan</string>
 </resources>

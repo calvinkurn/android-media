@@ -147,8 +147,9 @@ public class DetailTransactionActivity extends BasePresenterActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO : untuk bantuan
-                Toast.makeText(getApplicationContext(), "bantuan", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), HelpHistoryDetailActivity.class);
+                intent.putExtra(HelpHistoryDetailActivity.TRANSACTION_ID, String.valueOf(itemHistory.getTransactionId()));
+                startActivityForResult(intent, 201);
             }
         };
     }

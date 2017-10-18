@@ -60,6 +60,8 @@
         <activity
             android:name=".wallets.accountsetting.WalletAccountSettingActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".tokocash.activity.HelpHistoryDetailActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 
