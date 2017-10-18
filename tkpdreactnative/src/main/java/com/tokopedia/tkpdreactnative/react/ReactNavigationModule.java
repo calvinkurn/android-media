@@ -10,6 +10,9 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
+
+import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
 /**
  * @author ricoharisin .
@@ -61,13 +64,20 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setTitleToolbar(Promise promise, String title) {
-        if (getCurrentActivity() != null && getCurrentActivity().getActionBar() != null) {
-            getCurrentActivity().getActionBar().setTitle(title);
-            promise.resolve("OK");
-        } else {
-            promise.resolve("NOT OK");
-        }
+    public void setTitleToolbar(final String title, final Promise promise) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getCurrentActivity() != null && getCurrentActivity() instanceof ReactNativeView) {
+                    ((ReactNativeView) getCurrentActivity()).actionSetToolbarTitle(title);
+                    promise.resolve("OK");
+                } else {
+                    promise.resolve("NOT OK");
+                }
+
+            }
+        });
+
     }
 
     @ReactMethod

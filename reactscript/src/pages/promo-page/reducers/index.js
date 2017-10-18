@@ -66,9 +66,6 @@ const categories = (
         const items = action.payload.data.categories || []
         const totalCategories = action.payload.data.total_categories
         const totalItems = [...state.items, ...items]
-        console.log(items)
-        console.log(totalCategories)
-        console.log(totalItems)
         return {
           items: totalItems,
           isFetching: false,

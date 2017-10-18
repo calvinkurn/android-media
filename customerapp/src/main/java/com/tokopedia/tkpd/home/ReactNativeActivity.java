@@ -27,8 +27,9 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 
-public class ReactNativeActivity extends BasePresenterActivity {
+public class ReactNativeActivity extends BasePresenterActivity implements ReactNativeView {
     public static final String USER_ID = "User_ID";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String EXTRA_URL = "EXTRA_URL";
@@ -128,13 +129,26 @@ public class ReactNativeActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
         setToolbar();
-        Bundle initialProps = getIntent().getExtras();
+        Bundle initialProps = getReactNativeProps();
         ReactNativeOfficialStoreFragment fragment = ReactNativeOfficialStoreFragment.createInstance(initialProps);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
         fragmentTransaction.commit();
+    }
+
+    private Bundle getReactNativeProps() {
+        Bundle bundle = getIntent().getExtras();
+        Bundle newBundle = new Bundle();
+        for (String key : bundle.keySet()) {
+            if (!key.equalsIgnoreCase("is_deep_link_flag") &&
+                    !key.equalsIgnoreCase("android.intent.extra.REFERRER") &&
+                    !key.equalsIgnoreCase("deep_link_uri")){
+                newBundle.putString(key, bundle.getString(key));
+            }
+        }
+        return newBundle;
     }
 
     @Override
@@ -171,5 +185,10 @@ public class ReactNativeActivity extends BasePresenterActivity {
             return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void actionSetToolbarTitle(String title) {
+        toolbar.setTitle(title);
     }
 }
