@@ -84,6 +84,7 @@ import com.tokopedia.digital.product.listener.IProductDigitalView;
 import com.tokopedia.digital.product.listener.IUssdUpdateListener;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
@@ -777,11 +778,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void onClientNumberClicked(String clientNumber, List<OrderClientNumber> numberList) {
+    public void onClientNumberClicked(String number, ClientNumber clientNumber, List<OrderClientNumber> numberList) {
         if (!numberList.isEmpty()) {
             startActivityForResult(
                     DigitalSearchNumberActivity.newInstance(
-                            getActivity(), categoryId, clientNumber, numberList
+                            getActivity(), categoryId, clientNumber, number, numberList
                     ),
                     IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
             );
@@ -789,11 +790,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void onClientNumberCleared(List<OrderClientNumber> numberList) {
+    public void onClientNumberCleared(ClientNumber clientNumber, List<OrderClientNumber> numberList) {
         if (!numberList.isEmpty()) {
             startActivityForResult(
                     DigitalSearchNumberActivity.newInstance(
-                            getActivity(), categoryId, "", numberList
+                            getActivity(), categoryId, clientNumber, "", numberList
                     ),
                     IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
             );
@@ -848,8 +849,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                             showToastMessage(message);
                         }
                     }
-                } else {
-                    presenter.processGetCategoryAndBannerData();
                 }
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER:
@@ -993,13 +992,49 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
+        if (categoryDataState.isSupportedStyle()) {
+            switch (categoryDataState.getOperatorStyle()) {
+                case CategoryData.STYLE_PRODUCT_CATEGORY_1 :
+                    handleStyle1(orderClientNumber);
+                    break;
+                case CategoryData.STYLE_PRODUCT_CATEGORY_2 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_99 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_3 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_4 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_5 :
+                    handleStyleOther(orderClientNumber);
+                    break;
+            }
+        }
+    }
+
+    private void handleStyleOther(OrderClientNumber orderClientNumber) {
+        if (orderClientNumber.getOperatorId() != null) {
+            for (Operator operator : categoryDataState.getOperatorList()) {
+                if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
+                    digitalProductView.renderUpdateOperatorSelected(operator);
+                    for (Product product : operator.getProductList()) {
+                        if (orderClientNumber.getProductId() != null) {
+                            if (orderClientNumber.getProductId().equals(product.getProductId())) {
+                                digitalProductView.renderUpdateProductSelected(product);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        digitalProductView.renderClientNumberFromContact(orderClientNumber.getClientNumber());
+        digitalProductView.clearFocusOnClientNumber();
+    }
+
+    private void handleStyle1(OrderClientNumber orderClientNumber) {
         digitalProductView.renderClientNumberFromContact(orderClientNumber.getClientNumber());
         digitalProductView.clearFocusOnClientNumber();
 
         if (orderClientNumber.getOperatorId() != null) {
             for (Operator operator : categoryDataState.getOperatorList()) {
                 if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
-                    digitalProductView.renderUpdateOperatorSelected(operator);
                     for (Product product : operator.getProductList()) {
                         if (orderClientNumber.getProductId() != null) {
                             if (orderClientNumber.getProductId().equals(product.getProductId())) {

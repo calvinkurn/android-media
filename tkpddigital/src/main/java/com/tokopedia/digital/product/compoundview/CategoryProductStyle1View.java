@@ -354,12 +354,15 @@ public class CategoryProductStyle1View extends
 
             @Override
             public void onClientNumberHasFocus(String clientNumber) {
-                actionListener.onClientNumberClicked(clientNumber, historyClientNumber.getRecentClientNumberList());
+                actionListener.onClientNumberClicked(clientNumber,
+                        data.getClientNumberList().get(0),
+                        historyClientNumber.getRecentClientNumberList());
             }
 
             @Override
             public void onClientNumberCleared() {
-                actionListener.onClientNumberCleared(historyClientNumber.getRecentClientNumberList());
+                actionListener.onClientNumberCleared(data.getClientNumberList().get(0),
+                        historyClientNumber.getRecentClientNumberList());
             }
         };
     }

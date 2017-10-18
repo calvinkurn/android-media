@@ -12,6 +12,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
@@ -186,9 +187,9 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
         void storeLastInstantCheckoutUsed(String categoryId, boolean checked);
 
-        void onClientNumberClicked(String clientNumber, List<OrderClientNumber> numberList);
+        void onClientNumberClicked(String clientNumber, ClientNumber number, List<OrderClientNumber> numberList);
 
-        void onClientNumberCleared(List<OrderClientNumber> recentClientNumberList);
+        void onClientNumberCleared(ClientNumber clientNumber, List<OrderClientNumber> recentClientNumberList);
     }
 
     public static class PreCheckoutProduct {

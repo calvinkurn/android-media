@@ -202,13 +202,13 @@ public class CategoryProductStyle2View extends
         clearHolder(holderAdditionalInfoProduct);
         clearHolder(holderPriceInfoProduct);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInput());
-        clientNumberInputView.renderData(this.operatorSelected.getClientNumberList().get(0));
+        clientNumberInputView.renderData(data.getClientNumberList().get(0));
         holderClientNumber.addView(clientNumberInputView);
         clientNumberInputView.resetInputTyped();
 
         if (hasLastOrderHistoryData()) {
             if (historyClientNumber.getLastOrderClientNumber().getOperatorId().equalsIgnoreCase(
-                    this.operatorSelected.getOperatorId())) {
+                    data.getOperatorId())) {
                 if (!TextUtils.isEmpty(historyClientNumber
                         .getLastOrderClientNumber().getClientNumber())) {
                     clientNumberInputView.setText(
@@ -316,12 +316,14 @@ public class CategoryProductStyle2View extends
 
             @Override
             public void onClientNumberHasFocus(String clientNumber) {
-                actionListener.onClientNumberClicked(clientNumber, historyClientNumber.getRecentClientNumberList());
+                actionListener.onClientNumberClicked(clientNumber,
+                        operatorSelected.getClientNumberList().get(0),
+                        historyClientNumber.getRecentClientNumberList());
             }
 
             @Override
             public void onClientNumberCleared() {
-                actionListener.onClientNumberCleared(historyClientNumber.getRecentClientNumberList());
+                actionListener.onClientNumberCleared(data.getClientNumberList().get(0), historyClientNumber.getRecentClientNumberList());
             }
         };
     }

@@ -7,7 +7,9 @@ import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +18,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.adapter.NumberListAdapter;
+import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 
 import java.util.ArrayList;
@@ -42,10 +45,12 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
     private List<OrderClientNumber> clientNumbers;
 
     private static final String ARG_PARAM_EXTRA_NUMBER_LIST = "ARG_PARAM_EXTRA_NUMBER_LIST";
+    private static final String ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER";
     private static final String ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER";
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
 
-    private String clientNumber;
+    private ClientNumber clientNumber;
+    private String number;
 
     private OnClientNumberClickListener callback;
 
@@ -53,11 +58,13 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
         void onClientNumberClicked(OrderClientNumber orderClientNumber);
     }
 
-    public static Fragment newInstance(String categoryId, String clientNumber, List<OrderClientNumber> numberList) {
+    public static Fragment newInstance(String categoryId, ClientNumber clientNumber, String number,
+                                       List<OrderClientNumber> numberList) {
         Fragment fragment = new DigitalSearchNumberFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
-        bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber);
+        bundle.putParcelable(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber);
+        bundle.putString(ARG_PARAM_EXTRA_NUMBER, number);
         bundle.putParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST,
                 (ArrayList<? extends Parcelable>) numberList);
         fragment.setArguments(bundle);
@@ -101,7 +108,8 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        clientNumber = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER);
+        clientNumber = arguments.getParcelable(ARG_PARAM_EXTRA_CLIENT_NUMBER);
+        number = arguments.getString(ARG_PARAM_EXTRA_NUMBER);
         clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST);
     }
 
@@ -112,6 +120,8 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
 
     @Override
     protected void initView(View view) {
+        setClientNumberInputType();
+
         btnClearNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,12 +130,22 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
         });
 
         if (clientNumber != null) {
-            editTextSearchNumber.setText(clientNumber);
-            editTextSearchNumber.setSelection(clientNumber.length());
+            editTextSearchNumber.setText(number);
+            editTextSearchNumber.setSelection(number.length());
         }
         numberListAdapter = new NumberListAdapter(this, clientNumbers);
         rvNumberList.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvNumberList.setAdapter(numberListAdapter);
+    }
+
+    private void setClientNumberInputType() {
+        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)
+                || clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_NUMERIC)) {
+            editTextSearchNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
+            editTextSearchNumber.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
+        } else {
+            editTextSearchNumber.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        }
     }
 
     @Override
