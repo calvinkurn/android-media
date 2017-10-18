@@ -76,6 +76,8 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
                         view.renderLastOrder(lastOrder);
                     } else if (getLastClientNumberTyped(categoryId) != null) {
                         view.renderLastTypedClientNumber();
+                    } else {
+
                     }
                 }
             }

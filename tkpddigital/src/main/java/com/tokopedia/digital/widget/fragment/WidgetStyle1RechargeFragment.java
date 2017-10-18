@@ -166,7 +166,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     protected void initialVar() {
-
     }
 
     @Override
@@ -286,7 +285,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                     Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
 
-//                    storeLastStateTabSelected();
                     presenter.storeLastClientNumberTyped(String.valueOf(category.getId()),
                             widgetClientNumberView.getText(), selectedProduct);
 
@@ -396,6 +394,13 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         }
     }
 
+    @Override
+    public void renderVerifiedNumber() {
+        String verifiedNumber = SessionHandler.getPhoneNumber();
+        widgetClientNumberView.setText(verifiedNumber);
+    }
+
+    @Override
     public void renderLastTypedClientNumber() {
         if (category.getAttributes().isValidatePrefix()) {
             widgetClientNumberView.setText(lastClientNumberTyped);
@@ -404,6 +409,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         }
     }
 
+    @Override
     public void renderLastOrder(LastOrder lastOrder) {
         if (presenter != null) {
             this.lastOrder = lastOrder;

@@ -18,7 +18,7 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
     private LocalCacheHandler localCacheHandlerLastClientNumber;
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
-    BaseDigitalWidgetPresenter(Context context) {
+    public BaseDigitalWidgetPresenter(Context context) {
         this.context = context;
     }
 
@@ -94,4 +94,5 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
         return localCacheHandlerLastClientNumber.getString(
                 TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, "");
     }
+
 }

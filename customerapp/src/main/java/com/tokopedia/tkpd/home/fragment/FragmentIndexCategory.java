@@ -171,7 +171,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     RemoteConfigFetcher remoteConfigFetcher;
     FirebaseRemoteConfig firebaseRemoteConfig;
-    private int cateogrySize;
 
     @Override
     public void onTopUpTokoCashClicked() {

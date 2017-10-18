@@ -1,10 +1,12 @@
 package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle1View;
@@ -70,12 +72,17 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                         attributes.setClientNumber(digitalNumberList.getLastOrder().getClientNumber());
                         attributes.setCategoryId(Integer.valueOf(digitalNumberList.getLastOrder().getCategoryId()));
                         attributes.setOperatorId(Integer.valueOf(digitalNumberList.getLastOrder().getOperatorId()));
-                        attributes.setProductId(Integer.valueOf(digitalNumberList.getLastOrder().getLastProduct()));
+                        if (!TextUtils.isEmpty(digitalNumberList.getLastOrder().getLastProduct())) {
+                            attributes.setProductId(Integer.valueOf(digitalNumberList.getLastOrder().getLastProduct()));
+                        }
                         lastOrder.setAttributes(attributes);
 
                         view.renderLastOrder(lastOrder);
-                    } else if (getLastClientNumberTyped(categoryId) != null) {
+                    } else if (!TextUtils.isEmpty(getLastClientNumberTyped(categoryId))) {
                         view.renderLastTypedClientNumber();
+                    } else if (categoryId.equals("1") || categoryId.equals("2") &
+                            !TextUtils.isEmpty(SessionHandler.getPhoneNumber())) {
+                        view.renderVerifiedNumber();
                     }
                 }
             }

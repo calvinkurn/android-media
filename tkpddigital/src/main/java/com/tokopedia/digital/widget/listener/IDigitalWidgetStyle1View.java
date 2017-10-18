@@ -29,4 +29,5 @@ public interface IDigitalWidgetStyle1View extends BaseDigitalWidgetView {
 
     void renderDefaultError();
 
+    void renderVerifiedNumber();
 }
