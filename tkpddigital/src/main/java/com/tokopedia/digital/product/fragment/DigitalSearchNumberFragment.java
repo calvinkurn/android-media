@@ -13,14 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.adapter.NumberListAdapter;
-import com.tokopedia.digital.product.listener.ISearchNumberDigitalView;
 import com.tokopedia.digital.product.model.OrderClientNumber;
-import com.tokopedia.digital.product.presenter.ISearchNumberDigitalPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +27,7 @@ import butterknife.BindView;
  * @author rizkyfadillah on 10/4/2017.
  */
 
-public class DigitalSearchNumberFragment extends BasePresenterFragment<ISearchNumberDigitalPresenter>
+public class DigitalSearchNumberFragment extends BasePresenterFragment
         implements NumberListAdapter.OnClientNumberClickListener {
 
     @BindView(R2.id.recyclerview_number_list)

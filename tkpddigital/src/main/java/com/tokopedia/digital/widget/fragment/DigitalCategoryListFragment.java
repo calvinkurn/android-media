@@ -201,8 +201,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                                 R.string.title_header_menu_digital_categories_subscription_digital_module
                         ))
                         .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS
-                                + "?is_app=1")
+                                + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS)
                         .resIconId(R.drawable.ic_header_digital_category_subscription)
                         .typeMenu(DigitalCategoryItemHeader.TypeMenu.SUBSCRIPTION)
                         .build()
