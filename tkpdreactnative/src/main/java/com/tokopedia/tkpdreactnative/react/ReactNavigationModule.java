@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -68,5 +69,10 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
         } else {
             promise.resolve("NOT OK");
         }
+    }
+
+    @ReactMethod
+    public String getBaseDomain(Promise promise, String title) {
+        return TkpdBaseURL.BASE_DOMAIN;
     }
 }
