@@ -122,29 +122,28 @@ export const FETCH_TRANSACTION_HISTORY = 'FETCH_TRANSACTION_HISTORY'
 export const getTransactionHistory = () => {
   return {
     type: FETCH_TRANSACTION_HISTORY,
-    payload: fetchTxHistory()
+    payload: fetchTransactionHistory(1) // fetch page 1
   }
 }
 
-const fetchTxHistory = async () => {
+const fetchTransactionHistory = async (page) => {
   const env = await getEnv()
   const api_url = await getBaseAPI(env)
   const user_id = await getUserId()
   const addr_id = await getAddrId()
-  // need to work on pagination
   const data = {
     user_id,
     addr_id,
     per_page: 10,
-    page: 1,
+    page: page,
     os_type: '1'
   }
   console.log(data)
-  const txHistory = await apiGetTxHistory(`${api_url.api_url_order}/api/order/i/v1/o2o/get_order_list_details`, data)
+  const txHistory = await apiGetTransactionHistory(`${api_url.api_url_order}/api/order/i/v1/o2o/get_order_list_details`, data)
   return txHistory
 }
 
-const apiGetTxHistory = (url, data) => {
+const apiGetTransactionHistory = (url, data) => {
   return NetworkModule.getResponseJson(url, `POST`, JSON.stringify(data), false)
     .then(res => {
         const jsonResponse = JSON.parse(res)

@@ -17,7 +17,7 @@ public class ProductItem {
     @SerializedName("url")
     @Expose
     private String url;
-    @SerializedName("imageU_ul")
+    @SerializedName("image_url")
     @Expose
     private String imageUrl;
     @SerializedName("image_url_700")
