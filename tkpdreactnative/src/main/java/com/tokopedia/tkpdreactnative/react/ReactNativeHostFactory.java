@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
-import com.microsoft.codepush.react.CodePush;
 import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.Arrays;
