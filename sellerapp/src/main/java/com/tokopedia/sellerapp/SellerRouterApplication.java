@@ -558,4 +558,9 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = new Intent(activity, GmSubscribeHomeActivity.class);
         activity.startActivity(intent);
     }
+
+    @Override
+    public String getFlavor() {
+        return BuildConfig.FLAVOR;
+    }
 }

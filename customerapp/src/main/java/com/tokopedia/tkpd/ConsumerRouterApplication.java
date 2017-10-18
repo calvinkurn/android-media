@@ -571,4 +571,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
         activity.startActivity(intent);
     }
+
+    @Override
+    public String getFlavor() {
+        return BuildConfig.FLAVOR;
+    }
 }
