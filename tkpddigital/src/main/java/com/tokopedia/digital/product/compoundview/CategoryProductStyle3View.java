@@ -313,11 +313,9 @@ public class CategoryProductStyle3View extends
 
             @Override
             public void onClientNumberInputInvalid() {
-//                clientNumberInputView.disableImageOperator();
                 clearHolder(holderChooserProduct);
                 clearHolder(holderAdditionalInfoProduct);
                 clearHolder(holderPriceInfoProduct);
-//                clientNumberInputView.disableImageOperator();
             }
         };
     }
