@@ -333,7 +333,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     public void updateSolutionString(ResultViewModel resultViewModel, TextView textView) {
         textView.setText(resultViewModel.refundAmount != 0 ?
-                resultViewModel.solutionName + " Rp " + resultViewModel.refundAmount :
+                resultViewModel.solutionName.replace(
+                        context.getResources().getString(R.string.string_return_value),
+                        String.valueOf(resultViewModel.refundAmount)):
                 resultViewModel.solutionName);
     }
 

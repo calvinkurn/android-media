@@ -282,7 +282,9 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
 
     public void updateSolutionString(EditAppealSolutionModel editAppealSolutionModel, TextView textView) {
         textView.setText(editAppealSolutionModel.refundAmount != 0 ?
-                editAppealSolutionModel.solutionName + " sebesar " + editAppealSolutionModel.refundAmount :
+                editAppealSolutionModel.solutionName.replace(
+                        context.getResources().getString(R.string.string_return_value),
+                        String.valueOf(editAppealSolutionModel.refundAmount)) :
                 editAppealSolutionModel.solutionName);
     }
 

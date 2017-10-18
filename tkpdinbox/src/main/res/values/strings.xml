@@ -76,6 +76,7 @@
     <string name="string_to_buyer"> ke Pembeli</string>
     <string name="string_returning">Kembalikan </string>
     <string name="string_step3_complete">Bukti &amp; keterangan sudah diunggah</string>
+    <string name="string_return_value">return_value</string>
 
     <!--step 1-->
     <string name="string_button_save_choose">Simpan dan Pilih Barang Lain</string>
