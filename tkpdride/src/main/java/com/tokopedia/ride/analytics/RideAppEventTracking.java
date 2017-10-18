@@ -14,7 +14,7 @@ public interface RideAppEventTracking extends AppEventTracking {
         String EventCategory ="digital-uber";
     }
     interface Action {
-        String EventClickBack = "click back on";
+        String EventClickBack = "click back";
         String EventClickOnYourTrips = "click on your trips";
         String EventClickSource = "click source";
         String EventClickDestination = "click destination";
@@ -36,7 +36,7 @@ public interface RideAppEventTracking extends AppEventTracking {
         String EventClickApplyOffers = "click apply offers";
         String EventClickReadOfferDetails = "click read offer details";
         String EventClickCancelRequestRide = "click cancel request ride";
-        String EventSelectCancelReason = "select cancel %s";
+        String EventSelectCancelReason = "select cancel reason";
         String EventChangeDestiantionMap = "click change destination open map";
         String EventClickCall = "click call";
         String EventClickSmS  = "click sms";

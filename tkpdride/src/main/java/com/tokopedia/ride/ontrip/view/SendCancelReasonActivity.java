@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -89,6 +90,11 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
         setupViewListener();
         presenter.attachView(this);
         presenter.initialize();
+    };
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_CANCEL_REASON;
     }
 
     private void setupViewListener() {

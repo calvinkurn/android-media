@@ -241,6 +241,7 @@ public final class AppScreen {
     public static final String SCREEN_RIDE_DEST_CHANGE = "Ride Destination Change Screen";
     public static final String SCREEN_RIDE_HISTORY_DETAIL = "Ride Trip Detail Screen";
     public static final String SCREEN_RIDE_HISTORY = "Ride Your Trips Screen";
+    public static final String SCREEN_RIDE_CANCEL_REASON = "Ride Cancel Reason Screen";
     public static final String SCREEN_DEEPLINK_APPLINKHANDLER = "AppLink Handler";
     public static final String SCREEN_RESOLUTION_CENTER_HISTORY_ACTION = "Resolution Center - History Action Page";
     public static final String SCREEN_RESOLUTION_CENTER_HISTORY_ADDRESS = "Resolution Center - History Address Page";
