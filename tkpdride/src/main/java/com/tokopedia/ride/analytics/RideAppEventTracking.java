@@ -8,7 +8,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 
 public interface RideAppEventTracking extends AppEventTracking {
     interface Event {
-        String GenericUberEvent = "GenericUberEvent";
+        String GenericUberEvent = "genericUberEvent";
     }
     interface  Category {
         String EventCategory ="digital-uber";
