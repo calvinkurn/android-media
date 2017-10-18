@@ -26,6 +26,7 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.InboxRouter;
@@ -40,6 +41,7 @@ import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
@@ -212,8 +214,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_ULASAN);
-                Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
-                startActivity(intent);
+                startActivity(new Intent(getContext(), InboxReputationActivity.class));
             }
         });
         shopScoreWidget.setOnClickListener(new View.OnClickListener() {
@@ -282,7 +283,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         emptyCardContentView.setContentText(null);
         swipeRefreshLayout.setRefreshing(false);
 
-        showSnackBarRetry();
+        showSnackBarRetry(ViewUtils.getErrorMessage(getActivity(), t));
     }
 
     @Override
@@ -445,7 +446,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public void onErrorGetNotifiction(String message) {
         // just show the content without the count
         footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
-        showSnackBarRetry();
+        showSnackBarRetry(message);
     }
 
     @Override
@@ -470,9 +471,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     }
 
-    private void showSnackBarRetry() {
+    private void showSnackBarRetry(String message) {
         if (snackBarRetry == null) {
-            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
                     DashboardFragment.this.onRefresh();

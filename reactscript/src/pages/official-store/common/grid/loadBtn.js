@@ -12,11 +12,8 @@ import PropTypes from 'prop-types'
 import { NavigationModule } from 'NativeModules'
 
 
-// const icon_arrowUp = 'https://firebasestorage.googleapis.com/v0/b/tokopedia-android.appspot.com/o/load-more.png?alt=media&token=bbc027ae-dea6-4a81-a319-776c4c3effbe'
 const LoadMore = ({ onLoadMore, onSlideMore, offset, limit, canFetch, isFetching }) => {
   const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
-  // let User_ID;
-  // AsyncStorage.getItem('user_id').then(res => { User_ID = res })
 
   _onClick = () => {
     NavigationModule.getCurrentUserId().then(uuid => {
@@ -30,15 +27,6 @@ const LoadMore = ({ onLoadMore, onSlideMore, offset, limit, canFetch, isFetching
         }
       }
     })
-    // if (isFetching) {
-    //   return
-    // } else {
-    //   if (canFetch) {
-    //     onLoadMore(limit, offset, User_ID, 'LOADANDREPLACE')
-    //   } else {
-    //     onSlideMore()
-    //   }
-    // }
   }
   
   return (

@@ -11,6 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:eccv_content_text="@string/gm_statistic_card_error_content"
-        app:eccv_icon="@drawable/ic_gm_statistic_error" />
+        app:eccv_icon="@drawable/ic_cloud_error" />
 
 </LinearLayout>

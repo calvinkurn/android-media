@@ -6,6 +6,7 @@
 
     <!--<string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>-->
     <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
+    <string name="BRANCH_SDK_KEY">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="app_id">126665634029576</string>
     <string name="app_name">Tokopedia</string>
     <string name="action_settings">Pengaturan</string>
@@ -443,6 +444,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_update_insurance">Ganti Asuransi</string>
     <string name="title_delete">Hapus</string>
     <string name="action_edit">Ubah</string>
+    <string name="action_editor">Olah</string>
     <string name="title_confirm">Konfirmasi</string>
     <string name="title_confirm_otp">Verifikasi</string>
     <string name="title_copy">Salin Invoice</string>
@@ -487,8 +489,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
 
     <string-array name="sort_option">
         <item>Posisi</item>
-        <item>Pembaruan Terakhir</item>
         <item>Produk Baru</item>
+        <item>Pembaruan Terakhir</item>
         <item>Nama Produk</item>
         <item>Dilihat Terbanyak</item>
         <item>Diskusi Terbanyak</item>
@@ -510,6 +512,17 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
         <item>10</item>
         <item>11</item>
     </string-array>
+
+    <string name="sort_position">Posisi</string>
+    <string name="sort_last">Pembaruan Terakhir</string>
+    <string name="sort_new_product">Produk Baru</string>
+    <string name="sort_product_name">Nama Produk</string>
+    <string name="sort_most_viewed">Dilihat Terbanyak</string>
+    <string name="sort_most_discussed">Diskusi Terbanyak</string>
+    <string name="sort_most_reviewed">Ulasan Terbanyak</string>
+    <string name="sort_most_buy">Pembelian Terbanyak</string>
+    <string name="sort_lowest_price">Harga Terendah</string>
+    <string name="sort_highest_price">Harga Tertinggi</string>
 
     <string name="error_permission">Anda tidak memiliki Akses untuk mengakses ini</string>
     <!-- Strings related manage prod -->
@@ -797,7 +810,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_cat_gift">Souvenir, Kado &amp; Hadiah</string>
     <string name="title_cat_sport">Olahraga</string>
     <string name="title_activity_browse_category">Direktori</string>
-    <string name="title_activity_manage_product">Pengaturan Produk</string>
+    <string name="title_activity_manage_product">Daftar Produk</string>
     <string name="title_activity_choose_address">Alamat</string>
     <string name="title_activity_cart">Keranjang</string>
     <string name="title_activity_shop_editor">Ubah Informasi Toko</string>
@@ -1994,6 +2007,7 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_inbox">Kotak Masuk</string>
     <string name="drawer_title_product">Produk</string>
     <string name="drawer_title_gold_merchant">Gold Merchant</string>
+    <string name="drawer_title_featured_product">Produk Unggulan</string>
     <string name="drawer_title_setting">Pengaturan</string>
     <string name="drawer_title_statistic">Statistik</string>
     <string name="drawer_title_mitra_toppers">Mitra Toppers</string>
@@ -2064,5 +2078,6 @@ di Tokopedia Sekarang!</string>
     <string name="app_share_label">Share ke Temanmu, Yuk!</string>
     <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli & bayar ini itu lewat aplikasi Tokopedia]]></string>
     <string name="app_share_btn_label">Undang Teman</string>
+    <string name="tambah_produk">+ Tambah Produk</string>
 
 </resources>
