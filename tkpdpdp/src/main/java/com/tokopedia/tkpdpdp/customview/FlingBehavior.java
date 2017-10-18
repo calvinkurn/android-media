@@ -22,7 +22,7 @@ public final class FlingBehavior extends AppBarLayout.Behavior {
     //The higher this value is, the faster the user must scroll for the AppBarLayout to collapse by itself
     private static final int SCROLL_SENSIBILITY = 7;
     //The real fling velocity calculation seems complex, in this case it is simplified with a multiplier
-    private static final int FLING_VELOCITY_MULTIPLIER = 45;
+    private static final int FLING_VELOCITY_MULTIPLIER = 40;
 
     private boolean alreadyFlung = false;
     private boolean request = false;
@@ -56,26 +56,25 @@ public final class FlingBehavior extends AppBarLayout.Behavior {
 
     @Override
     public void onStopNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout appBarLayout, View target) {
+        super.onStopNestedScroll(coordinatorLayout, appBarLayout, target);
         if(request) {
             NestedScrollView nestedScrollView = (NestedScrollView) coordinatorLayout.findViewById(nestedScrollViewId);
+            int finalY = getPredictedScrollY(nestedScrollView);
             if (expand) {
                 if (nestedScrollView.getScrollY() > 0) {
-                    int finalY = getPredictedScrollY(nestedScrollView);
-                    if (finalY <= 5) {
+                    if (finalY <= 3) {
                         nestedScrollView.smoothScrollTo(0,0);
                         expandAppBarLayoutWithVelocity(coordinatorLayout, appBarLayout, velocity);
                     }
                 }
             } else {
                 onNestedFling(coordinatorLayout, appBarLayout, target, 0, velocity, true);
-
                 if(!alreadyFlung) {
                     nestedScrollView.fling(velocity);
                 }
             }
         }
         alreadyFlung = false;
-        super.onStopNestedScroll(coordinatorLayout, appBarLayout, target);
     }
 
     private int getPredictedScrollY(NestedScrollView nestedScrollView) {
