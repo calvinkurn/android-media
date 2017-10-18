@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
@@ -35,7 +33,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -44,9 +41,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.customView.RechargeEditText;
-import com.tokopedia.core.customView.WrapContentViewPager;
-import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
@@ -58,8 +52,6 @@ import com.tokopedia.core.home.customview.TokoCashHeaderView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
-import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brand;
@@ -77,12 +69,16 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
+import com.tokopedia.digital.widget.model.mapper.LastOrderMapper;
+import com.tokopedia.digital.widget.model.mapper.StatusMapper;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
@@ -99,6 +95,7 @@ import com.tokopedia.tkpd.home.adapter.TickerAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksItemAdapter;
 import com.tokopedia.tkpd.home.customview.BannerView;
+import com.tokopedia.tkpd.home.customview.DigitalWidgetView;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 import com.tokopedia.tkpd.home.presenter.BrandsPresenter;
 import com.tokopedia.tkpd.home.presenter.BrandsPresenterImpl;
@@ -111,7 +108,6 @@ import com.tokopedia.tkpd.home.presenter.TokoCashPresenter;
 import com.tokopedia.tkpd.home.presenter.TokoCashPresenterImpl;
 import com.tokopedia.tkpd.home.presenter.TopPicksPresenter;
 import com.tokopedia.tkpd.home.presenter.TopPicksPresenterImpl;
-import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
@@ -217,8 +213,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         private View MainView;
 
         private TokoCashHeaderView tokoCashHeaderView;
-        TabLayout tabLayoutRecharge;
-        WrapContentViewPager viewpagerRecharge;
         RecyclerView tickerContainer;
         NestedScrollView wrapperScrollview;
         RecyclerView categoriesRecylerview;
@@ -228,8 +222,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         RelativeLayout rlBrands;
         TextView textViewAllBrands;
         LinearLayout wrapperLinearLayout;
-        TextView seeAllProduct;
-        CardView containerRecharge;
+        DigitalWidgetView digitalWidgetView;
         BannerView bannerView;
         View pulsaPlaceHolder;
 
@@ -293,11 +286,12 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             rechargeCategoryPresenter.fetchLastOrder();
         }
     }
+
     private void loadDummyPromos() {
-                List<FacadePromo.PromoItem> dummyPromoList = new ArrayList<>();
-                dummyPromoList.add(new FacadePromo.PromoItem());
-                setBanner(dummyPromoList);
-            }
+        List<FacadePromo.PromoItem> dummyPromoList = new ArrayList<>();
+        dummyPromoList.add(new FacadePromo.PromoItem());
+        setBanner(dummyPromoList);
+    }
 
     private void fetchRemoteConfig() {
         remoteConfigFetcher = new RemoteConfigFetcher(getActivity());
@@ -423,7 +417,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this,
                 new RechargeNetworkInteractorImpl(
                         new DigitalWidgetRepository(
-                                new RechargeService(), new DigitalEndpointService())));
+                                new DigitalEndpointService()),
+                        new LastOrderMapper(),
+                        new CategoryMapper(),
+                        new StatusMapper()));
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
         tokoCashPresenter = new TokoCashPresenterImpl(this);
@@ -529,9 +526,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.MainView = inflater.inflate(R.layout.fragment_category, container, false);
         holder.wrapperLinearLayout = (LinearLayout) holder.MainView.findViewById(R.id.wrapperLinearLayout);
         holder.bannerView = (BannerView) holder.MainView.findViewById(R.id.banner_container_2);
-        holder.containerRecharge = (CardView) holder.MainView.findViewById(R.id.container_recharge);
-        holder.tabLayoutRecharge = (TabLayout) holder.MainView.findViewById(R.id.tablayout_recharge);
-        holder.viewpagerRecharge = (WrapContentViewPager) holder.MainView.findViewById(R.id.viewpager_pulsa);
+        holder.digitalWidgetView = (DigitalWidgetView) holder.MainView.findViewById(R.id.digital_widget);
         holder.tickerContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
         holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
         holder.cardBrandLayout = (CardView) holder.MainView.findViewById(R.id.card_brand_layout);
@@ -539,31 +534,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.tokoCashHeaderView = (TokoCashHeaderView) holder
                 .MainView.findViewById(R.id.toko_cash_header_layout);
         holder.tokoCashHeaderView.setActionListener(this);
-        holder.seeAllProduct = (TextView) holder.MainView.findViewById(R.id.see_all_product);
-        holder.seeAllProduct.setOnClickListener(getClickListenerShowAllDigitalProducts());
-        holder.pulsaPlaceHolder = holder.MainView.findViewById(R.id.pulsa_place_holders);
-
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();
 
-    }
-
-    @NonNull
-    private View.OnClickListener getClickListenerShowAllDigitalProducts() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-                    IDigitalModuleRouter digitalModuleRouter =
-                            (IDigitalModuleRouter) getActivity().getApplication();
-                    startActivityForResult(
-                            digitalModuleRouter.instanceIntentDigitalCategoryList(),
-                            IDigitalModuleRouter.REQUEST_CODE_DIGITAL_CATEGORY_LIST
-                    );
-                }
-            }
-        };
     }
 
     private void initCategoryRecyclerView() {
@@ -952,15 +926,16 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     //region recharge
+    //Modified by Nabilla Sabbaha 3/10/2017
     @Override
-    public void renderDataRechargeCategory(CategoryData rechargeCategory) {
+    public void renderDataRechargeCategory(List<com.tokopedia.digital.widget.model.category.Category> rechargeCategory) {
         holder.wrapperScrollview.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         holder.wrapperScrollview.setFocusable(true);
         holder.wrapperScrollview.setFocusableInTouchMode(true);
         holder.wrapperScrollview.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (view instanceof RechargeEditText) {
+                if (view instanceof WidgetClientNumberView) {
                     view.requestFocusFromTouch();
                 } else {
                     hideKeyboard();
@@ -969,58 +944,30 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 return false;
             }
         });
-
-        if (rechargeCategory.getData().size() == 0) {
-            return;
-        }
-        holder.containerRecharge.setVisibility(View.VISIBLE);
-        ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.VISIBLE);
-
-        List<Integer> newRechargePositions = new ArrayList<>();
-
-        holder.tabLayoutRecharge.removeAllTabs();
-        addChildTablayout(rechargeCategory, newRechargePositions);
-        getPositionFlagNewRecharge(newRechargePositions);
-
-
-        if (rechargeCategory.getData().size() == 1)
-            holder.tabLayoutRecharge.setTabMode(TabLayout.MODE_SCROLLABLE);
-        else {
-            holder.tabLayoutRecharge.setTabGravity(TabLayout.GRAVITY_FILL);
-            holder.tabLayoutRecharge.setTabMode(TabLayout.MODE_FIXED);
-        }
-
-        final RechargeViewPagerAdapter rechargeViewPagerAdapter = new RechargeViewPagerAdapter(
-                getChildFragmentManager(), rechargeCategory.getData()
-        );
-        holder.viewpagerRecharge.setAdapter(rechargeViewPagerAdapter);
-        holder.viewpagerRecharge.getAdapter().notifyDataSetChanged();
-        LocalCacheHandler handler = new LocalCacheHandler(
-                getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
-        );
-        addTablayoutListener(rechargeViewPagerAdapter);
-        holder.viewpagerRecharge.setOffscreenPageLimit(rechargeCategory.getData().size());
-        final int positionTab = handler.getInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED);
-        if (positionTab != -1 && positionTab < rechargeCategory.getData().size()) {
-            holder.viewpagerRecharge.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    holder.viewpagerRecharge.setCurrentItem(positionTab);
-                }
-            }, 300);
-            holder.tabLayoutRecharge.getTabAt(positionTab).select();
-        } else {
-            holder.viewpagerRecharge.setCurrentItem(0);
-        }
-
-
+        holder.digitalWidgetView.setListener(getWidgetActionListener());
+        holder.digitalWidgetView.renderDataWidget(rechargeCategory, getFragmentManager());
     }
 
+    @NonNull
+    private DigitalWidgetView.ActionListener getWidgetActionListener() {
+        return new DigitalWidgetView.ActionListener() {
+            @Override
+            public void onClickSeeAllProduct() {
+                if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+                    IDigitalModuleRouter digitalModuleRouter =
+                            (IDigitalModuleRouter) getActivity().getApplication();
+                    startActivityForResult(
+                            digitalModuleRouter.instanceIntentDigitalCategoryList(),
+                            IDigitalModuleRouter.REQUEST_CODE_DIGITAL_CATEGORY_LIST
+                    );
+                }
+            }
+        };
+    }
 
     @Override
     public void failedRenderDataRechargeCategory() {
-        holder.containerRecharge.setVisibility(View.GONE);
-        ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
+        holder.digitalWidgetView.hideDigitalWidget();
     }
 
     @Override
@@ -1031,61 +978,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void renderErrorMessage() {
 
-    }
-
-    private void addChildTablayout(CategoryData rechargeCategory, List<Integer> newRechargePositions) {
-        for (int i = 0; i < rechargeCategory.getData().size(); i++) {
-            holder.pulsaPlaceHolder.setVisibility(View.GONE);
-            com.tokopedia.core.database.model.category.Category category = rechargeCategory.getData().get(i);
-            TabLayout.Tab tab = holder.tabLayoutRecharge.newTab();
-            tab.setText(category.getAttributes().getName());
-            holder.tabLayoutRecharge.addTab(tab);
-            if (category.getAttributes().isNew()) {
-                newRechargePositions.add(i);
-
-            }
-        }
-    }
-
-    private void getPositionFlagNewRecharge(List<Integer> newRechargePositions) {
-        for (int positionRecharge : newRechargePositions) {
-            TextView tv = (TextView) (((LinearLayout) ((LinearLayout)
-                    holder.tabLayoutRecharge.getChildAt(0))
-                    .getChildAt(positionRecharge)).getChildAt(1));
-            if (tv != null) tv.setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ResourcesCompat.getDrawable(getResources(), R.drawable.recharge_circle, null)
-                    , null
-            );
-        }
-    }
-
-    private void addTablayoutListener(final RechargeViewPagerAdapter rechargeViewPagerAdapter) {
-        holder.viewpagerRecharge.addOnPageChangeListener(
-                new TabLayout.TabLayoutOnPageChangeListener(holder.tabLayoutRecharge)
-        );
-
-        holder.tabLayoutRecharge.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                holder.viewpagerRecharge.setCurrentItem(tab.getPosition(), false);
-                rechargeViewPagerAdapter.notifyDataSetChanged();
-                if (tab.getText() != null) {
-                    UnifyTracking.eventHomeRechargeTab(tab.getText().toString());
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
     }
 
     private void hideKeyboard() {
@@ -1186,7 +1078,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(trace!=null)
+        if (trace != null)
             trace.stop();
     }
 }

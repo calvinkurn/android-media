@@ -47,9 +47,14 @@ import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.tokocash.activity.TopUpTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.gm.GMModuleRouter;
+import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
+import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
+import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
+import com.tokopedia.seller.common.cashback.DataCashbackModel;
+import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
@@ -65,13 +70,14 @@ import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
-import com.tokopedia.seller.myproduct.ManageProductSeller;
-import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
+import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
+import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
@@ -172,7 +178,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, ManageProductSeller.class);
+        Intent intent = new Intent(context, ProductManageActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -193,7 +199,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void clearEtalaseCache() {
-        AddProductPresenterImpl.clearEtalaseCache(getApplicationContext());
+        EtalaseUtils.clearEtalaseCache(getApplicationContext());
     }
 
     @Override
@@ -203,8 +209,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void resetAddProductCache(Context context) {
-        AddProductPresenterImpl.clearEtalaseCache(context);
-        AddProductPresenterImpl.clearDepartementCache(context);
+        EtalaseUtils.clearEtalaseCache(context);
+        EtalaseUtils.clearDepartementCache(context);
     }
 
     @Override
@@ -562,6 +568,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Observable<GMFeaturedProductDomainModel> getFeaturedProduct() {
+        GMFeaturedProductGetListUseCase gmFeaturedProductGetListUseCase = getGMComponent().getFeaturedProductGetListUseCase();
+        return gmFeaturedProductGetListUseCase.getExecuteObservableAsync(RequestParams.EMPTY);
+    }
+
+    @Override
     public Observable<DataDeposit> getDataDeposit(String shopId) {
         GetDepositTopAdsUseCase getDepositTopAdsUseCase = getTopAdsComponent().getDepositTopAdsUseCase();
         return getDepositTopAdsUseCase.getExecuteObservable(GetDepositTopAdsUseCase.createRequestParams(shopId));
@@ -588,5 +600,23 @@ public abstract class SellerRouterApplication extends MainApplication
             actionApplink(activity, appLinkScheme);
         }
 
+    }
+
+    @Override
+    public Observable<Boolean> setCashBack(String productId, int cashback) {
+        SetCashbackUseCase setCashbackUseCase = getGMComponent().getSetCashbackUseCase();
+        return setCashbackUseCase.getExecuteObservableAsync(SetCashbackUseCase.createRequestParams(productId, cashback));
+    }
+
+    @Override
+    public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
+        GetCashbackUseCase getCashbackUseCase = getGMComponent().getCashbackUseCase();
+        return getCashbackUseCase.getExecuteObservable(GetCashbackUseCase.createRequestParams(productIds));
+    }
+
+    public void goToAddProduct(Activity activity){
+        if(activity != null) {
+            ProductAddActivity.start(activity);
+        }
     }
 }

@@ -23,6 +23,9 @@ public class GalleryCropActivity extends GalleryActivity {
     public static void moveToImageGallery(Context context, Fragment fragment, int position, int maxSelection, boolean compressToTkpd) {
         moveToImageGalleryCamera(context, fragment, position, false, maxSelection, compressToTkpd);
     }
+    public static void moveToImageGallery(Activity activity, int position, int maxSelection, boolean compressToTkpd) {
+        moveToImageGalleryCamera(activity, position, false, maxSelection, compressToTkpd);
+    }
     public static void moveToImageGalleryCamera(Context context, Fragment fragment,
                                                 int position,
                                                 boolean forceOpenCamera,

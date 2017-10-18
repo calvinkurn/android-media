@@ -62,7 +62,8 @@ public class ImageGalleryEntry{
      * @param data
      */
     public static void onActivityForResult(GalleryListener galleryListener, int requestCode, int resultCode, Intent data){
-        if (requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY && data != null) {
+        if ((requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY ||
+            requestCode == GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE) && data != null) {
             String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
             if (checkNotNull(imageUrl)) {
 

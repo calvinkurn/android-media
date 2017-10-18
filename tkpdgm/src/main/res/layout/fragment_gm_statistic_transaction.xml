@@ -118,7 +118,7 @@
                     android:layout_width="match_parent"
                     android:layout_marginLeft="0dp"
                     android:layout_marginRight="0dp"
-                    android:background="@drawable/rect_stroke_lighter_gray"
+                    android:background="@drawable/bg_rect_stroke_lighter_gray"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:gravity="center"

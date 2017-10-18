@@ -12,7 +12,7 @@
     <item
         android:id="@+id/action_cart"
         android:icon="@drawable/icon_cart_white"
-        android:orderInCategory="100"
+        android:orderInCategory="200"
         android:title="@string/title_activity_cart"
         app:showAsAction="always" />
 
@@ -20,19 +20,19 @@
     <item
         android:id="@+id/action_report"
         android:icon="@drawable/report_icon"
-        android:orderInCategory="100"
+        android:orderInCategory="300"
         android:title="@string/title_report_action"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_warehouse"
-        android:orderInCategory="100"
+        android:orderInCategory="400"
         android:title="@string/title_sold_out"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_etalase"
-        android:orderInCategory="100"
+        android:orderInCategory="500"
         android:title="@string/title_to_etalase"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
 </menu>

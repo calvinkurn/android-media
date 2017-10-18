@@ -126,4 +126,9 @@ public class YoutubeAddVideoActivity extends BaseSimpleActivity
                 .youtubeVideoModule(new YoutubeVideoModule())
                 .build();
     }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
 }
