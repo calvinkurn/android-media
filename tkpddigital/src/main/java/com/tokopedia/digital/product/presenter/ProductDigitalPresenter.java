@@ -63,6 +63,9 @@ import rx.Subscriber;
 public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
         implements IProductDigitalPresenter {
 
+    private static final String PULSA_CATEGORY_ID = "1";
+    private static final String PAKET_DATA_CATEGORY_ID = "2";
+
     private IProductDigitalView view;
     private IProductDigitalInteractor productDigitalInteractor;
 
@@ -323,8 +326,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                                 new OrderClientNumber.Builder()
                                         .clientNumber(lastTypedClientNumber)
                                         .build());
-                    } else if ((categoryData.getCategoryId().equals("1") ||
-                            categoryData.getCategoryId().equals("2")) &
+                    } else if (isPulsaOrPaketData(categoryData.getCategoryId()) &
                             !TextUtils.isEmpty(verifiedNumber)) {
                         historyClientNumber.setLastOrderClientNumber(
                                 new OrderClientNumber.Builder()
@@ -337,6 +339,10 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                 );
             }
         };
+    }
+
+    private boolean isPulsaOrPaketData(String categoryId) {
+        return categoryId.equals(PULSA_CATEGORY_ID) || categoryId.equals(PAKET_DATA_CATEGORY_ID);
     }
 
     private void renderCategoryDataAndBannerToView(CategoryData categoryData,

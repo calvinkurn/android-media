@@ -271,7 +271,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
                     Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
 
-//                    storeLastStateTabSelected();
                     presenter.storeLastClientNumberTyped(String.valueOf(category.getId()),
                             widgetClientNumberView.getText(), selectedProduct);
 

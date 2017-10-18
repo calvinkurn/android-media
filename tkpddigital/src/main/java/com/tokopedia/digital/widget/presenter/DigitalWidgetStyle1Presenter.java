@@ -2,12 +2,12 @@ package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle1View;
 import com.tokopedia.digital.widget.model.lastorder.Attributes;
@@ -27,6 +27,9 @@ import rx.Subscriber;
 
 public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
         implements IDigitalWidgetStyle1Presenter {
+
+    private static final String PULSA_CATEGORY_ID = "1";
+    private static final String PAKET_DATA_CATEGORY_ID = "2";
 
     private final IDigitalWidgetInteractor widgetInteractor;
     private final IDigitalWidgetStyle1View view;
@@ -67,26 +70,37 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                 view.renderNumberList(digitalNumberList.getOrderClientNumbers());
                 if (showLastOrder) {
                     if (digitalNumberList.getLastOrder() != null) {
-                        LastOrder lastOrder = new LastOrder();
-                        Attributes attributes = new Attributes();
-                        attributes.setClientNumber(digitalNumberList.getLastOrder().getClientNumber());
-                        attributes.setCategoryId(Integer.valueOf(digitalNumberList.getLastOrder().getCategoryId()));
-                        attributes.setOperatorId(Integer.valueOf(digitalNumberList.getLastOrder().getOperatorId()));
-                        if (!TextUtils.isEmpty(digitalNumberList.getLastOrder().getLastProduct())) {
-                            attributes.setProductId(Integer.valueOf(digitalNumberList.getLastOrder().getLastProduct()));
-                        }
-                        lastOrder.setAttributes(attributes);
+                        LastOrder lastOrder = mapOrderClientNumberToLastOrder(digitalNumberList
+                                .getLastOrder());
 
                         view.renderLastOrder(lastOrder);
                     } else if (!TextUtils.isEmpty(getLastClientNumberTyped(categoryId))) {
                         view.renderLastTypedClientNumber();
-                    } else if (categoryId.equals("1") || categoryId.equals("2") &
+                    } else if (isPulsaOrPaketData(categoryId) &
                             !TextUtils.isEmpty(SessionHandler.getPhoneNumber())) {
                         view.renderVerifiedNumber();
                     }
                 }
             }
         };
+    }
+
+    private LastOrder mapOrderClientNumberToLastOrder(OrderClientNumber orderClientNumber) {
+        LastOrder lastOrder = new LastOrder();
+        Attributes attributes = new Attributes();
+        attributes.setClientNumber(orderClientNumber.getClientNumber());
+        attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
+        attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
+        if (!TextUtils.isEmpty(orderClientNumber.getLastProduct())) {
+            attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+        }
+        lastOrder.setAttributes(attributes);
+        return lastOrder;
+    }
+
+    private boolean isPulsaOrPaketData(String categoryId) {
+        return (categoryId.equals(PULSA_CATEGORY_ID) ||
+                categoryId.equals(PAKET_DATA_CATEGORY_ID));
     }
 
     @Override

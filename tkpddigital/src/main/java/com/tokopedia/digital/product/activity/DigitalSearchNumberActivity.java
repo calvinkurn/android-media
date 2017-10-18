@@ -28,7 +28,6 @@ public class DigitalSearchNumberActivity extends BasePresenterActivity implement
     private static final String EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID";
 
     public static final String EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER";
-    private static final String EXTRA_CALLBACK_CLIENT_NUMBER_BACK = "EXTRA_CALLBACK_CLIENT_NUMBER_BACK";
 
     private String categoryId;
     private String clientNumber;

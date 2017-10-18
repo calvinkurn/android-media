@@ -3,7 +3,6 @@ package com.tokopedia.digital.widget.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -89,8 +88,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     protected void onFirstTimeLaunched() {
-        Log.d("WidgetStyle3RechargeFragment", "onFirstTimeLaunched: " + category.getId());
-
         lastClientNumberTyped = presenter.getLastClientNumberTyped(String.valueOf(category.getId()));
         lastOperatorSelected = presenter.getLastOperatorSelected(String.valueOf(category.getId()));
         lastProductSelected = presenter.getLastProductSelected(String.valueOf(category.getId()));
@@ -273,7 +270,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
                     Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
 
-//                    storeLastStateTabSelected();
                     presenter.storeLastClientNumberTyped(String.valueOf(category.getId()),
                             widgetClientNumberView.getText(), selectedProduct);
 
@@ -315,7 +311,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
         return new WidgetOperatorChooserView.OperatorChoserListener() {
             @Override
             public void onCheckChangeOperator(Operator rechargeOperatorModel) {
-                Log.d("WidgetStyle3RechargeFragment", "onCheckChangeOperator");
                 selectedProduct = null;
                 selectedOperator = rechargeOperatorModel;
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.getId());
@@ -335,7 +330,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void onResetOperator() {
-                Log.d("WidgetStyle3RechargeFragment", "onResetOperator");
                 clearHolder(holderWidgetWrapperBuy);
                 widgetClientNumberView.setEmptyString();
                 widgetClientNumberView.setImgOperatorInvisible();
@@ -470,14 +464,12 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     public void onSaveState(Bundle state) {
-        Log.d("WidgetStyle3RechargeFragment", "onSaveState");
         state.putString(STATE_CLIENT_NUMBER, widgetClientNumberView.getText());
         super.onSaveState(state);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-        Log.d("WidgetStyle3RechargeFragment", "onRestoreState");
         super.onRestoreState(savedState);
         if (category.getAttributes().getClientNumber().isShown()) {
             widgetClientNumberView.setText(savedState.getString(STATE_CLIENT_NUMBER));

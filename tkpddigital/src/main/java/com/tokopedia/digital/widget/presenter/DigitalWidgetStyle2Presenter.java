@@ -1,11 +1,12 @@
 package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
-import android.util.Log;
+import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle2View;
 import com.tokopedia.digital.widget.model.lastorder.Attributes;
@@ -57,7 +58,6 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                Log.d("DigitalWidgetStyle2Presenter", e.getMessage());
                 view.renderDefaultError();
             }
 
@@ -66,23 +66,29 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
                 view.renderNumberList(digitalNumberList.getOrderClientNumbers());
                 if (showLastOrder) {
                     if (digitalNumberList.getLastOrder() != null) {
-                        LastOrder lastOrder = new LastOrder();
-                        Attributes attributes = new Attributes();
-                        attributes.setClientNumber(digitalNumberList.getLastOrder().getClientNumber());
-                        attributes.setCategoryId(Integer.valueOf(digitalNumberList.getLastOrder().getCategoryId()));
-                        attributes.setOperatorId(Integer.valueOf(digitalNumberList.getLastOrder().getOperatorId()));
-                        attributes.setProductId(Integer.valueOf(digitalNumberList.getLastOrder().getLastProduct()));
-                        lastOrder.setAttributes(attributes);
+                        LastOrder lastOrder = mapOrderClientNumberToLastOrder(digitalNumberList
+                                .getLastOrder());
 
                         view.renderLastOrder(lastOrder);
                     } else if (getLastClientNumberTyped(categoryId) != null) {
                         view.renderLastTypedClientNumber();
-                    } else {
-
                     }
                 }
             }
         };
+    }
+
+    private LastOrder mapOrderClientNumberToLastOrder(OrderClientNumber orderClientNumber) {
+        LastOrder lastOrder = new LastOrder();
+        Attributes attributes = new Attributes();
+        attributes.setClientNumber(orderClientNumber.getClientNumber());
+        attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
+        attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
+        if (!TextUtils.isEmpty(orderClientNumber.getLastProduct())) {
+            attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+        }
+        lastOrder.setAttributes(attributes);
+        return lastOrder;
     }
 
     private Subscriber<List<Product>> getListProductSubscriber() {
@@ -123,7 +129,6 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                Log.d("DigitalWidgetStyle2Presenter", e.getMessage());
                 view.renderDefaultError();
             }
 
@@ -177,7 +182,6 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                Log.d("DigitalWidgetStyle2Presenter", e.getMessage());
                 view.renderDefaultError();
             }
 
