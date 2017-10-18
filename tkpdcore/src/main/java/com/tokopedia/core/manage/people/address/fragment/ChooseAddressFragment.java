@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -140,7 +141,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
             @Override
             public void onClick(View v) {
                 refresh();
-
+                hideKeyboard();
             }
         });
 
@@ -148,6 +149,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 refresh();
+                hideKeyboard();
                 return true;
             }
         });
@@ -160,6 +162,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() == 0) {
                     search.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                    refresh();
                 } else {
                     search.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
                 }
@@ -188,6 +191,15 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
             }
         });
 
+    }
+
+    private void hideKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     private RecyclerView.OnScrollListener onScroll() {
