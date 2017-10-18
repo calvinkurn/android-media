@@ -49,7 +49,7 @@ public class ReactNativeHostFactory {
 
             @Override
             protected String getJSBundleFile() {
-                return CodePush.getJSBundleFile();
+                return "index.android.bundle";
             }
         };
     }
