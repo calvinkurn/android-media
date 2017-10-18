@@ -112,8 +112,6 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     TextView driverPhone;
     @BindView(R2.id.driver_license)
     TextView driverLicense;
-    @BindView(R2.id.driver_info_border)
-    TextView driverInfoBorder;
     @BindView(R2.id.btn_call_driver)
     TextView btnCallOnDemandDriver;
 
@@ -230,10 +228,8 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
             btnCallOnDemandDriver.setOnClickListener(getClickListenerCallDriver());
             if (orderData.getDriverInfo().getLicenseNumber().isEmpty()) {
                 driverLicense.setVisibility(View.GONE);
-                driverInfoBorder.setVisibility(View.GONE);
             } else {
                 driverLicense.setVisibility(View.VISIBLE);
-                driverInfoBorder.setVisibility(View.VISIBLE);
                 driverLicense.setText(orderData.getDriverInfo().getLicenseNumber());
             }
         } else instantCourierDriverLayout.setVisibility(View.GONE);
