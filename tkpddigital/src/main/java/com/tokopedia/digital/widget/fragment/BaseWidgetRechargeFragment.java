@@ -17,14 +17,12 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.model.WidgetContact;
@@ -81,7 +79,6 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
 
     @Override
     public void onSaveState(Bundle state) {
-//        storeLastStateTabSelected();
         state.putParcelable(STATE_CATEGORY, category);
         state.putParcelable(EXTRA_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
     }
@@ -231,7 +228,6 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
 
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
     public void doLaunchContactPicker() {
-//        storeLastStateTabSelected();
         Intent contactPickerIntent = new Intent(
                 Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI
@@ -332,14 +328,6 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
     }
 
     protected abstract void trackingOnClientNumberFocusListener();
-
-//    protected void storeLastStateTabSelected() {
-//        LocalCacheHandler localCacheHandler = new LocalCacheHandler(
-//                getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
-//        );
-//        localCacheHandler.putInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED, currentPosition);
-//        localCacheHandler.applyEditor();
-//    }
 
     protected void showSnackbarErrorMessage(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);

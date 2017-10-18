@@ -459,18 +459,15 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     @Override
     public void onSaveState(Bundle state) {
         state.putString(STATE_CLIENT_NUMBER, widgetClientNumberView.getText());
-        if (selectedOperator != null) {
-            state.putInt(STATE_OPERATOR_ID, selectedOperator.getId());
-        }
-        if (selectedProduct != null) {
-            state.putInt(STATE_PRODUCT_ID, selectedProduct.getId());
-        }
         super.onSaveState(state);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
         super.onRestoreState(savedState);
+        if (category.getAttributes().getClientNumber().isShown()) {
+            widgetClientNumberView.setText(savedState.getString(STATE_CLIENT_NUMBER));
+        }
         renderView();
         presenter.fetchOperatorByCategory(category.getId(), false);
     }

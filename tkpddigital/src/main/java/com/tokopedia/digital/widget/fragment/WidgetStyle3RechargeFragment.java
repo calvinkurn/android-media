@@ -3,6 +3,7 @@ package com.tokopedia.digital.widget.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -51,8 +52,6 @@ import rx.subscriptions.CompositeSubscription;
 public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDigitalWidgetStyle2Presenter> implements IDigitalWidgetStyle2View {
 
     private static final String STATE_CLIENT_NUMBER = "STATE_CLIENT_NUMBER";
-    private static final String STATE_OPERATOR_ID = "STATE_OPERATOR_ID";
-    private static final String STATE_PRODUCT_ID = "STATE_PRODUCT_ID";
 
     @BindView(R2.id.holder_widget_client_number)
     LinearLayout holderWidgetClientNumber;
@@ -76,6 +75,9 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
     private boolean showPrice = true;
     private CompositeSubscription compositeSubscription;
 
+    private List<Operator> operators;
+    private List<Product> products;
+
     public static WidgetStyle3RechargeFragment newInstance(Category category, int position) {
         WidgetStyle3RechargeFragment fragment = new WidgetStyle3RechargeFragment();
         Bundle bundle = new Bundle();
@@ -87,6 +89,8 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     protected void onFirstTimeLaunched() {
+        Log.d("WidgetStyle3RechargeFragment", "onFirstTimeLaunched: " + category.getId());
+
         lastClientNumberTyped = presenter.getLastClientNumberTyped(String.valueOf(category.getId()));
         lastOperatorSelected = presenter.getLastOperatorSelected(String.valueOf(category.getId()));
         lastProductSelected = presenter.getLastProductSelected(String.valueOf(category.getId()));
@@ -311,6 +315,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
         return new WidgetOperatorChooserView.OperatorChoserListener() {
             @Override
             public void onCheckChangeOperator(Operator rechargeOperatorModel) {
+                Log.d("WidgetStyle3RechargeFragment", "onCheckChangeOperator");
                 selectedProduct = null;
                 selectedOperator = rechargeOperatorModel;
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.getId());
@@ -330,6 +335,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void onResetOperator() {
+                Log.d("WidgetStyle3RechargeFragment", "onResetOperator");
                 clearHolder(holderWidgetWrapperBuy);
                 widgetClientNumberView.setEmptyString();
                 widgetClientNumberView.setImgOperatorInvisible();
@@ -371,6 +377,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     public void renderDataProducts(List<Product> products) {
+        this.products = products;
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetWrapperBuy);
         widgetProductChooserView.setListener(getProductChoserListener());
@@ -387,15 +394,16 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
     }
 
     @Override
-    public void renderOperators(List<Operator> operatorModels, boolean b) {
+    public void renderOperators(List<Operator> operators, boolean b) {
+        this.operators = operators;
         clearHolder(holderWidgetSpinnerOperator);
         widgetOperatorChooserView.setListener(getOperatorChoserListener());
-        widgetOperatorChooserView.renderDataView(operatorModels, lastOrder, category.getId(),
+        widgetOperatorChooserView.renderDataView(operators, lastOrder, category.getId(),
                 lastOperatorSelected);
         holderWidgetSpinnerOperator.addView(widgetOperatorChooserView);
 
         if (category.getAttributes().getClientNumber().isShown()) {
-            presenter.fetchNumberList(String.valueOf(category.getId()), b);
+            presenter.fetchNumberList(String.valueOf(category.getId()), true);
         }
     }
 
@@ -453,6 +461,8 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
         if (presenter != null) {
             this.lastOrder = lastOrder;
             if (lastOrder != null && lastOrder.getAttributes() != null && category != null) {
+                widgetOperatorChooserView.renderDataView(operators, lastOrder, category.getId(),
+                        lastOperatorSelected);
                 widgetClientNumberView.setText(lastOrder.getAttributes().getClientNumber());
             }
         }
@@ -460,19 +470,18 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     public void onSaveState(Bundle state) {
+        Log.d("WidgetStyle3RechargeFragment", "onSaveState");
         state.putString(STATE_CLIENT_NUMBER, widgetClientNumberView.getText());
-        if (selectedOperator != null) {
-            state.putInt(STATE_OPERATOR_ID, selectedOperator.getId());
-        }
-        if (selectedProduct != null) {
-            state.putInt(STATE_PRODUCT_ID, selectedProduct.getId());
-        }
         super.onSaveState(state);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
+        Log.d("WidgetStyle3RechargeFragment", "onRestoreState");
         super.onRestoreState(savedState);
+        if (category.getAttributes().getClientNumber().isShown()) {
+            widgetClientNumberView.setText(savedState.getString(STATE_CLIENT_NUMBER));
+        }
         renderView();
         presenter.fetchOperatorByCategory(category.getId(), false);
     }

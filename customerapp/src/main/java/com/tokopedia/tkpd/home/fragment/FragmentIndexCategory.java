@@ -1072,6 +1072,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG, "onSaveInstanceState");
         storeLastStateTabSelected();
         super.onSaveInstanceState(outState);
     }
