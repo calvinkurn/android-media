@@ -5,7 +5,21 @@ import {
   BASE_API_URL_PCIDSS
 } from '../lib/api.js'
 
+// ==================== Session Data ===================== //
+const getUserId = () => {
+  return SessionModule.getUserId()
+    .then(res => { return res })
+    .catch(err => console.log(err))
+}
 
+const getAddrId = () => {
+  return SessionModule.getAddrId()
+    .then(res => { return res })
+    .catch(err => console.log(err))
+}
+
+
+// ==================== Session Data ===================== //
 
 
 //  ==================== Make Payment V2 Native ===================== //
@@ -42,7 +56,8 @@ const getBaseAPI = (env) => {
     const data_api = {
       api_url_payment: `${BASE_API_URL_PAYMENT.PRODUCTION}`,
       api_url_scrooge: `${BASE_API_URL_SCROOGE.PRODUCTION}`,
-      api_url_pcidss: `${BASE_API_URL_PCIDSS.PRODUCTION}`
+      api_url_pcidss: `${BASE_API_URL_PCIDSS.PRODUCTION}`,
+      api_url_order: `${BASE_API_URL_ORDER.PRODUCTION}`
     }
     return data_api
 
@@ -50,7 +65,8 @@ const getBaseAPI = (env) => {
     const data_api = {
       api_url_payment: `${BASE_API_URL_PAYMENT.STAGING}`,
       api_url_scrooge: `${BASE_API_URL_SCROOGE.STAGING}`,
-      api_url_pcidss: `${BASE_API_URL_PCIDSS.STAGING}`
+      api_url_pcidss: `${BASE_API_URL_PCIDSS.STAGING}`,
+      api_url_order: `${BASE_API_URL_ORDER.STAGING}`
     }
     return data_api
   }
@@ -106,7 +122,39 @@ export const FETCH_TRANSACTION_HISTORY = 'FETCH_TRANSACTION_HISTORY'
 export const getTransactionHistory = () => {
   return {
     type: FETCH_TRANSACTION_HISTORY,
+    payload: fetchTxHistory()
   }
+}
+
+const fetchTxHistory = async () => {
+  const env = await getEnv()
+  const api_url = await getBaseAPI(env)
+  const user_id = await getUserId()
+  const addr_id = await getAddrId()
+  // need to work on pagination
+  const data = {
+    user_id,
+    addr_id,
+    per_page: 10,
+    page: 1,
+    os_type: '1'
+  }
+  console.log(data)
+  const txHistory = await apiGetTxHistory(`${api_url.api_url_order}/api/order/i/v1/o2o/get_order_list_details`, data)
+  return txHistory
+}
+
+const apiGetTxHistory = (url, data) => {
+  return NetworkModule.getResponseJson(url, `POST`, JSON.stringify(data), false)
+    .then(res => {
+        const jsonResponse = JSON.parse(res)
+        console.log(jsonResponse)
+        return jsonResponse
+    })
+    .catch(err => {
+      console.log(err)
+      return
+    })
 }
 //  ==================== Transaction History ===================== //
 

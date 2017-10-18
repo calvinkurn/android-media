@@ -9,7 +9,7 @@ import com.tokopedia.posapp.PosConstants;
 import com.tokopedia.posapp.data.mapper.CreateOrderMapper;
 import com.tokopedia.posapp.data.mapper.PaymentStatusMapper;
 import com.tokopedia.posapp.data.pojo.payment.CreateOrderParameter;
-import com.tokopedia.posapp.data.source.cloud.api.PaymentApi;
+import com.tokopedia.posapp.data.source.cloud.api.GatewayPaymentApi;
 import com.tokopedia.posapp.data.source.cloud.api.ScroogeApi;
 import com.tokopedia.posapp.domain.model.CreateOrderDomain;
 import com.tokopedia.posapp.domain.model.payment.PaymentStatusDomain;
@@ -21,23 +21,23 @@ import rx.Observable;
  */
 
 public class PaymentCloudSource {
+    public static final String CREATE_ORDER_PARAMETER = "CREATE_ORDER_PARAMETER";
     private static final String PARAM_TRANSACTION_ID = "transaction_id";
     private static final String PARAM_IP_ADDRESS = "ip_address";
     private static final String PARAM_MERCHANT_CODE = "merchant_code";
-    public static final String CREATE_ORDER_PARAMETER = "CREATE_ORDER_PARAMETER";
     private String PARAM_SIGNATURE = "signature";
 
+    private GatewayPaymentApi gatewayPaymentApi;
     private ScroogeApi scroogeApi;
-    private PaymentApi paymentApi;
     private PaymentStatusMapper paymentStatusMapper;
     private CreateOrderMapper createOrderMapper;
 
-    public PaymentCloudSource(ScroogeApi scroogeApi,
-                              PaymentApi paymentApi,
+    public PaymentCloudSource(GatewayPaymentApi gatewayPaymentApi,
+                              ScroogeApi scroogeApi,
                               PaymentStatusMapper paymentStatusMapper,
                               CreateOrderMapper createOrderMapper) {
+        this.gatewayPaymentApi = gatewayPaymentApi;
         this.scroogeApi = scroogeApi;
-        this.paymentApi = paymentApi;
         this.paymentStatusMapper = paymentStatusMapper;
         this.createOrderMapper = createOrderMapper;
     }
@@ -70,12 +70,12 @@ public class PaymentCloudSource {
                 orderParam.getUserDefinedString();
 
         orderParam.setSignature(
-            AuthUtil.calculateHmacSHA1(signatureInput, PosConstants.KEY_PAYMENT)
+                AuthUtil.calculateHmacSHA1(signatureInput, PosConstants.KEY_PAYMENT)
         );
 
         Log.d("o2o", "create order request" + new Gson().toJson(orderParam));
 
-        return paymentApi
+        return gatewayPaymentApi
                 .createOrder(new Gson().toJson(orderParam))
                 .map(createOrderMapper);
     }

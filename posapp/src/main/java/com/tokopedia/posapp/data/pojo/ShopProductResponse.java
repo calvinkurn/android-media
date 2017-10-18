@@ -3,6 +3,7 @@ package com.tokopedia.posapp.data.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
+import com.tokopedia.posapp.data.pojo.base.Paging;
 
 import java.util.ArrayList;
 

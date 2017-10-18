@@ -2,7 +2,9 @@ package com.tokopedia.posapp.data.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.posapp.data.pojo.bank.BankItemResponse;
 import com.tokopedia.posapp.data.pojo.base.GeneralResponse;
+import com.tokopedia.posapp.data.pojo.cart.CheckoutDataResponse;
 
 /**
  * Created by okasurya on 10/9/17.

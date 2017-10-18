@@ -3,14 +3,14 @@ package com.tokopedia.posapp.di.module;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.di.qualifier.PaymentNoAuth;
+import com.tokopedia.core.network.di.qualifier.PosGatewayNoAuth;
 import com.tokopedia.core.network.di.qualifier.ScroogeNoAuth;
 import com.tokopedia.posapp.data.factory.PaymentFactory;
 import com.tokopedia.posapp.data.mapper.CreateOrderMapper;
 import com.tokopedia.posapp.data.mapper.PaymentStatusMapper;
 import com.tokopedia.posapp.data.repository.PaymentRepository;
 import com.tokopedia.posapp.data.repository.PaymentRepositoryImpl;
-import com.tokopedia.posapp.data.source.cloud.api.PaymentApi;
+import com.tokopedia.posapp.data.source.cloud.api.GatewayPaymentApi;
 import com.tokopedia.posapp.data.source.cloud.api.ScroogeApi;
 import com.tokopedia.posapp.di.scope.PaymentScope;
 import com.tokopedia.posapp.domain.usecase.CheckPaymentStatusUseCase;
@@ -27,13 +27,13 @@ import retrofit2.Retrofit;
 @Module(includes = CartModule.class)
 public class PaymentModule {
     @Provides
-    ScroogeApi provideScroogeApi(@ScroogeNoAuth Retrofit retrofit) {
-        return retrofit.create(ScroogeApi.class);
+    GatewayPaymentApi provideGatewayPaymentApi(@PosGatewayNoAuth Retrofit retrofit) {
+        return retrofit.create(GatewayPaymentApi.class);
     }
 
     @Provides
-    PaymentApi providePaymentApi(@PaymentNoAuth Retrofit retrofit) {
-        return retrofit.create(PaymentApi.class);
+    ScroogeApi provideScroogeApi(@ScroogeNoAuth Retrofit retrofit) {
+        return retrofit.create(ScroogeApi.class);
     }
 
     @Provides
@@ -47,11 +47,11 @@ public class PaymentModule {
     }
 
     @Provides
-    PaymentFactory providePaymentFactory(ScroogeApi scroogeApi,
-                                         PaymentApi paymentApi,
+    PaymentFactory providePaymentFactory(GatewayPaymentApi gatewayPaymentApi,
+                                         ScroogeApi scroogeApi,
                                          PaymentStatusMapper paymentStatusmapper,
                                          CreateOrderMapper createOrderMapper) {
-        return new PaymentFactory(scroogeApi, paymentApi, paymentStatusmapper, createOrderMapper);
+        return new PaymentFactory(gatewayPaymentApi, scroogeApi, paymentStatusmapper, createOrderMapper);
     }
 
     @Provides

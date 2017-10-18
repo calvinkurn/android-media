@@ -1,23 +1,18 @@
-package com.tokopedia.posapp.data.source.cloud.api.pos;
+package com.tokopedia.posapp.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
-import java.util.Map;
-
 import retrofit2.Response;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
  * Created by okasurya on 10/13/17.
  */
 
-public interface PosProductApi {
+public interface GatewayProductApi {
 
     String SHOP_ID = "shopId";
     String START_OFFSET = "startOffset";

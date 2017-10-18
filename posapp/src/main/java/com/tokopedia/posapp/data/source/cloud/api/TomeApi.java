@@ -1,8 +1,7 @@
 package com.tokopedia.posapp.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.posapp.data.pojo.EtalaseResponse;
+import com.tokopedia.posapp.data.pojo.etalase.EtalaseResponse;
 
 import java.util.Map;
 

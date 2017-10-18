@@ -2,7 +2,7 @@ package com.tokopedia.posapp.data.source.cloud;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.posapp.data.mapper.GetEtalaseMapper;
-import com.tokopedia.posapp.data.source.cloud.api.TomeApi;
+import com.tokopedia.posapp.data.source.cloud.api.GatewayProductApi;
 import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
 
 import java.util.List;
@@ -10,19 +10,21 @@ import java.util.List;
 import rx.Observable;
 
 /**
- * Created by okasurya on 9/25/17.
+ * Created by okasurya on 10/17/17.
  */
 
 public class EtalaseCloudSource {
-    private TomeApi tomeApi;
+    private static final String SHOP_ID = "shop_id";
+
+    private GatewayProductApi gatewayProductApi;
     private GetEtalaseMapper getEtalaseMapper;
 
-    public EtalaseCloudSource(TomeApi tomeApi, GetEtalaseMapper getEtalaseMapper) {
-        this.tomeApi = tomeApi;
+    public EtalaseCloudSource(GatewayProductApi gatewayProductApi, GetEtalaseMapper getEtalaseMapper) {
+        this.gatewayProductApi = gatewayProductApi;
         this.getEtalaseMapper = getEtalaseMapper;
     }
 
     public Observable<List<EtalaseDomain>> getEtalase(RequestParams params) {
-        return tomeApi.getShopEtalase(params.getParamsAllValueInString()).map(getEtalaseMapper);
+        return gatewayProductApi.getEtalase(params.getString(SHOP_ID, "")).map(getEtalaseMapper);
     }
 }

@@ -863,7 +863,7 @@ public class TkpdBaseURL {
         public static final String GET_PRODUCT_LIST = "o2o/v1/shops/{shopId}/get_products/{startOffset}/{rowOffset}";
         public static final String GET_PAYMENT_PARAM = "o2o/get_payment_params";
         public static final String GET_CREDIT_CARDS = "o2o/v1/payment/get_credit_cards";
-        public static final String GET_INSTALLMENT_TERM = "o2o/v1/payment/get_installment_terms/{merchantCode}/{profileCode}";
+        public static final String GET_INSTALLMENT_TERM = "o2o/v1/payment/get_installment_terms/{merchant_code}/{profile_code}";
         public static final String CREATE_PAYMENT = "o2o/v1/payment/create";
         public static final String PROCESS_CREDIT_CARD = "o2o/v1/payment/process/creditcard";
         public static final String CREATE_ORDER = "o2o/payment_action";

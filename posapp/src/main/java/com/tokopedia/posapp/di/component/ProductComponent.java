@@ -14,8 +14,8 @@ import dagger.Component;
 
 @ProductScope
 @Component(
-    modules = {ProductModule.class, CartModule.class},
-    dependencies = AppComponent.class
+        modules = {ProductModule.class, CartModule.class},
+        dependencies = AppComponent.class
 )
 public interface ProductComponent {
     void inject(ProductDetailFragment fragment);

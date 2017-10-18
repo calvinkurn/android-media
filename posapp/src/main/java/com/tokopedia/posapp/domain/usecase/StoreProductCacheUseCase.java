@@ -2,11 +2,10 @@ package com.tokopedia.posapp.domain.usecase;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.shopinfo.models.productmodel.ProductResponseData;
 import com.tokopedia.posapp.base.domain.UseCaseWithParams;
 import com.tokopedia.posapp.data.repository.ProductRepository;
 import com.tokopedia.posapp.domain.model.DataStatus;
-import com.tokopedia.posapp.domain.model.shop.ProductListDomain;
+import com.tokopedia.posapp.domain.model.product.ProductListDomain;
 
 import rx.Observable;
 

@@ -5,7 +5,7 @@ import com.tokopedia.posapp.database.manager.ProductDbManager;
 import com.tokopedia.posapp.database.model.ProductDb_Table;
 import com.tokopedia.posapp.domain.model.DataStatus;
 import com.tokopedia.posapp.domain.model.product.ProductDomain;
-import com.tokopedia.posapp.domain.model.shop.ProductListDomain;
+import com.tokopedia.posapp.domain.model.product.ProductListDomain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class ProductLocalSource {
                 .flatMap(new Func1<ProductListDomain, Observable<DataStatus>>() {
                     @Override
                     public Observable<DataStatus> call(ProductListDomain productListDomain) {
-                        return productDbManager.store(mapToDomainList(productListDomain.getProductList()));
+                        return productDbManager.store(productListDomain.getProductDomains());
                     }
                 });
     }
