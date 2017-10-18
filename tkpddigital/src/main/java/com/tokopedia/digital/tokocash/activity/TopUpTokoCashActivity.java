@@ -17,8 +17,9 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -29,6 +30,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
@@ -123,7 +125,9 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
         ITokoCashRepository balanceRepository = new TokoCashRepository(new TokoCashService(
                 sessionHandler.getAccessToken(this)));
         ITokoCashBalanceInteractor balanceInteractor = new TokoCashBalanceInteractor(balanceRepository,
-                new CompositeSubscription());
+                new CompositeSubscription(),
+                new JobExecutor(),
+                new UIThread());
         presenter = new TopUpTokocashPresenter(getApplicationContext(), productDigitalInteractor, balanceInteractor, this);
     }
 

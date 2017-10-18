@@ -23,6 +23,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
@@ -46,6 +48,7 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nabillasabbaha on 7/24/17.
@@ -79,6 +82,7 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
     private CountDownTimer countDownTimer;
     private TkpdProgressDialog progressDialog;
     private IncomingSmsReceiver incomingSmsReceiver;
+    private CompositeSubscription compositeSubscription;
 
     public static RequestOTPWalletFragment newInstance() {
         RequestOTPWalletFragment fragment = new RequestOTPWalletFragment();
@@ -159,8 +163,11 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
         String acessToken = sessionHandler.getAccessToken(MainApplication.getAppContext());
         TokoCashService tokoCashService = new TokoCashService(acessToken);
+        compositeSubscription = new CompositeSubscription();
         ActivateTokoCashInteractor interactor = new ActivateTokoCashInteractor
-                (new TokoCashRepository(tokoCashService));
+                (compositeSubscription, new TokoCashRepository(tokoCashService),
+                        new JobExecutor(),
+                        new UIThread());
         presenter = new RequestOTPWalletPresenter(interactor, this);
     }
 
@@ -361,7 +368,9 @@ public class RequestOTPWalletFragment extends BasePresenterFragment<IRequestOTPW
         if (incomingSmsReceiver != null)
             getActivity().unregisterReceiver(incomingSmsReceiver);
 
-        presenter.onDestroyView();
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
+
         cacheHandler = null;
     }
 

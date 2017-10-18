@@ -18,7 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
@@ -98,6 +100,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     private FilterTokoCashAdapter adapterFilter;
     private HistoryTokoCashAdapter adapterHistory;
     private EndlessRecyclerviewListener endlessRecyclerviewListener;
+    private CompositeSubscription compositeSubscription;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, HistoryTokocashActivity.class);
@@ -121,11 +124,15 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     @Override
     protected void initialPresenter() {
         SessionHandler sessionHandler = new SessionHandler(this);
+        if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         IHistoryTokoCashRepository repository = new HistoryTokoCashRepository(
                 new HistoryTokoCashService(
                         sessionHandler.getAccessTokenTokoCash())
         );
-        ITokoCashHistoryInteractor interactor = new TokoCashHistoryInteractor(repository, new CompositeSubscription());
+        ITokoCashHistoryInteractor interactor = new TokoCashHistoryInteractor(repository,
+                compositeSubscription,
+                new JobExecutor(),
+                new UIThread());
         presenter = new TokoCashHistoryPresenter(interactor, this);
     }
 
@@ -375,7 +382,9 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
 
     @Override
     protected void onDestroy() {
-        presenter.onDestroy();
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
         super.onDestroy();
     }
 }

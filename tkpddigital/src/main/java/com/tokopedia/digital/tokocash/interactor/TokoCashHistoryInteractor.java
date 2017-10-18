@@ -1,5 +1,8 @@
 package com.tokopedia.digital.tokocash.interactor;
 
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.digital.tokocash.domain.IHistoryTokoCashRepository;
 import com.tokopedia.digital.tokocash.entity.ResponseHelpHistoryEntity;
 import com.tokopedia.digital.tokocash.mapper.HelpHistoryDataMapper;
@@ -10,7 +13,6 @@ import com.tokopedia.digital.tokocash.model.TokoCashHistoryData;
 import java.util.List;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -25,13 +27,21 @@ public class TokoCashHistoryInteractor implements ITokoCashHistoryInteractor {
     private CompositeSubscription compositeSubscription;
     private TokoCashHistoryMapper tokoCashHistoryMapper;
     private HelpHistoryDataMapper helpHistoryDataMapper;
+    private ThreadExecutor threadExecutor;
+    private PostExecutionThread postExecutionThread;
+
 
     public TokoCashHistoryInteractor(IHistoryTokoCashRepository repository,
-                                     CompositeSubscription compositeSubscription) {
+                                     CompositeSubscription compositeSubscription,
+                                     JobExecutor jobExecutor,
+                                     PostExecutionThread postExecutionThread) {
         this.repository = repository;
         this.compositeSubscription = compositeSubscription;
         tokoCashHistoryMapper = new TokoCashHistoryMapper();
         helpHistoryDataMapper = new HelpHistoryDataMapper();
+        this.threadExecutor = jobExecutor;
+        this.postExecutionThread = postExecutionThread;
+
     }
 
     @Override
@@ -40,9 +50,9 @@ public class TokoCashHistoryInteractor implements ITokoCashHistoryInteractor {
         compositeSubscription.add(
                 repository.getTokoCashHistoryData(type, startDate, endDate, afterId)
                         .map(tokoCashHistoryMapper)
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
     }
 
@@ -51,9 +61,9 @@ public class TokoCashHistoryInteractor implements ITokoCashHistoryInteractor {
         compositeSubscription.add(
                 repository.getHelpHistoryData()
                         .map(helpHistoryDataMapper)
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
     }
 
@@ -67,16 +77,9 @@ public class TokoCashHistoryInteractor implements ITokoCashHistoryInteractor {
                                 return responseHelpHistoryEntity != null;
                             }
                         })
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
-    }
-
-    @Override
-    public void onDestroy() {
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
-            compositeSubscription.unsubscribe();
-        }
     }
 }

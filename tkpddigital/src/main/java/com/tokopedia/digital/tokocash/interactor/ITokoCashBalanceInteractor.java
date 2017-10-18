@@ -14,6 +14,4 @@ public interface ITokoCashBalanceInteractor {
     void getBalanceTokoCash(Subscriber<TokoCashData> subscriber);
 
     void getTokenWallet(Subscriber<WalletToken> subscriber);
-
-    void onDestroy();
 }

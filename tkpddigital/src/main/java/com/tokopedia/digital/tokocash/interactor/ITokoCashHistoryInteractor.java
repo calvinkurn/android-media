@@ -19,6 +19,4 @@ public interface ITokoCashHistoryInteractor {
     void getHelpListCategory(Subscriber<List<HelpHistoryTokoCash>> subscriber);
 
     void postHelpHistory(Subscriber<Boolean> subscriber, String subject, String message, String category, String transactionId);
-
-    void onDestroy();
 }

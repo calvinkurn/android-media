@@ -204,9 +204,4 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
             }
         };
     }
-
-    @Override
-    public void onDestroy() {
-        balanceInteractor.onDestroy();
-    }
 }

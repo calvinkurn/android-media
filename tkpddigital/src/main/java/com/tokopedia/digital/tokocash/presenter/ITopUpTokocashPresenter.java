@@ -16,6 +16,4 @@ public interface ITopUpTokocashPresenter {
 
     void processAddToCartProduct(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct);
 
-    void onDestroy();
-
 }

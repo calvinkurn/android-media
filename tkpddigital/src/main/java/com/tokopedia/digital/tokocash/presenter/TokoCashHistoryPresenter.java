@@ -123,9 +123,4 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
             view.renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         }
     }
-
-    @Override
-    public void onDestroy() {
-        interactor.onDestroy();
-    }
 }

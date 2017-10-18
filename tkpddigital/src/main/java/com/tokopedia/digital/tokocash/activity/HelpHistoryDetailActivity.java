@@ -15,6 +15,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
@@ -68,9 +70,12 @@ public class HelpHistoryDetailActivity extends BasePresenterActivity<HelpHistory
     @Override
     protected void initialPresenter() {
         SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
-        presenter = new HelpHistoryPresenter(getApplicationContext(), new TokoCashHistoryInteractor(
-                new HistoryTokoCashRepository(new HistoryTokoCashService(sessionHandler.getAccessTokenTokoCash())),
-                new CompositeSubscription()), this);
+        presenter = new HelpHistoryPresenter(getApplicationContext(),
+                new TokoCashHistoryInteractor(
+                        new HistoryTokoCashRepository(new HistoryTokoCashService(sessionHandler.getAccessTokenTokoCash())),
+                        new CompositeSubscription(),
+                        new JobExecutor(),
+                        new UIThread()), this);
     }
 
     @Override
