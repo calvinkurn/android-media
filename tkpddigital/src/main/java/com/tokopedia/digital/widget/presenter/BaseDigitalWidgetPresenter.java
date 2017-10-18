@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.product.Product;
 
 /**
  * Created by nabillasabbaha on 8/8/17.
@@ -70,7 +70,7 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
             String temp = localCacheHandlerLastOrder.getString(TkpdCache.Key.DIGITAL_LAST_ORDER);
             try {
                 LastOrder lastOrder = CacheUtil.convertStringToModel(temp, LastOrder.class);
-                return (lastOrder.getData().getAttributes().getCategory_id() == categoryId);
+                return (lastOrder.getAttributes().getCategoryId() == categoryId);
             } catch (Exception e) {
                 return false;
             }

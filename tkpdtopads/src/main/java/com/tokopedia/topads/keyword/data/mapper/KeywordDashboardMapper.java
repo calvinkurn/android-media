@@ -55,6 +55,7 @@ public class KeywordDashboardMapper implements Func1<PageDataResponse<List<Datum
         res.setLabelEdit(datum.getLabelEdit());//17
         res.setLabelPerClick(datum.getLabelPerClick());//18
         res.setLabelOf(datum.getLabelOf());//19
+        res.setGroupBid(datum.getGroupBid());
         return res;
     }
 

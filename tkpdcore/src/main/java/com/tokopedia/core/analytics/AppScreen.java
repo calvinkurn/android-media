@@ -252,6 +252,7 @@ public final class AppScreen {
     public static final String SCREEN_FEED_DETAIL = "Feed Detail";
     public static final String SCREEN_OPPORTUNITY_DETAIL = "Replacement Detail Page";
     public static final String SCREEN_OPPORTUNITY_TAB= "Replacement Main Page";
+    public static final String SCREEN_ONBOARDING = "Screen OnBoarding ";
 
     private AppScreen() {
 

@@ -3,7 +3,7 @@ package com.tokopedia.gm.featured.view.presenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductSubmitUseCase;
-import com.tokopedia.gm.featured.domain.model.GMFeaturedProductDomainModel;
+import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.gm.featured.domain.model.GMFeaturedProductSubmitDomainModel;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
 

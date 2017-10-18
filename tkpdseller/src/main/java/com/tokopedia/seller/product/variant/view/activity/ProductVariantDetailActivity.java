@@ -134,8 +134,7 @@ public class ProductVariantDetailActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    protected boolean isToolbarWhite() {
+        return true;
     }
-
 }

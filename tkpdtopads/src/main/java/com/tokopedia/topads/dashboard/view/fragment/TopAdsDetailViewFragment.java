@@ -2,12 +2,10 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,14 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
@@ -30,8 +24,6 @@ import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailViewPresenter;
-
-import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -95,13 +87,13 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
         alertDialog.setTitle(title);
         alertDialog.setMessage(content);
-        alertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(R.string.action_discard, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 deleteAd();
             }
         });
-        alertDialog.setNegativeButton(R.string.No, null);
+        alertDialog.setNegativeButton(R.string.action_keep, null);
         alertDialog.show();
     }
 
@@ -128,7 +120,7 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
     public void onTurnOnAdError() {
         setStatusSwitch(!status.isChecked());
         hideLoading();
-        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 setStatusSwitch(true);
@@ -149,7 +141,7 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
     public void onTurnOffAdError() {
         setStatusSwitch(!status.isChecked());
         hideLoading();
-        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 setStatusSwitch(false);
@@ -171,7 +163,7 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
     @Override
     public void onDeleteAdError() {
         hideLoading();
-        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 deleteAd();
