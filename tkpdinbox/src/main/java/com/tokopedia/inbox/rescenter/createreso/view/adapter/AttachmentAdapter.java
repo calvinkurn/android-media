@@ -75,7 +75,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (holder.getAdapterPosition() == attachmentViewModelList.size()) {
+                if (holder.getAdapterPosition() == 0) {
                     listener.onAddAttachmentClicked();
                 } else {
                     //image clicked
