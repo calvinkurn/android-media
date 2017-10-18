@@ -59,7 +59,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
 
     @Override
     public void onBindViewHolder(final ItemHolder holder, int position) {
-        final int itemPos = position - 1;
+        final int itemPos = attachmentViewModelList.size() < maxAttachmentCount ? position - 1 : position;
         if (attachmentViewModelList.size() < maxAttachmentCount && position == 0) {
             holder.ivClose.setVisibility(View.GONE);
             holder.ivImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_attachment));
