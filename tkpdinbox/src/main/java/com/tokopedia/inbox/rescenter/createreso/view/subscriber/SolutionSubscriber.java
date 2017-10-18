@@ -66,6 +66,7 @@ public class SolutionSubscriber extends Subscriber<SolutionResponseDomain> {
             viewModelList.add(new SolutionViewModel(
                     solutionDomain.getId(),
                     solutionDomain.getName(),
+                    solutionDomain.getSolutionName(),
                     solutionDomain.getAmount() != null ?
                             mappingAmountViewModel(solutionDomain.getAmount()) :
                             null));

@@ -75,6 +75,7 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
         for (SolutionResponse solutionResponse : response) {
             SolutionDomain solutionDomain = new SolutionDomain(solutionResponse.getId(),
                     solutionResponse.getName(),
+                    solutionResponse.getSolutionName(),
                     solutionResponse.getAmount() != null ?
                             mappingAmountDomain(solutionResponse.getAmount()) : null);
             domainList.add(solutionDomain);

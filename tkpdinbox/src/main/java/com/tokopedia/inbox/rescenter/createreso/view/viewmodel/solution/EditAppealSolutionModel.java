@@ -12,16 +12,67 @@ public class EditAppealSolutionModel implements Parcelable {
     public String resolutionId;
     public boolean isSeller;
     public int solution;
+    public String name;
     public String solutionName;
     public int refundAmount;
 
-    public EditAppealSolutionModel(boolean isEdit, String resolutionId, boolean isSeller) {
-        this.isEdit = isEdit;
+    public boolean isEdit() {
+        return isEdit;
+    }
+
+    public void setEdit(boolean edit) {
+        isEdit = edit;
+    }
+
+    public String getResolutionId() {
+        return resolutionId;
+    }
+
+    public void setResolutionId(String resolutionId) {
         this.resolutionId = resolutionId;
-        this.isSeller = isSeller;
-        refundAmount = 0;
-        solutionName = "";
-        solution = 0;
+    }
+
+    public boolean isSeller() {
+        return isSeller;
+    }
+
+    public void setSeller(boolean seller) {
+        isSeller = seller;
+    }
+
+    public int getSolution() {
+        return solution;
+    }
+
+    public void setSolution(int solution) {
+        this.solution = solution;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSolutionName() {
+        return solutionName;
+    }
+
+    public void setSolutionName(String solutionName) {
+        this.solutionName = solutionName;
+    }
+
+    public int getRefundAmount() {
+        return refundAmount;
+    }
+
+    public void setRefundAmount(int refundAmount) {
+        this.refundAmount = refundAmount;
+    }
+
+    public EditAppealSolutionModel() {
     }
 
     @Override
@@ -35,6 +86,8 @@ public class EditAppealSolutionModel implements Parcelable {
         dest.writeString(this.resolutionId);
         dest.writeByte(this.isSeller ? (byte) 1 : (byte) 0);
         dest.writeInt(this.solution);
+        dest.writeString(this.name);
+        dest.writeString(this.solutionName);
         dest.writeInt(this.refundAmount);
     }
 
@@ -43,6 +96,8 @@ public class EditAppealSolutionModel implements Parcelable {
         this.resolutionId = in.readString();
         this.isSeller = in.readByte() != 0;
         this.solution = in.readInt();
+        this.name = in.readString();
+        this.solutionName = in.readString();
         this.refundAmount = in.readInt();
     }
 

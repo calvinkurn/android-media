@@ -66,6 +66,7 @@ public class EditSolutionSubscriber extends Subscriber<EditSolutionResponseDomai
             viewModelList.add(new SolutionViewModel(
                     solutionDomain.getId(),
                     solutionDomain.getName(),
+                    solutionDomain.getSolutionName(),
                     solutionDomain.getRefundAmount() != null ?
                             mappingAmountViewModel(solutionDomain.getRefundAmount()) :
                             null));

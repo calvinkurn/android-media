@@ -70,6 +70,7 @@ public class EditSolutionMapper implements Func1<Response<TkpdResponse>, EditSol
         for (EditSolutionResponse solutionResponse : response) {
             EditSolutionDomain solutionDomain = new EditSolutionDomain(solutionResponse.getId(),
                     solutionResponse.getName(),
+                    solutionResponse.getSolutionName(),
                     solutionResponse.getAmount() != null ?
                             mappingAmountDomain(solutionResponse.getAmount()) :
                             null);

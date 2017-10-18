@@ -92,7 +92,8 @@ public class SolutionListFragmentPresenter
 
     @Override
     public void submitEditAppeal(SolutionViewModel solutionViewModel) {
-        editAppealSolutionModel.solutionName = solutionViewModel.getName();
+        editAppealSolutionModel.name = solutionViewModel.getName();
+        editAppealSolutionModel.solutionName = solutionViewModel.getSolutionName();
         editAppealSolutionModel.solution = solutionViewModel.getId();
         if (editAppealSolutionModel.isEdit) {
             postEditSolutionUseCase.execute(PostEditSolutionUseCase.
@@ -115,7 +116,7 @@ public class SolutionListFragmentPresenter
         if (solutionViewModel.getAmount() == null) {
             if (!isEditAppeal) {
                 resultViewModel.solution = solutionViewModel.getId();
-                resultViewModel.solutionName = solutionViewModel.getName();
+                resultViewModel.solutionName = solutionViewModel.getSolutionName();
                 resultViewModel.refundAmount = 0;
                 mainView.submitData(resultViewModel);
             } else {

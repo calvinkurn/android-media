@@ -66,6 +66,7 @@ public class AppealSolutionSubscriber extends Subscriber<AppealSolutionResponseD
             viewModelList.add(new SolutionViewModel(
                     solutionDomain.getId(),
                     solutionDomain.getName(),
+                    solutionDomain.getSolutionName(),
                     solutionDomain.getRefundAmount() != null ?
                             mappingAmountViewModel(solutionDomain.getRefundAmount()) :
                             null));

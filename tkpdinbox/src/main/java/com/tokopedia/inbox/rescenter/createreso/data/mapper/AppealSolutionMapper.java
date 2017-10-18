@@ -70,6 +70,7 @@ public class AppealSolutionMapper implements Func1<Response<TkpdResponse>, Appea
         for (AppealSolutionResponse solutionResponse : response) {
             AppealSolutionDomain solutionDomain = new AppealSolutionDomain(solutionResponse.getId(),
                     solutionResponse.getName(),
+                    solutionResponse.getSolutionName(),
                     solutionResponse.getAmount() != null ?
                             mappingAmountDomain(solutionResponse.getAmount()) :
                             null);
