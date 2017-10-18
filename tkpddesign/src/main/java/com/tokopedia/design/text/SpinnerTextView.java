@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
@@ -32,6 +33,7 @@ public class SpinnerTextView extends BaseCustomView {
     private static final int DEFAULT_INDEX_NOT_SELECTED = -1;
     private TextInputLayout textInputLayout;
     private AutoCompleteTextView textAutoComplete;
+    private ImageView imageViewChevron;
 
     private String hintText;
     private
@@ -107,6 +109,7 @@ public class SpinnerTextView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_spinner_text_view, this);
         textInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout);
         textAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.edit_text_spinner);
+        imageViewChevron = (ImageView) view.findViewById(R.id.image_view_chevron_icon);
         textAutoComplete.setOnKeyListener(null);
         textAutoComplete.setOnClickListener(new OnClickListener() {
             @Override
@@ -249,5 +252,9 @@ public class SpinnerTextView extends BaseCustomView {
 
     public EditText getEditText() {
         return textAutoComplete;
+    }
+
+    public void setChevronVisibility(boolean isVisible) {
+        imageViewChevron.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 }

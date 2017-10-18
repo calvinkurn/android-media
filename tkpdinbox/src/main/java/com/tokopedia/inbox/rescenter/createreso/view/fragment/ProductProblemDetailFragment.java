@@ -254,6 +254,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         btnInfo.setVisibility(View.GONE);
         if (canShowInfo) {
             presenter.updateSpinner(true);
+            stvProblem.setChevronVisibility(true);
             btnInfo.setVisibility(View.VISIBLE);
             buttonDisabled(btnNotArrived);
             buttonSelected(btnArrived);
