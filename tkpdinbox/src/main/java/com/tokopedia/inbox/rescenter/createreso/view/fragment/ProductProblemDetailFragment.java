@@ -260,6 +260,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             buttonSelected(btnArrived);
         } else {
             presenter.updateSpinner(isDelivered);
+            stvProblem.setChevronVisibility(isDelivered);
             if (isDelivered) {
                 buttonCanSelected(btnNotArrived);
                 buttonSelected(btnArrived);
