@@ -145,7 +145,7 @@ public abstract class BaseFilterActivity extends TActivity implements TopAdsFilt
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_ads_filter, menu);
+        getMenuInflater().inflate(R.menu.menu_base_filter, menu);
         return true;
     }
 
