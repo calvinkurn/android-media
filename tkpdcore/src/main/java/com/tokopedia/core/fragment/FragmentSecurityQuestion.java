@@ -326,11 +326,11 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     @Override
     public void showTrueCaller(boolean b) {
         Drawable img = MethodChecker.getDrawable(getActivity(), R.drawable.truecaller);
-        img.setBounds( 0, 0, 75, 75);
-        verifyTrueCaller.setCompoundDrawables( img, null, null, null );
+        img.setBounds(0, 0, 75, 75);
+        verifyTrueCaller.setCompoundDrawables(img, null, null, null);
 
         verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
-        if(b) UnifyTracking.eventTruecallerImpression();
+        if (b) UnifyTracking.eventTruecallerImpression();
     }
 
     @Override
@@ -396,7 +396,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
 
 
-        Spannable spannable = new SpannableString(getString(R.string.action_send_otp_with_call));
+        Spannable spannable = new SpannableString(getString(R.string.action_send_otp_with_call_2));
 
         spannable.setSpan(new ClickableSpan() {
                               @Override
@@ -410,8 +410,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                                   ds.setColor(getResources().getColor(R.color.tkpd_main_green));
                               }
                           }
-                , getString(R.string.action_send_otp_with_call).indexOf("kirim")
-                , getString(R.string.action_send_otp_with_call).length()
+                , getString(R.string.action_send_otp_with_call_2).indexOf("lewat")
+                , getString(R.string.action_send_otp_with_call_2).length()
                 , 0);
 
         vSendOtpCall.setText(spannable, TextView.BufferType.SPANNABLE);
@@ -447,7 +447,9 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 vInputOtp.setEnabled(true);
                 String phone = SessionHandler.getTempPhoneNumber(getActivity());
                 phone = phone.substring(phone.length() - 4);
-                String contentSecurity = String.format(getResources().getString(R.string.content_security_question_phone) + " <b>XXXX-XXXX- %s </b>", phone);
+                String contentSecurity = String.format
+                        (getResources().getString(R.string.content_security_question_phone) + " " +
+                                "<b>****-****- %s </b>", phone);
                 titleSecurity.setText(MethodChecker.fromHtml(contentSecurity));
                 changeNumber.setVisibility(View.VISIBLE);
                 vSendOtpCall.setVisibility(View.VISIBLE);
