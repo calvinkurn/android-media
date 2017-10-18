@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -79,8 +78,6 @@ public class DigitalWidgetView extends BaseCustomView {
     }
 
     public void renderDataWidget(List<Category> rechargeCategory, FragmentManager fragmentManager) {
-        Log.d("DigitalWidgetView", "renderDataWidget");
-
         List<Integer> newRechargePositions = new ArrayList<>();
 
         if (rechargeCategory.size() == 0) {

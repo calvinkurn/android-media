@@ -75,7 +75,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
     private CompositeSubscription compositeSubscription;
 
     private List<Operator> operators;
-    private List<Product> products;
 
     public static WidgetStyle3RechargeFragment newInstance(Category category, int position) {
         WidgetStyle3RechargeFragment fragment = new WidgetStyle3RechargeFragment();
@@ -371,7 +370,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     public void renderDataProducts(List<Product> products) {
-        this.products = products;
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetWrapperBuy);
         widgetProductChooserView.setListener(getProductChoserListener());

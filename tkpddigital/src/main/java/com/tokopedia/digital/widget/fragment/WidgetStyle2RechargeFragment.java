@@ -51,8 +51,6 @@ import rx.subscriptions.CompositeSubscription;
 public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDigitalWidgetStyle2Presenter> implements IDigitalWidgetStyle2View {
 
     private static final String STATE_CLIENT_NUMBER = "STATE_CLIENT_NUMBER";
-    private static final String STATE_OPERATOR_ID = "STATE_OPERATOR_ID";
-    private static final String STATE_PRODUCT_ID = "STATE_PRODUCT_ID";
 
     @BindView(R2.id.holder_widget_client_number)
     LinearLayout holderWidgetClientNumber;
