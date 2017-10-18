@@ -2,10 +2,15 @@ package com.tokopedia.digital.tokocash.network.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
+import com.tokopedia.digital.tokocash.network.request.RequestHelpHistory;
+
+import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Query;
+import retrofit2.http.POST;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -15,10 +20,8 @@ import rx.Observable;
 public interface HistoryTokoCashApi {
 
     @GET(TkpdBaseURL.Wallet.GET_HISTORY)
-    Observable<Response<TkpdDigitalResponse>> getHistoryTokocash(
-            @Query("type") String type,
-            @Query("start_date") String startDate,
-            @Query("end_date") String endDate,
-            @Query("after_id") String afterId
-    );
+    Observable<Response<TkpdDigitalResponse>> getHistoryTokocash(@QueryMap Map<String, String> params);
+
+    @POST(TkpdBaseURL.Wallet.POST_COMPLAINT)
+    Observable<Response<TkpdDigitalResponse>> postHelpHistory(@Body RequestHelpHistory requestHelpHistory);
 }

@@ -752,6 +752,7 @@ public class TkpdBaseURL {
 
     public static class Wallet {
         public static final String GET_HISTORY = "api/v1/me/history";
+        public static final String POST_COMPLAINT = "api/v1/cs/complaint";
     }
 
     public static class Truecaller {
