@@ -96,7 +96,7 @@
 
     <!--step 3-->
     <string name="string_upload_prove">Unggah Bukti</string>
-    <string name="string_information_container">Isi keterangan</string>
+    <string name="string_information_container">Isi Keterangan</string>
     <string name="string_button_upload_proof">Upload Bukti &amp; Keterangan</string>
     <string name="string_information">Keterangan</string>
     <string name="string_min_30_char">Minimal 30 karakter</string>

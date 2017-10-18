@@ -49,7 +49,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
                 if (type == 2) {
                     itemList.add("Kendala Produk");
                 } else {
-                    itemList.add(productProblem.getProblem().getName());
+                    itemList.add("Kendala Ongkos Kirim");
                 }
             }
             itemList.add(productProblem);
