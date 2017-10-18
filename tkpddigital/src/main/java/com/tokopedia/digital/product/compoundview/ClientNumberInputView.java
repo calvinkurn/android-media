@@ -212,7 +212,6 @@ public class ClientNumberInputView extends LinearLayout {
         final TextWatcher textWatcher = getTextWatcherInput(clientNumber);
         autoCompleteTextView.removeTextChangedListener(textWatcher);
         autoCompleteTextView.addTextChangedListener(textWatcher);
-//        this.autoCompleteTextView.setOnClickListener(getClientNumberClickListener());
         this.btnClear.setOnClickListener(getButtonClearClickListener());
         this.btnContactPicker.setOnClickListener(getButtonContactPickerClickListener());
     }
@@ -235,16 +234,6 @@ public class ClientNumberInputView extends LinearLayout {
             setInputTypeText();
         }
     }
-
-//    @NonNull
-//    private OnClickListener getClientNumberClickListener() {
-//        return new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                actionListener.onClientNumberClicked(((TextView) v).getText().toString());
-//            }
-//        };
-//    }
 
     @NonNull
     private OnClickListener getButtonContactPickerClickListener() {

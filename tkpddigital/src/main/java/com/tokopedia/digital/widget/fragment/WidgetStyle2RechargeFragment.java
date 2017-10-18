@@ -422,14 +422,14 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     }
 
     @Override
-    public void renderOperators(List<Operator> operatorModels, boolean b) {
+    public void renderOperators(List<Operator> operatorModels, boolean showLastOrder) {
         clearHolder(holderWidgetSpinnerOperator);
         widgetRadioChooserView.setListener(getRadioChoserListener());
         widgetRadioChooserView.renderDataView(operatorModels, lastOrder, lastOperatorSelected);
         holderWidgetSpinnerOperator.addView(widgetRadioChooserView);
 
         if (category.getAttributes().getClientNumber().isShown()) {
-            presenter.fetchNumberList(String.valueOf(category.getId()), b);
+            presenter.fetchNumberList(String.valueOf(category.getId()), showLastOrder);
         }
     }
 

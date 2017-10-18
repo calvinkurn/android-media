@@ -42,15 +42,16 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
-    public void fetchNumberList(String categoryId, boolean b) {
+    public void fetchNumberList(String categoryId, boolean showLastOrder) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("category_id", categoryId);
         param.put("sort", "label");
-        widgetInteractor.getNumberList(getNumberListSubscriber(categoryId, b),
+        widgetInteractor.getNumberList(getNumberListSubscriber(categoryId, showLastOrder),
                 AuthUtil.generateParamsNetwork(context, param));
     }
 
-    private Subscriber<DigitalNumberList> getNumberListSubscriber(final String categoryId, final boolean b) {
+    private Subscriber<DigitalNumberList> getNumberListSubscriber(final String categoryId,
+                                                                  final boolean showLastOrder) {
         return new Subscriber<DigitalNumberList>() {
             @Override
             public void onCompleted() {
@@ -58,14 +59,13 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                Log.d("DigitalWidgetStyle1Presenter", e.getMessage());
                 view.renderDefaultError();
             }
 
             @Override
             public void onNext(DigitalNumberList digitalNumberList) {
                 view.renderNumberList(digitalNumberList.getOrderClientNumbers());
-                if (b) {
+                if (showLastOrder) {
                     if (digitalNumberList.getLastOrder() != null) {
                         LastOrder lastOrder = new LastOrder();
                         Attributes attributes = new Attributes();
@@ -103,7 +103,6 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                Log.d("DigitalWidgetStyle1Presenter", e.getMessage());
                 e.printStackTrace();
                 view.renderDefaultError();
             }
