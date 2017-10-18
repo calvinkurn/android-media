@@ -145,7 +145,16 @@ public class InboxReputationDetailHeaderViewHolder extends
             changeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    adapter.showChangeSmiley(element.getReputationDataViewModel().getReviewerScore());
+                    if (changeButton.getText().equals(MainApplication.getAppContext().getString(R.string
+                            .change))) {
+                        adapter.showChangeSmiley(element.getReputationDataViewModel().getReviewerScore());
+                        changeButton.setText(MainApplication.getAppContext().getString(R.string
+                                .title_cancel));
+                    } else {
+                        setSmiley(element, adapter);
+                        changeButton.setText(MainApplication.getAppContext().getString(R.string
+                                .change));
+                    }
                 }
             });
         } else

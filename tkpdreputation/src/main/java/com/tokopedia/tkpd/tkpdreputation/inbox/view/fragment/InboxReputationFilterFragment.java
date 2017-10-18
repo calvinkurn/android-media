@@ -49,7 +49,7 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
     ArrayList<OptionViewModel> listOption;
 
     String timeFilter;
-    String statusFilter;
+    String scoreFilter;
 
     public static Fragment createInstance(String timeFilter, String statusFilter, int tab) {
         InboxReputationFilterFragment fragment = new InboxReputationFilterFragment();
@@ -64,6 +64,14 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            timeFilter = getArguments().getString(SELECTED_TIME_FILTER, "");
+            scoreFilter = getArguments().getString(SELECTED_SCORE_FILTER, "");
+        } else if (savedInstanceState != null) {
+            timeFilter = savedInstanceState.getString(SELECTED_TIME_FILTER, "");
+            scoreFilter = savedInstanceState.getString(SELECTED_SCORE_FILTER, "");
+        }
+
         initData();
     }
 
@@ -98,13 +106,14 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 Intent data = new Intent();
                 data.putExtra(SELECTED_TIME_FILTER, timeFilter);
-                data.putExtra(SELECTED_SCORE_FILTER, statusFilter);
+                data.putExtra(SELECTED_SCORE_FILTER, scoreFilter);
                 getActivity().setResult(Activity.RESULT_OK, data);
                 getActivity().finish();
 
             }
         });
     }
+
 
     private void initData() {
         listOption = createListOption();
@@ -172,6 +181,8 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
     @Override
     public void resetFilter() {
         adapter.resetFilter();
+        timeFilter = "";
+        scoreFilter = "";
     }
 
     @Override
@@ -180,7 +191,24 @@ public class InboxReputationFilterFragment extends BaseDaggerFragment
             timeFilter = optionViewModel.getValue();
         } else if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase
                 .PARAM_SCORE_FILTER)) {
-            statusFilter = optionViewModel.getValue();
+            scoreFilter = optionViewModel.getValue();
         }
+    }
+
+    @Override
+    public void onFilterUnselected(OptionViewModel optionViewModel) {
+        if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase.PARAM_TIME_FILTER)) {
+            timeFilter = "";
+        } else if (optionViewModel.getKey().equals(GetFirstTimeInboxReputationUseCase
+                .PARAM_SCORE_FILTER)) {
+            scoreFilter = "";
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SELECTED_TIME_FILTER, timeFilter);
+        outState.putString(SELECTED_SCORE_FILTER, scoreFilter);
     }
 }

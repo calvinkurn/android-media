@@ -10,8 +10,11 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 
 public class RefreshInboxReputationSubscriber extends GetFirstTimeInboxReputationSubscriber {
 
-    public RefreshInboxReputationSubscriber(InboxReputation.View viewListener) {
+    private final boolean isUsingFilter;
+
+    public RefreshInboxReputationSubscriber(InboxReputation.View viewListener, boolean isUsingFilter) {
         super(viewListener);
+        this.isUsingFilter = isUsingFilter;
     }
 
     @Override
@@ -23,7 +26,9 @@ public class RefreshInboxReputationSubscriber extends GetFirstTimeInboxReputatio
     @Override
     public void onNext(InboxReputationDomain inboxReputationDomain) {
         viewListener.finishRefresh();
-        if (inboxReputationDomain.getInboxReputation().isEmpty()) {
+        if (inboxReputationDomain.getInboxReputation().isEmpty() && isUsingFilter) {
+            viewListener.onShowEmptyFilteredInboxReputation();
+        } else if (inboxReputationDomain.getInboxReputation().isEmpty() && !isUsingFilter) {
             viewListener.onShowEmpty();
         } else {
             viewListener.onSuccessRefresh(mappingToViewModel(inboxReputationDomain));

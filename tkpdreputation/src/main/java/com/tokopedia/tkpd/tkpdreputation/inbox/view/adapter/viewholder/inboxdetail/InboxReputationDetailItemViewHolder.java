@@ -171,6 +171,11 @@ public class InboxReputationDetailItemViewHolder extends
                     MainApplication.getAppContext().getString(R.string.product_is_deleted));
 
             ImageHandler.loadImageWithIdWithoutPlaceholder(productAvatar, R.drawable.ic_product_deleted);
+        } else if (element.isProductBanned()) {
+            productName.setText(
+                    MainApplication.getAppContext().getString(R.string.product_is_banned));
+
+            ImageHandler.loadImageWithIdWithoutPlaceholder(productAvatar, R.drawable.ic_product_deleted);
         } else {
             productName.setText(MethodChecker.fromHtml(element.getProductName()));
             productName.setOnClickListener(new View.OnClickListener() {
@@ -385,7 +390,7 @@ public class InboxReputationDetailItemViewHolder extends
             String subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR);
             return MethodChecker
                     .fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
-                    + MORE_DESCRIPTION);
+                            + MORE_DESCRIPTION);
         } else {
             return MethodChecker.fromHtml(review);
         }

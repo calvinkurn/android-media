@@ -24,6 +24,8 @@ public class InboxReputationFilterAdapter
 
     public interface FilterListener {
         void onFilterSelected(OptionViewModel optionViewModel);
+
+        void onFilterUnselected(OptionViewModel optionViewModel);
     }
 
     private static final int VIEW_HEADER = 101;
@@ -61,6 +63,9 @@ public class InboxReputationFilterAdapter
 
                     if (listOption.get(getAdapterPosition()).isSelected()) {
                         listener.onFilterSelected(listOption.get(getAdapterPosition()));
+                    }else{
+                        listener.onFilterUnselected(listOption.get(getAdapterPosition()));
+
                     }
                     notifyDataSetChanged();
                 }

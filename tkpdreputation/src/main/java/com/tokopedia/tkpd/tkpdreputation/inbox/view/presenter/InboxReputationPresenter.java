@@ -93,7 +93,12 @@ public class InboxReputationPresenter
         getInboxReputationUseCase.execute(
                 GetInboxReputationUseCase.getParam(1, query, timeFilter,
                         scoreFilter, tab),
-                new RefreshInboxReputationSubscriber(viewListener));
+                new RefreshInboxReputationSubscriber(viewListener, isUsingFilter(query,
+                        timeFilter,scoreFilter)));
+    }
+
+    private boolean isUsingFilter(String query, String timeFilter, String scoreFilter) {
+        return !query.isEmpty() || !timeFilter.isEmpty() || !scoreFilter.isEmpty();
     }
 
     public void setHasNextPage(boolean hasNextPage) {
