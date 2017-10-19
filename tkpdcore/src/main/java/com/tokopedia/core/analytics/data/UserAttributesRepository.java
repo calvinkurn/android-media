@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics.data;
 
+import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.base.domain.RequestParams;
 
 import rx.Observable;
@@ -10,6 +11,6 @@ import rx.Observable;
 
 public interface UserAttributesRepository {
 
-    Observable<String> getUserAttributes(RequestParams parameters);
+    Observable<UserAttribute.Data> getUserAttributes(RequestParams parameters);
 
 }
