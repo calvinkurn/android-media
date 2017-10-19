@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics.domain.usecase;
 
+import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.data.UserAttributesRepository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
@@ -13,7 +14,7 @@ import rx.Observable;
  * Created by Herdi_WORK on 03.10.17.
  */
 
-public class GetUserAttributesUseCase extends UseCase<String>{
+public class GetUserAttributesUseCase extends UseCase<UserAttribute.Data>{
     public static final String PARAM_USER_ID = "PARAM_USER_ID";
     protected UserAttributesRepository userAttributesRepository;
 
@@ -25,7 +26,7 @@ public class GetUserAttributesUseCase extends UseCase<String>{
     }
 
     @Override
-    public Observable<String> createObservable(RequestParams requestParams) {
+    public Observable<UserAttribute.Data> createObservable(RequestParams requestParams) {
         return userAttributesRepository.getUserAttributes(requestParams) ;
     }
 
