@@ -3,7 +3,7 @@ package com.tokopedia.posapp.di.component;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.di.module.ValidatePasswordModule;
 import com.tokopedia.posapp.di.scope.ValidatePasswordScope;
-import com.tokopedia.posapp.view.fragment.DialogPasswordFragment;
+import com.tokopedia.posapp.view.widget.DialogPasswordFragment;
 
 import dagger.Component;
 

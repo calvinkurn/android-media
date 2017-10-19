@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -21,7 +20,7 @@ import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.activity.OutletActivity;
 import com.tokopedia.posapp.view.activity.TransactionHistoryActivity;
-import com.tokopedia.posapp.view.fragment.DialogPasswordFragment;
+import com.tokopedia.posapp.view.widget.DialogPasswordFragment;
 
 import java.util.ArrayList;
 

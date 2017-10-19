@@ -37,4 +37,10 @@
     <string name="password_dialog_message">Masukkan Password</string>
     <string name="password_action_cancel">Batal</string>
     <string name="password_action_continue">Lanjut</string>
+
+    <string name="pdp_add_to_cart_title">Tambah Ke Keranjang</string>
+    <string name="pdp_buy_label">Beli</string>
+    <string name="pdp_atc_success_message">Produk berhasil dimasukkan ke Keranjang Belanja</string>
+    <string name="pdp_continue_shopping_label">Lanjut Berbelanja</string>
+    <string name="pdp_pay_label">Bayar</string>
 </resources>

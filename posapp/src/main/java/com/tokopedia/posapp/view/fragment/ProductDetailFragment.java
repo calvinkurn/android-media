@@ -36,6 +36,7 @@ import com.tokopedia.posapp.view.presenter.AddToCartPresenter;
 import com.tokopedia.posapp.view.presenter.ProductPresenter;
 import com.tokopedia.posapp.view.widget.HeaderInfoView;
 import com.tokopedia.posapp.view.widget.InstallmentSimulationView;
+import com.tokopedia.posapp.view.widget.PosAlertDialog;
 import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.customview.PictureView;
@@ -169,18 +170,18 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessAddToCart(String message) {
-        AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle("Tambah ke Keranjang")
-                .setMessage("Produk berhasil dimasukkan ke Keranjang Belanja")
-                .setPositiveButton("Bayar", new DialogInterface.OnClickListener() {
+        AlertDialog dialog = new PosAlertDialog(getContext())
+                .setTitle(getString(R.string.pdp_add_to_cart_title))
+                .setMessage(getString(R.string.pdp_atc_success_message))
+                .setPositiveButton(getString(R.string.pdp_pay_label), new PosAlertDialog.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(DialogInterface dialogInterface) {
                         goToPaymentCheckout();
                     }
                 })
-                .setNegativeButton("Lanjut Berbelanja", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.pdp_continue_shopping_label), new PosAlertDialog.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(DialogInterface dialogInterface) {
                         dialogInterface.dismiss();
                     }
                 })

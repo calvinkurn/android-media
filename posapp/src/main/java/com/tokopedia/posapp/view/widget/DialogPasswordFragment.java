@@ -1,7 +1,6 @@
-package com.tokopedia.posapp.view.fragment;
+package com.tokopedia.posapp.view.widget;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.di.component.DaggerValidatePasswordComponent;
 import com.tokopedia.posapp.view.DialogPassword;
