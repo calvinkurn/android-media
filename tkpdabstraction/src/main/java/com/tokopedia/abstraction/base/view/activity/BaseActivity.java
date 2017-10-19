@@ -1,290 +1,120 @@
-package com.tokopedia.core.app;
+package com.tokopedia.abstraction.base.view.activity;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
-import com.localytics.android.Localytics;
-import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.ForceUpdate;
-import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.category.data.utils.CategoryVersioningHelper;
-import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
-import com.tokopedia.core.database.manager.CategoryDatabaseManager;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
-import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
-import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.service.ErrorNetworkReceiver;
-import com.tokopedia.core.service.HadesBroadcastReceiver;
-import com.tokopedia.core.service.HadesService;
-import com.tokopedia.core.service.constant.HadesConstant;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.core.welcome.WelcomeActivity;
-
-import javax.inject.Inject;
-
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.abstraction.constant.TkpdState;
+import com.tokopedia.abstraction.session.SessionHandler;
+import com.tokopedia.abstraction.utils.DialogForceLogout;
+import com.tokopedia.abstraction.utils.GlobalConfig;
+import com.tokopedia.abstraction.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.utils.receiver.ErrorNetworkReceiver;
+import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 
 /**
  * Created by nisie on 2/7/17.
  */
 
-public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
-        HadesBroadcastReceiver.ReceiveListener,
-        ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
+public class BaseActivity extends AppCompatActivity implements
+        ErrorNetworkReceiver.ReceiveListener {
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
-    private static final String TAG = "BaseActivity";
-    private static final long DISMISS_TIME = 10000;
-    private static final String HADES = "TAG HADES";
-    protected Boolean isAllowFetchDepartmentView = false;
-    @Inject
-    protected SessionHandler sessionHandler;
-    @Inject
-    protected GCMHandler gcmHandler;
 
-    private Boolean isPause = false;
-    private boolean isDialogNotConnectionShown = false;
-    private HadesBroadcastReceiver hadesBroadcastReceiver;
+    private static final long DISMISS_TIME = 10000;
+
+    protected SessionHandler sessionHandler;
+
     private ErrorNetworkReceiver logoutNetworkReceiver;
-    private CategoryDatabaseManager categoryDatabaseManager;
-    private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getApplicationComponent().inject(this);
 
+//        if (MaintenancePage.isMaintenance(this)) {
+//            startActivity(MaintenancePage.createIntent(this));
+//        }
 
-        if (MaintenancePage.isMaintenance(this)) {
-            startActivity(MaintenancePage.createIntent(this));
-        }
-
-        categoryDatabaseManager = new CategoryDatabaseManager();
-        hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
-        globalCacheManager = new GlobalCacheManager();
-        Localytics.registerPush(gcmHandler.getSenderID());
+//        Localytics.registerPush(Constants.FIREBASE_PROJECT_ID);
 
-        HockeyAppHelper.handleLogin(this);
-        HockeyAppHelper.checkForUpdate(this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
-        MainApplication.setActivityname(this.getClass().getSimpleName());
-        if (!MainApplication.isTablet()) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        }
+//        HockeyAppHelper.handleLogin(this);
+//        HockeyAppHelper.checkForUpdate(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterForceLogoutReceiver();
-        MainApplication.setActivityState(0);
-        MainApplication.setActivityname(null);
-        HockeyAppHelper.unregisterManager();
+//        HockeyAppHelper.unregisterManager();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
-        MainApplication.setActivityname(this.getClass().getSimpleName());
+
         cache = new LocalCacheHandler(this, TkpdCache.STATUS_UPDATE);
         if (cache.getInt(TkpdCache.Key.STATUS) == TkpdState.UpdateState.MUST_UPDATE) {
-            Intent intent = new Intent(this, ForceUpdate.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(new Intent(this, ForceUpdate.class));
+            if (getApplication() instanceof AbstractionRouter) {
+                ((AbstractionRouter) getApplication()).goToForceUpdate(this);
+            }
+//            Intent intent = new Intent(this, ForceUpdate.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(new Intent(this, ForceUpdate.class));
             finish();
         }
 
         initGTM();
         sendScreenAnalytics();
-        verifyFetchDepartment();// this code couldn't be mocked.
-
 
         registerForceLogoutReceiver();
         checkIfForceLogoutMustShow();
     }
 
     private void sendScreenAnalytics() {
-        ScreenTracking.sendScreen(this, this);
-    }
-
-    public boolean verifyFetchDepartment() {
-        CategoryVersioningHelper.checkVersionCategory(this, new CategoryVersioningHelperListener() {
-            @Override
-            public void doAfterChecking() {
-                if (categoryDatabaseManager == null) {
-                    categoryDatabaseManager = new CategoryDatabaseManager();
-                }
-                if (categoryDatabaseManager.isExpired(System.currentTimeMillis())) {
-                    if (!HadesService.getIsHadesRunning()) {
-                        fetchDepartment();
-                    } else {
-                        registerHadesReceiver();
-                    }
-                }
-            }
-        });
-        return false;
-    }
-
-    /**
-     * download department using intentservice, so that it will not affected UI
-     * {@link DownloadService#startDownload(Context, DownloadResultReceiver, Bundle, int)}
-     */
-    private void fetchDepartment() {
-        if (!HadesService.getIsHadesRunning()) {
-            Log.i(HADES, "START DOWNLOAAAD");
-            HadesService.startDownload(this, HadesConstant.STATE_DEPARTMENT);
-        }
-
-        registerHadesReceiver();
+//        ScreenTracking.sendScreen(this, this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterHadesReceiver();
-
-        HockeyAppHelper.unregisterManager();
-
+//        HockeyAppHelper.unregisterManager();
         sessionHandler = null;
-        categoryDatabaseManager = null;
-        gcmHandler = null;
-        globalCacheManager = null;
         cache = null;
-    }
-
-    public Boolean isPausing() {
-        return isPause;
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Localytics.onNewIntent(this, intent);
+//        Localytics.onNewIntent(this, intent);
     }
 
     public void initGTM() {
-        Observable.just(true)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<Boolean, Boolean>() {
-                    @Override
-                    public Boolean call(Boolean b) {
-                        TrackingUtils.eventPushUserID();
-                        TrackingUtils.eventOnline();
-                        return true;
-                    }
-                })
-                .subscribe();
-    }
-
-    @Override
-    public void onLogout(Boolean success) {
-        if (success) {
-            finish();
-            Intent intent;
-            if (GlobalConfig.isSellerApp()) {
-                intent = new Intent(this, WelcomeActivity.class);
-            } else {
-                intent = HomeRouter.getHomeActivity(this);
-            }
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            AppWidgetUtil.sendBroadcastToAppWidget(this);
-        }
-    }
-
-    @Override
-    public void onHadesRunning() {
-        Log.i(HADES, "LAGI JALAN NEEEEH");
-    }
-
-    @Override
-    public void onHadesComplete() {
-        Log.i(HADES, "UDAH KELAR NEEEEH");
-    }
-
-    @Override
-    public void onHadesNoConenction() {
-        Log.i(HADES, this.getClass().getSimpleName() + " " + getIsAllowFetchDepartmentView());
-        if (getIsAllowFetchDepartmentView() && !isDialogNotConnectionShown) {
-            DialogNoConnection.create(this, new DialogNoConnection.ActionListener() {
-                @Override
-                public void onRetryClicked() {
-                    fetchDepartment();
-                    isDialogNotConnectionShown = false;
-                }
-            }).show();
-            isDialogNotConnectionShown = true;
-        }
-    }
-
-    @Override
-    public void onHadesTimeout() {
-        Log.i(HADES, this.getClass().getSimpleName() + " " + getIsAllowFetchDepartmentView());
-        if (getIsAllowFetchDepartmentView() && !isDialogNotConnectionShown) {
-            DialogNoConnection.create(this, new DialogNoConnection.ActionListener() {
-                @Override
-                public void onRetryClicked() {
-                    fetchDepartment();
-                    isDialogNotConnectionShown = false;
-                }
-            }).show();
-            isDialogNotConnectionShown = true;
-        }
-    }
-
-    private void registerHadesReceiver() {
-        hadesBroadcastReceiver.setReceiver(this);
-        IntentFilter mStatusIntentFilter = new IntentFilter(HadesService.ACTION_FETCH_DEPARTMENT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(hadesBroadcastReceiver, mStatusIntentFilter);
-    }
-
-    private void unregisterHadesReceiver() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(hadesBroadcastReceiver);
+//        Observable.just(true)
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .map(new Func1<Boolean, Boolean>() {
+//                    @Override
+//                    public Boolean call(Boolean b) {
+//                        TrackingUtils.eventPushUserID();
+//                        TrackingUtils.eventOnline();
+//                        return true;
+//                    }
+//                })
+//                .subscribe();
     }
 
     private void registerForceLogoutReceiver() {
@@ -300,11 +130,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         logoutNetworkReceiver.setReceiver(null);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(logoutNetworkReceiver);
     }
-
-    public Boolean getIsAllowFetchDepartmentView() {
-        return isAllowFetchDepartmentView;
-    }
-
 
     @Override
     public void onForceLogout() {
@@ -349,16 +174,22 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {
-                        sessionHandler.forceLogout();
-                        if (GlobalConfig.isSellerApp()) {
-                            Intent intent = SellerRouter.getAcitivitySplashScreenActivity(getBaseContext());
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        } else {
-                            Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
+                        if (getApplication() instanceof AbstractionRouter) {
+                            ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
                         }
+//                        LoginManager.getInstance().logOut();
+//                        setIsDialogShown(context, false);
+//                        NotificationModHandler.clearCacheAllNotification(context);
+//                        sessionHandler.forceLogout();
+//                        if (GlobalConfig.isSellerApp()) {
+//                            Intent intent = SellerRouter.getAcitivitySplashScreenActivity(getBaseContext());
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            startActivity(intent);
+//                        } else {
+//                            Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            startActivity(intent);
+//                        }
                     }
                 });
     }
@@ -375,17 +206,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         startActivity(Intent.createChooser(intent, getString(R.string.send_email)));
     }
 
-    @Override
-    public String getScreenName() {
-        return null;
-    }
-
-    public AppComponent getApplicationComponent() {
-        return ((MainApplication) getApplication()).getAppComponent();
-    }
-
-    protected void setGoldMerchant(ShopModel shopModel) {
-        sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
-    }
+//    @Override
+//    public String getScreenName() {
+//        return null;
+//    }
 
 }

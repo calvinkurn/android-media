@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.MainApplication;
-import com.tokopedia.abstraction.analytics.TrackingUtils;
 import com.tokopedia.abstraction.utils.LocalCacheHandler;
 
 public class SessionHandler {
@@ -54,21 +52,6 @@ public class SessionHandler {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString("temp_login_id", "");
 
-    }
-
-    /**
-     * @param context Non Null context
-     * @param isLogin flag to determine user is login or not
-     * @param user_id valid user id
-     */
-    @SuppressWarnings("unused")
-    public static void setIsLogin(Context context, boolean isLogin, int user_id) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        Editor editor = sharedPrefs.edit();
-        editor.putString(LOGIN_ID, user_id + "");
-        editor.putBoolean(IS_LOGIN, isLogin);
-        editor.apply();
-        TrackingUtils.eventPushUserID();
     }
 
     public static String getLoginID(Context context) {
@@ -170,21 +153,6 @@ public class SessionHandler {
         return u_id != null;
     }
 
-    /**
-     * login json currently give user id even in security question
-     *
-     * @param context Non Null context
-     * @return always false
-     */
-//	public static Boolean isLogin (Context context) {
-//		String u_id = null;
-//		 SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-//		 u_id = sharedPrefs.getString(LOGIN_ID, null);
-////		 if (u_id == null) {
-//			 return false;
-////		 }
-////		 return true;
-//	}
     public static void setUserAvatarUri(Context context, String avatar_uri) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
@@ -237,28 +205,6 @@ public class SessionHandler {
         return sharedPreferences.edit().putBoolean(IS_FIRST_TIME_USER, isFirstTime).commit();
     }
 
-    public static boolean isMsisdnVerified() {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
-        return cache.getBoolean(IS_MSISDN_VERIFIED, false);
-    }
-
-    public static void setIsMSISDNVerified(boolean verified) {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
-        cache.putBoolean(IS_MSISDN_VERIFIED, verified);
-        cache.applyEditor();
-    }
-
-    public static String getPhoneNumber() {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
-        return cache.getString(PHONE_NUMBER, "");
-    }
-
-    public static void setPhoneNumber(String userPhone) {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
-        cache.putString(PHONE_NUMBER, userPhone);
-        cache.applyEditor();
-    }
-
     public static String getTempPhoneNumber(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(TEMP_PHONE_NUMBER, "");
@@ -267,11 +213,6 @@ public class SessionHandler {
     public static String getTempLoginName(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(TEMP_NAME, "");
-    }
-
-    public static String getAccessToken() {
-        SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "");
     }
 
     public static String getRefreshToken(Context context) {
