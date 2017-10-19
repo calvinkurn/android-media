@@ -33,11 +33,13 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
 import com.tokopedia.session.R;
+import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.di.DaggerSessionComponent;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
@@ -47,7 +49,6 @@ import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordModel;
 import com.tokopedia.session.session.activity.Login;
-import com.tokopedia.session.session.model.LoginModel;
 
 import java.util.ArrayList;
 
@@ -68,6 +69,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final int REQUEST_REGISTER_EMAIL = 101;
     private static final int REQUEST_LOGIN = 102;
     private static final int REQUEST_CREATE_PASSWORD = 103;
+    private static final int REQUEST_PHONE_VERIF = 104;
+    private static final int REQUEST_SECURITY_QUESTION = 105;
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
@@ -219,6 +222,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
                 presenter.registerGoogle(model);
             }
+        } else if (requestCode == REQUEST_PHONE_VERIF) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_SECURITY_QUESTION) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
         }
     }
 
@@ -396,8 +405,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToLogin() {
-
+    public void onSuccessLogin() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     @Override
@@ -416,6 +426,23 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void clearToken() {
         presenter.clearToken();
+    }
+
+    @Override
+    public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName) {
+        startActivityForResult(
+                SecurityQuestionActivity.getCallingIntent(
+                        getActivity(),
+                        securityDomain,
+                        fullName),
+                REQUEST_SECURITY_QUESTION);
+    }
+
+    @Override
+    public void onGoToPhoneVerification() {
+        startActivityForResult(PhoneVerificationActivationActivity.getCallingIntent(
+                getActivity()),
+                REQUEST_PHONE_VERIF);
     }
 
     @Override

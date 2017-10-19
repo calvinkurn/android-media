@@ -2,7 +2,7 @@ package com.tokopedia.session.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.session.domain.mapper.CreatePasswordMapper;
+import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
 
 import rx.Observable;

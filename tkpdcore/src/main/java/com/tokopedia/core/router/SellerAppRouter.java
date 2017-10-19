@@ -18,7 +18,6 @@ public class SellerAppRouter {
     private static final String SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
 
     private static final String SELLER_ONBOARDING_ACTIVITY = "com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity";
-    private static final String TRUECALLER_ACTIVITY = "com.tokopedia.sellerapp.truecaller.TruecallerActivity";
     private static final String FCM_NOTIFICATIONRECEIVER = "com.tokopedia.sellerapp.fcm.AppNotificationReceiver";
 
 
@@ -28,11 +27,6 @@ public class SellerAppRouter {
 
     public static Intent getSellerOnBoardingActivity(Context context) {
         return RouterUtils.getActivityIntent(context, SELLER_ONBOARDING_ACTIVITY);
-    }
-
-    public static Intent getTruecallerIntent(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, TRUECALLER_ACTIVITY);
-        return intent;
     }
 
     public static IAppNotificationReceiver getAppNotificationReceiver() {

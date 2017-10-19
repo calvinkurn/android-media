@@ -27,7 +27,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -460,7 +460,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     public void onStart() {
         super.onStart();
         ScreenTracking.screen(getScreenName());
-        TrackingUtils.fragmentBasedAFEvent(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
+        TrackingUtils.fragmentBasedAFEvent(OldSessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
     }
 
     private void sendGTMRegisterError(String label){

@@ -1,6 +1,8 @@
 package com.tokopedia.session.register.view.subscriber.registerinitial;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
+import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.register.domain.model.RegisterSosmedDomain;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 
@@ -32,11 +34,28 @@ public class RegisterSosmedSubscriber extends Subscriber<RegisterSosmedDomain> {
     @Override
     public void onNext(RegisterSosmedDomain registerSosmedDomain) {
         viewListener.dismissProgressBar();
-        if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-            viewListener.onGoToLogin();
-        } else {
+        if (!registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
             viewListener.onGoToCreatePasswordPage(registerSosmedDomain.getInfo()
                     .getGetUserInfoDomainData());
+        } else if (registerSosmedDomain.getMakeLoginModel() != null
+                && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
+                && isMsisdnVerified(registerSosmedDomain.getInfo())) {
+            viewListener.onSuccessLogin();
+        } else if (!isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
+                && !isMsisdnVerified(registerSosmedDomain.getInfo())) {
+            viewListener.onGoToPhoneVerification();
+        } else if (isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())) {
+            viewListener.onGoToSecurityQuestion(
+                    registerSosmedDomain.getMakeLoginModel().getSecurityDomain(),
+                    registerSosmedDomain.getMakeLoginModel().getFullName());
         }
+    }
+
+    private boolean isMsisdnVerified(GetUserInfoDomainModel info) {
+        return info.getGetUserInfoDomainData().isPhoneVerified();
+    }
+
+    private boolean isGoToSecurityQuestion(MakeLoginDomain makeLoginModel) {
+        return !makeLoginModel.isLogin();
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.session.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.otp.securityquestion.view.fragment.SecurityQuestionFragment;
 import com.tokopedia.session.register.view.fragment.CreatePasswordFragment;
 import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
 
@@ -18,5 +19,6 @@ public interface SessionComponent {
 
     void inject(CreatePasswordFragment createPasswordFragment);
 
+    void inject(SecurityQuestionFragment securityQuestionFragment);
 
 }

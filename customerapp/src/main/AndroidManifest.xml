@@ -187,7 +187,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity"
+            android:name="com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerificationActivity"
             android:screenOrientation="portrait" />
 
         <service

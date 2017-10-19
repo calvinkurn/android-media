@@ -6,7 +6,6 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -151,4 +150,7 @@ public interface AccountsApi {
 
     @GET(TkpdBaseURL.Accounts.Wallet.GET_BALANCE)
     Observable<Response<TkpdResponse>> getTokoCash(@QueryMap TKPDMapParam<String, Object> params);
+
+    @GET(TkpdBaseURL.User.PATH_GET_QUESTION_FORM)
+    Observable<Response<TkpdResponse>> getQuestionForm(@QueryMap TKPDMapParam<String, Object> parameters);
 }

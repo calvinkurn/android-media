@@ -50,7 +50,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -822,7 +822,7 @@ public class ShopInfoActivity extends BaseActivity
                     holder.favorite.startAnimation(animateFav);
                     facadeAction.actionToggleFav();
                 } else {
-                    Intent intent = SessionRouter.getLoginActivityIntent(ShopInfoActivity.this);
+                    Intent intent = OldSessionRouter.getLoginActivityIntent(ShopInfoActivity.this);
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                             TkpdState.DrawerPosition.LOGIN);
                     startActivityForResult(intent, ShopInfoActivity.FAVORITE_LOGIN_REQUEST_CODE);
@@ -860,7 +860,7 @@ public class ShopInfoActivity extends BaseActivity
             }
         } else {
             bundle.putBoolean("login", true);
-            intent = SessionRouter.getLoginActivityIntent(this);
+            intent = OldSessionRouter.getLoginActivityIntent(this);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             bundle.putString(InboxRouter.PARAM_SHOP_ID, shopModel.info.shopId);
             bundle.putString(PARAM_OWNER_FULLNAME, shopModel.info.shopName);
@@ -942,7 +942,7 @@ public class ShopInfoActivity extends BaseActivity
                 }
             } else {
                 redirectionUrl = url;
-                Intent intent = SessionRouter.getLoginActivityIntent(this);
+                Intent intent = OldSessionRouter.getLoginActivityIntent(this);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                         TkpdState.DrawerPosition.LOGIN);
                 startActivityForResult(intent, REQUEST_CODE_LOGIN);

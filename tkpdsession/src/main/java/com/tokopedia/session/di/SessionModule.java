@@ -11,6 +11,10 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.otp.securityquestion.SecurityQuestion;
+import com.tokopedia.otp.securityquestion.data.mapper.SecurityQuestionMapper;
+import com.tokopedia.otp.securityquestion.data.source.SecurityQuestionDataSource;
+import com.tokopedia.otp.securityquestion.domain.interactor.GetSecurityQuestionFormUseCase;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -23,11 +27,14 @@ import com.tokopedia.session.data.source.CloudDiscoverDataSource;
 import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.LocalDiscoverDataSource;
+import com.tokopedia.session.data.source.MakeLoginDataSource;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
-import com.tokopedia.session.domain.mapper.CreatePasswordMapper;
+import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
 import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
+import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
+import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterWebviewUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterWithSosmedUseCase;
@@ -49,6 +56,7 @@ public class SessionModule {
     private static final String HMAC_SERVICE = "HMAC_SERVICE";
     private static final String BASIC_SERVICE = "BASIC_SERVICE";
     private static final String BEARER_SERVICE = "BEARER_SERVICE";
+    private static final String WS_SERVICE = "WS_SERVICE";
 
     @SessionScope
     @Provides
@@ -90,6 +98,20 @@ public class SessionModule {
     }
 
     @SessionScope
+    @Named(WS_SERVICE)
+    @Provides
+    AccountsService provideWsAccountsService(@ApplicationContext Context context,
+                                             SessionHandler sessionHandler) {
+        Bundle bundle = new Bundle();
+        String authKey;
+        authKey = sessionHandler.getTokenType(context) + " " + sessionHandler.getAccessToken(context);
+        bundle.putString(AccountsService.AUTH_KEY, authKey);
+        bundle.putString(AccountsService.WEB_SERVICE, AccountsService.WS);
+        return new AccountsService(bundle);
+    }
+
+
+    @SessionScope
     @Provides
     DiscoverMapper provideDiscoverMapper() {
         return new DiscoverMapper();
@@ -100,11 +122,14 @@ public class SessionModule {
     SessionRepository provideSessionRepository(CloudDiscoverDataSource cloudDiscoverDataSource,
                                                LocalDiscoverDataSource localDiscoverDataSource,
                                                GetTokenDataSource getTokenDataSource,
-                                               CreatePasswordDataSource createPasswordDataSource) {
+                                               CreatePasswordDataSource createPasswordDataSource,
+                                               MakeLoginDataSource makeLoginDataSource,
+                                               SecurityQuestionDataSource securityQuestionDataSource) {
         return new SessionRepositoryImpl(cloudDiscoverDataSource,
-                localDiscoverDataSource, getTokenDataSource, createPasswordDataSource);
+                localDiscoverDataSource, getTokenDataSource,
+                createPasswordDataSource, makeLoginDataSource,
+                securityQuestionDataSource);
     }
-
 
     @SessionScope
     @Provides
@@ -214,10 +239,12 @@ public class SessionModule {
     RegisterWithSosmedUseCase provideRegisterFacebookUseCase(ThreadExecutor threadExecutor,
                                                              PostExecutionThread postExecutionThread,
                                                              GetTokenUseCase getTokenUseCase,
-                                                             GetUserInfoUseCase getUserInfoUseCase) {
+                                                             GetUserInfoUseCase
+                                                                     getUserInfoUseCase,
+                                                             MakeLoginUseCase makeLoginUseCase) {
         return new RegisterWithSosmedUseCase(
                 threadExecutor, postExecutionThread,
-                getTokenUseCase, getUserInfoUseCase);
+                getTokenUseCase, getUserInfoUseCase, makeLoginUseCase);
     }
 
 
@@ -226,10 +253,11 @@ public class SessionModule {
     RegisterWebviewUseCase provideRegisterWebviewUseCase(ThreadExecutor threadExecutor,
                                                          PostExecutionThread postExecutionThread,
                                                          GetTokenUseCase getTokenUseCase,
-                                                         GetUserInfoUseCase getUserInfoUseCase) {
+                                                         GetUserInfoUseCase getUserInfoUseCase,
+                                                         MakeLoginUseCase makeLoginUseCase) {
         return new RegisterWebviewUseCase(
                 threadExecutor, postExecutionThread,
-                getTokenUseCase, getUserInfoUseCase);
+                getTokenUseCase, getUserInfoUseCase, makeLoginUseCase);
     }
 
     @SessionScope
@@ -248,5 +276,51 @@ public class SessionModule {
                 sessionRepository);
     }
 
+    @SessionScope
+    @Provides
+    MakeLoginDataSource provideMakeLoginDataSource(@Named(WS_SERVICE) AccountsService
+                                                           accountsService,
+                                                   MakeLoginMapper makeLoginMapper) {
+        return new MakeLoginDataSource(accountsService, makeLoginMapper);
+    }
 
+    @SessionScope
+    @Provides
+    MakeLoginUseCase provideMakeLoginUseCase(ThreadExecutor threadExecutor,
+                                             PostExecutionThread postExecutionThread,
+                                             SessionRepository sessionRepository) {
+        return new MakeLoginUseCase(
+                threadExecutor, postExecutionThread, sessionRepository);
+    }
+
+
+    @SessionScope
+    @Provides
+    MakeLoginMapper provideMakeLoginMapper() {
+        return new MakeLoginMapper();
+    }
+
+    @SessionScope
+    @Provides
+    SecurityQuestionDataSource provideSecurityQuestionDataSource(@Named(WS_SERVICE) AccountsService
+                                                                         accountsService,
+                                                                 SecurityQuestionMapper securityQuestionMapper) {
+        return new SecurityQuestionDataSource(accountsService, securityQuestionMapper);
+    }
+
+    @SessionScope
+    @Provides
+    SecurityQuestionMapper provideSecurityQuestionMapper() {
+        return new SecurityQuestionMapper();
+    }
+
+    @SessionScope
+    @Provides
+    GetSecurityQuestionFormUseCase provideGetSecurityQuestionFormUseCase(ThreadExecutor threadExecutor,
+                                                                         PostExecutionThread postExecutionThread,
+                                                                         SessionRepository sessionRepository,
+                                                                         SessionHandler sessionHandler) {
+        return new GetSecurityQuestionFormUseCase(
+                threadExecutor, postExecutionThread, sessionRepository, sessionHandler);
+    }
 }

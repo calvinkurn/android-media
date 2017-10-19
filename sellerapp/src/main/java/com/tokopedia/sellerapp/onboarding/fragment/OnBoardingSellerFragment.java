@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
 
@@ -148,7 +148,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
                     startActivity(intent);
                     getActivity().finish();
                 } else {
-                    intent = SessionRouter.getPhoneVerificationActivationActivityIntent(getActivity());
+                    intent = OldSessionRouter.getPhoneVerificationActivationActivityIntent(getActivity());
                     intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                             SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
                     startActivityForResult(intent, REQUEST_ACTIVATE_PHONE_SELLER);

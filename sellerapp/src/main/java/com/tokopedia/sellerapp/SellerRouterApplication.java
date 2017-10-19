@@ -27,6 +27,7 @@ import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -75,6 +76,7 @@ import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
+import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsModuleRouter;
@@ -99,7 +101,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter {
+        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, SessionRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -252,7 +254,8 @@ public abstract class SellerRouterApplication extends MainApplication
                         this,
                         accountsService,
                         new GetUserInfoMapper(),
-                        null
+                        null,
+                        sessionHandler
                 );
 
         GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
@@ -557,5 +560,10 @@ public abstract class SellerRouterApplication extends MainApplication
     public void goToGMSubscribe(Activity activity) {
         Intent intent = new Intent(activity, GmSubscribeHomeActivity.class);
         activity.startActivity(intent);
+    }
+
+    @Override
+    public Intent getTrueCallerIntent(Context context) {
+        return TruecallerActivity.getCallingIntent(context);
     }
 }

@@ -7,7 +7,9 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
+import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.register.domain.model.RegisterSosmedDomain;
 
@@ -22,14 +24,17 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
 
     protected final GetTokenUseCase getTokenUseCase;
     protected final GetUserInfoUseCase getUserInfoUseCase;
+    protected final MakeLoginUseCase makeLoginUseCase;
 
     public RegisterWithSosmedUseCase(ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
                                      GetTokenUseCase getTokenUseCase,
-                                     GetUserInfoUseCase getUserInfoUseCase) {
+                                     GetUserInfoUseCase getUserInfoUseCase,
+                                     MakeLoginUseCase makeLoginUseCase) {
         super(threadExecutor, postExecutionThread);
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
+        this.makeLoginUseCase = makeLoginUseCase;
     }
 
 
@@ -46,11 +51,33 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
                     public Observable<RegisterSosmedDomain> call(RegisterSosmedDomain registerSosmedDomain) {
                         return getInfo(registerSosmedDomain);
                     }
+                })
+                .flatMap(new Func1<RegisterSosmedDomain, Observable<RegisterSosmedDomain>>() {
+                    @Override
+                    public Observable<RegisterSosmedDomain> call(RegisterSosmedDomain registerSosmedDomain) {
+                        if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
+                            return makeLogin(registerSosmedDomain);
+                        } else {
+                            return Observable.just(registerSosmedDomain);
+                        }
+                    }
+                });
+    }
+
+    protected Observable<RegisterSosmedDomain> makeLogin(final RegisterSosmedDomain
+                                                                 registerSosmedDomain) {
+        return makeLoginUseCase.getExecuteObservable(MakeLoginUseCase.getParam())
+                .flatMap(new Func1<MakeLoginDomain, Observable<RegisterSosmedDomain>>() {
+                    @Override
+                    public Observable<RegisterSosmedDomain> call(MakeLoginDomain makeLoginDomain) {
+                        registerSosmedDomain.setMakeLoginModel(makeLoginDomain);
+                        return Observable.just(registerSosmedDomain);
+                    }
                 });
     }
 
     protected Observable<RegisterSosmedDomain> getInfo(final RegisterSosmedDomain
-                                                           registerSosmedDomain) {
+                                                               registerSosmedDomain) {
         return getUserInfoUseCase.createObservable(RequestParams.EMPTY)
                 .flatMap(new Func1<GetUserInfoDomainModel, Observable<RegisterSosmedDomain>>() {
                     @Override
@@ -62,7 +89,7 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
     }
 
     protected Observable<RegisterSosmedDomain> getToken(final RegisterSosmedDomain registerSosmedDomain,
-                                                      RequestParams params) {
+                                                        RequestParams params) {
         return getTokenUseCase.createObservable(params)
                 .flatMap(new Func1<TokenViewModel, Observable<RegisterSosmedDomain>>() {
                     @Override

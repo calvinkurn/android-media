@@ -26,7 +26,7 @@ import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
@@ -180,7 +180,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     }
 
     public void showVerificationDialog() {
-        startActivityForResult(SessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()),
+        startActivityForResult(OldSessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()),
                 REQUEST_VERIFY_PHONE_NUMBER);
     }
 

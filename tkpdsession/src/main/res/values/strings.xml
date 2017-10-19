@@ -91,4 +91,5 @@
     <string name="you_must_agree">Untuk dapat menggunakan layanan Tokopedia, anda harus menyetujui Syarat dan Ketentuan dari Tokopedia</string>
     <string name="day_month_year">Tanggal / Bulan / Tahun</string>
     <string name="error_register_webview">Terjadi kesalahan. Mohon coba kembali.</string>
+    <string name="hi">Hai</string>
 </resources>

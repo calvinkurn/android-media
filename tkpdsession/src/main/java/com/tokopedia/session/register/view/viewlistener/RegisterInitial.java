@@ -11,6 +11,7 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.session.model.LoginGoogleModel;
+import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 
 import java.util.ArrayList;
@@ -40,13 +41,15 @@ public interface RegisterInitial {
 
         void onErrorRegisterSosmed(String errorMessage);
 
-        void onGoToLogin();
+        void onSuccessLogin();
 
         void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData);
 
         void clearToken();
 
+        void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName);
 
+        void onGoToPhoneVerification();
     }
 
     interface Presenter extends CustomerPresenter<View> {

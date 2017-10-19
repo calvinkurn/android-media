@@ -1,6 +1,7 @@
 package com.tokopedia.session.register.domain.model;
 
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
+import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 
 /**
@@ -10,6 +11,7 @@ import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 public class RegisterSosmedDomain {
     private TokenViewModel tokenModel;
     private GetUserInfoDomainModel info;
+    private MakeLoginDomain makeLoginModel;
 
     public void setTokenModel(TokenViewModel tokenModel) {
         this.tokenModel = tokenModel;
@@ -25,5 +27,13 @@ public class RegisterSosmedDomain {
 
     public GetUserInfoDomainModel getInfo() {
         return info;
+    }
+
+    public void setMakeLoginModel(MakeLoginDomain makeLoginModel) {
+        this.makeLoginModel = makeLoginModel;
+    }
+
+    public MakeLoginDomain getMakeLoginModel() {
+        return makeLoginModel;
     }
 }

@@ -55,4 +55,8 @@ public class TruecallerActivity extends Activity implements ITrueCallback{
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, TruecallerActivity.class);
+    }
 }

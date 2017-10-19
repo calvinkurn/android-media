@@ -16,4 +16,5 @@ public interface ErrorCode {
     int EMPTY_ACCESS_TOKEN = 1123;
     int ERROR_BUNDLE_WEBVIEW = 1124;
 
+    int UNKNOWN_SECURITY_QUESTION_TYPE = 1125;
 }

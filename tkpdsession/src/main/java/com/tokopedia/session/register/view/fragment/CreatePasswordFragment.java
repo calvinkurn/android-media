@@ -29,7 +29,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.session.R;
 import com.tokopedia.session.di.DaggerSessionComponent;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
@@ -109,7 +109,7 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     public void onStart() {
         super.onStart();
         ScreenTracking.screen(getScreenName());
-        TrackingUtils.fragmentBasedAFEvent(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
+        TrackingUtils.fragmentBasedAFEvent(OldSessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
     }
 
     @Override

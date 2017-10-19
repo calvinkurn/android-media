@@ -1924,9 +1924,10 @@ di Tokopedia Sekarang!</string>
     <string name="title_email_address">Alamat Email</string>
     <string name="title_phone_optional">Nomor Telepon (Opsional)</string>
     <string name="error_attachment">Mohon tambahkan lampiran.</string>
-    <string name="action_send_otp_with_call">Atau kirim Kode Verifikasi melalui telepon</string>
+    <string name="action_send_otp_with_call">Atau lewat telepon</string>
     <string name="action_send_otp_with_call_2">Atau lewat telepon</string>
-    <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan Klik disini</string>
+    <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan klik
+        disini</string>
     <string name="title_resend_otp">Kirim ulang Kode Verifikasi</string>
     <string name="truecaller_verif">Lanjutkan dengan Truecaller</string>
 

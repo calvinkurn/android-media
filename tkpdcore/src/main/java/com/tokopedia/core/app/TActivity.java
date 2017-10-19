@@ -14,7 +14,7 @@ import android.widget.FrameLayout;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.session.presenter.Session;
@@ -82,7 +82,7 @@ public abstract class TActivity extends BaseActivity {
 
     public static boolean onCartOptionSelected(Context context) {
         if (!SessionHandler.isV4Login(context)) {
-            Intent intent = SessionRouter.getLoginActivityIntent(context);
+            Intent intent = OldSessionRouter.getLoginActivityIntent(context);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             context.startActivity(intent);
         } else {
@@ -94,7 +94,7 @@ public abstract class TActivity extends BaseActivity {
     private Boolean onCartOptionSelected() {
 
         if (!SessionHandler.isV4Login(getBaseContext())) {
-            Intent intent = SessionRouter.getLoginActivityIntent(getBaseContext());
+            Intent intent = OldSessionRouter.getLoginActivityIntent(getBaseContext());
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             startActivity(intent);
         } else {
