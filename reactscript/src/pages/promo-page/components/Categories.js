@@ -5,14 +5,27 @@ import Category from './Category'
 import Footer from '../components/Infographics'
 import BannerContainer from '../containers/BannerContainer'
 
+
+
 class Categories extends PureComponent {
   componentDidMount() {
     const { offset, limit } = this.props.categories.pagination
     this.props.getCategories(offset, limit)
+    this.props.getApplinkEnv()
   }
 
   renderCategory = ({ item }) => {
-    return <Category category={item} dataSlug={this.props.dataSlug} />
+    const applink = this.props.applinkEnv
+
+    console.log(item)
+    // console.log(this.props.dataSlug)
+    // console.log(applink)
+    
+    return <Category 
+      category={item} 
+      products={item.products}
+      dataSlug={this.props.dataSlug} 
+      applink={applink} />
   }
 
   loadMore = () => {

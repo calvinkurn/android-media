@@ -6,10 +6,8 @@ import TKPButton from '../common/TKPPrimaryBtn'
 import { NavigationModule } from 'NativeModules'
 
 
-const url_categories_staging = 'https://staging.tokopedia.com/official-store/promo'
-const url_categories_prod = 'https://tokopedia.com/official-store/promo'
 
-const Category = ({ category, dataSlug }) => (
+const Category = ({ category, products, dataSlug, applink }) => (
   <View style={{marginBottom: 10}}>
     <View style={{
       backgroundColor: '#FFF', borderTopWidth: 1, borderBottomWidth: 1, borderColor: '#e0e0e0', marginVertical: 10
@@ -21,10 +19,11 @@ const Category = ({ category, dataSlug }) => (
     </View>
 
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} >
-      <TKPButton content="View All" onTap={() => { 
-        console.log(category)
-        NavigationModule.navigateWithMobileUrl('', `${url_categories_staging}/${dataSlug.slug}/${category.slug}`, "")}}
-        type="small" />
+      {products.length > 12 &&
+        <TKPButton content="View All" onTap={() => { 
+          NavigationModule.navigateWithMobileUrl('', `${applink.items}/${dataSlug.slug}/${category.slug}?override_url=1`, "")}}
+          type="small" />
+      }
     </View>
   </View>
 )

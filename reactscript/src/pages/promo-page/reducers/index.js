@@ -3,6 +3,7 @@ import { PENDING, FULFILLED, REJECTED } from 'redux-promise-middleware'
 import {
     FETCH_TOPBANNER,
     FETCH_CATEGORIES,
+    GETAPPLINK
 } from '../actions/index'
 
 
@@ -36,6 +37,27 @@ const banners = (state = {
             }
 
         default: 
+            return state
+    }
+}
+
+
+
+const applink = (
+    state = {
+        items: [],
+        isFetching: false,
+    }, action
+) => {
+    switch (action.type) {
+        case `${GETAPPLINK}_${FULFILLED}`: 
+            return {
+                ...state,
+                items: action.payload,
+                isFetching: false
+            }
+        
+        default:
             return state
     }
 }
@@ -93,6 +115,7 @@ const categories = (
 const appReducer = combineReducers({
     banners,
     categories,
+    applink
 })
 
 const rootReducer = (state, action) => {
