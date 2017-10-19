@@ -24,6 +24,7 @@ import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.ImageGallery;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
@@ -55,6 +56,9 @@ import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.manage.constant.CashbackOption;
+import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
+import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
+import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
 import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.constant.StatusProductOption;
@@ -200,6 +204,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     @Override
+    public void onSearchSubmitted(String text) {
+        UnifyTracking.eventProductManageSearch();
+        super.onSearchSubmitted(text);
+    }
+
+    @Override
     protected void initialVar() {
         super.initialVar();
         sortProductOption = SortProductOption.POSITION;
@@ -222,6 +232,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     onAddFromCamera();
+                    UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
                     return true;
                 }
             });
@@ -229,6 +240,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     onAddFromGallery();
+                    UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
                     return true;
                 }
             });
@@ -236,10 +248,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     importFromInstagram();
+                    UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
                     return false;
                 }
             });
         } else if (itemId == R.id.checklist_product_menu) {
+            UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
             getActivity().startActionMode(getCallbackActionMode());
         }
         return super.onOptionsItemSelected(item);
@@ -290,7 +304,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                             mode.finish();
                             productManagePresenter.deleteProduct(productIdList);
                         }
-                    });
+                    }, null);
                 }
                 return false;
             }
@@ -321,6 +335,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                     resetPageAndRefresh();
                     filtered = true;
                     setSearchMode(true);
+                    trackingFilter(productManageFilterModel);
                 }
                 break;
             case ProductManageConstant.REQUEST_CODE_SORT:
@@ -328,12 +343,42 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                     ProductManageSortModel productManageSortModel = intent.getParcelableExtra(ProductManageConstant.EXTRA_SORT_SELECTED);
                     sortProductOption = productManageSortModel.getId();
                     resetPageAndRefresh();
+                    trackingSort(productManageSortModel);
                 }
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, intent);
                 break;
         }
+    }
+
+    private void trackingSort(ProductManageSortModel productManageSortModel) {
+        UnifyTracking.eventProductManageSortProduct(productManageSortModel.getTitleSort());
+    }
+
+    private void trackingFilter(ProductManageFilterModel productManageFilterModel) {
+        List<String> filters = new ArrayList<>();
+        if (productManageFilterModel.getCategoryId() != String.valueOf(ProductManageConstant.FILTER_ALL_CATEGORY)) {
+            filters.add(AppEventTracking.EventLabel.CATEGORY);
+        }
+
+        if (productManageFilterModel.getEtalaseProductOption() != ProductManageConstant.FILTER_ALL_PRODUK) {
+            filters.add(AppEventTracking.EventLabel.ETALASE);
+        }
+
+        if (productManageFilterModel.getCatalogProductOption() != CatalogProductOption.WITH_AND_WITHOUT) {
+            filters.add(AppEventTracking.EventLabel.CATALOG);
+        }
+
+        if (productManageFilterModel.getConditionProductOption() != ConditionProductOption.ALL_CONDITION) {
+            filters.add(AppEventTracking.EventLabel.CONDITION);
+        }
+
+        if (productManageFilterModel.getPictureStatusOption() != PictureStatusProductOption.WITH_AND_WITHOUT) {
+            filters.add(AppEventTracking.EventLabel.PICTURE_STATUS);
+        }
+
+        UnifyTracking.eventProductManageFilterProduct(TextUtils.join(",", filters));
     }
 
     protected void resetPageAndRefresh() {
@@ -410,6 +455,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), false);
             adapter.notifyDataSetChanged();
             ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productManageViewModel.getProductUrl());
+            UnifyTracking.eventProductManageClickDetail();
         }
     }
 
@@ -559,7 +605,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private BottomSheetItemClickListener onOptionBottomSheetClicked(final ProductManageViewModel productManageViewModel) {
         return new BottomSheetItemClickListener() {
             @Override
-            public void onBottomSheetItemClick(MenuItem item) {
+            public void onBottomSheetItemClick(final MenuItem item) {
                 if (productManageViewModel.getProductStatus().equals(StatusProductOption.UNDER_SUPERVISION)) {
                     NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.product_manage_desc_product_on_supervision, productManageViewModel.getProductName()));
                     return;
@@ -567,15 +613,24 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 int itemId = item.getItemId();
                 if (itemId == R.id.edit_product_menu) {
                     goToEditProduct(productManageViewModel.getId());
+                    UnifyTracking.eventProductManageOverflowMenu(item.getTitle().toString());
                 } else if (itemId == R.id.duplicat_product_menu) {
                     goToDuplicateProduct(productManageViewModel.getId());
+                    UnifyTracking.eventProductManageOverflowMenu(item.getTitle().toString());
                 } else if (itemId == R.id.delete_product_menu) {
                     final List<String> productIdList = new ArrayList<>();
                     productIdList.add(productManageViewModel.getId());
                     showDialogActionDeleteProduct(productIdList, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            UnifyTracking.eventProductManageOverflowMenu(item.getTitle().toString() + " - " + getString(R.string.label_delete));
                             productManagePresenter.deleteProduct(productIdList);
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            UnifyTracking.eventProductManageOverflowMenu(item.getTitle().toString() + " - " + getString(R.string.title_cancel));
+                            dialog.dismiss();
                         }
                     });
                 } else if (itemId == R.id.change_price_product_menu) {
@@ -660,6 +715,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                     default:
                         break;
                 }
+                UnifyTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_cashback_title) + " - " + item.getTitle());
             }
         };
     }
@@ -689,12 +745,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         productManageEditPriceDialogFragment.show(getActivity().getFragmentManager(), "");
     }
 
-    private void showDialogActionDeleteProduct(final List<String> productIdList, Dialog.OnClickListener onClickListener) {
+    private void showDialogActionDeleteProduct(final List<String> productIdList, Dialog.OnClickListener onClickListener, Dialog.OnClickListener onCancelListener) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setTitle(R.string.label_delete);
         alertDialog.setMessage(R.string.dialog_delete_product);
         alertDialog.setPositiveButton(R.string.label_delete, onClickListener);
-        alertDialog.setNegativeButton(R.string.title_cancel, null);
+        alertDialog.setNegativeButton(R.string.title_cancel, onCancelListener);
         alertDialog.show();
     }
 
