@@ -15,6 +15,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.Product;
@@ -269,8 +270,9 @@ public class CategoryProductStyle2View extends
             @Override
             public void onUpdateDataDigitalRadioChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
-                if (!data.getClientNumberList().isEmpty())
+                if (!data.getClientNumberList().isEmpty()) {
                     renderClientNumberInputForm(operatorSelected);
+                }
             }
         };
     }
@@ -315,15 +317,23 @@ public class CategoryProductStyle2View extends
             }
 
             @Override
-            public void onClientNumberHasFocus(String clientNumber) {
-                actionListener.onClientNumberClicked(clientNumber,
-                        operatorSelected.getClientNumberList().get(0),
+            public void onClientNumberHasFocus(String number) {
+                ClientNumber clientNumber = null;
+                if (!operatorSelected.getClientNumberList().isEmpty()) {
+                    clientNumber = operatorSelected.getClientNumberList().get(0);
+                }
+                actionListener.onClientNumberClicked(number,
+                        clientNumber,
                         historyClientNumber.getRecentClientNumberList());
             }
 
             @Override
             public void onClientNumberCleared() {
-                actionListener.onClientNumberCleared(operatorSelected.getClientNumberList().get(0),
+                ClientNumber clientNumber = null;
+                if (!operatorSelected.getClientNumberList().isEmpty()) {
+                    clientNumber = operatorSelected.getClientNumberList().get(0);
+                }
+                actionListener.onClientNumberCleared(clientNumber,
                         historyClientNumber.getRecentClientNumberList());
             }
         };

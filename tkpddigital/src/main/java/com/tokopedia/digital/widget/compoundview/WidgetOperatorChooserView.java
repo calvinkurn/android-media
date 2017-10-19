@@ -109,6 +109,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
                                 String.valueOf(lastOrder.getAttributes().getOperatorId()
                                 ))) {
                     spinnerOperator.setSelection(i);
+                    listener.onCheckChangeOperator(model);
                 }
             }
         } else {
@@ -116,6 +117,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
                 Operator model = operators.get(i);
                 if (String.valueOf(model.getId()).equalsIgnoreCase(lastOperatorSelected)) {
                     spinnerOperator.setSelection(i);
+                    listener.onCheckChangeOperator(model);
                 }
             }
         }
@@ -133,6 +135,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
                                 ))) {
                     resetClientNumber = false;
                     spinnerOperator.setSelection(i);
+                    listener.onCheckChangeOperator(model);
                 }
             }
         }
