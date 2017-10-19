@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,8 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     String orderId = "";
     ProgressBar progressBar;
     ResultViewModel resultViewModel;
+    TypedValue typedValue100, typedValue70, typedValue38;
+    Float float100, float70, float38;
 
     @Inject
     CreateResolutionCenterPresenter presenter;
@@ -158,6 +161,17 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         btnCreateResolution = (Button) view.findViewById(R.id.btn_create_resolution);
 
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        typedValue100 = new TypedValue();
+        typedValue70 = new TypedValue();
+        typedValue38 = new TypedValue();
+
+        getResources().getValue(R.dimen.font_alpha_100, typedValue100, true);
+        getResources().getValue(R.dimen.font_alpha_70, typedValue70, true);
+        getResources().getValue(R.dimen.font_alpha_38, typedValue38, true);
+
+        float100 = typedValue100.getFloat();
+        float70 = typedValue70.getFloat();
+        float38 = typedValue38.getFloat();
 
         rlProgress = (RelativeLayout) view.findViewById(R.id.rl_progress);
         updateView(new ResultViewModel());
@@ -217,13 +231,13 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             updateProductProblemString(resultViewModel.problem, tvChooseProductProblem);
             tvSolution.setTextColor(context.getResources().getColor(R.color.black_70));
             tvSolutionTitle.setTextColor(context.getResources().getColor(R.color.black_70));
-            ivChooseProductProblem.setAlpha(context.getResources().getDimension(R.dimen.font_alpha_100));
-            ivSolution.setAlpha(context.getResources().getDimension(R.dimen.font_alpha_70));
+            ivChooseProductProblem.setAlpha(float100);
+            ivSolution.setAlpha(float70);
             tvUploadProve.setText(context.getResources()
                     .getString(R.string.string_upload_prove_information));
             ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(),
                     R.drawable.chevron_thin_right));
-            ivUploadProve.setAlpha(context.getResources().getDimension(R.dimen.font_alpha_38));
+            ivUploadProve.setAlpha(float38);
         } else {
             ffSolution.setEnabled(false);
             ivChooseProductProblem.setImageDrawable(ContextCompat.getDrawable(getActivity(),
@@ -233,9 +247,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             tvChooseProductProblem.setText(context.getResources().getString(R.string.string_choose_product_problem));
             tvSolution.setTextColor(context.getResources().getColor(R.color.black_38));
             tvSolutionTitle.setTextColor(context.getResources().getColor(R.color.black_38));
-            ivChooseProductProblem.setAlpha(context.getResources().getDimension(R.dimen.font_alpha_70));
-            ivSolution.setAlpha(context.getResources().getDimension(R.dimen.font_alpha_38));
-            ivUploadProve.setAlpha(context.getResources().getDimension(R.dimen.font_alpha_38));
+            ivChooseProductProblem.setAlpha(float100);
+            ivSolution.setAlpha(float38);
+            ivUploadProve.setAlpha(float38);
         }
 
         if (resultViewModel.solution != 0) {
@@ -249,17 +263,17 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                 ffUploadProve.setEnabled(false);
                 tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_38));
                 tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_38));
-                ivUploadProve.setAlpha(context.getResources().getDimension(R.dimen.font_alpha_38));
+                ivUploadProve.setAlpha(float38);
             } else {
                 ivUploadProve.setImageDrawable(ContextCompat.getDrawable(getActivity(),
                         R.drawable.chevron_thin_right));
                 ffUploadProve.setEnabled(true);
                 tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_70));
                 tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_70));
-                ivUploadProve.setAlpha(context.getResources().getDimension(R.dimen.font_alpha_70));
+                ivUploadProve.setAlpha(float70);
             }
             updateSolutionString(resultViewModel, tvSolution);
-            ivSolution.setAlpha(context.getResources().getDimension(R.dimen.font_alpha_100));
+            ivSolution.setAlpha(float100);
         } else {
             ffUploadProve.setEnabled(false);
             ivSolution.setImageDrawable(ContextCompat.getDrawable(getActivity(),
@@ -270,9 +284,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             tvUploadProve.setTextColor(context.getResources().getColor(R.color.black_38));
             tvUploadProveTitle.setTextColor(context.getResources().getColor(R.color.black_38));
             if (resultViewModel.problem.size() != 0) {
-                ivSolution.setAlpha(context.getResources().getDimension(R.dimen.font_alpha_70));
+                ivSolution.setAlpha(float70);
             } else {
-                ivSolution.setAlpha(context.getResources().getDimension(R.dimen.font_alpha_38));
+                ivSolution.setAlpha(float38);
             }
         }
 

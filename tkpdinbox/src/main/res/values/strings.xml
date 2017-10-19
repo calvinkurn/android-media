@@ -93,8 +93,8 @@
     <string name="string_continue">Lanjut</string>
     <string name="string_adapter_product_problem">Kendala Produk</string>
     <string name="string_adapter_money">Kendala Ongkos Kirim</string>
-    <string name="string_shipping_name">[%shipping_name%]</string>
-    <string name="string_shipping_name_identifier">%shipping_name%</string>
+    <string name="string_shipping_name">[$shipping_name$]</string>
+    <string name="string_shipping_name_identifier">$shipping_name$</string>
 
     <!--step 2-->
     <string name="string_money_amount_returned">Jumlah uang yang ingin dikembalikan</string>
