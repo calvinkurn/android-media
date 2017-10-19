@@ -10,25 +10,18 @@ import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.share.ShareActivity;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailFragment;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
-import com.tokopedia.discovery.presenter.BrowsePresenterImpl;
-
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
 
 /**
  * @author anggaprasetiyo on 10/17/16.
@@ -119,6 +112,12 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
+        } if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            this.finish();
+        } else if (isTaskRoot()) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            this.finish();
         } else {
             this.finish();
         }

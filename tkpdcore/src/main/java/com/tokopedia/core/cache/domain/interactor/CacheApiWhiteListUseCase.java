@@ -35,6 +35,6 @@ public class CacheApiWhiteListUseCase extends UseCase<Boolean> {
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         Object object = requestParams.getObject(ADD_WHITELIST_COLLECTIONS);
-        return apiCacheRepository.bulkInsert((Collection<CacheApiWhiteListDomain>) object);
+        return apiCacheRepository.insertWhiteList((Collection<CacheApiWhiteListDomain>) object);
     }
 }

@@ -618,7 +618,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
 
             @Override
-            public void onSuccess(String path, int position) {
+            public void onSuccess(String path) {
                 ArrayList<String> imageUrls = new ArrayList<>();
                 imageUrls.add(path);
                 ProductAddActivity.start(ParentIndexHome.this, imageUrls);

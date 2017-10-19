@@ -23,6 +23,7 @@ import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
+import com.tokopedia.topads.keyword.utils.EmptyCurrencyIdrTextWatcher;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
@@ -37,6 +38,7 @@ import javax.inject.Inject;
 
 public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment implements TopAdsKeywordEditDetailView {
     public static final String TAG = "TopAdsKeywordEditDetailFragment";
+    public static final int DEFAULT_KELIPATAN = 50;
 
     @Inject
     TopAdsKeywordEditDetailPresenter presenter;
@@ -48,6 +50,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected TextInputLayout textInputLayoutCostPerClick;
 
     private KeywordAd keywordAd;
+    private String topAdsKeywordCostPerClickDesc;
 
     public static Bundle createArguments(KeywordAd model) {
         Bundle bundle = new Bundle();
@@ -119,7 +122,9 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         topAdsCostPerClick = (PrefixEditText) view.findViewById(R.id.edit_text_top_ads_cost_per_click);
         topAdsMaxPriceInstruction = (TextView) view.findViewById(R.id.text_view_top_ads_max_price_description);
         textInputLayoutCostPerClick = (TextInputLayout) view.findViewById(R.id.text_input_layout_top_ads_cost_per_click);
-        CurrencyIdrTextWatcher textWatcher = new CurrencyIdrTextWatcher(topAdsCostPerClick){
+        topAdsKeywordCostPerClickDesc = getString(R.string.top_ads_keyword_cost_per_click_desc, keywordAd.getGroupBid());
+        topAdsMaxPriceInstruction.setText(topAdsKeywordCostPerClickDesc);
+        EmptyCurrencyIdrTextWatcher textWatcher = new EmptyCurrencyIdrTextWatcher(topAdsCostPerClick){
             @Override
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
@@ -132,6 +137,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
                 }
             }
         };
+        textWatcher.setAvoidMessageErrorValue(DEFAULT_KELIPATAN);
         topAdsCostPerClick.addTextChangedListener(textWatcher);
     }
 
