@@ -477,7 +477,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="item_all_cond">Semua Kondisi</string>
     <string name="item_new_cond">Baru</string>
     <string name="item_used_cond">Bekas</string>
-    <string name="title_warehouse">Stock Kosong</string>
+    <string name="title_warehouse">Stok Kosong</string>
     <string name="title_all_products">Semua Produk</string>
     <string name="title_all_etalase">Semua Etalase</string>
     <string name="title_quick_success">Sukses mengubah harga produk</string>
