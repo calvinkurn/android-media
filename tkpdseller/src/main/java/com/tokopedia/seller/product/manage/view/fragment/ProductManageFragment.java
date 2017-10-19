@@ -548,11 +548,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         BottomSheetBuilder bottomSheetBuilder = new BottomSheetBuilder(getActivity())
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(productManageViewModel.getProductName());
-        if (GlobalConfig.isSellerApp()) {
-            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item);
-        } else {
-            bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item_main_app);
-        }
+        bottomSheetBuilder.setMenu(R.menu.menu_product_manage_action_item);
         BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
                 .createDialog();
@@ -587,14 +583,25 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 } else if (itemId == R.id.share_product_menu) {
                     goToShareProduct(productManageViewModel);
                 } else if (itemId == R.id.set_cashback_product_menu) {
-                    if (goldMerchant) {
-                        showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductCashback());
-                    } else {
-                        showDialogActionGoToGMSubscribe();
-                    }
+                    onSetCashbackClicked(productManageViewModel);
                 }
             }
         };
+    }
+
+    private void onSetCashbackClicked(ProductManageViewModel productManageViewModel) {
+        if (GlobalConfig.isSellerApp()) {
+            if (goldMerchant) {
+                showOptionCashback(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(),
+                        productManageViewModel.getProductCurrencySymbol(), productManageViewModel.getProductCashback());
+            } else {
+                showDialogActionGoToGMSubscribe();
+            }
+        } else {
+            if (getActivity().getApplication() instanceof SellerModuleRouter) {
+                ((SellerModuleRouter) getActivity().getApplication()).goToGMSubscribe(getActivity());
+            }
+        }
     }
 
     private void showOptionCashback(String productId, String productPrice, String productPriceSymbol, int productCashback) {
