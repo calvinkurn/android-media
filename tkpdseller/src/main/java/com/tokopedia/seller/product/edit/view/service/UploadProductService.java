@@ -175,6 +175,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         bundle.putString(TkpdState.ProductService.IMAGE_URI, domainModel.getProductPrimaryPic());
         bundle.putString(TkpdState.ProductService.PRODUCT_URI, domainModel.getProductUrl());
         bundle.putString(TkpdState.ProductService.PRODUCT_DESCRIPTION, domainModel.getProductDesc());
+        bundle.putString(TkpdState.ProductService.PRODUCT_ID, domainModel.getProductId() + "");
         result.putExtras(bundle);
         sendBroadcast(result);
     }
