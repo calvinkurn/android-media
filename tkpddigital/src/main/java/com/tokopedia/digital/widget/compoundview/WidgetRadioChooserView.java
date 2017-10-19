@@ -93,7 +93,6 @@ public class WidgetRadioChooserView extends LinearLayout {
             for (int i = 0; i < operators.size(); i++) {
                 if (operators.get(i).getId() == lastOrder.getAttributes().getOperatorId()) {
                     radioGroup.check(radioGroup.getChildAt(i).getId());
-//                    listener.onResetClientNumber();
                     listener.onCheckChange(operators.get(radioGroup.getChildAt(i).getId()));
                 }
             }
@@ -103,7 +102,6 @@ public class WidgetRadioChooserView extends LinearLayout {
                     if (String.valueOf(operators.get(i).getId())
                             .equalsIgnoreCase(lastOperatorSelected)) {
                         radioGroup.check(radioGroup.getChildAt(i).getId());
-//                        listener.onResetClientNumber();
                         listener.onCheckChange(operators.get(radioGroup.getChildAt(i).getId()));
                     }
                 }
