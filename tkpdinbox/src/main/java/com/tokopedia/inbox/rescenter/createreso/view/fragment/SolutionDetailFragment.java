@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
@@ -223,15 +224,15 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     public void buttonSelected(Button button) {
         button.setClickable(true);
         button.setEnabled(true);
-        button.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_enable));
-        button.setTextColor(ContextCompat.getColor(context, R.color.white));
+        button.setBackground(MethodChecker.getDrawable(context, R.drawable.bg_button_enable));
+        button.setTextColor(MethodChecker.getColor(context, R.color.white));
     }
 
     public void buttonDisabled(Button button) {
         button.setClickable(false);
         button.setEnabled(false);
-        button.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disable));
-        button.setTextColor(ContextCompat.getColor(context, R.color.black_70));
+        button.setBackground(MethodChecker.getDrawable(context, R.drawable.bg_button_disable));
+        button.setTextColor(MethodChecker.getColor(context, R.color.black_70));
     }
 
     @Override
