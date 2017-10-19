@@ -246,6 +246,8 @@ public class InboxReputationDetailHeaderViewHolder extends
     }
 
     private void setSmiley(InboxReputationDetailHeaderViewModel element, ReputationAdapter adapter) {
+        changeButton.setText(MainApplication.getAppContext().getString(R.string
+                .change));
         switch (element.getReputationDataViewModel().getReviewerScore()) {
             case SMILEY_BAD:
                 adapter.showSmileyBad();
