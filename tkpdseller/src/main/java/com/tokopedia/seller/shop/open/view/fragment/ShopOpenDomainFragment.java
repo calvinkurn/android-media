@@ -1,16 +1,18 @@
 package com.tokopedia.seller.shop.open.view.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.PrefixEditText;
@@ -21,16 +23,20 @@ import com.tokopedia.seller.shop.setting.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopOpenDomainPresenter;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopOpenDomainView;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 
 /**
  * Created by Hendry on 3/17/2017.
  */
 
-public class ShopOpenDomainFragment
-        extends BasePresenterFragment<ShopOpenDomainPresenter>
-        implements ShopOpenDomainView {
+public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOpenDomainView {
+
     public static final String TAG = "ShopOpenDomain";
+
+    @Inject
+    ShopOpenDomainPresenter presenter;
     ShopOpenDomainComponent component;
     private View buttonSubmit;
     private TkpdTextInputLayout textInputShopName;
@@ -49,17 +55,7 @@ public class ShopOpenDomainFragment
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
+    protected void initInjector() {
         component = DaggerShopOpenDomainComponent
                 .builder()
                 .shopOpenDomainModule(new ShopOpenDomainModule())
@@ -69,24 +65,10 @@ public class ShopOpenDomainFragment
         presenter.attachView(this);
     }
 
+    @Nullable
     @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_shop_open_domain;
-    }
-
-    @Override
-    protected void initView(View view) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_shop_open_domain, container, false);
         TextView textHello = (TextView) view.findViewById(R.id.text_hello);
         buttonSubmit = view.findViewById(R.id.button_submit);
         textInputShopName = (TkpdTextInputLayout) view.findViewById(R.id.text_input_shop_name);
@@ -95,7 +77,7 @@ public class ShopOpenDomainFragment
         editTextInputDomainName = (PrefixEditText) textInputDomainName.getEditText();
 
 
-        String helloName = getString( R.string.hello_blank_name ) +
+        String helloName = getString(R.string.hello_blank_name) +
                 " " +
                 SessionHandler.getLoginName(getActivity());
         textHello.setText(helloName);
@@ -121,7 +103,7 @@ public class ShopOpenDomainFragment
             }
         });
 
-        editTextInputDomainName.addTextChangedListener (new TextWatcher() {
+        editTextInputDomainName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -139,6 +121,7 @@ public class ShopOpenDomainFragment
                 presenter.checkDomain(editTextInputDomainName.getTextWithoutPrefix());
             }
         });
+        return view;
     }
 
     @Override
@@ -146,8 +129,7 @@ public class ShopOpenDomainFragment
         if (existed) {
             textInputDomainName.setSuccess(getString(R.string.domain_name_available));
             checkEnableSubmit();
-        }
-        else {
+        } else {
             textInputDomainName.setError(getString(R.string.domain_name_not_available));
         }
     }
@@ -157,37 +139,16 @@ public class ShopOpenDomainFragment
         if (existed) {
             textInputShopName.setSuccess(getString(R.string.shop_name_available));
             checkEnableSubmit();
-        }
-        else {
+        } else {
             textInputShopName.setError(getString(R.string.shop_name_not_available));
         }
     }
 
-    private void checkEnableSubmit(){
+    private void checkEnableSubmit() {
         if (textInputDomainName.isSuccess() &&
                 textInputShopName.isSuccess()) {
             buttonSubmit.setEnabled(true);
         }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
     }
 
     @Override
@@ -223,25 +184,7 @@ public class ShopOpenDomainFragment
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        // subscription.unsubscribe();
+    protected String getScreenName() {
+        return null;
     }
-
-    @Override
-    public void onDestroy() {
-        presenter.detachView();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
 }

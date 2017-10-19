@@ -7,6 +7,8 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
  */
 
 public interface ShopOpenDomainPresenter extends CustomerPresenter<ShopOpenDomainView> {
+    
     void checkShop(String shopName);
+
     void checkDomain(String domainName);
 }
