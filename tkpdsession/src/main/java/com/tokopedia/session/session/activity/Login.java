@@ -38,6 +38,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -135,15 +136,29 @@ public class Login extends BaseActivity implements SessionView
     @DeepLink({Constants.Applinks.LOGIN})
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        Intent intent = new Intent(context, Login.class);
-        intent.putExtra(Session.WHICH_FRAGMENT_KEY,
-                TkpdState.DrawerPosition.LOGIN);
-        return intent
-                .setData(uri.build());
+        if (SessionHandler.isV4Login(context)) {
+            if (context.getApplicationContext() instanceof TkpdCoreRouter)
+                return ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
+            else throw new RuntimeException("Applinks intent unsufficient");
+        } else {
+            Intent intent = new Intent(context, Login.class);
+            intent.putExtra(Session.WHICH_FRAGMENT_KEY,
+                    TkpdState.DrawerPosition.LOGIN);
+            return intent
+                    .setData(uri.build());
+        }
     }
+
     @DeepLink({Constants.Applinks.REGISTER})
     public static Intent getCallingApplinkRegisterIntent(Context context, Bundle bundle) {
-        return getRegisterIntent(context);
+        if (SessionHandler.isV4Login(context)) {
+            if (context.getApplicationContext() instanceof TkpdCoreRouter)
+                return ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
+            else throw new RuntimeException("Applinks intent unsufficient");
+        } else {
+            return getRegisterIntent(context);
+        }
+
     }
 
     @NonNull
