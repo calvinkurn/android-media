@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -110,7 +111,7 @@ public abstract class BaseDaggerFragment extends TkpdFragment {
         if (!(view instanceof EditText)) {
             view.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
-                    hideSoftKeyboard(getActivity());
+                    KeyboardHandler.hideSoftKeyboard(getActivity());
                     return false;
                 }
             });
@@ -123,14 +124,6 @@ public abstract class BaseDaggerFragment extends TkpdFragment {
                 setupUI(innerView);
             }
         }
-    }
-
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) activity.getSystemService(
-                        Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
-                activity.getCurrentFocus().getWindowToken(), 0);
     }
 
     public abstract void onRestoreState(Bundle savedState);

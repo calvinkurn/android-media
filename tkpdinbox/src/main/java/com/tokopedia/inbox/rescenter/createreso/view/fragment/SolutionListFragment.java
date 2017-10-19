@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.FreeReturnActivity;
@@ -200,9 +201,7 @@ public class SolutionListFragment extends BaseDaggerFragment
         if (solutionResponseViewModel.getFreeReturn() != null) {
             freeReturnViewModel = solutionResponseViewModel.getFreeReturn();
             llFreeReturn.setVisibility(View.VISIBLE);
-            tvFreeReturn.setText(Html.fromHtml(solutionResponseViewModel.getFreeReturn().getInfo()));
-//            tvFreeReturn.setLinksClickable(true);
-//            tvFreeReturn.setMovementMethod(LinkMovementMethod.getInstance());
+            tvFreeReturn.setText(MethodChecker.fromHtml(solutionResponseViewModel.getFreeReturn().getInfo()));
         }
     }
 
@@ -246,7 +245,7 @@ public class SolutionListFragment extends BaseDaggerFragment
     @Override
     public void successEditSolution(String message) {
         hideLoading();
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }

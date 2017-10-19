@@ -272,29 +272,29 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     public void buttonCanSelected(Button button) {
         button.setClickable(true);
         button.setEnabled(true);
-        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable1));
-        button.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_btn));
+        button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable1));
+        button.setTextColor(MethodChecker.getColor(context, R.color.green_btn));
     }
 
     public void buttonSelected(Button button) {
         button.setClickable(false);
         button.setEnabled(false);
-        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
-        button.setTextColor(Color.parseColor("#ffffff"));
+        button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_enable));
+        button.setTextColor(MethodChecker.getColor(context, R.color.white));
     }
 
     public void buttonBottomSelected(Button button) {
         button.setClickable(true);
         button.setEnabled(true);
-        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
-        button.setTextColor(Color.parseColor("#ffffff"));
+        button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_enable));
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
     }
 
     public void buttonDisabled(Button button) {
         button.setClickable(false);
         button.setEnabled(false);
-        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
-        button.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_38));
+        button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_38));
     }
 
     @Override

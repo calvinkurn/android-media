@@ -19,6 +19,7 @@ import rx.Observable;
 public class CreateValidateUseCase extends UseCase<CreateValidateDomain> {
     public static final String ORDER_ID = "order_id";
     public static final String PARAM_RESULT = "result";
+    public static final String PARAM_PROBLEM = "problem";
 
     private static final String PARAM_LIST_ATTACHMENT = "LIST_ATTACHMENT";
 
@@ -37,9 +38,7 @@ public class CreateValidateUseCase extends UseCase<CreateValidateDomain> {
     }
 
     public static RequestParams createResoValidateParams(ResultViewModel resultViewModel) {
-        JSONObject problemObject = new JSONObject();
         try {
-            problemObject.put("problem", resultViewModel.getProblemArray());
             RequestParams params = RequestParams.create();
             params.putString(ORDER_ID, resultViewModel.orderId);
             params.putString(PARAM_RESULT, resultViewModel.writeToJson().toString());
