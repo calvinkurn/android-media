@@ -85,6 +85,6 @@ public class AppealSolutionMapper implements Func1<Response<TkpdResponse>, Appea
     }
 
     private FreeReturnDomain mappingFreeReturnDomain(AppealFreeReturnResponse response) {
-        return new FreeReturnDomain(response.getInfo());
+        return new FreeReturnDomain(response.getInfo(), response.getLink());
     }
 }

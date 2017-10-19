@@ -127,6 +127,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="com.tokopedia.inbox.rescenter.createreso.view.activity.FreeReturnActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".rescenter.discussion.view.activity.ResCenterDiscussionActivity"
             android:label="@string/title_activity_rescenter_discussion"
             android:screenOrientation="portrait"

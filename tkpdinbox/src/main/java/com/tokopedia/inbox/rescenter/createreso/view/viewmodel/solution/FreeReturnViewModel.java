@@ -9,9 +9,19 @@ import android.os.Parcelable;
 
 public class FreeReturnViewModel implements Parcelable {
     private String info;
+    private String link;
 
-    public FreeReturnViewModel(String info) {
+    public FreeReturnViewModel(String info, String link) {
         this.info = info;
+        this.link = link;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public String getInfo() {
@@ -30,10 +40,12 @@ public class FreeReturnViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.info);
+        dest.writeString(this.link);
     }
 
     protected FreeReturnViewModel(Parcel in) {
         this.info = in.readString();
+        this.link = in.readString();
     }
 
     public static final Creator<FreeReturnViewModel> CREATOR = new Creator<FreeReturnViewModel>() {

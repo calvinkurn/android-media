@@ -23,6 +23,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.FreeReturnActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionDetailActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.SolutionListAdapter;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
@@ -31,6 +32,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragme
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionListFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
@@ -51,6 +53,7 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     ResultViewModel resultViewModel;
     EditAppealSolutionModel editAppealSolutionModel;
+    FreeReturnViewModel freeReturnViewModel;
 
 
     RecyclerView rvSolution;
@@ -154,7 +157,13 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     @Override
     protected void setViewListener() {
-
+        tvFreeReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(FreeReturnActivity
+                        .newInstance(getActivity(), freeReturnViewModel.getLink()));
+            }
+        });
     }
 
     @Override
@@ -189,10 +198,11 @@ public class SolutionListFragment extends BaseDaggerFragment
                 this);
         rvSolution.setAdapter(adapter);
         if (solutionResponseViewModel.getFreeReturn() != null) {
+            freeReturnViewModel = solutionResponseViewModel.getFreeReturn();
             llFreeReturn.setVisibility(View.VISIBLE);
             tvFreeReturn.setText(Html.fromHtml(solutionResponseViewModel.getFreeReturn().getInfo()));
-            tvFreeReturn.setLinksClickable(true);
-            tvFreeReturn.setMovementMethod(LinkMovementMethod.getInstance());
+//            tvFreeReturn.setLinksClickable(true);
+//            tvFreeReturn.setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 

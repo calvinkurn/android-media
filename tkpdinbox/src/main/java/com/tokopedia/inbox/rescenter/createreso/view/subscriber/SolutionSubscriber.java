@@ -83,6 +83,6 @@ public class SolutionSubscriber extends Subscriber<SolutionResponseDomain> {
     }
 
     private FreeReturnViewModel mappingFreeReturnViewModel(FreeReturnDomain domain) {
-        return new FreeReturnViewModel(domain.getInfo());
+        return new FreeReturnViewModel(domain.getInfo(), domain.getLink());
     }
 }

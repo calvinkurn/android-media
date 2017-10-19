@@ -85,6 +85,6 @@ public class EditSolutionMapper implements Func1<Response<TkpdResponse>, EditSol
     }
 
     private FreeReturnDomain mappingFreeReturnDomain(EditFreeReturnResponse response) {
-        return new FreeReturnDomain(response.getInfo());
+        return new FreeReturnDomain(response.getInfo(), response.getLink());
     }
 }

@@ -93,7 +93,7 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
     }
 
     private FreeReturnDomain mappingFreeReturnDomain(FreeReturnResponse response) {
-        return new FreeReturnDomain(response.getInfo());
+        return new FreeReturnDomain(response.getInfo(), response.getLink());
     }
 
 }
