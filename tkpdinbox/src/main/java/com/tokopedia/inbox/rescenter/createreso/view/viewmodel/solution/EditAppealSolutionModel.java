@@ -72,7 +72,10 @@ public class EditAppealSolutionModel implements Parcelable {
         this.refundAmount = refundAmount;
     }
 
-    public EditAppealSolutionModel() {
+    public EditAppealSolutionModel(boolean isEdit, String resolutionId, boolean isSeller) {
+        this.isEdit = isEdit;
+        this.resolutionId = resolutionId;
+        this.isSeller = isSeller;
     }
 
     @Override
