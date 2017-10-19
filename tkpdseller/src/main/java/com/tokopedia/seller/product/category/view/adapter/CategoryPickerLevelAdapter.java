@@ -29,7 +29,7 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == LEVEL_CATEGORY_VIEW){
+        if (viewType == LEVEL_CATEGORY_VIEW) {
             View view = LayoutInflater
                     .from(parent.getContext())
                     .inflate(R.layout.item_product_category_picker_level, parent, false);
@@ -41,9 +41,9 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (getItemViewType(position)){
+        switch (getItemViewType(position)) {
             case LEVEL_CATEGORY_VIEW:
-                ((CategoryLevelPickerViewHolder)holder).renderData(data.get(position));
+                ((CategoryLevelPickerViewHolder) holder).renderData(data.get(position));
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -52,7 +52,7 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
 
     @Override
     public int getItemViewType(int position) {
-        if ((data.isEmpty() || isLoading() || isRetry())){
+        if ((data.isEmpty() || isLoading() || isRetry())) {
             return super.getItemViewType(position);
         } else {
             return LEVEL_CATEGORY_VIEW;
@@ -82,7 +82,7 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
 
     @Override
     public void unselectParent(int level) {
-        for (int i = data.size() - 1; i > level; i--){
+        for (int i = data.size() - 1; i > level; i--) {
             data.remove(i);
         }
         notifyDataSetChanged();
@@ -91,8 +91,11 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
     @Override
     public void selectCategoryItem() {
         List<CategoryViewModel> listSelectedCategory = new ArrayList<>();
-        for (CategoryLevelViewModel levelViewModel : data){
-            listSelectedCategory.add(levelViewModel.getSelectedModel());
+        for (CategoryLevelViewModel levelViewModel : data) {
+            CategoryViewModel categoryViewModel = levelViewModel.getSelectedModel();
+            if (categoryViewModel != null) {
+                listSelectedCategory.add(categoryViewModel);
+            }
         }
         listener.selectSetCategory(listSelectedCategory);
     }
