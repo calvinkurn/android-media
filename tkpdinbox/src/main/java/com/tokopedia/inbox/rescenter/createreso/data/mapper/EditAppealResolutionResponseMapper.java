@@ -38,16 +38,14 @@ public class EditAppealResolutionResponseMapper
                                 editAppealSolutionResponse.getSuccessMessage() :
                                 null);
         if (response.isSuccessful()) {
-            if (response.raw().code() == ResponseStatus.SC_OK) {
-                if (response.body().isNullData()) {
-                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                    } else {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    model.setSuccess(true);
+                    throw new ErrorMessageException(DEFAULT_ERROR);
                 }
+            } else {
+                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
