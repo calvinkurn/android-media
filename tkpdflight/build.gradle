@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 def getTkpdAbstraction() {
     return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.design : project(':tkpdabstraction');
+            rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
 }
 
 android {
