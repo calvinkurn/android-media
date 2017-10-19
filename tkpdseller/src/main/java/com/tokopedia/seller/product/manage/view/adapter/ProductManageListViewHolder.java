@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.manage.view.adapter;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +15,7 @@ import com.tokopedia.seller.product.edit.constant.FreeReturnTypeDef;
 import com.tokopedia.seller.product.manage.constant.ProductManagePreOrderDef;
 import com.tokopedia.seller.product.manage.constant.ProductManageStockDef;
 import com.tokopedia.seller.product.manage.constant.ProductManageWholesaleDef;
+import com.tokopedia.seller.product.manage.constant.StatusProductOption;
 import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
 
 /**
@@ -23,9 +23,6 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
  */
 
 public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<ProductManageViewModel> {
-
-    public static final String EMPTY_STOCK_STATUS = "3";
-    public static final String SUPERVISION_STATUS = "-1";
 
     public interface ClickOptionCallbackHolder {
         void onClickOptionItem(ProductManageViewModel productManageViewModel);
@@ -105,6 +102,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
                 productImageView,
                 productManageViewModel.getImageUrl()
         );
+        boolean statusUnderSupervision = productManageViewModel.getProductStatus().equals(StatusProductOption.UNDER_SUPERVISION);
         titleTextView.setText(MethodChecker.fromHtml(productManageViewModel.getProductName()));
         priceTextView.setText(priceTextView.getContext().getString(
                 R.string.price_format_text, productManageViewModel.getProductCurrencySymbol(),
@@ -118,13 +116,13 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
             cashbackTextView.setVisibility(View.GONE);
         }
 
-        if (productManageViewModel.getProductStatus().equals(EMPTY_STOCK_STATUS)) {
+        if (productManageViewModel.getProductStatus().equals(StatusProductOption.EMPTY)) {
             tagEmptyStock.setVisibility(View.VISIBLE);
         } else {
             tagEmptyStock.setVisibility(View.GONE);
         }
 
-        viewSuperVision.setVisibility(productManageViewModel.getProductStatus().equals(SUPERVISION_STATUS) ? View.VISIBLE : View.GONE);
+        viewSuperVision.setVisibility(statusUnderSupervision ? View.VISIBLE : View.GONE);
 
         preOrderTextView.setVisibility(
                 productManageViewModel.getProductPreorder() == ProductManagePreOrderDef.PRE_ORDER ? View.VISIBLE : View.GONE);
@@ -139,12 +137,13 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
             }
         });
         wholesaleTextView.setVisibility(productManageViewModel.getProductWholesale() == ProductManageWholesaleDef.WHOLESALE ? View.VISIBLE : View.GONE);
-        if(productManageViewModel.getProductUsingStock() == ProductManageStockDef.USING_STOCK) {
+        if (productManageViewModel.getProductUsingStock() == ProductManageStockDef.USING_STOCK) {
             stockTextView.setVisibility(View.VISIBLE);
             stockTextView.setText(itemView.getContext().getString(R.string.product_manage_label_stock_counter, productManageViewModel.getProductStock()));
-        }else{
+        } else {
             stockTextView.setVisibility(View.GONE);
         }
+        checkBoxProduct.setEnabled(!statusUnderSupervision);
     }
 
     public void bindFeaturedProduct(boolean isFeaturedProduct) {
@@ -157,11 +156,9 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
 
     public void bindActionMode(boolean isActionMode) {
         if (isActionMode) {
-            checkBoxProduct.setEnabled(true);
             checkBoxProduct.setVisibility(View.VISIBLE);
             optionImageButton.setVisibility(View.GONE);
         } else {
-            checkBoxProduct.setEnabled(false);
             checkBoxProduct.setVisibility(View.GONE);
             optionImageButton.setVisibility(View.VISIBLE);
         }
