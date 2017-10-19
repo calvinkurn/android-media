@@ -271,15 +271,12 @@ public class ShopInfoActivity extends BaseActivity
 //                updateView();
             }
         }
-
-        sendEventLoca();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         registerReceiver(loginReceiver, new IntentFilter(LOGIN_ACTION));
-        sendNotifLocalyticsCallback();
     }
 
 
@@ -896,24 +893,10 @@ public class ShopInfoActivity extends BaseActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        sendNotifLocalyticsCallback();
-    }
-
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-            }
-        }
     }
 
     public void setToolbarCollapse() {
         holder.appBarLayout.setExpanded(false, true);
-    }
-
-    private void sendEventLoca() {
-        ScreenTracking.eventLoca(AppScreen.SCREEN_VIEWED_SHOP_PAGE);
     }
 
     @Override

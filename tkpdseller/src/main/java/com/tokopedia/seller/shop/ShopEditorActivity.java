@@ -191,7 +191,6 @@ public class ShopEditorActivity extends TActivity implements
         if (activity instanceof AppCompatActivity) {
             activity.finish();
         }
-        TrackingUtils.eventLoca("event : open store");
     }
 
     @Override

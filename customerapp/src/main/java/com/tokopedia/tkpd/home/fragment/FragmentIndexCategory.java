@@ -641,8 +641,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         Map<String, String> values = new HashMap<>();
         values.put(getString(R.string.value_category_name), title);
 
-        TrackingUtils.eventLoca("event : " + getString(R.string.event_click_category), values);
-
         UnifyTracking.eventHomeCategory(title);
     }
 
@@ -879,7 +877,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        setLocalyticFlow();
         if (isVisibleToUser && getActivity() != null && isAdded()) {
             if (messageSnackbar != null) {
                 messageSnackbar.resumeRetrySnackbar();
@@ -985,16 +982,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     //endregion recharge
-
-    private void setLocalyticFlow() {
-        try {
-            String screenName = AppScreen.SCREEN_HOME_CATEGORY;
-            ScreenTracking.screenLoca(screenName);
-            ScreenTracking.eventLoca(screenName);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void scrollUntilBottomBanner() {
         holder.wrapperScrollview.smoothScrollTo(0, holder.bannerView != null ? holder.bannerView.getBottom() : 0);
