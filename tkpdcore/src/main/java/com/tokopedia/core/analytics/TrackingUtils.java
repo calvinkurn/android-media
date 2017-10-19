@@ -12,6 +12,7 @@ import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.model.Product;
@@ -76,6 +77,31 @@ public class TrackingUtils extends TrackingConfig {
                     .setSeller(profileData.getShopInfo() != null)
                     .setShopName(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopName() : "")
                     .setFirstName(getFirstName(profileData.getUserInfo().getUserName()))
+                    .build();
+
+            getMoEngine().setUserData(customerWrapper);
+        }
+        if(!TextUtils.isEmpty(FCMCacheManager.getRegistrationId(MainApplication.getAppContext())))
+            PushManager.getInstance().refreshToken(MainApplication.getAppContext(),FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
+    }
+
+    public static void setMoEUserAttributes(UserAttribute.Data profileData){
+        if(profileData!=null) {
+            CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
+                    .setTotalItemSold(profileData.shopInfoMoengage().stats().shop_item_sold())
+                    .setRegDate(profileData.profile().register_date())
+                    .setDateShopCreated(profileData.shopInfoMoengage().info().date_shop_created())
+                    .setShopLocation(profileData.shopInfoMoengage().info().shop_location())
+                    .setTokocashAmt(profileData.wallet() != null ? profileData.wallet().rawBalance()+"" : "")
+                    .setSaldoAmt(profileData.saldo() != null ? profileData.saldo().deposit()+"" : "")
+                    .setTopAdsAmt(profileData.topadsDeposit() != null ? profileData.topadsDeposit().topads_amount()+"" : "")
+                    .setTopadsUser(profileData.topadsDeposit().is_topads_user() != null ? profileData.topadsDeposit().is_topads_user() : false)
+                    .setHasPurchasedMarketplace(profileData.paymentAdminProfile().is_purchased_marketplace()!= null ? profileData.paymentAdminProfile().is_purchased_marketplace():false)
+                    .setHasPurchasedDigital(profileData.paymentAdminProfile().is_purchased_digital()!= null ? profileData.paymentAdminProfile().is_purchased_digital():false)
+                    .setHasPurchasedTiket(profileData.paymentAdminProfile().is_purchased_ticket()!= null ? profileData.paymentAdminProfile().is_purchased_ticket():false)
+                    .setLastTransactionDate(profileData.paymentAdminProfile()!= null ? profileData.paymentAdminProfile().last_purchase_date():"")
+                    .setTotalActiveProduct(profileData.shopInfoMoengage().info()!= null ? profileData.shopInfoMoengage().info().total_active_product()+"":"")
+                    .setShopScore(profileData.shopInfoMoengage().info()!= null ? profileData.shopInfoMoengage().info().shop_score()+"":"")
                     .build();
 
             getMoEngine().setUserData(customerWrapper);
