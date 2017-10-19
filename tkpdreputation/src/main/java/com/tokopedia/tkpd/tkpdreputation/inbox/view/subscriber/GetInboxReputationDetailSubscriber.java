@@ -39,8 +39,8 @@ import rx.Subscriber;
 
 public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputationDetailDomain> {
 
-    private static final int PRODUCT_IS_DELETED = 0;
-    private static final int PRODUCT_IS_BANNED = -2;
+    public static final int PRODUCT_IS_DELETED = 0;
+    public static final int PRODUCT_IS_BANNED = -2;
     protected final InboxReputationDetail.View viewListener;
 
     public GetInboxReputationDetailSubscriber(InboxReputationDetail.View viewListener) {
@@ -117,7 +117,8 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
                         .getDateTimeFmt1()),
                 reviewDomain.getShopData().getShopName(),
                 reviewDomain.getUserData().getUserId(),
-                itemDomain.getProductData().getProductStatus() == PRODUCT_IS_BANNED
+                itemDomain.getProductData().getProductStatus() == PRODUCT_IS_BANNED,
+                itemDomain.getProductData().getProductStatus()
                 );
     }
 

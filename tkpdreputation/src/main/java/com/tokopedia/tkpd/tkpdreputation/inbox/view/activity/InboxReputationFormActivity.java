@@ -2,27 +2,18 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFormFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
@@ -48,6 +39,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
     private static final String ARGS_IS_SKIPPABLE = "ARGS_IS_SKIPPABLE";
     public static final String ARGS_PRODUCT_AVATAR = "ARGS_PRODUCT_AVATAR";
     public static final String ARGS_PRODUCT_NAME = "ARGS_PRODUCT_NAME";
+    public static final String ARGS_PRODUCT_STATUS = "ARGS_PRODUCT_STATUS";
     public static final String ARGS_PRODUCT_URL = "ARGS_PRODUCT_URL";
 
     public static final String ARGS_IS_EDIT = "ARGS_IS_EDIT";
@@ -113,32 +105,16 @@ public class InboxReputationFormActivity extends BasePresenterActivity
 
     @Override
     protected void initView() {
-        String reputationId = getIntent().getExtras().getString(ARGS_REPUTATION_ID, "");
-        String reviewId = getIntent().getExtras().getString(ARGS_REVIEW_ID, "");
-        String productId = getIntent().getExtras().getString(ARGS_PRODUCT_ID, "");
-        String shopId = getIntent().getExtras().getString(ARGS_SHOP_ID, "");
-        String productAvatar = getIntent().getExtras().getString(ARGS_PRODUCT_AVATAR, "");
-        String productName = MethodChecker.fromHtml(getIntent().getExtras().getString(ARGS_PRODUCT_NAME,
-                "")).toString();
-        String productUrl = getIntent().getExtras().getString(ARGS_PRODUCT_URL, "");
-        boolean isAnonymous = getIntent().getExtras().getBoolean(ARGS_ANONYMOUS, false);
-        String revieweeName = MethodChecker.fromHtml(getIntent().getExtras().getString
-                (ARGS_REVIEWEE_NAME, "")).toString();
-
-        int rating = getIntent().getExtras().getInt(ARGS_RATING);
-        String review = getIntent().getExtras().getString(ARGS_REVIEW, "");
-        ArrayList<ImageAttachmentViewModel> listImage = getIntent().getExtras()
-                .getParcelableArrayList(ARGS_REVIEW_IMAGES);
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null)
+            bundle.putAll(getIntent().getExtras());
 
         Fragment fragment = getSupportFragmentManager().findFragmentByTag
                 (InboxReputationFormFragment.class.getSimpleName());
         if (fragment == null && getIntent().getExtras().getBoolean(ARGS_IS_EDIT, false)) {
-            fragment = InboxReputationFormFragment.createInstanceEdit(reviewId, reputationId,
-                    productId, shopId, rating, review, listImage, productAvatar, productName,
-                    productUrl, isAnonymous, revieweeName);
+            fragment = InboxReputationFormFragment.createInstance(bundle);
         } else if (fragment == null) {
-            fragment = InboxReputationFormFragment.createInstance(reviewId, reputationId,
-                    productId, shopId, productAvatar, productName, productUrl, revieweeName);
+            fragment = InboxReputationFormFragment.createInstance(bundle);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container,
@@ -174,7 +150,8 @@ public class InboxReputationFormActivity extends BasePresenterActivity
                                              String reputationId, String productId,
                                              String shopId, boolean reviewIsSkippable,
                                              String productAvatar, String productName,
-                                             String productUrl, String revieweeName) {
+                                             String productUrl, String revieweeName,
+                                             int productStatus) {
         Intent intent = new Intent(context, InboxReputationFormActivity.class);
         intent.putExtra(ARGS_PRODUCT_ID, productId);
         intent.putExtra(ARGS_REPUTATION_ID, reputationId);
@@ -186,7 +163,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         intent.putExtra(ARGS_PRODUCT_NAME, productName);
         intent.putExtra(ARGS_PRODUCT_URL, productUrl);
         intent.putExtra(ARGS_REVIEWEE_NAME, revieweeName);
-
+        intent.putExtra(ARGS_PRODUCT_STATUS, productStatus);
         return intent;
     }
 
@@ -195,7 +172,8 @@ public class InboxReputationFormActivity extends BasePresenterActivity
                                              String shopId, int reviewStar, String review,
                                              ArrayList<ImageAttachmentViewModel> reviewAttachment,
                                              String productAvatar, String productName,
-                                             String productUrl, boolean isAnonymous, String revieweeName) {
+                                             String productUrl, boolean isAnonymous,
+                                             String revieweeName, int productStatus) {
         Intent intent = new Intent(context, InboxReputationFormActivity.class);
         intent.putExtra(ARGS_PRODUCT_ID, productId);
         intent.putExtra(ARGS_REPUTATION_ID, reputationId);
@@ -211,7 +189,7 @@ public class InboxReputationFormActivity extends BasePresenterActivity
         intent.putExtra(ARGS_PRODUCT_URL, productUrl);
         intent.putExtra(ARGS_ANONYMOUS, isAnonymous);
         intent.putExtra(ARGS_REVIEWEE_NAME, revieweeName);
-
+        intent.putExtra(ARGS_PRODUCT_STATUS, productStatus);
         return intent;
     }
 

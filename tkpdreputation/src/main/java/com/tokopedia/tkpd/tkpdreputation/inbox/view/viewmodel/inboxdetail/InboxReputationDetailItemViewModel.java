@@ -39,6 +39,7 @@ public class InboxReputationDetailItemViewModel implements
     private String productUrl;
     private boolean reviewIsAnonymous;
     private boolean isProductDeleted;
+    private int productStatus;
 
     public InboxReputationDetailItemViewModel(int reputationId, String productId, String productName,
                                               String productAvatar,
@@ -59,7 +60,9 @@ public class InboxReputationDetailItemViewModel implements
                                               boolean isProductDeleted,
                                               boolean reviewIsEdited,
                                               String revieweeName,
-                                              int reviewerId, boolean isProductBanned) {
+                                              int reviewerId,
+                                              boolean isProductBanned,
+                                              int productStatus) {
         this.reputationId = reputationId;
         this.productId = productId;
         this.productName = productName;
@@ -84,6 +87,7 @@ public class InboxReputationDetailItemViewModel implements
         this.revieweeName = revieweeName;
         this.reviewerId = reviewerId;
         this.isProductBanned = isProductBanned;
+        this.productStatus = productStatus;
     }
 
     public String getReviewId() {
@@ -197,5 +201,9 @@ public class InboxReputationDetailItemViewModel implements
 
     public boolean isProductBanned() {
         return isProductBanned;
+    }
+
+    public int getproductStatus() {
+        return productStatus;
     }
 }

@@ -283,7 +283,8 @@ public class InboxReputationDetailItemViewHolder extends
                         element.getProductAvatar(),
                         element.getProductName(),
                         element.getProductUrl(),
-                        element.getRevieweeName());
+                        element.getRevieweeName(),
+                        element.getproductStatus());
             }
         });
 

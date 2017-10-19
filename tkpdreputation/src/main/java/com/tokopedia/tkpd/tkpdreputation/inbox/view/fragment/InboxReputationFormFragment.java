@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -60,6 +59,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReviewTipsAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationForm;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationFormPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.GetInboxReputationDetailSubscriber;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
@@ -113,44 +113,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     @Inject
     InboxReputationFormPresenter presenter;
 
-    public static InboxReputationFormFragment createInstance(String reviewId, String
-            reputationId, String productId, String shopId, String productAvatar, String productName,
-                                                             String productUrl, String revieweeName) {
+    public static InboxReputationFormFragment createInstance(Bundle bundle) {
         InboxReputationFormFragment fragment = new InboxReputationFormFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(InboxReputationFormActivity.ARGS_SHOP_ID, shopId);
-        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId);
-        bundle.putString(InboxReputationFormActivity.ARGS_REVIEW_ID, reviewId);
-        bundle.putString(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId);
-        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_AVATAR, productAvatar);
-        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_NAME, productName);
-        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_URL, productUrl);
-        bundle.putString(InboxReputationFormActivity.ARGS_REVIEWEE_NAME, revieweeName);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    public static Fragment createInstanceEdit(String reviewId, String reputationId,
-                                              String productId, String shopId,
-                                              int rating, String review,
-                                              ArrayList<ImageAttachmentViewModel> listImage,
-                                              String productAvatar, String productName,
-                                              String productUrl, boolean isAnonymous, String revieweeName) {
-        InboxReputationFormFragment fragment = new InboxReputationFormFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(InboxReputationFormActivity.ARGS_SHOP_ID, shopId);
-        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId);
-        bundle.putString(InboxReputationFormActivity.ARGS_REVIEW_ID, reviewId);
-        bundle.putString(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId);
-        bundle.putInt(InboxReputationFormActivity.ARGS_RATING, rating);
-        bundle.putString(InboxReputationFormActivity.ARGS_REVIEW, review);
-        bundle.putParcelableArrayList(InboxReputationFormActivity.ARGS_REVIEW_IMAGES, listImage);
-        bundle.putBoolean(InboxReputationFormActivity.ARGS_IS_EDIT, true);
-        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_AVATAR, productAvatar);
-        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_NAME, productName);
-        bundle.putString(InboxReputationFormActivity.ARGS_PRODUCT_URL, productUrl);
-        bundle.putBoolean(InboxReputationFormActivity.ARGS_ANONYMOUS, isAnonymous);
-        bundle.putString(InboxReputationFormActivity.ARGS_REVIEWEE_NAME, revieweeName);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -395,10 +359,18 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             }
         });
 
-        if (TextUtils.isEmpty(getArguments().getString
-                (InboxReputationFormActivity.ARGS_PRODUCT_NAME, ""))) {
+        if (getArguments().getInt
+                (InboxReputationFormActivity.ARGS_PRODUCT_STATUS, -1) ==
+                GetInboxReputationDetailSubscriber.PRODUCT_IS_DELETED) {
             productName.setText(
                     MainApplication.getAppContext().getString(R.string.product_is_deleted));
+
+            ImageHandler.loadImageWithIdWithoutPlaceholder(productImage, R.drawable.ic_product_deleted);
+        } else if (getArguments().getInt
+                (InboxReputationFormActivity.ARGS_PRODUCT_STATUS, -1) ==
+                GetInboxReputationDetailSubscriber.PRODUCT_IS_BANNED) {
+            productName.setText(
+                    MainApplication.getAppContext().getString(R.string.product_is_banned));
 
             ImageHandler.loadImageWithIdWithoutPlaceholder(productImage, R.drawable.ic_product_deleted);
         } else {
