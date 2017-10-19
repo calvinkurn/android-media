@@ -38,6 +38,7 @@ query UserAttribute($userID: Int!){
     wallet {
       linked
       balance
+      rawBalance
       errors {
         name
         message
@@ -45,6 +46,7 @@ query UserAttribute($userID: Int!){
     }
     saldo{
       deposit_fmt
+      deposit
     }
     paymentAdminProfile{
       is_purchased_marketplace
