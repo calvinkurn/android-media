@@ -103,11 +103,11 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
                 productManageViewModel.getImageUrl()
         );
         boolean statusUnderSupervision = productManageViewModel.getProductStatus().equals(StatusProductOption.UNDER_SUPERVISION);
+        boolean statusStockEmpty = productManageViewModel.getProductStatus().equals(StatusProductOption.EMPTY);
         titleTextView.setText(MethodChecker.fromHtml(productManageViewModel.getProductName()));
         priceTextView.setText(priceTextView.getContext().getString(
                 R.string.price_format_text, productManageViewModel.getProductCurrencySymbol(),
                 CurrencyUtils.getPriceFormatted(productManageViewModel.getProductCurrencyId(), productManageViewModel.getProductPricePlain())));
-
         if (productManageViewModel.getProductCashback() > 0) {
             cashbackTextView.setText(cashbackTextView.getContext().getString(
                     R.string.product_manage_item_cashback, productManageViewModel.getProductCashback()));
@@ -115,19 +115,10 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         } else {
             cashbackTextView.setVisibility(View.GONE);
         }
-
-        if (productManageViewModel.getProductStatus().equals(StatusProductOption.EMPTY)) {
-            tagEmptyStock.setVisibility(View.VISIBLE);
-        } else {
-            tagEmptyStock.setVisibility(View.GONE);
-        }
-
+        tagEmptyStock.setVisibility(statusStockEmpty ? View.VISIBLE: View.GONE);
         viewSuperVision.setVisibility(statusUnderSupervision ? View.VISIBLE : View.GONE);
-
-        preOrderTextView.setVisibility(
-                productManageViewModel.getProductPreorder() == ProductManagePreOrderDef.PRE_ORDER ? View.VISIBLE : View.GONE);
-        freeReturnImageView.setVisibility(
-                productManageViewModel.getProductReturnable() == FreeReturnTypeDef.TYPE_ACTIVE ? View.VISIBLE : View.GONE);
+        preOrderTextView.setVisibility(productManageViewModel.getProductPreorder() == ProductManagePreOrderDef.PRE_ORDER ? View.VISIBLE : View.GONE);
+        freeReturnImageView.setVisibility(productManageViewModel.getProductReturnable() == FreeReturnTypeDef.TYPE_ACTIVE ? View.VISIBLE : View.GONE);
         optionImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,7 +128,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
             }
         });
         wholesaleTextView.setVisibility(productManageViewModel.getProductWholesale() == ProductManageWholesaleDef.WHOLESALE ? View.VISIBLE : View.GONE);
-        if (productManageViewModel.getProductUsingStock() == ProductManageStockDef.USING_STOCK) {
+        if (!statusStockEmpty && productManageViewModel.getProductUsingStock() == ProductManageStockDef.USING_STOCK) {
             stockTextView.setVisibility(View.VISIBLE);
             stockTextView.setText(itemView.getContext().getString(R.string.product_manage_label_stock_counter, productManageViewModel.getProductStock()));
         } else {
