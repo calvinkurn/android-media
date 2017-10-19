@@ -73,7 +73,7 @@ class CartItemList extends Component {
                 <View style={styles.headerContainer}>
                   <View>
                     <TouchableWithoutFeedback onPress={this.onBackPress}>
-                      <Image source={{ uri: icons.logo_icon_back }} />
+                      <Image source={{ uri: icons.logo_icon_back }} style={{resizeMode:'contain', width:25, height:25 }} />
                     </TouchableWithoutFeedback>
                   </View>
                   <View style={{ left: -220 }}>
@@ -81,7 +81,7 @@ class CartItemList extends Component {
                   </View>
                   <View>
                     <TouchableWithoutFeedback onPress={() => { this.toggleScreen(true) }}>
-                      <Image source={{ uri: icons.logo_trash_all }} />
+                      <Image source={{ uri: icons.logo_trash_all }} style={{resizeMode:'contain', width:25, height:25 }} />
                     </TouchableWithoutFeedback>
                   </View>
                 </View>
@@ -129,7 +129,7 @@ class CartItemList extends Component {
                 <View style={styles.headerContainer}>
                   <View>
                     <TouchableWithoutFeedback onPress={this.onBackPress}>
-                      <Image source={{ uri: icons.logo_icon_back }} />
+                      <Image source={{ uri: icons.logo_icon_back }} style={{resizeMode:'contain', width:25, height:25 }} />
                     </TouchableWithoutFeedback>
                   </View>
                   <View style={{ left: -220 }}>
