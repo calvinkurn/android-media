@@ -16,29 +16,38 @@
         tools:replace="android:name">
 
         <meta-data
+            tools:replace="android:value"
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
         <meta-data
+            tools:replace="android:value"
             android:name="APP_ID"
             android:value="@string/key_moengage" />
         <meta-data
+            tools:replace="android:value"
             android:name="SENDER_ID"
             android:value="@string/key_sender_id" />
         <meta-data
+            tools:replace="android:value"
             android:name="SKIP_GCM_REGISTRATION"
             android:value="true"/>
-        <meta-data android:name="AF_PRE_INSTALL_PATH" android:value="/data/local/tmp/pre_install.appsflyer" />
-        <meta-data android:name="firebase_performance_logcat_enabled" android:value="false" />
+        <meta-data
+            tools:replace="android:value"
+            android:name="AF_PRE_INSTALL_PATH" android:value="/data/local/tmp/pre_install.appsflyer" />
+        <meta-data tools:replace="android:value" android:name="firebase_performance_logcat_enabled" android:value="false" />
 
         <meta-data
+            tools:replace="android:value"
             android:name="NOTIFICATION_ICON"
             android:value="@drawable/ic_stat_notify_white" />
         <meta-data
+            tools:replace="android:value"
             android:name="NOTIFICATION_LARGE_ICON"
             android:value="@drawable/qc_launcher" />
 
         <!-- Branch init -->
         <meta-data
+            tools:replace="android:value"
             android:name="io.branch.sdk.BranchKey"
             android:value="@string/key_branch" />
         <activity
@@ -207,6 +216,12 @@
 
         <activity
             android:name="com.tokopedia.tkpd.home.ReactNativeOfficialStoresActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.tkpd.home.ReactNativeThankYouPageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.tkpd.home.ReactNativeThankYouPageActivity2"
             android:screenOrientation="portrait" />
         <service
             android:name="com.tokopedia.digital.product.service.USSDAccessibilityService"
