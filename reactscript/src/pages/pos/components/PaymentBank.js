@@ -220,6 +220,8 @@ class PaymentBank extends Component {
 
   render() {
     const checkout_data = JSON.parse(this.props.screenProps.checkout_data)
+    const payment_amount = checkout_data.data.data.payment_amount
+    const payment_amount_curr = (checkout_data.data.data.payment_amount).toLocaleString("id") || ''
     console.log(checkout_data)
 
     return (
@@ -240,7 +242,7 @@ class PaymentBank extends Component {
                   Total Pembayaran
                   </Text>
                 <Text style={[styles.font16, styles.fontColor70]}>
-                  Rp {(checkout_data.data.payment_amount).toLocaleString("id")}
+                  Rp {(payment_amount_curr)}
                   </Text>
               </View>
 
@@ -321,11 +323,11 @@ class PaymentBank extends Component {
                 </View>
               </View>
 
-              {this.props.screenProps.total_payment && this.state.selectedEmiId && 
+              {payment_amount && this.state.selectedEmiId && 
               <View style={[styles.row, styles.row1]}>
                 <Text style={[styles.font20, styles.fontColor70]}>Nominal</Text>
                 <Text style={[styles.font20, styles.fontColor70]}>
-                  Rp {this.props.screenProps.total_payment / this.state.selectedEmiId}/ bulan</Text>
+                  Rp {(Math.ceil(payment_amount / this.state.selectedEmiId)).toLocaleString('id')}/ bulan</Text>
               </View>}
               {/*<View style={[styles.row, styles.row3]} >
                   <Text style={styles.row1Text}>

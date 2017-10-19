@@ -36,6 +36,7 @@ const doPayment = async () => {
       cart: local_cart
     }
     const paymentToNative_getParams = await makePaymentToNativeStepOne(data_payment)
+    console.log(paymentToNative_getParams)
     const paymentToNative_secondStep = await makePaymentToNativeStepTwo(paymentToNative_getParams, data_payment, local_cart)
     return paymentToNative_secondStep
   } catch (err){
@@ -122,21 +123,24 @@ const makePaymentToNativeStepOne = (data_payment) => {
     cart: data_payment.cart
   }
 
-  return NetworkModule.getResponseJson(`${data_payment.base_api_url_payment}/o2o/get_payment_params`, `POST`, JSON.stringify(data), true)
+  return NetworkModule.getResponseJson(`${data_payment.base_api_url_payment}`, `POST`, JSON.stringify(data), true)
     .then(response => {
       const jsonResponse = JSON.parse(response)
-      const itemsRes = jsonResponse.data.parameter.items
-      let itemsData = []
-
-      itemsRes.map((res) => {
-        itemsData.push({ 
-          id: res.id,
-          name: res.name,
-          price: res.price,
-          quantity: res.quantity
+      console.log(jsonResponse)
+      if (jsonResponse.data.status !== 'ERROR'){
+        const itemsRes = jsonResponse.data.data.parameter.items
+        let itemsData = []
+  
+        itemsRes.map((res) => {
+          itemsData.push({ 
+            id: res.id,
+            name: res.name,
+            price: res.price,
+            quantity: res.quantity
+          })
         })
-      })
-      return { jsonResponse, itemsData}
+        return { jsonResponse, itemsData}
+      }
     })
     .catch(err => { 
       console.log(err) 
@@ -148,33 +152,53 @@ const makePaymentToNativeStepOne = (data_payment) => {
 
 // ===================== Make Payment 2 ===================== //
 const makePaymentToNativeStepTwo = (paymentToNative_getParams, data_payment, local_cart) => {
-  let data_items = ''
+  let data_items = []
   const paymentParams = paymentToNative_getParams.itemsData
 
   if (!paymentParams) return 
 
-  paymentParams.map((res) => {
-    data_items += `items[name]=${encodeURIComponent(res.name)}&items[quantity]=${encodeURIComponent(res.quantity)}&items[price]=${encodeURIComponent(res.price)}&`
+
+  const data_cart = paymentToNative_getParams.jsonResponse.data.data.parameter.items || []
+  data_cart.map((res) => {
+    data_items.push({
+      Name: res.name,
+      Quantity: res.quantity,
+      Price: res.price
+    })
   })
   
-  const data_length = data_items.length
-  const data_cleaned = data_items.substr(0, data_length - 1)
-  const dataParams = paymentToNative_getParams.jsonResponse.data.parameter
-  const data_qry_params = `merchant_code=${encodeURIComponent(dataParams.merchant_code)}&profile_code=${encodeURIComponent(dataParams.profile_code)}&` +
-      `transaction_id=${encodeURIComponent(dataParams.transaction_id)}&transaction_date=${encodeURIComponent(dataParams.transaction_date)}&` +
-      `currency=${encodeURIComponent(dataParams.currency)}&amount=${encodeURIComponent(dataParams.amount)}&customer_name=${encodeURIComponent(dataParams.customer_name)}&` + 
-      `customer_email=${encodeURIComponent(dataParams.customer_email)}&user_defined_value=${encodeURIComponent(dataParams.user_defined_value)}&` +
-      `payment_metadata=${encodeURIComponent(dataParams.payment_meta)}&signature=${encodeURIComponent(dataParams.signature)}&`
-  const query_params = data_qry_params + '' + data_cleaned
+  const dataParams = paymentToNative_getParams.jsonResponse.data.data.parameter
 
-  return NetworkModule.getResponseParam(`${data_payment.base_api_url_scrooge}/v1/api/payment`, `POST`, query_params, false)
+  const payloads = {
+    merchant_code: dataParams.merchant_code,
+    profile_code: dataParams.profile_code,
+    transaction_id: dataParams.transaction_id,
+    transaction_date: dataParams.transaction_date,
+    currency: dataParams.currency,
+    amount: parseFloat(dataParams.amount),
+    customer_name: dataParams.customer_name,
+    customer_email: dataParams.customer_email,
+    user_defined_value: dataParams.user_defined_value,
+    payment_metadata: dataParams.payment_meta,
+    signature: dataParams.signature,
+    items: data_items
+  }
+  const payloadString = JSON.stringify(payloads)
+  
+  return NetworkModule.getResponseJson(`${data_payment.base_api_url_scrooge}`, `POST`, payloadString, false)
     .then(res => {
       const jsonResponse = JSON.parse(res)
-      return jsonResponse
+      console.log(jsonResponse)
+      if (jsonResponse.status === '200 Ok'){
+        if (jsonResponse.data.code === 200 && jsonResponse.data.message === 'Success'){
+          return jsonResponse
+        }
+      }
+      
     })
-    .catch(err => { 
-      console.log(err) 
-      return
+    .catch(err => {
+      console.log(err)
+      return 
     })
 }
 // ===================== Make Payment 2 ===================== //
