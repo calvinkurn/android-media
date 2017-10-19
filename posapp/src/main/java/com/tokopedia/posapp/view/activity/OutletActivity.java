@@ -1,5 +1,7 @@
 package com.tokopedia.posapp.view.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,8 +15,8 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.view.Outlet;
 import com.tokopedia.posapp.view.fragment.OutletFragment;
-import com.tokopedia.posapp.view.service.CacheService;
 
 /**
  * @author okasurya on 7/31/17
@@ -23,6 +25,12 @@ public class OutletActivity extends DrawerPresenterActivity implements HasCompon
 
     LocalCacheHandler drawerCache;
     DrawerHelper drawerHelper;
+
+    public static Intent newTopIntent(Context context) {
+        Intent intent = new Intent(context, OutletActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
+    }
 
     @Override
     protected int setDrawerPosition() {

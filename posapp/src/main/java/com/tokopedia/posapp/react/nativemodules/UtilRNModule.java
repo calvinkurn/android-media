@@ -32,7 +32,7 @@ public class UtilRNModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void generateHmac(String data, String url, Promise promise) {
-        promise.resolve(AuthUtil.calculateRFC2104HMAC(data, getSecretKey(url)));
+        promise.resolve(AuthUtil.calculateHmacSHA1(data, getSecretKey(url)));
     }
 
     @ReactMethod

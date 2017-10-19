@@ -31,6 +31,7 @@ import com.tokopedia.posapp.view.presenter.ShopPresenter;
 import com.tokopedia.posapp.view.viewmodel.outlet.OutletItemViewModel;
 import com.tokopedia.posapp.view.viewmodel.outlet.OutletViewModel;
 import com.tokopedia.posapp.view.viewmodel.shop.ShopViewModel;
+import com.tokopedia.posapp.view.widget.PosAlertDialog;
 
 import javax.inject.Inject;
 
@@ -94,24 +95,25 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
 
     @Override
     public void onOutletClicked(final OutletItemViewModel outlet) {
-        new AlertDialog.Builder(getContext())
-                .setTitle(R.string.outlet_chooser_dialog_title)
-                .setMessage(R.string.outlet_chooser_dialog_message)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        new PosAlertDialog(getContext())
+                .setTitle(getString(R.string.outlet_chooser_dialog_title))
+                .setMessage(getString(R.string.outlet_chooser_dialog_message))
+                .setPositiveButton(getString(R.string.yes), new PosAlertDialog.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(DialogInterface dialogInterface) {
                         setChosenOutlet(outlet);
                         getActivity().startActivity(new Intent(getContext(), ProductListActivity.class));
                         getActivity().finish();
                     }
                 })
-                .setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.No), new PosAlertDialog.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(DialogInterface dialogInterface) {
                         dialogInterface.dismiss();
                     }
                 })
                 .setCancelable(true)
+                .create()
                 .show();
     }
 

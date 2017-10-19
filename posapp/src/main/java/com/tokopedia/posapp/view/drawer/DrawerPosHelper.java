@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.view.drawer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
@@ -19,6 +20,7 @@ import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.activity.OutletActivity;
+import com.tokopedia.posapp.view.activity.ProductListActivity;
 import com.tokopedia.posapp.view.activity.TransactionHistoryActivity;
 import com.tokopedia.posapp.view.widget.DialogPasswordFragment;
 
@@ -121,9 +123,14 @@ public class DrawerPosHelper extends DrawerHelper
             PosSessionHandler posSessionHandler = new PosSessionHandler(context);
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
-
-                    startIntent(context, ((PosApplication) context.getApplication()).getHomeActivity(context));
-
+                    Intent intent;
+                    if(PosSessionHandler.getOutletId(context) != null
+                            && !PosSessionHandler.getOutletId(context).isEmpty()) {
+                        intent = ProductListActivity.newTopIntent(context);
+                    } else {
+                        intent = OutletActivity.newTopIntent(context);
+                    }
+                    context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY:
                     posSessionHandler.showPasswordDialog(

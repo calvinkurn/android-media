@@ -123,10 +123,10 @@ public class DialogPasswordFragment extends DialogFragment implements DialogPass
 
     @Override
     public void dismiss() {
-        if(!progressDialog.isProgress()) {
+        if(progressDialog.isProgress()) {
             progressDialog.dismiss();
-            super.dismiss();
         }
+        super.dismiss();
     }
 
     public interface PasswordListener {

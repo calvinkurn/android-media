@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">O2O POS</string>
 
+    <string name="outlet_page_title">Pilih Outlet</string>
+    <string name="outlet_store_name_label">Toko :</string>
     <string name="outlet_search_hint">Cari nama outlet</string>
     <string name="outlet_chooser_dialog_title">Konfirmasi Pilih Outlet</string>
     <string name="outlet_chooser_dialog_message">Apakah anda yakin untuk mengganti Outlet</string>
@@ -43,4 +45,6 @@
     <string name="pdp_atc_success_message">Produk berhasil dimasukkan ke Keranjang Belanja</string>
     <string name="pdp_continue_shopping_label">Lanjut Berbelanja</string>
     <string name="pdp_pay_label">Bayar</string>
+
+    <string name="tx_history_page_title">Riwayat Transaksi</string>
 </resources>

@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -33,6 +32,12 @@ public class ProductListActivity extends ReactDrawerPresenterActivity {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
         Intent intent = new Intent(context, ProductListActivity.class)
                 .setData(uri);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
+    }
+
+    public static Intent newTopIntent(Context context) {
+        Intent intent = new Intent(context, ProductListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }

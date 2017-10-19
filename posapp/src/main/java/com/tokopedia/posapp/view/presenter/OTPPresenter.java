@@ -46,20 +46,25 @@ import rx.schedulers.Schedulers;
  */
 
 public class OTPPresenter implements OTP.Presenter {
-    public static final String UTF_8 = "UTF-8";
-    public static final String PARAM_URL = "url";
-    public static final String PARAM_METHOD = "method";
-    public static final String PARAM_GATEWAY = "gateway";
-    public static final String PARAM_FORM = "form";
-    public static final String POST_METHOD = "POST";
-    public static final String PARAM_TRANSACTION_ID = "transaction_id";
-    public static final String PARAM_ID = "id";
-    public static final String PARAM_SIGNATURE = "signature";
-    public static final String PARAM_MERCHANT_CODE = "merchant_code";
-    public static final String PARAM_PROFILE_CODE = "profile_code";
-    public static final String PARAM_IP_ADDRESS = "ip_address";
-    public static final String PARAM_CURRENCY = "currency";
-    public static final String CREATE_ORDER_PARAMETER = "CREATE_ORDER_PARAMETER";
+    private static final String UTF_8 = "UTF-8";
+    private static final String PARAM_URL = "url";
+    private static final String PARAM_METHOD = "method";
+    private static final String PARAM_GATEWAY = "gateway";
+    private static final String PARAM_FORM = "form";
+    private static final String POST_METHOD = "POST";
+    private static final String PARAM_TRANSACTION_ID = "transaction_id";
+    private static final String PARAM_ID = "id";
+    private static final String PARAM_SIGNATURE = "signature";
+    private static final String PARAM_MERCHANT_CODE = "merchant_code";
+    private static final String PARAM_IP_ADDRESS = "ip_address";
+    private static final String PARAM_DATA = "data";
+    private static final String PARAM_DETAIL = "detail";
+    private static final String PARAM_ERRORS = "errors";
+    private static final String CREATE_ORDER_PARAMETER = "CREATE_ORDER_PARAMETER";
+    private static final String EMPTY_URL = "Empty url";
+    private static final String CREDITCARD = "CREDITCARD";
+    private static final String INSTALLMENT = "INSTALLMENT";
+
     private OTP.View viewListener;
     private OTPData otpData;
 
@@ -88,18 +93,18 @@ public class OTPPresenter implements OTP.Presenter {
         if (jsonData != null) {
             try {
                 JSONObject response = new JSONObject(jsonData);
-                if (!response.isNull("errors")) {
-                    JSONArray errors = response.getJSONArray("errors");
+                if (!response.isNull(PARAM_ERRORS)) {
+                    JSONArray errors = response.getJSONArray(PARAM_ERRORS);
                     List<String> errorList = new ArrayList<>();
                     for (int i = 0; i < errors.length(); i++) {
                         JSONObject error = errors.getJSONObject(i);
-                        errorList.add(error.getString("detail"));
+                        errorList.add(error.getString(PARAM_DETAIL));
                     }
                     viewListener.onLoadDataError(errorList);
                     return;
                 }
 
-                JSONObject data = response.getJSONObject("data");
+                JSONObject data = response.getJSONObject(PARAM_DATA);
                 if (data != null
                         && !data.getString(PARAM_URL).isEmpty()) {
                     otpData = new OTPData();
@@ -115,7 +120,7 @@ public class OTPPresenter implements OTP.Presenter {
                         viewListener.getOTPWebview(otpData);
                     }
                 } else {
-                    viewListener.onLoadDataError(new Exception("Empty url"));
+                    viewListener.onLoadDataError(new Exception(EMPTY_URL));
                 }
             } catch (Exception e) {
                 viewListener.onLoadDataError(e);
@@ -210,9 +215,9 @@ public class OTPPresenter implements OTP.Presenter {
         createOrderParameter.setTransactionId(paymentStatusDomain.getTransactionId());
         createOrderParameter.setState(paymentStatusDomain.getState() + "");
         createOrderParameter.setAmount(paymentStatusDomain.getAmount());
-        if (paymentStatusDomain.getGatewayCode().equals("CREDITCARD")) {
+        if (paymentStatusDomain.getGatewayCode().equals(CREDITCARD)) {
             createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.CREDITCARD + "");
-        } else if (paymentStatusDomain.getGatewayCode().equals("INSTALLMENT")) {
+        } else if (paymentStatusDomain.getGatewayCode().equals(INSTALLMENT)) {
             createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.INSTALLMENT + "");
         } else {
             createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.PAYMENTGLOBAL + "");
