@@ -727,6 +727,23 @@ public interface AppEventTracking {
         String PURCHASE_SITE = "purchase_site";
         String TOTAL_PRICE = "purchase_site";
         String REVIEW_SCORE = "review_score";
+
+        String TOTAL_SOLD_ITEM = "total_sold_item";
+        String REG_DATE = "registration_date";
+        String DATE_SHOP_CREATED = "date_shop_created";
+        String SHOP_LOCATION     = "shop_location";
+
+        String TOKOCASH_AMT     = "tokocash_amt";
+        String SALDO_AMT     = "saldo_amt";
+        String TOPADS_AMT     = "topads_amt";
+        String TOPADS_USER     = "is_topads_user";
+        String HAS_PURCHASED_TICKET     = "has_purchased_ticket";
+        String HAS_PURCHASED_MARKETPLACE     = "has_purchased_marketplace";
+        String HAS_PURCHASED_DIGITAL     = "has_purchased_digital";
+        String LAST_TRANSACT_DATE     = "last_transaction_date";
+        String TOTAL_ACTIVE_PRODUCT     = "total_active_product";
+        String SHOP_SCORE     = "shop_score";
+
     }
 
     interface EventMoEngage {
