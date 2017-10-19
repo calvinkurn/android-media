@@ -314,6 +314,11 @@ public interface AppEventTracking {
         String VOUCHER_ERROR = "Voucher Error - ";
         String SUBMIT = "Submit";
         String CLICK_DASHBOARD_CARD = "Click - Dashboard Card";
+        String CLICK_TOP_NAV = "click top nav";
+        String CLICK_PRODUCT_LIST = "click product list";
+        String CLICK_SORT_PRODUCT = "click sort product";
+        String CLICK_FILTER_PRODUCT = "click filter product";
+        String CLICK_OVERFLOW_MENU = "click overflow menu";
     }
 
     interface EventLabel {
@@ -622,6 +627,11 @@ public interface AppEventTracking {
         String DASHBOARD_ITEM_DISKUSI_PRODUK = "Diskusi Produk";
         String DASHBOARD_ITEM_ULASAN = "Ulasan";
 
+        String SEARCH_PRODUCT = "search product";
+        String CLICK_PRODUCT_LIST = "click product list";
+        String CATEGORY = "category";
+        String CONDITION = "condition";
+        String PICTURE_STATUS = "picture status";
     }
 
     interface SOCIAL_MEDIA {
