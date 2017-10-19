@@ -74,6 +74,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     private boolean showPrice = true;
     private CompositeSubscription compositeSubscription;
 
+    private List<Operator> operators;
+
     public static WidgetStyle2RechargeFragment newInstance(Category category, int position) {
         WidgetStyle2RechargeFragment fragment = new WidgetStyle2RechargeFragment();
         Bundle bundle = new Bundle();
@@ -224,7 +226,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 }
                 lastOrder.setAttributes(attributes);
 
-                setLastOrder(lastOrder);
+                renderLastOrder(lastOrder);
             }
         };
     }
@@ -419,10 +421,11 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     }
 
     @Override
-    public void renderOperators(List<Operator> operatorModels, boolean showLastOrder) {
+    public void renderOperators(List<Operator> operators, boolean showLastOrder) {
+        this.operators = operators;
         clearHolder(holderWidgetSpinnerOperator);
         widgetRadioChooserView.setListener(getRadioChoserListener());
-        widgetRadioChooserView.renderDataView(operatorModels, lastOrder, lastOperatorSelected);
+        widgetRadioChooserView.renderDataView(operators, lastOrder, lastOperatorSelected);
         holderWidgetSpinnerOperator.addView(widgetRadioChooserView);
 
         if (category.getAttributes().getClientNumber().isShown()) {
@@ -439,15 +442,12 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
         }
     }
 
-    private void setLastOrder(LastOrder lastOrder) {
-        this.lastOrder = lastOrder;
-    }
-
     @Override
     public void renderLastOrder(LastOrder lastOrder) {
         if (presenter != null) {
             this.lastOrder = lastOrder;
             if (lastOrder != null && lastOrder.getAttributes() != null && category != null) {
+                widgetRadioChooserView.checkRadioButtonBasedOnLastOrder2(operators, lastOrder);
                 widgetClientNumberView.setText(lastOrder.getAttributes().getClientNumber());
             }
         }

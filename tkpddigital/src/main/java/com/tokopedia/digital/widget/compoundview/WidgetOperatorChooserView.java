@@ -106,12 +106,29 @@ public class WidgetOperatorChooserView extends LinearLayout {
                                 String.valueOf(lastOrder.getAttributes().getOperatorId()
                                 ))) {
                     spinnerOperator.setSelection(i);
+                    listener.onCheckChangeOperator(model);
                 }
             }
         } else {
             for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
                 Operator model = operators.get(i);
                 if (String.valueOf(model.getId()).equalsIgnoreCase(lastOperatorSelected)) {
+                    spinnerOperator.setSelection(i);
+                }
+            }
+        }
+    }
+
+    public void setLastOrderSelectedOperator2(List<Operator> operators,
+                                              LastOrder lastOrder, int categoryId) {
+        if (SessionHandler.isV4Login(getContext())  &&
+                lastOrder.getAttributes().getCategoryId() == categoryId) {
+            for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
+                Operator model = operators.get(i);
+                if (String.valueOf(model.getId())
+                        .equalsIgnoreCase(
+                                String.valueOf(lastOrder.getAttributes().getOperatorId()
+                                ))) {
                     spinnerOperator.setSelection(i);
                 }
             }

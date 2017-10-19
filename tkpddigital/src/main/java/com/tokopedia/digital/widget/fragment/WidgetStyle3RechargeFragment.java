@@ -224,7 +224,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 }
                 lastOrder.setAttributes(attributes);
 
-                setLastOrder(lastOrder);
+                renderLastOrder(lastOrder);
             }
         };
     }
@@ -354,10 +354,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 selectedOperator == null ? "" : selectedOperator.getAttributes().getName());
     }
 
-    private void setLastOrder(LastOrder lastOrder) {
-        this.lastOrder = lastOrder;
-    }
-
     private PreCheckoutDigitalWidget getDataPreCheckout() {
         PreCheckoutDigitalWidget preCheckoutDigitalWidget = new PreCheckoutDigitalWidget();
         preCheckoutDigitalWidget.setClientNumber(widgetClientNumberView.getText());
@@ -453,8 +449,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
         if (presenter != null) {
             this.lastOrder = lastOrder;
             if (lastOrder != null && lastOrder.getAttributes() != null && category != null) {
-                widgetOperatorChooserView.renderDataView(operators, lastOrder, category.getId(),
-                        lastOperatorSelected);
+                widgetOperatorChooserView.setLastOrderSelectedOperator2(operators, lastOrder, category.getId());
                 widgetClientNumberView.setText(lastOrder.getAttributes().getClientNumber());
             }
         }

@@ -108,6 +108,17 @@ public class WidgetRadioChooserView extends LinearLayout {
         }
     }
 
+    public void checkRadioButtonBasedOnLastOrder2(List<Operator> operators, LastOrder lastOrder) {
+        if (lastOrder.getAttributes() != null && radioGroup != null) {
+            for (int i = 0; i < operators.size(); i++) {
+                if (operators.get(i).getId() == lastOrder.getAttributes().getOperatorId()) {
+                    radioGroup.check(radioGroup.getChildAt(i).getId());
+                    listener.onCheckChange(operators.get(radioGroup.getChildAt(i).getId()));
+                }
+            }
+        }
+    }
+
     private View.OnTouchListener getOnTouchListener() {
         return new OnTouchListener() {
             @Override
