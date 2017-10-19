@@ -248,11 +248,12 @@
                     />
 
                 <TextView
+                    android:id="@+id/info_anonymous"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="5sp"
-                    android:text="@string/hint_anonym"
+                    tools:text="@string/hint_anonym"
                     android:textColor="@color/black_38"
                     android:textSize="@dimen/text_size_xsmall"
                     android:textStyle="normal"

@@ -218,7 +218,7 @@ public class InboxReputationDetailItemViewHolder extends
             giveReview.setVisibility(View.GONE);
 
             reviewerName.setText(MethodChecker.fromHtml(getReviewerNameText(element
-                    .getReviewerName())));
+                    .getReviewerName(), element.isReviewIsAnonymous())));
             reviewerName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -409,9 +409,21 @@ public class InboxReputationDetailItemViewHolder extends
         return list;
     }
 
-    private String getReviewerNameText(String reviewerName) {
-        return MainApplication.getAppContext().getString(R.string.by) + " " + reviewerName;
+    private String getReviewerNameText(String reviewerName, boolean reviewIsAnonymous) {
+        if (reviewIsAnonymous) {
+            return MainApplication.getAppContext().getString(R.string.by) + " " +
+                    getAnonymousName(reviewerName);
+        } else {
+            return MainApplication.getAppContext().getString(R.string.by) + " " + reviewerName;
+        }
     }
+
+    private String getAnonymousName(String name) {
+        String first = name.substring(0, 1);
+        String last = name.substring(name.length() - 1);
+        return first + "***" + last;
+    }
+
 
     private boolean canShowOverflow(InboxReputationDetailItemViewModel element) {
         return element.isReviewIsEditable()

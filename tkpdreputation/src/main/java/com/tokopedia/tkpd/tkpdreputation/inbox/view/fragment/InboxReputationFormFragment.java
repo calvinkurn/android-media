@@ -51,6 +51,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
@@ -98,6 +99,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     RecyclerView listImageUpload;
     Switch shareFbSwitch;
     Switch anomymousSwitch;
+    TextView anonymousInfo;
     Button sendButton;
     View tipsHeader;
     ImageView tipsArrow;
@@ -112,6 +114,9 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
 
     @Inject
     InboxReputationFormPresenter presenter;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     public static InboxReputationFormFragment createInstance(Bundle bundle) {
         InboxReputationFormFragment fragment = new InboxReputationFormFragment();
@@ -156,6 +161,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         tipsArrow = (ImageView) parentView.findViewById(R.id.iv_expand_collapse);
         productImage = (ImageView) parentView.findViewById(R.id.product_avatar);
         productName = (TextView) parentView.findViewById(R.id.product_name);
+        anonymousInfo = (TextView) parentView.findViewById(R.id.info_anonymous);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -380,6 +386,15 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             ImageHandler.LoadImage(productImage, getArguments().getString
                     (InboxReputationFormActivity.ARGS_PRODUCT_AVATAR));
         }
+        String anonymouseInfoText = getString(R.string.hint_anonym) + " " + getAnonymousName();
+        anonymousInfo.setText(anonymouseInfoText);
+    }
+
+    private String getAnonymousName() {
+        String name = sessionHandler.getLoginName();
+        String first = name.substring(0, 1);
+        String last = name.substring(name.length() - 1);
+        return first + "***" + last;
     }
 
     private void setTips() {
