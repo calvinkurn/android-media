@@ -85,7 +85,6 @@ public class ProductAdditionalInfoView extends RelativeLayout {
         Spanned detail = Html.fromHtml(product.getDetail() + "<a href=\"" + product.getDetailUrl() + "\"> " +
                 product.getDetailUrlText() + "</a>");
         tvInfo.setText(detail);
-        tvInfo.setMovementMethod(LinkMovementMethod.getInstance());
         tvInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

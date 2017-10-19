@@ -28,6 +28,7 @@ import butterknife.ButterKnife;
  * @author anggaprasetiyo on 5/9/17.
  */
 public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
     private static final int TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM =
             R.layout.view_holder_item_product_desc_and_price_digital_module;
     private static final int TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC =
@@ -37,22 +38,17 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private Fragment hostFragment;
     private List<Product> productList;
-    private String productStyleView;
     private ActionListener actionListener;
 
     public interface ActionListener {
         void onProductItemSelected(Product product);
-
-        void onProductLinkClicked(String url);
     }
 
     public ProductChooserAdapter(Fragment hostFragment,
                                  List<Product> productList,
-                                 String productStyleView,
                                  ActionListener actionListener) {
         this.hostFragment = hostFragment;
         this.productList = productList != null ? productList : new ArrayList<Product>();
-        this.productStyleView = productStyleView;
         this.actionListener = actionListener;
     }
 
