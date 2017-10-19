@@ -327,7 +327,7 @@ class PaymentBank extends Component {
               <View style={[styles.row, styles.row1]}>
                 <Text style={[styles.font20, styles.fontColor70]}>Nominal</Text>
                 <Text style={[styles.font20, styles.fontColor70]}>
-                  Rp {payment_amount / this.state.selectedEmiId}/ bulan</Text>
+                  Rp {(Math.ceil(payment_amount / this.state.selectedEmiId)).toLocaleString('id')}/ bulan</Text>
               </View>}
               {/*<View style={[styles.row, styles.row3]} >
                   <Text style={styles.row1Text}>
