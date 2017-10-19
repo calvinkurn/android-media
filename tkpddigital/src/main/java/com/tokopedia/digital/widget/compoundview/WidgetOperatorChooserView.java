@@ -33,6 +33,8 @@ public class WidgetOperatorChooserView extends LinearLayout {
 
     private OperatorChoserListener listener;
 
+    private boolean resetClientNumber;
+
     public WidgetOperatorChooserView(Context context) {
         super(context);
         init();
@@ -64,15 +66,16 @@ public class WidgetOperatorChooserView extends LinearLayout {
         spinnerOperator.setAdapter(adapterOperator);
         spinnerOperator.setOnItemSelectedListener(getItemSelectedListener(operators));
         spinnerOperator.setOnTouchListener(getOnTouchListener());
-        setLastOrderSelectedOperator(operators, lastOrder, categoryId, lastOperatorSelected);
+        initSetLastOrderSelectedOperator(operators, lastOrder, categoryId, lastOperatorSelected);
     }
 
     private AdapterView.OnItemSelectedListener getItemSelectedListener(final List<Operator> operators) {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                listener.onResetOperator();
+                listener.onResetOperator(resetClientNumber);
                 listener.onCheckChangeOperator(operators.get(i));
+                resetClientNumber = true;
             }
 
             @Override
@@ -94,7 +97,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
         };
     }
 
-    private void setLastOrderSelectedOperator(List<Operator> operators,
+    private void initSetLastOrderSelectedOperator(List<Operator> operators,
                                               LastOrder lastOrder, int categoryId,
                                               String lastOperatorSelected) {
         if (SessionHandler.isV4Login(getContext()) && lastOrder != null &&
@@ -106,7 +109,6 @@ public class WidgetOperatorChooserView extends LinearLayout {
                                 String.valueOf(lastOrder.getAttributes().getOperatorId()
                                 ))) {
                     spinnerOperator.setSelection(i);
-                    listener.onCheckChangeOperator(model);
                 }
             }
         } else {
@@ -119,7 +121,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
         }
     }
 
-    public void setLastOrderSelectedOperator2(List<Operator> operators,
+    public void setLastOrderSelectedOperator(List<Operator> operators,
                                               LastOrder lastOrder, int categoryId) {
         if (SessionHandler.isV4Login(getContext())  &&
                 lastOrder.getAttributes().getCategoryId() == categoryId) {
@@ -129,6 +131,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
                         .equalsIgnoreCase(
                                 String.valueOf(lastOrder.getAttributes().getOperatorId()
                                 ))) {
+                    resetClientNumber = false;
                     spinnerOperator.setSelection(i);
                 }
             }
@@ -138,7 +141,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
     public interface OperatorChoserListener {
         void onCheckChangeOperator(Operator rechargeOperatorModel);
 
-        void onResetOperator();
+        void onResetOperator(boolean resetClientNumber);
 
         void onTrackingOperator();
     }

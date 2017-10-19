@@ -328,10 +328,12 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
             }
 
             @Override
-            public void onResetOperator() {
-                clearHolder(holderWidgetWrapperBuy);
-                widgetClientNumberView.setEmptyString();
-                widgetClientNumberView.setImgOperatorInvisible();
+            public void onResetOperator(boolean resetClientNumber) {
+                if (resetClientNumber) {
+                    clearHolder(holderWidgetWrapperBuy);
+                    widgetClientNumberView.setEmptyString();
+                    widgetClientNumberView.setImgOperatorInvisible();
+                }
             }
 
             @Override
@@ -449,7 +451,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
         if (presenter != null) {
             this.lastOrder = lastOrder;
             if (lastOrder != null && lastOrder.getAttributes() != null && category != null) {
-                widgetOperatorChooserView.setLastOrderSelectedOperator2(operators, lastOrder, category.getId());
+                widgetOperatorChooserView.setLastOrderSelectedOperator(operators, lastOrder, category.getId());
                 widgetClientNumberView.setText(lastOrder.getAttributes().getClientNumber());
             }
         }

@@ -447,7 +447,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
         if (presenter != null) {
             this.lastOrder = lastOrder;
             if (lastOrder != null && lastOrder.getAttributes() != null && category != null) {
-                widgetRadioChooserView.checkRadioButtonBasedOnLastOrder2(operators, lastOrder);
+                widgetRadioChooserView.checkRadioButtonBasedOnLastOrder(operators, lastOrder);
                 widgetClientNumberView.setText(lastOrder.getAttributes().getClientNumber());
             }
         }
