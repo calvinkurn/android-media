@@ -9,7 +9,7 @@ import com.tokopedia.posapp.data.mapper.GetProductListMapper;
 import com.tokopedia.posapp.data.mapper.GetProductMapper;
 import com.tokopedia.posapp.data.source.cloud.api.AceApi;
 import com.tokopedia.posapp.data.source.cloud.api.ProductApi;
-import com.tokopedia.posapp.domain.model.shop.ProductListDomain;
+import com.tokopedia.posapp.domain.model.product.ProductListDomain;
 
 import retrofit2.Response;
 import rx.Observable;

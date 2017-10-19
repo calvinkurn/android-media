@@ -2,26 +2,25 @@ package com.tokopedia.posapp.data.factory;
 
 import com.tokopedia.posapp.data.mapper.GetBankInstallmentMapper;
 import com.tokopedia.posapp.data.source.cloud.BankCloudSource;
-import com.tokopedia.posapp.data.source.cloud.api.CreditCardApi;
+import com.tokopedia.posapp.data.source.cloud.api.GatewayBankApi;
 import com.tokopedia.posapp.data.source.local.BankLocalSource;
-import com.tokopedia.posapp.database.manager.BankDbManager;
 
 /**
  * Created by okasurya on 9/5/17.
  */
 
 public class BankFactory {
-    private CreditCardApi creditCardApi;
+    private GatewayBankApi gatewayBankApi;
     private GetBankInstallmentMapper getBankInstallmentMapper;
 
-    public BankFactory(CreditCardApi creditCardApi,
+    public BankFactory(GatewayBankApi gatewayBankApi,
                        GetBankInstallmentMapper getBankInstallmentMapper) {
-        this.creditCardApi = creditCardApi;
+        this.gatewayBankApi = gatewayBankApi;
         this.getBankInstallmentMapper = getBankInstallmentMapper;
     }
 
     public BankCloudSource cloud() {
-        return new BankCloudSource(creditCardApi, getBankInstallmentMapper);
+        return new BankCloudSource(gatewayBankApi, getBankInstallmentMapper);
     }
 
     public BankLocalSource local() {

@@ -14,10 +14,11 @@ import dagger.Component;
 
 @ReactCacheScope
 @Component(
-    modules = {ReactCacheModule.class},
-    dependencies = AppComponent.class
+        modules = ReactCacheModule.class,
+        dependencies = AppComponent.class
 )
 public interface ReactCacheComponent {
     void inject(PosCacheRNModule posCacheRNModule);
+
     void inject(ProductDiscoveryRNModule productDiscoveryRNModule);
 }

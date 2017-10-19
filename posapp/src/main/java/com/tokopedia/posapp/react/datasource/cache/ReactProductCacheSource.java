@@ -2,7 +2,7 @@ package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
 import com.tokopedia.posapp.data.factory.ProductFactory;
-import com.tokopedia.posapp.data.pojo.Paging;
+import com.tokopedia.posapp.data.pojo.base.Paging;
 import com.tokopedia.posapp.data.pojo.ShopProductResponse;
 import com.tokopedia.posapp.domain.model.product.ProductDomain;
 import com.tokopedia.posapp.react.datasource.model.CacheResult;

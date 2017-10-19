@@ -33,6 +33,7 @@ import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.PaymentNoAuth;
+import com.tokopedia.core.network.di.qualifier.PosGatewayNoAuth;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardRetrofit;
 import com.tokopedia.core.network.di.qualifier.ScroogeNoAuth;
@@ -129,6 +130,9 @@ public interface AppComponent {
 
     @PaymentNoAuth
     Retrofit paymentNoAuth();
+
+    @PosGatewayNoAuth
+    Retrofit posNoAuth();
 
     ThreadExecutor threadExecutor();
 

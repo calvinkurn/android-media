@@ -2,8 +2,8 @@ package com.tokopedia.posapp.react.datasource.cache;
 
 import com.google.gson.Gson;
 import com.tokopedia.posapp.data.factory.BankFactory;
-import com.tokopedia.posapp.data.pojo.BankItemResponse;
-import com.tokopedia.posapp.data.pojo.InstallmentResponse;
+import com.tokopedia.posapp.data.pojo.bank.BankItemResponse;
+import com.tokopedia.posapp.data.pojo.bank.InstallmentResponse;
 import com.tokopedia.posapp.data.pojo.base.ListResponse;
 import com.tokopedia.posapp.domain.model.bank.BankDomain;
 import com.tokopedia.posapp.domain.model.bank.InstallmentDomain;

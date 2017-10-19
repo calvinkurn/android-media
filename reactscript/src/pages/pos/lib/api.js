@@ -29,3 +29,7 @@ export const BASE_API_URL_PCIDSS = {
 //     PRODUCTION: 'https://pay.tokopedia.id'
 // }
 
+export const BASE_API_URL_ORDER = {
+    STAGING: 'https://api-staging.tokopedia.com',
+    PRODUCTION: 'https://api.tokopedia.com'
+}

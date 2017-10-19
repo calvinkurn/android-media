@@ -12,7 +12,7 @@ import com.tokopedia.posapp.domain.model.bank.BankDomain;
 import com.tokopedia.posapp.domain.model.result.BankSavedResult;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
 import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
-import com.tokopedia.posapp.domain.model.shop.ProductListDomain;
+import com.tokopedia.posapp.domain.model.product.ProductListDomain;
 import com.tokopedia.posapp.domain.usecase.GetBankUseCase;
 import com.tokopedia.posapp.domain.usecase.GetEtalaseUseCase;
 import com.tokopedia.posapp.domain.usecase.GetProductListUseCase;
@@ -166,16 +166,16 @@ public class CachePresenter implements Cache.Presenter {
         params.putString(KEYWORD, "");
         params.putString(ETALASE_ID, "etalase");
         params.putString(ORDER_BY, "0");
-        params.putString(PER_PAGE, "5");
+        params.putString(PER_PAGE, "20");
         params.putString(WHOLESALE, "1");
 
         return params;
     }
 
-    private RequestParams getPosProductParam(int page) {
+    private RequestParams getGatewayProductParam(int page) {
         RequestParams params = RequestParams.create();
         params.putString(SHOP_ID, SessionHandler.getShopID(context));
-        params.putInt(START, defaultRowPerPage * page);
+        params.putInt(START, 1 + (defaultRowPerPage * (page - 1)));
         params.putInt(ROW, defaultRowPerPage);
         return params;
     }
@@ -242,7 +242,7 @@ public class CachePresenter implements Cache.Presenter {
                 productPage++;
                 isRequestNextProduct = true;
             } else {
-                productPage = 0;
+                productPage = 1;
                 isRequestNextProduct = false;
             }
 

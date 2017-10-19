@@ -3,6 +3,7 @@ package com.tokopedia.posapp.data.mapper;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.posapp.data.pojo.payment.PaymentDetail;
 import com.tokopedia.posapp.data.pojo.payment.PaymentStatusItem;
 import com.tokopedia.posapp.data.pojo.payment.PaymentStatusResponse;
@@ -20,7 +21,7 @@ import rx.functions.Func1;
  * Created by okasurya on 10/10/17.
  */
 
-public class PaymentStatusMapper implements Func1<Response<String>, PaymentStatusDomain> {
+public class PaymentStatusMapper implements Func1<Response<TkpdResponse>, PaymentStatusDomain> {
     private Gson gson;
 
     public PaymentStatusMapper(Gson gson) {
@@ -28,10 +29,12 @@ public class PaymentStatusMapper implements Func1<Response<String>, PaymentStatu
     }
 
     @Override
-    public PaymentStatusDomain call(Response<String> response) {
-        if (response.isSuccessful() && response.body() != null) {
-            Log.d("o2o", response.body());
-            PaymentStatusResponse data = gson.fromJson(response.body(), PaymentStatusResponse.class);
+    public PaymentStatusDomain call(Response<TkpdResponse> response) {
+        if (response.isSuccessful()
+                && response.body() != null
+                && response.body().getStringData() != null) {
+            Log.d("o2o", response.body().getStringData());
+            PaymentStatusResponse data = gson.fromJson(response.body().getStringData(), PaymentStatusResponse.class);
             if (data != null && data.getData() != null && data.getData().size() != 0) {
                 PaymentStatusDomain domain = new PaymentStatusDomain();
                 domain.setMerchantCode(data.getData().get(0).getMerchantCode());

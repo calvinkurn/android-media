@@ -2,8 +2,8 @@ package com.tokopedia.posapp.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.posapp.PosConstants;
-import com.tokopedia.posapp.data.pojo.BankItemResponse;
-import com.tokopedia.posapp.data.pojo.CCBinResponse;
+import com.tokopedia.posapp.data.pojo.bank.BankItemResponse;
+import com.tokopedia.posapp.data.pojo.bank.CCBinResponse;
 import com.tokopedia.posapp.data.pojo.base.ListResponse;
 import com.tokopedia.posapp.data.pojo.base.GeneralResponse;
 

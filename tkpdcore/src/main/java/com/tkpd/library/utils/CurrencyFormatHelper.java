@@ -252,6 +252,7 @@ public final class CurrencyFormatHelper {
 		rupiah = rupiah.replace("Rp", "");
 		rupiah = rupiah.replace(".", "");
 		rupiah = rupiah.replace(" ", "");
+		rupiah = rupiah.replace(",", ".");
 		return Double.parseDouble(rupiah);
 	}
 

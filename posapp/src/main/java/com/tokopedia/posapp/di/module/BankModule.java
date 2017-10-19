@@ -1,13 +1,14 @@
 package com.tokopedia.posapp.di.module;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardRetrofit;
+import com.tokopedia.core.network.di.qualifier.PosGatewayNoAuth;
 import com.tokopedia.posapp.data.factory.BankFactory;
 import com.tokopedia.posapp.data.mapper.GetBankInstallmentMapper;
 import com.tokopedia.posapp.data.repository.BankRepository;
 import com.tokopedia.posapp.data.repository.BankRepositoryImpl;
-import com.tokopedia.posapp.data.source.cloud.api.CreditCardApi;
+import com.tokopedia.posapp.data.source.cloud.api.GatewayBankApi;
 import com.tokopedia.posapp.database.manager.BankDbManager;
 import com.tokopedia.posapp.di.scope.BankScope;
 import com.tokopedia.posapp.domain.usecase.GetBankUseCase;
@@ -25,13 +26,13 @@ import retrofit2.Retrofit;
 @Module
 public class BankModule {
     @Provides
-    GetBankInstallmentMapper provideGetBankInstallmentMapper() {
-        return new GetBankInstallmentMapper();
+    GetBankInstallmentMapper provideGetBankInstallmentMapper(Gson gson) {
+        return new GetBankInstallmentMapper(gson);
     }
 
     @Provides
-    CreditCardApi provideCreditCardApi(@ScroogeCreditCardRetrofit Retrofit retrofit) {
-        return retrofit.create(CreditCardApi.class);
+    GatewayBankApi provideGatewayBankApi(@PosGatewayNoAuth Retrofit retrofit) {
+        return retrofit.create(GatewayBankApi.class);
     }
 
     @Provides
@@ -40,9 +41,9 @@ public class BankModule {
     }
 
     @Provides
-    BankFactory provideBankFactory(CreditCardApi creditCardApi,
+    BankFactory provideBankFactory(GatewayBankApi gatewayBankApi,
                                    GetBankInstallmentMapper getBankInstallmentMapper) {
-        return new BankFactory(creditCardApi, getBankInstallmentMapper);
+        return new BankFactory(gatewayBankApi, getBankInstallmentMapper);
     }
 
     @Provides

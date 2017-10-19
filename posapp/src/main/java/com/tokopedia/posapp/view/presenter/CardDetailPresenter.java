@@ -1,11 +1,10 @@
 package com.tokopedia.posapp.view.presenter;
 
 import com.google.gson.Gson;
-import com.tokopedia.posapp.data.pojo.CheckoutDataResponse;
+import com.tokopedia.posapp.data.pojo.cart.CheckoutDataResponse;
 import com.tokopedia.posapp.data.pojo.PaymentDataResponse;
 import com.tokopedia.posapp.data.pojo.base.GeneralResponse;
 import com.tokopedia.posapp.view.CardDetail;
-import com.tokopedia.posapp.view.viewmodel.card.CreditCardViewModel;
 import com.tokopedia.posapp.view.viewmodel.card.PaymentViewModel;
 
 import java.util.Calendar;

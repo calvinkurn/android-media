@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.posapp.data.repository.ProductRepository;
-import com.tokopedia.posapp.domain.model.shop.ProductListDomain;
+import com.tokopedia.posapp.domain.model.product.ProductListDomain;
 
 import javax.inject.Inject;
 

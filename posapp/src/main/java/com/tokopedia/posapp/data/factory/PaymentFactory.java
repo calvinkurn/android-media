@@ -3,7 +3,7 @@ package com.tokopedia.posapp.data.factory;
 import com.tokopedia.posapp.data.mapper.CreateOrderMapper;
 import com.tokopedia.posapp.data.mapper.PaymentStatusMapper;
 import com.tokopedia.posapp.data.source.cloud.PaymentCloudSource;
-import com.tokopedia.posapp.data.source.cloud.api.PaymentApi;
+import com.tokopedia.posapp.data.source.cloud.api.GatewayPaymentApi;
 import com.tokopedia.posapp.data.source.cloud.api.ScroogeApi;
 
 /**
@@ -12,22 +12,19 @@ import com.tokopedia.posapp.data.source.cloud.api.ScroogeApi;
 
 public class PaymentFactory {
 
-    private ScroogeApi scroogeApi;
-    private PaymentApi paymentApi;
+    private GatewayPaymentApi gatewayPaymentApi;
     private PaymentStatusMapper paymentStatusMapper;
     private CreateOrderMapper createOrderMapper;
 
-    public PaymentFactory(ScroogeApi scroogeApi,
-                          PaymentApi paymentApi,
+    public PaymentFactory(GatewayPaymentApi gatewayPaymentApi,
                           PaymentStatusMapper paymentStatusMapper,
                           CreateOrderMapper createOrderMapper) {
-        this.scroogeApi = scroogeApi;
-        this.paymentApi = paymentApi;
+        this.gatewayPaymentApi = gatewayPaymentApi;
         this.paymentStatusMapper = paymentStatusMapper;
         this.createOrderMapper = createOrderMapper;
     }
 
     public PaymentCloudSource cloud() {
-        return new PaymentCloudSource(scroogeApi, paymentApi, paymentStatusMapper, createOrderMapper);
+        return new PaymentCloudSource(gatewayPaymentApi, paymentStatusMapper, createOrderMapper);
     }
 }

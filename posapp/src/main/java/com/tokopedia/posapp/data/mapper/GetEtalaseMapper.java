@@ -1,8 +1,9 @@
 package com.tokopedia.posapp.data.mapper;
 
 import com.google.gson.Gson;
-import com.tokopedia.posapp.data.pojo.EtalaseItemResponse;
-import com.tokopedia.posapp.data.pojo.EtalaseResponse;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.posapp.data.pojo.etalase.EtalaseItemResponse;
+import com.tokopedia.posapp.data.pojo.etalase.EtalaseResponse;
 import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import rx.functions.Func1;
  * Created by okasurya on 9/19/17.
  */
 
-public class GetEtalaseMapper implements Func1<Response<EtalaseResponse>, List<EtalaseDomain>> {
+public class GetEtalaseMapper implements Func1<Response<TkpdResponse>, List<EtalaseDomain>> {
     private Gson gson;
 
     public GetEtalaseMapper(Gson gson) {
@@ -23,11 +24,14 @@ public class GetEtalaseMapper implements Func1<Response<EtalaseResponse>, List<E
     }
 
     @Override
-    public List<EtalaseDomain> call(Response<EtalaseResponse> response) {
+    public List<EtalaseDomain> call(Response<TkpdResponse> response) {
         if(response.isSuccessful()
-                && response.body() != null
-                && response.body().getData() != null) {
-            return mapToDomain(response.body().getData());
+                && response.body() != null) {
+            EtalaseResponse etalaseResponse = response.body().convertDataObj(EtalaseResponse.class);
+            if(etalaseResponse != null
+                    && etalaseResponse.getData() != null) {
+                return mapToDomain(etalaseResponse.getData());
+            }
         }
         return null;
     }

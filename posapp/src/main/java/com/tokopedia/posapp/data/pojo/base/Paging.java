@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.data.pojo;
+package com.tokopedia.posapp.data.pojo.base;
 
 import com.google.gson.annotations.SerializedName;
 
