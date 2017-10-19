@@ -10,6 +10,9 @@ import org.json.JSONObject;
  */
 
 public class ProblemResult implements Parcelable {
+    public static final int TYPE_DEFAULT = 0;
+    public static final int TROUBLE_DEFAULT = 0;
+
     public int id;
     public String name;
     public int type;
@@ -27,10 +30,10 @@ public class ProblemResult implements Parcelable {
     public JSONObject writeToJson() {
         JSONObject object = new JSONObject();
         try {
-            if (type != 0) {
+            if (type != TYPE_DEFAULT) {
                 object.put("type", type);
             }
-            if (trouble != 0) {
+            if (trouble != TROUBLE_DEFAULT) {
                 object.put("trouble", trouble);
             }
             if (type == 2) {

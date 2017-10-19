@@ -1,8 +1,13 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateResoWithoutAttachmentResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.ResolutionResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoWithoutAttachmentDomain;
@@ -16,8 +21,12 @@ import rx.functions.Func1;
  */
 
 public class CreateResoWithoutAttachmentMapper implements Func1<Response<TkpdResponse>, CreateResoWithoutAttachmentDomain> {
-    private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
-    private static final String ERROR_MESSAGE = "message_error";
+
+    private Context context;
+
+    public CreateResoWithoutAttachmentMapper(Context context) {
+        this.context = context;
+    }
 
     @Override
     public CreateResoWithoutAttachmentDomain call(Response<TkpdResponse> response) {
@@ -38,7 +47,7 @@ public class CreateResoWithoutAttachmentMapper implements Func1<Response<TkpdRes
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(DEFAULT_ERROR);
+                    throw new ErrorMessageException(context.getResources().getString(R.string.string_general_error));
                 }
             } else {
                 model.setSuccess(true);

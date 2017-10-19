@@ -1,8 +1,11 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
+import android.content.Context;
+
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateValidateResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateValidateDomain;
 
@@ -14,8 +17,12 @@ import rx.functions.Func1;
  */
 
 public class CreateValidateMapper implements Func1<Response<TkpdResponse>, CreateValidateDomain> {
-    private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
-    private static final String ERROR_MESSAGE = "message_error";
+
+    private Context context;
+
+    public CreateValidateMapper(Context context) {
+        this.context = context;
+    }
 
     @Override
     public CreateValidateDomain call(Response<TkpdResponse> response) {
@@ -31,7 +38,7 @@ public class CreateValidateMapper implements Func1<Response<TkpdResponse>, Creat
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(DEFAULT_ERROR);
+                    throw new ErrorMessageException(context.getResources().getString(R.string.string_general_error));
                 }
             } else {
                 model.setSuccess(true);

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="font_time_ticker_size">30sp</dimen>
+    <dimen name="font_alpha_38">0.38f</dimen>
+    <dimen name="font_alpha_70">0.7f</dimen>
+    <dimen name="font_alpha_100">1f</dimen>
 </resources>

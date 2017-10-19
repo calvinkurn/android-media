@@ -362,7 +362,11 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             } else {
                 setProductAlreadyArrive();
             }
-            tvCourierInfo.setText("[" + shippingName + "]");
+            tvCourierInfo.setText(
+                    context.getResources().getString(R.string.string_shipping_name)
+                            .replace(
+                                    context.getResources().getString(R.string.string_shipping_name_identifier),
+                                    shippingName));
             btnClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
