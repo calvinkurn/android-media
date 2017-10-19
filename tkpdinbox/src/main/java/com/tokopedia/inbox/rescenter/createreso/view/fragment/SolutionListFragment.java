@@ -304,7 +304,7 @@ public class SolutionListFragment extends BaseDaggerFragment
     }
 
     public void updateSolutionString(SolutionViewModel solutionViewModel, TextView textView) {
-        textView.setText(solutionViewModel.getAmount() != null ?
+        textView.setText(solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
                 solutionViewModel.getSolutionName().replace(
                         context.getResources().getString(R.string.string_return_value),
                         solutionViewModel.getAmount().getIdr()) :
