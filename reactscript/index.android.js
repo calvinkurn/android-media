@@ -11,7 +11,6 @@ import {
   UIManager,
   View
 } from 'react-native';
-// import { HotList_ } from './src/configs/router';
 import OfficialStore from './src/pages/official-store/setup'
 
 

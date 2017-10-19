@@ -1,10 +1,14 @@
 package com.tokopedia.tkpd.home.recharge.interactor;
 
-import com.tokopedia.core.database.model.category.CategoryData;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.model.category.Category;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
+import com.tokopedia.digital.widget.model.mapper.LastOrderMapper;
+import com.tokopedia.digital.widget.model.mapper.StatusMapper;
+import com.tokopedia.digital.widget.model.status.Status;
 
+import java.util.List;
 import java.util.Map;
 
 import rx.Subscriber;
@@ -21,26 +25,25 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
 
     private CompositeSubscription compositeSubscription;
     private DigitalWidgetRepository repository;
+    private LastOrderMapper lastOrderMapper;
+    private CategoryMapper categoryMapper;
+    private StatusMapper statusMapper;
 
-    public RechargeNetworkInteractorImpl(DigitalWidgetRepository repository) {
+    public RechargeNetworkInteractorImpl(DigitalWidgetRepository repository,
+                                         LastOrderMapper lastOrderMapper,
+                                         CategoryMapper categoryMapper,
+                                         StatusMapper statusMapper) {
         compositeSubscription = new CompositeSubscription();
         this.repository = repository;
+        this.lastOrderMapper = lastOrderMapper;
+        this.categoryMapper = categoryMapper;
+        this.statusMapper = statusMapper;
     }
 
     @Override
-    public void getRecentNumbers(Map<String, String> params) {
+    public void getRecentNumbers(Subscriber<Boolean> subscriber, Map<String, String> params) {
         compositeSubscription.add(
                 repository.storeObservableRecentDataNetwork(params)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe());
-    }
-
-    @Override
-    public void getLastOrder(Subscriber<LastOrder> subscriber, Map<String, String> params) {
-        compositeSubscription.add(
-                repository.getObservableLastOrderNetwork(params)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())
@@ -48,9 +51,21 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
     }
 
     @Override
-    public void getCategoryData(Subscriber<CategoryData> subscriber) {
+    public void getLastOrder(Subscriber<LastOrder> subscriber, Map<String, String> params) {
+        compositeSubscription.add(
+                repository.getObservableLastOrderNetwork(params)
+                        .map(lastOrderMapper)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber));
+    }
+
+    @Override
+    public void getCategoryData(Subscriber<List<Category>> subscriber) {
         compositeSubscription.add(
                 repository.getObservableCategoryData()
+                        .map(categoryMapper)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())
@@ -61,16 +76,7 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
     public void getStatus(Subscriber<Status> subscriber) {
         compositeSubscription.add(
                 repository.getObservableStatus()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber));
-    }
-
-    @Override
-    public void getStatusResume(Subscriber<Status> subscriber) {
-        compositeSubscription.add(
-                repository.getObservableStatusOnResume()
+                        .map(statusMapper)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())

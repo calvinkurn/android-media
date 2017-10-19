@@ -173,6 +173,29 @@ public class ImageHandler {
                 .into(imageview);
     }
 
+    public static void loadImage(Context context, ImageView imageview, String url,int placeholder) {
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(placeholder)
+                .error(R.drawable.error_drawable)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imageview);
+    }
+
+    public static void loadImage(Context context, ImageView imageview, String url,int placeholder,int error_image) {
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(placeholder)
+                .error(error_image)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imageview);
+    }
+
+
     /**
      * this class is not good for performances. please use LoadImageCustom
      *
@@ -180,13 +203,16 @@ public class ImageHandler {
      * @param url
      */
     public static void LoadImage(ImageView imageview, String url) {
-        Glide.with(imageview.getContext())
-                .load(url)
-                .fitCenter()
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .into(imageview);
+
+        if (imageview.getContext() != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .fitCenter()
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .into(imageview);
+        }
     }
 
     public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {

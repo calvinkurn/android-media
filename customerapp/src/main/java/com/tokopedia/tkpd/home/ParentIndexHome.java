@@ -163,17 +163,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         }
 
-        sendNotifLocalyticsCallback();
-
-    }
-
-    private void sendNotifLocalyticsCallback() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
-                TrackingUtils.eventLocaNotificationCallback(getIntent());
-            }
-        }
     }
 
     @Override
@@ -336,12 +325,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     break;
             }
 
-
-            /**
-             * send Localytics user attributes
-             * by : Hafizh Herdi
-             */
-            getUserCache();
         } else {
             adapter = new PagerAdapter(getSupportFragmentManager());
             mViewPager.setAdapter(adapter);
@@ -356,20 +339,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         mViewPager.setOffscreenPageLimit(3);
         adapter.notifyDataSetChanged();// DON'T DELETE THIS BECAUSE IT WILL NOTIFY ADAPTER TO CHANGE FROM GUEST TO LOGIN
-    }
-
-    /**
-     * send Localytics user attributes
-     * by : Hafizh Herdi
-     */
-    private void getUserCache() {
-        try {
-            LocalCacheHandler cacheUser = new LocalCacheHandler(this, TkpdState.CacheName.CACHE_USER);
-            TrackingUtils.eventLocaUserAttributes(SessionHandler.getLoginID(this), cacheUser.getString("user_name"), "");
-        } catch (Exception e) {
-            CommonUtils.dumper(TAG + " error connecting to GCM Service");
-            TrackingUtils.eventLogAnalytics(ParentIndexHome.class.getSimpleName(), e.getMessage());
-        }
     }
 
     private void setView() {
@@ -569,8 +538,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         MainApplication.setCurrentActivity(this);
         super.onResume();
 
-        sendNotifLocalyticsCallback();
-
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
     }
 
@@ -618,7 +585,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
 
             @Override
-            public void onSuccess(String path, int position) {
+            public void onSuccess(String path) {
                 ArrayList<String> imageUrls = new ArrayList<>();
                 imageUrls.add(path);
                 ProductAddActivity.start(ParentIndexHome.this, imageUrls);

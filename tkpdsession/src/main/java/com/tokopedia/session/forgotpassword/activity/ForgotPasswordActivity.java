@@ -127,4 +127,9 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
         intent.putExtra(INTENT_EXTRA_REMOVE_FOOTER,true);
         return intent;
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

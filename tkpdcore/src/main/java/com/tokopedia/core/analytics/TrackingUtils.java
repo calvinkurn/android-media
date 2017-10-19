@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
+import com.google.firebase.perf.metrics.Trace;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
@@ -522,52 +523,6 @@ public class TrackingUtils extends TrackingConfig {
         getAFEngine().sendTrackEvent(AFInAppEventType.CONTENT_VIEW, listViewEvent);
     }
 
-
-    public static void eventLocaNotificationCallback(Intent intent){
-        getLocaEngine().sendNotificationCallback(intent);
-    }
-
-    public static void eventLocaNotificationReceived(Bundle data){
-        getLocaEngine().sendReceiveNotification(data);
-    }
-
-    public static void eventLocaNotification(String eventName, Map<String, String> params){
-        eventLoca(eventName, params);
-        eventLocaInAppMessaging(eventName);
-    }
-
-    public static void eventLoca(String eventName){
-        getLocaEngine().tagEvent(eventName);
-    }
-
-    public static void eventLoca(String eventName, Map<String, String> params){
-        getLocaEngine().tagEvent(eventName, params);
-    }
-
-    static void eventLoca(String eventName, Map<String, String> params, long value){
-        getLocaEngine().tagEvent(eventName, params, value);
-    }
-
-    public static void eventLocaSetNotification(boolean notificationsDisabled){
-        getLocaEngine().setNotificationsDisabled(notificationsDisabled);
-    }
-
-    public static void eventLocaUserAttributes(String loginID, String username, String email){
-        getLocaEngine().tagUserAttributes(loginID, username, email);
-    }
-
-    public static void eventLocaInApp(String eventName){
-        getLocaEngine().triggerInAppMessage(eventName);
-    }
-
-    public static void eventLocaInAppMessaging(String eventName){
-        getLocaEngine().tageEventandInApp(eventName);
-    }
-
-    public static void eventLocaSearched(String keyword){
-        getLocaEngine().sendEventSearchProduct(keyword,"product",null,null);
-    }
-
     static void sendGTMEvent(Map<String, Object> dataLayers){
         getGTMEngine().sendEvent(dataLayers);
     }
@@ -602,6 +557,10 @@ public class TrackingUtils extends TrackingConfig {
 
     public static String getAdsId(){
         return getAFEngine().getAdsIdDirect();
+    }
+
+    public static Trace startTrace(String traceName){
+        return getFPMEngine(traceName).startTrace();
     }
 }
 

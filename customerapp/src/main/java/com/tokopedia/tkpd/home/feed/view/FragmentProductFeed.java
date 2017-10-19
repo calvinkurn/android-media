@@ -20,8 +20,6 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -48,7 +46,6 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
-import com.tokopedia.seller.myproduct.ManageProductSeller;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
@@ -87,6 +84,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         TopAdsItemClickListener {
 
     private static final String TAG = "FragmentProductFeed";
+    public static final int MAX_CHOOSEN_IMAGE = 10;
 
     @BindView(R.id.index_main_recycler_view)
     RecyclerView contentRecyclerView;
@@ -180,7 +178,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && getActivity() != null) {
             ScreenTracking.screen(getScreenName());
-            setLocalyticFlow();
             sendAppsFlyerData();
         }
         super.setUserVisibleHint(isVisibleToUser);
@@ -536,7 +533,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) getActivity().getApplication()).startInstopedActivityForResult(getContext(),
                     FragmentProductFeed.this,
-                    INSTAGRAM_SELECT_REQUEST_CODE, ManageProductSeller.MAX_INSTAGRAM_SELECT);
+                    INSTAGRAM_SELECT_REQUEST_CODE, MAX_CHOOSEN_IMAGE);
         }
     }
 
@@ -578,10 +575,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     private boolean isPositionOnRetryFeed(int position) {
         return adapter.isRetry(topAdsRecyclerAdapter.getPlacer().getItem(position).originalPos());
-    }
-
-    private void setLocalyticFlow() {
-        ScreenTracking.screenLoca(getString(R.string.home_product_feed));
     }
 
     private void sendAppsFlyerData() {
