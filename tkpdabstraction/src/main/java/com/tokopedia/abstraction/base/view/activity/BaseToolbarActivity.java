@@ -22,7 +22,7 @@ import com.tokopedia.abstraction.R;
  * Created by nathan on 7/11/17.
  */
 
-abstract class BaseToolbarActivity extends AppCompatActivity {
+abstract class BaseToolbarActivity extends BaseActivity {
 
     protected Toolbar toolbar;
 
