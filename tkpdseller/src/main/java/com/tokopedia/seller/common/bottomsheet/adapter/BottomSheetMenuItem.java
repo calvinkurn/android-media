@@ -55,10 +55,6 @@ public class BottomSheetMenuItem implements BottomSheetItem {
         }
     }
 
-    public int getmTintColor() {
-        return mTintColor;
-    }
-
     public Drawable getIcon() {
         return mIcon;
     }
