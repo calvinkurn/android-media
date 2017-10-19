@@ -285,7 +285,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
                 editAppealSolutionModel.solutionName.replace(
                         context.getResources().getString(R.string.string_return_value),
                         String.valueOf(editAppealSolutionModel.refundAmount)) :
-                editAppealSolutionModel.solutionName);
+                editAppealSolutionModel.getName());
     }
 
     @Override
