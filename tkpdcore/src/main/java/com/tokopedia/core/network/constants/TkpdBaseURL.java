@@ -826,14 +826,12 @@ public class TkpdBaseURL {
     public static class Payment {
         public static final String URL_BCA_ONE_CLICK = SCROOGE_DOMAIN;
         public static final String PATH_ONE_CLICK = "ws/oneclick";
-        public static final String PATH_ONE_CLICK_GET_USER_DATA = "oneclick/get";
-        public static final String PATH_ONE_CLICK_ADD_USER_DATA = "oneclick/add";
-        public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
-        public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
         public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
         public static final String PATH_CC_DELETE = "v2/ccvault/delete";
         public static final String PATH_GET_CANCEL_TRANSACTION_DIALOG = "get_payment_status";
         public static final String PATH_CANCEL_TRANSACTION = "cancel";
+        public static final String PATH_ZEUS_CHECK_WHITELIST = "zeus/whitelist/status";
+        public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
     }
 
     public static class FinTech {
