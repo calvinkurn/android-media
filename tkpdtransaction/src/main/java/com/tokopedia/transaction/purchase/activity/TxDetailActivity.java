@@ -532,5 +532,8 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         }
     }
 
-
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }
