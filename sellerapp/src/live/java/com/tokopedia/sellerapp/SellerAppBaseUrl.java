@@ -25,4 +25,5 @@ public class SellerAppBaseUrl {
     public static final String BASE_MOBILE_DOMAIN = "https://m.tokopedia.com/";
     public static final String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart/";
     public static final String BASE_PAYMENT_URL_DOMAIN = "https://pay.tokopedia.com";
+    public static final String BASE_SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
 }
