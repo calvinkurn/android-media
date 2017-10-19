@@ -29,4 +29,9 @@ dependencies {
     compile rootProject.ext.supportLibDependencies.appCompactV7
     compile rootProject.ext.miscDependencies.roundCornerProgressBar
     compile rootProject.ext.networkDependencies.glide
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.testDependencies.junit
 }
