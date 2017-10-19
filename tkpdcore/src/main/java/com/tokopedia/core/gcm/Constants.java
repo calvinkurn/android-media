@@ -107,6 +107,7 @@ public interface Constants {
         String RESCENTER = "tokopedia://resolution/{resolution_id}";
         String REFERRAL = "tokopedia://referral";
         String BROWSER = "tokopedia://browser";
+        String REGISTER = "tokopedia://registration";
 
         interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";

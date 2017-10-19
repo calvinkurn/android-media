@@ -141,6 +141,10 @@ public class Login extends BaseActivity implements SessionView
         return intent
                 .setData(uri.build());
     }
+    @DeepLink({Constants.Applinks.REGISTER})
+    public static Intent getCallingApplinkRegisterIntent(Context context, Bundle bundle) {
+        return getRegisterIntent(context);
+    }
 
     @NonNull
     public static Intent moveToCreateShop(Context context) {
