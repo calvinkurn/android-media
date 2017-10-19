@@ -187,4 +187,9 @@ public class InvoiceRendererActivity extends BasePresenterActivity<InvoiceRender
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

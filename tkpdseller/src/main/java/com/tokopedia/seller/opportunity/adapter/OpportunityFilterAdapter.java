@@ -142,10 +142,9 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
                     viewModel.isExpanded()) {
                 filterViewModel.getListChild().add(position + i + 1,
                         viewModel);
-                expandGroup(i+ 1, viewModel);
+                expandGroup(i + 1, viewModel);
                 position += viewModel.getListChild().size() - 1;
-            }
-            else
+            } else
                 filterViewModel.getListChild().add(position + i + 1,
                         viewModel);
         }
@@ -155,10 +154,14 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
     private void collapseGroup(int position) {
         filterViewModel.getListChild().get(position).setExpanded(false);
         for (int i = position + getAllOpenChild(position); i > position; i--) {
-            if (filterViewModel.getListChild().get(i).isExpanded()) {
-                filterViewModel.getListChild().get(i).setExpanded(false);
+            try {
+                if (filterViewModel.getListChild().get(i).isExpanded()) {
+                    filterViewModel.getListChild().get(i).setExpanded(false);
+                }
+                filterViewModel.getListChild().remove(i);
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
             }
-            filterViewModel.getListChild().remove(i);
         }
         notifyDataSetChanged();
 

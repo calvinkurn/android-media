@@ -14,7 +14,5 @@ public interface ProductInfoPresenter {
 
     void initialFragment(@NonNull Context context, Uri uri, Bundle bundle);
 
-    void setLocalyticFlow(@NonNull Context context);
-
     void processToShareProduct(Context context, @NonNull ShareData data);
 }
