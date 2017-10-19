@@ -1279,8 +1279,8 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="bar_security_question">Verifikasi Keamanan</string>
     <string name="title_security_question">Halo, User</string>
     <string name="content_security_question">Kami telah mengirimkan Kode Verifikasi ke nomor ponsel/email kamu.</string>
-    <string name="content_security_question_phone">Untuk memastikan akun ini benar milik Anda,\n
-        kami akan mengirimkan kode verifikasi\nke nomor
+    <string name="content_security_question_phone">Untuk memastikan akun ini benar milik Anda,&lt;br /&gt;
+        kami akan mengirimkan kode verifikasi&lt;br /&gt;ke nomor
     </string>
     <string name="content_security_question_email">Untuk memastikan akun ini benar milik Anda,\n
         kami akan mengirimkan kode verifikasi\nke email anda.</string>
@@ -1941,7 +1941,8 @@ di Tokopedia Sekarang!</string>
     <string name="error_attachment">Mohon tambahkan lampiran.</string>
     <string name="action_send_otp_with_call">Atau kirim Kode Verifikasi melalui telepon</string>
     <string name="action_send_otp_with_call_2">Atau lewat telepon</string>
-    <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silakan Klik disini</string>
+    <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silakan klik
+        disini</string>
     <string name="title_resend_otp">Kirim ulang Kode Verifikasi</string>
     <string name="truecaller_verif">Lanjutkan dengan Truecaller</string>
 

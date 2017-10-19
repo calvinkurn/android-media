@@ -393,7 +393,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 //        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true")
 //                && !verifyTrueCaller.isShown())
 //            presenter.doRequestOtp();
-        titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
+        titleOTP.setText("Hai " + SessionHandler.getTempLoginName(getActivity()) + ",");
 
 
         Spannable spannable = new SpannableString(getString(R.string.action_send_otp_with_call_2));
@@ -406,7 +406,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
                               @Override
                               public void updateDrawState(TextPaint ds) {
-                                  ds.setUnderlineText(true);
                                   ds.setColor(getResources().getColor(R.color.tkpd_main_green));
                               }
                           }
@@ -426,11 +425,10 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
                                @Override
                                public void updateDrawState(TextPaint ds) {
-                                   ds.setUnderlineText(true);
                                    ds.setColor(getResources().getColor(R.color.tkpd_main_green));
                                }
                            }
-                , getString(R.string.content_change_number).indexOf("Klik disini")
+                , getString(R.string.content_change_number).indexOf("klik disini")
                 , getString(R.string.content_change_number).length()
                 , 0);
 
@@ -448,8 +446,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 String phone = SessionHandler.getTempPhoneNumber(getActivity());
                 phone = phone.substring(phone.length() - 4);
                 String contentSecurity = String.format
-                        (getResources().getString(R.string.content_security_question_phone) + " " +
-                                "<b>****-****- %s </b>", phone);
+                        ((getResources().getString(R.string.content_security_question_phone) + " " +
+                                "<b>****-****- %s </b>"), phone);
                 titleSecurity.setText(MethodChecker.fromHtml(contentSecurity));
                 changeNumber.setVisibility(View.VISIBLE);
                 vSendOtpCall.setVisibility(View.VISIBLE);
