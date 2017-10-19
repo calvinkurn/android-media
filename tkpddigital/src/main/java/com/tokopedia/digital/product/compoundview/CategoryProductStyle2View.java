@@ -196,19 +196,19 @@ public class CategoryProductStyle2View extends
         }
     }
 
-    private void renderClientNumberInputForm(Operator data) {
+    private void renderClientNumberInputForm(Operator operator) {
         clearHolder(holderClientNumber);
         clearHolder(holderChooserProduct);
         clearHolder(holderAdditionalInfoProduct);
         clearHolder(holderPriceInfoProduct);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInput());
-        clientNumberInputView.renderData(data.getClientNumberList().get(0));
+        clientNumberInputView.renderData(operator.getClientNumberList().get(0));
         holderClientNumber.addView(clientNumberInputView);
         clientNumberInputView.resetInputTyped();
 
         if (hasLastOrderHistoryData()) {
             if (historyClientNumber.getLastOrderClientNumber().getOperatorId().equalsIgnoreCase(
-                    data.getOperatorId())) {
+                    operator.getOperatorId())) {
                 if (!TextUtils.isEmpty(historyClientNumber
                         .getLastOrderClientNumber().getClientNumber())) {
                     clientNumberInputView.setText(
@@ -219,7 +219,7 @@ public class CategoryProductStyle2View extends
         }
 
         if (hasLastOrderHistoryData()) {
-            if (!data.getClientNumberList().isEmpty()) {
+            if (!operator.getClientNumberList().isEmpty()) {
                 clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
             }
         }
@@ -323,7 +323,8 @@ public class CategoryProductStyle2View extends
 
             @Override
             public void onClientNumberCleared() {
-                actionListener.onClientNumberCleared(data.getClientNumberList().get(0), historyClientNumber.getRecentClientNumberList());
+                actionListener.onClientNumberCleared(operatorSelected.getClientNumberList().get(0),
+                        historyClientNumber.getRecentClientNumberList());
             }
         };
     }

@@ -191,18 +191,18 @@ public class CategoryProductStyle3View extends
         }
     }
 
-    private void renderClientNumberInputForm(Operator data) {
+    private void renderClientNumberInputForm(Operator operator) {
         clearHolder(holderClientNumber);
         clearHolder(holderChooserProduct);
         clearHolder(holderAdditionalInfoProduct);
         clearHolder(holderPriceInfoProduct);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInputView());
-        clientNumberInputView.renderData(data.getClientNumberList().get(0));
+        clientNumberInputView.renderData(operator.getClientNumberList().get(0));
         holderClientNumber.addView(clientNumberInputView);
         clientNumberInputView.resetInputTyped();
 
         if (hasLastOrderHistoryData()) {
-            if (operatorSelected != null && data.getOperatorId().equalsIgnoreCase(
+            if (operatorSelected != null && operator.getOperatorId().equalsIgnoreCase(
                     historyClientNumber.getLastOrderClientNumber().getOperatorId())
                     && !historyClientNumber.getLastOrderClientNumber().getClientNumber().isEmpty()
                     ) {
@@ -213,7 +213,7 @@ public class CategoryProductStyle3View extends
         }
 
         if (hasLastOrderHistoryData()) {
-            if (!data.getClientNumberList().isEmpty()) {
+            if (!operator.getClientNumberList().isEmpty()) {
                 clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
             }
         }
@@ -260,10 +260,10 @@ public class CategoryProductStyle3View extends
     private BaseDigitalChooserView.ActionListener<Operator> getActionListenerOperatorChooser() {
         return new BaseDigitalChooserView.ActionListener<Operator>() {
             @Override
-            public void onUpdateDataDigitalChooserSelectedRendered(Operator data) {
-                operatorSelected = data;
-                if (!data.getClientNumberList().isEmpty()) {
-                    renderClientNumberInputForm(data);
+            public void onUpdateDataDigitalChooserSelectedRendered(Operator operator) {
+                operatorSelected = operator;
+                if (!operator.getClientNumberList().isEmpty()) {
+                    renderClientNumberInputForm(operator);
                 } else {
                     renderProductChooserOptions();
                 }
@@ -304,7 +304,6 @@ public class CategoryProductStyle3View extends
                 } else {
                     renderProductChooserOptions();
                 }
-
             }
 
             @Override
@@ -325,7 +324,8 @@ public class CategoryProductStyle3View extends
 
             @Override
             public void onClientNumberCleared() {
-                actionListener.onClientNumberCleared(data.getClientNumberList().get(0), historyClientNumber.getRecentClientNumberList());
+                actionListener.onClientNumberCleared(operatorSelected.getClientNumberList().get(0),
+                        historyClientNumber.getRecentClientNumberList());
             }
         };
     }

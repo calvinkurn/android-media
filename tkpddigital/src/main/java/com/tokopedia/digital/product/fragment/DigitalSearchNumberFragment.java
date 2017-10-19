@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.view.View;
@@ -121,6 +122,10 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
     @Override
     protected void initView(View view) {
         setClientNumberInputType();
+
+        if (TextUtils.isEmpty(number)) {
+            btnClearNumber.setVisibility(View.GONE);
+        }
 
         btnClearNumber.setOnClickListener(new View.OnClickListener() {
             @Override
