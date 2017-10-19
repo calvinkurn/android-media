@@ -640,7 +640,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 } else if (itemId == R.id.change_price_product_menu) {
                     showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencyId());
                 } else if (itemId == R.id.share_product_menu) {
-                    UnifyTracking.eventProductManageOverflowMenu(item.getTitle().toString());
                     goToShareProduct(productManageViewModel);
                 } else if (itemId == R.id.set_cashback_product_menu) {
                     if (goldMerchant) {

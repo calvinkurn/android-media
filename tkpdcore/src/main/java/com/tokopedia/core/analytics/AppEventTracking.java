@@ -134,6 +134,7 @@ public interface AppEventTracking {
         String CLICK_CREATE_SHOP = "clickCreateShop";
         String CLICK_APP_SHARE_REFERRAL = "clickReferral";
         String HOME_DASHBOARD_CLICK_SELLER = "homeDashboardClicked";
+        String EVENT_MANAGE_PRODUCT = "eventManageProduct";
     }
 
     interface Category {
