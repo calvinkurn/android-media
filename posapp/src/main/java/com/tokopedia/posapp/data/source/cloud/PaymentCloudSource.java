@@ -28,16 +28,13 @@ public class PaymentCloudSource {
     private String PARAM_SIGNATURE = "signature";
 
     private GatewayPaymentApi gatewayPaymentApi;
-    private ScroogeApi scroogeApi;
     private PaymentStatusMapper paymentStatusMapper;
     private CreateOrderMapper createOrderMapper;
 
     public PaymentCloudSource(GatewayPaymentApi gatewayPaymentApi,
-                              ScroogeApi scroogeApi,
                               PaymentStatusMapper paymentStatusMapper,
                               CreateOrderMapper createOrderMapper) {
         this.gatewayPaymentApi = gatewayPaymentApi;
-        this.scroogeApi = scroogeApi;
         this.paymentStatusMapper = paymentStatusMapper;
         this.createOrderMapper = createOrderMapper;
     }
@@ -52,7 +49,7 @@ public class PaymentCloudSource {
                 AuthUtil.calculateHmacSHA1(signatureInput, PosConstants.KEY_PAYMENT)
         );
 
-        return scroogeApi.getPaymentStatus(requestParams.getParamsAllValueInString())
+        return gatewayPaymentApi.getPaymentStatus(requestParams.getParamsAllValueInString())
                 .map(paymentStatusMapper);
     }
 

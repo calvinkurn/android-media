@@ -32,11 +32,6 @@ public class PaymentModule {
     }
 
     @Provides
-    ScroogeApi provideScroogeApi(@ScroogeNoAuth Retrofit retrofit) {
-        return retrofit.create(ScroogeApi.class);
-    }
-
-    @Provides
     CreateOrderMapper provideCreateOrderMapper() {
         return new CreateOrderMapper();
     }
@@ -48,10 +43,9 @@ public class PaymentModule {
 
     @Provides
     PaymentFactory providePaymentFactory(GatewayPaymentApi gatewayPaymentApi,
-                                         ScroogeApi scroogeApi,
                                          PaymentStatusMapper paymentStatusmapper,
                                          CreateOrderMapper createOrderMapper) {
-        return new PaymentFactory(gatewayPaymentApi, scroogeApi, paymentStatusmapper, createOrderMapper);
+        return new PaymentFactory(gatewayPaymentApi, paymentStatusmapper, createOrderMapper);
     }
 
     @Provides

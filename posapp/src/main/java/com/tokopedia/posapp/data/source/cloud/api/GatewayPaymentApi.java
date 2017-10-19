@@ -24,6 +24,6 @@ public interface GatewayPaymentApi {
     @Headers(CONTENT_TYPE_APPLICATION_JSON)
     Observable<Response<TkpdResponse>> createOrder(@Body String json);
 
-    @GET(TkpdBaseURL.Payment.PATH_PAYMENT_STATUS)
-    Observable<Response<String>> getPaymentStatus(@QueryMap Map<String, String> param);
+    @GET(TkpdBaseURL.Pos.GET_PAYMENT_STATUS)
+    Observable<Response<TkpdResponse>> getPaymentStatus(@QueryMap Map<String, String> param);
 }
