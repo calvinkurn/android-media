@@ -33,6 +33,7 @@ import com.tokopedia.core.network.retrofit.response.TextErrorObject;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent;
@@ -126,22 +127,10 @@ public class TopAdsKeywordAddFragment extends BaseDaggerFragment
     protected void initInjector() {
         DaggerTopAdsKeywordAddComponent.builder()
                 .topAdsKeywordAddModule(new TopAdsKeywordAddModule())
-                .topAdsComponent(getTopAdsComponent())
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         topAdsKeywordAddPresenter.attachView(this);
-    }
-
-    protected TopAdsComponent getTopAdsComponent(){
-        if(getActivity() != null){
-            if(getActivity().getApplication() instanceof TopAdsModuleRouter){
-                return ((TopAdsModuleRouter)getActivity().getApplication()).getTopAdsComponent();
-            }else{
-                return null;
-            }
-        }else {
-            return null;
-        }
     }
 
     @Nullable

@@ -17,6 +17,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -51,22 +52,10 @@ public class TopAdsEditGroupNameFragment extends BasePresenterFragment implement
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .topAdsComponent(getTopAdsComponent())
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         topAdsDetailEditGroupPresenter.attachView(this);
-    }
-
-    protected TopAdsComponent getTopAdsComponent(){
-        if(getActivity() != null){
-            if(getActivity().getApplication() instanceof TopAdsModuleRouter){
-                return ((TopAdsModuleRouter)getActivity().getApplication()).getTopAdsComponent();
-            }else{
-                return null;
-            }
-        }else {
-            return null;
-        }
     }
 
     public static Fragment createInstance(String name, String adId) {

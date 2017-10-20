@@ -66,18 +66,6 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
         goToNextPage();
     }
 
-    protected TopAdsComponent getTopAdsComponent(){
-        if(getActivity() != null){
-            if(getActivity().getApplication() instanceof TopAdsModuleRouter){
-                return ((TopAdsModuleRouter)getActivity().getApplication()).getTopAdsComponent();
-            }else{
-                return null;
-            }
-        }else {
-            return null;
-        }
-    }
-
     protected abstract void initiateStepperModel();
 
     protected abstract void goToNextPage();

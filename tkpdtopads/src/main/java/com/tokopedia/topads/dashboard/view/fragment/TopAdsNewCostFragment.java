@@ -61,18 +61,6 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
     protected abstract V initiateDetailAd();
 
-    protected TopAdsComponent getTopAdsComponent(){
-        if(getActivity() != null){
-            if(getActivity().getApplication() instanceof TopAdsModuleRouter){
-                return ((TopAdsModuleRouter)getActivity().getApplication()).getTopAdsComponent();
-            }else{
-                return null;
-            }
-        }else {
-            return null;
-        }
-    }
-
     @Override
     protected void initView(View view) {
         super.initView(view);
