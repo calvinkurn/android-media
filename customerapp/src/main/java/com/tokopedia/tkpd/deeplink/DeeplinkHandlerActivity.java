@@ -14,6 +14,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
@@ -90,7 +91,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
 
 
     @DeepLink(Constants.Applinks.SellerApp.SELLER_APP_HOME)
-    public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {
+    public static Intent getCallingIntentSellerAppHome(Context context, Bundle extras) {
         Intent launchIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
 
@@ -100,5 +101,15 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             );
         }
         return launchIntent;
+    }
+
+    @DeepLink(Constants.Applinks.BROWSER)
+    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
+        String webUrl = extras.getString(
+                Constants.ARG_NOTIFICATION_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
+        );
+        Intent destination = new Intent(Intent.ACTION_VIEW);
+        destination.setData(Uri.parse(webUrl));
+        return destination;
     }
 }

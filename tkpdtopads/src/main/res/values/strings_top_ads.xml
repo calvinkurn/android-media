@@ -34,8 +34,8 @@
     <string name="menu_top_ads_add_promo_group">Tambah Grup Promo</string>
     <string name="menu_top_ads_add_promo_product">Tambah Promo Produk</string>
 
-    <string name="top_ads_delete_product_alert">Yakin menghapus produk ini?</string>
-    <string name="top_ads_delete_group_alert">Yakin menghapus grup ini?</string>
+    <string name="top_ads_delete_product_alert">Promo produk akan dihapus dari daftar promo TopAds Anda.</string>
+    <string name="top_ads_delete_group_alert">Semua promo produk dan kata kunci dalam grup ini akan dihapus.</string>
 
     <string name="action_filter_date">Filter Tanggal</string>
     <string name="label_manage_group">Atur Grup</string>
@@ -46,8 +46,8 @@
     <string name="title_group_ad_detail">Detil Promo Grup</string>
     <string name="title_group_ad_edit">Ubah Promo Grup</string>
     <string name="title_product_ad_edit">Ubah Promo Produk</string>
-    <string name="title_delete_promo">Hapus promo</string>
-    <string name="title_delete_group">Hapus grup</string>
+    <string name="title_delete_promo">Hapus Promo?</string>
+    <string name="title_delete_group">Hapus Grup?</string>
     <string name="title_edit_shop_ad">Ubah Promo Toko</string>
 
     <!-- Top Ads ad list -->
@@ -213,10 +213,11 @@
     <string name="top_ads_keyword_title_keyword_edit_keyword">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_cost_per_click">Biaya Per Klik</string>
+    <string name="top_ads_keyword_cost_per_click_desc">Kosongkan biaya per klik jika ingin disesuaikan dengan biaya grup sebesar Rp %1$d</string>
 
     <string name="top_ads_keyword_label_type">Tipe Kata Kunci</string>
-    <string name="top_ads_keyword_title_delete">Hapus kata kunci</string>
-    <string name="top_ads_keyword_confirmation_delete">Yakin menghapus kata kunci ini?</string>
+    <string name="top_ads_keyword_title_delete">Hapus Kata Kunci?</string>
+    <string name="top_ads_keyword_confirmation_delete">Kata kunci akan dihapus dari daftar promo TopAds Anda.</string>
 
     <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
     <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>

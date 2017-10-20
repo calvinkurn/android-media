@@ -1,13 +1,9 @@
 package com.tokopedia.topads.dashboard.utils;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
-import android.view.Window;
 
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.myproduct.utils.CurrencyFormatter;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 
 /**

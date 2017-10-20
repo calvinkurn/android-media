@@ -42,6 +42,6 @@
         <Button
             android:id="@+id/button_submit"
             style="@style/Button.Submit.Green"
-            android:text="@string/label_top_ads_choose_credit" />
+            android:text="@string/apply_text_description" />
     </LinearLayout>
 </LinearLayout>

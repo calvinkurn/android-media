@@ -61,8 +61,6 @@ class BrandContainer extends Component {
       canFetch = false
     }
 
-    // console.log(this.props)
-
     const bannerListProps = {
       status: this.props.brands.status,
       brands: totalItems,

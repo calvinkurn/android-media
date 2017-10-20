@@ -298,17 +298,8 @@ public class Login extends BaseActivity implements SessionView
 
     }
 
+
     private void setToolbarColor() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View view = getWindow().getDecorView();
-            int flags = view.getSystemUiVisibility();
-
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
-
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.white)));
@@ -532,7 +523,6 @@ public class Login extends BaseActivity implements SessionView
                 }
                 break;
         }
-        session.sendNotifLocalyticsCallback(getIntent());
     }
 
     @Override
@@ -728,13 +718,13 @@ public class Login extends BaseActivity implements SessionView
             case OTPService.ACTION_REQUEST_OTP_WITH_CALL:
                 if (fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_BUNDLE) != null) {
                     session.sendGTMEvent(resultData, type);
-                    session.sendLocalyticsEvent(resultData, type);
+                    session.sendAnalyticsEvent(resultData, type);
                     ((FragmentSecurityQuestion) fragment).onSuccessRequestOTPWithCall(resultData.getString(OTPService.EXTRA_BUNDLE));
                 }
             case OTPService.ACTION_REQUEST_OTP:
                 if (fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_BUNDLE) != null) {
                     session.sendGTMEvent(resultData, type);
-                    session.sendLocalyticsEvent(resultData, type);
+                    session.sendAnalyticsEvent(resultData, type);
                     ((FragmentSecurityQuestion) fragment).onSuccessRequestOTP(resultData.getString(OTPService.EXTRA_BUNDLE));
                 }
             case DownloadService.LOGIN_EMAIL:
@@ -754,7 +744,7 @@ public class Login extends BaseActivity implements SessionView
                         moveToRegisterPassPhone(model, null, resultData);
                     } else {
                         session.sendGTMEvent(resultData, type);
-                        session.sendLocalyticsEvent(resultData, type);
+                        session.sendAnalyticsEvent(resultData, type);
                         ((BaseView) fragment).setData(type, resultData);
                         UserAuthenticationAnalytics.sendAnalytics(resultData);
                     }
@@ -934,7 +924,6 @@ public class Login extends BaseActivity implements SessionView
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        session.sendNotifLocalyticsCallback(getIntent());
     }
 
     @Override

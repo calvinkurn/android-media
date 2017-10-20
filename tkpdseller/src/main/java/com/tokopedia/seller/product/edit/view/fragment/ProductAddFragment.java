@@ -32,6 +32,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
+import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -43,8 +44,9 @@ import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
 import com.tokopedia.seller.product.edit.view.activity.YoutubeAddVideoActivity;
+import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
 import com.tokopedia.seller.product.edit.view.dialog.ImageDescriptionDialog;
-import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
+import com.tokopedia.seller.product.edit.view.dialog.ImageEditProductDialogFragment;
 import com.tokopedia.seller.product.edit.view.holder.ProductAdditionalInfoViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductDetailViewHolder;
 import com.tokopedia.seller.product.edit.view.holder.ProductImageViewHolder;
@@ -80,6 +82,8 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
 
 //import com.tokopedia.seller.product.edit.di.component.DaggerProductAddComponent;
 
@@ -288,6 +292,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
                 break;
             case ImageGallery.TOKOPEDIA_GALLERY:
+                productImageViewHolder.onActivityResult(requestCode, resultCode, data);
+                break;
+            case INSTAGRAM_SELECT_REQUEST_CODE:
                 productImageViewHolder.onActivityResult(requestCode, resultCode, data);
                 break;
             case ImageEditorActivity.REQUEST_CODE:
@@ -535,19 +542,52 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onAddImagePickerClicked(int imagePosition) {
-        ProductAddFragmentPermissionsDispatcher.goToGalleryWithCheck(this, imagePosition);
+    public void onAddImagePickerClicked(final int imagePosition) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        ImageAddDialogFragment dialogFragment = ImageAddDialogFragment.newInstance(imagePosition);
+        dialogFragment.show(fm, ImageAddDialogFragment.FRAGMENT_TAG);
+        dialogFragment.setOnImageAddListener(new ImageAddDialogFragment.OnImageAddListener() {
+            @Override
+            public void clickAddProductFromCamera(int position) {
+                ProductAddFragmentPermissionsDispatcher.goToCameraWithCheck(ProductAddFragment.this, imagePosition);
+            }
+
+            @Override
+            public void clickAddProductFromGallery(int position) {
+                ProductAddFragmentPermissionsDispatcher.goToGalleryWithCheck(ProductAddFragment.this, imagePosition);
+            }
+
+            @Override
+            public void clickAddProductFromInstagram(int position) {
+                int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
+                InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductAddFragment.this,
+                        INSTAGRAM_SELECT_REQUEST_CODE, remainingEmptySlot);
+            }
+        });
     }
 
     @Override
     public void onImagePickerItemClicked(int position, boolean isPrimary, boolean allowDelete) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        DialogFragment dialogFragment = ImageEditDialogFragment.newInstance(position, isPrimary,allowDelete);
-        dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
-        ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
+        DialogFragment dialogFragment = ImageEditProductDialogFragment.newInstance(position, isPrimary,allowDelete);
+        dialogFragment.show(fm, ImageEditProductDialogFragment.FRAGMENT_TAG);
+        ((ImageEditProductDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditProductDialogFragment.OnImageEditListener() {
+
             @Override
-            public void clickEditImagePath(int position) {
+            public void clickEditImagePathFromCamera(int position) {
+                GalleryCropActivity.moveToImageGalleryCamera(getActivity(), ProductAddFragment.this, position,
+                        true, 1,true);
+            }
+
+            @Override
+            public void clickEditImagePathFromGallery(int position) {
                 GalleryCropActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
+            }
+
+            @Override
+            public void clickEditImagePathFromInstagram(int position) {
+                InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductAddFragment.this,
+                        INSTAGRAM_SELECT_REQUEST_CODE, 1);
             }
 
             @Override
@@ -632,6 +672,15 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     public void goToGallery(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
         GalleryCropActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
+    }
+
+    @TargetApi(16)
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void goToCamera(int imagePosition) {
+        int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
+        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), this, imagePosition,
+                true, remainingEmptySlot,true);
+
     }
 
     @Override

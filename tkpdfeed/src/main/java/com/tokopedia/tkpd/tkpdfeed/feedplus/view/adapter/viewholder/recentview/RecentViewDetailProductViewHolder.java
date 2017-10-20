@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.recentview;
 
 import android.support.annotation.LayoutRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
@@ -33,6 +35,7 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
     private RecyclerView labels;
     public TextView shopName;
     public TextView shopLocation;
+    public ImageView iconLocation;
 
     public ImageView freeReturn;
     public ImageView goldMerchant;
@@ -57,6 +60,7 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
         officialStore = (ImageView) itemView.findViewById(R.id.official_store);
         shopName = (TextView) itemView.findViewById(R.id.shop_name);
         shopLocation = (TextView) itemView.findViewById(R.id.shop_location);
+        iconLocation = (ImageView)  itemView.findViewById(R.id.ic_location);
         this.viewListener = viewListener;
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext
@@ -122,7 +126,15 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
         }
 
         shopName.setText(MethodChecker.fromHtml(element.getShopName()));
-        shopLocation.setText(element.getShopLocation());
+
+        if (element.isOfficial()) {
+            iconLocation.setImageDrawable(ContextCompat.getDrawable(MainApplication.getAppContext(),com.tokopedia.core.R.drawable.ic_icon_authorize_grey));
+            shopLocation.setText(MainApplication.getAppContext().getResources().getString(R.string.authorized)
+            );
+        } else {
+            shopLocation.setText(element.getShopLocation());
+            iconLocation.setImageDrawable(ContextCompat.getDrawable(MainApplication.getAppContext(),com.tokopedia.core.R.drawable.ic_icon_location_grey));
+        }
 
         mainView.setOnClickListener(new View.OnClickListener() {
             @Override

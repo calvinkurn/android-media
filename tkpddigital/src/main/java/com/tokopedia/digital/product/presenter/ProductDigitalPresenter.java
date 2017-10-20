@@ -362,7 +362,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     private void renderCheckPulsaBalanceDataToView() {
-        view.renderCheckPulsaBalanceData(null);
+        view.renderCheckPulsaBalanceData();
     }
 
     @Override

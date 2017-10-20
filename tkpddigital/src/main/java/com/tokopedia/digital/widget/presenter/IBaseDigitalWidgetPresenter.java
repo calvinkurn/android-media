@@ -1,7 +1,7 @@
 package com.tokopedia.digital.widget.presenter;
 
-import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.product.Product;
 
 /**
  * Created by nabillasabbaha on 8/8/17.
