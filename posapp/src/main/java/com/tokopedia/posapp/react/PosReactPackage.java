@@ -5,7 +5,6 @@ import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.tokopedia.posapp.react.nativemodules.PaymentRNModule;
 import com.tokopedia.posapp.react.nativemodules.PosCacheRNModule;
 import com.tokopedia.posapp.react.nativemodules.ProductDiscoveryRNModule;
 import com.tokopedia.posapp.react.nativemodules.SessionRNModule;
@@ -25,7 +24,6 @@ public class PosReactPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new PosCacheRNModule(reactContext));
         modules.add(new SessionRNModule(reactContext));
-        modules.add(new PaymentRNModule(reactContext));
         modules.add(new ProductDiscoveryRNModule(reactContext));
         modules.add(new UtilRNModule(reactContext));
         return modules;

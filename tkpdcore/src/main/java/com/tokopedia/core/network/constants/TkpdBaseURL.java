@@ -1,7 +1,5 @@
 package com.tokopedia.core.network.constants;
 
-import okhttp3.HttpUrl;
-
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
@@ -120,7 +118,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_HELPFUL_REVIEW = "get_helpful_review.pl";
         public static final String PATH_GET_REPORT_PRODUCT_TYPE = "get_product_report_type.pl";
 
-        public static final String MOST_HELPFUL_REVIEW =  "reputationapp/review/api/v1/mosthelpful";
+        public static final String MOST_HELPFUL_REVIEW = "reputationapp/review/api/v1/mosthelpful";
     }
 
     public static class User {
@@ -853,6 +851,7 @@ public class TkpdBaseURL {
         public static final String PATH_MITRA_TOPPERS_WEBVIEW = "mitra-toppers";
 
     }
+
     public class TkpdCart {
         public static final String CHECK_VOUCHER = "v1/voucher/verify";
         public static final String CHECKOUT_ORDER = "v1/cart/order";

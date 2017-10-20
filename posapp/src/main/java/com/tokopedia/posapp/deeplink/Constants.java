@@ -13,5 +13,6 @@ public interface Constants {
         String PAYMENT_SCAN_CC = "posapp://payment/scan";
         String PAYMENT_PROCESSING = "posapp://payment/process";
         String OTP = "posapp://payment/otp";
+        String CART = "posapp://cart";
     }
 }
