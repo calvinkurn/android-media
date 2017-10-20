@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -26,7 +27,7 @@ public class TopAdsEditCostExistingGroupFragment extends TopAdsEditCostFragment<
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);

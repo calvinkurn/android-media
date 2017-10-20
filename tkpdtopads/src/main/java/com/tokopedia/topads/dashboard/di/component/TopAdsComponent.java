@@ -10,11 +10,12 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
+import com.tokopedia.topads.common.di.module.TopAdsNetworkModule;
+import com.tokopedia.topads.dashboard.di.scope.TopAdsQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 
@@ -27,7 +28,7 @@ import retrofit2.Retrofit;
  */
 
 @TopAdsScope
-@Component(modules = TopAdsModule.class, dependencies = AppComponent.class)
+@Component(modules = {TopAdsModule.class, TopAdsNetworkModule.class}, dependencies = AppComponent.class)
 public interface TopAdsComponent {
 
     @ApplicationContext

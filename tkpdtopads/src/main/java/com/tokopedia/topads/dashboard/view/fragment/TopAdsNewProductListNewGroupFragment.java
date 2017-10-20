@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductListStepperModel;
@@ -18,7 +19,7 @@ public class TopAdsNewProductListNewGroupFragment extends TopAdsNewProductListFr
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);

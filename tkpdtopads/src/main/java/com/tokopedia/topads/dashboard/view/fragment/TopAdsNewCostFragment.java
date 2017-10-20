@@ -18,6 +18,8 @@ import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
+import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.topads.dashboard.view.widget.PrefixEditText;

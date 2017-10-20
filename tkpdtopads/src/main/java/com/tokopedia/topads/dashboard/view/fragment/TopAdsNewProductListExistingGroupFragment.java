@@ -8,6 +8,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
@@ -27,7 +28,7 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);

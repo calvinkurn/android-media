@@ -571,7 +571,7 @@ public abstract class SellerRouterApplication extends MainApplication
         activity.startActivity(intent);
     }
 
-    @Override
+//    @Override
     public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
         if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
                 || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {

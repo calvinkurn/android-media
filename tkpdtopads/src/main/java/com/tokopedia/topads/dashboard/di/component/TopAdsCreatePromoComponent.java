@@ -25,7 +25,7 @@ import dagger.Component;
  */
 
 @TopAdsDashboardScope
-@Component(modules = TopAdsCreatePromoModule.class, dependencies = AppComponent.class)
+@Component(modules = TopAdsCreatePromoModule.class, dependencies = TopAdsComponent.class)
 public interface TopAdsCreatePromoComponent {
     void inject(TopAdsNewScheduleNewGroupFragment topAdsNewScheduleFragment);
 

@@ -9,6 +9,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -37,7 +38,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         topAdsDetailNewProductPresenter.attachView(this);

@@ -22,8 +22,11 @@ import com.tokopedia.topads.R;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
@@ -281,7 +284,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     protected void initInjector() {
         DaggerTopAdsKeywordNewChooseGroupComponent.builder()
                 .topAdsKeywordNewChooseGroupModule(new TopAdsKeywordNewChooseGroupModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         topAdsKeywordNewChooseGroupPresenter.attachView(this);

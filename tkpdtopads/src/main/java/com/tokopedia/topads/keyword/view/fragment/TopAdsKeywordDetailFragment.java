@@ -53,7 +53,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDetailStatisticFragment<T
     protected void initInjector() {
         DaggerTopAdsKeywordDetailComponent
                 .builder()
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(getTopAdsComponent())
                 .topAdsKeywordDetailModule(new TopAdsKeywordDetailModule())
                 .build()
                 .inject(this);
