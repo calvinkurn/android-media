@@ -536,8 +536,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void clearContentRendered() {
-        pbMainLoading.setVisibility(View.GONE);
-        mainHolderContainer.setVisibility(View.GONE);
+        if (pbMainLoading != null) {
+            pbMainLoading.setVisibility(View.GONE);
+        }
+        if (mainHolderContainer != null) {
+            mainHolderContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override
