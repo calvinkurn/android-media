@@ -70,7 +70,7 @@ public class InstopedSellerCropperActivity extends InstopedSellerActivity {
     private void finishWithSingleImage(String imageUrl){
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add(imageUrl);
-        ImageEditorActivity.start(this,arrayList, null, true);
+        ImageEditorActivity.start(this,arrayList, true);
     }
 
     @Override

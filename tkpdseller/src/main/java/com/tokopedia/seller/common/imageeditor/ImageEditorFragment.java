@@ -95,10 +95,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.main_action_crop) {
             // no need to crop if the rect is same and in local tkpd already
-            if (mCropImageView.getRotatedDegrees() == 0 &&
-                    (mCropImageView.getCropRect() == null ||
-                    mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect())) &&
-                    FileUtils.isInTkpdCache(new File(localPath))) {
+            if (checkIfSameWithPrevImage()) {
                 onImageEditorFragmentListener.onSuccessCrop(localPath);
             } else {
                 File file = FileUtils.getTkpdImageCacheFile(FileUtils.generateUniqueFileName());
@@ -112,6 +109,13 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected boolean checkIfSameWithPrevImage(){
+        return mCropImageView.getRotatedDegrees() == 0 &&
+                (mCropImageView.getCropRect() == null ||
+                        mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect())) &&
+                FileUtils.isInTkpdCache(new File(localPath));
     }
 
     @Override
