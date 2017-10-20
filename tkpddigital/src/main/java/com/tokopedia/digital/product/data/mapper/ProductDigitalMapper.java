@@ -270,7 +270,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 .clientNumber(lastOrderData.getAttributes().getClientNumber())
                 .categoryId(lastOrderData.getAttributes().getCategoryId())
                 .operatorId(lastOrderData.getAttributes().getOperatorId())
-                .productId(lastOrderData.getAttributes().getProductId())
+                .lastProduct(lastOrderData.getAttributes().getProductId())
                 .build();
     }
 

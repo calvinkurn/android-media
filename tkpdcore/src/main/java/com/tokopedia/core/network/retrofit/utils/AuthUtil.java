@@ -337,7 +337,6 @@ public class AuthUtil {
         return params;
     }
 
-
     public static TKPDMapParam<String, String> generateParamsNetwork(String userId, String deviceId, TKPDMapParam<String, String> params) {
         String hash = md5(userId + "~" + deviceId);
         params.put(PARAM_USER_ID, userId);
@@ -372,7 +371,7 @@ public class AuthUtil {
         params.put(PARAM_HASH, hash);
         params.put(PARAM_OS_TYPE, "1");
         params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-        //      params.put(PARAM_X_TKPD_USER_ID, userId);
+//        params.put(PARAM_X_TKPD_USER_ID, userId);
         return params;
     }
 
