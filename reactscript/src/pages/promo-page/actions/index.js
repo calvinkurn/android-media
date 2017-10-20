@@ -27,9 +27,9 @@ get_Applink = () => {
     let applink;
     return NavigationModule.getFlavor()
         .then(res => {
-            if (res === 'staging'){
+            if (res === 'live'){
                 applink = BASE_API_CATEGORIES.production
-            } else if (res === 'live'){
+            } else if (res === 'staging'){
                 applink = BASE_API_CATEGORIES.staging
             }
             return applink
@@ -55,9 +55,9 @@ getEnv = () => {
     let app_env;
     return NavigationModule.getFlavor()
         .then(res => {
-            if (res === 'staging'){
+            if (res === 'live'){
                 app_env = BASE_API_URL.mojito_prod
-            } else if (res === 'live'){
+            } else if (res === 'staging'){
                 app_env = BASE_API_URL.mojito_staging
             }
             return app_env
