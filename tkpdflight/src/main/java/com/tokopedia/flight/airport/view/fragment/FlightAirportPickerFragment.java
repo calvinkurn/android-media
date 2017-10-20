@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboard.view.fragment;
+package com.tokopedia.flight.airport.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,10 +13,10 @@ import com.tokopedia.flight.R;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightDashboardFragment extends BaseDaggerFragment{
+public class FlightAirportPickerFragment extends BaseDaggerFragment{
 
-    public static FlightDashboardFragment getInstance() {
-        return new FlightDashboardFragment();
+    public static FlightAirportPickerFragment getInstance() {
+        return new FlightAirportPickerFragment();
     }
 
     @Override

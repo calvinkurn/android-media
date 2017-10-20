@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/margin_sm">
+
+    <RadioGroup
+        android:id="@+id/radioSex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radioMale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/flight_search_one_way" />
+
+        <RadioButton
+            android:id="@+id/radioFemale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/flight_search_return" />
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.tokopedia.flight.dashboard.view.widget.TextInputView
+                android:id="@+id/text_input_view_departure_airport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tiv_icon="@drawable/ic_flight_departure"
+                app:tiv_title_text="@string/flight_search_airport_departure_title" />
+
+            <com.tokopedia.flight.dashboard.view.widget.TextInputView
+                android:id="@+id/text_input_view_arrival_airport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_vs"
+                app:tiv_icon="@drawable/ic_flight_arrival"
+                app:tiv_title_text="@string/flight_search_airport_arrival_title" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="@dimen/image_width_m"
+            android:layout_height="@dimen/image_width_m"
+            android:src="@drawable/ic_flight_reverse" />
+    </LinearLayout>
+
+    <com.tokopedia.flight.dashboard.view.widget.TextInputView
+        android:id="@+id/text_input_view_date_departure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vs"
+        app:tiv_icon="@drawable/ic_flight_calendar"
+        app:tiv_title_text="@string/flight_search_date_departure_title" />
+
+    <com.tokopedia.flight.dashboard.view.widget.TextInputView
+        android:id="@+id/text_input_view_date_arrival"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vs"
+        app:tiv_icon="@drawable/ic_flight_calendar"
+        app:tiv_title_text="@string/flight_search_date_arrival_title" />
+
+    <com.tokopedia.flight.dashboard.view.widget.TextInputView
+        android:id="@+id/text_input_view_passenger"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vs"
+        app:tiv_icon="@drawable/ic_flight_passenger"
+        app:tiv_title_text="@string/flight_search_passenger_title" />
+
+    <com.tokopedia.flight.dashboard.view.widget.TextInputView
+        android:id="@+id/text_input_view_class"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_vs"
+        app:tiv_icon="@drawable/ic_flight_class"
+        app:tiv_title_text="@string/flight_search_passenger_class_title" />
+</LinearLayout>

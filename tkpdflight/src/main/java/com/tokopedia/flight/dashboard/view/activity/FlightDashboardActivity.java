@@ -9,10 +9,15 @@ import com.tokopedia.flight.dashboard.view.fragment.FlightDashboardFragment;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightDashboardActivity extends BaseSimpleActivity{
+public class FlightDashboardActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightDashboardFragment.getInstance() ;
+        return FlightDashboardFragment.getInstance();
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 }
