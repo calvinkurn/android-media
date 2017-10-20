@@ -6,6 +6,7 @@ import TKPButton from '../common/TKPPrimaryBtn'
 import { NavigationModule } from 'NativeModules'
 
 
+
 const Category = ({ category, products, dataSlug, applink }) => (
   <View style={{marginBottom: 10}}>
     <View style={{
@@ -18,34 +19,14 @@ const Category = ({ category, products, dataSlug, applink }) => (
     </View>
 
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} >
+      {products.length > 12 &&
         <TKPButton content="View All" onTap={() => { 
           NavigationModule.navigateWithMobileUrl('', `${applink.items}/${dataSlug.slug}/${category.slug}?override_url=1`, "")}}
           type="small" />
+      }
     </View>
   </View>
 )
-
-
-// const Category = ({ category, products, dataSlug, applink }) => (
-//   <View style={{marginBottom: 10}}>
-//     <View style={{
-//       backgroundColor: '#FFF', borderTopWidth: 1, borderBottomWidth: 1, borderColor: '#e0e0e0', marginVertical: 10
-//     }}>
-//       <View style={{ paddingVertical: 15, paddingHorizontal: 10 }}>
-//         <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '600', color: 'rgba(0,0,0,.7)' }}>{category.category_name}</Text>
-//       </View>
-//       <ProductList products={category.products} />
-//     </View>
-
-//     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} >
-//       {products.length > 12 &&
-//         <TKPButton content="View All" onTap={() => { 
-//           NavigationModule.navigateWithMobileUrl('', `${applink.items}/${dataSlug.slug}/${category.slug}?override_url=1`, "")}}
-//           type="small" />
-//       }
-//     </View>
-//   </View>
-// )
 
 
 Category.propTypes = {
