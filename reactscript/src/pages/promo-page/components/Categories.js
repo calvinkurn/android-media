@@ -17,7 +17,7 @@ class Categories extends PureComponent {
   renderCategory = ({ item }) => {
     const applink = this.props.applinkEnv
 
-    // console.log(item)
+    console.log(item)
     // console.log(this.props.dataSlug)
     // console.log(applink)
     

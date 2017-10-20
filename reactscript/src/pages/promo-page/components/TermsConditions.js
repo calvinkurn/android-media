@@ -15,14 +15,6 @@ class TermsConds extends Component {
         )
     }
  
-    // static navigationOptions = {
-    //     title: 'Syarat & Ketentuan',
-    //     headerTintColor: '#FFF',
-    //     fontWeight: '300',
-    //     headerStyle: {
-    //         backgroundColor: '#42B549'
-    //     }
-    // }
     static navigationOptions = {
         header: null
     }

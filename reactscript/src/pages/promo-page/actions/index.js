@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { NetworkModule, NavigationModule } from 'NativeModules'
 
 
@@ -132,6 +131,7 @@ doCategories = async (dataSlug, offset, limit) => {
 
 fetcProdCategories = async (dataSlug, offset, limit, env) => {
     const url = `${env}/categories?promo=${dataSlug.slug}&device=mobile&limit=${limit}&offset=${offset}`
+    console.log(url)
     return NetworkModule.getResponse(url, 'GET', '', true)
         .then(res => {
             let jsonResponse = JSON.parse(res)

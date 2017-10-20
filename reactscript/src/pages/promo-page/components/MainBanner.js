@@ -25,7 +25,8 @@ const MainBanner = ({ dataMainBanners }) => {
           : <TouchableOpacity
               key={image.image_id}
               onPress={() => {
-                NavigationModule.navigateWithMobileUrl(image.destination_url_apps, image.destination_url, '')}}>
+                console.log(image)
+                NavigationModule.navigateWithMobileUrl('', image.destination_url, '')}}>
               <Image source={{uri: image.file_url}} style={idx === 1 ? styles.mainBannerImageBig : styles.mainBannerImageSmall} />
             </TouchableOpacity>
         ))
