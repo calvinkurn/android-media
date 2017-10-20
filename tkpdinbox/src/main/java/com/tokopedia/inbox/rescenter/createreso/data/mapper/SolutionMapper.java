@@ -29,13 +29,6 @@ import rx.functions.Func1;
  */
 
 public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionResponseDomain> {
-    private Context context;
-    private Gson gson;
-
-    public SolutionMapper(Context context, Gson gson) {
-        this.context = context;
-        this.gson = gson;
-    }
 
     @Override
     public SolutionResponseDomain call(Response<TkpdResponse> response) {
@@ -58,7 +51,7 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(context.getResources().getString(R.string.string_general_error));
+                    throw new ErrorMessageException("");
                 }
             } else {
                 model.setSuccess(true);

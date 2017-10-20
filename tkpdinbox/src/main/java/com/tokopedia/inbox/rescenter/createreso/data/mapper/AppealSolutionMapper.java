@@ -27,12 +27,6 @@ import rx.functions.Func1;
 
 public class AppealSolutionMapper implements Func1<Response<TkpdResponse>, AppealSolutionResponseDomain> {
 
-    private Context context;
-
-    public AppealSolutionMapper(Context context) {
-        this.context = context;
-    }
-
     @Override
     public AppealSolutionResponseDomain call(Response<TkpdResponse> response) {
         return mappingResponse(response);
@@ -54,7 +48,7 @@ public class AppealSolutionMapper implements Func1<Response<TkpdResponse>, Appea
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(context.getResources().getString(R.string.string_general_error));
+                    throw new ErrorMessageException("");
                 }
             } else {
                 model.setSuccess(true);

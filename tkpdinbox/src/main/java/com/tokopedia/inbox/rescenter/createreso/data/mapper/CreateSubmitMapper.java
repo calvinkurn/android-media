@@ -20,12 +20,6 @@ import rx.functions.Func1;
 
 public class CreateSubmitMapper implements Func1<Response<TkpdResponse>, CreateSubmitDomain> {
 
-    private Context context;
-
-    public CreateSubmitMapper(Context context) {
-        this.context = context;
-    }
-
     @Override
     public CreateSubmitDomain call(Response<TkpdResponse> response) {
         return mappingResponse(response);
@@ -43,7 +37,7 @@ public class CreateSubmitMapper implements Func1<Response<TkpdResponse>, CreateS
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(context.getResources().getString(R.string.string_general_error));
+                    throw new ErrorMessageException("");
                 }
             } else {
                 model.setSuccess(true);

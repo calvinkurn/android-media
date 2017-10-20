@@ -18,12 +18,6 @@ import rx.functions.Func1;
 
 public class UploadVideoMapper implements Func1<Response<TkpdResponse>, UploadDomain> {
 
-    private Context context;
-
-    public UploadVideoMapper(Context context) {
-        this.context = context;
-    }
-
     @Override
     public UploadDomain call(Response<TkpdResponse> response) {
         return mappingResponse(response);
@@ -38,7 +32,7 @@ public class UploadVideoMapper implements Func1<Response<TkpdResponse>, UploadDo
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(context.getResources().getString(R.string.string_general_error));
+                    throw new ErrorMessageException("");
                 }
             } else {
                 model.setSuccess(true);

@@ -19,12 +19,6 @@ import rx.functions.Func1;
 public class EditAppealResolutionResponseMapper
         implements Func1<Response<TkpdResponse>, EditAppealResolutionSolutionDomain> {
 
-    private Context context;
-
-    public EditAppealResolutionResponseMapper(Context context) {
-        this.context = context;
-    }
-
     @Override
     public EditAppealResolutionSolutionDomain call(Response<TkpdResponse> response) {
         return mappingResponse(response);
@@ -44,7 +38,7 @@ public class EditAppealResolutionResponseMapper
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(context.getResources().getString(R.string.string_general_error));
+                    throw new ErrorMessageException("");
                 }
             } else {
                 model.setSuccess(true);

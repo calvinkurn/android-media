@@ -22,12 +22,6 @@ import rx.functions.Func1;
 
 public class CreateResoWithoutAttachmentMapper implements Func1<Response<TkpdResponse>, CreateResoWithoutAttachmentDomain> {
 
-    private Context context;
-
-    public CreateResoWithoutAttachmentMapper(Context context) {
-        this.context = context;
-    }
-
     @Override
     public CreateResoWithoutAttachmentDomain call(Response<TkpdResponse> response) {
         return mappingResponse(response);
@@ -47,7 +41,7 @@ public class CreateResoWithoutAttachmentMapper implements Func1<Response<TkpdRes
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(context.getResources().getString(R.string.string_general_error));
+                    throw new ErrorMessageException("");
                 }
             } else {
                 model.setSuccess(true);

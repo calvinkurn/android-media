@@ -18,12 +18,6 @@ import rx.functions.Func1;
 
 public class CreateValidateMapper implements Func1<Response<TkpdResponse>, CreateValidateDomain> {
 
-    private Context context;
-
-    public CreateValidateMapper(Context context) {
-        this.context = context;
-    }
-
     @Override
     public CreateValidateDomain call(Response<TkpdResponse> response) {
         return mappingResponse(response);
@@ -38,7 +32,7 @@ public class CreateValidateMapper implements Func1<Response<TkpdResponse>, Creat
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(context.getResources().getString(R.string.string_general_error));
+                    throw new ErrorMessageException("");
                 }
             } else {
                 model.setSuccess(true);

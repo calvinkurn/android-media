@@ -81,63 +81,63 @@ public class CreateResoModule {
 
     @CreateResoScope
     @Provides
-    EditAppealResolutionResponseMapper provideEditAppealResolutionResponseMapper(@ApplicationContext Context context) {
-        return new EditAppealResolutionResponseMapper(context);
+    EditAppealResolutionResponseMapper provideEditAppealResolutionResponseMapper() {
+        return new EditAppealResolutionResponseMapper();
     }
 
     @CreateResoScope
     @Provides
-    AppealSolutionMapper provideAppealSolutionMapper(@ApplicationContext Context context) {
-        return new AppealSolutionMapper(context);
+    AppealSolutionMapper provideAppealSolutionMapper() {
+        return new AppealSolutionMapper();
     }
 
 
     @CreateResoScope
     @Provides
-    EditSolutionMapper provideEditSolutionMapper(@ApplicationContext Context context) {
-        return new EditSolutionMapper(context);
+    EditSolutionMapper provideEditSolutionMapper() {
+        return new EditSolutionMapper();
     }
 
     @CreateResoScope
     @Provides
-    CreateValidateMapper provideCreateValidateMapper(@ApplicationContext Context context) {
-        return new CreateValidateMapper(context);
+    CreateValidateMapper provideCreateValidateMapper() {
+        return new CreateValidateMapper();
     }
 
     @CreateResoScope
     @Provides
-    GenerateHostMapper provideGenerateHostMapper(@ApplicationContext Context context) {
-        return new GenerateHostMapper(context);
+    GenerateHostMapper provideGenerateHostMapper() {
+        return new GenerateHostMapper();
     }
 
     @CreateResoScope
     @Provides
-    UploadMapper provideUploadMapper(@ApplicationContext Context context) {
-        return new UploadMapper(context);
+    UploadMapper provideUploadMapper() {
+        return new UploadMapper();
     }
 
     @CreateResoScope
     @Provides
-    CreateSubmitMapper provideCreateSubmitMapper(@ApplicationContext Context context) {
-        return new CreateSubmitMapper(context);
+    CreateSubmitMapper provideCreateSubmitMapper() {
+        return new CreateSubmitMapper();
     }
 
     @CreateResoScope
     @Provides
-    SolutionMapper provideSolutionMapper(@ApplicationContext Context context) {
-        return new SolutionMapper(context, new Gson());
+    SolutionMapper provideSolutionMapper() {
+        return new SolutionMapper();
     }
 
     @CreateResoScope
     @Provides
-    CreateResoWithoutAttachmentMapper provideCreateResoStep1Mapper(@ApplicationContext Context context) {
-        return new CreateResoWithoutAttachmentMapper(context);
+    CreateResoWithoutAttachmentMapper provideCreateResoStep1Mapper() {
+        return new CreateResoWithoutAttachmentMapper();
     }
 
     @CreateResoScope
     @Provides
-    GetProductProblemMapper provideGetProductProblemMapper(@ApplicationContext Context context) {
-        return new GetProductProblemMapper(context, new Gson());
+    GetProductProblemMapper provideGetProductProblemMapper() {
+        return new GetProductProblemMapper();
     }
 
     @CreateResoScope
@@ -368,8 +368,8 @@ public class CreateResoModule {
 
     @CreateResoScope
     @Provides
-    UploadVideoMapper provideUploadVideoMapper(@ApplicationContext Context context) {
-        return new UploadVideoMapper(context);
+    UploadVideoMapper provideUploadVideoMapper() {
+        return new UploadVideoMapper();
     }
 
     @CreateResoScope

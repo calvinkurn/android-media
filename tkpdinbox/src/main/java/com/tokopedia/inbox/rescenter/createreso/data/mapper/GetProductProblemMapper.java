@@ -44,13 +44,6 @@ import rx.functions.Func1;
  */
 
 public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, ProductProblemResponseDomain> {
-    private Context context;
-    private final Gson gson;
-
-    public GetProductProblemMapper(Context context, Gson gson) {
-        this.context = context;
-        this.gson = gson;
-    }
 
     @Override
     public ProductProblemResponseDomain call(Response<TkpdResponse> response) {
@@ -68,7 +61,7 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(context.getResources().getString(R.string.string_general_error));
+                    throw new ErrorMessageException("");
                 }
             } else {
                 model.setSuccess(true);
