@@ -150,6 +150,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                     productOperator.setDesc(product.getAttributes().getDesc());
                     productOperator.setDetail(product.getAttributes().getDetail());
                     productOperator.setDetailUrl(product.getAttributes().getDetailUrl());
+                    productOperator.setDetailUrlText(product.getAttributes().getDetailUrlText());
                     productOperator.setInfo(product.getAttributes().getInfo());
                     productOperator.setPrice(product.getAttributes().getPrice());
                     productOperator.setPricePlain(product.getAttributes().getPricePlain());

@@ -151,12 +151,6 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     }
 
     @Override
-    public void onProductItemChooserCanceled() {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         invalidateTitleToolBar();
