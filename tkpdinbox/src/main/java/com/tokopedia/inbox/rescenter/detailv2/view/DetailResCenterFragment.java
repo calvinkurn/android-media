@@ -18,6 +18,7 @@ import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
@@ -36,7 +37,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFrag
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.activity.ResCenterDiscussionActivity;
-import com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity;
 import com.tokopedia.inbox.rescenter.historyaction.HistoryActionActivity;
 import com.tokopedia.inbox.rescenter.historyaddress.HistoryAddressActivity;
 import com.tokopedia.inbox.rescenter.historyawb.HistoryShippingActivity;
@@ -432,11 +432,8 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionAppealClick() {
-        String orderID = getViewData().getDetailData().getOrderID();
-        boolean isReceived = getViewData().getDetailData().isReceived();
-
         startActivityForResult(
-                EditResCenterActivity.newAppealInstance(getActivity(), resolutionID, orderID, isSeller(), isReceived),
+                SolutionListActivity.newAppealInstance(getActivity(), resolutionID),
                 REQUEST_APPEAL_SOLUTION);
     }
 
@@ -454,15 +451,12 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     private Intent getIntentEditResCenter() {
-        String orderID = getViewData().getDetailData().getOrderID();
-        boolean isReceived = getViewData().getDetailData().isReceived();
-
         if (isSeller()) {
-            return EditResCenterActivity
-                    .newSellerInstance(getActivity(), resolutionID, orderID, isReceived);
+            return SolutionListActivity.newSellerEditInstance(getActivity(),
+                    resolutionID);
         } else {
-            return EditResCenterActivity
-                    .newBuyerInstance(getActivity(), resolutionID, orderID, isReceived);
+            return SolutionListActivity.newBuyerEditInstance(getActivity(),
+                    resolutionID);
         }
     }
 

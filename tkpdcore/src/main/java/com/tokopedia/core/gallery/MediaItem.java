@@ -20,6 +20,8 @@ public class MediaItem implements Parcelable {
     public final Uri uri;
     public final long size;
     public final long duration; // only for video, in ms
+    public long height;
+    public long width;
     private final String realPath;
 
     private MediaItem(long id, String realPath, String mimeType, long size, long duration) {
@@ -93,6 +95,8 @@ public class MediaItem implements Parcelable {
         dest.writeParcelable(this.uri, flags);
         dest.writeLong(this.size);
         dest.writeLong(this.duration);
+        dest.writeLong(this.height);
+        dest.writeLong(this.width);
         dest.writeString(this.realPath);
     }
 
@@ -102,6 +106,8 @@ public class MediaItem implements Parcelable {
         this.uri = in.readParcelable(Uri.class.getClassLoader());
         this.size = in.readLong();
         this.duration = in.readLong();
+        this.height = in.readLong();
+        this.width = in.readLong();
         this.realPath = in.readString();
     }
 
