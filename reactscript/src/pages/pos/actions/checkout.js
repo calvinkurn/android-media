@@ -16,9 +16,8 @@ export const PaymentCheckoutToNative = () => {
 }
 
 const doPayment = async () => {
-  try {
-    const user_id = await getUserId()
-    const addr_id = await getAddrId()
+  const user_id = await getUserId()
+  const addr_id = await getAddrId()
     const shop_id = await getShopId()
     const env = await getEnv()
     const api_url = await getBaseAPI(env)
@@ -39,10 +38,6 @@ const doPayment = async () => {
     console.log(paymentToNative_getParams)
     const paymentToNative_secondStep = await makePaymentToNativeStepTwo(paymentToNative_getParams, data_payment, local_cart)
     return paymentToNative_secondStep
-  } catch (err){
-    console.log(err)
-    return
-  }
 }
 
 const getUserId = () => {
@@ -194,7 +189,6 @@ const makePaymentToNativeStepTwo = (paymentToNative_getParams, data_payment, loc
           return jsonResponse
         }
       }
-      
     })
     .catch(err => {
       console.log(err)
