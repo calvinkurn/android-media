@@ -410,7 +410,7 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
     private String getReviewerNameText(String reviewerName, boolean reviewIsAnonymous) {
-        if (reviewIsAnonymous) {
+        if (reviewIsAnonymous && element.getTab() != InboxReputationActivity.TAB_BUYER_REVIEW) {
             return MainApplication.getAppContext().getString(R.string.by) + " " +
                     getAnonymousName(reviewerName);
         } else {
