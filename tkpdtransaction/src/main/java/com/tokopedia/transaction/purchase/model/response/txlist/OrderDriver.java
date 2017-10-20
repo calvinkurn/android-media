@@ -28,6 +28,9 @@ public class OrderDriver implements Parcelable{
     @Expose
     private String licenseNumber;
 
+    public OrderDriver() {
+    }
+
     protected OrderDriver(Parcel in) {
         driverName = in.readString();
         driverPhone = in.readString();

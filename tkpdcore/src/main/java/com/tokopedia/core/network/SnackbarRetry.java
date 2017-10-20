@@ -11,13 +11,17 @@ import com.tokopedia.core.R;
  */
 public class SnackbarRetry {
 
-    protected Boolean isRetryClicked;
-    protected Snackbar snackBar;
+    private Boolean isRetryClicked;
+    private Snackbar snackBar;
 
     public SnackbarRetry(Snackbar snackbar, final NetworkErrorHelper.RetryClickedListener listener) {
+        this(snackbar, snackbar.getContext().getString(R.string.title_try_again), listener);
+    }
+
+    public SnackbarRetry(Snackbar snackbar, String actionText, final NetworkErrorHelper.RetryClickedListener listener) {
         isRetryClicked = true;
         this.snackBar = snackbar;
-        snackBar.setAction(R.string.title_try_again, new View.OnClickListener() {
+        snackBar.setAction(actionText, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isRetryClicked = true;

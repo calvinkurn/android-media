@@ -726,6 +726,8 @@ public class TkpdBaseURL {
         public static final String GET_SHOP_SCORE_DETAIL = "/v1/shopstats/shopscore/dtl/";
         public static final String GET_GM_SUBSCRIBE_PRODUCT = "/v1/gold/product";
         public static final String GET_FEATURED_PRODUCTS = "/v1/mobile/featured_product/{shopId}?json=1";
+        public static final String SET_CASHBACK_PRODUCTS = "/v1/cashback/set";
+        public static final String GET_CASHBACK_PRODUCTS = "v1/tx/cashback";
     }
 
     public static class FCM {
@@ -824,14 +826,12 @@ public class TkpdBaseURL {
     public static class Payment {
         public static final String URL_BCA_ONE_CLICK = SCROOGE_DOMAIN;
         public static final String PATH_ONE_CLICK = "ws/oneclick";
-        public static final String PATH_ONE_CLICK_GET_USER_DATA = "oneclick/get";
-        public static final String PATH_ONE_CLICK_ADD_USER_DATA = "oneclick/add";
-        public static final String PATH_ONE_CLICK_EDIT_USER_DATA = "oneclick/edit";
-        public static final String PATH_ONE_CLICK_DELETE_USER_DATA = "oneclick/delete";
         public static final String PATH_CC_DISPLAY = "v2/ccvault/metadata";
         public static final String PATH_CC_DELETE = "v2/ccvault/delete";
         public static final String PATH_GET_CANCEL_TRANSACTION_DIALOG = "get_payment_status";
         public static final String PATH_CANCEL_TRANSACTION = "cancel";
+        public static final String PATH_ZEUS_CHECK_WHITELIST = "zeus/whitelist/status";
+        public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
     }
 
     public static class FinTech {

@@ -123,7 +123,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         imageUrls = new ArrayList<>();
         for (int i = 0; i < imagesCount; i++) {
             String imageUrl = oriImageUrls.get(i);
-            String fileNameToMove = FileUtils.generateUniqueFileName(imageUrl);
+            String fileNameToMove = FileUtils.generateUniqueFileName();
             File photo = FileUtils.writeImageToTkpdPath(
                     FileUtils.compressImage(imageUrl, DEF_WIDTH_CMPR,
                             DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
@@ -272,6 +272,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                     .setPositiveButton(getString(R.string.label_exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            deleteNotUsedTkpdCacheImage();
                             ProductAddActivity.super.onBackPressed();
                         }
                     }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
@@ -298,11 +299,24 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     }
 
     private boolean hasDataAdded() {
-        Fragment fragment = getFragment();
-        if (fragment != null && fragment instanceof ProductAddFragment) {
-            return ((ProductAddFragment) fragment).hasDataAdded();
+        ProductAddFragment fragment = getProductAddFragment();
+        if (fragment != null) {
+            return fragment.hasDataAdded();
         }
         return false;
+    }
+
+    private void deleteNotUsedTkpdCacheImage() {
+        if (needDeleteCacheOnBack()) {
+            ProductAddFragment fragment = getProductAddFragment();
+            if (fragment != null) {
+                fragment.deleteNotUsedTkpdCacheImage();
+            }
+        }
+    }
+
+    protected boolean needDeleteCacheOnBack(){
+        return true;
     }
 
     private boolean saveProductToDraft() {
@@ -448,6 +462,11 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     }
 
     @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
     public String getScreenName() {
         return AppScreen.SCREEN_ADD_PRODUCT;
     }
@@ -456,4 +475,5 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     public ProductComponent getComponent() {
         return ((SellerModuleRouter) getApplication()).getProductComponent();
     }
+
 }

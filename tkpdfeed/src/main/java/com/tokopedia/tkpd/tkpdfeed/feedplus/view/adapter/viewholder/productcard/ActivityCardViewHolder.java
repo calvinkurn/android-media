@@ -110,6 +110,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     public void bind(ActivityCardViewModel activityCardViewModel) {
         if (activityCardViewModel != null) {
             setHeader(activityCardViewModel);
+            activityCardViewModel.setRowNumber(getAdapterPosition());
             adapter.setData(activityCardViewModel);
             setFooter(activityCardViewModel);
         }
@@ -136,6 +137,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             public void onClick(View view) {
                 viewListener.onGoToFeedDetail(
                         activityCardViewModel.getPage(),
+                        activityCardViewModel.getRowNumber(),
                         activityCardViewModel.getFeedId());
             }
 
@@ -152,6 +154,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             @Override
             public void onClick(View view) {
                 viewListener.onGoToShopDetail(
+                        activityCardViewModel.getPage(),
+                        activityCardViewModel.getRowNumber(),
                         activityCardViewModel.getHeader().getShopId(),
                         activityCardViewModel.getHeader().getUrl());
 
@@ -199,7 +203,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             @Override
             public void onClick(View v) {
                 viewListener.onGoToShopDetail(
-                        activityCardViewModel.getHeader().getShopId(),
+                        activityCardViewModel.getPage(), activityCardViewModel.getRowNumber(), activityCardViewModel.getHeader().getShopId(),
                         activityCardViewModel.getHeader().getUrl());
             }
         });
@@ -209,7 +213,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             public void onClick(View view) {
                 viewListener.onGoToFeedDetail(
                         activityCardViewModel.getPage(),
-                        activityCardViewModel.getFeedId());
+                        activityCardViewModel.getRowNumber(), activityCardViewModel.getFeedId());
             }
         });
     }
@@ -234,7 +238,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                             viewModel.getShareUrl(),
                             viewModel.getHeader().getShopName(),
                             viewModel.getHeader().getShopAvatar(),
-                            viewModel.getShareLinkDescription()
+                            viewModel.getShareLinkDescription(),
+                            viewModel.getPage() + "." + viewModel.getRowNumber()
                     );
                 }
             });

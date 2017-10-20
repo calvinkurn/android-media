@@ -12,29 +12,16 @@ import {
 import { NetworkModule, NavigationModule } from 'NativeModules';
 import unescape from 'lodash/unescape'
 import LoadMore from './LoadMore'
-import Grid from '../common/grid/grid'
 import FavouriteBtn from '../common/Favourite/favBtn'
 import WishlistBtn from '../common/Wishlist/WishlistButton'
 
 
 const BrandList = (props) => {
-  const gridProps = {
-    rows: 3,
-    columns: 3,
-    data: props.gridData,
-    onLoadMore: props.loadMore,
-    onSlideMore: props.slideMore,
-    limit: props.limit,
-    offset: props.offset,
-    isFetching: props.isFetching,
-    canFetch: props.canFetch
-  }
 
   const validBrands = props.brands.filter(brand => brand && brand.microsite_url && brand.products.length && brand.logo_url)
   
   return (
     <View>
-      <Grid {...gridProps} />
       {
         validBrands.map(b => (
           <View key={b.id} style={styles.brandContainer}>

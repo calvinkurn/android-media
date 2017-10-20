@@ -185,7 +185,6 @@ public class CategoryProductStyle3View extends
                     break;
                 }
             }
-
         }
     }
 
@@ -220,6 +219,8 @@ public class CategoryProductStyle3View extends
                 clientNumberInputView.setAdapterAutoCompleteClientNumber(recentClientNumberString);
             }
         }
+
+        clientNumberInputView.enableImageOperator(operatorSelected.getImage());
     }
 
     private void renderProductChooserOptions() {
@@ -308,16 +309,13 @@ public class CategoryProductStyle3View extends
                 } else {
                     renderProductChooserOptions();
                 }
-
             }
 
             @Override
             public void onClientNumberInputInvalid() {
-                clientNumberInputView.disableImageOperator();
                 clearHolder(holderChooserProduct);
                 clearHolder(holderAdditionalInfoProduct);
                 clearHolder(holderPriceInfoProduct);
-                clientNumberInputView.disableImageOperator();
             }
         };
     }

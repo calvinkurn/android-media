@@ -88,6 +88,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     private boolean ussdTimeOut = false;
 
     private final String PARAM_IS_RESELLER = "is_reseller";
+    private final static String balance = "balance";
 
     public ProductDigitalPresenter(IProductDigitalView view,
                                    IProductDigitalInteractor productDigitalInteractor) {
@@ -361,7 +362,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     private void renderCheckPulsaBalanceDataToView() {
-        view.renderCheckPulsaBalanceData(null);
+        view.renderCheckPulsaBalanceData();
     }
 
     @Override
@@ -372,7 +373,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 dailUssdToCheckBalance(simSlot, ussdCode);
             } else {
                 view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed), view.getActivity().getString(R.string.message_ussd_title));
-
             }
 
         } else {
@@ -495,12 +495,12 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     private RequestBodyPulsaBalance getRequestBodyPulsaBalance(String message, int selectedSim) {
-        String number = getDeviceMobileNumber(selectedSim);
+        String number = getUssdPhoneNumberFromCache(selectedSim);
         if (number == null || "".equalsIgnoreCase(number.trim())) {
-            number = getUssdPhoneNumberFromCache(selectedSim);
+            number = getDeviceMobileNumber(selectedSim);
         }
         RequestBodyPulsaBalance requestBodyPulsaBalance = new RequestBodyPulsaBalance();
-        requestBodyPulsaBalance.setType("balance");
+        requestBodyPulsaBalance.setType(balance);
         Attributes attributes = new Attributes();
         attributes.setOperatorId(parseStringToInt(getSelectedUssdOperator(selectedSim).getOperatorId()));
         attributes.setMessage(message);
@@ -528,9 +528,9 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
     @Override
     public Operator getSelectedUssdOperator(int selectedSim) {
-        String number = getDeviceMobileNumber(selectedSim);
+        String number = getUssdPhoneNumberFromCache(selectedSim);
         if (number == null || "".equalsIgnoreCase(number.trim())) {
-            number = getUssdPhoneNumberFromCache(selectedSim);
+            number = getDeviceMobileNumber(selectedSim);
         }
         List<Operator> selectedOperatorList = getSelectedUssdOperatorList(selectedSim);
         for (Operator operator : selectedOperatorList) {

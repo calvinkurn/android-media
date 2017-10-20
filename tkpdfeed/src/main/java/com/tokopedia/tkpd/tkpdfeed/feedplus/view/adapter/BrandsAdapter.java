@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 
 import java.util.ArrayList;
@@ -22,10 +23,9 @@ public class BrandsAdapter extends RecyclerView.Adapter<BrandsAdapter.ViewHolder
 
     private static final int IS_NEW = 1;
     private final FeedPlus.View viewListener;
-    ArrayList<OfficialStoreViewModel> listStore;
+    OfficialStoreBrandsViewModel officialStoreBrandsViewModel;
 
     public BrandsAdapter(FeedPlus.View viewListener) {
-        this.listStore = new ArrayList<>();
         this.viewListener = viewListener;
     }
 
@@ -40,7 +40,10 @@ public class BrandsAdapter extends RecyclerView.Adapter<BrandsAdapter.ViewHolder
             logo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onBrandClicked(listStore.get(getAdapterPosition()));
+                    viewListener.onBrandClicked(
+                            officialStoreBrandsViewModel.getPage(),
+                            officialStoreBrandsViewModel.getRowNumber(),
+                            officialStoreBrandsViewModel.getListStore().get(getAdapterPosition()));
                 }
             });
         }
@@ -56,9 +59,10 @@ public class BrandsAdapter extends RecyclerView.Adapter<BrandsAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageHandler.LoadImage(holder.logo, listStore.get(position).getLogoUrl());
+        ImageHandler.LoadImage(holder.logo, officialStoreBrandsViewModel.getListStore().get(position)
+                .getLogoUrl());
 
-        if (listStore.get(position).getIsNew())
+        if (officialStoreBrandsViewModel.getListStore().get(position).getIsNew())
             holder.labelNew.setVisibility(View.VISIBLE);
         else
             holder.labelNew.setVisibility(View.GONE);
@@ -66,14 +70,14 @@ public class BrandsAdapter extends RecyclerView.Adapter<BrandsAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        if (listStore != null)
-            return listStore.size();
+        if (officialStoreBrandsViewModel.getListStore() != null)
+            return officialStoreBrandsViewModel.getListStore().size();
         else
             return 0;
     }
 
-    public void setList(ArrayList<OfficialStoreViewModel> listStore) {
-        this.listStore = listStore;
+    public void setData(OfficialStoreBrandsViewModel officialStoreBrandsViewModel) {
+        this.officialStoreBrandsViewModel = officialStoreBrandsViewModel;
         notifyDataSetChanged();
     }
 

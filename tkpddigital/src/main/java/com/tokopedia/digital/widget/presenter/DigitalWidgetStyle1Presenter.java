@@ -2,11 +2,11 @@ package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.database.model.RechargeOperatorModel;
-import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle1View;
+import com.tokopedia.digital.widget.model.operator.Operator;
+import com.tokopedia.digital.widget.model.product.Product;
 
 import java.util.List;
 
@@ -62,8 +62,8 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
         widgetInteractor.getOperatorById(getOperatorModelSubscriber(), operatorId);
     }
 
-    private Subscriber<RechargeOperatorModel> getOperatorModelSubscriber() {
-        return new Subscriber<RechargeOperatorModel>() {
+    private Subscriber<Operator> getOperatorModelSubscriber() {
+        return new Subscriber<Operator>() {
             @Override
             public void onCompleted() {
 
@@ -76,8 +76,8 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             }
 
             @Override
-            public void onNext(RechargeOperatorModel rechargeOperatorModel) {
-                view.renderOperator(rechargeOperatorModel);
+            public void onNext(Operator operator) {
+                view.renderOperator(operator);
             }
         };
     }
@@ -115,13 +115,12 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
     private void processOperatorById(List<Product> products) {
         String operatorId = String.valueOf(
-                products.get(0).getRelationships().getOperator().getData().getId()
-        );
+                products.get(0).getRelationships().getOperator().getData().getId());
         widgetInteractor.getOperatorById(getOperatorSubscriber(), operatorId);
     }
 
-    private Subscriber<RechargeOperatorModel> getOperatorSubscriber() {
-        return new Subscriber<RechargeOperatorModel>() {
+    private Subscriber<Operator> getOperatorSubscriber() {
+        return new Subscriber<Operator>() {
             @Override
             public void onCompleted() {
 
@@ -134,9 +133,9 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             }
 
             @Override
-            public void onNext(RechargeOperatorModel rechargeOperatorModel) {
-                if (rechargeOperatorModel != null)
-                    view.renderDataOperator(rechargeOperatorModel);
+            public void onNext(Operator operator) {
+                if (operator != null)
+                    view.renderDataOperator(operator);
                 else
                     view.renderEmptyOperator(context.getString(R.string.error_message_operator));
             }
@@ -199,10 +198,5 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                 view.renderProduct(product);
             }
         };
-    }
-
-    @Override
-    public void onDestroy() {
-        widgetInteractor.onDestroy();
     }
 }

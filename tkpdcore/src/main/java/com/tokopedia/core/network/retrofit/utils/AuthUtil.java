@@ -74,6 +74,7 @@ public class AuthUtil {
         public static final String KEY_KEROPPI = "Keroppi";
         public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
         public static String KEY_CREDIT_CARD_VAULT = "AdKc1ag2NmYgRUF97eQQ8J";
+        public static String ZEUS_WHITELIST = "abf49d067c9ca8585f3a1059464d22b9";
     }
 
     public static Map<String, String> generateHeadersWithXUserId(

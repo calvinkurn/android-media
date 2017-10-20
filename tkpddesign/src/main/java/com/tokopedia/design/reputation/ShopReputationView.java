@@ -71,12 +71,12 @@ public class ShopReputationView extends BaseCustomView {
         requestLayout();
     }
 
-    public void setValue(int medalType, int level, int point) {
+    public void setValue(int medalType, int level, String point) {
         reputationLayout.removeAllViews();
         int imageResource = getIconResource(medalType);
         if (medalType == MEDAL_TYPE_0) {
             level = 1;
-            point = 0;
+            point = "0";
         }
         updateMedalView(imageResource, level);
         if (showTooltip && medalType != MEDAL_TYPE_0) {
@@ -97,7 +97,7 @@ public class ShopReputationView extends BaseCustomView {
         }
     }
 
-    private void setToolTip(final int point) {
+    private void setToolTip(final String point) {
         reputationLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

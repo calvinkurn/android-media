@@ -727,7 +727,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     private void processCartAnalytics(ProductDetail productDetail) {
-        if(productDetail != null) {
+        if (productDetail != null) {
             com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
             product.setCategoryName(productDetail.getProductCatName());
             product.setCategoryId(productDetail.getProductCatId());
@@ -779,6 +779,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     private void quantityChangedEvent(Editable quantity) {
+        if (orderData == null) {
+            presenter.getCartFormData(this, productCartPass);
+            return;
+        }
         orderData.setQuantity(quantity.length() == 0 ?
                 0 : Integer.parseInt(etQuantity.getText().toString()));
         if (orderData.getQuantity() < orderData.getMinOrder()) {
@@ -889,7 +893,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected void onResume() {
         super.onResume();
-        UnifyTracking.eventViewATC();
     }
 
     private void showBuyError(String errorMessage) {
@@ -997,4 +1000,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         }
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }
