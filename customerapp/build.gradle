@@ -192,8 +192,7 @@ android {
         staging {
 
         }
-        alpha {
-        }
+
         live {
 
         }

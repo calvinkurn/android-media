@@ -523,52 +523,6 @@ public class TrackingUtils extends TrackingConfig {
         getAFEngine().sendTrackEvent(AFInAppEventType.CONTENT_VIEW, listViewEvent);
     }
 
-
-    public static void eventLocaNotificationCallback(Intent intent){
-        getLocaEngine().sendNotificationCallback(intent);
-    }
-
-    public static void eventLocaNotificationReceived(Bundle data){
-        getLocaEngine().sendReceiveNotification(data);
-    }
-
-    public static void eventLocaNotification(String eventName, Map<String, String> params){
-        eventLoca(eventName, params);
-        eventLocaInAppMessaging(eventName);
-    }
-
-    public static void eventLoca(String eventName){
-        getLocaEngine().tagEvent(eventName);
-    }
-
-    public static void eventLoca(String eventName, Map<String, String> params){
-        getLocaEngine().tagEvent(eventName, params);
-    }
-
-    static void eventLoca(String eventName, Map<String, String> params, long value){
-        getLocaEngine().tagEvent(eventName, params, value);
-    }
-
-    public static void eventLocaSetNotification(boolean notificationsDisabled){
-        getLocaEngine().setNotificationsDisabled(notificationsDisabled);
-    }
-
-    public static void eventLocaUserAttributes(String loginID, String username, String email){
-        getLocaEngine().tagUserAttributes(loginID, username, email);
-    }
-
-    public static void eventLocaInApp(String eventName){
-        getLocaEngine().triggerInAppMessage(eventName);
-    }
-
-    public static void eventLocaInAppMessaging(String eventName){
-        getLocaEngine().tageEventandInApp(eventName);
-    }
-
-    public static void eventLocaSearched(String keyword){
-        getLocaEngine().sendEventSearchProduct(keyword,"product",null,null);
-    }
-
     public static void sendGTMEvent(Map<String, Object> dataLayers){
         getGTMEngine().sendEvent(dataLayers);
     }

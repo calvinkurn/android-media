@@ -196,7 +196,6 @@ public class CategoryProductStyle1View extends
             clientNumberInputView.setText(lastClientNumberHistory);
         }
 
-
         if (hasLastOrderHistoryData()) {
             if (!data.getClientNumberList().isEmpty()) {
                 List<String> recentClientNumberString = new ArrayList<>();
