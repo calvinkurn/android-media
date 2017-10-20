@@ -724,7 +724,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void renderCompletedRequestWithoutReceipt(RideRequest result) {
         replaceFragment(R.id.bottom_container, DriverDetailFragment.newInstance(result, getTag()));
-        setTitle(R.string.title_trip_in_progress);
+        setTitle(R.string.title_trip_completed);
 
         //show dialog the ride is completed and receipt is response is pending
         dialogReceiptPending.setVisibility(View.VISIBLE);
