@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -141,7 +142,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
             @Override
             public void onClick(View v) {
                 refresh();
-                hideKeyboard();
+                KeyboardHandler.DropKeyboard(context, search);
             }
         });
 
@@ -149,7 +150,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 refresh();
-                hideKeyboard();
+                KeyboardHandler.DropKeyboard(context, search);
                 return true;
             }
         });
@@ -191,15 +192,6 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
             }
         });
 
-    }
-
-    private void hideKeyboard() {
-        View view = getActivity().getCurrentFocus();
-        if (view != null) {
-            InputMethodManager inputMethodManager =
-                    (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
     }
 
     private RecyclerView.OnScrollListener onScroll() {
