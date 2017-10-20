@@ -89,10 +89,10 @@ public class TrackingUtils extends TrackingConfig {
     public static void setMoEUserAttributes(UserAttribute.Data profileData){
         if(profileData!=null) {
             CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
-                    .setTotalItemSold(profileData.shopInfoMoengage().stats().shop_item_sold()!=null ? profileData.shopInfoMoengage().stats().shop_item_sold() : "0")
+                    .setTotalItemSold(profileData.shopInfoMoengage().stats()!=null ? profileData.shopInfoMoengage().stats().shop_item_sold() : "0")
                     .setRegDate(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(profileData.profile().register_date(),"T")))
-                    .setDateShopCreated(profileData.shopInfoMoengage().info().date_shop_created()!=null ? profileData.shopInfoMoengage().info().date_shop_created(): "")
-                    .setShopLocation(profileData.shopInfoMoengage().info().shop_location()!=null ? profileData.shopInfoMoengage().info().shop_location() :"")
+                    .setDateShopCreated(profileData.shopInfoMoengage().info()!=null ? profileData.shopInfoMoengage().info().date_shop_created(): "")
+                    .setShopLocation(profileData.shopInfoMoengage().info()!=null ? profileData.shopInfoMoengage().info().shop_location() :"")
                     .setTokocashAmt(profileData.wallet() != null ? profileData.wallet().rawBalance()+"" : "")
                     .setSaldoAmt(profileData.saldo() != null ? profileData.saldo().deposit()+"" : "")
                     .setTopAdsAmt(profileData.topadsDeposit() != null ? profileData.topadsDeposit().topads_amount()+"" : "")
