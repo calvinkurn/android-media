@@ -89,7 +89,7 @@ public class TrackingUtils extends TrackingConfig {
         if(profileData!=null) {
             CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
                     .setTotalItemSold(profileData.shopInfoMoengage().stats().shop_item_sold())
-                    .setRegDate(profileData.profile().register_date())
+                    .setRegDate(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(profileData.profile().register_date(),"T")))
                     .setDateShopCreated(profileData.shopInfoMoengage().info().date_shop_created())
                     .setShopLocation(profileData.shopInfoMoengage().info().shop_location())
                     .setTokocashAmt(profileData.wallet() != null ? profileData.wallet().rawBalance()+"" : "")
@@ -99,9 +99,10 @@ public class TrackingUtils extends TrackingConfig {
                     .setHasPurchasedMarketplace(profileData.paymentAdminProfile().is_purchased_marketplace()!= null ? profileData.paymentAdminProfile().is_purchased_marketplace():false)
                     .setHasPurchasedDigital(profileData.paymentAdminProfile().is_purchased_digital()!= null ? profileData.paymentAdminProfile().is_purchased_digital():false)
                     .setHasPurchasedTiket(profileData.paymentAdminProfile().is_purchased_ticket()!= null ? profileData.paymentAdminProfile().is_purchased_ticket():false)
-                    .setLastTransactionDate(profileData.paymentAdminProfile()!= null ? profileData.paymentAdminProfile().last_purchase_date():"")
+                    .setLastTransactionDate(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(profileData.paymentAdminProfile()!= null ? profileData.paymentAdminProfile().last_purchase_date():"","T")))
                     .setTotalActiveProduct(profileData.shopInfoMoengage().info()!= null ? profileData.shopInfoMoengage().info().total_active_product()+"":"")
                     .setShopScore(profileData.shopInfoMoengage().info()!= null ? profileData.shopInfoMoengage().info().shop_score()+"":"")
+                    .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(profileData.profile().bday()!=null?profileData.profile().bday():"","T")))
                     .build();
 
             getMoEngine().setUserData(customerWrapper);
@@ -134,7 +135,6 @@ public class TrackingUtils extends TrackingConfig {
                     .setShopId(String.valueOf(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopId():""))
                     .setSeller(!TextUtils.isEmpty(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopName():""))
                     .setFirstName(getFirstName(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getFullName():""))
-                    .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(accountsParameter.getInfoModel()!=null?accountsParameter.getInfoModel().getBday():"","T")))
                     .setMethod(label)
                     .build();
 
