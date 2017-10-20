@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -112,11 +113,13 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
 
     @DeepLink(Constants.Applinks.HOME)
-    public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
+    public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ParentIndexHome.class)
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(new Intent(context, ParentIndexHome.class)
                 .setData(uri.build())
-                .putExtras(extras);
+                .putExtras(extras));
+        return taskStackBuilder;
     }
 
     @DeepLink({Constants.Applinks.HOME_FEED, Constants.Applinks.FEED})

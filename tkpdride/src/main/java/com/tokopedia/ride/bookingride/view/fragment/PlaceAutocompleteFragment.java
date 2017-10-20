@@ -23,12 +23,14 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
@@ -209,6 +211,12 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     @Override
     public void onPlaceSelected(PlaceAutoCompeleteViewModel address) {
         CommonUtils.closeKeyboard(getActivity(), mAutocompleteEditText.getWindowToken());
+        if(showAutodetectLocation) {
+            RideGATracking.eventClickSourceRecentAddress(getScreenName(),address.getAddress());
+        }else {
+            RideGATracking.eventClickDestinationRecentAddress(getScreenName(),address.getAddress());//14
+        }
+
         mPresenter.onPlaceSelected(address);
     }
 
@@ -315,6 +323,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @Override
     public void onPlaceSelectedFound(PlacePassViewModel placePassViewModel) {
+        RideGATracking.eventClickAutDetectLocation(getScreenName(),placePassViewModel.getAddress()); //9
         mOnFragmentInteractionListener.onLocationSelected(placePassViewModel);
     }
 
@@ -325,6 +334,11 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @OnClick(R2.id.set_location_on_map_container)
     public void actionSelectLocationOnMapClicked() {
+        if(showAutodetectLocation) {
+            RideGATracking.eventClickSourceOpenMap(getScreenName());
+        }else {
+            RideGATracking.eventClickDestinationOpenMap(getScreenName());
+        }
         mOnFragmentInteractionListener.onSelectLocationOnMapSelected();
     }
 

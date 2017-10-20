@@ -185,6 +185,10 @@ public class DigitalWidgetView extends BaseCustomView {
         }
     }
 
+    public int getPosition() {
+        return viewPager.getCurrentItem();
+    }
+
     public interface ActionListener {
         void onClickSeeAllProduct();
     }

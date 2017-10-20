@@ -1027,6 +1027,11 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="domain">https://www.tokopedia.com/</string>
     <string name="title_activity_contact_us">Hubungi Kami</string>
     <string name="title_select_city">Pilih Asal Kota</string>
+
+
+    <string name="title_activity_create_reso_center">Buat Komplain</string>
+    <string name="title_activity_product_problem">Pilih Barang &amp; Masalah</string>
+
     <!-- Strings related to contact us -->
     <string name="title_full_name">Nama Lengkap</string>
     <string name="title_send">Kirim</string>

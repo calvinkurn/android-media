@@ -420,7 +420,7 @@ public class TkpdBaseURL {
         public static final String PATH_EDIT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/edit_address_resolution.pl";
         public static final String PATH_REPLY_CONVERSATION_SUBMIT_V2 = "v4/action/resolution-center/reply_conversation_submit.pl";
         public static final String PATH_REPLY_CONVERSATION_VALIDATION_V2 = "v4/action/resolution-center/reply_conversation_validation.pl";
-        public static final String PATH_GENERATE_TOKEN_HOST = "v4/action/resolution-center/generate_token_host.pl";
+        public static final String PATH_GENERATE_TOKEN_HOST = "generate_token_host.pl";
     }
 
     public static class Search {
@@ -552,6 +552,7 @@ public class TkpdBaseURL {
         public static final String PATH_PROFILE_IMAGE = "/web-service/v4/action/upload-image/upload_profile_image.pl";
         public static final String PATH_UPLOAD_VIDEO = "/upload/video";
         public static final String PATH_UPLOAD_ATTACHMENT = "/upload/attachment";
+        public static final String PATH_GENERATE_HOST_RESO = "/v4/action/resolution-center/generate_token_host.pl";
     }
 
     public static class Tome {
@@ -765,6 +766,7 @@ public class TkpdBaseURL {
         public static final String PATH_OPERATOR = "operator/list";
         public static final String PATH_PRODUCT = "product/list";
         public static final String PATH_RECENT_NUMBER = "recent-number";
+        public static final String PATH_NUMBER_LIST = "favorite/list";
         public static final String PATH_LAST_ORDER = "last-order";
         public static final String PATH_SALDO = "saldo";
         public static final String PATH_GET_CART = "cart";
@@ -798,9 +800,11 @@ public class TkpdBaseURL {
     }
 
     public static class ResCenterV2 {
-        public static final String BASE_RESOLUTION = WEB_DOMAIN + "resolution/v1/";
-        public static final String BASE_INBOX_RESOLUTION = "inbox";
-        public static final String BASE_DETAIL_RESOLUTION = "detail/{resolution_id}";
+        public static final String BASE_RESOLUTION = WEB_DOMAIN + "resolution/";
+        public static final String BASE_RESOLUTION_VERSION_1 = "v1/";
+        public static final String BASE_RESOLUTION_VERSION_2 = "v2/";
+        public static final String BASE_INBOX_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "inbox";
+        public static final String BASE_DETAIL_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
 
         public static final String GET_RESOLUTION_LIST = BASE_INBOX_RESOLUTION;
         public static final String GET_RESOLUTION_DETAIL = BASE_DETAIL_RESOLUTION;
@@ -812,6 +816,23 @@ public class TkpdBaseURL {
         public static final String GET_RESOLUTION_LIST_PRODUCT = BASE_DETAIL_RESOLUTION + "/product";
         public static final String GET_RESOLUTION_PRODUCT_DETAIL = BASE_DETAIL_RESOLUTION + "/product/{trouble_id}";
         public static final String ACTION_REPLY_RESOLUTION = BASE_DETAIL_RESOLUTION + "/reply";
+
+
+        public static final String BASE_RESOLUTION_CREATE = BASE_RESOLUTION_VERSION_2 + "create/{order_id}";
+        public static final String BASE_RESOLUTION_VALIDATE = BASE_RESOLUTION_VERSION_2 + "create/{order_id}";
+        public static final String BASE_RESOLUTION_SUBMIT = BASE_RESOLUTION_VERSION_2 + "create/{order_id}";
+        public static final String GET_RESOLUTION_STEP_1 = BASE_RESOLUTION_CREATE + "/step1";
+        public static final String POST_RESOLUTION_STEP_2_3 = BASE_RESOLUTION_CREATE + "/step2_3";
+
+        public static final String BASE_RESOLUTION_EDIT = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
+        public static final String GET_RESOLUTION_EDIT = BASE_RESOLUTION_EDIT + "/edit";
+        public static final String POST_RESOLUTION_EDIT = BASE_RESOLUTION_EDIT + "/edit";
+        public static final String GET_RESOLUTION_APPEAL = BASE_RESOLUTION_EDIT + "/appeal";
+        public static final String POST_RESOLUTION_APPEAL = BASE_RESOLUTION_EDIT + "/appeal";
+
+
+
+
     }
 
     public static class Replacement {
