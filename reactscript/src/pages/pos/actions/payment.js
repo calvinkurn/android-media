@@ -83,7 +83,8 @@ const getGatewayCode = (data) => {
 }
 
 const makePaymentV2 = (api_url, data, gateway_code) => {
-  const checkout_data = data.checkout_data
+  console.log(data)
+  const checkoutData = data.checkout_data.data.data
   const exp_month = (data.expiry_date).substring(0, (data.expiry_date).indexOf('/'))
   const exp_year = (data.expiry_date).substring((data.expiry_date).indexOf("/") + 1)
   const cc_card_no_without_spaces = (data.cc_no).replace(/\s/g, '')
@@ -95,19 +96,23 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
     cc_cvv: parseInt(data.cvv),
     inst_term: data.installment_term,
     gateway_code: gateway_code,
-    payment_amount: parseFloat(checkout_data.data.payment_amount),
-    merchant_code: checkout_data.data.merchant_code,
-    profile_code: checkout_data.data.profile_code,
-    transaction_id: checkout_data.data.transaction_id,
-    signature: checkout_data.data.signature
+    payment_amount: parseFloat(checkoutData.payment_amount),
+    merchant_code: checkoutData.merchant_code,
+    profile_code: checkoutData.profile_code,
+    transaction_id: checkoutData.transaction_id,
+    signature: checkoutData.signature
   }
   console.log(data_params)
 
-  return NetworkModule.getResponse(`${api_url.api_url_pcidss}/v2/payment/process/CREDITCARD`, `POST`, JSON.stringify(data_params), true)
+  return NetworkModule.getResponseJson(`${api_url.api_url_pcidss}`, `POST`, JSON.stringify(data_params), true)
     .then(res => {
       const jsonResponse = JSON.parse(res)
       console.log(jsonResponse)
-      return jsonResponse
+      if (jsonResponse.status === '200 Ok'){
+        if (jsonResponse.data.errors === null){
+          return jsonResponse
+        }
+      }
     })
     .catch(err => { 
       console.log(err) 

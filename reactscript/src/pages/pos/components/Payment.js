@@ -120,7 +120,10 @@ class payment extends Component {
   }
 
   render() {
+    const data_props = this.props.navigation.state.params
     const checkout_data = JSON.parse(this.props.navigation.state.params.checkout_data)
+    const total_payment = (data_props.total_payment).toLocaleString("id")
+    console.log(data_props)
     console.log(checkout_data)
     // console.log(this.state)
     let years = this.state.years().map((i) => {
@@ -144,7 +147,7 @@ class payment extends Component {
                 Total Pembayaran
             </Text>
               <Text style={styles.row1Text}>
-                Rp {(checkout_data.data.payment_amount).toLocaleString("id")}
+                Rp {total_payment}
             </Text>
             </View>
 
