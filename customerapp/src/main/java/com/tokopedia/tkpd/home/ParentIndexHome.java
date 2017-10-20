@@ -126,6 +126,15 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 .putExtras(extras);
     }
 
+    @DeepLink({Constants.Applinks.FAVORITE})
+    public static Intent getFavoriteApplinkCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ParentIndexHome.class)
+                .putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FAVORITE)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
+
     @DeepLink(Constants.Applinks.HOME_CATEGORY)
     public static Intent getCategoryApplinkCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -330,7 +339,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             mViewPager.setAdapter(adapter);
             mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
             indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
-            if (initStateFragment == INIT_STATE_FRAGMENT_HOTLIST){
+            if (initStateFragment == INIT_STATE_FRAGMENT_HOTLIST) {
                 mViewPager.setCurrentItem(1);
             } else {
                 mViewPager.setCurrentItem(0);
