@@ -217,8 +217,7 @@ public class InboxReputationDetailItemViewHolder extends
             viewReview.setVisibility(View.VISIBLE);
             giveReview.setVisibility(View.GONE);
 
-            reviewerName.setText(MethodChecker.fromHtml(getReviewerNameText(element
-                    .getReviewerName(), element.isReviewIsAnonymous())));
+            reviewerName.setText(MethodChecker.fromHtml(getReviewerNameText(element)));
             reviewerName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -409,12 +408,14 @@ public class InboxReputationDetailItemViewHolder extends
         return list;
     }
 
-    private String getReviewerNameText(String reviewerName, boolean reviewIsAnonymous) {
-        if (reviewIsAnonymous && element.getTab() != InboxReputationActivity.TAB_BUYER_REVIEW) {
+    private String getReviewerNameText(InboxReputationDetailItemViewModel element) {
+        if (element.isReviewIsAnonymous()
+                && element.getTab() != InboxReputationActivity.TAB_BUYER_REVIEW) {
             return MainApplication.getAppContext().getString(R.string.by) + " " +
-                    getAnonymousName(reviewerName);
+                    getAnonymousName(element.getReviewerName());
         } else {
-            return MainApplication.getAppContext().getString(R.string.by) + " " + reviewerName;
+            return MainApplication.getAppContext().getString(R.string.by) + " " +
+                    element.getReviewerName();
         }
     }
 
