@@ -21,8 +21,15 @@ class PaymentProcessing extends Component {
 
 
   render() {
-    if (this.props.processing_status_msg === 'SUCCESS' && !this.props.processing_isFetchingParams && !this.props.processing_showLoadingPage){
-      NavigationModule.navigate('posapp://payment/otp', JSON.stringify(this.props.processing_data))
+    const { 
+      processing_status_msg, 
+      processing_isFetchingParams, 
+      processing_showLoadingPage, 
+      processing_data 
+    } = this.props
+    
+    if (processing_status_msg === 'SUCCESS' && !processing_isFetchingParams && !processing_showLoadingPage){
+      NavigationModule.navigate('posapp://payment/otp', JSON.stringify(processing_data))
     }
 
     return (
@@ -41,11 +48,12 @@ class PaymentProcessing extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log(state.paymentV2)
   return {
     ...state.paymentV2,
     processing_isFetchingParams: state.paymentV2.processing_isFetchingParams,
     processing_showLoadingPage: state.paymentV2.processing_showLoadingPage,
-    processing_data: state.paymentV2.processing_data,
+    processing_data: state.paymentV2.processing_data.data,
     processing_status_msg: state.paymentV2.processing_status_msg
   }
 }

@@ -39,8 +39,10 @@ class PaymentBank extends Component {
   }
 
   _handleButtonPress = () => {
-    const selected_installment = !this.state.selectedEmiId ? 0 : (this.state.selectedEmiId);
-     const selectedBankData = !this.state.selectedBankData ? {} : this.state.selectedBankData;
+    const selected_installment = !this.state.selectedEmiId ? 0 : (this.state.selectedEmiId)
+    const selectedBankData = !this.state.selectedBankData ? {} : this.state.selectedBankData
+    const checkout_data = JSON.parse(this.props.screenProps.checkout_data)
+    const payment_amount = checkout_data.data.data.payment_amount
 
     if (this.state.paymentMethod === 'SCAN'){
       const data_scan_params = {
@@ -51,7 +53,9 @@ class PaymentBank extends Component {
         selectedBankData: selectedBankData,
         total_payment: this.props.screenProps.total_payment
       }
-      NavigationModule.navigate("posapp://payment/scan", JSON.stringify(data_scan_params))
+      console.log(data_scan_params)
+      console.log(this.props.screenProps)
+      // NavigationModule.navigate("posapp://payment/scan", JSON.stringify(data_scan_params))
 
     } else {
       // console.log(this.state.selectedBank, this.state.selectIdBank, this.state.selectedEmiId)
@@ -61,7 +65,7 @@ class PaymentBank extends Component {
         selectIdBank: this.state.selectIdBank,
         selectedEmiId: selected_installment,
         selectedBankData: selectedBankData,
-        total_payment: this.props.screenProps.total_payment
+        total_payment: payment_amount
       })
     }
   };
