@@ -62,23 +62,20 @@ public class ProductManageListAdapter extends BaseMultipleCheckListAdapter<Produ
     protected void bindData(final int position, final RecyclerView.ViewHolder viewHolder) {
         super.bindData(position, viewHolder);
         final ProductManageViewModel productManageViewModel = data.get(position);
-        if (!productManageViewModel.getProductStatus().equals(StatusProductOption.UNDER_SUPERVISION)) {
-            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (callback != null) {
-                        callback.onItemClicked(productManageViewModel);
-                    }
-                    if (clickOptionCallback != null && clickOptionCallback.isActionModeActive()) {
-                        boolean checked = ((BaseMultipleCheckViewHolder<ProductManageViewModel>) viewHolder).isChecked();
-                        ((BaseMultipleCheckViewHolder<ProductManageViewModel>) viewHolder).setChecked(!checked);
-                        updateChecked(data.get(position), position, !checked);
-                    }
+        final boolean statusUnderSupervision = productManageViewModel.getProductStatus().equals(StatusProductOption.UNDER_SUPERVISION);
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (callback != null) {
+                    callback.onItemClicked(productManageViewModel);
                 }
-            });
-        } else {
-            viewHolder.itemView.setOnClickListener(null);
-        }
+                if (clickOptionCallback != null && clickOptionCallback.isActionModeActive() && !statusUnderSupervision) {
+                    boolean checked = ((BaseMultipleCheckViewHolder<ProductManageViewModel>) viewHolder).isChecked();
+                    ((BaseMultipleCheckViewHolder<ProductManageViewModel>) viewHolder).setChecked(!checked);
+                    updateChecked(data.get(position), position, !checked);
+                }
+            }
+        });
         ((ProductManageListViewHolder) viewHolder).bindFeaturedProduct(isFeaturedProduct(data.get(position).getProductId()));
         ((ProductManageListViewHolder) viewHolder).bindActionMode(isActionMode);
     }
