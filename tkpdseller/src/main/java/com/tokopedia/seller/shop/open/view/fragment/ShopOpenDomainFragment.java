@@ -17,6 +17,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.lib.widget.TkpdTextInputLayout;
+import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopOpenDomainModule;
@@ -59,7 +60,7 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
         component = DaggerShopOpenDomainComponent
                 .builder()
                 .shopOpenDomainModule(new ShopOpenDomainModule())
-                .appComponent(((HasComponent<AppComponent>) getActivity()).getComponent())
+                .shopComponent(getComponent(ShopComponent.class))
                 .build();
         presenter = component.getPresenter();
         presenter.attachView(this);

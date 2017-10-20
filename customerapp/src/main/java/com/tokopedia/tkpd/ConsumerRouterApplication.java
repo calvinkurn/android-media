@@ -69,6 +69,9 @@ import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
+import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
+import com.tokopedia.seller.shop.common.di.component.ShopComponent;
+import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
@@ -112,6 +115,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerProductComponent.Builder daggerProductBuilder;
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private ProductComponent productComponent;
+    private DaggerShopComponent.Builder daggerShopBuilder;
+    private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
     @Inject
     ReactNativeHost reactNativeHost;
@@ -134,6 +139,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                 .appComponent(getApplicationComponent())
         .reactNativeModule(new ReactNativeModule(this));
+        daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
     }
 
     @Override
@@ -142,6 +148,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
         }
         return productComponent;
+    }
+
+    @Override
+    public ShopComponent getShopComponent() {
+        if(shopComponent == null){
+            shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
+        }
+        return shopComponent;
     }
 
     @Override

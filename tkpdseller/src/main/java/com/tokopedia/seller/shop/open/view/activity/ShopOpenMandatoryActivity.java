@@ -15,8 +15,8 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
@@ -64,7 +64,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity implements
         component = DaggerShopSettingComponent
                 .builder()
                 .shopSettingModule(new ShopSettingModule())
-                .appComponent(getApplicationComponent())
+                .shopComponent(((SellerModuleRouter) getApplication()).getShopComponent())
                 .build();
     }
 
@@ -114,18 +114,22 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity implements
         ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
             @Override
             public void onSuccess(ArrayList<String> imageUrls) {
-                File file = UploadPhotoShopTask.writeImageToTkpdPath(AddProductFragment.compressImage(imageUrls.get(0)));
-                if (listenerOnImagePickerReady != null) {
-                    listenerOnImagePickerReady.onImageReady(file.getPath());
-                }
+//                File file = UploadPhotoShopTask.writeImageToTkpdPath(AddProductFragment.compressImage(imageUrls.get(0)));
+//                if (listenerOnImagePickerReady != null) {
+//                    listenerOnImagePickerReady.onImageReady(file.getPath());
+//                }
             }
 
             @Override
+            public void onSuccess(String path) {
+
+            }
+
             public void onSuccess(String path, int position) {
-                File file = UploadPhotoShopTask.writeImageToTkpdPath(AddProductFragment.compressImage(path));
-                if (listenerOnImagePickerReady != null) {
-                    listenerOnImagePickerReady.onImageReady(file.getPath());
-                }
+//                File file = UploadPhotoShopTask.writeImageToTkpdPath(AddProductFragment.compressImage(path));
+//                if (listenerOnImagePickerReady != null) {
+//                    listenerOnImagePickerReady.onImageReady(file.getPath());
+//                }
             }
 
             @Override
