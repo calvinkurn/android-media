@@ -11,6 +11,7 @@ import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
@@ -31,7 +32,7 @@ public class TopAdsEditScheduleWithoutGroupFragment extends TopAdsNewScheduleFra
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .topAdsComponent(getTopAdsComponent())
+                .topAdsComponent(getComponent(TopAdsComponent.class))
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);

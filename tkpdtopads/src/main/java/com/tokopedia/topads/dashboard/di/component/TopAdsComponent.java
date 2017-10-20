@@ -14,7 +14,7 @@ import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
-import com.tokopedia.topads.dashboard.di.module.TopAdsNetworkModule;
+import com.tokopedia.topads.common.di.module.TopAdsNetworkModule;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;

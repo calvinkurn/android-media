@@ -16,7 +16,6 @@ import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -71,13 +70,6 @@ public class InterceptorModule {
     @Provides
     public GlobalTkpdAuthInterceptor provideMojitoTkpdAuthInterceptor() {
         return new GlobalTkpdAuthInterceptor(AuthUtil.KEY.KEY_MOJITO);
-    }
-
-    @ApplicationScope
-    @Provides
-    public TopAdsAuthInterceptor provideTopAdsAuthInterceptor() {
-        String oAuthString = "Bearer " + SessionHandler.getAccessToken();
-        return new TopAdsAuthInterceptor(oAuthString);
     }
 
     @ApplicationScope
