@@ -78,7 +78,7 @@ public class TopAdsKeywordListFragment extends TopAdsAdListFragment<TopAdsKeywor
     protected void initInjector() {
         DaggerTopAdsKeywordComponent.builder()
                 .topAdsKeywordModule(new TopAdsKeywordModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(getTopAdsComponent())
                 .build()
                 .inject(this);
     }

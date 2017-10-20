@@ -2,10 +2,10 @@ package com.tokopedia.topads.dashboard.di.module;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.topads.dashboard.data.repository.GetDepositTopAdsRepositoryImpl;
 import com.tokopedia.topads.dashboard.data.source.GetDepositTopadsDataSource;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.topads.dashboard.di.scope.TopAdsQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.topads.dashboard.domain.GetDepositTopAdsRepository;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;

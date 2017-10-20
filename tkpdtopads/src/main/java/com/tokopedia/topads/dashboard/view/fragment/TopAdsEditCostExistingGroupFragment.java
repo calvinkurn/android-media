@@ -26,7 +26,7 @@ public class TopAdsEditCostExistingGroupFragment extends TopAdsEditCostFragment<
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(getTopAdsComponent())
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);

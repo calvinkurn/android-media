@@ -25,9 +25,11 @@ import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.design.label.DateLabelView;
+import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
@@ -76,6 +78,18 @@ public abstract class TopAdsAdListFragment<P extends
 
     public TopAdsAdListFragment() {
         // Required empty public constructor
+    }
+
+    protected TopAdsComponent getTopAdsComponent(){
+        if(getActivity() != null){
+            if(getActivity().getApplication() instanceof TopAdsModuleRouter){
+                return ((TopAdsModuleRouter)getActivity().getApplication()).getTopAdsComponent();
+            }else{
+                return null;
+            }
+        }else {
+            return null;
+        }
     }
 
     @Override

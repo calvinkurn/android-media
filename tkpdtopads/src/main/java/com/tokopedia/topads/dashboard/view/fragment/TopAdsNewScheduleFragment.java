@@ -19,8 +19,10 @@ import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView;
+import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.dialog.DatePickerDialog;
 import com.tokopedia.topads.dashboard.view.dialog.TimePickerdialog;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
@@ -82,6 +84,18 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
         if (!TextUtils.isEmpty(adId)) {
             showLoading();
             daggerPresenter.getDetailAd(adId);
+        }
+    }
+
+    protected TopAdsComponent getTopAdsComponent(){
+        if(getActivity() != null){
+            if(getActivity().getApplication() instanceof TopAdsModuleRouter){
+                return ((TopAdsModuleRouter)getActivity().getApplication()).getTopAdsComponent();
+            }else{
+                return null;
+            }
+        }else {
+            return null;
         }
     }
 

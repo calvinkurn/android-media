@@ -17,7 +17,9 @@ import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsNewProductListAdapter;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyProductListDataBinder;
@@ -62,6 +64,18 @@ public abstract class TopAdsNewProductListFragment<T extends TopAdsProductListSt
         }
         stepperModel.setTopAdsProductViewModels(adapter.getData());
         goToNextPage();
+    }
+
+    protected TopAdsComponent getTopAdsComponent(){
+        if(getActivity() != null){
+            if(getActivity().getApplication() instanceof TopAdsModuleRouter){
+                return ((TopAdsModuleRouter)getActivity().getApplication()).getTopAdsComponent();
+            }else{
+                return null;
+            }
+        }else {
+            return null;
+        }
     }
 
     protected abstract void initiateStepperModel();

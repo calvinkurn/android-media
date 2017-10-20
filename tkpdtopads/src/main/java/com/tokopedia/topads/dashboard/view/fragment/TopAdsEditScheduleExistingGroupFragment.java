@@ -45,7 +45,7 @@ public class TopAdsEditScheduleExistingGroupFragment extends TopAdsNewScheduleFr
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(getTopAdsComponent())
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);

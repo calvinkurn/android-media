@@ -37,7 +37,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(getTopAdsComponent())
                 .build()
                 .inject(this);
         topAdsDetailNewProductPresenter.attachView(this);

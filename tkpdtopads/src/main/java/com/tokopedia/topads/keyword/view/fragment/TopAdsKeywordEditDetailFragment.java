@@ -20,7 +20,9 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
 import com.tokopedia.topads.keyword.utils.EmptyCurrencyIdrTextWatcher;
@@ -62,10 +64,22 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     protected void initInjector() {
         DaggerTopAdsKeywordEditDetailComponent
                 .builder()
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(getTopAdsComponent())
                 .topAdsKeywordEditDetailModule(new TopAdsKeywordEditDetailModule())
                 .build()
                 .inject(this);
+    }
+
+    protected TopAdsComponent getTopAdsComponent(){
+        if(getActivity() != null){
+            if(getActivity().getApplication() instanceof TopAdsModuleRouter){
+                return ((TopAdsModuleRouter)getActivity().getApplication()).getTopAdsComponent();
+            }else{
+                return null;
+            }
+        }else {
+            return null;
+        }
     }
 
     @Override
