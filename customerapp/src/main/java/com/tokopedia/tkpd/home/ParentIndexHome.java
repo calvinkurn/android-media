@@ -314,7 +314,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             @Override
             public void onSuccessGetUserAttr(UserAttribute.Data data) {
-                CommonUtils.dumper("rxapollo data from cache "+data.toString());
                 if(data!=null)
                     TrackingUtils.setMoEUserAttributes(data);
             }

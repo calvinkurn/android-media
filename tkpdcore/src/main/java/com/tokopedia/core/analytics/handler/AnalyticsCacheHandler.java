@@ -145,8 +145,6 @@ public class AnalyticsCacheHandler {
             @Override
             public void onSuccess(UserAttribute.Data value) {
 
-                CommonUtils.dumper("rxapollo "+value.toString());
-
                 cacheManager.setKey(USER_ATTR);
                 cacheManager.setValue(CacheUtil.convertModelToString(value,
                         new TypeToken<UserAttribute.Data>() {
