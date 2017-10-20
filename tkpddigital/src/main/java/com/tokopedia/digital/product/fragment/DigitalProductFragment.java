@@ -1009,23 +1009,28 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private void handleStyleOther(OrderClientNumber orderClientNumber) {
+        Operator selectedOperator = null;
         if (orderClientNumber.getOperatorId() != null) {
             for (Operator operator : categoryDataState.getOperatorList()) {
                 if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
+                    selectedOperator = operator;
                     digitalProductView.renderUpdateOperatorSelected(operator);
-                    for (Product product : operator.getProductList()) {
-                        if (orderClientNumber.getProductId() != null) {
-                            if (orderClientNumber.getProductId().equals(product.getProductId())) {
-                                digitalProductView.renderUpdateProductSelected(product);
-                            }
-                        }
-                    }
                 }
             }
         }
 
         digitalProductView.renderClientNumberFromContact(orderClientNumber.getClientNumber());
         digitalProductView.clearFocusOnClientNumber();
+
+        if (selectedOperator != null) {
+            for (Product product : selectedOperator.getProductList()) {
+                if (orderClientNumber.getProductId() != null) {
+                    if (orderClientNumber.getProductId().equals(product.getProductId())) {
+                        digitalProductView.renderUpdateProductSelected(product);
+                    }
+                }
+            }
+        }
     }
 
     private void handleStyle1(OrderClientNumber orderClientNumber) {
