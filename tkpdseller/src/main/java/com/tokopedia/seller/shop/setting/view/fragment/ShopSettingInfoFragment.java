@@ -2,7 +2,7 @@ package com.tokopedia.seller.shop.setting.view.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -15,14 +15,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingInfoComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingInfoComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingInfoModule;
-import com.tokopedia.seller.shop.setting.view.listener.ShopSettingInfoListener;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingInfoPresenter;
 import com.tokopedia.seller.shop.setting.view.listener.ShopSettingInfoView;
+import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingInfoPresenter;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -30,23 +32,23 @@ import javax.inject.Inject;
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopSettingInfoFragment extends BaseDaggerFragment
-        implements ShopSettingInfoView, ShopSettingInfoListener.ListenerOnImagePickerReady {
+public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopSettingInfoView {
+
+    public static final int MAX_SELECTION_PICK_IMAGE = 1;
 
     @Inject
     public ShopSettingInfoPresenter presenter;
-    ShopSettingInfoListener shopSettingInfoListenerActivity;
-    TextInputLayout shopDescInputLayout;
-    EditText shopDescInputText;
-    TextInputLayout shopSloganInputLayout;
-    EditText shopSloganInputText;
-    View containerBrowseFile;
-    View containerImagePicker;
-    ImageView imagePicker;
-    TextView errorImageEmpty;
-    Button buttonNext;
-    ProgressDialog progressDialog;
-    String uriPathImage = "";
+    private TextInputLayout shopDescInputLayout;
+    private EditText shopDescInputText;
+    private TextInputLayout shopSloganInputLayout;
+    private EditText shopSloganInputText;
+    private View containerBrowseFile;
+    private View containerImagePicker;
+    private ImageView imagePicker;
+    private TextView errorImageEmpty;
+    private Button buttonNext;
+    private ProgressDialog progressDialog;
+    private String uriPathImage = "";
     private ShopSettingInfoComponent component;
 
     public static ShopSettingInfoFragment createInstance() {
@@ -61,14 +63,6 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment
                 .shopSettingComponent(getComponent(ShopSettingComponent.class))
                 .build();
         component.inject(this);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof ShopSettingInfoListener) {
-            shopSettingInfoListenerActivity = (ShopSettingInfoListener) context;
-        }
     }
 
     @Nullable
@@ -171,16 +165,50 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment
 
     }
 
-    @Override
-    public void onImageReady(String uriPathImage) {
-        this.uriPathImage = uriPathImage;
-        imagePicker.setImageDrawable(Drawable.createFromPath(uriPathImage));
-    }
+//    @Override
+//    public void onImageReady(String uriPathImage) {
+//        this.uriPathImage = uriPathImage;
+//        imagePicker.setImageDrawable(Drawable.createFromPath(uriPathImage));
+//    }
 
     private void onClickBrowseImage() {
-        if (shopSettingInfoListenerActivity != null) {
-            shopSettingInfoListenerActivity.onBrowseImageAction(ShopSettingInfoFragment.this);
-        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
+            @Override
+            public void onSuccess(ArrayList<String> imageUrls) {
+//                File file = UploadPhotoShopTask.writeImageToTkpdPath(AddProductFragment.compressImage(imageUrls.get(0)));
+//                if (listenerOnImagePickerReady != null) {
+//                    listenerOnImagePickerReady.onImageReady(file.getPath());
+//                }
+            }
+
+            @Override
+            public void onSuccess(String path) {
+
+            }
+
+            public void onSuccess(String path, int position) {
+//                File file = UploadPhotoShopTask.writeImageToTkpdPath(AddProductFragment.compressImage(path));
+//                if (listenerOnImagePickerReady != null) {
+//                    listenerOnImagePickerReady.onImageReady(file.getPath());
+//                }
+            }
+
+            @Override
+            public void onFailed(String message) {
+
+            }
+
+            @Override
+            public Context getContext() {
+                return getActivity();
+            }
+        }, requestCode, resultCode, data);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.tokopedia.seller.shop.setting.view.fragment;
 
-import android.content.Context;
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -8,9 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
@@ -18,38 +24,34 @@ import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingLocationC
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingLocationComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingLocationModule;
-import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLocationListener;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingDistrictViewHolderListener;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLocationPickupViewHolderListener;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLocationView;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewModel;
 import com.tokopedia.seller.shop.setting.view.model.ShopSettingLocationModel;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationPresenter;
-import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLocationView;
 import com.tokopedia.seller.shop.setting.view.viewholder.ShopSettingDistrictViewHolder;
-import com.tokopedia.seller.shop.setting.view.listener.ShopSettingDistrictViewHolderListener;
 import com.tokopedia.seller.shop.setting.view.viewholder.ShopSettingLocationPickupViewHolder;
-import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLocationPickupViewHolderListener;
 
 import javax.inject.Inject;
 
 /**
  * Created by Nathaniel on 3/16/2017.
  */
-public class ShopSettingShopSettingLocationFragment
-        extends BaseDaggerFragment
-        implements ShopSettingLocationView,
-        ShopSettingDistrictViewHolderListener,
-        ShopSettingLocationPickupViewHolderListener {
-    public static final String TAG = "ShopSettingLocation";
+public class ShopSettingLocationFragment extends BaseDaggerFragment implements
+        ShopSettingLocationView, ShopSettingDistrictViewHolderListener, ShopSettingLocationPickupViewHolderListener {
+
+    private static final int OPEN_MAP_CODE = 1000;
+
     @Inject
     public ShopSettingLocationPresenter presenter;
     private ShopSettingLocationComponent component;
     private TkpdProgressDialog tkpdProgressDialog;
-    private ShopSettingLocationListener listener;
     private ShopSettingDistrictViewHolder shopSettingDistrictViewHolder;
     private ShopSettingLocationPickupViewHolder shopSettingLocationPickupViewHolder;
 
-
-    public static ShopSettingShopSettingLocationFragment getInstance() {
-        return new ShopSettingShopSettingLocationFragment();
+    public static ShopSettingLocationFragment getInstance() {
+        return new ShopSettingLocationFragment();
     }
 
     @Override
@@ -60,16 +62,6 @@ public class ShopSettingShopSettingLocationFragment
                 .shopSettingComponent(getComponent(ShopSettingComponent.class))
                 .build();
         component.inject(this);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof ShopSettingLocationListener) {
-            this.listener = ((ShopSettingLocationListener) context);
-        } else {
-            throw new RuntimeException("Please implement ShopSettingLocationListener to the activity");
-        }
     }
 
     @Nullable
@@ -90,15 +82,10 @@ public class ShopSettingShopSettingLocationFragment
     }
 
     protected void onNextButtonClicked() {
-        try {
-            ShopSettingLocationModel model = getDataModel();
-            listener.goToShopSettingLogisticFragment(model);
-        } catch (Exception e) {
 
-        }
     }
 
-    private ShopSettingLocationModel getDataModel() throws RuntimeException {
+    protected ShopSettingLocationModel getDataModel() throws RuntimeException {
         ShopSettingLocationModel model = new ShopSettingLocationModel();
         model.setDistrictCode(shopSettingDistrictViewHolder.getDistrictCode());
         model.setPostalCode(shopSettingLocationPickupViewHolder.getPostalCode());
@@ -127,7 +114,31 @@ public class ShopSettingShopSettingLocationFragment
 
     @Override
     public void goToPickupLocationPicker(LocationPass locationPass) {
-        listener.goToPickupLocationPicker(locationPass);
+        GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
+
+        int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
+
+        if (ConnectionResult.SUCCESS == resultCode) {
+            Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
+            startActivityForResult(intent, OPEN_MAP_CODE);
+        } else {
+            CommonUtils.dumper("Google play services unavailable");
+            Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
+            dialog.show();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case OPEN_MAP_CODE:
+                    LocationPass locationPass = data.getParcelableExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+                    changePickupLocation(locationPass);
+                    break;
+            }
+        }
     }
 
     @Override

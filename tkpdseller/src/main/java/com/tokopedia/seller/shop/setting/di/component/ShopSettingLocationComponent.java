@@ -2,7 +2,7 @@ package com.tokopedia.seller.shop.setting.di.component;
 
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingLocationModule;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingLocationScope;
-import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingShopSettingLocationFragment;
+import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationFragment;
 
 import dagger.Component;
 
@@ -13,5 +13,5 @@ import dagger.Component;
 @Component(modules = ShopSettingLocationModule.class, dependencies = ShopSettingComponent.class)
 public interface ShopSettingLocationComponent {
 
-    void inject(ShopSettingShopSettingLocationFragment fragment);
+    void inject(ShopSettingLocationFragment fragment);
 }

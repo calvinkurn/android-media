@@ -24,7 +24,10 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     protected StepperModel stepperModel;
     private RoundCornerProgressBar progressStepper;
-    int currentPosition = 1;
+    private int currentPosition = 1;
+
+    @NonNull
+    protected abstract List<Fragment> getListFragment();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,10 +104,6 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
-
-    @NonNull
-    protected abstract List<Fragment> getListFragment();
-
 
     public void updateToolbarTitle() {
         getSupportActionBar().setTitle(getString(R.string.top_ads_label_stepper, currentPosition, getListFragment().size()));

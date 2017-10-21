@@ -1,6 +1,5 @@
 package com.tokopedia.seller.shop.setting.view.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -14,9 +13,8 @@ import com.tokopedia.seller.shop.setting.di.component.DaggerShopSetingLogisticCo
 import com.tokopedia.seller.shop.setting.di.component.ShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSetingLogisticModule;
-import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticListener;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenter;
 import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
+import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenter;
 
 import javax.inject.Inject;
 
@@ -28,11 +26,11 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
 
     public static final String TAG = "ShopSettingLogistic";
     public static final int UNSELECTED_DISTRICT_VIEW = -1;
+
     @Inject
     public ShopSettingLogisticPresenter presenter;
     private ShopSetingLogisticComponent component;
     private int districtCode = UNSELECTED_DISTRICT_VIEW;
-    private ShopSettingLogisticListener listener;
 
     public static ShopSettingLogisticFragment getInstance() {
         return new ShopSettingLogisticFragment();
@@ -46,16 +44,6 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
                 .shopSettingComponent(getComponent(ShopSettingComponent.class))
                 .build();
         component.inject(this);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof ShopSettingLogisticListener) {
-            listener = ((ShopSettingLogisticListener) context);
-        } else {
-            throw new RuntimeException("Activity must implement ShopSettingLogisticListener");
-        }
     }
 
     @Nullable
@@ -83,14 +71,14 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
         NetworkErrorHelper.showSnackbar(getActivity(), string);
     }
 
-    private void onSelected() {
-        try {
-            updateLogistic();
-        } catch (Exception e) {
-            showMessageError(getString(R.string.shop_setting_city_not_filled));
-            listener.goBackToLocation();
-        }
-    }
+//    private void onSelected() {
+//        try {
+//            updateLogistic();
+//        } catch (Exception e) {
+//            showMessageError(getString(R.string.shop_setting_city_not_filled));
+//            listener.goBackToLocation();
+//        }
+//    }
 
     @Override
     protected String getScreenName() {
