@@ -23,14 +23,12 @@ public class LocationPickupViewHolder {
 
     public LocationPickupViewHolder(Context context, View view, final LocationPickupViewHolderListener listener) {
         this.context = context;
-        view
-                .findViewById(R.id.action_shop_setting_location_pickup_button)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        listener.goToPickupLocationPicker(locationPass);
-                    }
-                });
+        view.findViewById(R.id.action_shop_setting_location_pickup_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.goToPickupLocationPicker(locationPass);
+            }
+        });
         locationPass = generateEmptyLocationPass();
         locationPickupTextView = (TextView) view.findViewById(R.id.text_view_shop_setting_location_pickup);
         postalCode = (EditText) view.findViewById(R.id.edit_text_shop_setting_location_postal_code);

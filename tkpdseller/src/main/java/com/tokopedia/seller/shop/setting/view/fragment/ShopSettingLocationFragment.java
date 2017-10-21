@@ -77,20 +77,18 @@ public class ShopSettingLocationFragment
         View view = inflater.inflate(R.layout.fragment_shop_setting_location, container, false);
         districtViewHolder = new DistrictViewHolder(getActivity(), view, this);
         locationPickupViewHolder = new LocationPickupViewHolder(getActivity(), view, this);
-        view
-                .findViewById(R.id.continue_button)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        continueToNextStep();
-                    }
-                });
+        view.findViewById(R.id.continue_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNextButtonClicked();
+            }
+        });
         presenter.attachView(this);
         presenter.getDistrictData();
         return view;
     }
 
-    private void continueToNextStep() {
+    protected void onNextButtonClicked() {
         try {
             ShopSettingLocationModel model = getDataModel();
             listener.goToShopSettingLogisticFragment(model);

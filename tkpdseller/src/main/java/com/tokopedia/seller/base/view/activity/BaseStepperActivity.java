@@ -37,8 +37,8 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     @Override
     protected void setupFragment(Bundle savedinstancestate) {
-        if(getListFragment().size() >= currentPosition) {
-            Fragment fragment = getListFragment().get(currentPosition -1);
+        if (getListFragment().size() >= currentPosition) {
+            Fragment fragment = getListFragment().get(currentPosition - 1);
             Bundle bundle = new Bundle();
             bundle.putParcelable(STEPPER_MODEL_EXTRA, stepperModel);
             fragment.setArguments(bundle);
@@ -85,9 +85,9 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     }
 
     private void onBackEvent() {
-        if(currentPosition > 1) {
+        if (currentPosition > 1) {
             decrementPage();
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -95,7 +95,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if(itemId == android.R.id.home){
+        if (itemId == android.R.id.home) {
             onBackEvent();
             return false;
         }

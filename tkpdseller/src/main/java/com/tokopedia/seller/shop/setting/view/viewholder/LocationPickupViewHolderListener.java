@@ -7,5 +7,7 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
  */
 
 public interface LocationPickupViewHolderListener {
+
     void goToPickupLocationPicker(LocationPass locationPass);
+
 }

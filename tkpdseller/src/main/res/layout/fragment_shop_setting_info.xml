@@ -111,7 +111,7 @@
 
         <Button
             android:id="@+id/button_next"
-            style="@style/Button.TopAds.ShopSetting"
+            style="@style/Button.Submit.Green"
             android:text="@string/title_next" />
 
     </LinearLayout>

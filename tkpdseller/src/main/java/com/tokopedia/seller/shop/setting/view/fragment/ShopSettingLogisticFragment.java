@@ -23,9 +23,8 @@ import javax.inject.Inject;
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopSettingLogisticFragment
-        extends BaseDaggerFragment
-        implements ShopSettingLogisticView {
+public class ShopSettingLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView {
+
     public static final String TAG = "ShopSettingLogistic";
     public static final int UNSELECTED_DISTRICT_VIEW = -1;
     @Inject
@@ -62,6 +61,7 @@ public class ShopSettingLogisticFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_setting_logistic, container, false);
+        updateLogistic();
         return view;
     }
 
@@ -69,7 +69,6 @@ public class ShopSettingLogisticFragment
     public void changeDistrictCode(int districtCode) {
         this.districtCode = districtCode;
     }
-
 
     private void updateLogistic() throws RuntimeException {
         if (districtCode != UNSELECTED_DISTRICT_VIEW) {
@@ -83,16 +82,14 @@ public class ShopSettingLogisticFragment
         NetworkErrorHelper.showSnackbar(getActivity(), string);
     }
 
-//    @Override
-//    public void onSelected() {
-//        try {
-//            updateLogistic();
-//        } catch (Exception e) {
-//            showMessageError(getString(R.string.shop_setting_city_not_filled));
-//            listener.goBackToLocation();
-//        }
-//    }
-//
+    private void onSelected() {
+        try {
+            updateLogistic();
+        } catch (Exception e) {
+            showMessageError(getString(R.string.shop_setting_city_not_filled));
+            listener.goBackToLocation();
+        }
+    }
 
     @Override
     protected String getScreenName() {

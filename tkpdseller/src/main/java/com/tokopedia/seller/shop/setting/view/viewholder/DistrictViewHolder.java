@@ -26,15 +26,9 @@ public class DistrictViewHolder {
     public DistrictViewHolder(Context context, View view, DistrictViewHolderListener listener) {
         this.context = context;
         this.listener = listener;
-        AutoCompleteTextView locationDistrictTextView =
-                (AutoCompleteTextView) view
-                        .findViewById(R.id.edit_text_shop_setting_location_district);
+        AutoCompleteTextView locationDistrictTextView = (AutoCompleteTextView) view.findViewById(R.id.edit_text_shop_setting_location_district);
         districtInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_shop_setting_location_district);
-        locationDistrictAdapter =
-                new LocationCityAdapter(
-                        DistrictViewHolder.this.context,
-                        android.R.layout.simple_dropdown_item_1line
-                );
+        locationDistrictAdapter = new LocationCityAdapter(context, android.R.layout.simple_dropdown_item_1line);
         locationDistrictTextView.setAdapter(locationDistrictAdapter);
         locationDistrictTextView.addTextChangedListener(new TextWatcher() {
             @Override

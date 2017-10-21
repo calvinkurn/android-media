@@ -111,10 +111,14 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.submitShopInfo(uriPathImage, shopSloganInputText.getText().toString(),
-                        shopDescInputText.getText().toString());
+                onNextButtonClicked();
             }
         });
+    }
+
+    protected void onNextButtonClicked() {
+        presenter.submitShopInfo(uriPathImage, shopSloganInputText.getText().toString(),
+                shopDescInputText.getText().toString());
     }
 
     @Override

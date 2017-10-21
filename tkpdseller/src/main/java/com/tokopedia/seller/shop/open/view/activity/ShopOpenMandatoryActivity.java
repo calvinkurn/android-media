@@ -17,6 +17,9 @@ import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
@@ -34,12 +37,10 @@ import java.util.List;
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopOpenMandatoryActivity extends BaseStepperActivity implements
+public class ShopOpenMandatoryActivity extends BaseStepperActivity implements HasComponent<ShopSettingComponent>,
         ShopSettingLocationListener,
-        HasComponent<ShopSettingComponent>,
         ListenerShopSettingInfo, ShopSettingLogisticListener {
 
-    //    StepperLayout stepperLayout;
     public static final int MAX_SELECTION_PICK_IMAGE = 1;
     private static final int OPEN_MAP_CODE = 1000;
     private ShopSettingComponent component;
@@ -57,7 +58,15 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity implements
     @NonNull
     @Override
     protected List<Fragment> getListFragment() {
-        return fragmentList;
+        if (fragmentList == null) {
+            fragmentList = new ArrayList<>();
+            fragmentList.add(new ShopOpenMandatoryInfoFragment());
+            fragmentList.add(new ShopOpenMandatoryLocationFragment());
+            fragmentList.add(new ShopOpenMandatoryLogisticFragment());
+            return fragmentList;
+        } else {
+            return fragmentList;
+        }
     }
 
     protected void initComponent() {

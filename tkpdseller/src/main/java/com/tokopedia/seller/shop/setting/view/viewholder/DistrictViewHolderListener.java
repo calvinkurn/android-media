@@ -5,5 +5,7 @@ package com.tokopedia.seller.shop.setting.view.viewholder;
  */
 
 public interface DistrictViewHolderListener {
+
     void getRecomendationLocationDistrict(String stringTyped);
+
 }
