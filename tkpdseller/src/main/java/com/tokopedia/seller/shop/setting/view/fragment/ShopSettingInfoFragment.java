@@ -20,9 +20,9 @@ import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingInfoCompo
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingInfoComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingInfoModule;
-import com.tokopedia.seller.shop.setting.view.listener.ListenerShopSettingInfo;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingInfoListener;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingInfoPresenter;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingInfoView;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingInfoView;
 
 import javax.inject.Inject;
 
@@ -31,11 +31,11 @@ import javax.inject.Inject;
  */
 
 public class ShopSettingInfoFragment extends BaseDaggerFragment
-        implements ShopSettingInfoView, ListenerShopSettingInfo.ListenerOnImagePickerReady {
+        implements ShopSettingInfoView, ShopSettingInfoListener.ListenerOnImagePickerReady {
 
     @Inject
     public ShopSettingInfoPresenter presenter;
-    ListenerShopSettingInfo listenerShopSettingInfoActivity;
+    ShopSettingInfoListener shopSettingInfoListenerActivity;
     TextInputLayout shopDescInputLayout;
     EditText shopDescInputText;
     TextInputLayout shopSloganInputLayout;
@@ -66,8 +66,8 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ListenerShopSettingInfo) {
-            listenerShopSettingInfoActivity = (ListenerShopSettingInfo) context;
+        if (context instanceof ShopSettingInfoListener) {
+            shopSettingInfoListenerActivity = (ShopSettingInfoListener) context;
         }
     }
 
@@ -178,8 +178,8 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment
     }
 
     private void onClickBrowseImage() {
-        if (listenerShopSettingInfoActivity != null) {
-            listenerShopSettingInfoActivity.onBrowseImageAction(ShopSettingInfoFragment.this);
+        if (shopSettingInfoListenerActivity != null) {
+            shopSettingInfoListenerActivity.onBrowseImageAction(ShopSettingInfoFragment.this);
         }
     }
 

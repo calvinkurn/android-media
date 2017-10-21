@@ -18,18 +18,16 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragment;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryShopSettingLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
-import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationListener;
-import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLogisticListener;
-import com.tokopedia.seller.shop.setting.view.listener.ListenerShopSettingInfo;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingInfoListener;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLocationListener;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticListener;
 import com.tokopedia.seller.shop.setting.view.model.ShopSettingLocationModel;
-import com.tokopedia.seller.shop.utils.UploadPhotoShopTask;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,12 +37,12 @@ import java.util.List;
 
 public class ShopOpenMandatoryActivity extends BaseStepperActivity implements HasComponent<ShopSettingComponent>,
         ShopSettingLocationListener,
-        ListenerShopSettingInfo, ShopSettingLogisticListener {
+        ShopSettingInfoListener, ShopSettingLogisticListener {
 
     public static final int MAX_SELECTION_PICK_IMAGE = 1;
     private static final int OPEN_MAP_CODE = 1000;
     private ShopSettingComponent component;
-    private ListenerShopSettingInfo.ListenerOnImagePickerReady listenerOnImagePickerReady;
+    private ShopSettingInfoListener.ListenerOnImagePickerReady listenerOnImagePickerReady;
 
     private List<Fragment> fragmentList;
 
@@ -61,7 +59,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity implements Ha
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
             fragmentList.add(new ShopOpenMandatoryInfoFragment());
-            fragmentList.add(new ShopOpenMandatoryLocationFragment());
+            fragmentList.add(new ShopOpenMandatoryShopSettingLocationFragment());
             fragmentList.add(new ShopOpenMandatoryLogisticFragment());
             return fragmentList;
         } else {

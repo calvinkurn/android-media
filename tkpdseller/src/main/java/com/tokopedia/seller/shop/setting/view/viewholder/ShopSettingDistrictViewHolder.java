@@ -9,26 +9,27 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.shop.setting.view.adapter.LocationCityAdapter;
+import com.tokopedia.seller.shop.setting.view.adapter.ShopSettingLocationCityAdapter;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingDistrictViewHolderListener;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewModel;
 
 /**
  * Created by sebastianuskh on 3/23/17.
  */
 
-public class DistrictViewHolder {
+public class ShopSettingDistrictViewHolder {
 
     private final Context context;
-    private final DistrictViewHolderListener listener;
+    private final ShopSettingDistrictViewHolderListener listener;
     private final TextInputLayout districtInputLayout;
-    private final LocationCityAdapter locationDistrictAdapter;
+    private final ShopSettingLocationCityAdapter locationDistrictAdapter;
 
-    public DistrictViewHolder(Context context, View view, DistrictViewHolderListener listener) {
+    public ShopSettingDistrictViewHolder(Context context, View view, ShopSettingDistrictViewHolderListener listener) {
         this.context = context;
         this.listener = listener;
         AutoCompleteTextView locationDistrictTextView = (AutoCompleteTextView) view.findViewById(R.id.edit_text_shop_setting_location_district);
         districtInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_shop_setting_location_district);
-        locationDistrictAdapter = new LocationCityAdapter(context, android.R.layout.simple_dropdown_item_1line);
+        locationDistrictAdapter = new ShopSettingLocationCityAdapter(context, android.R.layout.simple_dropdown_item_1line);
         locationDistrictTextView.setAdapter(locationDistrictAdapter);
         locationDistrictTextView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -44,7 +45,7 @@ public class DistrictViewHolder {
             @Override
             public void afterTextChanged(Editable s) {
                 locationDistrictAdapter.clearSelectedDistrict();
-                DistrictViewHolder.this.listener.getRecomendationLocationDistrict(s.toString());
+                ShopSettingDistrictViewHolder.this.listener.getRecomendationLocationDistrict(s.toString());
             }
         });
         locationDistrictTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

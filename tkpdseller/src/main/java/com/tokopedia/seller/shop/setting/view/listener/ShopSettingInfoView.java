@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.setting.view.presenter;
+package com.tokopedia.seller.shop.setting.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
 

@@ -18,37 +18,38 @@ import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingLocationC
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingLocationComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingLocationModule;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLocationListener;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewModel;
 import com.tokopedia.seller.shop.setting.view.model.ShopSettingLocationModel;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationPresenter;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
-import com.tokopedia.seller.shop.setting.view.viewholder.DistrictViewHolder;
-import com.tokopedia.seller.shop.setting.view.viewholder.DistrictViewHolderListener;
-import com.tokopedia.seller.shop.setting.view.viewholder.LocationPickupViewHolder;
-import com.tokopedia.seller.shop.setting.view.viewholder.LocationPickupViewHolderListener;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLocationView;
+import com.tokopedia.seller.shop.setting.view.viewholder.ShopSettingDistrictViewHolder;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingDistrictViewHolderListener;
+import com.tokopedia.seller.shop.setting.view.viewholder.ShopSettingLocationPickupViewHolder;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLocationPickupViewHolderListener;
 
 import javax.inject.Inject;
 
 /**
  * Created by Nathaniel on 3/16/2017.
  */
-public class ShopSettingLocationFragment
+public class ShopSettingShopSettingLocationFragment
         extends BaseDaggerFragment
         implements ShopSettingLocationView,
-        DistrictViewHolderListener,
-        LocationPickupViewHolderListener {
+        ShopSettingDistrictViewHolderListener,
+        ShopSettingLocationPickupViewHolderListener {
     public static final String TAG = "ShopSettingLocation";
     @Inject
     public ShopSettingLocationPresenter presenter;
     private ShopSettingLocationComponent component;
     private TkpdProgressDialog tkpdProgressDialog;
     private ShopSettingLocationListener listener;
-    private DistrictViewHolder districtViewHolder;
-    private LocationPickupViewHolder locationPickupViewHolder;
+    private ShopSettingDistrictViewHolder shopSettingDistrictViewHolder;
+    private ShopSettingLocationPickupViewHolder shopSettingLocationPickupViewHolder;
 
 
-    public static ShopSettingLocationFragment getInstance() {
-        return new ShopSettingLocationFragment();
+    public static ShopSettingShopSettingLocationFragment getInstance() {
+        return new ShopSettingShopSettingLocationFragment();
     }
 
     @Override
@@ -75,8 +76,8 @@ public class ShopSettingLocationFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_setting_location, container, false);
-        districtViewHolder = new DistrictViewHolder(getActivity(), view, this);
-        locationPickupViewHolder = new LocationPickupViewHolder(getActivity(), view, this);
+        shopSettingDistrictViewHolder = new ShopSettingDistrictViewHolder(getActivity(), view, this);
+        shopSettingLocationPickupViewHolder = new ShopSettingLocationPickupViewHolder(getActivity(), view, this);
         view.findViewById(R.id.continue_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,8 +100,8 @@ public class ShopSettingLocationFragment
 
     private ShopSettingLocationModel getDataModel() throws RuntimeException {
         ShopSettingLocationModel model = new ShopSettingLocationModel();
-        model.setDistrictCode(districtViewHolder.getDistrictCode());
-        model.setPostalCode(locationPickupViewHolder.getPostalCode());
+        model.setDistrictCode(shopSettingDistrictViewHolder.getDistrictCode());
+        model.setPostalCode(shopSettingLocationPickupViewHolder.getPostalCode());
         return model;
     }
 
@@ -116,7 +117,7 @@ public class ShopSettingLocationFragment
 
     @Override
     public void renderRecomendationDistrictModel(RecommendationDistrictViewModel viewModels) {
-        districtViewHolder.renderRecomendationDistrictModel(viewModels);
+        shopSettingDistrictViewHolder.renderRecomendationDistrictModel(viewModels);
     }
 
     @Override
@@ -131,7 +132,7 @@ public class ShopSettingLocationFragment
 
     @Override
     public void changePickupLocation(LocationPass locationPass) {
-        locationPickupViewHolder.changePickupLocation(locationPass);
+        shopSettingLocationPickupViewHolder.changePickupLocation(locationPass);
     }
 
     @Override

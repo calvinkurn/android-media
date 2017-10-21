@@ -15,10 +15,10 @@ import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictItemVi
  * Created by sebastianuskh on 3/22/17.
  */
 
-class LocationDistrictViewHolder {
+class ShopSettingLocationDistrictViewHolder {
     private final TextView districtStringTextView;
 
-    public LocationDistrictViewHolder(View convertView) {
+    public ShopSettingLocationDistrictViewHolder(View convertView) {
         districtStringTextView = (TextView) convertView.findViewById(R.id.textivew_district_string);
     }
 

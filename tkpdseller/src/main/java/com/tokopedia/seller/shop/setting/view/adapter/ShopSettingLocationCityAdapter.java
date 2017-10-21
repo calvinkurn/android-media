@@ -13,34 +13,32 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictItemViewModel;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewModel;
 
-import java.util.List;
-
 /**
  * Created by sebastianuskh on 3/22/17.
  */
 
-public class LocationCityAdapter extends ArrayAdapter<String> {
+public class ShopSettingLocationCityAdapter extends ArrayAdapter<String> {
 
     public static final int UNSELECTED_DISTRICT = -1;
     private RecommendationDistrictViewModel datas;
     private int selected = UNSELECTED_DISTRICT;
 
-    public LocationCityAdapter(@NonNull Context context, @LayoutRes int resource) {
+    public ShopSettingLocationCityAdapter(@NonNull Context context, @LayoutRes int resource) {
         super(context, resource);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LocationDistrictViewHolder viewHolder;
+        ShopSettingLocationDistrictViewHolder viewHolder;
         if(convertView == null){
             convertView = LayoutInflater
                     .from(parent.getContext())
                     .inflate(R.layout.shop_setting_location_district_autocomplete, parent, false);
-            viewHolder = new LocationDistrictViewHolder(convertView);
+            viewHolder = new ShopSettingLocationDistrictViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (LocationDistrictViewHolder) convertView.getTag();
+            viewHolder = (ShopSettingLocationDistrictViewHolder) convertView.getTag();
         }
         viewHolder.bindData(datas.getItems().get(position), datas.getStringTyped());
         return convertView;

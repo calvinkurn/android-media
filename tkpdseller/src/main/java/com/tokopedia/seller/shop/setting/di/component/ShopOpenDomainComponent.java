@@ -1,12 +1,9 @@
 package com.tokopedia.seller.shop.setting.di.component;
 
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.scope.ActivityScope;
-import com.tokopedia.seller.app.BaseFragmentComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
 import com.tokopedia.seller.shop.setting.di.module.ShopOpenDomainModule;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopOpenDomainPresenter;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenter;
 
 import dagger.Component;
 

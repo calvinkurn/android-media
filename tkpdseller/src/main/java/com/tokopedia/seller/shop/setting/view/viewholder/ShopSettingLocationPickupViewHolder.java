@@ -8,12 +8,13 @@ import android.widget.TextView;
 
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLocationPickupViewHolderListener;
 
 /**
  * Created by sebastianuskh on 3/23/17.
  */
 
-public class LocationPickupViewHolder {
+public class ShopSettingLocationPickupViewHolder {
 
     private final Context context;
     private final TextInputLayout postalCodeInputLayout;
@@ -21,7 +22,7 @@ public class LocationPickupViewHolder {
     private final EditText postalCode;
     private LocationPass locationPass;
 
-    public LocationPickupViewHolder(Context context, View view, final LocationPickupViewHolderListener listener) {
+    public ShopSettingLocationPickupViewHolder(Context context, View view, final ShopSettingLocationPickupViewHolderListener listener) {
         this.context = context;
         view.findViewById(R.id.action_shop_setting_location_pickup_button).setOnClickListener(new View.OnClickListener() {
             @Override

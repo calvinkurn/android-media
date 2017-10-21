@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.setting.view.fragment;
+package com.tokopedia.seller.shop.setting.view.listener;
 
 /**
  * Created by sebastianuskh on 3/27/17.

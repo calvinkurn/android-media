@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.setting.view.presenter;
+package com.tokopedia.seller.shop.open.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.app.BaseDiView;
@@ -8,6 +8,9 @@ import com.tokopedia.seller.app.BaseDiView;
  */
 
 public interface ShopOpenDomainView extends CustomerView {
+
     void setDomainCheckResult(boolean existed);
+
     void setShopCheckResult(boolean existed);
+
 }

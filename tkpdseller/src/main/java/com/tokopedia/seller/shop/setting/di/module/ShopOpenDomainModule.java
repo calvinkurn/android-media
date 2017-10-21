@@ -12,8 +12,8 @@ import com.tokopedia.seller.shop.setting.data.source.cloud.service.TomeService;
 import com.tokopedia.seller.shop.setting.domain.ShopOpenRepository;
 import com.tokopedia.seller.shop.setting.domain.interactor.CheckDomainNameUseCase;
 import com.tokopedia.seller.shop.setting.domain.interactor.CheckShopNameUseCase;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopOpenDomainPresenter;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopOpenDomainPresenterImpl;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenter;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;

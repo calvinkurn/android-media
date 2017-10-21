@@ -14,8 +14,9 @@ import com.tokopedia.seller.shop.setting.di.component.DaggerShopSetingLogisticCo
 import com.tokopedia.seller.shop.setting.di.component.ShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSetingLogisticModule;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticListener;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenter;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticView;
+import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
 
 import javax.inject.Inject;
 

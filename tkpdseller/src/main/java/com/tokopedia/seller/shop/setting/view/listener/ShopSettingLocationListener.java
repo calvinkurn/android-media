@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.setting.view.fragment;
+package com.tokopedia.seller.shop.setting.view.listener;
 
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.seller.shop.setting.view.model.ShopSettingLocationModel;

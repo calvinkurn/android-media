@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
@@ -21,8 +19,8 @@ import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopOpenDomainModule;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopOpenDomainPresenter;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopOpenDomainView;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenter;
+import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
 
 import javax.inject.Inject;
 

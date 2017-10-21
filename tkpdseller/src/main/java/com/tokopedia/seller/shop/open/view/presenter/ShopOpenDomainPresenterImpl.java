@@ -1,8 +1,9 @@
-package com.tokopedia.seller.shop.setting.view.presenter;
+package com.tokopedia.seller.shop.open.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.shop.setting.domain.interactor.CheckDomainNameUseCase;
 import com.tokopedia.seller.shop.setting.domain.interactor.CheckShopNameUseCase;
+import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
 
 import java.util.concurrent.TimeUnit;
 
