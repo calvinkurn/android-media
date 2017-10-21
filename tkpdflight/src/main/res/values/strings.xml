@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">flight</string>
+
     <string name="flight_search_one_way">Sekali Jalan</string>
     <string name="flight_search_return">Pulang Pergi</string>
     <string name="flight_search_airport_departure_title">Dari</string>
@@ -11,4 +12,8 @@
     <string name="flight_search_passenger_title">Penumpang</string>
     <string name="flight_search_passenger_class_title">Kelas</string>
     <string name="flight_search_search_ticket">Cari ticket</string>
+
+    <string name="flight_title_product_list">Product List</string>
+    <string name="flight_title_transaction_list">Daftar Transaksi</string>
+    <string name="flight_title_subscribe">Langganan</string>
 </resources>
