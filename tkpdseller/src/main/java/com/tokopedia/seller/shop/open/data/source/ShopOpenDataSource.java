@@ -16,21 +16,16 @@ public class ShopOpenDataSource {
     private final ShopOpenDataCloud shopOpenDataCloud;
 
     @Inject
-    public ShopOpenDataSource(ShopOpenDataCache shopOpenDataCache,
-                              ShopOpenDataCloud shopOpenDataCloud) {
+    public ShopOpenDataSource(ShopOpenDataCache shopOpenDataCache, ShopOpenDataCloud shopOpenDataCloud) {
         this.shopOpenDataCache = shopOpenDataCache;
         this.shopOpenDataCloud = shopOpenDataCloud;
     }
 
     public Observable<Boolean> checkDomainName(String domainName) {
-        // stub
-        // TODO look between cache and clouds
         return shopOpenDataCloud.checkDomainName(domainName);
     }
 
     public Observable<Boolean> checkShopName(String shopName) {
-        // stub
-        // TODO look between cache and cloud
         return shopOpenDataCloud.checkShopName(shopName);
     }
 }

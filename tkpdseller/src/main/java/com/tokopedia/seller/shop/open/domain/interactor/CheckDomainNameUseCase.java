@@ -17,6 +17,7 @@ import rx.Observable;
  */
 
 public class CheckDomainNameUseCase extends UseCase<Boolean> {
+
     private final ShopOpenRepository shopOpenRepository;
 
     @Inject
@@ -35,7 +36,6 @@ public class CheckDomainNameUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return shopOpenRepository.checkDomain(
-                requestParams.getString(ShopExtraConstant.EXTRA_DOMAIN_NAME, ""));
+        return shopOpenRepository.checkDomain(requestParams.getString(ShopExtraConstant.EXTRA_DOMAIN_NAME, ""));
     }
 }

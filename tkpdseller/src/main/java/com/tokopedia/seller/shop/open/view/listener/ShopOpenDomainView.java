@@ -9,8 +9,12 @@ import com.tokopedia.seller.app.BaseDiView;
 
 public interface ShopOpenDomainView extends CustomerView {
 
-    void setDomainCheckResult(boolean existed);
+    void onSuccessCheckShopName(boolean existed);
 
-    void setShopCheckResult(boolean existed);
+    void onErrorCheckShopName(Throwable t);
+
+    void onSuccessCheckShopDomain(boolean existed);
+
+    void onErrorCheckShopDomain(Throwable t);
 
 }

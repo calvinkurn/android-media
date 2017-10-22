@@ -35,65 +35,65 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
         this.checkShopNameUseCase = checkShopNameUseCase;
 
         domainDebounceSubscription = Observable.create(
-            new Observable.OnSubscribe<String>() {
-                @Override
-                public void call(final Subscriber<? super String> subscriber) {
-                    domainListener = new ShopOpenDomainPresenterImpl.QueryListener() {
-                        @Override
-                        public void query(String string) {
-                            subscriber.onNext(string);
-                        }
-                    };
-                }
-            })
-            .debounce(DELAY_DEBOUNCE, TimeUnit.MILLISECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Subscriber<String>() {
-                @Override
-                public void onCompleted() {
+                new Observable.OnSubscribe<String>() {
+                    @Override
+                    public void call(final Subscriber<? super String> subscriber) {
+                        domainListener = new ShopOpenDomainPresenterImpl.QueryListener() {
+                            @Override
+                            public void query(String string) {
+                                subscriber.onNext(string);
+                            }
+                        };
+                    }
+                })
+                .debounce(DELAY_DEBOUNCE, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-                }
+                    }
 
-                @Override
-                public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                }
+                    }
 
-                @Override
-                public void onNext(String s) {
-                    checkDomainWS(s);
-                }
-            });
+                    @Override
+                    public void onNext(String s) {
+                        checkDomainWS(s);
+                    }
+                });
         shopDebounceSubscription = Observable.create(
-            new Observable.OnSubscribe<String>() {
-                @Override
-                public void call(final Subscriber<? super String> subscriber) {
-                    shopListener = new ShopOpenDomainPresenterImpl.QueryListener() {
-                        @Override
-                        public void query(String string) {
-                            subscriber.onNext(string);
-                        }
-                    };
-                }
-            })
-            .debounce(DELAY_DEBOUNCE, TimeUnit.MILLISECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Subscriber<String>() {
-                @Override
-                public void onCompleted() {
+                new Observable.OnSubscribe<String>() {
+                    @Override
+                    public void call(final Subscriber<? super String> subscriber) {
+                        shopListener = new ShopOpenDomainPresenterImpl.QueryListener() {
+                            @Override
+                            public void query(String string) {
+                                subscriber.onNext(string);
+                            }
+                        };
+                    }
+                })
+                .debounce(DELAY_DEBOUNCE, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-                }
+                    }
 
-                @Override
-                public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                }
+                    }
 
-                @Override
-                public void onNext(String s) {
-                    checkShopWS(s);
-                }
-            });
+                    @Override
+                    public void onNext(String s) {
+                        checkShopWS(s);
+                    }
+                });
     }
 
     private interface QueryListener {
@@ -102,25 +102,13 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
 
     @Override
     public void checkShop(String shopName) {
-        if (shopListener!= null) {
+        if (shopListener != null) {
             shopListener.query(shopName);
         }
     }
 
-    private void checkShopWS (String shopName) {
-        checkShopNameUseCase.execute(
-                CheckShopNameUseCase.createRequestParams(shopName),
-                getCheckShopSubscriber());
-    }
-
-    private void checkDomainWS (String domainName) {
-        checkDomainNameUseCase.execute(
-                CheckShopNameUseCase.createRequestParams(domainName),
-                getCheckDomainSubscriber());
-    }
-
-    private Subscriber<Boolean> getCheckShopSubscriber(){
-        return new Subscriber<Boolean>() {
+    private void checkShopWS(String shopName) {
+        checkShopNameUseCase.execute(CheckShopNameUseCase.createRequestParams(shopName), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -128,19 +116,20 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
 
             @Override
             public void onError(Throwable e) {
-                // TODO error network?
+                if (isViewAttached()) {
+                    getView().onErrorCheckShopName(e);
+                }
             }
 
             @Override
             public void onNext(Boolean existed) {
-                getView().setShopCheckResult(existed);
+                getView().onSuccessCheckShopName(existed);
             }
-        };
+        });
     }
 
-
-    private Subscriber<Boolean> getCheckDomainSubscriber(){
-         return new Subscriber<Boolean>() {
+    private void checkDomainWS(String domainName) {
+        checkDomainNameUseCase.execute(CheckDomainNameUseCase.createRequestParams(domainName), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -148,19 +137,21 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
 
             @Override
             public void onError(Throwable e) {
-                // TODO error network?
+                if (isViewAttached()) {
+                    getView().onErrorCheckShopDomain(e);
+                }
             }
 
             @Override
             public void onNext(Boolean existed) {
-                getView().setDomainCheckResult(existed);
+                getView().onSuccessCheckShopDomain(existed);
             }
-        };
+        });
     }
 
     @Override
     public void checkDomain(String domainName) {
-        if (domainListener!= null) {
+        if (domainListener != null) {
             domainListener.query(domainName);
         }
     }

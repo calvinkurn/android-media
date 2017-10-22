@@ -75,10 +75,7 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
         editTextInputShopName = textInputShopName.getEditText();
         editTextInputDomainName = (PrefixEditText) textInputDomainName.getEditText();
 
-
-        String helloName = getString(R.string.hello_blank_name) +
-                " " +
-                SessionHandler.getLoginName(getActivity());
+        String helloName = getString(R.string.hello_blank_name) + " " + SessionHandler.getLoginName(getActivity());
         textHello.setText(helloName);
 
         buttonSubmit.setEnabled(false);
@@ -124,7 +121,22 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
     }
 
     @Override
-    public void setDomainCheckResult(boolean existed) {
+    public void onSuccessCheckShopName(boolean existed) {
+        if (existed) {
+            textInputShopName.setSuccess(getString(R.string.shop_name_available));
+            checkEnableSubmit();
+        } else {
+            textInputShopName.setError(getString(R.string.shop_name_not_available));
+        }
+    }
+
+    @Override
+    public void onErrorCheckShopName(Throwable t) {
+        textInputShopName.setError(getString(R.string.shop_name_not_available));
+    }
+
+    @Override
+    public void onSuccessCheckShopDomain(boolean existed) {
         if (existed) {
             textInputDomainName.setSuccess(getString(R.string.domain_name_available));
             checkEnableSubmit();
@@ -134,52 +146,14 @@ public class ShopOpenDomainFragment extends BaseDaggerFragment implements ShopOp
     }
 
     @Override
-    public void setShopCheckResult(boolean existed) {
-        if (existed) {
-            textInputShopName.setSuccess(getString(R.string.shop_name_available));
-            checkEnableSubmit();
-        } else {
-            textInputShopName.setError(getString(R.string.shop_name_not_available));
-        }
+    public void onErrorCheckShopDomain(Throwable t) {
+        textInputDomainName.setError(getString(R.string.domain_name_not_available));
     }
 
     private void checkEnableSubmit() {
-        if (textInputDomainName.isSuccess() &&
-                textInputShopName.isSuccess()) {
+        if (textInputDomainName.isSuccess() && textInputShopName.isSuccess()) {
             buttonSubmit.setEnabled(true);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // untuk test
-//        TomeService tomeService = new TomeService(SessionHandler.getAccessToken(getActivity()));
-//        HashMap<String, String> params = new HashMap<>();
-//        params.put(ShopOpenNetworkConstant.PARAM_USER_ID, SessionHandler.getLoginID(getActivity()));
-//        subscription = tomeService.getApi().getDomainCheck(params)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .unsubscribeOn(Schedulers.io())
-//                .subscribe(
-//                    new Subscriber<Response<String>>() {
-//                        @Override
-//                        public void onCompleted() {
-//
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//                            Log.i("Test", e.toString());
-//                        }
-//
-//                        @Override
-//                        public void onNext(Response<String> stringResponse) {
-//                            Log.i("Test", "test");
-//                        }
-//                    }
-//                );
     }
 
     @Override

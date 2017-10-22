@@ -46,7 +46,7 @@ public class TomeService extends BearerService<TomeApi> {
         return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                        .buildClientTopAdsAuth(getOauthAuthorization()))
+                        .buildClientBearerAuth(getOauthAuthorization()))
                 .build();
     }
 

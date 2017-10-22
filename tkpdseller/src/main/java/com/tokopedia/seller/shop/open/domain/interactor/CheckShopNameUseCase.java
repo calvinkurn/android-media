@@ -29,8 +29,7 @@ public class CheckShopNameUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return shopOpenRepository.checkShop(
-                requestParams.getString(ShopExtraConstant.EXTRA_SHOP_NAME, ""));
+        return shopOpenRepository.checkShop(requestParams.getString(ShopExtraConstant.EXTRA_SHOP_NAME, ""));
     }
 
     public static RequestParams createRequestParams(String shopName){
