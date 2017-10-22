@@ -6,17 +6,6 @@ import com.tokopedia.core.base.presentation.CustomerView;
  * Created by zulfikarrahman on 3/16/17.
  */
 public interface ShopSettingInfoView extends CustomerView {
-    void onErrorEmptyImage();
-
-    void onErrorEmptyImageFalse();
-
-    void onErrorSloganEmpty();
-
-    void onErrorSloganEmptyFalse();
-
-    void onErrorDescriptionEmpty();
-
-    void onErrorDescriptionEmptyFalse();
 
     void showProgressDialog();
 
@@ -24,5 +13,5 @@ public interface ShopSettingInfoView extends CustomerView {
 
     void onSuccessSaveInfoShop();
 
-    void onFailedSaveInfoShop();
+    void onFailedSaveInfoShop(Throwable t);
 }

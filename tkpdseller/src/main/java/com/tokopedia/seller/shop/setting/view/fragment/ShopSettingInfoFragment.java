@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,10 +41,10 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
 
     @Inject
     public ShopSettingInfoPresenter presenter;
-    private TextInputLayout shopDescInputLayout;
-    private EditText shopDescInputText;
-    private TextInputLayout shopSloganInputLayout;
-    private EditText shopSloganInputText;
+    private TextInputLayout shopDescTextInputLayout;
+    private EditText shopDescEditText;
+    private TextInputLayout shopSloganTextInputLayout;
+    private EditText shopSloganEditText;
     private View containerBrowseFile;
     private View containerImagePicker;
     private ImageView imagePicker;
@@ -75,11 +78,11 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
         return view;
     }
 
-    protected void initView(View view) {
-        shopDescInputLayout = (TextInputLayout) view.findViewById(R.id.shop_desc_input_layout);
-        shopDescInputText = (EditText) view.findViewById(R.id.shop_desc_input_text);
-        shopSloganInputLayout = (TextInputLayout) view.findViewById(R.id.shop_slogan_input_layout);
-        shopSloganInputText = (EditText) view.findViewById(R.id.shop_slogan_input_text);
+    private void initView(View view) {
+        shopDescTextInputLayout = (TextInputLayout) view.findViewById(R.id.shop_desc_input_layout);
+        shopDescEditText = (EditText) view.findViewById(R.id.shop_desc_input_text);
+        shopSloganTextInputLayout = (TextInputLayout) view.findViewById(R.id.shop_slogan_input_layout);
+        shopSloganEditText = (EditText) view.findViewById(R.id.shop_slogan_input_text);
         containerBrowseFile = view.findViewById(R.id.container_browse_file);
         containerImagePicker = view.findViewById(R.id.image_picker_container);
         imagePicker = (ImageView) view.findViewById(R.id.image_picker);
@@ -89,7 +92,39 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
         progressDialog.setMessage(getString(R.string.title_loading));
     }
 
-    protected void setActionVar() {
+    private void setActionVar() {
+        shopSloganEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isSloganFieldValid(true);
+            }
+        });
+        shopDescEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isDescriptionFieldValid(true);
+            }
+        });
         containerBrowseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,38 +146,51 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     }
 
     protected void onNextButtonClicked() {
-        presenter.submitShopInfo(uriPathImage, shopSloganInputText.getText().toString(),
-                shopDescInputText.getText().toString());
+        if (!isFormValid()) {
+            return;
+        }
+        presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
+                shopDescEditText.getText().toString());
     }
 
-    @Override
-    public void onErrorEmptyImage() {
-        errorImageEmpty.setVisibility(View.VISIBLE);
+    private boolean isSloganFieldValid(boolean showError) {
+        if (TextUtils.isEmpty(shopSloganEditText.getText().toString())) {
+            if (showError) {
+                shopSloganTextInputLayout.setError(getString(R.string.label_shop_setting_error_slogan_should_fill));
+            }
+            return false;
+        }
+        shopSloganTextInputLayout.setError(null);
+        return true;
     }
 
-    @Override
-    public void onErrorEmptyImageFalse() {
+    private boolean isDescriptionFieldValid(boolean showError) {
+        if (TextUtils.isEmpty(shopDescEditText.getText().toString())) {
+            if (showError) {
+                shopDescTextInputLayout.setError(getString(R.string.label_shop_setting_error_desc_should_fill));
+            }
+            return false;
+        }
+        shopDescTextInputLayout.setError(null);
+        return true;
+    }
+
+    private boolean isShopImageValid(boolean showError) {
+        if (TextUtils.isEmpty(uriPathImage)) {
+            if (showError) {
+                errorImageEmpty.setVisibility(View.VISIBLE);
+            }
+            return false;
+        }
         errorImageEmpty.setVisibility(View.GONE);
+        return true;
     }
 
-    @Override
-    public void onErrorSloganEmpty() {
-        shopSloganInputLayout.setError(getString(R.string.label_shop_setting_error_slogan_should_fill));
-    }
-
-    @Override
-    public void onErrorSloganEmptyFalse() {
-        shopSloganInputLayout.setError(null);
-    }
-
-    @Override
-    public void onErrorDescriptionEmpty() {
-        shopDescInputLayout.setError(getString(R.string.label_shop_setting_error_desc_should_fill));
-    }
-
-    @Override
-    public void onErrorDescriptionEmptyFalse() {
-        shopDescInputLayout.setError(null);
+    private boolean isFormValid() {
+        if (isSloganFieldValid(true) & isDescriptionFieldValid(true) & isShopImageValid(true)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -161,7 +209,7 @@ public class ShopSettingInfoFragment extends BaseDaggerFragment implements ShopS
     }
 
     @Override
-    public void onFailedSaveInfoShop() {
+    public void onFailedSaveInfoShop(Throwable t) {
 
     }
 
