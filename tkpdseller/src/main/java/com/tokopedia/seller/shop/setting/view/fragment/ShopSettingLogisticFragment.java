@@ -50,6 +50,7 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_setting_logistic, container, false);
+        changeDistrictCode(4528);
         updateLogistic();
         return view;
     }

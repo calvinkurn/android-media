@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.tokopedia.seller.shop.setting.view.activity.ShopSettingInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
 import com.tokopedia.seller.shopsettings.payment.PaymentEditor;
@@ -79,7 +80,7 @@ public class FragmentSettingShop extends TkpdFragment{
 				Intent intent = null;
 				switch(pos) {
 					case 0:
-                        intent = new Intent(getActivity(), ShopEditorActivity.class);
+                        intent = new Intent(getActivity(), ShopSettingInfoActivity.class);
                         intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
                         UnifyTracking.eventManageShopInfo();
 						startActivityForResult(intent, 0);

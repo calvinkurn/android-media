@@ -10,11 +10,26 @@
             android:name="com.tokopedia.seller.common.imageeditor.ImageEditorActivity"
             android:label="@string/title_activity_image_edit"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat"/>
+            android:theme="@style/Theme.AppCompat" />
 
         <activity
             android:name=".common.imageeditor.GalleryCropActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenDomainActivity"
+            android:label="@string/title_open_shop"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenMandatoryActivity"
+            android:label="@string/title_shop_setting"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".shop.setting.view.activity.ShopSettingInfoActivity"
+            android:label="@string/title_shop_setting"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
@@ -188,7 +203,7 @@
             android:name=".product.variant.view.activity.ProductVariantPickerActivity"
             android:label="@string/product_variant_label_title"
             android:screenOrientation="portrait" />
-        
+
         <activity
             android:name=".product.draft.view.activity.ProductDraftListActivity"
             android:exported="true"
@@ -222,19 +237,6 @@
             android:label="@string/reputation_point_calculation"
             android:theme="@style/AppTheme" />
 
-
-        <activity
-            android:name=".shop.open.view.activity.ShopOpenDomainActivity"
-            android:label="@string/title_open_shop"
-            android:exported="true"
-            android:theme="@style/ShopAppTheme" />
-            
-		<activity
-            android:name=".shop.open.view.activity.ShopOpenMandatoryActivity"
-            android:label="@string/title_shop_setting"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
-            
         <activity
             android:name=".shopsettings.ManageShopActivity"
             android:label="@string/title_activity_manage_shop"

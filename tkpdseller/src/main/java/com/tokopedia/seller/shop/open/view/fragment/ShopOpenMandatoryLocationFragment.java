@@ -13,7 +13,7 @@ public class ShopOpenMandatoryLocationFragment extends ShopSettingLocationFragme
     @Override
     protected void onNextButtonClicked() {
         if (getActivity() instanceof StepperListener) {
-            ShopSettingLocationModel shopSettingLocationModel = getDataModel();
+//            ShopSettingLocationModel shopSettingLocationModel = getDataModel();
             ((StepperListener) getActivity()).goToNextPage(null);
         }
     }
