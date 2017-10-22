@@ -1,7 +1,7 @@
-package com.tokopedia.seller.shop.setting.data.source;
+package com.tokopedia.seller.shop.open.data.source;
 
 import com.tokopedia.seller.shop.setting.data.source.cache.ShopOpenDataCache;
-import com.tokopedia.seller.shop.setting.data.source.cloud.ShopOpenDataCloud;
+import com.tokopedia.seller.shop.open.data.source.cloud.ShopOpenDataCloud;
 
 import javax.inject.Inject;
 

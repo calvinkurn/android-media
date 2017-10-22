@@ -1,6 +1,5 @@
 package com.tokopedia.seller.shop.setting.di.component;
 
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;

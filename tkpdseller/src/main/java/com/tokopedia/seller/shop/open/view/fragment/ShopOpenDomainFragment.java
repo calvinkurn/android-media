@@ -16,11 +16,11 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.lib.widget.TkpdTextInputLayout;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.seller.shop.setting.di.component.DaggerShopOpenDomainComponent;
-import com.tokopedia.seller.shop.setting.di.component.ShopOpenDomainComponent;
-import com.tokopedia.seller.shop.setting.di.module.ShopOpenDomainModule;
-import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenter;
+import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenter;
 
 import javax.inject.Inject;
 

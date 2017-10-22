@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.setting.domain.interactor;
+package com.tokopedia.seller.shop.open.domain.interactor;
 
 
 import com.tokopedia.core.base.domain.RequestParams;
@@ -6,7 +6,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.shop.constant.ShopExtraConstant;
-import com.tokopedia.seller.shop.setting.domain.ShopOpenRepository;
+import com.tokopedia.seller.shop.open.domain.ShopOpenRepository;
 
 import javax.inject.Inject;
 

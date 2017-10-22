@@ -1,7 +1,7 @@
-package com.tokopedia.seller.shop.setting.data.repository;
+package com.tokopedia.seller.shop.open.data.repository;
 
-import com.tokopedia.seller.shop.setting.data.source.ShopOpenDataSource;
-import com.tokopedia.seller.shop.setting.domain.ShopOpenRepository;
+import com.tokopedia.seller.shop.open.data.source.ShopOpenDataSource;
+import com.tokopedia.seller.shop.open.domain.ShopOpenRepository;
 
 import rx.Observable;
 

@@ -3,9 +3,8 @@ package com.tokopedia.seller.shop.setting.data.source.cloud.service;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.RetrofitFactory;
-import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.core.network.retrofit.services.BearerService;
-import com.tokopedia.seller.shop.setting.data.source.cloud.api.TomeApi;
+import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 
 import javax.inject.Inject;
 
