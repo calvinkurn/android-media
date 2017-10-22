@@ -1,6 +1,6 @@
 package com.tokopedia.seller.shop.setting.data.mapper;
 
-import com.tokopedia.core.database.model.DistrictDataDb;
+import com.tokopedia.seller.shop.setting.data.source.db.DistrictDataDb;
 import com.tokopedia.seller.shop.setting.domain.model.RecomendationDistrictDomainModel;
 import com.tokopedia.seller.shop.setting.domain.model.RecommendationDistrictItemDomainModel;
 

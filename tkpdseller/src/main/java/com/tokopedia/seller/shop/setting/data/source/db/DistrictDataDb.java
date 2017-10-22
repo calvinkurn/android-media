@@ -1,4 +1,4 @@
-package com.tokopedia.core.database.model;
+package com.tokopedia.seller.shop.setting.data.source.db;
 
 import com.google.gson.annotations.Expose;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -7,13 +7,13 @@ import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.core.database.DbFlowDatabase;
+import com.tokopedia.seller.database.TkpdSellerDatabase;
 
 /**
  * Created by sebastianuskh on 3/20/17.
  */
 @ModelContainer
-@Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
+@Table(database = TkpdSellerDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class DistrictDataDb extends BaseModel {
 
     @PrimaryKey

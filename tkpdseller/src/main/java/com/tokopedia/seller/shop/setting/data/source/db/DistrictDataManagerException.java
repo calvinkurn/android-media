@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.setting.data.source.cache.db;
+package com.tokopedia.seller.shop.setting.data.source.db;
 
 /**
  * Created by sebastianuskh on 3/21/17.
