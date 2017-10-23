@@ -147,7 +147,6 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
                 new RequestOTPSubscriber(viewListener));
     }
 
-
     private void validateOTPWithTrueCaller(String phoneNumber) {
 
     }

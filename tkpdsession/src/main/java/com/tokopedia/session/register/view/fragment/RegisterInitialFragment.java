@@ -225,7 +225,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_PHONE_VERIF) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
-        } else if (requestCode == REQUEST_SECURITY_QUESTION) {
+        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         }

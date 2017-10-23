@@ -62,6 +62,5 @@ public interface SecurityQuestion {
         void requestOTPWithSMS();
 
         void requestOTPWithEmail(String email);
-
     }
 }

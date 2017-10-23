@@ -132,8 +132,6 @@ public class TkpdBaseURL {
         public static final String URL_INTERRUPT_ACTION = BASE_DOMAIN + "v4/action/interrupt/";
         public static final String URL_INTERRUPT = BASE_DOMAIN + "v4/interrupt/";
         public static final String URL_INVOICE = BASE_DOMAIN + "v4/";
-        public static final String URL_MSISDN_ACTION = BASE_DOMAIN + "v4/action/msisdn/";
-        public static final String URL_MSISDN = BASE_DOMAIN + "v4/msisdn/";
         public static final String PATH_NOTIFICATION = "v4/notification/";
         public static final String URL_NOTIFICATION = BASE_DOMAIN + PATH_NOTIFICATION;
         public static final String URL_PEOPLE_ACTION = BASE_DOMAIN + "v4/action/people/";

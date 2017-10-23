@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -395,8 +396,14 @@ public class CreatePasswordFragment extends BaseDaggerFragment
         if (requestCode == REQUEST_VERIFY_PHONE_NUMBER) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
-        }else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
