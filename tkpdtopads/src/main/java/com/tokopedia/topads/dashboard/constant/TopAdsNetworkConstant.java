@@ -17,14 +17,18 @@ public class TopAdsNetworkConstant {
     public static final String PATH_DASHBOARD_SHOP = "/v1.1/dashboard/shop";
     public static final String PATH_DASHBOARD_CREDIT = "/v1/tkpd_products";
 
-    public static final String PATH_BULK_ACTION_PRODUCT_AD = "/v2/promo/bulk";
-    public static final String PATH_BULK_ACTION_GROUP_AD = "/v2/promo/group/bulk";
-    public static final String PATH_DETAIL_PRODUCT_AD = "/v2/promo";
+    public static final String PATH_BULK_ACTION_PRODUCT_AD = "/v2.1/promo/bulk";
+    public static final String PATH_BULK_ACTION_GROUP_AD = "/v2.1/promo/group/bulk";
+    public static final String PATH_DETAIL_PRODUCT_AD = "/v2.1/promo";
 
-    public static final String PATH_CREATE_GROUP_AD = "v2/promo/group";
+    public static final String PATH_CREATE_GROUP_AD = "v2.1/promo/group";
 
-    public static final String PATH_EDIT_KEYWORD_DETAIL = "/v2/promo/keyword";
+    public static final String GET_DASHBOARD_KEYWORD = "/v1.1/dashboard/keywords";
+    public static final String ADD_KEYOWRD = "/v2.1/promo/keyword";
+    public static final String PATH_EDIT_KEYWORD_DETAIL = "/v2.1/promo/keyword";
     public static final String PATH_BULK_KEYWORD_DETAIL = PATH_EDIT_KEYWORD_DETAIL + "/bulk";
+
+    public static final String GET_SUGGESTION = "/v1/suggest";
 
     public static final String PARAM_AD = "ad";
     public static final String PARAM_SHOP_ID = "shop_id";
