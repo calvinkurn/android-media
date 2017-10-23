@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.perf.metrics.Trace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -69,15 +70,16 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
+import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
-import com.tokopedia.digital.widget.model.mapper.LastOrderMapper;
 import com.tokopedia.digital.widget.model.mapper.StatusMapper;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
@@ -181,7 +183,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                         .build()
         );
         startActivity(intent);
-
     }
 
     @Override
@@ -275,9 +276,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         topPicksPresenter.fetchTopPicks();
         brandsPresenter.fetchBrands();
         fetchRemoteConfig();
-        if (SessionHandler.isV4Login(getActivity())) {
-            rechargeCategoryPresenter.fetchLastOrder();
-        }
     }
 
     private void loadDummyPromos() {
@@ -410,10 +408,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this,
                 new RechargeNetworkInteractorImpl(
                         new DigitalWidgetRepository(
-                                new DigitalEndpointService()),
-                        new LastOrderMapper(),
+                                new DigitalEndpointService(), new FavoriteNumberListDataMapper()),
                         new CategoryMapper(),
                         new StatusMapper()));
+
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
         tokoCashPresenter = new TokoCashPresenterImpl(this);
@@ -835,9 +833,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     homeCatMenuPresenter.fetchHomeCategoryMenu(true);
                     topPicksPresenter.fetchTopPicks();
                     brandsPresenter.fetchBrands();
-                    if (SessionHandler.isV4Login(getActivity())) {
-                        rechargeCategoryPresenter.fetchLastOrder();
-                    }
                 }
             });
         }
@@ -896,7 +891,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
         super.setUserVisibleHint(isVisibleToUser);
     }
-
 
     public void sendAppsFlyerData() {
         TrackingUtils.fragmentBasedAFEvent(HomeRouter.IDENTIFIER_CATEGORY_FRAGMENT);
@@ -1061,4 +1055,22 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         if (trace != null)
             trace.stop();
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG, "onSaveInstanceState");
+        storeLastStateTabSelected();
+        super.onSaveInstanceState(outState);
+    }
+
+    protected void storeLastStateTabSelected() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(
+                getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
+        );
+        int position = holder.digitalWidgetView.getPosition();
+        localCacheHandler.putInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED,
+                position);
+        localCacheHandler.applyEditor();
+    }
+
 }

@@ -1,12 +1,19 @@
 package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle2View;
+import com.tokopedia.digital.widget.model.lastorder.Attributes;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
 import com.tokopedia.digital.widget.model.operator.Operator;
 import com.tokopedia.digital.widget.model.product.Product;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.List;
 
@@ -14,36 +21,39 @@ import rx.Subscriber;
 
 /**
  * Created by nabillasabbaha on 7/21/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
         implements IDigitalWidgetStyle2Presenter {
 
     private final IDigitalWidgetInteractor widgetInteractor;
-
     private final IDigitalWidgetStyle2View view;
-
     private Context context;
 
     public DigitalWidgetStyle2Presenter(Context context,
                                         IDigitalWidgetInteractor widgetInteractor,
                                         IDigitalWidgetStyle2View view) {
         super(context);
+        this.context = context;
         this.widgetInteractor = widgetInteractor;
         this.view = view;
-        this.context = context;
     }
 
     @Override
-    public void fetchRecentNumber(int categoryId) {
-        widgetInteractor.getRecentData(getRecentListNumberSubscriber(), categoryId);
+    public void fetchNumberList(String categoryId, boolean showLastOrder) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("category_id", categoryId);
+        param.put("sort", "label");
+        widgetInteractor.getNumberList(getNumberListSubscriber(categoryId, showLastOrder),
+                AuthUtil.generateParamsNetwork(context, param));
     }
 
-    private Subscriber<List<String>> getRecentListNumberSubscriber() {
-        return new Subscriber<List<String>>() {
+    private Subscriber<DigitalNumberList> getNumberListSubscriber(final String categoryId,
+                                                                  final boolean showLastOrder) {
+        return new Subscriber<DigitalNumberList>() {
             @Override
             public void onCompleted() {
-
             }
 
             @Override
@@ -52,10 +62,33 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
             }
 
             @Override
-            public void onNext(List<String> results) {
-                view.renderDataRecent(results);
+            public void onNext(DigitalNumberList digitalNumberList) {
+                view.renderNumberList(digitalNumberList.getOrderClientNumbers());
+                if (showLastOrder) {
+                    if (digitalNumberList.getLastOrder() != null) {
+                        LastOrder lastOrder = mapOrderClientNumberToLastOrder(digitalNumberList
+                                .getLastOrder());
+
+                        view.renderLastOrder(lastOrder);
+                    } else if (getLastClientNumberTyped(categoryId) != null) {
+                        view.renderLastTypedClientNumber();
+                    }
+                }
             }
         };
+    }
+
+    private LastOrder mapOrderClientNumberToLastOrder(OrderClientNumber orderClientNumber) {
+        LastOrder lastOrder = new LastOrder();
+        Attributes attributes = new Attributes();
+        attributes.setClientNumber(orderClientNumber.getClientNumber());
+        attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
+        attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
+        if (!TextUtils.isEmpty(orderClientNumber.getLastProduct())) {
+            attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+        }
+        lastOrder.setAttributes(attributes);
+        return lastOrder;
     }
 
     private Subscriber<List<Product>> getListProductSubscriber() {
@@ -136,11 +169,11 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
-    public void fetchOperatorByCategory(int categoryId) {
-        widgetInteractor.getOperatorsFromCategory(getOperatorByCategorySubscriber(), categoryId);
+    public void fetchOperatorByCategory(int categoryId, boolean showLastOrder) {
+        widgetInteractor.getOperatorsFromCategory(getOperatorByCategorySubscriber(showLastOrder), categoryId);
     }
 
-    private Subscriber<List<Operator>> getOperatorByCategorySubscriber() {
+    private Subscriber<List<Operator>> getOperatorByCategorySubscriber(final boolean showLastOrder) {
         return new Subscriber<List<Operator>>() {
             @Override
             public void onCompleted() {
@@ -154,10 +187,11 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onNext(List<Operator> rechargeOperatorModels) {
-                if (rechargeOperatorModels.size() > 0)
-                    view.renderOperators(rechargeOperatorModels);
-                else
+                if (rechargeOperatorModels.size() > 0) {
+                    view.renderOperators(rechargeOperatorModels, showLastOrder);
+                } else {
                     view.renderEmptyOperators(context.getString(R.string.error_message_operator));
+                }
             }
         };
     }

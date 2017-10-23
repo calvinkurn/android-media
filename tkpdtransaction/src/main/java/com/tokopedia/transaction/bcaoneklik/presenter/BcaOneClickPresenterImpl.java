@@ -8,8 +8,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.bcaoneklik.BcaOneClickView;
 import com.tokopedia.transaction.bcaoneklik.domain.BcaOneClickFormRepository;
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickRegisterData;
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickSuccessRegisterData;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.BcaOneClickRegisterData;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.BcaOneClickSuccessRegisterData;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

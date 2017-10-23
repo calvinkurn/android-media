@@ -174,7 +174,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="error_weight_value_gr">Mohon diisi dengan angka antara 1 dan 100000</string>
     <string name="error_weight_value_kg">Mohon diisi dengan angka antara 1 dan 100</string>
     <string name="error_minimumorder_value">Mohon diisi dengan angka antara 1 dan 10000</string>
-    <string name="title_img_desc">Ubah Deskripsi</string>
+    <string name="title_img_desc">Ubah deskripsi gambar</string>
     <string name="title_img_default">Jadikan yang utama</string>
     <string name="title_img_delete">Hapus</string>
     <string name="title_dollar">US$</string>
@@ -445,7 +445,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_update_insurance">Ganti Asuransi</string>
     <string name="title_delete">Hapus</string>
     <string name="action_edit">Ubah</string>
-    <string name="action_editor">Olah</string>
+    <string name="action_editor">Edit gambar</string>
     <string name="title_confirm">Konfirmasi</string>
     <string name="title_confirm_otp">Verifikasi</string>
     <string name="title_copy">Salin Invoice</string>
@@ -478,7 +478,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="item_all_cond">Semua Kondisi</string>
     <string name="item_new_cond">Baru</string>
     <string name="item_used_cond">Bekas</string>
-    <string name="title_warehouse">Stock Kosong</string>
+    <string name="title_warehouse">Stok Kosong</string>
     <string name="title_all_products">Semua Produk</string>
     <string name="title_all_etalase">Semua Etalase</string>
     <string name="title_quick_success">Sukses mengubah harga produk</string>
@@ -1027,6 +1027,11 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="domain">https://www.tokopedia.com/</string>
     <string name="title_activity_contact_us">Hubungi Kami</string>
     <string name="title_select_city">Pilih Asal Kota</string>
+
+
+    <string name="title_activity_create_reso_center">Buat Komplain</string>
+    <string name="title_activity_product_problem">Pilih Barang &amp; Masalah</string>
+
     <!-- Strings related to contact us -->
     <string name="title_full_name">Nama Lengkap</string>
     <string name="title_send">Kirim</string>

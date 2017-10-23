@@ -35,6 +35,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -89,6 +90,7 @@ import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +107,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter {
+        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -598,5 +600,11 @@ public abstract class SellerRouterApplication extends MainApplication
         if(activity != null) {
             ProductAddActivity.start(activity);
         }
+    }
+
+    @Override
+    public void goToUserPaymentList(Activity activity) {
+        Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
+        activity.startActivity(intent);
     }
 }

@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
@@ -50,9 +52,15 @@ public class RideHistoryActivity extends BaseActivity implements RideHistoryFrag
     }
 
     @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_HISTORY;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            RideGATracking.eventBackPress(getScreenName());
             onBackPressed();
             return true;
         } else {

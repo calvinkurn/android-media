@@ -126,7 +126,7 @@ public class DynamicFilterModel implements Parcelable {
         this.status = in.readString();
     }
 
-    public static final Parcelable.Creator<DynamicFilterModel> CREATOR = new Parcelable.Creator<DynamicFilterModel>() {
+    public static final Creator<DynamicFilterModel> CREATOR = new Creator<DynamicFilterModel>() {
         @Override
         public DynamicFilterModel createFromParcel(Parcel source) {
             return new DynamicFilterModel(source);
@@ -137,6 +137,4 @@ public class DynamicFilterModel implements Parcelable {
             return new DynamicFilterModel[size];
         }
     };
-
-
 }

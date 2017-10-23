@@ -3,12 +3,16 @@ package com.tokopedia.digital.widget.interactor;
 import com.tokopedia.digital.widget.model.operator.Operator;
 import com.tokopedia.digital.widget.model.product.Product;
 
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
+
 import java.util.List;
 
 import rx.Subscriber;
 
 /**
  * Created by nabillasabbaha on 7/21/17.
+ * Modified by rizkyfadillah at 10/9/17.
  */
 
 public interface IDigitalWidgetInteractor {
@@ -23,5 +27,7 @@ public interface IDigitalWidgetInteractor {
 
     void getProductById(Subscriber<Product> subscriber, String categoryId, String operatorId, String productId);
 
-    void getRecentData(Subscriber<List<String>> subscriber, int categoryId);
+    void getNumberList(Subscriber<DigitalNumberList> subscriber,
+                       TKPDMapParam<String, String> param);
+
 }
