@@ -25,10 +25,12 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.domain.usecase.GetUserAttributesUseCase;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
@@ -102,6 +104,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
+    private GetUserAttributesUseCase getUserAttributesUseCase;
 
     private AnalyticsCacheHandler cacheHandler;
     List<String> content;
@@ -299,7 +302,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void setMoengageUserAttributes() {
-        cacheHandler.getUserDataCache(new AnalyticsCacheHandler.GetUserDataListener() {
+
+        AnalyticsCacheHandler.GetUserDataListener listener
+                = new AnalyticsCacheHandler.GetUserDataListener() {
             @Override
             public void onSuccessGetUserData(ProfileData result) {
                 TrackingUtils.setMoEUserAttributes(result);
@@ -309,7 +314,17 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             public void onError(Throwable e) {
                 e.printStackTrace();
             }
-        });
+
+            @Override
+            public void onSuccessGetUserAttr(UserAttribute.Data data) {
+                if(data!=null)
+                    TrackingUtils.setMoEUserAttributes(data);
+            }
+        };
+
+        cacheHandler.getUserDataCache(listener);
+        cacheHandler.getUserAttrGraphQLCache(listener);
+
     }
 
     public void initCreate() {

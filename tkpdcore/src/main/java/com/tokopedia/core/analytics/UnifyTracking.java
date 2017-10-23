@@ -2487,4 +2487,37 @@ public class UnifyTracking extends TrackingUtils {
     public static void eventDeleteFeaturedProduct() {
         eventFeaturedProduct(AppEventTracking.EventLabel.DELETE_FEATURED_PRODUCT);
     }
+
+    public static void eventProductManage(String action, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                action,
+                label
+        ).getEvent());
+    }
+
+    public static void eventProductManageTopNav(String label){
+        eventProductManage(AppEventTracking.Action.CLICK_TOP_NAV,label);
+    }
+
+    public static void eventProductManageSearch(){
+        eventProductManage(AppEventTracking.Action.CLICK_TOP_NAV,AppEventTracking.EventLabel.SEARCH_PRODUCT);
+    }
+
+    public static void eventProductManageClickDetail(){
+        eventProductManage(AppEventTracking.Action.CLICK_PRODUCT_LIST,AppEventTracking.EventLabel.CLICK_PRODUCT_LIST);
+    }
+
+    public static void eventProductManageSortProduct(String label){
+        eventProductManage(AppEventTracking.Action.CLICK_SORT_PRODUCT,label);
+    }
+
+    public static void eventProductManageFilterProduct(String label){
+        eventProductManage(AppEventTracking.Action.CLICK_FILTER_PRODUCT,label);
+    }
+
+    public static void eventProductManageOverflowMenu(String label){
+        eventProductManage(AppEventTracking.Action.CLICK_OVERFLOW_MENU,label);
+    }
 }

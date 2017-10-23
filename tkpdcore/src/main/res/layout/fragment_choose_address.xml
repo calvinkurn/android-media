@@ -38,17 +38,19 @@
 
             <EditText
                 android:id="@+id/search"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/btn_height"
-                android:layout_weight="0.8"
+                android:layout_weight="1"
                 android:hint="@string/hint_search_other_address"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
                 android:textSize="@dimen/fontm" />
 
             <ImageView
                 android:id="@+id/search_but"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/btn_height"
-                android:layout_weight="0.2"
                 android:padding="@dimen/padding_small"
                 android:src="@drawable/ic_menu_search" />
         </LinearLayout>

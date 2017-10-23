@@ -1,7 +1,5 @@
 package com.tokopedia.core.analytics.fingerprint.data;
 
-import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
-
 import rx.Observable;
 
 /**
