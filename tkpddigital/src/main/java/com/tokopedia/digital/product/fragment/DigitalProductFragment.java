@@ -350,7 +350,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
         for (int i = bannerDataList.size() - 1; i >= 0; i--) {
-            if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) && TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
+            if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) &&
+                    TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
                 bannerDataList.remove(bannerDataList.get(i));
             }
         }
