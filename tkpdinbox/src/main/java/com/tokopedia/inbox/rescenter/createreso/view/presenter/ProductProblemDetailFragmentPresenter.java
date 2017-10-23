@@ -3,6 +3,7 @@ package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
@@ -151,7 +152,7 @@ public class ProductProblemDetailFragmentPresenter
     @Override
     public void updateComplainReason(String reason) {
         if (reason.length() < 30) {
-            mainView.updateComplainReasonView(false, "Minimal 30 karakter");
+            mainView.updateComplainReasonView(false, context.getResources().getString(R.string.string_min_30_char));
             problemResult.remark = "";
         } else {
             problemResult.remark = reason;

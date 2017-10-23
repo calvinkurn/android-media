@@ -115,6 +115,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
 
     @Override
     protected void initView(View view) {
+        setupUI(view);
         ivProductImage = (ImageView) view.findViewById(R.id.iv_product_image);
         tvProductName = (TextView) view.findViewById(R.id.tv_product_name);
         tvProductPrice = (TextView) view.findViewById(R.id.tv_product_price);
@@ -251,11 +252,13 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
         btnInfo.setVisibility(View.GONE);
         if (canShowInfo) {
             presenter.updateSpinner(true);
+            stvProblem.setChevronVisibility(true);
             btnInfo.setVisibility(View.VISIBLE);
             buttonDisabled(btnNotArrived);
             buttonSelected(btnArrived);
         } else {
             presenter.updateSpinner(isDelivered);
+            stvProblem.setChevronVisibility(isDelivered);
             if (isDelivered) {
                 buttonCanSelected(btnNotArrived);
                 buttonSelected(btnArrived);
@@ -269,29 +272,29 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
     public void buttonCanSelected(Button button) {
         button.setClickable(true);
         button.setEnabled(true);
-        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable1));
-        button.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_btn));
+        button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable1));
+        button.setTextColor(MethodChecker.getColor(context, R.color.green_btn));
     }
 
     public void buttonSelected(Button button) {
         button.setClickable(false);
         button.setEnabled(false);
-        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
-        button.setTextColor(Color.parseColor("#ffffff"));
+        button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_enable));
+        button.setTextColor(MethodChecker.getColor(context, R.color.white));
     }
 
     public void buttonBottomSelected(Button button) {
         button.setClickable(true);
         button.setEnabled(true);
-        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_enable));
-        button.setTextColor(Color.parseColor("#ffffff"));
+        button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_enable));
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
     }
 
     public void buttonDisabled(Button button) {
         button.setClickable(false);
         button.setEnabled(false);
-        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.bg_button_disable));
-        button.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_38));
+        button.setBackground(MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_disable));
+        button.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_38));
     }
 
     @Override
@@ -359,7 +362,11 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             } else {
                 setProductAlreadyArrive();
             }
-            tvCourierInfo.setText("[" + shippingName + "]");
+            tvCourierInfo.setText(
+                    context.getResources().getString(R.string.string_shipping_name)
+                            .replace(
+                                    context.getResources().getString(R.string.string_shipping_name_identifier),
+                                    shippingName));
             btnClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

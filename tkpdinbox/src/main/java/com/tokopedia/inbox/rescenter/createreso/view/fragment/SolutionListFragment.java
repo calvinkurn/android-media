@@ -21,8 +21,10 @@ import android.widget.Toast;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.FreeReturnActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionDetailActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.SolutionListAdapter;
 import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
@@ -31,6 +33,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragme
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionListFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
@@ -51,6 +54,7 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     ResultViewModel resultViewModel;
     EditAppealSolutionModel editAppealSolutionModel;
+    FreeReturnViewModel freeReturnViewModel;
 
 
     RecyclerView rvSolution;
@@ -154,7 +158,13 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     @Override
     protected void setViewListener() {
-
+        tvFreeReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(FreeReturnActivity
+                        .newInstance(getActivity(), freeReturnViewModel.getLink()));
+            }
+        });
     }
 
     @Override
@@ -189,10 +199,9 @@ public class SolutionListFragment extends BaseDaggerFragment
                 this);
         rvSolution.setAdapter(adapter);
         if (solutionResponseViewModel.getFreeReturn() != null) {
+            freeReturnViewModel = solutionResponseViewModel.getFreeReturn();
             llFreeReturn.setVisibility(View.VISIBLE);
-            tvFreeReturn.setText(Html.fromHtml(solutionResponseViewModel.getFreeReturn().getInfo()));
-            tvFreeReturn.setLinksClickable(true);
-            tvFreeReturn.setMovementMethod(LinkMovementMethod.getInstance());
+            tvFreeReturn.setText(MethodChecker.fromHtml(solutionResponseViewModel.getFreeReturn().getInfo()));
         }
     }
 
@@ -236,7 +245,7 @@ public class SolutionListFragment extends BaseDaggerFragment
     @Override
     public void successEditSolution(String message) {
         hideLoading();
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -295,9 +304,10 @@ public class SolutionListFragment extends BaseDaggerFragment
     }
 
     public void updateSolutionString(SolutionViewModel solutionViewModel, TextView textView) {
-        textView.setText(solutionViewModel.getAmount() != null ?
-                context.getString(R.string.string_returning) + " " +solutionViewModel.getAmount().getIdr()
-                        + " "+ context.getString(R.string.string_to_buyer) :
+        textView.setText(solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
+                solutionViewModel.getSolutionName().replace(
+                        context.getResources().getString(R.string.string_return_value),
+                        solutionViewModel.getAmount().getIdr()) :
                 solutionViewModel.getName());
     }
 

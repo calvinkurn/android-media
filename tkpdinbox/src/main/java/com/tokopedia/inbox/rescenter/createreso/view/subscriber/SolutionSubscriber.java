@@ -66,6 +66,7 @@ public class SolutionSubscriber extends Subscriber<SolutionResponseDomain> {
             viewModelList.add(new SolutionViewModel(
                     solutionDomain.getId(),
                     solutionDomain.getName(),
+                    solutionDomain.getSolutionName(),
                     solutionDomain.getAmount() != null ?
                             mappingAmountViewModel(solutionDomain.getAmount()) :
                             null));
@@ -82,6 +83,6 @@ public class SolutionSubscriber extends Subscriber<SolutionResponseDomain> {
     }
 
     private FreeReturnViewModel mappingFreeReturnViewModel(FreeReturnDomain domain) {
-        return new FreeReturnViewModel(domain.getInfo());
+        return new FreeReturnViewModel(domain.getInfo(), domain.getLink());
     }
 }

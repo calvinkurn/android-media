@@ -28,6 +28,9 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
 
     public static final int FREE_RETURN = 3;
 
+    public static final int ITEM_TEXT = 1;
+    public static final int ITEM_PRODUCT = 2;
+
     private Context context;
     private List<ProblemResult> selectedProblemResultList = new ArrayList<>();
     private List<Object> itemList = new ArrayList<>();
@@ -46,10 +49,10 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
         for (ProductProblemViewModel productProblem : productProblemList) {
             if (type != productProblem.getProblem().getType()) {
                 type = productProblem.getProblem().getType();
-                if (type == 2) {
-                    itemList.add("Kendala Produk");
+                if (type == ITEM_PRODUCT) {
+                    itemList.add(context.getResources().getString(R.string.string_adapter_product_problem));
                 } else {
-                    itemList.add(productProblem.getProblem().getName());
+                    itemList.add(context.getResources().getString(R.string.string_adapter_money));
                 }
             }
             itemList.add(productProblem);
@@ -78,7 +81,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
             holder.llFreeReturn.setVisibility(View.GONE);
             holder.checkBox.setChecked(false);
             for (ProblemResult problemResult : selectedProblemResultList) {
-                if (productProblem.getProblem().getType() == 1) {
+                if (productProblem.getProblem().getType() == ITEM_TEXT) {
                     if (problemResult.name.equals(productProblem.getProblem().getName())) {
                         holder.checkBox.setChecked(true);
                     }
@@ -88,7 +91,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
                     }
                 }
             }
-            if (productProblem.getProblem().getType() == 1) {
+            if (productProblem.getProblem().getType() == ITEM_TEXT) {
                 holder.tvProductName.setText(productProblem.getProblem().getName());
                 holder.ivProduct.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_ongkir));
             } else {
@@ -108,7 +111,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
             holder.llItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (productProblem.getProblem().getType() == 2) {
+                    if (productProblem.getProblem().getType() == ITEM_PRODUCT) {
                         listener.onItemClicked(productProblem);
                     } else {
                         listener.onStringProblemClicked(productProblem);
@@ -121,7 +124,7 @@ public class ProductProblemAdapter extends RecyclerView.Adapter<ProductProblemAd
                 public void onClick(View view) {
                     if (holder.checkBox.isChecked()) {
                         holder.checkBox.setChecked(false);
-                        if (productProblem.getProblem().getType() == 2) {
+                        if (productProblem.getProblem().getType() == ITEM_PRODUCT) {
                             listener.onItemClicked(productProblem);
                         } else {
                             listener.onStringProblemClicked(productProblem);

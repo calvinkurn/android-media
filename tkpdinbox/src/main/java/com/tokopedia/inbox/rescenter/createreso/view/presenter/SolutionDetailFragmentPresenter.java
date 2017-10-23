@@ -88,7 +88,7 @@ public class SolutionDetailFragmentPresenter
     public void onContinueButtonClicked() {
         if (resultViewModel != null) {
             resultViewModel.solution = solutionViewModel.getId();
-            resultViewModel.solutionName = solutionViewModel.getName();
+            resultViewModel.solutionName = solutionViewModel.getSolutionName();
             mainView.submitData(resultViewModel);
         } else {
             editAppealSolutionModel.solution = solutionViewModel.getId();

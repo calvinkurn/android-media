@@ -15,6 +15,9 @@ public class AppealSolutionResponse {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("NameCustom")
+    @Expose
+    private String solutionName;
     @SerializedName("amount")
     @Expose
     private AmountResponse amount;
@@ -41,6 +44,14 @@ public class AppealSolutionResponse {
 
     public void setAmount(AmountResponse amount) {
         this.amount = amount;
+    }
+
+    public String getSolutionName() {
+        return solutionName;
+    }
+
+    public void setSolutionName(String solutionName) {
+        this.solutionName = solutionName;
     }
 
     @Override

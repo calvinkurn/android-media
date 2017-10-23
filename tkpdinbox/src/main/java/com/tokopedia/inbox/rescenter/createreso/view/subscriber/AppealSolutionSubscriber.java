@@ -66,6 +66,7 @@ public class AppealSolutionSubscriber extends Subscriber<AppealSolutionResponseD
             viewModelList.add(new SolutionViewModel(
                     solutionDomain.getId(),
                     solutionDomain.getName(),
+                    solutionDomain.getSolutionName(),
                     solutionDomain.getRefundAmount() != null ?
                             mappingAmountViewModel(solutionDomain.getRefundAmount()) :
                             null));
@@ -79,6 +80,6 @@ public class AppealSolutionSubscriber extends Subscriber<AppealSolutionResponseD
     }
 
     private FreeReturnViewModel mappingFreeReturnViewModel(FreeReturnDomain domain) {
-        return new FreeReturnViewModel(domain.getInfo());
+        return new FreeReturnViewModel(domain.getInfo(), domain.getLink());
     }
 }

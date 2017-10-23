@@ -1,9 +1,12 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.FreeReturnResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.RequireResponse;
@@ -27,15 +30,6 @@ import rx.functions.Func1;
 
 public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionResponseDomain> {
 
-    private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
-    private static final String ERROR_MESSAGE = "message_error";
-
-    private Gson gson;
-
-    public SolutionMapper(Gson gson) {
-        this.gson = gson;
-    }
-
     @Override
     public SolutionResponseDomain call(Response<TkpdResponse> response) {
         return mappingResponse(response);
@@ -53,16 +47,14 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
                 solutionResponseResponse.getFreeReturn() != null ?
                         mappingFreeReturnDomain(solutionResponseResponse.getFreeReturn()) : null);
         if (response.isSuccessful()) {
-            if (response.raw().code() == ResponseStatus.SC_OK) {
-                if (response.body().isNullData()) {
-                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                    } else {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    model.setSuccess(true);
+                    throw new ErrorMessageException("");
                 }
+            } else {
+                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
@@ -75,6 +67,7 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
         for (SolutionResponse solutionResponse : response) {
             SolutionDomain solutionDomain = new SolutionDomain(solutionResponse.getId(),
                     solutionResponse.getName(),
+                    solutionResponse.getSolutionName(),
                     solutionResponse.getAmount() != null ?
                             mappingAmountDomain(solutionResponse.getAmount()) : null);
             domainList.add(solutionDomain);
@@ -92,7 +85,7 @@ public class SolutionMapper implements Func1<Response<TkpdResponse>, SolutionRes
     }
 
     private FreeReturnDomain mappingFreeReturnDomain(FreeReturnResponse response) {
-        return new FreeReturnDomain(response.getInfo());
+        return new FreeReturnDomain(response.getInfo(), response.getLink());
     }
 
 }

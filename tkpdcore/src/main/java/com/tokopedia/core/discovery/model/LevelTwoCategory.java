@@ -14,7 +14,7 @@ import java.util.List;
  * Created by henrypriyono on 8/7/17.
  */
 
-public class LevelTwoCategory implements Serializable, Parcelable {
+public class LevelTwoCategory implements Parcelable {
 
     @SerializedName("name")
     @Expose
@@ -107,20 +107,6 @@ public class LevelTwoCategory implements Serializable, Parcelable {
         this.levelThreeCategoryList = levelThreeCategoryList;
     }
 
-    protected LevelTwoCategory(Parcel in) {
-        name = in.readString();
-        key = in.readString();
-        value = in.readString();
-        inputType = in.readString();
-        totalData = in.readString();
-        if (in.readByte() == 0x01) {
-            levelThreeCategoryList = new ArrayList<>();
-            in.readList(levelThreeCategoryList, LevelThreeCategory.class.getClassLoader());
-        } else {
-            levelThreeCategoryList = null;
-        }
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -128,24 +114,30 @@ public class LevelTwoCategory implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(key);
-        dest.writeString(value);
-        dest.writeString(inputType);
-        dest.writeString(totalData);
-        if (levelThreeCategoryList == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(levelThreeCategoryList);
-        }
+        dest.writeString(this.name);
+        dest.writeString(this.key);
+        dest.writeString(this.value);
+        dest.writeString(this.inputType);
+        dest.writeString(this.totalData);
+        dest.writeTypedList(this.levelThreeCategoryList);
     }
 
-    public static final Parcelable.Creator<LevelTwoCategory> CREATOR
-            = new Parcelable.Creator<LevelTwoCategory>() {
+    public LevelTwoCategory() {
+    }
+
+    protected LevelTwoCategory(Parcel in) {
+        this.name = in.readString();
+        this.key = in.readString();
+        this.value = in.readString();
+        this.inputType = in.readString();
+        this.totalData = in.readString();
+        this.levelThreeCategoryList = in.createTypedArrayList(LevelThreeCategory.CREATOR);
+    }
+
+    public static final Creator<LevelTwoCategory> CREATOR = new Creator<LevelTwoCategory>() {
         @Override
-        public LevelTwoCategory createFromParcel(Parcel in) {
-            return new LevelTwoCategory(in);
+        public LevelTwoCategory createFromParcel(Parcel source) {
+            return new LevelTwoCategory(source);
         }
 
         @Override

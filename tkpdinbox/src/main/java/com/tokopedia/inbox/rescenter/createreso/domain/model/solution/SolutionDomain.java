@@ -14,13 +14,14 @@ public class SolutionDomain {
     @Nullable
     private String name;
     @Nullable
+    private String solutionName;
+    @Nullable
     private AmountDomain amount;
 
-    public SolutionDomain(@Nullable int id,
-                          @Nullable String name,
-                          @Nullable AmountDomain amount) {
+    public SolutionDomain(int id, String name, String solutionName, AmountDomain amount) {
         this.id = id;
         this.name = name;
+        this.solutionName = solutionName;
         this.amount = amount;
     }
 
@@ -40,6 +41,15 @@ public class SolutionDomain {
 
     public void setName(@Nullable String name) {
         this.name = name;
+    }
+
+    @Nullable
+    public String getSolutionName() {
+        return solutionName;
+    }
+
+    public void setSolutionName(@Nullable String solutionName) {
+        this.solutionName = solutionName;
     }
 
     @Nullable

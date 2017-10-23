@@ -125,7 +125,7 @@ public class CreateResoModule {
     @CreateResoScope
     @Provides
     SolutionMapper provideSolutionMapper() {
-        return new SolutionMapper(new Gson());
+        return new SolutionMapper();
     }
 
     @CreateResoScope
@@ -137,7 +137,7 @@ public class CreateResoModule {
     @CreateResoScope
     @Provides
     GetProductProblemMapper provideGetProductProblemMapper() {
-        return new GetProductProblemMapper(new Gson());
+        return new GetProductProblemMapper();
     }
 
     @CreateResoScope

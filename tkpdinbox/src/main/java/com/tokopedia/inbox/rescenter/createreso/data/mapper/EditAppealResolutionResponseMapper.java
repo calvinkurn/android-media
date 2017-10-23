@@ -1,8 +1,11 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
+import android.content.Context;
+
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditAppealSolutionResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditAppealResolutionSolutionDomain;
 
@@ -15,13 +18,6 @@ import rx.functions.Func1;
 
 public class EditAppealResolutionResponseMapper
         implements Func1<Response<TkpdResponse>, EditAppealResolutionSolutionDomain> {
-
-    private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
-    private static final String ERROR_MESSAGE = "message_error";
-
-
-    public EditAppealResolutionResponseMapper() {
-    }
 
     @Override
     public EditAppealResolutionSolutionDomain call(Response<TkpdResponse> response) {
@@ -38,16 +34,14 @@ public class EditAppealResolutionResponseMapper
                                 editAppealSolutionResponse.getSuccessMessage() :
                                 null);
         if (response.isSuccessful()) {
-            if (response.raw().code() == ResponseStatus.SC_OK) {
-                if (response.body().isNullData()) {
-                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                    } else {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    model.setSuccess(true);
+                    throw new ErrorMessageException("");
                 }
+            } else {
+                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));

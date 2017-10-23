@@ -56,6 +56,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
     private static final int REQUEST_CODE_GALLERY = 1243;
     private static final int COUNT_MAX_ATTACHMENT = 5;
+    private static final int COUNT_MIN_STRING = 30;
 
     private TkpdTextInputLayout tilInformation;
     private EditText etInformation;
@@ -186,6 +187,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
 
     @Override
     protected void initView(View view) {
+        setupUI(view);
         tilInformation = (TkpdTextInputLayout) view.findViewById(R.id.til_information);
         etInformation = (EditText) view.findViewById(R.id.et_information);
         btnContinue = (Button) view.findViewById(R.id.btn_upload);
@@ -209,7 +211,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     @Override
     public void updateView(Attachment attachment) {
         boolean isComplete = true;
-        if (attachment.information.length() < 30) {
+        if (attachment.information.length() < COUNT_MIN_STRING) {
             tilInformation.setError(context.getResources().getString(R.string.string_min_30_char));
             isComplete = false;
         } else {
@@ -351,5 +353,4 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     public void showSnackBarError(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
-
 }

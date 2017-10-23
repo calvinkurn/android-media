@@ -41,7 +41,8 @@
         <FrameLayout
             android:id="@+id/ff_product_problem"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="wrap_content"
+            android:minHeight="75dp"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
             android:layout_marginTop="@dimen/margin_med"
@@ -73,8 +74,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_vvs"
-                        android:ellipsize="end"
-                        android:maxLines="1"
                         android:text="@string/string_choose_product_problem"
                         android:textColor="@color/black_70"/>
                 </LinearLayout>
@@ -93,7 +92,8 @@
         <FrameLayout
             android:id="@+id/ff_solution"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="wrap_content"
+            android:minHeight="75dp"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
             android:layout_marginTop="@dimen/margin_med"
@@ -125,8 +125,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_vvs"
-                        android:ellipsize="end"
-                        android:maxLines="1"
                         android:text="@string/string_choose_solution"
                         android:textColor="@color/black_38"/>
 
@@ -145,7 +143,8 @@
         <FrameLayout
             android:id="@+id/ff_prove"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="wrap_content"
+            android:minHeight="75dp"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
             android:layout_marginTop="@dimen/margin_med"
@@ -177,8 +176,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_vvs"
-                        android:ellipsize="end"
-                        android:maxLines="1"
                         android:text="@string/string_upload_prove_information"
                         android:textColor="@color/black_38"/>
                 </LinearLayout>
@@ -199,7 +196,8 @@
         android:id="@+id/rl_progress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_36">
+        android:background="@color/black_36"
+        android:visibility="gone">
 
         <ProgressBar
             android:id="@+id/progress_bar"

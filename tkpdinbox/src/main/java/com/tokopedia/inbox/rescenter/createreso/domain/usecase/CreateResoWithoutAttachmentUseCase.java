@@ -35,9 +35,7 @@ public class CreateResoWithoutAttachmentUseCase extends UseCase<CreateResoWithou
     }
 
     public RequestParams createResoStep1Params(ResultViewModel resultViewModel) {
-        JSONObject problemObject = new JSONObject();
         try {
-            problemObject.put("problem", resultViewModel.getProblemArray());
             RequestParams params = RequestParams.create();
             params.putString(ORDER_ID, resultViewModel.orderId);
             params.putString(PARAM_RESULT, resultViewModel.writeToJson().toString());

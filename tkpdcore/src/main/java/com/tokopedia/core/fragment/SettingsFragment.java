@@ -20,7 +20,6 @@ import com.tkpd.library.ui.utilities.CustomCheckBoxPreference;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
 import com.tokopedia.core.gcm.Constants;
 
@@ -179,11 +178,6 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                 // simple string representation.
                 if(!preference.getKey().equals(Constants.Settings.NOTIFICATION_PROMO))
                     preference.setSummary(stringValue);
-            }
-
-            if(preference.getKey().equals(Constants.Settings.NOTIFICATION_PROMO)){
-                boolean notificationsDisabled = !(boolean)value;
-                TrackingUtils.eventLocaSetNotification(notificationsDisabled);
             }
 
             return true;

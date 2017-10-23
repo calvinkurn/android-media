@@ -44,7 +44,7 @@ public class CheckedBottomSheetBuilder extends BottomSheetBuilder {
 
     public BottomSheetBuilder addItem(int id, String title, Drawable icon, boolean value) {
         if (mAdapterBuilder != null && mAdapterBuilder instanceof CheckedAdapterBottomSheetBuilder) {
-            ((CheckedAdapterBottomSheetBuilder) mAdapterBuilder).addSelection(value);
+            ((CheckedAdapterBottomSheetBuilder) mAdapterBuilder).addSelection(id, value);
         }
         mAdapterBuilder.addItem(id, title, icon, mItemTextColor, mItemBackground, mIconTintColor);
         return this;

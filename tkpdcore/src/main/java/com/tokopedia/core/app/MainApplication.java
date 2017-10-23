@@ -16,7 +16,6 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
-import com.localytics.android.Localytics;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -277,8 +276,6 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
 
         initDbFlow();
 
-        Localytics.autoIntegrate(this);
-
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .netModule(new NetModule());
@@ -340,7 +337,6 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
     protected void initializeAnalytics() {
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.LOCALYTICS);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
         TrackingUtils.setMoEngageExistingUser();
         TrackingUtils.enableDebugging(isDebug());

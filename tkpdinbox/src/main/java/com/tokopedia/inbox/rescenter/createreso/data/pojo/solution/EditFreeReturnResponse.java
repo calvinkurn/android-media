@@ -12,12 +12,23 @@ public class EditFreeReturnResponse {
     @Expose
     private String info;
 
+    @SerializedName("link")
+    @Expose
+    private String link;
     public String getInfo() {
         return info;
     }
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 
     @Override

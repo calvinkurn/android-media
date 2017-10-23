@@ -43,6 +43,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
@@ -543,6 +544,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
         startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE, sourcePickerLayout);
         //startActivityForResult(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
+        RideGATracking.eventClickSource(getScreenName());
     }
 
     @OnClick(R2.id.crux_cabs_destination)
@@ -555,10 +557,12 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         intent.putExtra(GooglePlacePickerActivity.EXTRA_SOURCE, source);
         startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE, destinationLayoout);
         //startActivityForResult(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
+        RideGATracking.eventClickDestination(getScreenName());
     }
 
     @OnClick(R2.id.destination_clear)
     public void actionDestinationClearIconClicked() {
+        RideGATracking.eventClickDeleteDestination(destination.getAddress());
         enablePickLocation();
         destination = null;
         isAlreadySelectDestination = false;
@@ -572,6 +576,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
         setDestinationLocationText(DEFAULT_EMPTY_VALUE);
         proccessToRenderRideProduct();
+
 
     }
 

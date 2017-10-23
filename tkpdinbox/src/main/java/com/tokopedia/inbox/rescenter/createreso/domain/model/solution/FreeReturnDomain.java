@@ -11,8 +11,12 @@ public class FreeReturnDomain {
     @Nullable
     private String info;
 
-    public FreeReturnDomain(String info) {
+    @Nullable
+    private String link;
+
+    public FreeReturnDomain(String info, String link) {
         this.info = info;
+        this.link = link;
     }
 
     @Nullable
@@ -22,5 +26,14 @@ public class FreeReturnDomain {
 
     public void setInfo(@Nullable String info) {
         this.info = info;
+    }
+
+    @Nullable
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(@Nullable String link) {
+        this.link = link;
     }
 }

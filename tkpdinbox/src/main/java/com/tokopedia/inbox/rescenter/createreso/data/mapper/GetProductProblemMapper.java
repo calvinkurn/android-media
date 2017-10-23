@@ -1,9 +1,13 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+
 import com.google.gson.Gson;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.AmountResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.OrderDetailResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.OrderProductResponse;
@@ -40,15 +44,6 @@ import rx.functions.Func1;
  */
 
 public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, ProductProblemResponseDomain> {
-    private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
-    private static final String ERROR_MESSAGE = "message_error";
-
-
-    private final Gson gson;
-
-    public GetProductProblemMapper(Gson gson) {
-        this.gson = gson;
-    }
 
     @Override
     public ProductProblemResponseDomain call(Response<TkpdResponse> response) {
@@ -62,16 +57,14 @@ public class GetProductProblemMapper implements Func1<Response<TkpdResponse>, Pr
                 mappingProductProblemListDomain(
                         productProblemListResponse.getProductProblemResponseList()));
         if (response.isSuccessful()) {
-            if (response.raw().code() == ResponseStatus.SC_OK) {
-                if (response.body().isNullData()) {
-                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                    } else {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
+            if (response.body().isNullData()) {
+                if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    model.setSuccess(true);
+                    throw new ErrorMessageException("");
                 }
+            } else {
+                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));

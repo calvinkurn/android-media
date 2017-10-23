@@ -37,7 +37,7 @@ public class GetSolutionUseCase extends UseCase<SolutionResponseDomain> {
     public RequestParams getSolutionUseCaseParams(ResultViewModel resultViewModel) {
         JSONObject problemObject = new JSONObject();
         try {
-            problemObject.put("problem", resultViewModel.getProblemArray());
+            problemObject.put(PARAM_PROBLEM, resultViewModel.getProblemArray());
             RequestParams params = RequestParams.create();
             params.putString(ORDER_ID, resultViewModel.orderId);
             params.putString(PARAM_PROBLEM, problemObject.toString());

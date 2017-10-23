@@ -16,13 +16,15 @@ public class AppealSolutionDomain {
     private String name;
 
     @Nullable
+    private String solutionName;
+
+    @Nullable
     private AmountDomain refundAmount;
 
-    public AppealSolutionDomain(@Nullable int id,
-                                @Nullable String name,
-                                @Nullable AmountDomain refundAmount) {
+    public AppealSolutionDomain(int id, String name, String solutionName, AmountDomain refundAmount) {
         this.id = id;
         this.name = name;
+        this.solutionName = solutionName;
         this.refundAmount = refundAmount;
     }
 
@@ -42,6 +44,15 @@ public class AppealSolutionDomain {
 
     public void setName(@Nullable String name) {
         this.name = name;
+    }
+
+    @Nullable
+    public String getSolutionName() {
+        return solutionName;
+    }
+
+    public void setSolutionName(@Nullable String solutionName) {
+        this.solutionName = solutionName;
     }
 
     @Nullable

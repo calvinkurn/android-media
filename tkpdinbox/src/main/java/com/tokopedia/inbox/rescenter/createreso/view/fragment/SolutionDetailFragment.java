@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
@@ -134,6 +135,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
 
     @Override
     protected void initView(View view) {
+        setupUI(view);
         tilAmount = (TkpdTextInputLayout) view.findViewById(R.id.til_amount);
         etAmount = (EditText) view.findViewById(R.id.et_amount);
         btnContinue = (Button) view.findViewById(R.id.btn_continue);
@@ -186,6 +188,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     @Override
     public void updatePriceEditText(String price) {
         etAmount.setText(price);
+        etAmount.setSelection(etAmount.getText().toString().length());
     }
 
     @Override
@@ -221,15 +224,15 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     public void buttonSelected(Button button) {
         button.setClickable(true);
         button.setEnabled(true);
-        button.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_enable));
-        button.setTextColor(ContextCompat.getColor(context, R.color.white));
+        button.setBackground(MethodChecker.getDrawable(context, R.drawable.bg_button_enable));
+        button.setTextColor(MethodChecker.getColor(context, R.color.white));
     }
 
     public void buttonDisabled(Button button) {
         button.setClickable(false);
         button.setEnabled(false);
-        button.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_button_disable));
-        button.setTextColor(ContextCompat.getColor(context, R.color.black_70));
+        button.setBackground(MethodChecker.getDrawable(context, R.drawable.bg_button_disable));
+        button.setTextColor(MethodChecker.getColor(context, R.color.black_70));
     }
 
     @Override
@@ -279,9 +282,11 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     }
 
     public void updateSolutionString(EditAppealSolutionModel editAppealSolutionModel, TextView textView) {
-        textView.setText(editAppealSolutionModel.refundAmount != 0 ?
-                editAppealSolutionModel.solutionName + " sebesar " + editAppealSolutionModel.refundAmount :
-                editAppealSolutionModel.solutionName);
+        textView.setText(editAppealSolutionModel.refundAmount != 0 && editAppealSolutionModel.solutionName != null?
+                editAppealSolutionModel.solutionName.replace(
+                        context.getResources().getString(R.string.string_return_value),
+                        String.valueOf(editAppealSolutionModel.refundAmount)) :
+                editAppealSolutionModel.getName());
     }
 
     @Override
