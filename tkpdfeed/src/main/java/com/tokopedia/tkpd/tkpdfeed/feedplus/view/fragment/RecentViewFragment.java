@@ -15,6 +15,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.RecentView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.WishlistListener;
@@ -124,7 +125,9 @@ public class RecentViewFragment extends BaseDaggerFragment
     @Override
     public void onGoToProductDetail(String productId) {
         if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productId);
+            ProductPass productPass = new ProductPass();
+            productPass.setProductId(productId);
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productPass);
         }
     }
 

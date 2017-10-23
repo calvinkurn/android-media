@@ -43,6 +43,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.share.ShareActivity;
@@ -357,7 +358,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void goToProductDetail(String productId) {
         if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productId);
+            ProductPass productPass = new ProductPass();
+            productPass.setProductId(productId);
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productPass);
         }
     }
 
