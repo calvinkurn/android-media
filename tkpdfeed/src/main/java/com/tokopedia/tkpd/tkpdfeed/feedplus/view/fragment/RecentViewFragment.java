@@ -125,9 +125,12 @@ public class RecentViewFragment extends BaseDaggerFragment
     @Override
     public void onGoToProductDetail(String productId) {
         if (getActivity().getApplication() instanceof PdpRouter) {
-            ProductPass productPass = new ProductPass();
-            productPass.setProductId(productId);
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productPass);
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
+                    getActivity(),
+                    ProductPass.Builder.aProductPass()
+                            .setProductId(productId)
+                            .build()
+            );
         }
     }
 
