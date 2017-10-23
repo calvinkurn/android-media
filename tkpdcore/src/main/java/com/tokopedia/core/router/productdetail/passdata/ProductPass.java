@@ -177,12 +177,10 @@ public class ProductPass implements Parcelable {
 
     public boolean haveBasicData() {
         return (
-                productName != null &&
-                        productPrice != null &&
-                        productId != null &&
-                        !productName.equals("") &&
-                        !productPrice.equals("") &&
-                        !productId.equals("")
+                (productName != null && !productName.equals("")) &
+                        (productPrice != null && !productPrice.equals("")) &
+                        (productId != null && !productId.equals(""))
+
         );
     }
 
