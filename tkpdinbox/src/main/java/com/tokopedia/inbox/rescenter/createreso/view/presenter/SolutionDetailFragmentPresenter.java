@@ -94,14 +94,12 @@ public class SolutionDetailFragmentPresenter
 
     @Override
     public void onContinueButtonClicked() {
+        resultViewModel.solution = solutionViewModel.getId();
+        resultViewModel.solutionName = solutionViewModel.getSolutionName();
         if (resultViewModel != null) {
-            resultViewModel.solution = solutionViewModel.getId();
-            resultViewModel.solutionName = solutionViewModel.getSolutionName();
             mainView.submitData(resultViewModel);
         } else {
-            editAppealSolutionModel.solution = solutionViewModel.getId();
-            editAppealSolutionModel.solutionName = solutionViewModel.getName();
-            mainView.showDialogCompleteEditAppeal(editAppealSolutionModel)  ;
+            mainView.showDialogCompleteEditAppeal(editAppealSolutionModel);
         }
     }
 
