@@ -20,8 +20,6 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -180,7 +178,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && getActivity() != null) {
             ScreenTracking.screen(getScreenName());
-            setLocalyticFlow();
             sendAppsFlyerData();
         }
         super.setUserVisibleHint(isVisibleToUser);
@@ -578,10 +575,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     private boolean isPositionOnRetryFeed(int position) {
         return adapter.isRetry(topAdsRecyclerAdapter.getPlacer().getItem(position).originalPos());
-    }
-
-    private void setLocalyticFlow() {
-        ScreenTracking.screenLoca(getString(R.string.home_product_feed));
     }
 
     private void sendAppsFlyerData() {

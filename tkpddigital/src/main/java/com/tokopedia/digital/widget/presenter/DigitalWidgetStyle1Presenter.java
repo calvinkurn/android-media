@@ -1,12 +1,20 @@
 package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle1View;
+import com.tokopedia.digital.widget.model.lastorder.Attributes;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
 import com.tokopedia.digital.widget.model.operator.Operator;
 import com.tokopedia.digital.widget.model.product.Product;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.List;
 
@@ -14,13 +22,16 @@ import rx.Subscriber;
 
 /**
  * Created by nabillasabbaha on 7/21/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
         implements IDigitalWidgetStyle1Presenter {
 
-    private final IDigitalWidgetInteractor widgetInteractor;
+    private static final String PULSA_CATEGORY_ID = "1";
+    private static final String PAKET_DATA_CATEGORY_ID = "2";
 
+    private final IDigitalWidgetInteractor widgetInteractor;
     private final IDigitalWidgetStyle1View view;
     private Context context;
 
@@ -28,21 +39,25 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
                                         IDigitalWidgetInteractor widgetInteractor,
                                         IDigitalWidgetStyle1View view) {
         super(context);
+        this.context = context;
         this.widgetInteractor = widgetInteractor;
         this.view = view;
-        this.context = context;
     }
 
     @Override
-    public void fetchRecentNumber(int categoryId) {
-        widgetInteractor.getRecentData(getRecentListNumberSubscriber(), categoryId);
+    public void fetchNumberList(String categoryId, boolean showLastOrder) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("category_id", categoryId);
+        param.put("sort", "label");
+        widgetInteractor.getNumberList(getNumberListSubscriber(categoryId, showLastOrder),
+                AuthUtil.generateParamsNetwork(context, param));
     }
 
-    private Subscriber<List<String>> getRecentListNumberSubscriber() {
-        return new Subscriber<List<String>>() {
+    private Subscriber<DigitalNumberList> getNumberListSubscriber(final String categoryId,
+                                                                  final boolean showLastOrder) {
+        return new Subscriber<DigitalNumberList>() {
             @Override
             public void onCompleted() {
-
             }
 
             @Override
@@ -51,10 +66,41 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
             }
 
             @Override
-            public void onNext(List<String> results) {
-                view.renderDataRecent(results);
+            public void onNext(DigitalNumberList digitalNumberList) {
+                view.renderNumberList(digitalNumberList.getOrderClientNumbers());
+                if (showLastOrder) {
+                    if (digitalNumberList.getLastOrder() != null) {
+                        LastOrder lastOrder = mapOrderClientNumberToLastOrder(digitalNumberList
+                                .getLastOrder());
+
+                        view.renderLastOrder(lastOrder);
+                    } else if (!TextUtils.isEmpty(getLastClientNumberTyped(categoryId))) {
+                        view.renderLastTypedClientNumber();
+                    } else if (isPulsaOrPaketData(categoryId) &
+                            !TextUtils.isEmpty(SessionHandler.getPhoneNumber())) {
+                        view.renderVerifiedNumber();
+                    }
+                }
             }
         };
+    }
+
+    private LastOrder mapOrderClientNumberToLastOrder(OrderClientNumber orderClientNumber) {
+        LastOrder lastOrder = new LastOrder();
+        Attributes attributes = new Attributes();
+        attributes.setClientNumber(orderClientNumber.getClientNumber());
+        attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
+        attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
+        if (!TextUtils.isEmpty(orderClientNumber.getLastProduct())) {
+            attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+        }
+        lastOrder.setAttributes(attributes);
+        return lastOrder;
+    }
+
+    private boolean isPulsaOrPaketData(String categoryId) {
+        return (categoryId.equals(PULSA_CATEGORY_ID) ||
+                categoryId.equals(PAKET_DATA_CATEGORY_ID));
     }
 
     @Override

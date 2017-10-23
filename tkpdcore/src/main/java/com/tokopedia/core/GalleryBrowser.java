@@ -232,5 +232,8 @@ public class GalleryBrowser extends TActivity implements ImageGalleryView{
 		return null;
 	}
 
-
+	@Override
+	protected boolean isLightToolbarThemes() {
+		return true;
+	}
 }

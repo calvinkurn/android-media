@@ -439,9 +439,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         values.put(context.getString(R.string.value_seller_id), orderData.getShopId() + "");
         values.put(context.getString(R.string.value_products_category), productCartPass.getProductCategory());
 
-        PaymentTracking.atcLoca(productCartPass, orderData.getProductId(),
-                orderData.getPriceItem(), values);
-
         com.tokopedia.core.analytics.nishikino.model.Product product
                 = new com.tokopedia.core.analytics.nishikino.model.Product();
         product.setProductID(orderData.getProductId());
