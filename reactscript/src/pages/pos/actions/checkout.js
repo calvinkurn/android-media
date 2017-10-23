@@ -18,26 +18,26 @@ export const PaymentCheckoutToNative = () => {
 const doPayment = async () => {
   const user_id = await getUserId()
   const addr_id = await getAddrId()
-    const shop_id = await getShopId()
-    const env = await getEnv()
-    const api_url = await getBaseAPI(env)
-    const local_cart = await getCart()
+  const shop_id = await getShopId()
+  const env = await getEnv()
+  const api_url = await getBaseAPI(env)
+  const local_cart = await getCart()
   
-    const data_payment = {
-      base_api_url_payment: api_url.api_url_payment,
-      base_api_url_scrooge: api_url.api_url_scrooge,
-      base_api_url_pcidss: api_url.api_url_pcidss,
-      user_id: parseInt(user_id),
-      os_type: '1',
-      addr_id: parseInt(addr_id),
-      client_id: '',
-      shop_id: parseInt(shop_id),
-      cart: local_cart
-    }
-    const paymentToNative_getParams = await makePaymentToNativeStepOne(data_payment)
-    console.log(paymentToNative_getParams)
-    const paymentToNative_secondStep = await makePaymentToNativeStepTwo(paymentToNative_getParams, data_payment, local_cart)
-    return paymentToNative_secondStep
+  const data_payment = {
+    base_api_url_payment: api_url.api_url_payment,
+    base_api_url_scrooge: api_url.api_url_scrooge,
+    base_api_url_pcidss: api_url.api_url_pcidss,
+    user_id: parseInt(user_id),
+    os_type: '1',
+    addr_id: parseInt(addr_id),
+    client_id: '',
+    shop_id: parseInt(shop_id),
+    cart: local_cart
+  }
+  const paymentToNative_getParams = await makePaymentToNativeStepOne(data_payment)
+  console.log(paymentToNative_getParams)
+  const paymentToNative_secondStep = await makePaymentToNativeStepTwo(paymentToNative_getParams, data_payment, local_cart)
+  return paymentToNative_secondStep
 }
 
 const getUserId = () => {
