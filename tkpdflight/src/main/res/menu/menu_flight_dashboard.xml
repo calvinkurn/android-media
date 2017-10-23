@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_product_list"
+        android:title="@string/flight_title_product_list"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_transaction_list"
+        android:title="@string/flight_title_transaction_list"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_subscribe"
+        android:title="@string/flight_title_subscribe"
+        app:showAsAction="never" />
+</menu>

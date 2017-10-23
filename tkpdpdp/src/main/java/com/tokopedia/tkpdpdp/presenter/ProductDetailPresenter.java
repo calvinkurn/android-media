@@ -94,8 +94,6 @@ public interface ProductDetailPresenter {
 
     void sendAppsFlyerData(@NonNull Context context, @NonNull ProductDetailData successResult, @NonNull String eventName);
 
-    void sendLocalytics(@NonNull Context context, @NonNull ProductDetailData successResult);
-
     void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult);
 
     void sendAppsFlyerCheckout(@NonNull Context context, @NonNull ProductCartPass param);

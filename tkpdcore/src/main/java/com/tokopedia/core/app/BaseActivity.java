@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.localytics.android.Localytics;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -97,7 +96,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
-        Localytics.registerPush(gcmHandler.getSenderID());
 
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
@@ -203,7 +201,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Localytics.onNewIntent(this, intent);
     }
 
     public void initGTM() {

@@ -468,7 +468,6 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     public void onConfirmClick() {
         if (checkConfirmationError()) {
             confirmShipping();
-            TrackingUtils.eventLoca(getActivity().getString(R.string.shipping_confirmation));
         }
     }
 

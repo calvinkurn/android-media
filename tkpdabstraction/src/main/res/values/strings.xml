@@ -24,4 +24,6 @@
     <string name="server_error_problem">Masalah Server Error</string>
     <string name="application_version_text">"Versi Aplikasi: "</string>
     <string name="send_email">Kirim Email</string>
+    <string name="title_session_expired">Sesi anda telah habis, silahkan login kembali</string>
+    <string name="title_ok">OK</string>
 </resources>
