@@ -8,6 +8,7 @@ import {
   TouchableHighlight,
   Platform
 } from 'react-native'
+import { NavigationModule } from 'NativeModules'
 
 
 
@@ -44,7 +45,7 @@ const TopBanner = ({ navigation, dataTopBanners }) => {
           <View style={styles.termsWrap}>
             <TouchableHighlight 
               underlayColor={'#FFF'}
-              onPress={() => navigation.navigate('TermsPage', { termsCondition: dataTopBanners.terms_conditions })}>
+              onPress={() => NavigationModule.navigate(`tokopedia://official-stores/promo-terms`, dataTopBanners.terms_conditions)}>
               <View style={styles.tcWrap}>
                 <Text style={{color: '#42b549', textAlign: 'center'}}>Syarat & Ketentuan</Text>
               </View>

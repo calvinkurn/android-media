@@ -115,6 +115,7 @@ fetchBanners = async (dataSlug, env) => {
 // =================== Fetch Products Categories =================== //
 export const FETCH_CATEGORIES = 'FETCH_CATEGORIES'
 export const fetchCategories = (dataSlug, offset, limit) => {
+    console.log(offset, limit)
     return {
         type: FETCH_CATEGORIES,
         payload: doCategories(dataSlug, offset, limit)    
@@ -123,8 +124,9 @@ export const fetchCategories = (dataSlug, offset, limit) => {
 
 
 doCategories = async (dataSlug, offset, limit) => {
+    console.log(offset, limit)
     const env = await getEnv(dataSlug)
-    const categories  = await fetcProdCategories(dataSlug, offset, limit, env)
+    const categories = await fetcProdCategories(dataSlug, offset, limit, env)
     return categories
 }
 

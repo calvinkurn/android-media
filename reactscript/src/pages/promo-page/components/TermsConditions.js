@@ -7,8 +7,8 @@ const entities = new Entities()
 
 class TermsConds extends Component {
     render(){
-        const { termsCondition } = this.props.navigation.state.params
-        const decodeHtml = entities.decode(termsCondition)
+        const { extra } = this.props.data
+        const decodeHtml = entities.decode(extra)
 
         return (
             <WebView source={{html: decodeHtml}} />
