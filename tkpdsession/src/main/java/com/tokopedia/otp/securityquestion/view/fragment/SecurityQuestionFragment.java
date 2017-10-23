@@ -1,13 +1,19 @@
 package com.tokopedia.otp.securityquestion.view.fragment;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -27,6 +33,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.SessionRouter;
@@ -43,6 +50,8 @@ import com.tokopedia.otp.securityquestion.view.viewmodel.SecurityQuestionViewMod
 import com.tokopedia.session.R;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.di.DaggerSessionComponent;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -71,6 +80,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     private static final int REQUEST_VERIFY_PHONE_NUMBER = 102;
 
     private static final String ARGS_DATA = "ARGS_DATA";
+    private static final long TIMER_DURATION = 90000; //90 second
 
     private EditText vInputOtp;
     private TextView titleOTP;
@@ -85,7 +95,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     private CountDownTimer countDownTimer;
     private IncomingSmsReceiver smsReceiver;
-    private TkpdProgressDialog Progress;
+    private TkpdProgressDialog progressDialog;
 
     boolean isRunningTimer;
 
@@ -167,6 +177,40 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.getQuestionForm(securityQuestionViewModel.getSecurityDomain());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            showCheckSMSPermission();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @TargetApi(Build.VERSION_CODES.M)
+    private void showCheckSMSPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
+                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+            new android.support.v7.app.AlertDialog.Builder(getActivity())
+                    .setMessage(RequestPermissionUtil.getNeedPermissionMessage(Manifest.permission.READ_SMS)
+                    )
+                    .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SecurityQuestionFragmentPermissionsDispatcher
+                                    .checkSmsPermissionWithCheck(SecurityQuestionFragment.this);
+
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_SMS);
+                        }
+                    })
+                    .show();
+        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+            SecurityQuestionFragmentPermissionsDispatcher.checkSmsPermissionWithCheck(
+                    SecurityQuestionFragment.this);
+        }
     }
 
     @Override
@@ -376,12 +420,17 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
+        if (progressDialog == null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
+                    .NORMAL_PROGRESS);
 
+        progressDialog.showDialog();
     }
 
     @Override
     public void dismissLoadingProgress() {
-
+        if (progressDialog != null)
+            progressDialog.dismiss();
     }
 
     @Override
@@ -391,7 +440,65 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRequestOTP(String messageStatus) {
+        startTimer();
         NetworkErrorHelper.showSnackbar(getActivity(), messageStatus);
+    }
+
+    private void startTimer() {
+        if (!isRunningTimer) {
+            countDownTimer = new CountDownTimer(TIMER_DURATION, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    try {
+                        isRunningTimer = true;
+                        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
+                        vSendOtp.setEnabled(false);
+                        vSendOtp.setText(String.format(FORMAT,
+                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                        TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+
+                        vSendOtpCall.setVisibility(View.GONE);
+
+                    } catch (Exception e) {
+                        cancel();
+                    }
+                }
+
+                public void onFinish() {
+                    try {
+                        isRunningTimer = false;
+                        enableOtpButton();
+                    } catch (Exception e) {
+
+
+                    }
+                }
+
+            }.start();
+        }
+        vInputOtp.requestFocus();
+    }
+
+    private void enableOtpButton() {
+        vSendOtp.setTextColor(getResources().getColor(R.color.tkpd_green_onboarding));
+        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_share_transaparent));
+        vSendOtp.setText(R.string.title_resend_otp);
+        vSendOtp.setEnabled(true);
+
+        if (titleSecurity != null
+                && titleSecurity.getText() != null
+                && !titleSecurity.getText().equals("")
+                && !titleSecurity.getText().toString().equals(getString(R.string.content_security_question_email)))
+            vSendOtpCall.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void disableOtpButton() {
+        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
+        vSendOtp.setEnabled(false);
+        vSendOtp.setTextColor(getResources().getColor(R.color.grey_600));
+        vSendOtpCall.setVisibility(View.GONE);
     }
 
     @Override
@@ -418,7 +525,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_CHANGE_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
-        }else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER){
+        } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         }
@@ -470,6 +577,15 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+        destroyTimer();
+        progressDialog = null;
+    }
+
+    private void destroyTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
     }
 
     @Override

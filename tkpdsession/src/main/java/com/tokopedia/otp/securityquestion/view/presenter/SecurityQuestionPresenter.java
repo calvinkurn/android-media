@@ -113,6 +113,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
     @Override
     public void requestOTPWithSMS() {
         viewListener.showLoadingProgress();
+        viewListener.disableOtpButton();
         requestOtpUseCase.execute(
                 RequestOtpUseCase.getParamBeforeLogin(
                         RequestOtpUseCase.MODE_SMS,
@@ -124,6 +125,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
     @Override
     public void requestOTPWithPhoneCall() {
         viewListener.showLoadingProgress();
+        viewListener.disableOtpButton();
         requestOtpUseCase.execute(
                 RequestOtpUseCase.getParamBeforeLogin(
                         RequestOtpUseCase.MODE_CALL,
@@ -135,6 +137,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
     @Override
     public void requestOTPWithEmail(String email) {
         viewListener.showLoadingProgress();
+        viewListener.disableOtpButton();
         requestOtpUseCase.execute(
                 RequestOtpUseCase.getParamEmailBeforeLogin(
                         RequestOtpUseCase.MODE_SMS,

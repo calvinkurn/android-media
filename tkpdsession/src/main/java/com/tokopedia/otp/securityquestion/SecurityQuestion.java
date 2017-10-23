@@ -44,6 +44,8 @@ public interface SecurityQuestion {
         void onErrorValidateOtp(String errorMessage);
 
         void onGoToPhoneVerification();
+
+        void disableOtpButton();
     }
 
     interface Presenter extends CustomerPresenter<View> {
