@@ -25,11 +25,23 @@ class PaymentProcessing extends Component {
       processing_status_msg, 
       processing_isFetchingParams, 
       processing_showLoadingPage, 
-      processing_data 
+      processing_data,
+      selectedBankData,
     } = this.props
+
+    // console.log(processing_data)
+    // console.log(selectedBankData)
+
     
     if (processing_status_msg === 'SUCCESS' && !processing_isFetchingParams && !processing_showLoadingPage){
-      NavigationModule.navigate('posapp://payment/otp', JSON.stringify(processing_data))
+      const objData = {
+        ...processing_data, 
+        bank_id: selectedBankData.bank_id,
+        bank_logo: selectedBankData.bank_logo,
+        bank_name: selectedBankData.bank_name
+      }
+      console.log(objData)
+      NavigationModule.navigate('posapp://payment/otp', JSON.stringify(objData))
     }
 
     return (
@@ -47,14 +59,17 @@ class PaymentProcessing extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  console.log(state.paymentV2)
+const mapStateToProps = (state, ownProps) => {
+  const data_process_json = JSON.parse(ownProps.screenProps.data.data_process)
+  console.log(data_process_json)
+
   return {
     ...state.paymentV2,
     processing_isFetchingParams: state.paymentV2.processing_isFetchingParams,
     processing_showLoadingPage: state.paymentV2.processing_showLoadingPage,
     processing_data: state.paymentV2.processing_data.data,
-    processing_status_msg: state.paymentV2.processing_status_msg
+    processing_status_msg: state.paymentV2.processing_status_msg,
+    selectedBankData: data_process_json.selectedBankData,
   }
 }
 

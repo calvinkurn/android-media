@@ -78,11 +78,14 @@ class payment extends Component {
       const data_process = {
         checkout_data: json_checkout_data,
         selectedEmiId: this.props.navigation.state.params.selectedEmiId,
+        selectedBankData: this.props.navigation.state.params.selectedBankData,
         ccNum: this.props.ccNum,
         mon: this.props.mon,
         year: this.props.year,
         cvv: this.props.cvv
       }
+
+      // console.log(this.props.navigation.state.params.selectedBankData)
 
       // this.props.dispatch(makePayment(checkout_data, this.props.navigation.state.params.selectedEmiId, 
       //   this.props.ccNum, this.props.mon + '/' + this.props.year, this.props.cvv));
