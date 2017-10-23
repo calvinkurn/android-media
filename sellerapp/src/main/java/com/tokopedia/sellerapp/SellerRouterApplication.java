@@ -227,6 +227,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void actionApplink(Activity activity, String linkUrl, String extra) {
+
+    }
+
+    @Override
     public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
 
     }
