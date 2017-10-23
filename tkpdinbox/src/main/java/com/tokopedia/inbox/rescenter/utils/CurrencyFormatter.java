@@ -12,7 +12,6 @@ import java.text.NumberFormat;
 public class CurrencyFormatter {
 
     static private NumberFormat formatRupiah = new DecimalFormat("#,###,###");
-    static private NumberFormat formatDotRupiah = new DecimalFormat("#.###.###");
     static private NumberFormat formatDollar = new DecimalFormat("#,###,###.00");
 
     public static String formatRupiah(String string) {
@@ -22,7 +21,7 @@ public class CurrencyFormatter {
 
     public static String formatDotRupiah(String string) {
         if(string.isEmpty()) return "0";
-        return formatDotRupiah.format(Double.valueOf(getRawString(string)));
+        return formatRupiah.format(Double.valueOf(getRawString(string))).replaceAll(",",".");
     }
 
     public static Pair<String, Integer> typeFormatRupiah(String string, int posCursor){
