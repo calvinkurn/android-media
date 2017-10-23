@@ -1,7 +1,11 @@
 package com.tokopedia.seller.common.imageeditor;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.imageeditor.component.DaggerGetShopInfoComponent;
@@ -22,17 +27,20 @@ import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shop.presenter.GetShopInfoPresenter;
 import com.tokopedia.seller.shop.presenter.GetShopInfoView;
 
+import java.io.File;
+
 import javax.inject.Inject;
 
 /**
  * Created by hendry on 9/25/2017.
  */
 
-public class ImageEditorWatermarkFragment extends ImageEditorFragment implements GetShopInfoView {
+public class ImageEditorWatermarkFragment extends ImageEditorFragment implements GetShopInfoView, CropImageView.OnSetCropOverlayReleasedListener, CropImageView.OnSetCropOverlayMovedListener, CropImageView.OnSetCropWindowChangeListener {
 
     private WatermarkView watermarkView;
 
     private String watermarkText;
+    private boolean isUseWatermark;
 
     @Inject
     public GetShopInfoPresenter getShopInfoPresenter;
@@ -54,6 +62,8 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
         getShopInfoComponent.inject(this);
         getShopInfoPresenter.attachView(this);
         getShopInfoPresenter.getShopInfo();
+
+        isUseWatermark = false;
     }
 
     @Nullable
@@ -67,20 +77,8 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mCropImageView.setOnSetCropOverlayReleasedListener(new CropImageView.OnSetCropOverlayReleasedListener() {
-            @Override
-            public void onCropOverlayReleased(Rect rect) {
-                RectF windowRect = mCropImageView.getCropWindowRect();
-                setWatermarkWindowCropRect(windowRect);
-            }
-        });
-        mCropImageView.setOnSetCropOverlayMovedListener(new CropImageView.OnSetCropOverlayMovedListener() {
-            @Override
-            public void onCropOverlayMoved(Rect rect) {
-                RectF windowRect = mCropImageView.getCropWindowRect();
-                setWatermarkWindowCropRect(windowRect);
-            }
-        });
+        mCropImageView.setOnSetCropOverlayReleasedListener(this);
+        mCropImageView.setOnSetCropOverlayMovedListener(this);
     }
 
     public void setWatermarkWindowCropRect(RectF cropWindowRect){
@@ -97,19 +95,71 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
     }
 
     protected boolean checkIfSameWithPrevImage(){
-        return super.checkIfSameWithPrevImage() && (watermarkMenuItem == null || !watermarkMenuItem.isChecked());
+        return super.checkIfSameWithPrevImage() && !isUseWatermark;
+    }
+
+
+    @Override
+    protected Bitmap processBitmap(Bitmap bitmap) {
+        if (isUseWatermark) {
+            return watermarkView.drawTo(bitmap);
+        } else {
+            return bitmap;
+        }
+    }
+
+    @Override
+    protected String processCroppedPath(String croppedPath) {
+        if (isUseWatermark) {
+            Bitmap bitmap = BitmapFactory.decodeFile(croppedPath);
+            bitmap = processBitmap(bitmap);
+            File file = FileUtils.writeImageToTkpdPath(bitmap, FileUtils.generateUniqueFileName());
+            if (file != null && file.exists()) {
+                onImageEditorFragmentListener.addCroppedPath(croppedPath);
+                return file.getAbsolutePath();
+            } else {
+                return croppedPath;
+            }
+        } else {
+            return croppedPath;
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
         inflater.inflate(R.menu.menu_image_editor_watermark,menu);
         watermarkMenuItem = menu.findItem(R.id.main_action_watermark);
-        if (watermarkMenuItem.isChecked()) {
-            watermarkView.setVisibility( View.VISIBLE);
+        setUIByWatermark(isUseWatermark);
+    }
+
+    private void setUIByWatermark(boolean isUseWatermark){
+        if (isUseWatermark) {
+            watermarkMenuItem.setIcon(R.drawable.ic_branding_watermark_checked);
+            watermarkMenuItem.getIcon().invalidateSelf();
+            watermarkView.setVisibility(View.VISIBLE);
         } else {
-            watermarkView.setVisibility( View.GONE);
+            watermarkMenuItem.setIcon(R.drawable.ic_branding_watermark_unchecked);
+            watermarkMenuItem.getIcon().invalidateSelf();
+            watermarkView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onCropOverlayReleased(Rect rect) {
+        RectF windowRect = mCropImageView.getCropWindowRect();
+        setWatermarkWindowCropRect(windowRect);
+    }
+
+    @Override
+    public void onCropOverlayMoved(Rect rect) {
+        RectF windowRect = mCropImageView.getCropWindowRect();
+        setWatermarkWindowCropRect(windowRect);
+    }
+
+    @Override
+    public void onCropWindowChanged() {
+        RectF windowRect = mCropImageView.getCropWindowRect();
+        setWatermarkWindowCropRect(windowRect);
     }
 
     @Override
@@ -139,13 +189,12 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.main_action_watermark) {
-            if (item.isChecked()) {
-                watermarkMenuItem.setChecked(false);
-                watermarkView.setVisibility(View.VISIBLE);
-            } else {
-                watermarkMenuItem.setChecked(true);
-                watermarkView.setVisibility(View.GONE);
-            }
+            isUseWatermark = !isUseWatermark;
+            setUIByWatermark(isUseWatermark);
+            return true;
+        } else if (item.getItemId() == R.id.main_action_rotate) {
+            mCropImageView.rotateImage(90);
+            onCropWindowChanged();
             return true;
         }
         return super.onOptionsItemSelected(item);

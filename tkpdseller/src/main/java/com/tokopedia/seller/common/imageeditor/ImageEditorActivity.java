@@ -177,7 +177,7 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     public void onSuccessCrop(String path){
         // save the new path
         resultImageUrls.set(imageIndex, path);
-        savedCroppedPaths.add(path);
+        addCroppedPath(path);
         imageIndex++;
         if (imageIndex == imageUrls.size()) {
             finishEditing(true);
@@ -187,6 +187,10 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
             replaceEditorFragment(fragmentManager);
             setUpToolbarTitle();
         }
+    }
+
+    public void addCroppedPath(String path){
+        savedCroppedPaths.add(path);
     }
 
     private void finishEditing(boolean isResultOK) {

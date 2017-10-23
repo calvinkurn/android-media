@@ -1,8 +1,8 @@
 package com.tokopedia.seller.common.imageeditor;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
@@ -53,13 +53,16 @@ public class WatermarkView extends View {
 
     private void initView(Context context) {
         density = context.getResources().getDisplayMetrics().density;
+        setDefaultTextPaint(mTextPaint);
+    }
 
-        mTextPaint.setColor(ContextCompat.getColor(getContext(), R.color.watermark_text_color));
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
-        mTextPaint.setTextSize(mTextSize * density);
-        mTextPaint.setStyle(Paint.Style.STROKE);
-        mTextPaint.setAntiAlias(true);
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
+    private void setDefaultTextPaint(TextPaint textPaint) {
+        textPaint.setColor(ContextCompat.getColor(getContext(), R.color.watermark_text_color));
+        textPaint.setTextAlign(Paint.Align.LEFT);
+        textPaint.setTextSize(mTextSize * density);
+        textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        textPaint.setAntiAlias(true);
+        textPaint.setTextAlign(Paint.Align.LEFT);
     }
 
     @Override
@@ -119,5 +122,33 @@ public class WatermarkView extends View {
 
     public void drawText(Canvas canvas) {
         canvas.drawText(textString, xText, yText, mTextPaint);
+    }
+
+    public Bitmap drawTo(Bitmap bitmap) {
+        if (bitmap == null) {
+            return null;
+        }
+        Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        int newWidth = mutableBitmap.getWidth();
+        int oldWidth = (int) (windowRect.right - windowRect.left);
+        float ratio = (float) newWidth / oldWidth;
+
+        Canvas canvas = new Canvas(mutableBitmap);
+        TextPaint watermarkTextPaint = new TextPaint();
+        setDefaultTextPaint(watermarkTextPaint);
+        watermarkTextPaint.setTextSize((int) (mTextSize * ratio * density + 0.5f));
+
+        int padding = (int) (PADDING_DEFAULT * ratio * density );
+        int xText = padding;
+        int yText = mutableBitmap.getHeight() - padding;
+
+        canvas.drawText(textString, xText, yText, watermarkTextPaint);
+
+        bitmap.recycle();
+
+        return mutableBitmap;
+//        Canvas canvas = new Canvas(mutableBitmap);
+//        canvas.drawText(textString, xText, yText, mTextPaint);
+//        return mutableBitmap;
     }
 }
