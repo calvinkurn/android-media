@@ -358,7 +358,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     private void trackingFilter(ProductManageFilterModel productManageFilterModel) {
         List<String> filters = new ArrayList<>();
-        if (productManageFilterModel.getCategoryId() != String.valueOf(ProductManageConstant.FILTER_ALL_CATEGORY)) {
+        if (!productManageFilterModel.getCategoryId().equals(String.valueOf(ProductManageConstant.FILTER_ALL_CATEGORY))) {
             filters.add(AppEventTracking.EventLabel.CATEGORY);
         }
 
@@ -366,15 +366,15 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             filters.add(AppEventTracking.EventLabel.ETALASE);
         }
 
-        if (productManageFilterModel.getCatalogProductOption() != CatalogProductOption.WITH_AND_WITHOUT) {
+        if (!productManageFilterModel.getCatalogProductOption().equals(CatalogProductOption.WITH_AND_WITHOUT)) {
             filters.add(AppEventTracking.EventLabel.CATALOG);
         }
 
-        if (productManageFilterModel.getConditionProductOption() != ConditionProductOption.ALL_CONDITION) {
+        if (!productManageFilterModel.getConditionProductOption().equals(ConditionProductOption.ALL_CONDITION)) {
             filters.add(AppEventTracking.EventLabel.CONDITION);
         }
 
-        if (productManageFilterModel.getPictureStatusOption() != PictureStatusProductOption.WITH_AND_WITHOUT) {
+        if (!productManageFilterModel.getPictureStatusOption().equals(PictureStatusProductOption.WITH_AND_WITHOUT)) {
             filters.add(AppEventTracking.EventLabel.PICTURE_STATUS);
         }
 
