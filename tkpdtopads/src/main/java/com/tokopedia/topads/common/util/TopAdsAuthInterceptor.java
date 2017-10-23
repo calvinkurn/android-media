@@ -35,7 +35,18 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
     }
 
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
-        Map headerMap = AuthUtil.getDefaultHeaderMap(path, strParam, method, "", authKey, "dd MMM yy HH:mm ZZZ");
+        String contentType = "";
+        switch (method) {
+            case "PATCH":
+            case "POST":
+                contentType = "application/json";
+                break;
+            default:
+            case "GET":
+                // do nothing
+                break;
+        }
+        Map headerMap = AuthUtil.getDefaultHeaderMap(path, strParam, method, contentType, authKey, "dd MMM yy HH:mm ZZZ");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy HH:mm ZZZ", Locale.ENGLISH);
         String date = dateFormat.format(new Date());
         headerMap.put("X-Date", date);
@@ -43,17 +54,6 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
         headerMap.put("X-Device", "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put("X-Tkpd-Authorization", headerMap.get("Authorization"));
         headerMap.put("Authorization", this.bearerToken);
-
-        switch (method) {
-            case "PATCH":
-            case "POST":
-                headerMap.put("Content-Type", "application/json");
-                break;
-            default:
-            case "GET":
-                // do nothing
-                break;
-        }
         return headerMap;
     }
 }

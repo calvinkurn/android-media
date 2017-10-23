@@ -4,15 +4,14 @@ import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.topads.common.util.TopAdsOkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
+import com.tokopedia.topads.common.util.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsQualifier;
@@ -60,16 +59,12 @@ public class TopAdsNetworkModule {
                                                       TopAdsAuthInterceptor topAdsAuthInterceptor,
                                                       OkHttpRetryPolicy okHttpRetryPolicy,
                                                       @TopAdsQualifier TkpdErrorResponseInterceptor errorResponseInterceptor,
-                                                      ChuckInterceptor chuckInterceptor,
-                                                      DebugInterceptor debugInterceptor,
                                                       ApiCacheInterceptor apiCacheInterceptor) {
 
-        return OkHttpFactory.create().buildDaggerClientBearerTopAdsAuth(fingerprintInterceptor,
+        return TopAdsOkHttpFactory.create().buildDaggerClientBearerTopAdsAuth(fingerprintInterceptor,
                 topAdsAuthInterceptor,
                 okHttpRetryPolicy,
                 errorResponseInterceptor,
-                chuckInterceptor,
-                debugInterceptor,
                 apiCacheInterceptor);
     }
 

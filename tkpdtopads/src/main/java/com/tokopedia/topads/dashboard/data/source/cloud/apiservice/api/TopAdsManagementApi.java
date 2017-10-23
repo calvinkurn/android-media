@@ -4,6 +4,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.topads.dashboard.data.model.request.CreateGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.request.EditGroupRequest;
+import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
@@ -85,5 +86,8 @@ public interface TopAdsManagementApi {
 
     @PATCH(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> editGroupAd(@Body DataRequest<EditGroupRequest> body);
+
+    @POST(TopAdsNetworkConstant.GET_SUGGESTION)
+    Observable<Response<String>> getSuggestion(@Body DataRequest<GetSuggestionBody> body);
 
 }

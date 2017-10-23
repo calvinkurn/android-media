@@ -32,8 +32,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class OkHttpFactory {
 
     private final OkHttpClient client = getDefaultClient();
-    private OkHttpRetryPolicy okHttpRetryPolicy;
-    private OkHttpClient.Builder builder;
+    protected OkHttpRetryPolicy okHttpRetryPolicy;
+    protected OkHttpClient.Builder builder;
 
     public OkHttpFactory() {
         builder = client.newBuilder();
@@ -72,7 +72,7 @@ public class OkHttpFactory {
         return new HttpLoggingInterceptor().setLevel(loggingLevel);
     }
 
-    private OkHttpRetryPolicy getOkHttpRetryPolicy() {
+    protected OkHttpRetryPolicy getOkHttpRetryPolicy() {
         if (okHttpRetryPolicy == null) {
             return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
         }
