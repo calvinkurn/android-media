@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.tokopedia.seller.shop.setting.view.activity.ShopSettingInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
 import com.tokopedia.seller.shopsettings.payment.PaymentEditor;
@@ -52,8 +51,7 @@ public class FragmentSettingShop extends TkpdFragment{
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View mainView = inflater.inflate(R.layout.fragment_manage_general, container, false);
 		Name.clear();
 		ResID.clear();
@@ -75,14 +73,13 @@ public class FragmentSettingShop extends TkpdFragment{
 		lvManage.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
-					long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
 				Intent intent = null;
 				switch(pos) {
 					case 0:
-                        intent = new Intent(getActivity(), ShopSettingInfoActivity.class);
-                        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
-                        UnifyTracking.eventManageShopInfo();
+						intent = new Intent(getActivity(), ShopEditorActivity.class);
+						intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+						UnifyTracking.eventManageShopInfo();
 						startActivityForResult(intent, 0);
 						break;
 					case 1:
@@ -112,7 +109,6 @@ public class FragmentSettingShop extends TkpdFragment{
 						break;
 				}
 			}
-			
 		});
 		return mainView;
 	}
@@ -125,4 +121,3 @@ public class FragmentSettingShop extends TkpdFragment{
 		super.setUserVisibleHint(isVisibleToUser);
 	}
 }
-	

@@ -27,11 +27,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".shop.setting.view.activity.ShopSettingInfoActivity"
-            android:label="@string/title_shop_setting"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shop_score"
             android:screenOrientation="portrait" />
