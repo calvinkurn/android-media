@@ -42,23 +42,12 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
 
     @SuppressWarnings("unused")
     @DeepLink({Constants.Applinks.WEBVIEW})
-    public static TaskStackBuilder getInstanceIntentAppLink(Context context, Bundle extras) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        if (extras.getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
-            Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(context);
-            homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
-            taskStackBuilder.addNextIntent(homeIntent);
-        }
+    public static Intent getInstanceIntentAppLink(Context context, Bundle extras) {
         String webUrl = extras.getString(
                 KEY_APP_LINK_QUERY_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
         );
         String parentAppLink = extras.getString(KEY_APP_LINK_PARENT_APP_LINK);
-
-        Intent destination = AppLinkWebsiteActivity.newInstance(context, webUrl, parentAppLink);
-        taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
+        return AppLinkWebsiteActivity.newInstance(context, webUrl, parentAppLink);
     }
 
     @Override
