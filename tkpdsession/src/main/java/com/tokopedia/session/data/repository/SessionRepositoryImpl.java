@@ -1,8 +1,6 @@
 package com.tokopedia.session.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.entity.otp.RequestOtpData;
-import com.tokopedia.core.network.entity.phoneverification.ValidateOtpData;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.otp.data.viewmodel.RequestOtpViewModel;
 import com.tokopedia.otp.domain.model.ValidateOTPDomain;
@@ -17,7 +15,7 @@ import com.tokopedia.session.data.source.OtpSource;
 import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
-import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
+import com.tokopedia.session.register.domain.model.CreatePasswordDomain;
 
 import rx.Observable;
 
@@ -68,7 +66,7 @@ public class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
-    public Observable<CreatePasswordViewModel> createPassword(RequestParams params) {
+    public Observable<CreatePasswordDomain> createPassword(RequestParams params) {
         return createPasswordDataSource.createPassword(params);
     }
 

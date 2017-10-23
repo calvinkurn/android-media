@@ -8,8 +8,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.session.R;
 import com.tokopedia.session.domain.pojo.CreatePasswordPojo;
-import com.tokopedia.session.domain.pojo.discover.DiscoverPojo;
-import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
+import com.tokopedia.session.register.domain.model.CreatePasswordDomain;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -18,9 +17,9 @@ import rx.functions.Func1;
  * @author by nisie on 10/16/17.
  */
 
-public class CreatePasswordMapper implements Func1<Response<TkpdResponse>, CreatePasswordViewModel> {
+public class CreatePasswordMapper implements Func1<Response<TkpdResponse>, CreatePasswordDomain> {
     @Override
-    public CreatePasswordViewModel call(Response<TkpdResponse> response) {
+    public CreatePasswordDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals(""))
@@ -47,7 +46,7 @@ public class CreatePasswordMapper implements Func1<Response<TkpdResponse>, Creat
         }
     }
 
-    private CreatePasswordViewModel mappingToViewModel(CreatePasswordPojo pojo) {
-        return new CreatePasswordViewModel(pojo.getIsSuccess() == 1);
+    private CreatePasswordDomain mappingToViewModel(CreatePasswordPojo pojo) {
+        return new CreatePasswordDomain(pojo.getIsSuccess() == 1);
     }
 }

@@ -3,7 +3,7 @@ package com.tokopedia.session.data.source;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
-import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
+import com.tokopedia.session.register.domain.model.CreatePasswordDomain;
 
 import rx.Observable;
 
@@ -21,7 +21,7 @@ public class CreatePasswordDataSource {
         this.createPasswordMapper = createPasswordMapper;
     }
 
-    public Observable<CreatePasswordViewModel> createPassword(RequestParams params) {
+    public Observable<CreatePasswordDomain> createPassword(RequestParams params) {
         return accountsService.getApi()
                 .createPassword(params.getParameters())
                 .map(createPasswordMapper);

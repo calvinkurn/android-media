@@ -6,16 +6,15 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
+import com.tokopedia.session.register.domain.interactor.registerthird.CreatePasswordLoginUseCase;
 import com.tokopedia.session.register.domain.interactor.registerthird.CreatePasswordUseCase;
 import com.tokopedia.session.register.view.subscriber.CreatePasswordSubscriber;
 import com.tokopedia.session.register.view.viewlistener.CreatePassword;
-import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordModel;
+import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
 import com.tokopedia.session.session.presenter.RegisterNewImpl;
 import com.tokopedia.session.session.presenter.RegisterNewNextImpl;
 
 import javax.inject.Inject;
-
-import static android.R.attr.mode;
 
 /**
  * @author by nisie on 10/13/17.
@@ -24,15 +23,15 @@ import static android.R.attr.mode;
 public class CreatePasswordPresenter extends BaseDaggerPresenter<CreatePassword.View>
         implements CreatePassword.Presenter {
 
-    private final CreatePasswordUseCase createPasswordUseCase;
     private final SessionHandler sessionHandler;
+    private final CreatePasswordLoginUseCase createPasswordLoginUseCase;
     private CreatePassword.View viewListener;
 
 
     @Inject
-    public CreatePasswordPresenter(CreatePasswordUseCase createPasswordUseCase,
+    public CreatePasswordPresenter(CreatePasswordLoginUseCase createPasswordLoginUseCase,
                                    SessionHandler sessionHandler) {
-        this.createPasswordUseCase = createPasswordUseCase;
+        this.createPasswordLoginUseCase = createPasswordLoginUseCase;
         this.sessionHandler = sessionHandler;
     }
 
@@ -45,14 +44,14 @@ public class CreatePasswordPresenter extends BaseDaggerPresenter<CreatePassword.
     @Override
     public void detachView() {
         super.detachView();
-        createPasswordUseCase.unsubscribe();
+        createPasswordLoginUseCase.unsubscribe();
     }
 
     @Override
-    public void createPassword(CreatePasswordModel model) {
+    public void createPassword(CreatePasswordViewModel model) {
         viewListener.resetError();
         if (isValid(model)) {
-            createPasswordUseCase.execute(
+            createPasswordLoginUseCase.execute(
                     CreatePasswordUseCase.getParam(
                             model.getFullName(),
                             model.getBdayDay(),
@@ -68,7 +67,7 @@ public class CreatePasswordPresenter extends BaseDaggerPresenter<CreatePassword.
         }
     }
 
-    private boolean isValid(CreatePasswordModel model) {
+    private boolean isValid(CreatePasswordViewModel model) {
         boolean isValid = true;
 
         if (TextUtils.isEmpty(model.getRegisterTos())

@@ -7,7 +7,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.session.data.repository.SessionRepository;
-import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
+import com.tokopedia.session.register.domain.model.CreatePasswordDomain;
 
 import rx.Observable;
 
@@ -15,18 +15,17 @@ import rx.Observable;
  * @author by nisie on 10/16/17.
  */
 
-public class CreatePasswordUseCase extends UseCase<CreatePasswordViewModel> {
+public class CreatePasswordUseCase extends UseCase<CreatePasswordDomain> {
 
-    private static final String BIRTHDAY = "bday_dd";
-    private static final String BIRTHMONTH = "bday_mm";
-    private static final String BIRTHYEAR = "bday_yy";
-    private static final String FULLNAME = "full_name";
-    private static final String GENDER = "gender";
-    private static final String MSISDN = "msisdn";
-    private static final String REGISTER_TOS = "register_tos";
-    private static final String CONFIRM_PASSWORD = "confirm_pass";
-    private static final String NEW_PASSWORD = "new_pass";
-    private static final String USER_ID = "user_id";
+    public static final String BIRTHDAY = "bday_dd";
+    public static final String BIRTHMONTH = "bday_mm";
+    public static final String BIRTHYEAR = "bday_yy";
+    public static final String FULLNAME = "full_name";
+    public static final String MSISDN = "msisdn";
+    public static final String REGISTER_TOS = "register_tos";
+    public static final String CONFIRM_PASSWORD = "confirm_pass";
+    public static final String NEW_PASSWORD = "new_pass";
+    public static final String USER_ID = "user_id";
 
     SessionRepository sessionRepository;
 
@@ -38,7 +37,7 @@ public class CreatePasswordUseCase extends UseCase<CreatePasswordViewModel> {
     }
 
     @Override
-    public Observable<CreatePasswordViewModel> createObservable(RequestParams requestParams) {
+    public Observable<CreatePasswordDomain> createObservable(RequestParams requestParams) {
         return sessionRepository.createPassword(requestParams);
     }
 

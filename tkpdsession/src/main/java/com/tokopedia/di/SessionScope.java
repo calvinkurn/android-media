@@ -1,4 +1,4 @@
-package com.tokopedia.session.di;
+package com.tokopedia.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

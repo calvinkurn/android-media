@@ -56,6 +56,7 @@ import butterknife.OnClick;
 /**
  * Created by Nisie on 3/28/16.
  */
+@Deprecated
 public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> implements RegisterThirdView {
     public static final String messageTAG = "RegisterPassPhoneFragment : ";
     public static final String DEFAULT_GENDER = "1";

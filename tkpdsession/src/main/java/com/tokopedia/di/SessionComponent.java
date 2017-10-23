@@ -1,4 +1,4 @@
-package com.tokopedia.session.di;
+package com.tokopedia.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.otp.securityquestion.view.fragment.SecurityQuestionFragment;

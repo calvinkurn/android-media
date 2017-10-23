@@ -33,7 +33,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.SessionRouter;
@@ -49,7 +48,7 @@ import com.tokopedia.otp.securityquestion.view.presenter.SecurityQuestionPresent
 import com.tokopedia.otp.securityquestion.view.viewmodel.SecurityQuestionViewModel;
 import com.tokopedia.session.R;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
-import com.tokopedia.session.di.DaggerSessionComponent;
+import com.tokopedia.di.DaggerSessionComponent;
 
 import java.util.concurrent.TimeUnit;
 
@@ -528,8 +527,9 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

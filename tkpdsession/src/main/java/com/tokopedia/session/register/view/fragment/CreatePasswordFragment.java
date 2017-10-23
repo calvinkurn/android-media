@@ -2,6 +2,7 @@ package com.tokopedia.session.register.view.fragment;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -30,12 +31,13 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.OldSessionRouter;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
-import com.tokopedia.session.di.DaggerSessionComponent;
+import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.presenter.CreatePasswordPresenter;
 import com.tokopedia.session.register.view.viewlistener.CreatePassword;
-import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordModel;
+import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
 import com.tokopedia.session.session.presenter.RegisterNewImpl;
 
 import javax.inject.Inject;
@@ -48,6 +50,7 @@ public class CreatePasswordFragment extends BaseDaggerFragment
         implements CreatePassword.View {
 
     private static final String CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED";
+    private static final int REQUEST_VERIFY_PHONE_NUMBER = 101;
     EditText vName;
     TextView vBDay;
     PasswordView vPassword;
@@ -66,7 +69,7 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     @Inject
     CreatePasswordPresenter presenter;
 
-    CreatePasswordModel model;
+    CreatePasswordViewModel model;
 
     DatePickerDialog.OnDateSetListener callBack = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -379,5 +382,21 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     @Override
     public void onErrorCreatePassword(String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onGoToPhoneVerification() {
+        Intent intent = PhoneVerificationActivationActivity.getCallingIntent(getActivity());
+        startActivityForResult(intent, REQUEST_VERIFY_PHONE_NUMBER);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_VERIFY_PHONE_NUMBER) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        }else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

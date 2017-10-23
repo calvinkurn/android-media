@@ -1,11 +1,9 @@
 package com.tokopedia.session.register.view.subscriber;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.session.R;
+import com.tokopedia.session.register.domain.model.CreatePasswordLoginDomain;
 import com.tokopedia.session.register.view.viewlistener.CreatePassword;
-import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
 
 import rx.Subscriber;
 
@@ -13,7 +11,7 @@ import rx.Subscriber;
  * @author by nisie on 10/16/17.
  */
 
-public class CreatePasswordSubscriber extends Subscriber<CreatePasswordViewModel> {
+public class CreatePasswordSubscriber extends Subscriber<CreatePasswordLoginDomain> {
     private final CreatePassword.View viewListener;
 
     public CreatePasswordSubscriber(CreatePassword.View viewListener) {
@@ -28,18 +26,21 @@ public class CreatePasswordSubscriber extends Subscriber<CreatePasswordViewModel
     @Override
     public void onError(Throwable e) {
         viewListener.onErrorCreatePassword(ErrorHandler.getErrorMessage(e));
-
     }
 
     @Override
-    public void onNext(CreatePasswordViewModel createPasswordViewModel) {
-        if(createPasswordViewModel.isSuccess()){
+    public void onNext(CreatePasswordLoginDomain domain) {
+        if (domain.getCreatePasswordDomain().isSuccess()
+                && domain.getMakeLoginDomain().isLogin()
+                && !domain.getMakeLoginDomain().isMsisdnVerified()) {
+            viewListener.onGoToPhoneVerification();
+        } else if (domain.getCreatePasswordDomain().isSuccess()
+                && domain.getMakeLoginDomain().isLogin()
+                && !domain.getMakeLoginDomain().isMsisdnVerified()) {
             viewListener.onSuccessCreatePassword();
-        }else{
-            viewListener.onErrorCreatePassword(MainApplication.getAppContext().getString(R
-                    .string.error_empty_provider) + " " + MainApplication.getAppContext().getString(R
-                    .string.code_error) + " " + ErrorCode.WS_ERROR);
-
+        } else {
+            viewListener.onErrorCreatePassword(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode
+                    .UNSUPPORTED_FLOW));
         }
     }
 }

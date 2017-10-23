@@ -40,14 +40,14 @@ import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActiva
 import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
-import com.tokopedia.session.di.DaggerSessionComponent;
+import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.presenter.RegisterInitialPresenter;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
-import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordModel;
+import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
 import com.tokopedia.session.session.activity.Login;
 
 import java.util.ArrayList;
@@ -413,7 +413,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData) {
         startActivityForResult(CreatePasswordActivity.getCallingIntent(getActivity(),
-                new CreatePasswordModel(
+                new CreatePasswordViewModel(
                         userInfoDomainData.getEmail(),
                         userInfoDomainData.getFullName(),
                         userInfoDomainData.getBdayYear(),

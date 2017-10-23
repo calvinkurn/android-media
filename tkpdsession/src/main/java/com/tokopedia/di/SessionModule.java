@@ -1,4 +1,4 @@
-package com.tokopedia.session.di;
+package com.tokopedia.di;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -44,6 +44,7 @@ import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterWebviewUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterWithSosmedUseCase;
+import com.tokopedia.session.register.domain.interactor.registerthird.CreatePasswordLoginUseCase;
 import com.tokopedia.session.register.domain.interactor.registerthird.CreatePasswordUseCase;
 
 import javax.inject.Named;
@@ -288,6 +289,17 @@ public class SessionModule {
         return new CreatePasswordUseCase(
                 threadExecutor, postExecutionThread,
                 sessionRepository);
+    }
+
+    @SessionScope
+    @Provides
+    CreatePasswordLoginUseCase provideCreatePasswordLoginUseCase(ThreadExecutor threadExecutor,
+                                                                 PostExecutionThread postExecutionThread,
+                                                                 CreatePasswordUseCase
+                                                                         createPasswordUseCase,
+                                                                 MakeLoginUseCase makeLoginUseCase) {
+        return new CreatePasswordLoginUseCase(
+                threadExecutor, postExecutionThread, createPasswordUseCase, makeLoginUseCase);
     }
 
     @SessionScope

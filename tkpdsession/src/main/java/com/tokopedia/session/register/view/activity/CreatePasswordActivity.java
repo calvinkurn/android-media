@@ -12,7 +12,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.view.fragment.CreatePasswordFragment;
-import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordModel;
+import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
 
 /**
  * @author by nisie on 10/12/17.
@@ -50,9 +50,9 @@ public class CreatePasswordActivity extends TActivity implements HasComponent {
         return AppScreen.SCREEN_CREATE_PASSWORD;
     }
 
-    public static Intent getCallingIntent(Context context, CreatePasswordModel createPasswordModel) {
+    public static Intent getCallingIntent(Context context, CreatePasswordViewModel createPasswordViewModel) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ARGS_FORM_DATA, createPasswordModel);
+        bundle.putParcelable(ARGS_FORM_DATA, createPasswordViewModel);
         Intent intent = new Intent(context, CreatePasswordActivity.class);
         intent.putExtras(bundle);
         return intent;

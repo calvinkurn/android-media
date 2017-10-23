@@ -8,7 +8,7 @@ import com.tokopedia.otp.securityquestion.domain.model.securityquestion.Question
 import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
-import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
+import com.tokopedia.session.register.domain.model.CreatePasswordDomain;
 
 import rx.Observable;
 
@@ -25,7 +25,7 @@ public interface SessionRepository {
 
     Observable<TokenViewModel> getAccessToken(RequestParams params);
 
-    Observable<CreatePasswordViewModel> createPassword(RequestParams requestParams);
+    Observable<CreatePasswordDomain> createPassword(RequestParams requestParams);
 
     Observable<MakeLoginDomain> makeLogin(TKPDMapParam<String, Object> parameters);
 
