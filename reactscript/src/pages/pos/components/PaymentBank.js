@@ -70,6 +70,7 @@ class PaymentBank extends Component {
     }
   };
 
+
   _renderPopRow(rowData, sectionID, rowID) {
     if (rowID > 10) {
       return (
@@ -79,7 +80,7 @@ class PaymentBank extends Component {
               <Image style={styles.popupImage} source={{uri: rowData.bank_logo}} />
             </View>
             <View style={styles.popupCol}>
-              <Text style={styles.popupText} > {rowData.bank_name} </Text>
+              <Text style={styles.popupText}> {rowData.bank_name} </Text>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -91,29 +92,25 @@ class PaymentBank extends Component {
 
 
   _renderEmiRow(rowData, sectionID, rowID) {
-
     if (rowData.available === false) {
       return (
-      <TouchableWithoutFeedback onPress={this._onPressEmiRow.bind(this, rowID, rowData)}>
-        <View style={[styles.emiBox, { marginRight: 10, height: 80 }, this.state.selectedEmiId === rowData.term ? styles.selectedBorder : {}]}>
-          <Text style={styles.emiText} >
-              {rowData.text}
-          </Text>
-        </View>
-      </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={this._onPressEmiRow.bind(this, rowID, rowData)}>
+          <View style={[styles.emiBox, { marginRight: 10, height: 80 }, this.state.selectedEmiId === rowData.term ? styles.selectedBorder : {}]}>
+            <Text style={styles.emiText}>{rowData.text}</Text>
+          </View>
+        </TouchableWithoutFeedback>
       );
-   }
-
-   return (
+    }
+    
+    return (
       <TouchableWithoutFeedback onPress={this._onPressEmiRow.bind(this, rowID, rowData)}>
         <View style={[styles.emiBox, { marginRight: 10, height: 80 }, this.state.selectedEmiId === rowData.term ? styles.selectedBorder : {}]}>
-          <Text style={styles.emiText} >
-            {rowData.term} Bulan
-          </Text>
+          <Text style={styles.emiText}>{rowData.term} Bulan</Text>
         </View>
       </TouchableWithoutFeedback>
     );
   }
+
 
   _renderBankLogo(rowData, sectionID, rowID) {
     if (rowID <= 10) {
@@ -127,22 +124,21 @@ class PaymentBank extends Component {
       );
     } else if (rowID <= 11) {
       return (
-        <TouchableOpacity style={[styles.logoBox, { marginTop: 10, height: 80 }]} onPress={() => { this.popupDialog.show() }} >
-          <Text style={{ fontSize: 13, color: '#0000008a' }} >
-            Bank
-            </Text>
-          <Text style={{ fontSize: 13, color: '#0000008a' }}>
-            Lainnya
-            </Text>
+        <TouchableOpacity style={[styles.logoBox, { marginTop: 10, height: 80 }]} 
+          onPress={() => { this.popupDialog.show() }} >
+          <View>
+            <Text style={{ fontSize: 13, color: '#0000008a' }}>Bank{"\n"}Lainnya</Text>
+          </View>
         </TouchableOpacity>
       );
     } else if (rowID < 99) {
-      return (<View style={[styles.logoBox, styles.noBorder]}>
-      </View>);
+      return <View style={[styles.logoBox, styles.noBorder]} />
     }
 
     return (<View style={{ height: 0 }} />);
   }
+
+  
 
   _onPressPopupRow(rowID, rowData) {
     let emiList = this.state.dsEmi.cloneWithRows([{
