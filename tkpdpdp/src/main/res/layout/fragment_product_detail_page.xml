@@ -19,12 +19,13 @@
             android:fitsSystemWindows="true"
             app:contentScrim="@color/white"
             android:minHeight="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
             <com.tokopedia.tkpdpdp.customview.PictureView
                 android:id="@+id/view_picture"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                app:scrimAnimationDuration="50"
                 android:fitsSystemWindows="true"
                 app:layout_collapseMode="none"
                 android:orientation="vertical" />
@@ -50,6 +51,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:layout_gravity="fill_vertical"
+        android:descendantFocusability="blocksDescendants"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/nested_scroll_pdp">
 
@@ -58,6 +60,7 @@
             android:id="@+id/root_view"
             android:orientation="vertical"
             android:layout_width="match_parent"
+            android:clickable="true"
             android:paddingBottom="?attr/actionBarSize"
             android:layout_height="match_parent">
 
@@ -174,7 +177,8 @@
             <com.tokopedia.tkpdpdp.customview.LastUpdateView
                 android:id="@+id/view_last_update"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_med"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
