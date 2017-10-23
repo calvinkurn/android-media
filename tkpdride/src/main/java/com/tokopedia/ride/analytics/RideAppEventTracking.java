@@ -11,7 +11,7 @@ public interface RideAppEventTracking extends AppEventTracking {
         String GenericUberEvent = "genericUberEvent";
     }
     interface  Category {
-        String EventCategory ="digital-uber";
+        String EventCategory ="digital - uber";
     }
     interface Action {
         String EventClickBack = "click back";
@@ -21,12 +21,12 @@ public interface RideAppEventTracking extends AppEventTracking {
         String EventClickDeleteDestination = "click delete destination";
         String EventSelectRideOption = "select ride option";
         String EventDeletePromotion = "delete promotion";
-        String EventClickRideOption = "click reqeust %s";
+        String EventClickRideOption = "click request %s";
         String EventAutoDetectCurrentLocation  = "click autodetect current location";
         String EventClickSourceOpenMap = "click source open map on";
         String EventClickSourceRecentAddress = "click source recent addresses";
         String EventClickDoneSourceMap = "click done on source map";
-        String EventClickDestinationOpenMap = "click destiantion open map";
+        String EventClickDestinationOpenMap = "click destination open map";
         String EventClickDestinationRecentAddress = "click destination recent addresses";
         String EventDoneOnDestinationMap = "click done on destination map";
         String EventClickReceipt = "click receipt";
