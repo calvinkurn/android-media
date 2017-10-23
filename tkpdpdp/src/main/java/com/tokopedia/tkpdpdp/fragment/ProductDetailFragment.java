@@ -116,6 +116,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final int STATUS_IN_WISHLIST = 1;
     public static final int STATUS_NOT_WISHLIST = 0;
 
+    private static final int FROM_COLLAPSED = 0;
+    private static final int FROM_EXPANDED = 1;
+
     public static final int INIT_REQUEST = 1;
     public static final int RE_REQUEST = 2;
 
@@ -1036,21 +1039,24 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
         return new AppBarLayout.OnOffsetChangedListener() {
             int intColor = 0;
+            int stateCollapsing = FROM_COLLAPSED;
 
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
                 intColor = - verticalOffset;
-                if (intColor>=SCROLL_ELEVATION+toolbar.getHeight() && isAdded()) {
+                if (intColor>=SCROLL_ELEVATION+toolbar.getHeight() && isAdded() && stateCollapsing==FROM_EXPANDED) {
                     initToolbarLight();
                     initStatusBarLight();
                     fabWishlist.hide();
-                } else if (isAdded()) {
+                    stateCollapsing = FROM_COLLAPSED;
+                } else if (intColor<SCROLL_ELEVATION+toolbar.getHeight() && isAdded() && stateCollapsing==FROM_COLLAPSED) {
                     initStatusBarDark();
                     initToolbarTransparant();
                     if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
                         fabWishlist.show();
                     }
+                    stateCollapsing = FROM_EXPANDED;
                 }
             }
         };
