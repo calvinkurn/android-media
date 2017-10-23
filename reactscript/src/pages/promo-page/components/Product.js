@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, StyleSheet, Text, Platform, TouchableWithoutFeedback } from 'react-native'
+import { View, Image, StyleSheet, Text, Platform, TouchableHighlight } from 'react-native'
 import PropTypes from 'prop-types'
 import unescape from 'lodash/unescape'
 import { NavigationModule } from 'NativeModules'
@@ -146,36 +146,38 @@ const styles = StyleSheet.create({
 
 const Product = ({ product }) => (
   <View style={styles.productCell}>
-    <TouchableWithoutFeedback onPress={() => {
+    <TouchableHighlight underlayColor={'#FFF'} onPress={() => {
       NavigationModule.navigateWithMobileUrl(product.data.url_app, product.data.url, '')}}>
-      <View style={styles.productImageWrapper}>
-        <Image source={{ uri: product.data.image_url }} style={styles.productImage} />
-      </View>
-      <Text
-        style={styles.productName}
-        ellipsizeMode="tail"
-        numberOfLines={2}>{unescape(product.data.name)}
-      </Text>
-      <View style={styles.priceContainer}>
-        <View style={styles.productGridNormalPrice}>
-          {
-            product.data.discount_percentage && (
-              <View style={{ height: 15 }}>
-                <Text style={styles.productGridNormalPriceText}>{product.data.original_price}</Text>
-              </View>
-            )
-          }
+      <View>
+        <View style={styles.productImageWrapper}>
+          <Image source={{ uri: product.data.image_url }} style={styles.productImage} />
         </View>
-        <View style={styles.priceWrapper}>
-          <Text style={styles.price}>{product.data.price}</Text>
-          {product.data.discount_percentage && (
-            <View style={styles.productGridCampaignRate}>
-              <Text style={styles.productGridCampaignRateText}>{`${product.data.discount_percentage}% OFF`}</Text>
-            </View>)
-          }
+        <Text
+          style={styles.productName}
+          ellipsizeMode="tail"
+          numberOfLines={2}>{unescape(product.data.name)}
+        </Text>
+        <View style={styles.priceContainer}>
+          <View style={styles.productGridNormalPrice}>
+            {
+              product.data.discount_percentage && (
+                <View style={{ height: 15 }}>
+                  <Text style={styles.productGridNormalPriceText}>{product.data.original_price}</Text>
+                </View>
+              )
+            }
+          </View>
+          <View style={styles.priceWrapper}>
+            <Text style={styles.price}>{product.data.price}</Text>
+            {product.data.discount_percentage && (
+              <View style={styles.productGridCampaignRate}>
+                <Text style={styles.productGridCampaignRateText}>{`${product.data.discount_percentage}% OFF`}</Text>
+              </View>)
+            }
+          </View>
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableHighlight>
     <View style={styles.productBadgeWrapper}>
       {
         product.data.labels.map((l, i) => {
@@ -204,7 +206,7 @@ const Product = ({ product }) => (
     </View>
 
     {/* Brand Section */}
-    <TouchableWithoutFeedback onPress={() => {
+    <TouchableHighlight underlayColor={'#FFF'} onPress={() => {
       console.log(product)
       NavigationModule.navigateWithMobileUrl(product.data.shop.url_app, product.data.shop.url, '')}}>
       <View style={styles.shopSection}>
@@ -225,7 +227,7 @@ const Product = ({ product }) => (
             </View>) : null))
           }
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableHighlight>
   </View>
 )
 
