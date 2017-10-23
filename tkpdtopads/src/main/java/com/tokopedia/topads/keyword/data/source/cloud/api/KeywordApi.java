@@ -28,10 +28,10 @@ import rx.Observable;
 
 public interface KeywordApi {
 
-    @GET("/v1.1/dashboard/keywords")
+    @GET(TopAdsNetworkConstant.GET_DASHBOARD_KEYWORD)
     Observable<PageDataResponse<List<Datum>>> getDashboardKeyword(@QueryMap Map<String, String> param);
 
-    @POST("/v2/promo/keyword")
+    @POST(TopAdsNetworkConstant.ADD_KEYOWRD)
     Observable<PageDataResponse<List<KeywordAddResponseDatum>>> addKeyword(@Body AddKeywordRequest addKeywordRequest);
 
     @PATCH(TopAdsNetworkConstant.PATH_EDIT_KEYWORD_DETAIL)

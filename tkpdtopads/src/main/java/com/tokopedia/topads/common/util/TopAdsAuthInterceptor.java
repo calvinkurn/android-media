@@ -6,10 +6,15 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by normansyahputa on 10/20/17.
@@ -38,6 +43,17 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
         headerMap.put("X-Device", "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put("X-Tkpd-Authorization", headerMap.get("Authorization"));
         headerMap.put("Authorization", this.bearerToken);
+
+        switch (method) {
+            case "PATCH":
+            case "POST":
+                headerMap.put("Content-Type", "application/json");
+                break;
+            default:
+            case "GET":
+                // do nothing
+                break;
+        }
         return headerMap;
     }
 }
