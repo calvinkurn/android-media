@@ -32,8 +32,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class OkHttpFactory {
 
     private final OkHttpClient client = getDefaultClient();
-    private OkHttpRetryPolicy okHttpRetryPolicy;
-    private OkHttpClient.Builder builder;
+    protected OkHttpRetryPolicy okHttpRetryPolicy;
+    protected OkHttpClient.Builder builder;
 
     public OkHttpFactory() {
         builder = client.newBuilder();

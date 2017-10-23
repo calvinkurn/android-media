@@ -11,6 +11,7 @@ import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailGroupMapper;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsSearchGroupMapper;
 import com.tokopedia.topads.dashboard.data.model.request.CreateGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.request.EditGroupRequest;
+import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -20,7 +21,9 @@ import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by zulfikarrahman on 2/20/17.
@@ -65,6 +68,17 @@ public class TopAdsGroupAdsDataSource {
 
     public Observable<TopAdsDetailGroupDomainModel> saveDetailGroup(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel) {
         return topAdsManagementApi.editGroupAd(getSaveGroupDetailRequest(topAdsDetailGroupDomainModel)).map(topAdsDetailGroupDomainMapper);
+    }
+
+    public Observable<String> getSuggestion(GetSuggestionBody getSuggestionBody){
+        DataRequest<GetSuggestionBody> dataRequest = new DataRequest<>();
+        dataRequest.setData(getSuggestionBody);
+        return topAdsManagementApi.getSuggestion(dataRequest).map(new Func1<Response<String>, String>() {
+            @Override
+            public String call(Response<String> stringResponse) {
+                return stringResponse.body();
+            }
+        });
     }
 
     private DataRequest<EditGroupRequest> getSaveGroupDetailRequest(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel) {
