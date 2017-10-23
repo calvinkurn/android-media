@@ -9,7 +9,5 @@ import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
 
 public abstract class ShopSettingLogisticPresenter extends BaseDaggerPresenter<ShopSettingLogisticView> {
 
-    protected abstract void unsubscribeOnDestroy();
-
     public abstract void updateLogistic(int districtCode);
 }

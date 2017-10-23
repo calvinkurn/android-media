@@ -13,6 +13,7 @@ import com.tokopedia.seller.shop.setting.di.component.DaggerShopSetingLogisticCo
 import com.tokopedia.seller.shop.setting.di.component.ShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSetingLogisticModule;
+import com.tokopedia.seller.shop.setting.domain.model.LogisticAvailableDomainModel;
 import com.tokopedia.seller.shop.setting.view.listener.ShopSettingLogisticView;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenter;
 
@@ -55,7 +56,6 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
         return view;
     }
 
-    @Override
     public void changeDistrictCode(int districtCode) {
         this.districtCode = districtCode;
     }
@@ -66,6 +66,16 @@ public class ShopSettingLogisticFragment extends BaseDaggerFragment implements S
         } else {
             throw new RuntimeException("District code must be selected");
         }
+    }
+
+    @Override
+    public void onSuccessLoadLogistic(LogisticAvailableDomainModel logisticAvailableDomainModel) {
+
+    }
+
+    @Override
+    public void onErrorLoadLogistic(Throwable t) {
+
     }
 
     private void showMessageError(String string) {

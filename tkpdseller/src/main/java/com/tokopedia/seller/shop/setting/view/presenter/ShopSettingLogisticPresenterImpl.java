@@ -19,31 +19,25 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
     }
 
     @Override
-    protected void unsubscribeOnDestroy() {
-
-    }
-
-    @Override
     public void updateLogistic(int districtCode) {
         RequestParams requestParam = GetLogisticAvailableUseCase.generateParams(districtCode);
-        getLogisticAvailableUseCase.execute(requestParam, new UpdateLogisticSubscriber());
+        getLogisticAvailableUseCase.execute(requestParam, new Subscriber<LogisticAvailableDomainModel>() {
+            @Override
+            public void onCompleted() {
 
-    }
+            }
 
-    private class UpdateLogisticSubscriber extends Subscriber<LogisticAvailableDomainModel> {
-        @Override
-        public void onCompleted() {
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorLoadLogistic(e);
+                }
+            }
 
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-
-        @Override
-        public void onNext(LogisticAvailableDomainModel logisticAvailableDomainModel) {
-
-        }
+            @Override
+            public void onNext(LogisticAvailableDomainModel logisticAvailableDomainModel) {
+                getView().onSuccessLoadLogistic(logisticAvailableDomainModel);
+            }
+        });
     }
 }

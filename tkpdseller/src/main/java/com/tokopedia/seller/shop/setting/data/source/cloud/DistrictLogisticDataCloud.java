@@ -52,12 +52,7 @@ public class DistrictLogisticDataCloud {
 
 
     public Observable<OpenShopLogisticServiceModel> getLogisticAvailable(int districtCode) {
-        return api
-                .getLogisticAvailable(
-                        AuthUtil.generateParamsNetwork(
-                                context, getLogisticAvailableDataparams(districtCode)
-                        )
-                )
+        return api.getLogisticAvailable(AuthUtil.generateParamsNetwork(context, getLogisticAvailableDataparams(districtCode)))
                 .map(new GetData<OpenShopLogisticServiceModel>());
     }
 
