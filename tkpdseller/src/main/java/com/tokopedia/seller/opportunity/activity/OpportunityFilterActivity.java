@@ -59,6 +59,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     private ArrayList<FilterPass> listPass;
     private OpportunityFilterPassModel filterPassModel;
     private GlobalCacheManager cacheManager;
+    private String trackingEventLabel;
 
     public static Intent createIntent(Context context) {
         Intent intent = new Intent(context, OpportunityFilterActivity.class);
@@ -68,6 +69,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         cacheManager = new GlobalCacheManager();
+        trackingEventLabel = "";
 
         if (savedInstanceState != null) {
             listFilter = savedInstanceState.getParcelableArrayList(PARAM_FILTER_VIEW_MODEL);
@@ -203,9 +205,20 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                         }.getType()));
                 cacheManager.store();
 
+                if (trackingEventLabel.endsWith("~"))
+                    trackingEventLabel = trackingEventLabel.substring(0, trackingEventLabel.length
+                            () - 1);
+                UnifyTracking.eventOpportunity(
+                        OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
+                        OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
+                        AppEventTracking.Action.SUBMIT,
+                        trackingEventLabel
+                );
+
                 Intent intent = new Intent();
                 setResult(Activity.RESULT_OK, intent);
                 finish();
+
             }
         };
     }
@@ -213,9 +226,13 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     private ArrayList<FilterPass> getSelectedFilterList() {
         ArrayList<FilterPass> list = new ArrayList<>();
 
-        for (FilterViewModel filterViewModel : listFilter) {
-            if (filterViewModel.isActive()) {
-                addSelectedFilterToList(list, filterViewModel.getListChild());
+        for (int i = 0; i < listFilter.size(); i++) {
+            if (listFilter.get(i).isActive()) {
+                addSelectedFilterToList(list, listFilter.get(i).getListChild());
+                if (trackingEventLabel.endsWith(";"))
+                    trackingEventLabel = trackingEventLabel.substring(0, trackingEventLabel.length
+                            () - 1);
+                trackingEventLabel += "~";
             }
         }
         return list;
@@ -223,7 +240,9 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
     private void addSelectedFilterToList(ArrayList<FilterPass> list,
                                          ArrayList<OptionViewModel> listChild) {
-        for (OptionViewModel optionViewModel : listChild) {
+
+        for (int i = 0; i < listChild.size(); i++) {
+            OptionViewModel optionViewModel = listChild.get(i);
             if (optionViewModel.getListChild().size() > 0 && !optionViewModel.isExpanded()) {
                 addSelectedFilterToList(list, optionViewModel.getListChild());
             } else if (optionViewModel.isSelected()) {
@@ -231,6 +250,9 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                         optionViewModel.getKey(),
                         optionViewModel.getValue(),
                         optionViewModel.getName()));
+
+                trackingEventLabel += optionViewModel.getKey() + " " + optionViewModel
+                        .getValue() + ";";
             }
         }
     }

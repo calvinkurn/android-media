@@ -167,7 +167,7 @@ public abstract class TopAdsAdListFragment<P extends
                 setResultAdListChanged();
             }
         } else if (requestCode == REQUEST_CODE_AD_FILTER) {
-            searchMode = true;
+            setSearchMode(true);
         }
     }
 
@@ -264,8 +264,8 @@ public abstract class TopAdsAdListFragment<P extends
     public void onSearch(String keyword) {
         this.keyword = keyword;
         resetPageAndSearch();
-        if (!searchMode && !TextUtils.isEmpty(keyword)) {
-            searchMode = true;
+        if (!isSearchMode() && !TextUtils.isEmpty(keyword)) {
+            setSearchMode(true);
         }
     }
 

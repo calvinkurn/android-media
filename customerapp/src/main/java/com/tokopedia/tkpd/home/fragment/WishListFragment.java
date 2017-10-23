@@ -24,7 +24,6 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -171,7 +170,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void onResume() {
         super.onResume();
         wishList.onResume(getActivity());
-        UnifyTracking.eventViewWishlist();
     }
 
     @Override
