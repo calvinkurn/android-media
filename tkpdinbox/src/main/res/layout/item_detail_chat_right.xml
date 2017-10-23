@@ -2,15 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_marginRight="80dp"
+    android:layout_marginLeft="80dp"
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <include layout="@layout/item_detail_chat_title"/>
 
         <FrameLayout
             android:layout_marginTop="@dimen/margin_small"
@@ -19,7 +18,7 @@
             android:layout_height="wrap_content"
             android:minWidth="120dp"
             android:minHeight="25dp"
-            android:background="@drawable/bg_bubble_left"
+            android:background="@drawable/bg_bubble_right"
             android:padding="@dimen/padding_small">
 
             <LinearLayout
@@ -28,22 +27,22 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_message"
+                    android:id="@+id/tv_chat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black_54"/>
+                    android:textColor="@color/white"/>
 
                 <RelativeLayout
-                    android:id="@+id/rv_attachment"
+                    android:id="@+id/rv_image"
                     android:layout_marginTop="@dimen/margin_small"
                     android:layout_width="wrap_content"
                     android:layout_height="70dp"
                     android:visibility="gone"/>
             </LinearLayout>
-
         </FrameLayout>
 
-        <include layout="@layout/item_detail_chat_date"/>
+        <include layout="@layout/item_detail_chat_date_right" />
+
     </LinearLayout>
 
 
