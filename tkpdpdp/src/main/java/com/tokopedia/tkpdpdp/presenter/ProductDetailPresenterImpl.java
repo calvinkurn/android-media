@@ -255,19 +255,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void sendLocalytics(@NonNull Context context, @NonNull ProductDetailData successResult) {
-        Map<String, String> attributes = new HashMap<>();
-        attributes.put("Seller ID", successResult.getShopInfo().getShopId());
-        attributes.put("Price", Integer.toString(
-                CurrencyFormatHelper.convertRupiahToInt(
-                        successResult.getInfo().getProductPrice()
-                )));
-        attributes.put("Wishlist", successResult.getInfo().getProductAlreadyWishlist() == 1 ? "Yes" : "No");
-        attributes.put("Favorite Seller", successResult.getShopInfo().getShopAlreadyFavorited() == 1 ? "Yes" : "No");
-        UnifyTracking.sendLocaProductDetailEvent(successResult, attributes);
-    }
-
-    @Override
     public void sendAppsFlyerCheckout(@NonNull final Context context, @NonNull final ProductCartPass param) {
         PaymentTracking.checkoutEventAppsflyer(param);
     }
@@ -745,7 +732,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private void requestAddWishList(final Context context, final Integer productId) {
         viewListener.loadingWishList();
         UnifyTracking.eventPDPWishlit();
-        TrackingUtils.eventLoca(AppScreen.EVENT_ADDED_WISHLIST);
         retrofitInteractor.addToWishList(context, productId,
                 new RetrofitInteractor.AddWishListListener() {
                     @Override

@@ -8,6 +8,7 @@ import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.ImageBlogViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.VideoBlogViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.EmptyTopAdsProductViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.EmptyTopAdsViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.officialstore.OfficialStoreBrandsViewHolder;
@@ -24,6 +25,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.toppicks.Top
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
@@ -117,6 +119,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
+    public int type(EmptyTopAdsProductModel emptyModel) {
+        return EmptyTopAdsProductViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(ToppicksViewModel toppicksViewModel) {
         return ToppicksViewHolder.LAYOUT;
     }
@@ -159,6 +166,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new RecentViewViewHolder(view, viewListener);
         else if (type == EmptyTopAdsViewHolder.LAYOUT)
             viewHolder = new EmptyTopAdsViewHolder(view, topAdsItemClickListener);
+        else if (type == EmptyTopAdsProductViewHolder.LAYOUT)
+            viewHolder = new EmptyTopAdsProductViewHolder(view, topAdsItemClickListener);
         else if (type == ToppicksViewHolder.LAYOUT)
             viewHolder = new ToppicksViewHolder(view, toppicksListener);
         else

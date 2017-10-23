@@ -27,6 +27,7 @@ public class TopAdsKeywordDetailMapperView {
         keywordAd.setStatusToogle(keywordDetailDomain.getStatusToogle());
         keywordAd.setStatusDesc(keywordDetailDomain.getKeywordStatusDesc());
         keywordAd.setGroupName(keywordDetailDomain.getGroupName());
+        keywordAd.setGroupBid(keywordDetailDomain.getGroupBid());
         return keywordAd;
     }
 }

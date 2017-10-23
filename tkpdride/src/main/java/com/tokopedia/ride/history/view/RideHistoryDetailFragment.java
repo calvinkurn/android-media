@@ -31,6 +31,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.di.RideComponent;
@@ -429,6 +430,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     @OnClick(R2.id.layout_need_help)
     public void actionNeedHelpClicked() {
+        RideGATracking.eventClickHelpTrip(getScreenName(),rideHistory.getRequestTime(),rideHistory.getTotalFare(),rideHistory.getStatus());//17
         startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
     }
 

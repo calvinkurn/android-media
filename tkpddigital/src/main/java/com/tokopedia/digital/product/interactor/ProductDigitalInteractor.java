@@ -18,6 +18,8 @@ import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.ProductDigitalData;
 import com.tokopedia.digital.product.model.PulsaBalance;
+import com.tokopedia.digital.widget.domain.IDigitalWidgetRepository;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func4;
+import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -37,30 +39,31 @@ import rx.subscriptions.CompositeSubscription;
 public class ProductDigitalInteractor implements IProductDigitalInteractor {
     private final CompositeSubscription compositeSubscription;
     private final IDigitalCategoryRepository categoryRepository;
-    private final ILastOrderNumberRepository lastOrderNumberRepository;
+//    private final ILastOrderNumberRepository lastOrderNumberRepository;
     private final LocalCacheHandler localCacheHandler;
     private final IUssdCheckBalanceRepository ussdCheckBalanceRepository;
+    private IDigitalWidgetRepository digitalWidgetRepository;
 
     public ProductDigitalInteractor(CompositeSubscription compositeSubscription,
+                                    IDigitalWidgetRepository digitalWidgetRepository,
                                     IDigitalCategoryRepository categoryRepository,
                                     ILastOrderNumberRepository lastOrderNumberRepository,
                                     LocalCacheHandler localCacheHandler,
                                     IUssdCheckBalanceRepository ussdCheckBalanceRepository) {
         this.compositeSubscription = compositeSubscription;
+        this.digitalWidgetRepository = digitalWidgetRepository;
         this.categoryRepository = categoryRepository;
-        this.lastOrderNumberRepository = lastOrderNumberRepository;
+//        this.lastOrderNumberRepository = lastOrderNumberRepository;
         this.localCacheHandler = localCacheHandler;
         this.ussdCheckBalanceRepository = ussdCheckBalanceRepository;
-
     }
-
 
     @Override
     public void getCategoryAndBanner(
             final String pathCategoryId,
             TKPDMapParam<String, String> paramQueryCategory,
             TKPDMapParam<String, String> paramQueryBanner,
-            TKPDMapParam<String, String> paramQueryLastNumber,
+            TKPDMapParam<String, String> paramQueryNumberList,
             TKPDMapParam<String, String> paramQueryLastOrder,
             Subscriber<ProductDigitalData> subscriber) {
         compositeSubscription.add(
@@ -74,14 +77,14 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                                     }
                                 }),*/
                         Observable.just(new ArrayList<BannerData>()),
-                        getObservableRecentNumberOrderList(paramQueryLastNumber)
-                                .flatMap(getFunctionFilterRecentNumberByCategory(pathCategoryId))
-                                .onErrorReturn(getResumeFunctionOnErrorReturnRecentNumber()),
-                        getObservableLastOrder(paramQueryLastOrder)
-                                .map(getFunctionCheckCategoryIdMatcher(pathCategoryId))
-                                .onErrorReturn(
-                                        getResumeFunctionOnErrorReturnLastOrder(pathCategoryId)
-                                ),
+                        getObservableNumberList(paramQueryNumberList),
+//                                .map(getFunctionTransformNumberList())
+//                                .onErrorReturn(getResumeFunctionOnErrorReturnRecentNumber()),
+//                        getObservableLastOrder(paramQueryLastOrder)
+//                                .map(getFunctionCheckCategoryIdMatcher(pathCategoryId))
+//                                .onErrorReturn(
+//                                        getResumeFunctionOnErrorReturnLastOrder(pathCategoryId)
+//                                ),
                         getZipFunctionProductDigitalData())
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -90,23 +93,24 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
         );
     }
 
-    private Observable<OrderClientNumber> getObservableLastOrder(
-            TKPDMapParam<String, String> paramQueryLastOrder
-    ) {
-        if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
-            return lastOrderNumberRepository.getLastOrder(paramQueryLastOrder);
-        } else {
-            return Observable.just(new OrderClientNumber.Builder().build());
-        }
-    }
+//    private Observable<OrderClientNumber> getObservableLastOrder(
+//            TKPDMapParam<String, String> paramQueryLastOrder
+//    ) {
+//        if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
+//            return lastOrderNumberRepository.getLastOrder(paramQueryLastOrder);
+//        } else {
+//            return Observable.just(new OrderClientNumber.Builder().build());
+//        }
+//    }
 
-    private Observable<List<OrderClientNumber>> getObservableRecentNumberOrderList
+    private Observable<DigitalNumberList> getObservableNumberList
             (TKPDMapParam<String, String> paramQueryLastNumber) {
         if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
-            return lastOrderNumberRepository.getRecentNumberOrderList(paramQueryLastNumber);
+            return digitalWidgetRepository.getObservableNumberList(paramQueryLastNumber);
         } else {
-            List<OrderClientNumber> emptyList = new ArrayList<>();
-            return Observable.just(emptyList);
+            List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
+            DigitalNumberList digitalNumberList = new DigitalNumberList(orderClientNumbers, new OrderClientNumber());
+            return Observable.just(digitalNumberList);
         }
     }
 
@@ -178,33 +182,24 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
     }
 
     @NonNull
-    private Func1<List<OrderClientNumber>, Observable<List<OrderClientNumber>>>
-    getFunctionFilterRecentNumberByCategory(final String pathCategoryId) {
-        return new Func1<List<OrderClientNumber>, Observable<List<OrderClientNumber>>>() {
+    private Func1<DigitalNumberList, List<OrderClientNumber>>
+    getFunctionTransformNumberList() {
+        return new Func1<DigitalNumberList, List<OrderClientNumber>>() {
             @Override
-            public Observable<List<OrderClientNumber>>
-            call(List<OrderClientNumber> orderClientNumbers) {
-                return Observable.from(orderClientNumbers)
-                        .filter(new Func1<OrderClientNumber, Boolean>() {
-                            @Override
-                            public Boolean call(OrderClientNumber orderClientNumber) {
-                                return (orderClientNumber.getCategoryId()
-                                        .equalsIgnoreCase(pathCategoryId));
-                            }
-                        }).toList();
+            public List<OrderClientNumber> call(DigitalNumberList digitalNumberList) {
+                return digitalNumberList.getOrderClientNumbers();
             }
         };
     }
 
     @NonNull
-    private Func4<CategoryData, List<BannerData>, List<OrderClientNumber>,
-            OrderClientNumber, ProductDigitalData> getZipFunctionProductDigitalData() {
-        return new Func4<CategoryData, List<BannerData>, List<OrderClientNumber>,
-                OrderClientNumber, ProductDigitalData>() {
+    private Func3<CategoryData, List<BannerData>, DigitalNumberList,
+                ProductDigitalData> getZipFunctionProductDigitalData() {
+        return new Func3<CategoryData, List<BannerData>, DigitalNumberList, ProductDigitalData>() {
             @Override
             public ProductDigitalData call(
                     CategoryData categoryData, List<BannerData> bannerDatas,
-                    List<OrderClientNumber> orderClientNumbers, OrderClientNumber orderClientNumber
+                    DigitalNumberList digitalNumberList
             ) {
                 List<BannerData> bannerDataList = new ArrayList<>();
                 for (BannerData bannerData : categoryData.getBannerDataListIncluded()) {
@@ -216,8 +211,8 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                 }
                 return new ProductDigitalData.Builder()
                         .historyClientNumber(new HistoryClientNumber.Builder()
-                                .lastOrderClientNumber(orderClientNumber)
-                                .recentClientNumberList(orderClientNumbers)
+                                .lastOrderClientNumber(digitalNumberList.getLastOrder())
+                                .recentClientNumberList(digitalNumberList.getOrderClientNumbers())
                                 .build())
                         .categoryData(categoryData)
                         .bannerDataList(bannerDataList)
@@ -234,6 +229,6 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber);
-
     }
+
 }

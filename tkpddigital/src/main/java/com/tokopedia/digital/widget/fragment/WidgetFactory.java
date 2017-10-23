@@ -2,7 +2,7 @@ package com.tokopedia.digital.widget.fragment;
 
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.database.model.category.Category;
+import com.tokopedia.digital.widget.model.category.Category;
 
 /**
  * Created by nabillasabbaha on 7/21/17.

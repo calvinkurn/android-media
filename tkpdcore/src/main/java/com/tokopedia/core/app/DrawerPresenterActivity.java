@@ -114,6 +114,10 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerDataManager.getProfile();
     }
 
+    protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler){
+        drawerDataManager.getUserAttributes(sessionHandler);
+    }
+
     protected void getProfileCompletion() {
         drawerDataManager.getProfileCompletion();
     }
@@ -160,6 +164,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                 getDrawerTopPoints();
                 getDrawerTokoCash();
                 getProfileCompletion();
+                getDrawerUserAttrUseCase(sessionHandler);
             }
         }
     }

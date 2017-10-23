@@ -53,12 +53,14 @@ public class ManagePeople extends TkpdActivity {
             Name.add(getString(R.string.title_personal_profile));
             Name.add(getString(R.string.title_address));
             Name.add(getString(R.string.title_bank));
+            Name.add(getString(R.string.title_payment_menu));
             Name.add(getString(R.string.title_notification));
 //		Name.add(getString(R.string.title_privacy));
             Name.add(getString(R.string.title_password));
             ResID.add(R.drawable.ic_set_profile);
             ResID.add(R.drawable.ic_set_address);
             ResID.add(R.drawable.ic_set_bank);
+            ResID.add(R.drawable.ic_set_payment);
             ResID.add(R.drawable.ic_set_notifications);
             ResID.add(R.drawable.ic_set_privacy);
             ResID.add(R.drawable.ic_menu_general_setting);
@@ -135,10 +137,16 @@ public class ManagePeople extends TkpdActivity {
                         startActivity(intent);
                         break;
                     case 3:
+                        if ((getActivity().getApplication() instanceof TransactionRouter)) {
+                            ((TransactionRouter) getActivity().getApplication())
+                                    .goToUserPaymentList(getActivity());
+                        }
+                        break;
+                    case 4:
                         intent = new Intent(ManagePeople.this, ManageNotificationActivity.class);
                         startActivity(intent);
                         break;
-                    case 4:
+                    case 5:
                         intent = new Intent(ManagePeople.this, ManagePasswordActivity.class);
                         startActivity(intent);
                         break;

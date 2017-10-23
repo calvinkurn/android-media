@@ -29,8 +29,17 @@ public class KeywordAd implements Ad, Parcelable, ItemType {
     private String priceBidFmt;
     private String labelPerClick;
     private String keywordTypeDesc;
+    private int groupBid;
 
     public KeywordAd() {
+    }
+
+    public int getGroupBid() {
+        return groupBid;
+    }
+
+    public void setGroupBid(int groupBid) {
+        this.groupBid = groupBid;
     }
 
     @Override
@@ -264,6 +273,7 @@ public class KeywordAd implements Ad, Parcelable, ItemType {
         dest.writeString(this.priceBidFmt);
         dest.writeString(this.labelPerClick);
         dest.writeString(this.keywordTypeDesc);
+        dest.writeInt(this.groupBid);
     }
 
     protected KeywordAd(Parcel in) {
@@ -284,6 +294,7 @@ public class KeywordAd implements Ad, Parcelable, ItemType {
         this.priceBidFmt = in.readString();
         this.labelPerClick = in.readString();
         this.keywordTypeDesc = in.readString();
+        this.groupBid = in.readInt();
     }
 
     public static final Creator<KeywordAd> CREATOR = new Creator<KeywordAd>() {

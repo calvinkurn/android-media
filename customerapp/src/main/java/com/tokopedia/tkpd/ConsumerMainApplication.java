@@ -31,8 +31,6 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.branch.referral.Branch;
-
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -61,8 +59,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LocalBroadcastManager.getInstance(this).registerReceiver(new DeepLinkReceiver(), intentFilter);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
-        // initialize the Branch object
-        initBranch();
     }
 
     private void generateConsumerAppBaseUrl() {
@@ -100,6 +96,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     private void generateConsumerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
+        AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
     }
 
     public void initializeDatabase() {
@@ -170,9 +167,5 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     private void initReact() {
         SoLoader.init(this, false);
-    }
-
-    private void initBranch() {
-        Branch.getAutoInstance(this);
     }
 }

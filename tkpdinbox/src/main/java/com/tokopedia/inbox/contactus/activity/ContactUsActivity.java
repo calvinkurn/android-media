@@ -196,4 +196,9 @@ public class ContactUsActivity extends BasePresenterActivity implements
         outState.putBundle(PARAM_BUNDLE, bundleCreateTicket);
         super.onSaveInstanceState(outState);
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

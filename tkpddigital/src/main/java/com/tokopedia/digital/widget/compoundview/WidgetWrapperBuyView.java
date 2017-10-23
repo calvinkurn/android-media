@@ -16,7 +16,6 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
@@ -25,6 +24,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.widget.model.PreCheckoutDigitalWidget;
+import com.tokopedia.digital.widget.model.category.Category;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

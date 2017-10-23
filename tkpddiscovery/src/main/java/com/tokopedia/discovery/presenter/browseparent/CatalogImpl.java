@@ -138,7 +138,11 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
                     return;
 
                 Pair<List<CatalogModel>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseCategoryModel(catalogModel);
-                view.notifyChangeData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                if (listPagingHandlerModelPair.getModel1().size() == 0) {
+                    view.displayEmptyResult();
+                } else {
+                    view.notifyChangeData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                }
                 fetchDynamicAttribut();
                 break;
             case DiscoveryListener.DYNAMIC_ATTRIBUTE:
