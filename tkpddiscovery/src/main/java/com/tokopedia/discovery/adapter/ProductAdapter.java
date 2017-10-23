@@ -986,10 +986,13 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             else
                 title.setText(MethodChecker.fromHtml(data.name));
             price.setText(data.price);
-            if (data.getShopLocation() != null)
-                location.setText(MethodChecker.fromHtml(data.getShopLocation()));
-            else
-                location.setVisibility(View.INVISIBLE);
+            if (data.getShopLocation() != null) {
+                if (data.getOfficial()) {
+                    location.setText(context.getResources().getString(com.tokopedia.core.R.string.authorized));
+                } else {
+                    location.setText(MethodChecker.fromHtml(data.getShopLocation()));
+                }
+            } else location.setVisibility(View.INVISIBLE);
 
             if (data.getSpannedShop() != null)
                 shopName.setText(data.getSpannedShop());

@@ -501,7 +501,6 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                         public void onSuccess(String message, JSONObject lucky) {
                             TxListUIReceiver.sendBroadcastForceRefreshListData(context);
                             viewListener.hideProgressLoading();
-                            TrackingUtils.eventLoca(context.getString(R.string.confirm_received));
                             processReview(context, message);
                             dialog.dismiss();
                         }

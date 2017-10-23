@@ -44,6 +44,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.Receipt;
@@ -493,6 +494,8 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @OnClick(R2.id.tv_signup_tnc)
     public void actionTermsClicked() {
+        RideGATracking.eventClickTNC();
+
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("uber_singup_dialog");
         if (previousDialog != null) {
@@ -505,6 +508,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @OnClick(R2.id.rate_confirmation)
     public void actionRateConfirmClicked() {
+        RideGATracking.eventClickSubmit(getRateStars(), getRateComment());
         presenter.actionSubmitRatingAndDriverTip();
     }
 

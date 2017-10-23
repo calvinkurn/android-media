@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
@@ -81,13 +80,6 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
 
     public void processToShareProduct(Context context, @NonNull ShareData shareData) {
         UnifyTracking.eventShareProduct();
-    }
-
-    @Override
-    public void setLocalyticFlow(@NonNull Context context) {
-        String screenName = context.getString(R.string.product_info_page);
-        ScreenTracking.screenLoca(screenName);
-
     }
 
     private ProductPass generateProductPass(Bundle bundleData, Uri uriData) {
