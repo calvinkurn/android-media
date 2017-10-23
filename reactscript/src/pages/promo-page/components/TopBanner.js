@@ -5,7 +5,7 @@ import {
   Dimensions,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
   Platform
 } from 'react-native'
 
@@ -42,12 +42,12 @@ const TopBanner = ({ navigation, dataTopBanners }) => {
             <Text style={styles.termContent}>{banners.promo_code}</Text>
           </View>
           <View style={styles.termsWrap}>
-            <TouchableOpacity
+            <TouchableWithoutFeedback
               onPress={() => navigation.navigate('TermsPage', { termsCondition: dataTopBanners.terms_conditions })}>
               <View style={styles.tcWrap}>
                 <Text style={{color: '#42b549', textAlign: 'center'}}>Syarat & Ketentuan</Text>
               </View>
-            </TouchableOpacity>
+            </TouchableWithoutFeedback>
           </View>
         </View>
       </View>

@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Dimensions,
   Platform,
-  TouchableOpacity
+  TouchableWithoutFeedback
 } from 'react-native'
 import { NavigationModule } from 'NativeModules';
 
@@ -22,13 +22,13 @@ const MainBanner = ({ dataMainBanners }) => {
       {
         arrImages.map((image, idx) => (
           idx === 0 ? null
-          : <TouchableOpacity
+          : <TouchableWithoutFeedback
               key={image.image_id}
               onPress={() => {
                 console.log(image)
                 NavigationModule.navigateWithMobileUrl('', image.destination_url, '')}}>
               <Image source={{uri: image.file_url}} style={idx === 1 ? styles.mainBannerImageBig : styles.mainBannerImageSmall} />
-            </TouchableOpacity>
+            </TouchableWithoutFeedback>
         ))
       }
     </View>

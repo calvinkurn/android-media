@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, StyleSheet, Text, Platform, TouchableOpacity } from 'react-native'
+import { View, Image, StyleSheet, Text, Platform, TouchableWithoutFeedback } from 'react-native'
 import PropTypes from 'prop-types'
 import unescape from 'lodash/unescape'
 import { NavigationModule } from 'NativeModules'
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
 
 const Product = ({ product }) => (
   <View style={styles.productCell}>
-    <TouchableOpacity onPress={() => {
+    <TouchableWithoutFeedback onPress={() => {
       NavigationModule.navigateWithMobileUrl(product.data.url_app, product.data.url, '')}}>
       <View style={styles.productImageWrapper}>
         <Image source={{ uri: product.data.image_url }} style={styles.productImage} />
@@ -175,7 +175,7 @@ const Product = ({ product }) => (
           }
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
     <View style={styles.productBadgeWrapper}>
       {
         product.data.labels.map((l, i) => {
@@ -204,7 +204,7 @@ const Product = ({ product }) => (
     </View>
 
     {/* Brand Section */}
-    <TouchableOpacity onPress={() => {
+    <TouchableWithoutFeedback onPress={() => {
       console.log(product)
       NavigationModule.navigateWithMobileUrl(product.data.shop.url_app, product.data.shop.url, '')}}>
       <View style={styles.shopSection}>
@@ -225,7 +225,7 @@ const Product = ({ product }) => (
             </View>) : null))
           }
       </View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   </View>
 )
 
