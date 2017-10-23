@@ -38,7 +38,7 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/shop_desc_input_layout"
             style="@style/TextInputLayout.ShopSetting.DescShop"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/margin_sm">
 
             <EditText
                 android:id="@+id/shop_desc_input_text"
