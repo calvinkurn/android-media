@@ -127,7 +127,7 @@ class PaymentBank extends Component {
         <TouchableOpacity style={[styles.logoBox, { marginTop: 10, height: 80 }]} 
           onPress={() => { this.popupDialog.show() }} >
           <View>
-            <Text style={{ fontSize: 13, color: '#0000008a' }}>Bank{"\n"}Lainnya</Text>
+            <Text style={{ textAlign:'center', fontSize: 13, color: '#0000008a' }}>Bank{"\n"}Lainnya</Text>
           </View>
         </TouchableOpacity>
       );
@@ -138,7 +138,7 @@ class PaymentBank extends Component {
     return (<View style={{ height: 0 }} />);
   }
 
-  
+
 
   _onPressPopupRow(rowID, rowData) {
     let emiList = this.state.dsEmi.cloneWithRows([{
