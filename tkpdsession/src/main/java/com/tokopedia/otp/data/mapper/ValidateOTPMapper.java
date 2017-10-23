@@ -1,33 +1,33 @@
-package com.tokopedia.otp.securityquestion.data.mapper;
+package com.tokopedia.otp.data.mapper;
 
 import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.entity.phoneverification.ValidateOtpData;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.otp.securityquestion.data.pojo.SecurityQuestionPojo;
-import com.tokopedia.otp.securityquestion.domain.model.securityquestion.QuestionDomain;
+import com.tokopedia.otp.domain.model.ValidateOTPDomain;
 import com.tokopedia.session.R;
 
 import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * @author by nisie on 10/19/17.
+ * @author by nisie on 10/21/17.
  */
 
-public class SecurityQuestionMapper implements Func1<Response<TkpdResponse>, QuestionDomain> {
+public class ValidateOTPMapper implements Func1<Response<TkpdResponse>, ValidateOTPDomain> {
     @Override
-    public QuestionDomain call(Response<TkpdResponse> response) {
+    public ValidateOTPDomain call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals(""))
                     || (!response.body().isNullData()
                     && response.body().getErrorMessages() == null)) {
-                SecurityQuestionPojo pojo = response.body().convertDataObj(SecurityQuestionPojo
-                        .class);
-                return mappingToViewModel(pojo);
+                ValidateOtpData validateOtpData = response.body().convertDataObj(
+                        ValidateOtpData.class);
+                return convertToDomain(validateOtpData);
             } else {
                 if (response.body().getErrorMessages() != null
                         && !response.body().getErrorMessages().isEmpty()) {
@@ -47,8 +47,7 @@ public class SecurityQuestionMapper implements Func1<Response<TkpdResponse>, Que
         }
     }
 
-    private QuestionDomain mappingToViewModel(SecurityQuestionPojo pojo) {
-        return new QuestionDomain(pojo.getQuestion(),
-                pojo.getTitle());
+    private ValidateOTPDomain convertToDomain(ValidateOtpData validateOtpData) {
+        return new ValidateOTPDomain(validateOtpData.isSuccess(), validateOtpData.getUuid());
     }
 }

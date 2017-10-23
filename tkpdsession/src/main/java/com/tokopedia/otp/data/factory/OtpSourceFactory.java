@@ -5,8 +5,8 @@ import android.os.Bundle;
 
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.data.mapper.RequestOtpMapper;
-import com.tokopedia.otp.data.mapper.ValidateOtpMapper;
+import com.tokopedia.otp.data.mapper.OldRequestOtpMapper;
+import com.tokopedia.otp.data.mapper.OldValidateOtpMapper;
 import com.tokopedia.otp.data.source.CloudOtpSource;
 
 /**
@@ -16,14 +16,14 @@ import com.tokopedia.otp.data.source.CloudOtpSource;
 public class OtpSourceFactory {
     private final Context context;
     private AccountsService accountsService;
-    private RequestOtpMapper requestOtpMapper;
-    private ValidateOtpMapper validateOtpMapper;
+    private OldRequestOtpMapper oldRequestOtpMapper;
+    private OldValidateOtpMapper validateOtpMapper;
 
 
     public OtpSourceFactory(Context context) {
         this.context = context;
-        this.requestOtpMapper = new RequestOtpMapper();
-        this.validateOtpMapper = new ValidateOtpMapper();
+        this.oldRequestOtpMapper = new OldRequestOtpMapper();
+        this.validateOtpMapper = new OldValidateOtpMapper();
 
         Bundle bundle = new Bundle();
         SessionHandler sessionHandler = new SessionHandler(context);
@@ -35,7 +35,7 @@ public class OtpSourceFactory {
 
     public CloudOtpSource createCloudOtpSource() {
         return new CloudOtpSource(context, accountsService,
-                requestOtpMapper, validateOtpMapper);
+                oldRequestOtpMapper, validateOtpMapper);
     }
 
 }

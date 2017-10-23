@@ -429,12 +429,13 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName) {
+    public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email) {
         startActivityForResult(
                 SecurityQuestionActivity.getCallingIntent(
                         getActivity(),
                         securityDomain,
-                        fullName),
+                        fullName,
+                        email),
                 REQUEST_SECURITY_QUESTION);
     }
 

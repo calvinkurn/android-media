@@ -1,5 +1,6 @@
 package com.tokopedia.session.domain.mapper;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
@@ -82,36 +83,56 @@ public class MakeLoginMapper implements Func1<Response<TkpdResponse>, MakeLoginD
                 convertToSecurityDomain(data.getSecurityPojo()));
     }
 
-    private SecurityDomain convertToSecurityDomain(SecurityPojo securityPojo) {
-        return new SecurityDomain(securityPojo.getAllowLogin(),
-                securityPojo.getUserCheckSecurity1(),
-                securityPojo.getUserCheckSecurity2());
+    private SecurityDomain convertToSecurityDomain(@Nullable SecurityPojo securityPojo) {
+        if (securityPojo != null) {
+            return new SecurityDomain(securityPojo.getAllowLogin(),
+                    securityPojo.getUserCheckSecurity1(),
+                    securityPojo.getUserCheckSecurity2());
+        } else {
+            return null;
+        }
     }
 
-    private UserReputationDomain createUserReputationDomain(UserReputationPojo userReputation) {
-        return new UserReputationDomain(
-                userReputation.getPositivePercentage(),
-                userReputation.getNoReputation(),
-                userReputation.getNegative(),
-                userReputation.getPositive(),
-                userReputation.getNeutral()
-        );
+    private UserReputationDomain createUserReputationDomain(@Nullable UserReputationPojo
+                                                                    userReputation) {
+        if (userReputation != null) {
+            return new UserReputationDomain(
+                    userReputation.getPositivePercentage(),
+                    userReputation.getNoReputation(),
+                    userReputation.getNegative(),
+                    userReputation.getPositive(),
+                    userReputation.getNeutral()
+            );
+        } else {
+            return null;
+        }
     }
 
-    private ShopReputationDomain createShopReputationDomain(ShopReputationPojo shopReputation) {
-        return new ShopReputationDomain(
-                shopReputation.getTooltip(),
-                createReputationBadgeDomain(shopReputation.getReputationBadge()),
-                shopReputation.getReputationScore(),
-                shopReputation.getMinBadgeScore(),
-                shopReputation.getScore());
+    private ShopReputationDomain createShopReputationDomain(@Nullable ShopReputationPojo
+                                                                    shopReputation) {
+        if (shopReputation != null) {
+            return new ShopReputationDomain(
+                    shopReputation.getTooltip(),
+                    createReputationBadgeDomain(shopReputation.getReputationBadge()),
+                    shopReputation.getReputationScore(),
+                    shopReputation.getMinBadgeScore(),
+                    shopReputation.getScore());
+        } else {
+            return null;
+        }
     }
 
-    private ReputationBadgeDomain createReputationBadgeDomain(ReputationBadgePojo reputationBadge) {
-        return new ReputationBadgeDomain(
-                reputationBadge.getLevel(),
-                reputationBadge.getSet()
-        );
+    private ReputationBadgeDomain createReputationBadgeDomain(@Nullable ReputationBadgePojo
+                                                                      reputationBadge) {
+        if (reputationBadge != null) {
+            return new ReputationBadgeDomain(
+                    reputationBadge.getLevel(),
+                    reputationBadge.getSet()
+            );
+        } else {
+            return null;
+        }
+
     }
 
 

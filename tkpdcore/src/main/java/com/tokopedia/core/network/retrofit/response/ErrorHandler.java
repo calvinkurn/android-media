@@ -187,4 +187,10 @@ public class ErrorHandler {
             return "";
         }
     }
+
+    public static String getDefaultErrorCodeMessage(int errorCode) {
+        return MainApplication.getAppContext().getString(R.string.default_request_error_unknown)
+                + " " + MainApplication.getAppContext().getString(R.string.code_error)
+                + " " + errorCode;
+    }
 }

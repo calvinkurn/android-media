@@ -1,29 +1,32 @@
 package com.tokopedia.otp.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.entity.phoneverification.ValidateOtpData;
+import com.tokopedia.core.network.entity.otp.RequestOtpData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.otp.data.ValidateOtpModel;
+import com.tokopedia.otp.data.RequestOtpModel;
 
 import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
  * Created by nisie on 3/7/17.
+ * @deprecated use RequestOTPMapper instead
  */
-public class ValidateOtpMapper implements Func1<Response<TkpdResponse>, ValidateOtpModel> {
+
+@Deprecated
+public class OldRequestOtpMapper implements Func1<Response<TkpdResponse>, RequestOtpModel> {
     @Override
-    public ValidateOtpModel call(Response<TkpdResponse> response) {
+    public RequestOtpModel call(Response<TkpdResponse> response) {
         return mappingResponse(response);
     }
 
-    private ValidateOtpModel mappingResponse(Response<TkpdResponse> response) {
-        ValidateOtpModel model = new ValidateOtpModel();
+    private RequestOtpModel mappingResponse(Response<TkpdResponse> response) {
+        RequestOtpModel model = new RequestOtpModel();
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
-                ValidateOtpData data = response.body().convertDataObj(ValidateOtpData.class);
+                RequestOtpData data = response.body().convertDataObj(RequestOtpData.class);
                 model.setSuccess(true);
-                model.setValidateOtpData(data);
+                model.setRequestOtpData(data);
             } else {
                 if (response.body().getErrorMessages() == null
                         && response.body().getErrorMessages().isEmpty()) {

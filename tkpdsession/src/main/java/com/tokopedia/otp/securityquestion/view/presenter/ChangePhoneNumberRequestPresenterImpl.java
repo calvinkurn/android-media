@@ -14,6 +14,12 @@ import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.CheckStatusUseCase;
+import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.GetUploadHostUseCase;
+import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.SubmitImageUseCase;
+import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.UploadChangePhoneNumberRequestUseCase;
+import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.UploadImageUseCase;
+import com.tokopedia.otp.securityquestion.domain.interactor.changephonenumberrequest.ValidateImageUseCase;
 import com.tokopedia.session.R;
 import com.tokopedia.otp.securityquestion.domain.model.changephonenumberrequest.ChangePhoneNumberRequestModel;
 import com.tokopedia.otp.securityquestion.domain.model.changephonenumberrequest.ChangePhoneNumberRequestPass;
@@ -27,12 +33,6 @@ import com.tokopedia.otp.securityquestion.data.mapper.changephonenumberrequest.G
 import com.tokopedia.otp.securityquestion.data.mapper.changephonenumberrequest.UploadImageMapper;
 import com.tokopedia.otp.securityquestion.data.repository.KtpRepositoryImpl;
 import com.tokopedia.otp.securityquestion.data.repository.UploadImageRepositoryImpl;
-import com.tokopedia.session.changephonenumber.domain.interactor.CheckStatusUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.SubmitImageUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.ValidateImageUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.GetUploadHostUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.UploadChangePhoneNumberRequestUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.UploadImageUseCase;
 import com.tokopedia.otp.securityquestion.view.ChangePhoneNumberRequestView;
 
 import java.io.File;

@@ -81,4 +81,9 @@ public class ChangePhoneNumberRequestActivity extends BasePresenterActivity impl
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, ChangePhoneNumberRequestActivity.class);
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

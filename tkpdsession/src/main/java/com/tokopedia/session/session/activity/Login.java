@@ -38,23 +38,24 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginViewModel;
+import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -471,10 +472,10 @@ public class Login extends BaseActivity implements SessionView
 
     @Override
     public void verifyTruecaller() {
-        if (GlobalConfig.isSellerApp()) {
-            startActivityForResult(SellerAppRouter.getTruecallerIntent(this), 100);
-        } else {
-            startActivityForResult(CustomerRouter.getTruecallerIntent(this), 100);
+        if (MainApplication.getAppContext() instanceof SessionRouter) {
+            Intent intent = ((SessionRouter) MainApplication.getAppContext()).getTrueCallerIntent
+                    (this);
+            startActivityForResult(intent, 100);
         }
     }
 

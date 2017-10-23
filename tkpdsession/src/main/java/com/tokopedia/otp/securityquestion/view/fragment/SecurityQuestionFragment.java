@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -34,6 +33,7 @@ import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.securityquestion.SecurityQuestion;
 import com.tokopedia.otp.securityquestion.domain.model.securityquestion.QuestionDomain;
 import com.tokopedia.otp.securityquestion.view.activity.ChangePhoneNumberRequestActivity;
@@ -42,6 +42,7 @@ import com.tokopedia.otp.securityquestion.view.presenter.SecurityQuestionPresent
 import com.tokopedia.otp.securityquestion.view.viewmodel.SecurityQuestionViewModel;
 import com.tokopedia.session.R;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
+import com.tokopedia.session.di.DaggerSessionComponent;
 
 import javax.inject.Inject;
 
@@ -51,8 +52,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-
-import static android.R.attr.data;
 
 /**
  * @author by nisie on 10/18/17.
@@ -69,15 +68,13 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     private static final int REQUEST_TRUE_CALLER = 100;
     private static final int REQUEST_CHANGE_PHONE_NUMBER = 101;
+    private static final int REQUEST_VERIFY_PHONE_NUMBER = 102;
 
     private static final String ARGS_DATA = "ARGS_DATA";
 
-    private EditText vAnswer;
     private EditText vInputOtp;
     private TextView titleOTP;
     private TextView titleSecurity;
-    private TextInputLayout wrapperAnswer;
-    private TextView vQuestion;
     private View vOtp;
     private View vError;
     private TextView vSendOtp;
@@ -94,6 +91,9 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Inject
     SecurityQuestionPresenter presenter;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     SecurityQuestionViewModel securityQuestionViewModel;
 
@@ -122,6 +122,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
                         .appComponent(appComponent)
                         .build();
 
+
         daggerSessionComponent.inject(this);
     }
 
@@ -133,7 +134,8 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         } else if (getArguments() != null) {
             securityQuestionViewModel = new SecurityQuestionViewModel(
                     (SecurityDomain) getArguments().getParcelable(SecurityQuestionActivity.ARGS_QUESTION),
-                    getArguments().getString(SecurityQuestionActivity.ARGS_NAME));
+                    getArguments().getString(SecurityQuestionActivity.ARGS_NAME),
+                    getArguments().getString(SecurityQuestionActivity.ARGS_EMAIL));
         } else {
             getActivity().finish();
         }
@@ -145,12 +147,9 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_security_question, parent, false);
 
-        vAnswer = (EditText) view.findViewById(R.id.input_text);
         vInputOtp = (EditText) view.findViewById(R.id.input_otp);
         titleOTP = (TextView) view.findViewById(R.id.title_otp);
         titleSecurity = (TextView) view.findViewById(R.id.title_security);
-        wrapperAnswer = (TextInputLayout) view.findViewById(R.id.wrapper_input_text);
-        vQuestion = (TextView) view.findViewById(R.id.title);
         vOtp = view.findViewById(R.id.view_otp);
         vError = view.findViewById(R.id.view_error);
         vSendOtp = (TextView) view.findViewById(R.id.send_otp);
@@ -158,7 +157,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         vSaveBut = (TextView) view.findViewById(R.id.save_but);
         changeNumber = (TextView) view.findViewById(R.id.title_change_number);
         verifyTrueCaller = (TextView) view.findViewById(R.id.verify_button);
-        prepareView(view);
+        prepareView();
         setViewListener();
         presenter.attachView(this);
         return view;
@@ -234,11 +233,10 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         startActivityForResult(intent, REQUEST_CHANGE_PHONE_NUMBER);
     }
 
-    private void prepareView(View view) {
-        wrapperAnswer.setHintEnabled(false);
+    private void prepareView() {
         vOtp.setVisibility(View.VISIBLE);
 
-        String title = "";
+        String title;
         if (getArguments() != null) {
             title = getString(R.string.hi) + " "
                     + getArguments().getString(SecurityQuestionActivity.ARGS_NAME, "")
@@ -318,9 +316,10 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     public void onSuccessGetQuestionPhone(QuestionDomain questionDomain) {
         vSendOtp.setText(R.string.title_otp_phone);
         vInputOtp.setEnabled(true);
-        String phone = SessionHandler.getTempPhoneNumber(getActivity());
+        String phone = sessionHandler.getTempPhoneNumber(getActivity());
         phone = phone.substring(phone.length() - 4);
-        String contentSecurity = String.format(getResources().getString(R.string.content_security_question_phone) + " <b>XXXX-XXXX- %s </b>", phone);
+        String contentSecurity = String.format(getResources().getString(
+                R.string.content_security_question_phone) + " <b>XXXX-XXXX- %s </b>", phone);
         titleSecurity.setText(MethodChecker.fromHtml(contentSecurity));
         changeNumber.setVisibility(View.VISIBLE);
         vSendOtpCall.setVisibility(View.VISIBLE);
@@ -334,8 +333,6 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
                 presenter.requestOTPWithSMS();
             }
         });
-        vQuestion.setText(questionDomain.getTitle());
-
     }
 
     private boolean isAutoRequestOTP() {
@@ -354,12 +351,11 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         vSendOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.requestOTPWithEmail();
+                presenter.requestOTPWithEmail(securityQuestionViewModel.getEmail());
             }
         });
-        vQuestion.setText(questionDomain.getTitle());
         if (isAutoRequestOTP()) {
-            presenter.requestOTPWithEmail();
+            presenter.requestOTPWithEmail(securityQuestionViewModel.getEmail());
         }
     }
 
@@ -379,11 +375,51 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void showLoadingProgress() {
+
+    }
+
+    @Override
+    public void dismissLoadingProgress() {
+
+    }
+
+    @Override
+    public void onErrorRequestOTP(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessRequestOTP(String messageStatus) {
+        NetworkErrorHelper.showSnackbar(getActivity(), messageStatus);
+    }
+
+    @Override
+    public void onSuccessValidateOtp() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+    }
+
+    @Override
+    public void onErrorValidateOtp(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onGoToPhoneVerification() {
+        Intent intent = PhoneVerificationActivationActivity.getCallingIntent(getActivity());
+        startActivityForResult(intent, REQUEST_VERIFY_PHONE_NUMBER);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TRUE_CALLER && resultCode == Activity.RESULT_OK) {
             presenter.processTrueCaller(data);
         } else if (requestCode == REQUEST_CHANGE_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_CANCELED);
+            getActivity().finish();
+        }else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER){
+            getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -391,7 +427,8 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Override
     public void onReceiveOTP(String otpCode) {
-//        SecurityQuestionFragmentPermissionsDispatcher.processOtpWithCheck(FragmentSecurityQuestion.this, otpCode);
+        SecurityQuestionFragmentPermissionsDispatcher.processOtpWithCheck(SecurityQuestionFragment.this,
+                otpCode);
     }
 
     @NeedsPermission(Manifest.permission.READ_SMS)
@@ -405,8 +442,8 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        SecurityQuestionFragmentPermissionsDispatcher.onRequestPermissionsResult(SecurityQuestionFragment.this,
-//                requestCode, grantResults);
+        SecurityQuestionFragmentPermissionsDispatcher.onRequestPermissionsResult(SecurityQuestionFragment.this,
+                requestCode, grantResults);
     }
 
     @OnShowRationale(Manifest.permission.READ_SMS)

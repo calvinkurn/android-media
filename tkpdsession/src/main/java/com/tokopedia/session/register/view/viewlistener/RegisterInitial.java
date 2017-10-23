@@ -47,7 +47,7 @@ public interface RegisterInitial {
 
         void clearToken();
 
-        void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName);
+        void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email);
 
         void onGoToPhoneVerification();
     }

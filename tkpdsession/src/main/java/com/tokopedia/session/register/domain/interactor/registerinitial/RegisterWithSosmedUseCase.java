@@ -39,7 +39,7 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
 
 
     @Override
-    public Observable<RegisterSosmedDomain> createObservable(RequestParams requestParams) {
+    public Observable<RegisterSosmedDomain> createObservable(final RequestParams requestParams) {
         RegisterSosmedDomain registerSosmedDomain = new RegisterSosmedDomain();
         return getToken(registerSosmedDomain,
                 GetTokenUseCase.getParamRegisterThirdParty(
@@ -56,7 +56,7 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
                     @Override
                     public Observable<RegisterSosmedDomain> call(RegisterSosmedDomain registerSosmedDomain) {
                         if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-                            return makeLogin(registerSosmedDomain);
+                            return makeLogin(registerSosmedDomain, requestParams);
                         } else {
                             return Observable.just(registerSosmedDomain);
                         }
@@ -65,8 +65,11 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
     }
 
     protected Observable<RegisterSosmedDomain> makeLogin(final RegisterSosmedDomain
-                                                                 registerSosmedDomain) {
-        return makeLoginUseCase.getExecuteObservable(MakeLoginUseCase.getParam())
+                                                                 registerSosmedDomain,
+                                                         RequestParams requestParams) {
+        return makeLoginUseCase.getExecuteObservable(MakeLoginUseCase.getParam(
+                requestParams.getString(MakeLoginUseCase.PARAM_USER_ID, "")
+        ))
                 .flatMap(new Func1<MakeLoginDomain, Observable<RegisterSosmedDomain>>() {
                     @Override
                     public Observable<RegisterSosmedDomain> call(MakeLoginDomain makeLoginDomain) {
@@ -108,21 +111,23 @@ public class RegisterWithSosmedUseCase extends UseCase<RegisterSosmedDomain> {
         );
     }
 
-    public static RequestParams getParamFacebook(AccessToken accessToken) {
+    public static RequestParams getParamFacebook(AccessToken accessToken, String tempUserId) {
         RequestParams params = RequestParams.create();
         params.putAll(
                 getParamRegisterThirdParty(GetTokenUseCase.SOCIAL_TYPE_FACEBOOK,
                         accessToken.getToken())
                         .getParameters());
+        params.putString(MakeLoginUseCase.PARAM_USER_ID, tempUserId);
         return params;
     }
 
-    public static RequestParams getParamGoogle(String accessToken) {
+    public static RequestParams getParamGoogle(String accessToken, String tempUserId) {
         RequestParams params = RequestParams.create();
         params.putAll(
                 getParamRegisterThirdParty(GetTokenUseCase.SOCIAL_TYPE_GPLUS,
                         accessToken)
                         .getParameters());
+        params.putString(MakeLoginUseCase.PARAM_USER_ID, tempUserId);
         return params;
     }
 

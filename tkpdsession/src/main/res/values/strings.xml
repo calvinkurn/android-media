@@ -92,4 +92,5 @@
     <string name="day_month_year">Tanggal / Bulan / Tahun</string>
     <string name="error_register_webview">Terjadi kesalahan. Mohon coba kembali.</string>
     <string name="hi">Hai</string>
+    <string name="success_request_otp">Kode verifikasi telah dikirim.</string>
 </resources>

@@ -5,6 +5,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.securityquestion.domain.model.securityquestion.QuestionDomain;
 import com.tokopedia.session.data.repository.SessionRepository;
@@ -40,6 +41,7 @@ public class GetSecurityQuestionFormUseCase extends UseCase<QuestionDomain> {
 
     public RequestParams getParam(int userCheckSecurity1, int userCheckSecurity2) {
         RequestParams params = RequestParams.create();
+        params.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(), params.getParameters()));
         params.putInt(USER_CHECK_SECURITY_ONE, userCheckSecurity1);
         params.putInt(USER_CHECK_SECURITY_TWO, userCheckSecurity2);
         params.putString(USER_ID, sessionHandler.getTempLoginSession(MainApplication.getAppContext()));

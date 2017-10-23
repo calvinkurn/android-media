@@ -15,8 +15,8 @@ import rx.Subscriber;
 
 public class GetSecurityQuestionFormSubscriber extends Subscriber<QuestionDomain> {
 
-    private static final int OTP_PHONE_NUMBER = 1;
-    private static final int OTP_EMAIL = 2;
+    private static final String OTP_PHONE_NUMBER = "1";
+    private static final String OTP_EMAIL = "2";
     private final SecurityQuestion.View viewListener;
 
     public GetSecurityQuestionFormSubscriber(SecurityQuestion.View viewListener) {
@@ -35,14 +35,13 @@ public class GetSecurityQuestionFormSubscriber extends Subscriber<QuestionDomain
 
     @Override
     public void onNext(QuestionDomain questionDomain) {
-        if (questionDomain.getQuestion() == OTP_PHONE_NUMBER) {
+        if (questionDomain.getQuestion().equals(OTP_PHONE_NUMBER)) {
             viewListener.onSuccessGetQuestionPhone(questionDomain);
-        } else if (questionDomain.getQuestion() == OTP_EMAIL) {
+        } else if (questionDomain.getQuestion().equals(OTP_EMAIL)) {
             viewListener.onSuccessGetQuestionEmail(questionDomain);
         } else {
-            viewListener.onErrorGetQuestion(MainApplication.getAppContext().getString(R.string
-                    .default_request_error_unknown) + " " + MainApplication.getAppContext().getString(R.string
-                    .code_error) + " " + ErrorCode.UNKNOWN_SECURITY_QUESTION_TYPE);
+            viewListener.onErrorGetQuestion(
+                    ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNKNOWN_SECURITY_QUESTION_TYPE));
         }
     }
 }

@@ -1,34 +1,51 @@
 package com.tokopedia.otp.domain.interactor;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.otp.data.ValidateOtpModel;
-import com.tokopedia.otp.domain.OtpRepository;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.otp.domain.model.ValidateOTPDomain;
+import com.tokopedia.session.data.repository.SessionRepository;
 
 import rx.Observable;
 
 /**
- * Created by nisie on 3/7/17.
+ * @author by nisie on 10/21/17.
  */
 
-public class ValidateOtpUseCase extends UseCase<ValidateOtpModel> {
-
+public class ValidateOtpUseCase extends UseCase<ValidateOTPDomain> {
+    public static final String PARAM_OTP_TYPE = "otp_type";
     public static final String PARAM_USER = "user";
     public static final String PARAM_CODE = "code";
 
-    private final OtpRepository otpRepository;
+    public static final int OTP_TYPE_PHONE_NUMBER_VERIFICATION = 13;
+
+    private final SessionRepository sessionRepository;
 
     public ValidateOtpUseCase(ThreadExecutor threadExecutor,
                               PostExecutionThread postExecutionThread,
-                              OtpRepository otpRepository) {
+                              SessionRepository sessionRepository,
+                              SessionHandler sessionHandler) {
         super(threadExecutor, postExecutionThread);
-        this.otpRepository = otpRepository;
+        this.sessionRepository = sessionRepository;
     }
 
     @Override
-    public Observable<ValidateOtpModel> createObservable(RequestParams requestParams) {
-        return otpRepository.validateOtp(requestParams.getParameters());
+    public Observable<ValidateOTPDomain> createObservable(RequestParams requestParams) {
+        return sessionRepository.validateOtp(requestParams.getParameters());
+    }
+
+
+    public static RequestParams getParamBeforeLogin(int otpType, String otp, String tempUserId) {
+        RequestParams param = RequestParams.create();
+        param.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(),
+                RequestParams.EMPTY.getParameters()));
+        param.putInt(PARAM_OTP_TYPE, otpType);
+        param.putString(PARAM_CODE, otp);
+        param.putString(PARAM_USER, tempUserId);
+        return param;
     }
 }

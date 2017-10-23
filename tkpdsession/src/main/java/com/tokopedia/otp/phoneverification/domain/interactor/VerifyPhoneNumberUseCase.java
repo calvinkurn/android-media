@@ -7,13 +7,12 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.ValidateOtpModel;
-import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
+import com.tokopedia.otp.domain.interactor.OldValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberModel;
 import com.tokopedia.otp.phoneverification.domain.MsisdnRepository;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * Created by nisie on 3/7/17.
@@ -25,15 +24,15 @@ public class VerifyPhoneNumberUseCase extends UseCase<VerifyPhoneNumberModel> {
     public static final String PARAM_PHONE = "phone";
 
     private final MsisdnRepository msisdnRepository;
-    private final ValidateOtpUseCase validateOtpUseCase;
+    private final OldValidateOtpUseCase oldValidateOtpUseCase;
 
     public VerifyPhoneNumberUseCase(ThreadExecutor threadExecutor,
                                     PostExecutionThread postExecutionThread,
                                     MsisdnRepository msisdnRepository,
-                                    ValidateOtpUseCase validateOtpUseCase) {
+                                    OldValidateOtpUseCase oldValidateOtpUseCase) {
         super(threadExecutor, postExecutionThread);
         this.msisdnRepository = msisdnRepository;
-        this.validateOtpUseCase = validateOtpUseCase;
+        this.oldValidateOtpUseCase = oldValidateOtpUseCase;
     }
 
     @Override
@@ -60,10 +59,10 @@ public class VerifyPhoneNumberUseCase extends UseCase<VerifyPhoneNumberModel> {
 
     private RequestParams getValidateOtpParam(RequestParams requestParams) {
         RequestParams param = RequestParams.create();
-        param.putString(ValidateOtpUseCase.PARAM_CODE,
-                requestParams.getString(ValidateOtpUseCase.PARAM_CODE, ""));
-        param.putString(ValidateOtpUseCase.PARAM_USER,
-                requestParams.getString(ValidateOtpUseCase.PARAM_USER, ""));
+        param.putString(OldValidateOtpUseCase.PARAM_CODE,
+                requestParams.getString(OldValidateOtpUseCase.PARAM_CODE, ""));
+        param.putString(OldValidateOtpUseCase.PARAM_USER,
+                requestParams.getString(OldValidateOtpUseCase.PARAM_USER, ""));
         return param;
     }
 
@@ -72,7 +71,7 @@ public class VerifyPhoneNumberUseCase extends UseCase<VerifyPhoneNumberModel> {
     }
 
     private Observable<ValidateOtpModel> doValidateOtp(RequestParams requestParams) {
-        return validateOtpUseCase.createObservable(requestParams)
+        return oldValidateOtpUseCase.createObservable(requestParams)
                 .flatMap(new Func1<ValidateOtpModel, Observable<ValidateOtpModel>>() {
                     @Override
                     public Observable<ValidateOtpModel> call(ValidateOtpModel validateOtpModel) {

@@ -1,5 +1,6 @@
 package com.tokopedia.session.register.view.subscriber.registerinitial;
 
+import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -27,6 +28,7 @@ public class RegisterSosmedSubscriber extends Subscriber<RegisterSosmedDomain> {
     @Override
     public void onError(Throwable e) {
         viewListener.dismissProgressBar();
+
         viewListener.onErrorRegisterSosmed(ErrorHandler.getErrorMessage(e));
         viewListener.clearToken();
     }
@@ -47,7 +49,11 @@ public class RegisterSosmedSubscriber extends Subscriber<RegisterSosmedDomain> {
         } else if (isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())) {
             viewListener.onGoToSecurityQuestion(
                     registerSosmedDomain.getMakeLoginModel().getSecurityDomain(),
-                    registerSosmedDomain.getMakeLoginModel().getFullName());
+                    registerSosmedDomain.getMakeLoginModel().getFullName(),
+                    registerSosmedDomain.getInfo().getGetUserInfoDomainData().getEmail());
+        } else {
+            viewListener.onErrorRegisterSosmed(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
+            viewListener.clearToken();
         }
     }
 
@@ -56,6 +62,6 @@ public class RegisterSosmedSubscriber extends Subscriber<RegisterSosmedDomain> {
     }
 
     private boolean isGoToSecurityQuestion(MakeLoginDomain makeLoginModel) {
-        return !makeLoginModel.isLogin();
+        return !makeLoginModel.isLogin() && makeLoginModel.getSecurityDomain() != null;
     }
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.session.data.viewmodel.login;
 
+import android.support.annotation.Nullable;
+
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 
 /**
@@ -7,7 +9,6 @@ import com.tokopedia.session.data.viewmodel.SecurityDomain;
  */
 
 public class MakeLoginDomain {
-
 
     private final int shopIsGold;
     private final boolean isMsisdnVerified;
@@ -30,9 +31,9 @@ public class MakeLoginDomain {
                            boolean isMsisdnVerified,
                            int shopId, String shopName,
                            String fullName,
-                           ShopReputationDomain shopReputation,
+                           @Nullable ShopReputationDomain shopReputation,
                            boolean isLogin,
-                           UserReputationDomain userReputation,
+                           @Nullable UserReputationDomain userReputation,
                            int shopHasTerms,
                            int shopIsOfficial,
                            int isRegisterDevice,
@@ -40,7 +41,7 @@ public class MakeLoginDomain {
                            int msisdnShowDialog,
                            String shopAvatar,
                            String userImage,
-                           SecurityDomain securityDomain) {
+                           @Nullable SecurityDomain securityDomain) {
         this.shopIsGold = shopIsGold;
         this.isMsisdnVerified = isMsisdnVerified;
         this.shopId = shopId;

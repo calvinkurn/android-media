@@ -213,7 +213,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, String.valueOf(securityQuestionViewModel.getSecurity2()));
                 params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
                 service = new InterruptService();
-                ((InterruptService) service).getApi().getQuestionForm(AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext())))
+                ((InterruptService) service).getApi().oldGetQuestionForm(AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext())))
                         .subscribeOn(Schedulers.io())
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

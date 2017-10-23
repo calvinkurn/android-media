@@ -175,7 +175,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_security_question, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
         wrapperAnswer.setHintEnabled(false);
         Progress = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         initListener();

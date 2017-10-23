@@ -17,4 +17,5 @@ public interface ErrorCode {
     int ERROR_BUNDLE_WEBVIEW = 1124;
 
     int UNKNOWN_SECURITY_QUESTION_TYPE = 1125;
+    int UNSUPPORTED_FLOW = 1126;
 }

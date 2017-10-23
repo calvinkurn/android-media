@@ -27,7 +27,7 @@ public class RegisterWebviewUseCase extends RegisterWithSosmedUseCase {
     }
 
     @Override
-    public Observable<RegisterSosmedDomain> createObservable(RequestParams requestParams) {
+    public Observable<RegisterSosmedDomain> createObservable(final RequestParams requestParams) {
         RegisterSosmedDomain registerSosmedDomain = new RegisterSosmedDomain();
         return getToken(registerSosmedDomain,
                 GetTokenUseCase.getParamRegisterWebview(
@@ -44,7 +44,7 @@ public class RegisterWebviewUseCase extends RegisterWithSosmedUseCase {
                     @Override
                     public Observable<RegisterSosmedDomain> call(RegisterSosmedDomain registerSosmedDomain) {
                         if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-                            return makeLogin(registerSosmedDomain);
+                            return makeLogin(registerSosmedDomain, requestParams);
                         } else {
                             return Observable.just(registerSosmedDomain);
                         }
@@ -52,7 +52,10 @@ public class RegisterWebviewUseCase extends RegisterWithSosmedUseCase {
                 });
     }
 
-    public static RequestParams getParamWebview(String code, String redirectUri) {
-        return GetTokenUseCase.getParamRegisterWebview(code, redirectUri);
+    public static RequestParams getParamWebview(String code, String redirectUri, String tempLoginSession) {
+        RequestParams params = RequestParams.create();
+        params.putAll(GetTokenUseCase.getParamRegisterWebview(code, redirectUri).getParameters());
+        params.putString(MakeLoginUseCase.PARAM_USER_ID, tempLoginSession);
+        return params;
     }
 }

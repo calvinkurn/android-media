@@ -9,12 +9,12 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.factory.OtpSourceFactory;
-import com.tokopedia.otp.data.mapper.RequestOtpMapper;
-import com.tokopedia.otp.data.mapper.ValidateOtpMapper;
+import com.tokopedia.otp.data.mapper.OldRequestOtpMapper;
+import com.tokopedia.otp.data.mapper.OldValidateOtpMapper;
 import com.tokopedia.otp.data.repository.OtpRepositoryImpl;
 import com.tokopedia.otp.domain.OtpRepository;
-import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
+import com.tokopedia.otp.domain.interactor.OldRequestOtpUseCase;
+import com.tokopedia.otp.domain.interactor.OldValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.factory.MsisdnSourceFactory;
 import com.tokopedia.otp.phoneverification.data.mapper.ChangePhoneNumberMapper;
 import com.tokopedia.otp.phoneverification.data.mapper.VerifyPhoneNumberMapper;
@@ -62,14 +62,14 @@ public class PhoneVerifModule {
 
     @PhoneVerifScope
     @Provides
-    RequestOtpMapper provideRequestOtpMapper(){
-        return new RequestOtpMapper();
+    OldRequestOtpMapper provideRequestOtpMapper(){
+        return new OldRequestOtpMapper();
     }
 
     @PhoneVerifScope
     @Provides
-    ValidateOtpMapper provideValidateOtpMapper(){
-        return new ValidateOtpMapper();
+    OldValidateOtpMapper provideValidateOtpMapper(){
+        return new OldValidateOtpMapper();
     }
 
     @PhoneVerifScope
@@ -86,29 +86,29 @@ public class PhoneVerifModule {
 
     @PhoneVerifScope
     @Provides
-    RequestOtpUseCase provideRequestOtpUseCase(ThreadExecutor threadExecutor,
-                                                         PostExecutionThread postExecutor,
-                                                         OtpRepository otpRepository){
+    OldRequestOtpUseCase provideRequestOtpUseCase(ThreadExecutor threadExecutor,
+                                                  PostExecutionThread postExecutor,
+                                                  OtpRepository otpRepository){
 
-        return new RequestOtpUseCase(threadExecutor, postExecutor, otpRepository);
+        return new OldRequestOtpUseCase(threadExecutor, postExecutor, otpRepository);
     }
 
     @PhoneVerifScope
     @Provides
-    ValidateOtpUseCase provideValidateOtpUseCase(ThreadExecutor threadExecutor,
+    OldValidateOtpUseCase provideValidateOtpUseCase(ThreadExecutor threadExecutor,
                                                     PostExecutionThread postExecutor,
                                                     OtpRepository otpRepository){
 
-        return new ValidateOtpUseCase(threadExecutor, postExecutor, otpRepository);
+        return new OldValidateOtpUseCase(threadExecutor, postExecutor, otpRepository);
     }
     @PhoneVerifScope
     @Provides
     VerifyPhoneNumberUseCase provideVerifyPhoneNumberUseCase(ThreadExecutor threadExecutor,
                                                              PostExecutionThread postExecutor,
                                                              MsisdnRepository msisdnRepository,
-                                                             ValidateOtpUseCase validateOtpUseCase){
+                                                             OldValidateOtpUseCase oldValidateOtpUseCase){
 
-        return new VerifyPhoneNumberUseCase(threadExecutor, postExecutor, msisdnRepository,validateOtpUseCase);
+        return new VerifyPhoneNumberUseCase(threadExecutor, postExecutor, msisdnRepository, oldValidateOtpUseCase);
     }
 
     @PhoneVerifScope

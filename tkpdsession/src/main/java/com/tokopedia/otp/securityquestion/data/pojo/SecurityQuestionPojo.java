@@ -10,20 +10,13 @@ import com.google.gson.annotations.SerializedName;
 public class SecurityQuestionPojo {
     @SerializedName("question")
     @Expose
-    int question;
-    @SerializedName("example")
-    @Expose
-    String example;
+    String question;
     @SerializedName("title")
     @Expose
     String title;
 
-    public int getQuestion() {
+    public String getQuestion() {
         return question;
-    }
-
-    public String getExample() {
-        return example;
     }
 
     public String getTitle() {

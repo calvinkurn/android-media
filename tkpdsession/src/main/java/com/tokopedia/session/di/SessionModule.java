@@ -9,9 +9,14 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.apiservices.user.InterruptService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.securityquestion.SecurityQuestion;
+import com.tokopedia.otp.data.mapper.RequestOTPMapper;
+import com.tokopedia.otp.data.mapper.ValidateOTPMapper;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
+import com.tokopedia.otp.domain.interactor.ValidateOTPLoginUseCase;
+import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.otp.securityquestion.data.mapper.SecurityQuestionMapper;
 import com.tokopedia.otp.securityquestion.data.source.SecurityQuestionDataSource;
 import com.tokopedia.otp.securityquestion.domain.interactor.GetSecurityQuestionFormUseCase;
@@ -28,13 +33,14 @@ import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.LocalDiscoverDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
+import com.tokopedia.session.data.source.OtpSource;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
-import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
-import com.tokopedia.session.domain.mapper.DiscoverMapper;
-import com.tokopedia.session.domain.mapper.TokenMapper;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
+import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
+import com.tokopedia.session.domain.mapper.TokenMapper;
+import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterWebviewUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.RegisterWithSosmedUseCase;
@@ -97,6 +103,13 @@ public class SessionModule {
         return new AccountsService(bundle);
     }
 
+
+    /**
+     * @param context
+     * @param sessionHandler
+     * @return https://ws.tokopedia.com
+     * with Authorization : Bearer {Access Token}
+     */
     @SessionScope
     @Named(WS_SERVICE)
     @Provides
@@ -109,7 +122,6 @@ public class SessionModule {
         bundle.putString(AccountsService.WEB_SERVICE, AccountsService.WS);
         return new AccountsService(bundle);
     }
-
 
     @SessionScope
     @Provides
@@ -124,11 +136,13 @@ public class SessionModule {
                                                GetTokenDataSource getTokenDataSource,
                                                CreatePasswordDataSource createPasswordDataSource,
                                                MakeLoginDataSource makeLoginDataSource,
-                                               SecurityQuestionDataSource securityQuestionDataSource) {
+                                               SecurityQuestionDataSource
+                                                       securityQuestionDataSource,
+                                               OtpSource otpSource) {
         return new SessionRepositoryImpl(cloudDiscoverDataSource,
                 localDiscoverDataSource, getTokenDataSource,
                 createPasswordDataSource, makeLoginDataSource,
-                securityQuestionDataSource);
+                securityQuestionDataSource, otpSource);
     }
 
     @SessionScope
@@ -278,17 +292,18 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    MakeLoginDataSource provideMakeLoginDataSource(@Named(WS_SERVICE) AccountsService
-                                                           accountsService,
-                                                   MakeLoginMapper makeLoginMapper) {
-        return new MakeLoginDataSource(accountsService, makeLoginMapper);
+    MakeLoginDataSource provideMakeLoginDataSource(@Named(WS_SERVICE) AccountsService accountsService,
+                                                   MakeLoginMapper makeLoginMapper,
+                                                   SessionHandler sessionHandler) {
+        return new MakeLoginDataSource(accountsService, makeLoginMapper, sessionHandler);
     }
 
     @SessionScope
     @Provides
     MakeLoginUseCase provideMakeLoginUseCase(ThreadExecutor threadExecutor,
                                              PostExecutionThread postExecutionThread,
-                                             SessionRepository sessionRepository) {
+                                             SessionRepository sessionRepository,
+                                             SessionHandler sessionHandler) {
         return new MakeLoginUseCase(
                 threadExecutor, postExecutionThread, sessionRepository);
     }
@@ -302,10 +317,15 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    SecurityQuestionDataSource provideSecurityQuestionDataSource(@Named(WS_SERVICE) AccountsService
-                                                                         accountsService,
+    InterruptService provideInterruptService() {
+        return new InterruptService();
+    }
+
+    @SessionScope
+    @Provides
+    SecurityQuestionDataSource provideSecurityQuestionDataSource(InterruptService interruptService,
                                                                  SecurityQuestionMapper securityQuestionMapper) {
-        return new SecurityQuestionDataSource(accountsService, securityQuestionMapper);
+        return new SecurityQuestionDataSource(interruptService, securityQuestionMapper);
     }
 
     @SessionScope
@@ -322,5 +342,57 @@ public class SessionModule {
                                                                          SessionHandler sessionHandler) {
         return new GetSecurityQuestionFormUseCase(
                 threadExecutor, postExecutionThread, sessionRepository, sessionHandler);
+    }
+
+    @SessionScope
+    @Provides
+    OtpSource provideOtpSource(@Named(BEARER_SERVICE) AccountsService accountsService,
+                               RequestOTPMapper requestOTPMapper,
+                               ValidateOTPMapper validateOTPMapper,
+                               SessionHandler sessionHandler) {
+        return new OtpSource(accountsService, requestOTPMapper, validateOTPMapper, sessionHandler);
+    }
+
+    @SessionScope
+    @Provides
+    RequestOTPMapper provideRequestOTPMapper() {
+        return new RequestOTPMapper();
+    }
+
+    @SessionScope
+    @Provides
+    RequestOtpUseCase provideRequestOtpUseCase(ThreadExecutor threadExecutor,
+                                               PostExecutionThread postExecutionThread,
+                                               SessionRepository sessionRepository,
+                                               SessionHandler sessionHandler) {
+        return new RequestOtpUseCase(
+                threadExecutor, postExecutionThread, sessionRepository);
+    }
+
+    @SessionScope
+    @Provides
+    ValidateOTPMapper provideValidateOtpMapper() {
+        return new ValidateOTPMapper();
+    }
+
+    @SessionScope
+    @Provides
+    ValidateOtpUseCase provideValidateOtpUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 SessionRepository sessionRepository,
+                                                 SessionHandler sessionHandler) {
+        return new ValidateOtpUseCase(
+                threadExecutor, postExecutionThread, sessionRepository, sessionHandler);
+    }
+
+    @SessionScope
+    @Provides
+    ValidateOTPLoginUseCase provideValidateOTPLoginUseCase(ThreadExecutor threadExecutor,
+                                                           PostExecutionThread postExecutionThread,
+                                                           ValidateOtpUseCase
+                                                                   validateOtpUseCase,
+                                                           MakeLoginUseCase makeLoginUseCase) {
+        return new ValidateOTPLoginUseCase(
+                threadExecutor, postExecutionThread, validateOtpUseCase, makeLoginUseCase);
     }
 }

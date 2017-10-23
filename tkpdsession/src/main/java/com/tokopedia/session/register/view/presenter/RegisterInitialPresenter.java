@@ -11,6 +11,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.response.ErrorCode;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
@@ -92,17 +93,18 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
         } else if (bundle != null
                 && bundle.getString(ARGS_PATH) != null
                 && bundle.getString(ARGS_CODE) != null
-                && bundle.getString(ARGS_SERVER)!= null) {
+                && bundle.getString(ARGS_SERVER) != null) {
             registerWebviewUseCase.execute(RegisterWebviewUseCase.getParamWebview(
                     bundle.getString(ARGS_CODE),
-                    HTTPS + bundle.getString(ARGS_SERVER) + bundle.getString(ARGS_PATH)
+                    HTTPS + bundle.getString(ARGS_SERVER) + bundle.getString(ARGS_PATH),
+                    sessionHandler
+                            .getTempLoginSession(MainApplication.getAppContext())
             ), new RegisterSosmedSubscriber(viewListener));
         } else {
             viewListener.dismissProgressBar();
-            viewListener.onErrorRegisterSosmed(MainApplication.getAppContext().getString(R.string
-                    .error_register_webview) + " " +
-                    MainApplication.getAppContext().getString(R.string.code_error) + " " + ErrorCode
-                    .EMPTY_ACCESS_TOKEN);
+            viewListener.onErrorRegisterSosmed(
+                    ErrorHandler.getDefaultErrorCodeMessage(ErrorCode
+                            .EMPTY_ACCESS_TOKEN));
         }
     }
 
@@ -120,7 +122,8 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
     public void registerFacebook(AccessToken accessToken) {
         viewListener.showProgressBar();
         registerSosmedUseCase.execute(
-                RegisterWithSosmedUseCase.getParamFacebook(accessToken),
+                RegisterWithSosmedUseCase.getParamFacebook(accessToken,
+                        sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
                 new RegisterSosmedSubscriber(viewListener)
         );
     }
@@ -134,7 +137,8 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
     public void registerGoogle(LoginGoogleModel model) {
         viewListener.showProgressBar();
         registerSosmedUseCase.execute(
-                RegisterWithSosmedUseCase.getParamGoogle(model.getAccessToken()),
+                RegisterWithSosmedUseCase.getParamGoogle(model.getAccessToken(),
+                        sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
                 new RegisterSosmedSubscriber(viewListener)
         );
     }

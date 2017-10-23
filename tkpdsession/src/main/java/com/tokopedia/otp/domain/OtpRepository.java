@@ -1,5 +1,6 @@
 package com.tokopedia.otp.domain;
 
+import com.tokopedia.core.network.entity.otp.RequestOtpData;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.otp.data.RequestOtpModel;
 import com.tokopedia.otp.data.ValidateOtpModel;
@@ -12,7 +13,7 @@ import rx.Observable;
 
 public interface OtpRepository {
 
-    Observable<RequestOtpModel> requestOtp(TKPDMapParam<String, Object> parameters);
+    Observable<RequestOtpModel> oldRequestOtp(TKPDMapParam<String, Object> parameters);
 
     Observable<ValidateOtpModel> validateOtp(TKPDMapParam<String, Object> parameters);
 

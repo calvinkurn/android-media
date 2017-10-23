@@ -2,12 +2,13 @@ package com.tokopedia.session.data.source;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.session.domain.mapper.MakeLoginMapper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
+import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 
 import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * @author by nisie on 10/18/17.
@@ -17,15 +18,37 @@ public class MakeLoginDataSource {
 
     private final AccountsService accountsService;
     private final MakeLoginMapper makeLoginMapper;
+    private final SessionHandler sessionHandler;
 
-    public MakeLoginDataSource(AccountsService accountsService, MakeLoginMapper makeLoginMapper) {
+    public MakeLoginDataSource(AccountsService accountsService, MakeLoginMapper makeLoginMapper,
+                               SessionHandler sessionHandler) {
         this.accountsService = accountsService;
         this.makeLoginMapper = makeLoginMapper;
+        this.sessionHandler = sessionHandler;
     }
 
     public Observable<MakeLoginDomain> makeLogin(TKPDMapParam<String, Object> parameters) {
         return accountsService.getApi()
-                .makeLogin(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(), parameters))
-                .map(makeLoginMapper);
+                .makeLogin(parameters)
+                .map(makeLoginMapper)
+                .doOnNext(saveToCache());
+    }
+
+    private Action1<MakeLoginDomain> saveToCache() {
+        return new Action1<MakeLoginDomain>() {
+            @Override
+            public void call(MakeLoginDomain makeLoginDomain) {
+                if (makeLoginDomain.isLogin()) {
+                    sessionHandler.setLoginSession(makeLoginDomain.isLogin(),
+                            makeLoginDomain.getUserId() + "",
+                            makeLoginDomain.getFullName(),
+                            makeLoginDomain.getShopId() + "",
+                            makeLoginDomain.isMsisdnVerified());
+                    sessionHandler.setGoldMerchant(makeLoginDomain.getShopIsGold());
+                    sessionHandler.setPhoneNumber(sessionHandler.getTempPhoneNumber
+                            (MainApplication.getAppContext()));
+                }
+            }
+        };
     }
 }

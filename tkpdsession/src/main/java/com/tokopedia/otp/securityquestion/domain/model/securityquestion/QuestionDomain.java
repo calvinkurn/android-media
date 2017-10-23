@@ -1,33 +1,55 @@
 package com.tokopedia.otp.securityquestion.domain.model.securityquestion;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * @author by nisie on 10/19/17.
  */
 
-public class QuestionDomain {
+public class QuestionDomain implements Parcelable {
 
-    int question;
-    String example;
+    String question;
     String title;
 
-    public QuestionDomain(int question, String example, String title) {
+    public QuestionDomain(String question, String title) {
         this.question = question;
-        this.example = example;
         this.title = title;
     }
 
-    public int getQuestion() {
-        return question;
+    protected QuestionDomain(Parcel in) {
+        question = in.readString();
+        title = in.readString();
     }
 
-    public String getExample() {
-        return example;
+    public static final Creator<QuestionDomain> CREATOR = new Creator<QuestionDomain>() {
+        @Override
+        public QuestionDomain createFromParcel(Parcel in) {
+            return new QuestionDomain(in);
+        }
+
+        @Override
+        public QuestionDomain[] newArray(int size) {
+            return new QuestionDomain[size];
+        }
+    };
+
+    public String getQuestion() {
+        return question;
     }
 
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(question);
+        dest.writeString(title);
     }
 }

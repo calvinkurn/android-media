@@ -1,5 +1,6 @@
 package com.tokopedia.otp.data.repository;
 
+import com.tokopedia.core.network.entity.otp.RequestOtpData;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.otp.data.RequestOtpModel;
 import com.tokopedia.otp.data.ValidateOtpModel;
@@ -21,7 +22,7 @@ public class OtpRepositoryImpl implements OtpRepository {
     }
 
     @Override
-    public Observable<RequestOtpModel> requestOtp(TKPDMapParam<String, Object> parameters) {
+    public Observable<RequestOtpModel> oldRequestOtp(TKPDMapParam<String, Object> parameters) {
         return otpSourceFactory.createCloudOtpSource().requestOtp(parameters);
     }
 

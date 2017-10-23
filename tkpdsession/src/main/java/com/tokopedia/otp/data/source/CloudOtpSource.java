@@ -7,8 +7,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.RequestOtpModel;
 import com.tokopedia.otp.data.ValidateOtpModel;
-import com.tokopedia.otp.data.mapper.RequestOtpMapper;
-import com.tokopedia.otp.data.mapper.ValidateOtpMapper;
+import com.tokopedia.otp.data.mapper.OldRequestOtpMapper;
+import com.tokopedia.otp.data.mapper.OldValidateOtpMapper;
 
 import rx.Observable;
 
@@ -20,20 +20,20 @@ public class CloudOtpSource {
 
     private final Context context;
     private AccountsService accountsService;
-    private RequestOtpMapper requestOtpMapper;
-    private ValidateOtpMapper validateOtpMapper;
+    private OldRequestOtpMapper oldRequestOtpMapper;
+    private OldValidateOtpMapper validateOtpMapper;
 
     public CloudOtpSource(Context context, AccountsService accountsService,
-                          RequestOtpMapper requestOtpMapper, ValidateOtpMapper validateOtpMapper) {
+                          OldRequestOtpMapper oldRequestOtpMapper, OldValidateOtpMapper validateOtpMapper) {
         this.context = context;
         this.accountsService = accountsService;
-        this.requestOtpMapper = requestOtpMapper;
+        this.oldRequestOtpMapper = oldRequestOtpMapper;
         this.validateOtpMapper = validateOtpMapper;
     }
 
     public Observable<RequestOtpModel> requestOtp(TKPDMapParam<String, Object> params) {
         return accountsService.getApi()
-                .requestOtp(SessionHandler.getLoginID(context), params).map(requestOtpMapper);
+                .requestOtp(SessionHandler.getLoginID(context), params).map(oldRequestOtpMapper);
     }
 
     public Observable<ValidateOtpModel> validateOtp(TKPDMapParam<String, Object> params) {

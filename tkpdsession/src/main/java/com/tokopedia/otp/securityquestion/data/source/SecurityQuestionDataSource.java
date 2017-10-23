@@ -1,7 +1,7 @@
 package com.tokopedia.otp.securityquestion.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.apiservices.user.InterruptService;
 import com.tokopedia.otp.securityquestion.data.mapper.SecurityQuestionMapper;
 import com.tokopedia.otp.securityquestion.domain.model.securityquestion.QuestionDomain;
 
@@ -12,17 +12,17 @@ import rx.Observable;
  */
 
 public class SecurityQuestionDataSource {
-    private final AccountsService accountsService;
+    private final InterruptService interruptService;
     private final SecurityQuestionMapper securityQuestionMapper;
 
-    public SecurityQuestionDataSource(AccountsService accountsService,
+    public SecurityQuestionDataSource(InterruptService interruptService,
                                       SecurityQuestionMapper securityQuestionMapper) {
-        this.accountsService = accountsService;
+        this.interruptService = interruptService;
         this.securityQuestionMapper = securityQuestionMapper;
     }
 
     public Observable<QuestionDomain> getSecurityQuestion(RequestParams params) {
-        return accountsService.getApi()
+        return interruptService.getApi()
                 .getQuestionForm(params.getParameters())
                 .map(securityQuestionMapper);
     }

@@ -42,10 +42,14 @@ public class CloudGetUserInfoSource {
         return new Action1<GetUserInfoDomainModel>() {
             @Override
             public void call(GetUserInfoDomainModel getUserInfoDomainModel) {
-                if (!sessionHandler.isV4Login())
+                if (!sessionHandler.isV4Login()) {
                     sessionHandler.setTempLoginSession(String.valueOf(getUserInfoDomainModel
                             .getGetUserInfoDomainData().getUserId()));
-                else {
+                    sessionHandler.setTempPhoneNumber(getUserInfoDomainModel.getGetUserInfoDomainData
+                            ().getPhone());
+                    sessionHandler.setTempLoginName(getUserInfoDomainModel
+                            .getGetUserInfoDomainData().getFullName());
+                } else {
 
                 }
             }

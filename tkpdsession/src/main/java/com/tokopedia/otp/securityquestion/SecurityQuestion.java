@@ -30,6 +30,20 @@ public interface SecurityQuestion {
         void showTrueCaller();
 
         void removeTrueCaller();
+
+        void showLoadingProgress();
+
+        void dismissLoadingProgress();
+
+        void onErrorRequestOTP(String errorMessage);
+
+        void onSuccessRequestOTP(String messageStatus);
+
+        void onSuccessValidateOtp();
+
+        void onErrorValidateOtp(String errorMessage);
+
+        void onGoToPhoneVerification();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -45,7 +59,7 @@ public interface SecurityQuestion {
 
         void requestOTPWithSMS();
 
-        void requestOTPWithEmail();
+        void requestOTPWithEmail(String email);
 
     }
 }

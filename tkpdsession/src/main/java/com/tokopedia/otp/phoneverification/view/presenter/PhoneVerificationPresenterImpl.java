@@ -13,8 +13,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.RequestOtpModel;
 import com.tokopedia.otp.data.factory.OtpSourceFactory;
 import com.tokopedia.otp.data.repository.OtpRepositoryImpl;
-import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
+import com.tokopedia.otp.domain.interactor.OldRequestOtpUseCase;
+import com.tokopedia.otp.domain.interactor.OldValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberModel;
 import com.tokopedia.otp.phoneverification.data.factory.MsisdnSourceFactory;
 import com.tokopedia.otp.phoneverification.data.mapper.ChangePhoneNumberMapper;
@@ -38,8 +38,8 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
     private static final String TOKEN_BEARER = "Bearer ";
 
     private final PhoneVerificationFragmentView viewListener;
-    private RequestOtpUseCase requestOtpUseCase;
-    private ValidateOtpUseCase validateOtpUseCase;
+    private OldRequestOtpUseCase oldRequestOtpUseCase;
+    private OldValidateOtpUseCase oldValidateOtpUseCase;
     private VerifyPhoneNumberUseCase verifyPhoneNumberUseCase;
 
 
@@ -60,12 +60,12 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
                         accountsService,
                         new VerifyPhoneNumberMapper(),
                         new ChangePhoneNumberMapper()));
-        this.requestOtpUseCase = new RequestOtpUseCase(new JobExecutor(),
+        this.oldRequestOtpUseCase = new OldRequestOtpUseCase(new JobExecutor(),
                 new UIThread(), otpRepository);
-        this.validateOtpUseCase = new ValidateOtpUseCase(new JobExecutor(),
+        this.oldValidateOtpUseCase = new OldValidateOtpUseCase(new JobExecutor(),
                 new UIThread(), otpRepository);
         this.verifyPhoneNumberUseCase = new VerifyPhoneNumberUseCase(new JobExecutor(),
-                new UIThread(), msisdnRepository, validateOtpUseCase);
+                new UIThread(), msisdnRepository, oldValidateOtpUseCase);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
             viewListener.setViewEnabled(false);
             viewListener.showProgressDialog();
 
-            requestOtpUseCase.execute(getRequestOTPParam(), new Subscriber<RequestOtpModel>() {
+            oldRequestOtpUseCase.execute(getRequestOTPParam(), new Subscriber<RequestOtpModel>() {
                         @Override
                         public void onCompleted() {
 
@@ -225,7 +225,7 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
             viewListener.setViewEnabled(false);
             viewListener.showProgressDialog();
 
-            requestOtpUseCase.execute(getRequestOTPWithCallParam(), new Subscriber<RequestOtpModel>() {
+            oldRequestOtpUseCase.execute(getRequestOTPWithCallParam(), new Subscriber<RequestOtpModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -291,24 +291,24 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
 
     @Override
     public void onDestroyView() {
-        requestOtpUseCase.unsubscribe();
-        validateOtpUseCase.unsubscribe();
+        oldRequestOtpUseCase.unsubscribe();
+        oldValidateOtpUseCase.unsubscribe();
         verifyPhoneNumberUseCase.unsubscribe();
     }
 
     private RequestParams getRequestOTPParam() {
         RequestParams param = RequestParams.create();
-        param.putString(RequestOtpUseCase.PARAM_MODE, RequestOtpUseCase.MODE_SMS);
-        param.putString(RequestOtpUseCase.PARAM_OTP_TYPE, OTP_TYPE_PHONE_NUMBER_VERIFICATION);
-        param.putString(RequestOtpUseCase.PARAM_MSISDN, viewListener.getPhoneNumber());
+        param.putString(OldRequestOtpUseCase.PARAM_MODE, OldRequestOtpUseCase.MODE_SMS);
+        param.putString(OldRequestOtpUseCase.PARAM_OTP_TYPE, OTP_TYPE_PHONE_NUMBER_VERIFICATION);
+        param.putString(OldRequestOtpUseCase.PARAM_MSISDN, viewListener.getPhoneNumber());
         return param;
     }
 
     private RequestParams getRequestOTPWithCallParam() {
         RequestParams param = RequestParams.create();
-        param.putString(RequestOtpUseCase.PARAM_MODE, RequestOtpUseCase.MODE_CALL);
-        param.putString(RequestOtpUseCase.PARAM_OTP_TYPE, OTP_TYPE_PHONE_NUMBER_VERIFICATION);
-        param.putString(RequestOtpUseCase.PARAM_MSISDN, viewListener.getPhoneNumber());
+        param.putString(OldRequestOtpUseCase.PARAM_MODE, OldRequestOtpUseCase.MODE_CALL);
+        param.putString(OldRequestOtpUseCase.PARAM_OTP_TYPE, OTP_TYPE_PHONE_NUMBER_VERIFICATION);
+        param.putString(OldRequestOtpUseCase.PARAM_MSISDN, viewListener.getPhoneNumber());
         return param;
     }
 
@@ -320,8 +320,8 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
     }
 
     private void setValidateOtpParam(RequestParams param) {
-        param.putString(ValidateOtpUseCase.PARAM_CODE, viewListener.getOTPCode());
-        param.putString(ValidateOtpUseCase.PARAM_USER, SessionHandler.getLoginID(viewListener.getActivity()));
+        param.putString(OldValidateOtpUseCase.PARAM_CODE, viewListener.getOTPCode());
+        param.putString(OldValidateOtpUseCase.PARAM_USER, SessionHandler.getLoginID(viewListener.getActivity()));
     }
 
     private void setVerifyOtpParam(RequestParams param) {

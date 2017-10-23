@@ -631,6 +631,20 @@ public class SessionHandler {
                 .getString(UUID_KEY, DEFAULT_UUID_VALUE);
     }
 
+    public void setUUID(String uuid) {
+        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(),
+                LOGIN_UUID_KEY);
+        String prevUUID = cache.getString(UUID_KEY, "");
+        String currUUID;
+        if (prevUUID.equals("")) {
+            currUUID = uuid;
+        } else {
+            currUUID = prevUUID + "*~*" + uuid;
+        }
+        cache.putString(UUID_KEY, currUUID);
+        cache.applyEditor();
+    }
+
     public interface onLogoutListener {
         void onLogout(Boolean success);
     }
