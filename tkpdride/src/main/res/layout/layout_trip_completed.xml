@@ -106,7 +106,7 @@
                         <LinearLayout
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="80dp"
+                            android:layout_marginLeft="20dp"
                             android:orientation="vertical">
 
                             <ImageView
@@ -133,8 +133,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
+                                android:gravity="center"
                                 android:paddingTop="12dp"
-                                android:text="Honda Brio"
+                                android:text="Toyota Prius"
                                 android:textColor="@color/black_400"
                                 android:textSize="14sp" />
                         </LinearLayout>
