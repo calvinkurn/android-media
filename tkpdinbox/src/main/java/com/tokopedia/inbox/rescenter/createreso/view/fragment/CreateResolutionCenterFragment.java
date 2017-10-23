@@ -33,6 +33,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.presenter.CreateResolutionC
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
+import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -349,7 +350,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         textView.setText(resultViewModel.refundAmount != 0 && resultViewModel.solutionName != null?
                 resultViewModel.solutionName.replace(
                         context.getResources().getString(R.string.string_return_value),
-                        String.valueOf(resultViewModel.refundAmount)):
+                        CurrencyFormatter.formatDotRupiah(String.valueOf(resultViewModel.refundAmount))) :
                 resultViewModel.solutionName);
     }
 

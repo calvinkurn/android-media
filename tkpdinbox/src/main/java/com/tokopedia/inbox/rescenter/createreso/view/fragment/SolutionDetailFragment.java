@@ -30,6 +30,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionDetailFra
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
+import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
 
 import javax.inject.Inject;
 
@@ -285,7 +286,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
         textView.setText(editAppealSolutionModel.refundAmount != 0 && editAppealSolutionModel.solutionName != null?
                 editAppealSolutionModel.solutionName.replace(
                         context.getResources().getString(R.string.string_return_value),
-                        String.valueOf(editAppealSolutionModel.refundAmount)) :
+                        CurrencyFormatter.formatDotRupiah(String.valueOf(editAppealSolutionModel.refundAmount))) :
                 editAppealSolutionModel.getName());
     }
 

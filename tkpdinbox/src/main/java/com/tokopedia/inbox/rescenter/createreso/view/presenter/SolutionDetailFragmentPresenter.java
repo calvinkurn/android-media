@@ -76,11 +76,19 @@ public class SolutionDetailFragmentPresenter
                     editAppealSolutionModel.refundAmount = intAmount;
                 }
             }
+        } else {
             if (resultViewModel != null) {
-                mainView.updateBottomButton(resultViewModel.refundAmount);
+                resultViewModel.refundAmount = 0;
             } else {
-                mainView.updateBottomButton(editAppealSolutionModel.refundAmount);
+                editAppealSolutionModel.refundAmount = 0;
             }
+            mainView.updatePriceEditText(String.valueOf(0));
+        }
+
+        if (resultViewModel != null) {
+            mainView.updateBottomButton(resultViewModel.refundAmount);
+        } else {
+            mainView.updateBottomButton(editAppealSolutionModel.refundAmount);
         }
     }
 

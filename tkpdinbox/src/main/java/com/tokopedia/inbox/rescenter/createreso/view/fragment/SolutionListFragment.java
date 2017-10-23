@@ -36,6 +36,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppe
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
+import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
 
 import javax.inject.Inject;
 
@@ -307,7 +308,7 @@ public class SolutionListFragment extends BaseDaggerFragment
         textView.setText(solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
                 solutionViewModel.getSolutionName().replace(
                         context.getResources().getString(R.string.string_return_value),
-                        solutionViewModel.getAmount().getIdr()) :
+                        CurrencyFormatter.formatDotRupiah(solutionViewModel.getAmount().getIdr())) :
                 solutionViewModel.getName());
     }
 
