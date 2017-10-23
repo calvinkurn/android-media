@@ -72,7 +72,7 @@ public class OkHttpFactory {
         return new HttpLoggingInterceptor().setLevel(loggingLevel);
     }
 
-    private OkHttpRetryPolicy getOkHttpRetryPolicy() {
+    protected OkHttpRetryPolicy getOkHttpRetryPolicy() {
         if (okHttpRetryPolicy == null) {
             return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
         }

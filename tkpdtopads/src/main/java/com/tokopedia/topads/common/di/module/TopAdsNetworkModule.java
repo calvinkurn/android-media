@@ -59,16 +59,12 @@ public class TopAdsNetworkModule {
                                                       TopAdsAuthInterceptor topAdsAuthInterceptor,
                                                       OkHttpRetryPolicy okHttpRetryPolicy,
                                                       @TopAdsQualifier TkpdErrorResponseInterceptor errorResponseInterceptor,
-                                                      ChuckInterceptor chuckInterceptor,
-                                                      DebugInterceptor debugInterceptor,
                                                       ApiCacheInterceptor apiCacheInterceptor) {
 
         return TopAdsOkHttpFactory.create().buildDaggerClientBearerTopAdsAuth(fingerprintInterceptor,
                 topAdsAuthInterceptor,
                 okHttpRetryPolicy,
                 errorResponseInterceptor,
-                chuckInterceptor,
-                debugInterceptor,
                 apiCacheInterceptor);
     }
 
