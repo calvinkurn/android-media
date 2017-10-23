@@ -17,6 +17,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
+import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
 import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 
 import java.io.File;
@@ -70,7 +71,7 @@ public class InstopedSellerCropperActivity extends InstopedSellerActivity {
     private void finishWithSingleImage(String imageUrl){
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add(imageUrl);
-        ImageEditorActivity.start(this,arrayList, null, true);
+        ImageEditorWatermarkActivity.start(this,arrayList, true);
     }
 
     @Override

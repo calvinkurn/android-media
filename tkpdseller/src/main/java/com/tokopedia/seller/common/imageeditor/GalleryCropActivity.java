@@ -68,7 +68,7 @@ public class GalleryCropActivity extends GalleryActivity {
     public void finishWithSingleImage(String imageUrl){
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add(imageUrl);
-        ImageEditorActivity.start(this,arrayList, null, true);
+        ImageEditorWatermarkActivity.start(this,arrayList, true);
     }
 
     @Override

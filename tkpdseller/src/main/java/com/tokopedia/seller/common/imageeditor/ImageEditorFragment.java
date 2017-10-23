@@ -43,6 +43,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
 
     public interface OnImageEditorFragmentListener {
         void onSuccessCrop(String localPath);
+        void addCroppedPath(String croppedPath);
     }
 
     public static ImageEditorFragment newInstance(String localPath) {
@@ -95,10 +96,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.main_action_crop) {
             // no need to crop if the rect is same and in local tkpd already
-            if (mCropImageView.getRotatedDegrees() == 0 &&
-                    (mCropImageView.getCropRect() == null ||
-                    mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect())) &&
-                    FileUtils.isInTkpdCache(new File(localPath))) {
+            if (checkIfSameWithPrevImage()) {
                 onImageEditorFragmentListener.onSuccessCrop(localPath);
             } else {
                 File file = FileUtils.getTkpdImageCacheFile(FileUtils.generateUniqueFileName());
@@ -112,6 +110,13 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected boolean checkIfSameWithPrevImage(){
+        return mCropImageView.getRotatedDegrees() == 0 &&
+                (mCropImageView.getCropRect() == null ||
+                        mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect())) &&
+                FileUtils.isInTkpdCache(new File(localPath));
     }
 
     @Override
@@ -139,6 +144,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
             if (uri == null) {
                 Bitmap bitmap = result.getBitmap();
                 if (bitmap != null) {
+                    bitmap = processBitmap(bitmap);
                     File file = FileUtils.writeImageToTkpdPath(bitmap, FileUtils.generateUniqueFileName());
                     if (file != null && file.exists()) {
                         String path = file.getAbsolutePath();
@@ -147,6 +153,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
                 }
             } else {
                 if (!TextUtils.isEmpty(croppedPath)) {
+                    croppedPath = processCroppedPath(croppedPath);
                     onImageEditorFragmentListener.onSuccessCrop(croppedPath);
                 }
             }
@@ -154,6 +161,16 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
             Log.e("AIC", "Failed to crop image", result.getError());
             Toast.makeText(getActivity(), "Image crop failed: " + result.getError().getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    // will be override on child
+    protected Bitmap processBitmap(Bitmap bitmap) {
+        return bitmap;
+    }
+
+    // will be override on child
+    protected String processCroppedPath(String croppedPath) {
+        return croppedPath;
     }
 
     @SuppressWarnings("deprecation")
