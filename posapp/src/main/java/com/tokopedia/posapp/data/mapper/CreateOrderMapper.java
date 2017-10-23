@@ -19,13 +19,14 @@ public class CreateOrderMapper implements Func1<Response<TkpdResponse>, CreateOr
 
     @Override
     public CreateOrderDomain call(Response<TkpdResponse> response) {
-        Log.d("o2o", response.body().getStrResponse());
         CreateOrderDomain createOrderDomain = new CreateOrderDomain();
         if(response.isSuccessful()
                 && response.body() != null
                 && response.body().getStatus().equals(SUCCESS)) {
+            Log.d("o2o", response.body().getStrResponse());
             PaymentAction paymentAction = response.body().convertDataObj(PaymentAction.class);
             createOrderDomain.setOrderId(paymentAction.getOrderId());
+            createOrderDomain.setInvoiceRef(paymentAction.getInvoiceRef());
             createOrderDomain.setStatus(true);
         } else {
             createOrderDomain.setStatus(false);

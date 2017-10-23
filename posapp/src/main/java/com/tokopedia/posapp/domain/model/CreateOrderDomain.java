@@ -7,6 +7,7 @@ package com.tokopedia.posapp.domain.model;
 public class CreateOrderDomain {
     private boolean status;
     private int orderId;
+    private String invoiceRef;
 
     public boolean isStatus() {
         return status;
@@ -22,5 +23,13 @@ public class CreateOrderDomain {
 
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+
+    public String getInvoiceRef() {
+        return invoiceRef;
+    }
+
+    public void setInvoiceRef(String invoiceRef) {
+        this.invoiceRef = invoiceRef;
     }
 }

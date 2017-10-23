@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.Gson;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -47,9 +48,11 @@ import javax.inject.Inject;
 public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         implements HasComponent, OTP.View {
     public static final long FORCE_TIMEOUT = 90000L;
+    public static final String EXTRAS = "extras";
 
     private WebView scroogeWebView;
     private ProgressBar progressBar;
+    TkpdProgressDialog tkpdProgressDialog;
 
     @Inject
     OTPPresenter otpPresenter;
@@ -105,7 +108,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
     protected void initView() {
         scroogeWebView = (WebView) findViewById(com.tokopedia.payment.R.id.scrooge_webview);
         progressBar = (ProgressBar) findViewById(com.tokopedia.payment.R.id.progressbar);
-
+        tkpdProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
     @Override
@@ -129,7 +132,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     @Override
     protected void setActionVar() {
-        otpPresenter.initializeData(getIntent().getStringExtra("extras"));
+        otpPresenter.initializeData(getIntent().getStringExtra(EXTRAS));
     }
 
     @Override
@@ -161,11 +164,14 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     @Override
     public void onPaymentError(Throwable e) {
+        tkpdProgressDialog.dismiss();
+        Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         e.printStackTrace();
     }
 
     @Override
     public void onPaymentCompleted(PaymentStatusDomain paymentStatusDomain) {
+        tkpdProgressDialog.dismiss();
         startActivity(InvoiceActivity.newTopIntent(this, gson.toJson(paymentStatusDomain)));
         finish();
     }
@@ -215,7 +221,10 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
             Log.d("o2o", "initial " + url);
             progressBar.setVisibility(View.VISIBLE);
             if(url.contains("/payment/thanks")) {
+                tkpdProgressDialog.showDialog();
                 otpPresenter.processPayment();
+                scroogeWebView.setEnabled(false);
+                scroogeWebView.setVisibility(View.GONE);
             }
             super.onPageStarted(view, url, favicon);
         }

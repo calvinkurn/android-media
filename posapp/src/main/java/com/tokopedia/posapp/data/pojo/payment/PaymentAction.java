@@ -12,11 +12,23 @@ public class PaymentAction {
     @Expose
     private int orderId;
 
+    @SerializedName("invoice_ref")
+    @Expose
+    private String invoiceRef;
+
     public int getOrderId() {
         return orderId;
     }
 
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+
+    public String getInvoiceRef() {
+        return invoiceRef;
+    }
+
+    public void setInvoiceRef(String invoiceRef) {
+        this.invoiceRef = invoiceRef;
     }
 }

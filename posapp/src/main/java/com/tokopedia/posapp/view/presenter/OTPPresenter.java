@@ -1,6 +1,7 @@
 package com.tokopedia.posapp.view.presenter;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -11,6 +12,7 @@ import com.tokopedia.posapp.data.pojo.payment.CartDetail;
 import com.tokopedia.posapp.data.pojo.payment.CreateOrderParameter;
 import com.tokopedia.posapp.data.pojo.payment.OrderCartParameter;
 import com.tokopedia.posapp.domain.model.CreateOrderDomain;
+import com.tokopedia.posapp.domain.model.bank.BankDomain;
 import com.tokopedia.posapp.domain.model.cart.CartDomain;
 import com.tokopedia.posapp.domain.model.payment.PaymentStatusDomain;
 import com.tokopedia.posapp.domain.model.payment.PaymentStatusItemDomain;
@@ -64,6 +66,9 @@ public class OTPPresenter implements OTP.Presenter {
     private static final String EMPTY_URL = "Empty url";
     private static final String CREDITCARD = "CREDITCARD";
     private static final String INSTALLMENT = "INSTALLMENT";
+    public static final String PARAM_BANK_NAME = "bank_name";
+    public static final String PARAM_BANK_ID = "bank_id";
+    public static final String PARAM_BANK_LOGO = "bank_logo";
 
     private OTP.View viewListener;
     private OTPData otpData;
@@ -72,6 +77,7 @@ public class OTPPresenter implements OTP.Presenter {
     private CreateOrderUseCase createOrderUseCase;
     private GetAllCartUseCase getAllCartUseCase;
     private Context context;
+    private BankDomain bankDomain;
 
     @Inject
     public OTPPresenter(CheckPaymentStatusUseCase checkPaymentStatusUseCase,
@@ -90,6 +96,7 @@ public class OTPPresenter implements OTP.Presenter {
 
     @Override
     public void initializeData(String jsonData) {
+        Log.d("o2o", jsonData);
         if (jsonData != null) {
             try {
                 JSONObject response = new JSONObject(jsonData);
@@ -103,6 +110,8 @@ public class OTPPresenter implements OTP.Presenter {
                     viewListener.onLoadDataError(errorList);
                     return;
                 }
+
+                bankDomain = getBankData(response);
 
                 JSONObject data = response.getJSONObject(PARAM_DATA);
                 if (data != null
@@ -126,6 +135,24 @@ public class OTPPresenter implements OTP.Presenter {
                 viewListener.onLoadDataError(e);
             }
         }
+    }
+
+    public BankDomain getBankData(JSONObject response) {
+        try {
+            if(response.has(PARAM_BANK_ID) && !response.isNull(PARAM_BANK_ID)
+                    && response.has(PARAM_BANK_NAME) && !response.isNull(PARAM_BANK_NAME)
+                    && response.has(PARAM_BANK_LOGO) && !response.isNull(PARAM_BANK_LOGO)) {
+                BankDomain bankDomain = new BankDomain();
+                bankDomain.setBankId(response.getInt(PARAM_BANK_ID));
+                bankDomain.setBankName(response.getString(PARAM_BANK_NAME));
+                bankDomain.setBankLogo(response.getString(PARAM_BANK_LOGO));
+                return bankDomain;
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private OTPDetailTransaction getDetailTransaction(JSONObject form) throws JSONException {
@@ -154,6 +181,7 @@ public class OTPPresenter implements OTP.Presenter {
                     .subscribeOn(Schedulers.newThread())
                     .flatMap(checkPaymentStatus())
                     .flatMap(getCartItem())
+                    .map(getBankDetail())
                     .flatMap(createOrder())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<PaymentStatusDomain>() {
@@ -184,63 +212,6 @@ public class OTPPresenter implements OTP.Presenter {
                 return checkPaymentStatusUseCase.execute(requestParams);
             }
         };
-    }
-
-    private Func1<PaymentStatusDomain, Observable<PaymentStatusDomain>> createOrder() {
-        return new Func1<PaymentStatusDomain, Observable<PaymentStatusDomain>>() {
-            @Override
-            public Observable<PaymentStatusDomain> call(PaymentStatusDomain paymentStatusDomain) {
-                RequestParams requestParams = RequestParams.create();
-                requestParams.putObject(CREATE_ORDER_PARAMETER, getCreateOrderParam(paymentStatusDomain));
-                return Observable.zip(
-                        Observable.just(paymentStatusDomain),
-                        createOrderUseCase.execute(requestParams),
-                        new Func2<PaymentStatusDomain, CreateOrderDomain, PaymentStatusDomain>() {
-                            @Override
-                            public PaymentStatusDomain call(PaymentStatusDomain paymentStatusDomain, CreateOrderDomain createOrderDomain) {
-                                if (createOrderDomain.isStatus()) {
-                                    paymentStatusDomain.setOrderId(createOrderDomain.getOrderId());
-                                }
-                                return paymentStatusDomain;
-                            }
-                        }
-                );
-            }
-        };
-    }
-
-    private CreateOrderParameter getCreateOrderParam(PaymentStatusDomain paymentStatusDomain) {
-        CreateOrderParameter createOrderParameter = new CreateOrderParameter();
-        createOrderParameter.setUserId(Integer.parseInt(SessionHandler.getLoginID(context)));
-        createOrderParameter.setTransactionId(paymentStatusDomain.getTransactionId());
-        createOrderParameter.setState(paymentStatusDomain.getState() + "");
-        createOrderParameter.setAmount(paymentStatusDomain.getAmount());
-        if (paymentStatusDomain.getGatewayCode().equals(CREDITCARD)) {
-            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.CREDITCARD + "");
-        } else if (paymentStatusDomain.getGatewayCode().equals(INSTALLMENT)) {
-            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.INSTALLMENT + "");
-        } else {
-            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.PAYMENTGLOBAL + "");
-        }
-        createOrderParameter.setUserDefinedString(paymentStatusDomain.getUserDefinedValue());
-        createOrderParameter.setIpAddress("");
-        createOrderParameter.setMerchantCode(paymentStatusDomain.getMerchantCode());
-        createOrderParameter.setProfileCode(paymentStatusDomain.getProfileCode());
-        createOrderParameter.setCurrency(paymentStatusDomain.getCurrency());
-
-        OrderCartParameter cart = new OrderCartParameter();
-        List<CartDetail> cartDetails = new ArrayList<>();
-        for (PaymentStatusItemDomain item : paymentStatusDomain.getItems()) {
-            CartDetail cartDetail = new CartDetail();
-            cartDetail.setProductId(item.getId());
-            cartDetail.setQty(item.getQuantity());
-            cartDetails.add(cartDetail);
-        }
-        cart.setDetails(cartDetails);
-        cart.setShopId(Integer.parseInt(SessionHandler.getShopID(context)));
-        cart.setAddressId(Integer.parseInt(PosSessionHandler.getOutletId(context)));
-        createOrderParameter.setCart(cart);
-        return createOrderParameter;
     }
 
     private String getQueryParam(JSONObject form) throws JSONException, UnsupportedEncodingException {
@@ -293,5 +264,77 @@ public class OTPPresenter implements OTP.Presenter {
                 );
             }
         };
+    }
+
+    private Func1<PaymentStatusDomain, PaymentStatusDomain> getBankDetail() {
+        return new Func1<PaymentStatusDomain, PaymentStatusDomain>() {
+            @Override
+            public PaymentStatusDomain call(PaymentStatusDomain paymentStatusDomain) {
+                if(bankDomain != null) {
+                    paymentStatusDomain.setBankId(bankDomain.getBankId());
+                    paymentStatusDomain.setBankName(bankDomain.getBankName());
+                    paymentStatusDomain.setBankLogo(bankDomain.getBankLogo());
+                }
+                return paymentStatusDomain;
+            }
+        };
+    }
+
+    private Func1<PaymentStatusDomain, Observable<PaymentStatusDomain>> createOrder() {
+        return new Func1<PaymentStatusDomain, Observable<PaymentStatusDomain>>() {
+            @Override
+            public Observable<PaymentStatusDomain> call(PaymentStatusDomain paymentStatusDomain) {
+                RequestParams requestParams = RequestParams.create();
+                requestParams.putObject(CREATE_ORDER_PARAMETER, getCreateOrderParam(paymentStatusDomain));
+                return Observable.zip(
+                        Observable.just(paymentStatusDomain),
+                        createOrderUseCase.execute(requestParams),
+                        new Func2<PaymentStatusDomain, CreateOrderDomain, PaymentStatusDomain>() {
+                            @Override
+                            public PaymentStatusDomain call(PaymentStatusDomain paymentStatusDomain, CreateOrderDomain createOrderDomain) {
+                                if (createOrderDomain.isStatus()) {
+                                    paymentStatusDomain.setOrderId(createOrderDomain.getOrderId());
+                                    paymentStatusDomain.setInvoiceRef(createOrderDomain.getInvoiceRef());
+                                }
+                                return paymentStatusDomain;
+                            }
+                        }
+                );
+            }
+        };
+    }
+
+    private CreateOrderParameter getCreateOrderParam(PaymentStatusDomain paymentStatusDomain) {
+        CreateOrderParameter createOrderParameter = new CreateOrderParameter();
+        createOrderParameter.setUserId(Integer.parseInt(SessionHandler.getLoginID(context)));
+        createOrderParameter.setTransactionId(paymentStatusDomain.getTransactionId());
+        createOrderParameter.setState(paymentStatusDomain.getState() + "");
+        createOrderParameter.setAmount(paymentStatusDomain.getAmount());
+        if (paymentStatusDomain.getGatewayCode().equals(CREDITCARD)) {
+            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.CREDITCARD + "");
+        } else if (paymentStatusDomain.getGatewayCode().equals(INSTALLMENT)) {
+            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.INSTALLMENT + "");
+        } else {
+            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.PAYMENTGLOBAL + "");
+        }
+        createOrderParameter.setUserDefinedString(paymentStatusDomain.getUserDefinedValue());
+        createOrderParameter.setIpAddress("");
+        createOrderParameter.setMerchantCode(paymentStatusDomain.getMerchantCode());
+        createOrderParameter.setProfileCode(paymentStatusDomain.getProfileCode());
+        createOrderParameter.setCurrency(paymentStatusDomain.getCurrency());
+
+        OrderCartParameter cart = new OrderCartParameter();
+        List<CartDetail> cartDetails = new ArrayList<>();
+        for (PaymentStatusItemDomain item : paymentStatusDomain.getItems()) {
+            CartDetail cartDetail = new CartDetail();
+            cartDetail.setProductId(item.getId());
+            cartDetail.setQty(item.getQuantity());
+            cartDetails.add(cartDetail);
+        }
+        cart.setDetails(cartDetails);
+        cart.setShopId(Integer.parseInt(SessionHandler.getShopID(context)));
+        cart.setAddressId(Integer.parseInt(PosSessionHandler.getOutletId(context)));
+        createOrderParameter.setCart(cart);
+        return createOrderParameter;
     }
 }

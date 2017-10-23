@@ -29,6 +29,10 @@ public class PaymentStatusDomain {
     private String tokocashUsage;
     private String pairData;
     private int orderId;
+    private String invoiceRef;
+    private int bankId;
+    private String bankName;
+    private String bankLogo;
 
     public String getMerchantCode() {
         return merchantCode;
@@ -196,5 +200,37 @@ public class PaymentStatusDomain {
 
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+
+    public String getInvoiceRef() {
+        return invoiceRef;
+    }
+
+    public void setInvoiceRef(String invoiceRef) {
+        this.invoiceRef = invoiceRef;
+    }
+
+    public int getBankId() {
+        return bankId;
+    }
+
+    public void setBankId(int bankId) {
+        this.bankId = bankId;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
+    public String getBankLogo() {
+        return bankLogo;
+    }
+
+    public void setBankLogo(String bankLogo) {
+        this.bankLogo = bankLogo;
     }
 }
