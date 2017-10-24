@@ -115,4 +115,9 @@ public class TopPicksWebView extends TkpdCoreWebViewActivity implements
             super.onBackPressed();
         }
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }
