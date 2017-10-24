@@ -33,7 +33,7 @@ public class ShopSettingLocationPresenterImpl extends ShopSettingLocationPresent
     }
 
     @Override
-    public void getRecomendationLocationDistrict(String stringTyped) {
+    public void getRecommendationLocationDistrict(String stringTyped) {
         if (!stringTyped.isEmpty()) {
             RequestParams recomendationLocationDistrictParam =
                     GetRecomendationLocationDistrictUseCase.generateParams(stringTyped);
@@ -42,12 +42,6 @@ public class ShopSettingLocationPresenterImpl extends ShopSettingLocationPresent
                     new GetRecomendationLocationDistrictSubscriber()
             );
         }
-    }
-
-    @Override
-    protected void unsubscribeOnDestroy() {
-        fetchDistrictDataUseCase.unsubscribe();
-
     }
 
     private class GetDistrictDataSubscriber extends Subscriber<Boolean> {

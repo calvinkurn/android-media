@@ -109,7 +109,7 @@ public class ShopSettingLocationFragment extends BaseDaggerFragment implements
 
     @Override
     public void getRecomendationLocationDistrict(String stringTyped) {
-        presenter.getRecomendationLocationDistrict(stringTyped);
+        presenter.getRecommendationLocationDistrict(stringTyped);
     }
 
     @Override

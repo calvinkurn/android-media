@@ -11,7 +11,5 @@ public abstract class ShopSettingLocationPresenter extends BaseDaggerPresenter<S
 
     public abstract void getDistrictData();
 
-    public abstract void getRecomendationLocationDistrict(String stringTyped);
-
-    protected abstract void unsubscribeOnDestroy();
+    public abstract void getRecommendationLocationDistrict(String stringTyped);
 }
