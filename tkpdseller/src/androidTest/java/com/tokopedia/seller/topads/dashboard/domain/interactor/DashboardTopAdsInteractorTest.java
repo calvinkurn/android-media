@@ -22,13 +22,13 @@ public class DashboardTopAdsInteractorTest extends BaseAndroidJUnitTest {
 
     private final String TAG = DashboardTopAdsInteractorTest.class.getSimpleName();
 
-//    private DashboardTopadsInteractorImpl dashboardTopadsInteractor;
+    private DashboardTopadsInteractorImpl dashboardTopadsInteractor;
     private CountDownLatch mCountDownLatch;
 
-//    @Before
-//    public void initialSystem() {
-//        dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(getContext());
-//    }
+    @Before
+    public void initialSystem() {
+        dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(getContext());
+    }
 
     @Test
     public void testGetDashboardProduct() throws Exception {
