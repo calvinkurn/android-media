@@ -3,7 +3,7 @@ package com.tokopedia.otp.securityquestion.data.factory;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.otp.securityquestion.data.mapper.changephonenumberrequest.CheckStatusMapper;
+import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.CheckStatusMapper;
 import com.tokopedia.otp.securityquestion.data.source.changephonenumberrequest.CloudCheckStatusSource;
 
 /**

@@ -6,7 +6,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.otp.data.model.RequestOtpViewModel;
-import com.tokopedia.otp.securityquestion.SecurityQuestion;
+import com.tokopedia.otp.securityquestion.view.listener.SecurityQuestion;
 import com.tokopedia.session.R;
 
 import rx.Subscriber;

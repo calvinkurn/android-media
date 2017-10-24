@@ -24,7 +24,7 @@ import com.tokopedia.otp.phoneverification.domain.interactor.ValidateVerifyPhone
 import com.tokopedia.otp.phoneverification.domain.interactor.VerifyPhoneNumberUseCase;
 import com.tokopedia.otp.phoneverification.domain.mapper.ChangePhoneNumberMapper;
 import com.tokopedia.otp.phoneverification.domain.mapper.VerifyPhoneNumberMapper;
-import com.tokopedia.otp.securityquestion.data.mapper.SecurityQuestionMapper;
+import com.tokopedia.otp.securityquestion.domain.mapper.SecurityQuestionMapper;
 import com.tokopedia.otp.securityquestion.data.source.SecurityQuestionDataSource;
 import com.tokopedia.otp.securityquestion.domain.interactor.GetSecurityQuestionFormUseCase;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -40,7 +40,7 @@ import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.LocalDiscoverDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
-import com.tokopedia.session.data.source.OtpSource;
+import com.tokopedia.otp.data.source.OtpSource;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;

@@ -1,10 +1,10 @@
 package com.tokopedia.otp.securityquestion.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.otp.securityquestion.domain.model.changephonenumberrequest.SubmitImageModel;
-import com.tokopedia.otp.securityquestion.domain.model.changephonenumberrequest.UploadHostModel;
-import com.tokopedia.otp.securityquestion.domain.model.changephonenumberrequest.UploadImageModel;
-import com.tokopedia.otp.securityquestion.domain.model.changephonenumberrequest.ValidateImageModel;
+import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.SubmitImageModel;
+import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.UploadHostModel;
+import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.UploadImageModel;
+import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.ValidateImageModel;
 
 import java.util.Map;
 

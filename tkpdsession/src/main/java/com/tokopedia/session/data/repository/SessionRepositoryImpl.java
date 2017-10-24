@@ -9,13 +9,13 @@ import com.tokopedia.otp.phoneverification.data.model.ChangePhoneNumberViewModel
 import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
 import com.tokopedia.otp.phoneverification.data.source.VerifyMsisdnSource;
 import com.tokopedia.otp.securityquestion.data.source.SecurityQuestionDataSource;
-import com.tokopedia.otp.securityquestion.domain.model.securityquestion.QuestionDomain;
+import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
 import com.tokopedia.session.data.source.CloudDiscoverDataSource;
 import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.LocalDiscoverDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
-import com.tokopedia.session.data.source.OtpSource;
+import com.tokopedia.otp.data.source.OtpSource;
 import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -86,7 +86,7 @@ public class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
-    public Observable<QuestionDomain> getSecurityQuestionForm(RequestParams params) {
+    public Observable<QuestionViewModel> getSecurityQuestionForm(RequestParams params) {
         return securityQuestionDataSource.getSecurityQuestion(params);
     }
 

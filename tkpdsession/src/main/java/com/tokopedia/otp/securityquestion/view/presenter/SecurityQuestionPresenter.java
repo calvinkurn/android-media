@@ -11,7 +11,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.domain.interactor.ValidateOTPLoginUseCase;
 import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
-import com.tokopedia.otp.securityquestion.SecurityQuestion;
+import com.tokopedia.otp.securityquestion.view.listener.SecurityQuestion;
 import com.tokopedia.otp.securityquestion.domain.interactor.GetSecurityQuestionFormUseCase;
 import com.tokopedia.otp.securityquestion.view.subscriber.GetSecurityQuestionFormSubscriber;
 import com.tokopedia.otp.securityquestion.view.subscriber.RequestOTPSecurityQuestionSubscriber;

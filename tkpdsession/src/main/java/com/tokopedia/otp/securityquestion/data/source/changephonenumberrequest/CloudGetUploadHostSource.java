@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.otp.securityquestion.domain.model.changephonenumberrequest.UploadHostModel;
-import com.tokopedia.otp.securityquestion.data.mapper.changephonenumberrequest.GetUploadHostMapper;
+import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.UploadHostModel;
+import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.GetUploadHostMapper;
 
 import rx.Observable;
 

@@ -4,42 +4,28 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.session.R;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.otp.securityquestion.view.fragment.ChangePhoneNumberRequestFragment;
 import com.tokopedia.otp.securityquestion.view.fragment.ChangePhoneNumberWaitFragment;
+import com.tokopedia.session.R;
 
 /**
  * Created by nisie on 3/2/17.
  */
 
-public class ChangePhoneNumberRequestActivity extends BasePresenterActivity implements ChangePhoneNumberRequestFragment.ChangePhoneNumberRequestListener {
+public class ChangePhoneNumberRequestActivity extends TActivity implements
+        ChangePhoneNumberRequestFragment.ChangePhoneNumberRequestListener {
 
     @Override
-    protected void setupURIPass(Uri data) {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inflateView(R.layout.activity_simple_fragment);
+        initView();
     }
 
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-    @Override
-    protected void initView() {
+    private void initView() {
         ChangePhoneNumberRequestFragment fragment = ChangePhoneNumberRequestFragment.createInstance(this);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -47,21 +33,6 @@ public class ChangePhoneNumberRequestActivity extends BasePresenterActivity impl
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
         fragmentTransaction.commit();
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

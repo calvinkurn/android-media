@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.otp.securityquestion.domain.model.changephonenumberrequest.CheckStatusModel;
-import com.tokopedia.otp.securityquestion.data.mapper.changephonenumberrequest.CheckStatusMapper;
+import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.CheckStatusModel;
+import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.CheckStatusMapper;
 
 import rx.Observable;
 

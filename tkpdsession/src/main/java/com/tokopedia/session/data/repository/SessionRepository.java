@@ -6,7 +6,7 @@ import com.tokopedia.otp.data.model.RequestOtpViewModel;
 import com.tokopedia.otp.data.model.ValidateOTPDomain;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberDomain;
 import com.tokopedia.otp.phoneverification.data.model.ChangePhoneNumberViewModel;
-import com.tokopedia.otp.securityquestion.domain.model.securityquestion.QuestionDomain;
+import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
 import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
@@ -31,7 +31,7 @@ public interface SessionRepository {
 
     Observable<MakeLoginDomain> makeLogin(TKPDMapParam<String, Object> parameters);
 
-    Observable<QuestionDomain> getSecurityQuestionForm(RequestParams requestParams);
+    Observable<QuestionViewModel> getSecurityQuestionForm(RequestParams requestParams);
 
     Observable<RequestOtpViewModel> requestOtp(TKPDMapParam<String, Object> parameters);
 

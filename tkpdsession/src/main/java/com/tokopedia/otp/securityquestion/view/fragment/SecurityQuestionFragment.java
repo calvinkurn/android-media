@@ -19,7 +19,6 @@ import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -41,8 +40,8 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
-import com.tokopedia.otp.securityquestion.SecurityQuestion;
-import com.tokopedia.otp.securityquestion.domain.model.securityquestion.QuestionDomain;
+import com.tokopedia.otp.securityquestion.view.listener.SecurityQuestion;
+import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
 import com.tokopedia.otp.securityquestion.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
 import com.tokopedia.otp.securityquestion.view.presenter.SecurityQuestionPresenter;
@@ -357,7 +356,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetQuestionPhone(QuestionDomain questionDomain) {
+    public void onSuccessGetQuestionPhone(QuestionViewModel questionViewModel) {
         vSendOtp.setText(R.string.title_otp_phone);
         vInputOtp.setEnabled(true);
         String phone = sessionHandler.getTempPhoneNumber(getActivity());
@@ -385,7 +384,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetQuestionEmail(QuestionDomain questionDomain) {
+    public void onSuccessGetQuestionEmail(QuestionViewModel questionViewModel) {
         vSendOtp.setText(R.string.title_otp_email);
         vInputOtp.setEnabled(true);
         titleSecurity.setText(getResources().getString(R.string.content_security_question_email));

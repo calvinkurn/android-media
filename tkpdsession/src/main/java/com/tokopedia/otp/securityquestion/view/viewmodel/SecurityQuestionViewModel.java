@@ -3,7 +3,7 @@ package com.tokopedia.otp.securityquestion.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.otp.securityquestion.domain.model.securityquestion.QuestionDomain;
+import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 
 /**
@@ -15,7 +15,7 @@ public class SecurityQuestionViewModel implements Parcelable {
     private String name;
     private String email;
     private SecurityDomain securityDomain;
-    private QuestionDomain questionDomain;
+    private QuestionViewModel questionViewModel;
 
     public SecurityQuestionViewModel(SecurityDomain securityDomain, String name, String email) {
         this.securityDomain = securityDomain;
@@ -27,7 +27,7 @@ public class SecurityQuestionViewModel implements Parcelable {
         name = in.readString();
         email = in.readString();
         securityDomain = in.readParcelable(SecurityDomain.class.getClassLoader());
-        questionDomain = in.readParcelable(QuestionDomain.class.getClassLoader());
+        questionViewModel = in.readParcelable(QuestionViewModel.class.getClassLoader());
     }
 
     public static final Creator<SecurityQuestionViewModel> CREATOR = new Creator<SecurityQuestionViewModel>() {
@@ -50,12 +50,12 @@ public class SecurityQuestionViewModel implements Parcelable {
         this.securityDomain = securityDomain;
     }
 
-    public QuestionDomain getQuestionDomain() {
-        return questionDomain;
+    public QuestionViewModel getQuestionViewModel() {
+        return questionViewModel;
     }
 
-    public void setQuestionDomain(QuestionDomain questionDomain) {
-        this.questionDomain = questionDomain;
+    public void setQuestionViewModel(QuestionViewModel questionViewModel) {
+        this.questionViewModel = questionViewModel;
     }
 
     public String getName() {
@@ -76,6 +76,6 @@ public class SecurityQuestionViewModel implements Parcelable {
         dest.writeString(name);
         dest.writeString(email);
         dest.writeParcelable(securityDomain, flags);
-        dest.writeParcelable(questionDomain, flags);
+        dest.writeParcelable(questionViewModel, flags);
     }
 }

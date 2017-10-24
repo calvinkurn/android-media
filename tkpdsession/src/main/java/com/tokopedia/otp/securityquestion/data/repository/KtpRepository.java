@@ -1,7 +1,7 @@
 package com.tokopedia.otp.securityquestion.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.otp.securityquestion.domain.model.changephonenumberrequest.CheckStatusModel;
+import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.CheckStatusModel;
 
 import rx.Observable;
 

@@ -7,7 +7,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.securityquestion.domain.model.securityquestion.QuestionDomain;
+import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
 import com.tokopedia.session.data.repository.SessionRepository;
 
 import rx.Observable;
@@ -16,7 +16,7 @@ import rx.Observable;
  * @author by nisie on 10/19/17.
  */
 
-public class GetSecurityQuestionFormUseCase extends UseCase<QuestionDomain> {
+public class GetSecurityQuestionFormUseCase extends UseCase<QuestionViewModel> {
 
     private static final String USER_CHECK_SECURITY_ONE = "user_check_security_1";
     private static final String USER_CHECK_SECURITY_TWO = "user_check_security_2";
@@ -35,7 +35,7 @@ public class GetSecurityQuestionFormUseCase extends UseCase<QuestionDomain> {
     }
 
     @Override
-    public Observable<QuestionDomain> createObservable(RequestParams requestParams) {
+    public Observable<QuestionViewModel> createObservable(RequestParams requestParams) {
         return sessionRepository.getSecurityQuestionForm(requestParams);
     }
 

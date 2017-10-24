@@ -10,7 +10,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.securityquestion.data.repository.UploadImageRepository;
-import com.tokopedia.otp.securityquestion.domain.model.changephonenumberrequest.UploadImageModel;
+import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.UploadImageModel;
 import com.tokopedia.session.R;
 
 import java.io.File;

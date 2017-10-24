@@ -3,8 +3,8 @@ package com.tokopedia.otp.securityquestion.data.source.changephonenumberrequest;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
-import com.tokopedia.otp.securityquestion.domain.model.changephonenumberrequest.UploadImageModel;
-import com.tokopedia.otp.securityquestion.data.mapper.changephonenumberrequest.UploadImageMapper;
+import com.tokopedia.otp.securityquestion.data.model.changephonenumberrequest.UploadImageModel;
+import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.UploadImageMapper;
 
 import java.util.Map;
 

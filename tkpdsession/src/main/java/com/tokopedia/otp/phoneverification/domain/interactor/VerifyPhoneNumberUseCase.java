@@ -4,14 +4,10 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.otp.data.ValidateOtpModel;
-import com.tokopedia.otp.domain.interactor.OldValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberDomain;
-import com.tokopedia.otp.phoneverification.domain.MsisdnRepository;
 import com.tokopedia.session.data.repository.SessionRepository;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by nisie on 3/7/17.

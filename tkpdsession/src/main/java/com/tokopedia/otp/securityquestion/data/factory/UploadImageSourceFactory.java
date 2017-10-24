@@ -4,10 +4,10 @@ import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
-import com.tokopedia.otp.securityquestion.data.mapper.changephonenumberrequest.SubmitImageMapper;
-import com.tokopedia.otp.securityquestion.data.mapper.changephonenumberrequest.ValidateImageMapper;
-import com.tokopedia.otp.securityquestion.data.mapper.changephonenumberrequest.GetUploadHostMapper;
-import com.tokopedia.otp.securityquestion.data.mapper.changephonenumberrequest.UploadImageMapper;
+import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.SubmitImageMapper;
+import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.ValidateImageMapper;
+import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.GetUploadHostMapper;
+import com.tokopedia.otp.securityquestion.domain.mapper.changephonenumberrequest.UploadImageMapper;
 import com.tokopedia.otp.securityquestion.data.source.changephonenumberrequest.CloudSubmitImageDataSource;
 import com.tokopedia.otp.securityquestion.data.source.changephonenumberrequest.CloudValidateImageSource;
 import com.tokopedia.otp.securityquestion.data.source.changephonenumberrequest.CloudGetUploadHostSource;

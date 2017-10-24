@@ -2,8 +2,8 @@ package com.tokopedia.otp.securityquestion.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.user.InterruptService;
-import com.tokopedia.otp.securityquestion.data.mapper.SecurityQuestionMapper;
-import com.tokopedia.otp.securityquestion.domain.model.securityquestion.QuestionDomain;
+import com.tokopedia.otp.securityquestion.domain.mapper.SecurityQuestionMapper;
+import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
 
 import rx.Observable;
 
@@ -21,7 +21,7 @@ public class SecurityQuestionDataSource {
         this.securityQuestionMapper = securityQuestionMapper;
     }
 
-    public Observable<QuestionDomain> getSecurityQuestion(RequestParams params) {
+    public Observable<QuestionViewModel> getSecurityQuestion(RequestParams params) {
         return interruptService.getApi()
                 .getQuestionForm(params.getParameters())
                 .map(securityQuestionMapper);
