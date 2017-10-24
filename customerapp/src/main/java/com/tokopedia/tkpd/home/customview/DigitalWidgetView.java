@@ -39,6 +39,7 @@ public class DigitalWidgetView extends BaseCustomView {
     private ActionListener listener;
     private RechargeViewPagerAdapter rechargeViewPagerAdapter;
     private View pulsaPlaceHolder;
+
     public DigitalWidgetView(@NonNull Context context) {
         super(context);
         init();
