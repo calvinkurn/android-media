@@ -82,9 +82,9 @@ public class ProductAdditionalInfoView extends RelativeLayout {
         if (TextUtils.isEmpty(product.getDetailUrl()) ||  TextUtils.isEmpty(product.getDetailUrlText())) {
             detail = product.getDetail();
         } else {
-            Spanned detilUrl = Html.fromHtml("<a href=\"" + product.getDetailUrl() + "\"> " +
+            Spanned detailUrl = Html.fromHtml("<a href=\"" + product.getDetailUrl() + "\"> " +
                     product.getDetailUrlText() + "</a>");
-            detail = product.getDetail() + detilUrl;
+            detail = product.getDetail() + " " + detailUrl;
         }
         tvInfo.setText(detail);
         tvInfo.setOnClickListener(new OnClickListener() {
