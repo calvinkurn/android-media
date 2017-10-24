@@ -47,7 +47,7 @@
             android:layout_width="@dimen/image_width_xxs"
             android:layout_height="@dimen/image_width_xxs"
             android:background="@null"
-            android:src="@drawable/ic_close"
+            android:src="@drawable/ic_close_grey_main"
             android:visibility="gone" />
     </LinearLayout>
 
