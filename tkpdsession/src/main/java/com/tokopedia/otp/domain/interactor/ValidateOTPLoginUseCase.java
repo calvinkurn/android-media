@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.otp.domain.model.ValidateOTPDomain;
-import com.tokopedia.otp.domain.model.ValidateOTPLoginDomain;
+import com.tokopedia.otp.data.model.ValidateOTPDomain;
+import com.tokopedia.otp.data.model.ValidateOTPLoginDomain;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 
@@ -39,7 +39,7 @@ public class ValidateOTPLoginUseCase extends UseCase<ValidateOTPLoginDomain> {
 
     private Observable<ValidateOTPLoginDomain> validateOTP(RequestParams requestParams,
                                                            final ValidateOTPLoginDomain domain) {
-        return validateOTPUseCase.createObservable(ValidateOtpUseCase.getParamBeforeLogin(
+        return validateOTPUseCase.createObservable(ValidateOtpUseCase.getParam(
                 requestParams.getInt(ValidateOtpUseCase.PARAM_OTP_TYPE, -1),
                 requestParams.getString(ValidateOtpUseCase.PARAM_CODE, ""),
                 requestParams.getString(ValidateOtpUseCase.PARAM_USER, "")
@@ -74,7 +74,7 @@ public class ValidateOTPLoginUseCase extends UseCase<ValidateOTPLoginDomain> {
 
     public static RequestParams getParam(int otpType, String otp, String tempUserId) {
         RequestParams params = RequestParams.create();
-        params.putAll(ValidateOtpUseCase.getParamBeforeLogin(otpType, otp, tempUserId).getParameters());
+        params.putAll(ValidateOtpUseCase.getParam(otpType, otp, tempUserId).getParameters());
         params.putString(MakeLoginUseCase.PARAM_USER_ID, tempUserId);
         return params;
     }

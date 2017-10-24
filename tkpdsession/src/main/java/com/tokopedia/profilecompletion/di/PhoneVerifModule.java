@@ -9,15 +9,15 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.factory.OtpSourceFactory;
-import com.tokopedia.otp.data.mapper.OldRequestOtpMapper;
-import com.tokopedia.otp.data.mapper.OldValidateOtpMapper;
+import com.tokopedia.otp.domain.mapper.OldRequestOtpMapper;
+import com.tokopedia.otp.domain.mapper.OldValidateOtpMapper;
 import com.tokopedia.otp.data.repository.OtpRepositoryImpl;
 import com.tokopedia.otp.domain.OtpRepository;
 import com.tokopedia.otp.domain.interactor.OldRequestOtpUseCase;
 import com.tokopedia.otp.domain.interactor.OldValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.factory.MsisdnSourceFactory;
-import com.tokopedia.otp.phoneverification.data.mapper.ChangePhoneNumberMapper;
-import com.tokopedia.otp.phoneverification.data.mapper.VerifyPhoneNumberMapper;
+import com.tokopedia.otp.phoneverification.domain.mapper.ChangePhoneNumberMapper;
+import com.tokopedia.otp.phoneverification.domain.mapper.VerifyPhoneNumberMapper;
 import com.tokopedia.otp.phoneverification.data.repository.MsisdnRepositoryImpl;
 import com.tokopedia.otp.phoneverification.domain.MsisdnRepository;
 import com.tokopedia.otp.phoneverification.domain.interactor.VerifyPhoneNumberUseCase;
@@ -100,15 +100,6 @@ public class PhoneVerifModule {
                                                     OtpRepository otpRepository){
 
         return new OldValidateOtpUseCase(threadExecutor, postExecutor, otpRepository);
-    }
-    @PhoneVerifScope
-    @Provides
-    VerifyPhoneNumberUseCase provideVerifyPhoneNumberUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutor,
-                                                             MsisdnRepository msisdnRepository,
-                                                             OldValidateOtpUseCase oldValidateOtpUseCase){
-
-        return new VerifyPhoneNumberUseCase(threadExecutor, postExecutor, msisdnRepository, oldValidateOtpUseCase);
     }
 
     @PhoneVerifScope

@@ -12,11 +12,18 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.user.InterruptService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.data.mapper.RequestOTPMapper;
-import com.tokopedia.otp.data.mapper.ValidateOTPMapper;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.domain.interactor.ValidateOTPLoginUseCase;
 import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
+import com.tokopedia.otp.domain.mapper.RequestOTPMapper;
+import com.tokopedia.otp.domain.mapper.ValidateOTPMapper;
+import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
+import com.tokopedia.otp.phoneverification.data.source.VerifyMsisdnSource;
+import com.tokopedia.otp.phoneverification.domain.interactor.ChangePhoneNumberUseCase;
+import com.tokopedia.otp.phoneverification.domain.interactor.ValidateVerifyPhoneNumberUseCase;
+import com.tokopedia.otp.phoneverification.domain.interactor.VerifyPhoneNumberUseCase;
+import com.tokopedia.otp.phoneverification.domain.mapper.ChangePhoneNumberMapper;
+import com.tokopedia.otp.phoneverification.domain.mapper.VerifyPhoneNumberMapper;
 import com.tokopedia.otp.securityquestion.data.mapper.SecurityQuestionMapper;
 import com.tokopedia.otp.securityquestion.data.source.SecurityQuestionDataSource;
 import com.tokopedia.otp.securityquestion.domain.interactor.GetSecurityQuestionFormUseCase;
@@ -139,11 +146,14 @@ public class SessionModule {
                                                MakeLoginDataSource makeLoginDataSource,
                                                SecurityQuestionDataSource
                                                        securityQuestionDataSource,
-                                               OtpSource otpSource) {
+                                               OtpSource otpSource,
+                                               ChangeMsisdnSource changeMsisdnSource,
+                                               VerifyMsisdnSource verifyMsisdnSource) {
         return new SessionRepositoryImpl(cloudDiscoverDataSource,
                 localDiscoverDataSource, getTokenDataSource,
                 createPasswordDataSource, makeLoginDataSource,
-                securityQuestionDataSource, otpSource);
+                securityQuestionDataSource, otpSource, changeMsisdnSource,
+                verifyMsisdnSource);
     }
 
     @SessionScope
@@ -407,4 +417,63 @@ public class SessionModule {
         return new ValidateOTPLoginUseCase(
                 threadExecutor, postExecutionThread, validateOtpUseCase, makeLoginUseCase);
     }
+
+    @SessionScope
+    @Provides
+    ChangeMsisdnSource provideCloudChangeMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
+                                                      ChangePhoneNumberMapper changePhoneNumberMapper,
+                                                      SessionHandler sessionHandler) {
+        return new ChangeMsisdnSource(accountsService, changePhoneNumberMapper, sessionHandler);
+    }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberMapper provideChangePhoneNumberMapper() {
+        return new ChangePhoneNumberMapper();
+    }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberUseCase provideChangePhoneNumberUseCase(ThreadExecutor threadExecutor,
+                                                             PostExecutionThread postExecutionThread,
+                                                             SessionRepository sessionRepository) {
+        return new ChangePhoneNumberUseCase(
+                threadExecutor, postExecutionThread, sessionRepository);
+    }
+
+    @SessionScope
+    @Provides
+    VerifyMsisdnSource provideVerifyMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
+                                                 VerifyPhoneNumberMapper verifyPhoneNumberMapper,
+                                                 SessionHandler sessionHandler) {
+        return new VerifyMsisdnSource(accountsService, verifyPhoneNumberMapper, sessionHandler);
+    }
+
+    @SessionScope
+    @Provides
+    VerifyPhoneNumberMapper provideVerifyPhoneNumberMapper() {
+        return new VerifyPhoneNumberMapper();
+    }
+
+    @SessionScope
+    @Provides
+    VerifyPhoneNumberUseCase provideVerifyPhoneNumberUseCase(ThreadExecutor threadExecutor,
+                                                             PostExecutionThread postExecutionThread,
+                                                             SessionRepository sessionRepository) {
+        return new VerifyPhoneNumberUseCase(
+                threadExecutor, postExecutionThread, sessionRepository);
+    }
+
+
+    @SessionScope
+    @Provides
+    ValidateVerifyPhoneNumberUseCase provideValidateVerifyPhoneNumberUseCase(ThreadExecutor threadExecutor,
+                                                                             PostExecutionThread postExecutionThread,
+                                                                             ValidateOtpUseCase
+                                                                                     validateOtpUseCase,
+                                                                             VerifyPhoneNumberUseCase verifyPhoneNumberUseCase) {
+        return new ValidateVerifyPhoneNumberUseCase(
+                threadExecutor, postExecutionThread, validateOtpUseCase, verifyPhoneNumberUseCase);
+    }
+
 }

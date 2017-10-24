@@ -1,15 +1,14 @@
 package com.tokopedia.otp.phoneverification.domain.interactor;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.ValidateOtpModel;
 import com.tokopedia.otp.domain.interactor.OldValidateOtpUseCase;
-import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberModel;
+import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberDomain;
 import com.tokopedia.otp.phoneverification.domain.MsisdnRepository;
+import com.tokopedia.session.data.repository.SessionRepository;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -18,67 +17,30 @@ import rx.functions.Func1;
  * Created by nisie on 3/7/17.
  */
 
-public class VerifyPhoneNumberUseCase extends UseCase<VerifyPhoneNumberModel> {
+public class VerifyPhoneNumberUseCase extends UseCase<VerifyPhoneNumberDomain> {
 
     public static final String PARAM_USER_ID = "user_id";
     public static final String PARAM_PHONE = "phone";
 
-    private final MsisdnRepository msisdnRepository;
-    private final OldValidateOtpUseCase oldValidateOtpUseCase;
+    private final SessionRepository sessionRepository;
 
     public VerifyPhoneNumberUseCase(ThreadExecutor threadExecutor,
                                     PostExecutionThread postExecutionThread,
-                                    MsisdnRepository msisdnRepository,
-                                    OldValidateOtpUseCase oldValidateOtpUseCase) {
+                                    SessionRepository sessionRepository) {
         super(threadExecutor, postExecutionThread);
-        this.msisdnRepository = msisdnRepository;
-        this.oldValidateOtpUseCase = oldValidateOtpUseCase;
+        this.sessionRepository = sessionRepository;
     }
 
     @Override
-    public Observable<VerifyPhoneNumberModel> createObservable(final RequestParams requestParams) {
-        return doValidateOtp(getValidateOtpParam(requestParams))
-                .flatMap(new Func1<ValidateOtpModel, Observable<VerifyPhoneNumberModel>>() {
-                    @Override
-                    public Observable<VerifyPhoneNumberModel> call(ValidateOtpModel validateOtpModel) {
-                        return doVerifyPhoneNumber(getVerifyPhoneNumberParam(requestParams));
-                    }
-                });
+    public Observable<VerifyPhoneNumberDomain> createObservable(final RequestParams requestParams) {
+        return sessionRepository.verifyMsisdn(requestParams.getParameters());
     }
 
-    private RequestParams getVerifyPhoneNumberParam(RequestParams requestParams) {
+    public static RequestParams getParam(String userId, String phone) {
         RequestParams param = RequestParams.create();
-        param.putString(VerifyPhoneNumberUseCase.PARAM_USER_ID,
-                requestParams.getString(VerifyPhoneNumberUseCase.PARAM_USER_ID,
-                SessionHandler.getLoginID(MainApplication.getAppContext())));
-        param.putString(VerifyPhoneNumberUseCase.PARAM_PHONE,
-                requestParams.getString(VerifyPhoneNumberUseCase.PARAM_PHONE,
-                ""));
+        param.putString(VerifyPhoneNumberUseCase.PARAM_USER_ID, userId);
+        param.putString(VerifyPhoneNumberUseCase.PARAM_PHONE, phone);
         return param;
     }
-
-    private RequestParams getValidateOtpParam(RequestParams requestParams) {
-        RequestParams param = RequestParams.create();
-        param.putString(OldValidateOtpUseCase.PARAM_CODE,
-                requestParams.getString(OldValidateOtpUseCase.PARAM_CODE, ""));
-        param.putString(OldValidateOtpUseCase.PARAM_USER,
-                requestParams.getString(OldValidateOtpUseCase.PARAM_USER, ""));
-        return param;
-    }
-
-    private Observable<VerifyPhoneNumberModel> doVerifyPhoneNumber(RequestParams requestParams) {
-        return msisdnRepository.verifyMsisdn(requestParams.getParameters());
-    }
-
-    private Observable<ValidateOtpModel> doValidateOtp(RequestParams requestParams) {
-        return oldValidateOtpUseCase.createObservable(requestParams)
-                .flatMap(new Func1<ValidateOtpModel, Observable<ValidateOtpModel>>() {
-                    @Override
-                    public Observable<ValidateOtpModel> call(ValidateOtpModel validateOtpModel) {
-                        return Observable.just(validateOtpModel);
-                    }
-                });
-    }
-
 
 }

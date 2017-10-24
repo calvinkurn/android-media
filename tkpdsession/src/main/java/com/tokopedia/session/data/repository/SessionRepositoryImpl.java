@@ -2,8 +2,12 @@ package com.tokopedia.session.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.otp.data.viewmodel.RequestOtpViewModel;
-import com.tokopedia.otp.domain.model.ValidateOTPDomain;
+import com.tokopedia.otp.data.model.RequestOtpViewModel;
+import com.tokopedia.otp.data.model.ValidateOTPDomain;
+import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberDomain;
+import com.tokopedia.otp.phoneverification.data.model.ChangePhoneNumberViewModel;
+import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
+import com.tokopedia.otp.phoneverification.data.source.VerifyMsisdnSource;
 import com.tokopedia.otp.securityquestion.data.source.SecurityQuestionDataSource;
 import com.tokopedia.otp.securityquestion.domain.model.securityquestion.QuestionDomain;
 import com.tokopedia.session.data.source.CloudDiscoverDataSource;
@@ -33,6 +37,8 @@ public class SessionRepositoryImpl implements SessionRepository {
     private final MakeLoginDataSource makeLoginDataSource;
     private final SecurityQuestionDataSource securityQuestionDataSource;
     private final OtpSource otpSource;
+    private final ChangeMsisdnSource changeMsisdnSource;
+    private final VerifyMsisdnSource verifyMsisdnSource;
 
     public SessionRepositoryImpl(CloudDiscoverDataSource cloudDiscoverDataSource,
                                  LocalDiscoverDataSource localDiscoverDataSource,
@@ -40,7 +46,9 @@ public class SessionRepositoryImpl implements SessionRepository {
                                  CreatePasswordDataSource createPasswordDataSource,
                                  MakeLoginDataSource makeLoginDataSource,
                                  SecurityQuestionDataSource securityQuestionDataSource,
-                                 OtpSource otpSource) {
+                                 OtpSource otpSource,
+                                 ChangeMsisdnSource changeMsisdnSource,
+                                 VerifyMsisdnSource verifyMsisdnSource) {
         this.cloudDiscoverDataSource = cloudDiscoverDataSource;
         this.localDiscoverDataSource = localDiscoverDataSource;
         this.getTokenDataSource = getTokenDataSource;
@@ -48,6 +56,8 @@ public class SessionRepositoryImpl implements SessionRepository {
         this.makeLoginDataSource = makeLoginDataSource;
         this.securityQuestionDataSource = securityQuestionDataSource;
         this.otpSource = otpSource;
+        this.changeMsisdnSource = changeMsisdnSource;
+        this.verifyMsisdnSource = verifyMsisdnSource;
     }
 
     @Override
@@ -88,5 +98,15 @@ public class SessionRepositoryImpl implements SessionRepository {
     @Override
     public Observable<ValidateOTPDomain> validateOtp(TKPDMapParam<String, Object> parameters) {
         return otpSource.validateOtp(parameters);
+    }
+
+    @Override
+    public Observable<ChangePhoneNumberViewModel> changePhoneNumber(TKPDMapParam<String, Object> parameters) {
+        return changeMsisdnSource.changePhoneNumber(parameters);
+    }
+
+    @Override
+    public Observable<VerifyPhoneNumberDomain> verifyMsisdn(TKPDMapParam<String, Object> parameters) {
+        return verifyMsisdnSource.verifyPhoneNumber(parameters);
     }
 }

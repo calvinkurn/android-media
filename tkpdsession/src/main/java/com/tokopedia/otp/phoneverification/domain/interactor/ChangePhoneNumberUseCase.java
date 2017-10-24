@@ -4,29 +4,44 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.otp.phoneverification.data.ChangePhoneNumberModel;
-import com.tokopedia.otp.phoneverification.domain.MsisdnRepository;
+import com.tokopedia.otp.phoneverification.data.model.ChangePhoneNumberViewModel;
+import com.tokopedia.session.data.repository.SessionRepository;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by nisie on 5/10/17.
  */
 
-public class ChangePhoneNumberUseCase extends UseCase<ChangePhoneNumberModel> {
+public class ChangePhoneNumberUseCase extends UseCase<ChangePhoneNumberViewModel> {
 
-    public static final String PARAM_MSISDN = "msisdn";
-    private final MsisdnRepository msisdnRepository;
+    private static final String PARAM_MSISDN = "msisdn";
+    private final SessionRepository sessionRepository;
 
     public ChangePhoneNumberUseCase(ThreadExecutor threadExecutor,
                                     PostExecutionThread postExecutionThread,
-                                    MsisdnRepository msisdnRepository) {
+                                    SessionRepository sessionRepository) {
         super(threadExecutor, postExecutionThread);
-        this.msisdnRepository = msisdnRepository;
+        this.sessionRepository = sessionRepository;
     }
 
     @Override
-    public Observable<ChangePhoneNumberModel> createObservable(RequestParams requestParams) {
-        return msisdnRepository.changeMsisdn(requestParams.getParameters());
+    public Observable<ChangePhoneNumberViewModel> createObservable(final RequestParams requestParams) {
+        return sessionRepository.changePhoneNumber(requestParams.getParameters())
+                .flatMap(new Func1<ChangePhoneNumberViewModel, Observable<ChangePhoneNumberViewModel>>() {
+                    @Override
+                    public Observable<ChangePhoneNumberViewModel> call(ChangePhoneNumberViewModel changePhoneNumberViewModel) {
+                        changePhoneNumberViewModel.setPhoneNumber(
+                                requestParams.getString(PARAM_MSISDN, ""));
+                        return Observable.just(changePhoneNumberViewModel);
+                    }
+                });
+    }
+
+    public static RequestParams getParam(String phoneNumber) {
+        RequestParams params = RequestParams.create();
+        params.putString(PARAM_MSISDN, phoneNumber);
+        return params;
     }
 }

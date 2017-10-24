@@ -2,7 +2,7 @@ package com.tokopedia.otp.securityquestion.view.subscriber;
 
 import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.otp.domain.model.ValidateOTPLoginDomain;
+import com.tokopedia.otp.data.model.ValidateOTPLoginDomain;
 import com.tokopedia.otp.securityquestion.SecurityQuestion;
 
 import rx.Subscriber;

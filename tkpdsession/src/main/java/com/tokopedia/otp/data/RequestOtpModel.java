@@ -4,8 +4,9 @@ import com.tokopedia.core.network.entity.otp.RequestOtpData;
 
 /**
  * Created by nisie on 3/7/17.
+ * @deprecated  use RequestOtpViewModel instead
  */
-
+@Deprecated
 public class RequestOtpModel {
     private boolean success;
     private RequestOtpData requestOtpData;

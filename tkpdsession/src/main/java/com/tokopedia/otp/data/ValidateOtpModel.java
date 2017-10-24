@@ -4,7 +4,9 @@ import com.tokopedia.core.network.entity.phoneverification.ValidateOtpData;
 
 /**
  * Created by nisie on 3/7/17.
+ * @deprecated use ValidateOTPDomain instead
  */
+@Deprecated
 public class ValidateOtpModel {
     private boolean success;
     private ValidateOtpData validateOtpData;

@@ -2,8 +2,10 @@ package com.tokopedia.session.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.otp.data.viewmodel.RequestOtpViewModel;
-import com.tokopedia.otp.domain.model.ValidateOTPDomain;
+import com.tokopedia.otp.data.model.RequestOtpViewModel;
+import com.tokopedia.otp.data.model.ValidateOTPDomain;
+import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberDomain;
+import com.tokopedia.otp.phoneverification.data.model.ChangePhoneNumberViewModel;
 import com.tokopedia.otp.securityquestion.domain.model.securityquestion.QuestionDomain;
 import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -34,4 +36,8 @@ public interface SessionRepository {
     Observable<RequestOtpViewModel> requestOtp(TKPDMapParam<String, Object> parameters);
 
     Observable<ValidateOTPDomain> validateOtp(TKPDMapParam<String, Object> parameters);
+
+    Observable<ChangePhoneNumberViewModel> changePhoneNumber(TKPDMapParam<String, Object> parameters);
+
+    Observable<VerifyPhoneNumberDomain> verifyMsisdn(TKPDMapParam<String, Object> parameters);
 }

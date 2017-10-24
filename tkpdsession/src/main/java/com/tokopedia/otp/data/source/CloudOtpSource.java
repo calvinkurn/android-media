@@ -7,8 +7,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.RequestOtpModel;
 import com.tokopedia.otp.data.ValidateOtpModel;
-import com.tokopedia.otp.data.mapper.OldRequestOtpMapper;
-import com.tokopedia.otp.data.mapper.OldValidateOtpMapper;
+import com.tokopedia.otp.domain.mapper.OldRequestOtpMapper;
+import com.tokopedia.otp.domain.mapper.OldValidateOtpMapper;
 
 import rx.Observable;
 

@@ -6,8 +6,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.data.viewmodel.RequestOtpViewModel;
+import com.tokopedia.otp.data.model.RequestOtpViewModel;
 import com.tokopedia.session.data.repository.SessionRepository;
 
 import rx.Observable;
@@ -27,7 +26,8 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
     public static final String MODE_SMS = "sms";
     public static final String MODE_CALL = "call";
 
-    public static final int OTP_TYPE_PHONE_NUMBER_VERIFICATION = 13;
+    public static final int OTP_TYPE_SECURITY_QUESTION = 13;
+    public static final int OTP_TYPE_PHONE_NUMBER_VERIFICATION = 11;
 
     private final SessionRepository sessionRepository;
 
@@ -43,11 +43,13 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
         return sessionRepository.requestOtp(requestParams.getParameters());
     }
 
-    public static RequestParams getParamSMS(String mode, String phone, int otpType) {
+    public static RequestParams getParamAfterLogin(String mode, String phone, int otpType) {
         RequestParams param = RequestParams.create();
         param.putString(PARAM_MODE, mode);
         param.putInt(PARAM_OTP_TYPE, otpType);
         param.putString(PARAM_MSISDN, phone);
+        param.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(), param
+                .getParameters()));
         return param;
     }
 
@@ -62,7 +64,7 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
     }
 
     public static RequestParams getParamEmailBeforeLogin(String mode, String email, int otpType,
-                                                       String tempUserId) {
+                                                         String tempUserId) {
         RequestParams param = RequestParams.create();
         param.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(),
                 RequestParams.EMPTY.getParameters()));

@@ -14,5 +14,4 @@ import dagger.Component;
 @PhoneVerifScope
 @Component(modules = PhoneVerifModule.class, dependencies = AppComponent.class)
 public interface PhoneVerifComponent {
-    void inject(ProfileCompletionPhoneVerificationFragment fragment);
 }

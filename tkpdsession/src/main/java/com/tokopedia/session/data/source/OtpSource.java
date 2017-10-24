@@ -1,16 +1,13 @@
 package com.tokopedia.session.data.source;
 
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.entity.phoneverification.ValidateOtpData;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.data.mapper.RequestOTPMapper;
-import com.tokopedia.otp.data.mapper.ValidateOTPMapper;
-import com.tokopedia.otp.data.viewmodel.RequestOtpViewModel;
+import com.tokopedia.otp.domain.mapper.RequestOTPMapper;
+import com.tokopedia.otp.domain.mapper.ValidateOTPMapper;
+import com.tokopedia.otp.data.model.RequestOtpViewModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.domain.model.ValidateOTPDomain;
+import com.tokopedia.otp.data.model.ValidateOTPDomain;
 
 import rx.Observable;
 import rx.functions.Action1;

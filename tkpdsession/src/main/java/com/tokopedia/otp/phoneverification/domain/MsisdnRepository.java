@@ -1,8 +1,7 @@
 package com.tokopedia.otp.phoneverification.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.otp.phoneverification.data.ChangePhoneNumberModel;
-import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberModel;
+import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberDomain;
 
 import rx.Observable;
 
@@ -12,9 +11,6 @@ import rx.Observable;
 
 public interface MsisdnRepository {
 
-    Observable<VerifyPhoneNumberModel> verifyMsisdn(TKPDMapParam<String, Object> parameters);
-
-    Observable<ChangePhoneNumberModel> changeMsisdn(TKPDMapParam<String, Object> parameters);
-
+    Observable<VerifyPhoneNumberDomain> verifyMsisdn(TKPDMapParam<String, Object> parameters);
 
 }

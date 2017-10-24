@@ -248,6 +248,7 @@ public final class AppScreen {
     public static final String SCREEN_INITIAL_REGISTER = "Register - Initial Page";
     public static final String SCREEN_CREATE_PASSWORD = "Register - Create Password";
     public static final String SCREEN_SECURITY_QUESTION = "Security Question Page";
+    public static final String SCREEN_CHANGE_PHONE_NUMBER = "Change Phone Number Page";
 
     private AppScreen() {
 

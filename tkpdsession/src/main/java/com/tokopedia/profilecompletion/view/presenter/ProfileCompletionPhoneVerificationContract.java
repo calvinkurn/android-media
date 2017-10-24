@@ -35,12 +35,10 @@ public interface ProfileCompletionPhoneVerificationContract {
     }
 
     interface Presenter{
-        void verifyPhoneNumber();
+        void verifyPhoneNumber(String otpCode, String phoneNumber);
 
         void requestOtp();
 
         void requestOtpWithCall();
-
-        void onDestroyView();
     }
 }

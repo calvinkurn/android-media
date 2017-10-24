@@ -5,8 +5,8 @@ import android.os.Bundle;
 
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.data.mapper.OldRequestOtpMapper;
-import com.tokopedia.otp.data.mapper.OldValidateOtpMapper;
+import com.tokopedia.otp.domain.mapper.OldRequestOtpMapper;
+import com.tokopedia.otp.domain.mapper.OldValidateOtpMapper;
 import com.tokopedia.otp.data.source.CloudOtpSource;
 
 /**

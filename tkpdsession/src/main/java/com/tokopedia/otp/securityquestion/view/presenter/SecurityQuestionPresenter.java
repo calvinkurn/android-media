@@ -14,7 +14,7 @@ import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.otp.securityquestion.SecurityQuestion;
 import com.tokopedia.otp.securityquestion.domain.interactor.GetSecurityQuestionFormUseCase;
 import com.tokopedia.otp.securityquestion.view.subscriber.GetSecurityQuestionFormSubscriber;
-import com.tokopedia.otp.securityquestion.view.subscriber.RequestOTPSubscriber;
+import com.tokopedia.otp.securityquestion.view.subscriber.RequestOTPSecurityQuestionSubscriber;
 import com.tokopedia.otp.securityquestion.view.subscriber.ValidateOtpLoginSubscriber;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 
@@ -71,7 +71,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
         if (isValid(otp)) {
             viewListener.showLoadingProgress();
             validateOtpLoginUseCase.execute(ValidateOTPLoginUseCase.getParam(
-                    ValidateOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
+                    ValidateOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
                     otp,
                     sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
                     new ValidateOtpLoginSubscriber(viewListener));
@@ -117,9 +117,9 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
         requestOtpUseCase.execute(
                 RequestOtpUseCase.getParamBeforeLogin(
                         RequestOtpUseCase.MODE_SMS,
-                        RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
+                        RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
                         sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
-                new RequestOTPSubscriber(viewListener));
+                new RequestOTPSecurityQuestionSubscriber(viewListener));
     }
 
     @Override
@@ -129,9 +129,9 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
         requestOtpUseCase.execute(
                 RequestOtpUseCase.getParamBeforeLogin(
                         RequestOtpUseCase.MODE_CALL,
-                        RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
+                        RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
                         sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
-                new RequestOTPSubscriber(viewListener));
+                new RequestOTPSecurityQuestionSubscriber(viewListener));
     }
 
     @Override
@@ -142,9 +142,9 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
                 RequestOtpUseCase.getParamEmailBeforeLogin(
                         RequestOtpUseCase.MODE_SMS,
                         email,
-                        RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
+                        RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
                         sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
-                new RequestOTPSubscriber(viewListener));
+                new RequestOTPSecurityQuestionSubscriber(viewListener));
     }
 
     private void validateOTPWithTrueCaller(String phoneNumber) {

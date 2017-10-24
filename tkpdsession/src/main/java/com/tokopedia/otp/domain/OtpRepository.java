@@ -1,6 +1,5 @@
 package com.tokopedia.otp.domain;
 
-import com.tokopedia.core.network.entity.otp.RequestOtpData;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.otp.data.RequestOtpModel;
 import com.tokopedia.otp.data.ValidateOtpModel;
