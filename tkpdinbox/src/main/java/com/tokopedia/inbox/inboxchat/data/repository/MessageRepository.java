@@ -3,6 +3,7 @@ package com.tokopedia.inbox.inboxchat.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.domain.model.message.MessageData;
+import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 
 import rx.Observable;
 
@@ -12,5 +13,5 @@ import rx.Observable;
 
 public interface MessageRepository {
 
-    Observable<MessageData> getMessage(TKPDMapParam<String, Object> requestParams);
+    Observable<InboxChatViewModel> getMessage(TKPDMapParam<String, Object> requestParams);
 }

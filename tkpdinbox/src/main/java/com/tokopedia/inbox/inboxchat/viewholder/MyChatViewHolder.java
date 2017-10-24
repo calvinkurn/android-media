@@ -1,12 +1,15 @@
 package com.tokopedia.inbox.inboxchat.viewholder;
 
+import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
@@ -25,7 +28,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
     TextView message;
     TextView hour;
     TextView date;
-
+    ImageView chatStatus;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.message_item_mine;
@@ -36,6 +39,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         message = (TextView) itemView.findViewById(R.id.message);
         hour = (TextView) itemView.findViewById(R.id.hour);
         date = (TextView) itemView.findViewById(R.id.date);
+        chatStatus = (ImageView) itemView.findViewById(R.id.chat_status);
     }
 
     @Override
@@ -69,6 +73,19 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         }
 
         hour.setText(hourTime);
+
+        int imageResource;
+
+        if(element.isMessageIsRead()){
+            imageResource = R.drawable.ic_chat_read;
+        }else {
+            imageResource = R.drawable.ic_chat_unread;
+        }
+        if(element.isDummy()){
+            imageResource = R.drawable.ic_chat_pending;
+        }
+
+        chatStatus.setImageResource(imageResource);
 
         element.getSenderId();
 

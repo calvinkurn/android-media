@@ -55,6 +55,7 @@ public class ChatWebSocketListenerImpl extends WebSocketListener{
 
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-        Log.i("Error : " , t.getMessage());
+        Log.i("Error : " , "");
+        listener.newWebSocket();
     }
 }

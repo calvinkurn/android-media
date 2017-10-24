@@ -25,6 +25,7 @@ public interface InboxMessageConstant {
     String PARAM_SENT_MESSAGE = "sent_message";
     String PARAM_SENDER_NAME = "name";
     String PARAM_SENDER_TAG = "tag";
+    String PARAM_SENDER_ID = "sender_id";
 
 
     String MOVE_ALL = "move_to_inbox_all";
@@ -96,4 +97,5 @@ public interface InboxMessageConstant {
 
     int STATE_CHAT_UNREAD = 1;
     int STATE_CHAT_READ = 2;
+    int STATE_CHAT_BOTH = 3;
 }

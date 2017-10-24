@@ -4,6 +4,7 @@ import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
 import com.tokopedia.inbox.inboxchat.domain.model.message.MessageData;
+import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 
 import rx.Observable;
 
@@ -21,7 +22,7 @@ public class CloudMessageDataSource{
         this.getMessageMapper = getMessageMapper;
     }
 
-    public Observable<MessageData> getMessage(TKPDMapParam<String, Object> requestParams) {
+    public Observable<InboxChatViewModel> getMessage(TKPDMapParam<String, Object> requestParams) {
         return chatService.getApi().getMessage(requestParams).map(getMessageMapper);
     }
 }

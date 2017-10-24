@@ -82,7 +82,7 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:padding="@dimen/padding_small"
-                android:src="@drawable/ic_action_attachment" />
+                android:src="@drawable/ic_attach_product" />
 
 
             <EditText
@@ -92,9 +92,11 @@
                 android:layout_centerInParent="true"
                 android:layout_toLeftOf="@+id/send_but"
                 android:layout_toRightOf="@+id/add_url"
-                android:hint="@string/prompt_new_comment"
+                android:hint="@string/chat_edit_text"
                 android:inputType="textMultiLine"
                 android:maxLines="5"
+                android:padding="@dimen/padding_vs"
+                android:background="@color/white"
                 android:textSize="@dimen/font_medium" />
 
             <ImageView
@@ -114,6 +116,15 @@
                 android:layout_gravity="center"
                 android:visibility="gone" />
         </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/add_comment_area"
+            android:layout_below="@id/header"
+            android:layout_centerInParent="true"
+            />
 
         <com.tokopedia.core.customwidget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"

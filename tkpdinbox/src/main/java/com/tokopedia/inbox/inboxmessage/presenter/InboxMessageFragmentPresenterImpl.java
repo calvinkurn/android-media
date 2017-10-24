@@ -8,21 +8,17 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
-import com.tokopedia.inbox.inboxchat.data.factory.WebSocketFactory;
-import com.tokopedia.inbox.inboxchat.data.mapper.ChatEventMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepositoryImpl;
-import com.tokopedia.inbox.inboxchat.data.repository.WebSocketRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.domain.model.message.ListMessage;
 import com.tokopedia.inbox.inboxchat.domain.model.message.MessageData;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.ChatSocketData;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ListenWebSocketUseCase;
+import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment;
@@ -191,7 +187,7 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
 //                }
 //            }
 //        });
-        getMessageListUseCase.execute(GetMessageListUseCase.generateParam(inboxMessagePass), new Subscriber<MessageData>() {
+        getMessageListUseCase.execute(GetMessageListUseCase.generateParam(inboxMessagePass, pagingHandler.getPage()), new Subscriber<InboxChatViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -203,7 +199,7 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
             }
 
             @Override
-            public void onNext(MessageData messageData) {
+            public void onNext(InboxChatViewModel messageData) {
                 viewListener.enableActions();
 //                if (pagingHandler.getPage() == 1 && !isFilterUsed()) {
 //                    cacheInteractor.setInboxMessageCache(viewListener.getArguments().getString(PARAM_NAV), result);
@@ -214,7 +210,7 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
                 }
                 viewListener.finishLoading();
 
-                setResult(messageData);
+                setResult(new MessageData());
                 if (pagingHandler.CheckNextPage()) {
                     viewListener.getAdapter().showLoading(true);
                 }

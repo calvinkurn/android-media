@@ -4,6 +4,7 @@ package com.tokopedia.inbox.inboxchat.data.repository;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.domain.model.message.MessageData;
+import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 
 import rx.Observable;
 
@@ -20,7 +21,7 @@ public class MessageRepositoryImpl implements MessageRepository{
     }
 
     @Override
-    public Observable<MessageData> getMessage(TKPDMapParam<String, Object> mapParam) {
+    public Observable<InboxChatViewModel> getMessage(TKPDMapParam<String, Object> mapParam) {
         return messageFactory.createCloudMessageDataSource().getMessage(mapParam);
     }
 }

@@ -517,7 +517,6 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
         switch (response.getCode()){
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING :
                 viewListener.setOnlineDesc("sedang mengetik");
-
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
                 viewListener.setOnlineDesc("baru saja");
@@ -525,6 +524,11 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
             default:
                 break;
         }
+
+    }
+
+    @Override
+    public void newWebSocket() {
 
     }
 }

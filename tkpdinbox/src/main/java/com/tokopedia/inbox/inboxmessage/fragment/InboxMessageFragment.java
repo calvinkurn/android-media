@@ -485,8 +485,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
     @Override
     public void showUndoSnackBar(String message, View.OnClickListener onUndo) {
         snackbarUndo = SnackbarManager.make(getActivity(),
-                message,
-                Snackbar.LENGTH_LONG).setAction(getString(R.string.undo_but), onUndo)
+                message, Snackbar.LENGTH_LONG).setAction(getString(R.string.undo_but), onUndo)
         ;
         snackbarUndo.show();
     }

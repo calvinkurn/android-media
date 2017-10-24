@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_move_trash"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="@string/option_move_trash"
+        android:icon="@drawable/ic_trash"/>
+   
+    <item
+        android:id="@+id/action_move_achieve"
+        android:orderInCategory="101"
+        app:showAsAction="always"
+        android:title="@string/option_move_archive"
+        android:icon="@drawable/ic_archive"/>
+
+    <item
+        android:id="@+id/action_mark_as_read"
+        android:orderInCategory="102"
+        android:title="@string/mark_as_read"
+        app:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/action_mark_as_unread"
+        android:orderInCategory="103"
+        android:title="@string/mark_as_unread"
+        app:showAsAction="collapseActionView" />
+</menu>

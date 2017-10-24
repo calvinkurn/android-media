@@ -26,7 +26,6 @@ import butterknife.BindView;
 public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewModel> {
 
     private int position;
-    ImageView avatar;
     TextView message;
     TextView hour;
     TextView date;
@@ -38,7 +37,6 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
 
     public OppositeChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView);
-        avatar = (ImageView) itemView.findViewById(R.id.user_ava);
         message = (TextView) itemView.findViewById(R.id.message);
         hour = (TextView) itemView.findViewById(R.id.hour);
         date = (TextView) itemView.findViewById(R.id.date);
@@ -55,9 +53,14 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
         message.setMovementMethod(new SelectableSpannedMovementMethod());
 
         date.setVisibility(View.VISIBLE);
-        long myTime = Long.parseLong(element.getReplyTime());
+        String time;
 
-        String time = DateFormat.getLongDateFormat(itemView.getContext()).format(new Date(myTime));
+        try {
+            long myTime = Long.parseLong(element.getReplyTime());
+            time = DateFormat.getLongDateFormat(itemView.getContext()).format(new Date(myTime));
+        }catch (NumberFormatException e){
+            time = element.getReplyTime();
+        }
         date.setText(time);
 
         if (element.isShowTime()) {
@@ -66,14 +69,23 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
             date.setVisibility(View.GONE);
         }
 
-        String hourTime = ChatTimeConverter.formatTime(Long.parseLong(element.getReplyTime()));
+
+
+        String hourTime;
+
+        try {
+            hourTime = ChatTimeConverter.formatTime(Long.parseLong(element.getReplyTime()));
+        }catch (NumberFormatException e){
+            hourTime = element.getReplyTime();
+        }
+
         hour.setText(hourTime);
 
         element.getSenderId();
 
-        name.setText("TestName");
+        name.setText(element.getSenderName());
 
-        label.setText("TestLabel");
+        label.setText(element.getRole());
 
     }
 }

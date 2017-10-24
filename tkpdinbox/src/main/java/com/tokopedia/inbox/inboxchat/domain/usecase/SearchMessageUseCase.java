@@ -1,0 +1,46 @@
+package com.tokopedia.inbox.inboxchat.domain.usecase;
+
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.inbox.inboxchat.data.repository.SearchRepository;
+import com.tokopedia.inbox.inboxchat.data.repository.SearchRepositoryImpl;
+import com.tokopedia.inbox.inboxchat.domain.model.search.SearchedMessage;
+import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
+
+import rx.Observable;
+
+/**
+ * Created by stevenfredian on 10/18/17.
+ */
+
+public class SearchMessageUseCase extends UseCase<InboxChatViewModel> {
+
+    private final SearchRepository searchRepository;
+
+    public SearchMessageUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, SearchRepository searchRepository) {
+        super(threadExecutor, postExecutionThread);
+        this.searchRepository = searchRepository;
+    }
+
+    @Override
+    public Observable<InboxChatViewModel> createObservable(RequestParams requestParams) {
+        return searchRepository.searchChat(requestParams.getParameters());
+    }
+
+    public static RequestParams generateParam(String keyword, int page)
+    {
+        RequestParams requestParams = RequestParams.EMPTY;
+        requestParams.putString("keyword", keyword);
+        requestParams.putInt("page", page);
+        return requestParams;
+    }
+
+    public static RequestParams generateParam(String keyword)
+    {
+        RequestParams requestParams = RequestParams.EMPTY;
+        requestParams.putString("keyword", keyword);
+        return requestParams;
+    }
+}

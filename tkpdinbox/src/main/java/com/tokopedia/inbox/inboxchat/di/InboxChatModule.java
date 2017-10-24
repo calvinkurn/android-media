@@ -8,16 +8,21 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.ReplyFactory;
+import com.tokopedia.inbox.inboxchat.data.factory.SearchFactory;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetReplyMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.ReplyMessageMapper;
+import com.tokopedia.inbox.inboxchat.data.mapper.SearchChatMapper;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepositoryImpl;
+import com.tokopedia.inbox.inboxchat.data.repository.SearchRepository;
+import com.tokopedia.inbox.inboxchat.data.repository.SearchRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -48,6 +53,14 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
+    SearchFactory provideSearchFactory(
+            ChatService chatService,
+            SearchChatMapper searchChatMapper){
+        return new SearchFactory(chatService, searchChatMapper);
+    }
+
+    @InboxChatScope
+    @Provides
     GetReplyMapper provideGetReplyMapper(){
         return new GetReplyMapper();
     }
@@ -64,6 +77,13 @@ public class InboxChatModule {
         return new ReplyMessageMapper();
     }
 
+
+    @InboxChatScope
+    @Provides
+    SearchChatMapper provideSearchChatMapper(){
+        return new SearchChatMapper();
+    }
+
     @InboxChatScope
     @Provides
     MessageRepository provideMessageRepository(MessageFactory messageFactory){
@@ -74,6 +94,12 @@ public class InboxChatModule {
     @Provides
     ReplyRepository provideReplyRepository(ReplyFactory replyFactory){
         return new ReplyRepositoryImpl(replyFactory);
+    }
+
+    @InboxChatScope
+    @Provides
+    SearchRepository provideSearchRepository(SearchFactory searchFactory){
+        return new SearchRepositoryImpl(searchFactory);
     }
 
     @InboxChatScope
@@ -100,6 +126,14 @@ public class InboxChatModule {
                                                    PostExecutionThread postExecutor,
                                                    ReplyRepository replyRepository){
         return new ReplyMessageUseCase(threadExecutor, postExecutor, replyRepository);
+    }
+
+    @InboxChatScope
+    @Provides
+    SearchMessageUseCase provideSearchChatUseCase(ThreadExecutor threadExecutor,
+                                                   PostExecutionThread postExecutor,
+                                                   SearchRepository searchRepository){
+        return new SearchMessageUseCase(threadExecutor, postExecutor, searchRepository);
     }
 
     @InboxChatScope

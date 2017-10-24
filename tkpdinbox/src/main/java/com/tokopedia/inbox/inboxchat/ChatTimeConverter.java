@@ -28,7 +28,7 @@ public class ChatTimeConverter {
         } else if (span.contains("yesterday")) {
             return YESTERDAY;
         } else {
-            return DateFormat.getLongDateFormat(MainApplication.getAppContext()).format(unixTime);
+            return DateFormat.getMediumDateFormat(MainApplication.getAppContext()).format(unixTime);
         }
     }
 

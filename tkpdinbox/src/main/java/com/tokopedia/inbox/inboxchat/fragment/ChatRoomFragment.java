@@ -1,10 +1,13 @@
 package com.tokopedia.inbox.inboxchat.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,25 +24,37 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
+import com.tokopedia.inbox.inboxchat.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
+import com.tokopedia.inbox.inboxchat.util.Events;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * Created by stevenfredian on 9/19/17.
  */
 
-public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomContract.View, InboxMessageConstant{
+public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomContract.View, InboxMessageConstant, WebSocketInterface {
 
     @Inject
     ChatRoomPresenter presenter;
@@ -62,6 +77,10 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
     private ImageView sendButton;
     private EditText replyColumn;
     RefreshHandler refreshHandler;
+    private View mainHeader;
+    private Toolbar toolbar;
+    private Observable<String> replyWatcher;
+    private Observable<Boolean> replyIsTyping;
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -75,17 +94,22 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
         View rootView = inflater.inflate(R.layout.fragment_chat_room, container, false);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         initVar();
-        progressBar = (ProgressBar) rootView.findViewById(R.id.loading);
+        toolbar = (Toolbar) getActivity().findViewById(R.id.app_bar);
+        mainHeader = toolbar.findViewById(R.id.main_header);
+        mainHeader.setVisibility(View.INVISIBLE);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progress);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.reply_list);
         replyView = rootView.findViewById(R.id.add_comment_area);
         sendButton = (ImageView) rootView.findViewById(R.id.send_but);
         replyColumn = (EditText) rootView.findViewById(R.id.new_comment);
         refreshHandler = new RefreshHandler(getActivity(), rootView, onRefresh());
+        replyWatcher =  Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
         presenter.attachView(this);
         initListener();
         return rootView;
     }
+
 
     private RefreshHandler.OnRefreshHandlerListener onRefresh() {
         return new RefreshHandler.OnRefreshHandlerListener() {
@@ -103,6 +127,38 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
                 presenter.sendMessage();
             }
         });
+
+        replyIsTyping = replyWatcher.map(new Func1<String, Boolean>() {
+            @Override
+            public Boolean call(String s) {
+                return s.length()>0;
+            }
+        });
+
+        replyIsTyping.subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean aBoolean) {
+                Log.i("call: ", "isTyping");
+                try {
+                    presenter.setIsTyping(getArguments().getString("message_id"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        replyIsTyping.debounce(2, TimeUnit.SECONDS)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        Log.i("call: ", "stopTyping");
+                        try {
+                            presenter.stopTyping(getArguments().getString("message_id"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
     private void initVar() {
@@ -112,8 +168,8 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        showLoading();
         presenter.getReply();
+        progressBar.setVisibility(View.VISIBLE);
         adapter = new ChatRoomAdapter(typeFactory);
         adapter.setNav(getArguments().getString(PARAM_NAV, ""));
         adapter.notifyDataSetChanged();
@@ -125,7 +181,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int index = layoutManager.findFirstCompletelyVisibleItemPosition();
-                if(adapter.checkLoadMore(index)){
+                if (adapter.checkLoadMore(index)) {
                     presenter.onLoadMore();
                 }
             }
@@ -143,7 +199,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
                     recyclerView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            scrollToBottom();
+
                         }
                     }, 100);
                 }
@@ -169,26 +225,24 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
 
     @Override
     public void showLoading() {
-        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void finishLoading() {
         refreshHandler.finishRefresh();
-        progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void setHeader() {
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(com.tokopedia.core.R.id.app_bar);
 
         if (toolbar != null) {
-            avatar = (ImageView) toolbar.findViewById(com.tokopedia.core.R.id.user_avatar);
-            user = (TextView) toolbar.findViewById(com.tokopedia.core.R.id.title);
-            onlineDesc = (TextView) toolbar.findViewById(com.tokopedia.core.R.id.subtitle);
-            label = (TextView) toolbar.findViewById(com.tokopedia.core.R.id.label);
+            mainHeader.setVisibility(View.VISIBLE);
+            avatar = (ImageView) toolbar.findViewById(R.id.user_avatar);
+            user = (TextView) toolbar.findViewById(R.id.title);
+            onlineDesc = (TextView) toolbar.findViewById(R.id.subtitle);
+            label = (TextView) toolbar.findViewById(R.id.label);
             onlineStatus = (ImageView) toolbar.findViewById(R.id.online_status);
-            ImageHandler.loadImageCircle2(getActivity(), avatar, null, com.tokopedia.core.R.drawable.ic_image_avatar_boy);
+            ImageHandler.loadImageCircle2(getActivity(), avatar, null, R.drawable.ic_image_avatar_boy);
             user.setText(getArguments().getString(PARAM_SENDER_NAME));
             label.setText(getArguments().getString(PARAM_SENDER_TAG));
             setOnlineDesc("baru saja");
@@ -199,7 +253,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
     public void setTextAreaReply(boolean textAreaReply) {
         if (textAreaReply) {
             replyView.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             replyView.setVisibility(View.GONE);
         }
     }
@@ -209,7 +263,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
         return adapter;
     }
 
-    public void setOnlineDesc(final String when){
+    public void setOnlineDesc(final String when) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -219,13 +273,23 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
     }
 
     @Override
+    public WebSocketInterface getInterface() {
+        return this;
+    }
+
+    @Override
     public void scrollTo(int i) {
         layoutManager.scrollToPosition(i);
     }
 
     @Override
     public void scrollToBottom() {
-        layoutManager.scrollToPosition(adapter.getList().size());
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                layoutManager.scrollToPosition(adapter.getList().size() - 1);
+            }
+        });
     }
 
     @Override
@@ -246,12 +310,13 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
     public void onSuccessSendReply(ReplyActionData replyData, String reply) {
         adapter.removeLast();
         setViewEnabled(true);
-        adapter.addReply(new MyChatViewModel(
-                replyData.getChat().getMsgId(),
-                replyData.getChat().getSenderId(),
-                replyData.getChat().getMsg(),
-                replyData.getChat().getReplyTime(),
-                0, "", 0, 0));
+        MyChatViewModel item = new MyChatViewModel();
+        item.setReplyId(replyData.getChat().getMsgId());
+        item.setSenderId(replyData.getChat().getSenderId());
+        item.setMsg(replyData.getChat().getMsg());
+        item.setReplyTime(replyData.getChat().getReplyTime());
+
+        adapter.addReply(item);
         finishLoading();
         replyColumn.setText("");
         scrollToBottom();
@@ -272,9 +337,27 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
 
     @Override
     public void addDummyMessage() {
-        MyChatViewModel item = new MyChatViewModel(getReplyMessage());
+        MyChatViewModel item = new MyChatViewModel();
+        item.setMsg(getReplyMessage());
+        item.setReplyTime(MyChatViewModel.SENDING_TEXT);
+        item.setDummy(true);
         adapter.addReply(item);
         scrollToBottom();
+        setResult();
+    }
+
+    public void addDummyMessage(OppositeChatViewModel item) {
+        adapter.addReply(item);
+        scrollToBottom();
+        setResult();
+    }
+
+    private void setResult() {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("parcel", adapter.getLastItem());
+        intent.putExtras(bundle);
+        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     @Override
@@ -284,11 +367,55 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
 
     @Override
     public void setCanLoadMore(boolean hasNext) {
-        if(hasNext){
+        if (hasNext) {
             adapter.showLoading();
-        }else {
+        } else {
             adapter.removeLoading();
         }
     }
 
+    public void restackList(Bundle data) {
+        String senderId = data.getString("sender_id");
+        if (senderId.equals(getArguments().get("sender_id"))) {
+            OppositeChatViewModel item = new OppositeChatViewModel();
+            item.setMsg(data.getString("summary"));
+            item.setSenderId(senderId);
+            item.setSenderName(data.getString("full_name"));
+            item.setReplyTime(data.getString("create_time"));
+            addDummyMessage(item);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
+
+
+    @Override
+    public void hideMainLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void onIncomingEvent(WebSocketResponse response) {
+        switch (response.getCode()){
+            case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING :
+                setOnlineDesc("sedang mengetik");
+                break;
+            case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
+                setOnlineDesc("baru saja");
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    @Override
+    public void newWebSocket() {
+        presenter.recreateWebSocket();
+    }
 }

@@ -39,4 +39,9 @@ public interface ChatApi {
     @Headers("Cookie:_SID_TOKOPEDIA_")
     @GET(TkpdBaseURL.Chat.LISTEN_WEBSOCKET)
     Observable<Response<TkpdResponse>> listenWebSocket(@QueryMap Map<String, Object> mapParam);
+
+
+    @Headers("Cookie:_SID_TOKOPEDIA_")
+    @GET(TkpdBaseURL.Chat.SEARCH)
+    Observable<Response<TkpdResponse>> searchChat(@QueryMap Map<String, Object> requestParams);
 }

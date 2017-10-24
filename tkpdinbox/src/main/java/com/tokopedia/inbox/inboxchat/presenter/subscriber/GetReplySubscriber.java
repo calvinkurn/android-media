@@ -62,7 +62,7 @@ public class GetReplySubscriber extends Subscriber<ReplyData> {
 //
         view.setTextAreaReply(model.getTextAreaReply() == 1);
         presenter.setResult(convertToViewModel(model));
-        presenter.finishLoading();
+        view.finishLoading();
         presenter.finishRequest(convertToViewModel(model).getList().size() - 1);
     }
 
@@ -72,25 +72,36 @@ public class GetReplySubscriber extends Subscriber<ReplyData> {
         ArrayList<Visitable> list = new ArrayList<>();
         for (ListReply item : model.getList()) {
             if (item.getSenderId().equals(SessionHandler.getLoginID(view.getContext()))) {
-                list.add(new MyChatViewModel(
-                        item.getReplyId(),
-                        item.getSenderId(),
-                        item.getMsg(),
-                        item.getReplyTime(),
-                        item.getFraudStatus(),
-                        item.getReadTime(),
-                        item.getAttachmentId(),
-                        item.getOldMsgId()));
+                MyChatViewModel temp = new MyChatViewModel();
+                temp.setReplyId(item.getReplyId());
+                temp.setSenderId(item.getSenderId());
+                temp.setMsg(item.getMsg());
+                temp.setReplyTime(item.getReplyTime());
+                temp.setFraudStatus(item.getFraudStatus());
+                temp.setReadTime(item.getReadTime());
+                temp.setAttachmentId(item.getAttachmentId());
+                temp.setOldMsgId(item.getOldMsgId());
+                temp.setMsgId(item.getMsgId());
+                temp.setRole(item.getRole());
+                temp.setSenderName(item.getSenderName());
+
+                list.add(temp);
             } else {
-                list.add(new OppositeChatViewModel(
-                        item.getReplyId(),
-                        item.getSenderId(),
-                        item.getMsg(),
-                        item.getReplyTime(),
-                        item.getFraudStatus(),
-                        item.getReadTime(),
-                        item.getAttachmentId(),
-                        item.getOldMsgId()));
+
+                OppositeChatViewModel temp = new OppositeChatViewModel();
+                temp.setReplyId(item.getReplyId());
+                temp.setSenderId(item.getSenderId());
+                temp.setMsg(item.getMsg());
+                temp.setReplyTime(item.getReplyTime());
+                temp.setFraudStatus(item.getFraudStatus());
+                temp.setReadTime(item.getReadTime());
+                temp.setAttachmentId(item.getAttachmentId());
+                temp.setOldMsgId(item.getOldMsgId());
+                temp.setMsgId(item.getMsgId());
+                temp.setRole(item.getRole());
+                temp.setSenderName(item.getSenderName());
+
+                list.add(temp);
             }
         }
 

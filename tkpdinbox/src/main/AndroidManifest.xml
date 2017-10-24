@@ -59,6 +59,12 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             tools:ignore="UnusedAttribute" />
+
+        <activity android:name=".inboxchat.activity.InboxChatActivity"
+            android:label="@string/title_inbox_chat"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
         <activity
             android:name=".inboxmessage.activity.InboxMessageDetailActivity"
             android:label="@string/title_inbox_message"
@@ -120,7 +126,6 @@
             android:exported="false" />
 
 
-        <activity android:name=".inboxchat.activity.InboxChatActivity" />
         <activity android:name=".inboxchat.activity.DummyActivity"></activity>
     </application>
 

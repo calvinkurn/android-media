@@ -1,8 +1,6 @@
 
 package com.tokopedia.inbox.inboxchat.domain.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
@@ -11,20 +9,12 @@ import java.util.Calendar;
 
 public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactory>{
 
-    public ListReplyViewModel(int replyId, String senderId, String msg, String replyTime, int fraudStatus, String readTime, int attachmentId, int oldMsgId) {
-        this.replyId = replyId;
-        this.senderId = senderId;
-        this.msg = msg;
-        this.replyTime = replyTime;
-        this.fraudStatus = fraudStatus;
-        this.readTime = readTime;
-        this.attachmentId = attachmentId;
-        this.oldMsgId = oldMsgId;
-        this.showTime = true;
-    }
-
+    private int msgId;
+    private int userId;
     private int replyId;
     private String senderId;
+    private String senderName;
+    private String role;
     private String msg;
     private String replyTime;
     private int fraudStatus;
@@ -32,6 +22,8 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
     private int attachmentId;
     private int oldMsgId;
     private boolean showTime;
+    private boolean messageIsRead;
+    private boolean isOpposite;
 
     public int getReplyId() {
         return replyId;
@@ -107,5 +99,53 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
 
     public boolean isShowTime() {
         return showTime;
+    }
+
+    public int getMsgId() {
+        return msgId;
+    }
+
+    public void setMsgId(int msgId) {
+        this.msgId = msgId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public boolean isMessageIsRead() {
+        return messageIsRead;
+    }
+
+    public void setMessageIsRead(boolean messageIsRead) {
+        this.messageIsRead = messageIsRead;
+    }
+
+    public boolean isOpposite() {
+        return isOpposite;
+    }
+
+    public void setOpposite(boolean opposite) {
+        isOpposite = opposite;
     }
 }

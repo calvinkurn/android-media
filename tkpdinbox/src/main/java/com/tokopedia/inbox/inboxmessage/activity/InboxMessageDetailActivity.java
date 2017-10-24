@@ -23,11 +23,13 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
+import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageDetailFragment;
 import com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageIntentService;
@@ -38,7 +40,7 @@ import com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageResultReceiver
  */
 public class InboxMessageDetailActivity extends BasePresenterActivity
         implements InboxMessageDetailFragment.DoActionInboxMessageListener,
-        InboxMessageConstant, InboxMessageResultReceiver.Receiver {
+        InboxMessageConstant, InboxMessageResultReceiver.Receiver, NotificationReceivedListener {
 
 
     private static final String TAG = "INBOX_MESSAGE_DETAIL_FRAGMENT";
@@ -48,15 +50,26 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolbarColor();
+        MainApplication.setCurrentActivity(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MainApplication.setCurrentActivity(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MainApplication.setCurrentActivity(null);
+    }
     @Override
     protected void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         LayoutInflater mInflater=LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.header_chat, null);
         toolbar.addView(mCustomView);
-
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
@@ -70,7 +83,6 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
         }
-
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
         if (upArrow != null) {
@@ -223,5 +235,22 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
             default:
                 throw new UnsupportedOperationException("Invalid Type Action");
         }
+    }
+
+
+    @Override
+    public void onGetNotif() {
+
+    }
+
+    @Override
+    public void onRefreshCart(int status) {
+
+    }
+
+    @Override
+    public void onGetNotif(Bundle data) {
+        ChatRoomFragment something = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(TAG);
+        something.restackList(data);
     }
 }

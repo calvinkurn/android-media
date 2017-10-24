@@ -8,6 +8,7 @@ import com.tokopedia.inbox.inboxmessage.adapter.InboxMessageAdapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -61,6 +62,12 @@ public class InboxChatContract {
         void showEmptyState(String localizedMessage);
 
         void showError(String localizedMessage);
+
+        Bundle getArguments();
+
+        void moveViewToTop();
+
+        void setOptionsMenu();
     }
 
     interface Presenter extends CustomerPresenter<View>{

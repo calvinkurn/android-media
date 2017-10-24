@@ -71,7 +71,7 @@ public class InboxRouter {
     }
 
     public static Intent getInboxMessageActivityIntent(Context context) {
-        return RouterUtils.getActivityIntent(context, INBOX_MESSAGE_ACTIVITY);
+        return RouterUtils.getActivityIntent(context, INBOX_CHAT_ACTIVITY);
     }
 
     public static Intent getInboxTalkActivityIntent(Context context) {

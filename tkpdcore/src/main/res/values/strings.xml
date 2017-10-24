@@ -628,6 +628,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_my_product">PRODUK SAYA</string>
     <string name="title_inbox_message">Pesan</string>
     <string name="title_inbox_chat">Chat</string>
+    <string name="title_inbox_chat_all">CHAT</string>
     <string name="title_inbox_message_all">INBOX</string>
     <string name="title_inbox_sent">TERKIRIM</string>
     <string name="title_inbox_archive">ARSIP</string>
@@ -646,6 +647,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_between">Antara</string>
     <string name="item_all">Semua</string>
     <string name="item_unread">Belum Dibaca</string>
+    <string name="chat_edit_text">Tulis pesan</string>
 
     <!-- Strings related to inbox -->
 

@@ -1,7 +1,9 @@
 package com.tokopedia.inbox.inboxchat.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +14,13 @@ import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
+import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,12 +51,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         if(list.get(position) instanceof ListReplyViewModel){
-            showTime(position);
+            showTime(holder.itemView.getContext(), holder.getAdapterPosition());
         }
-        holder.bind(list.get(position));
+        holder.bind(list.get(holder.getAdapterPosition()));
     }
 
-    private void showTime(int position) {
+    private void showTime(Context context, int position) {
         if (position != 0) {
             try {
                 ListReplyViewModel now = (ListReplyViewModel) list.get(position);
@@ -62,13 +66,13 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
 
                 Calendar time1 = ChatTimeConverter.unixToCalendar(myTime);
                 Calendar calBefore = ChatTimeConverter.unixToCalendar(prevTime);
-                if (compareTime(time1, calBefore)) {
+                if (compareTime(context, myTime, prevTime)) {
                     ((ListReplyViewModel) list.get(position)).setShowTime(false);
+                }else{
+                    ((ListReplyViewModel) list.get(position)).setShowTime(true);
                 }
-            }catch (NumberFormatException e){
+            }catch (NumberFormatException | ClassCastException e){
                 ((ListReplyViewModel) list.get(position)).setShowTime(true);
-            }catch (ClassCastException e){
-                e.printStackTrace();
             }
         }else {
             try {
@@ -79,10 +83,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
         }
     }
 
-    private boolean compareTime(Calendar calCurrent, Calendar calBefore) {
-        return calCurrent.get(Calendar.DAY_OF_YEAR) == calBefore.get(Calendar.DAY_OF_YEAR)
-                && calCurrent.get(Calendar.MONTH) == calBefore.get(Calendar.MONTH)
-                && calCurrent.get(Calendar.YEAR) == calBefore.get(Calendar.YEAR);
+    private boolean compareTime(Context context, long calCurrent, long calBefore) {
+        return DateFormat.getLongDateFormat(context).format(new Date(calCurrent))
+                .equals(DateFormat.getLongDateFormat(context).format(new Date(calBefore)));
+//        return calCurrent.get(Calendar.DAY_OF_YEAR) == calBefore.get(Calendar.DAY_OF_YEAR)
+//                && calCurrent.get(Calendar.MONTH) == calBefore.get(Calendar.MONTH)
+//                && calCurrent.get(Calendar.YEAR) == calBefore.get(Calendar.YEAR);
     }
 
     @Override
@@ -102,7 +108,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
 
     public void addList(List<Visitable> list) {
         this.list.addAll(0, list);
-        notifyItemRangeInserted(0, list.size()+1);
+        notifyItemRangeInserted(0, list.size());
     }
 
     public void showEmpty() {
@@ -124,7 +130,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
     public void setNav(String string) {
 
     }
-
 
     public void removeLast() {
         list.remove(list.size() - 1);
@@ -152,5 +157,10 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
             return (list.get(index) instanceof LoadingModel);
         }
         return false;
+    }
+
+    public ReplyParcelableModel getLastItem() {
+        ListReplyViewModel item = (ListReplyViewModel) list.get(list.size() - 1);
+        return new ReplyParcelableModel(item.getSenderId(), item.getMsg(), item.getReplyTime());
     }
 }

@@ -46,9 +46,9 @@
     </RelativeLayout>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_read"
+        android:id="@+id/chat_status"
+        android:layout_width="11dp"
+        android:layout_height="6dp"
         android:layout_toLeftOf="@+id/hour"
         android:layout_toStartOf="@+id/hour"
         android:layout_marginRight="5dp"

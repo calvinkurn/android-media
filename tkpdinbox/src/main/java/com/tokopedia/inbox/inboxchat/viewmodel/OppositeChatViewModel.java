@@ -8,11 +8,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
  * Created by stevenfredian on 9/27/17.
  */
 
-public class OppositeChatViewModel extends ListReplyViewModel{
-
-    public OppositeChatViewModel(int replyId, String senderId, String msg, String replyTime, int fraudStatus, String readTime, int attachmentId, int oldMsgId) {
-        super(replyId, senderId, msg, replyTime, fraudStatus, readTime, attachmentId, oldMsgId);
-    }
+public class OppositeChatViewModel extends ListReplyViewModel {
 
     @Override
     public int type(ChatRoomTypeFactory typeFactory) {

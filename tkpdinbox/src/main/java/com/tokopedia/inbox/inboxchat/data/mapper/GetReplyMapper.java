@@ -17,8 +17,6 @@ import rx.functions.Func1;
 
 public class GetReplyMapper implements Func1<Response<TkpdResponse>, ReplyData> {
 
-    private static final String ERROR = "error";
-    private static final String ERROR_DESCRIPTION = "error_description";
 
     @Override
     public ReplyData call(Response<TkpdResponse> response) {

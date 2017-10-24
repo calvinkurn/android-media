@@ -11,18 +11,10 @@ public class MessageData {
     @SerializedName("list")
     @Expose
     private List<ListMessage> list = null;
-    @SerializedName("server_process_time")
+    @SerializedName("paging_next")
     @Expose
-    private float serverProcessTime;
-    @SerializedName("server")
-    @Expose
-    private String server;
-    @SerializedName("status")
-    @Expose
-    private String status;
-    @SerializedName("success")
-    @Expose
-    private int success;
+    private boolean hasNext;
+
 
     public List<ListMessage> getList() {
         return list;
@@ -32,20 +24,11 @@ public class MessageData {
         this.list = list;
     }
 
-    public String getStatus() {
-        return status;
+    public boolean isHasNext() {
+        return hasNext;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setHasNext(boolean hasNext) {
+        this.hasNext = hasNext;
     }
-
-    public int getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(int success) {
-        this.success = success;
-    }
-
 }

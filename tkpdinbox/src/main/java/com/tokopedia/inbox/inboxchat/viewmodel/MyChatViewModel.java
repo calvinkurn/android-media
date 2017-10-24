@@ -10,16 +10,25 @@ import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 
 public class MyChatViewModel extends ListReplyViewModel{
 
-    public MyChatViewModel(int replyId, String senderId, String msg, String replyTime, int fraudStatus, String readTime, int attachmentId, int oldMsgId) {
-        super(replyId, senderId, msg, replyTime, fraudStatus, readTime, attachmentId, oldMsgId);
-    }
+    public static String SENDING_TEXT = "Sedang mengirim ...";
 
-    public MyChatViewModel(String msg) {
-        super(0, "", msg, "Sedang mengirim ...", 0, "", 0, 0);
+    boolean isDummy;
+
+    public MyChatViewModel() {
+        super();
+        this.isDummy = false;
     }
 
     @Override
     public int type(ChatRoomTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public boolean isDummy() {
+        return isDummy;
+    }
+
+    public void setDummy(boolean dummy) {
+        isDummy = dummy;
     }
 }

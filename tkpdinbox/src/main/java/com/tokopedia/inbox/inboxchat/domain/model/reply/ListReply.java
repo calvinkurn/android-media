@@ -9,12 +9,24 @@ import java.util.Calendar;
 
 public class ListReply {
 
+    @SerializedName("msg_id")
+    @Expose
+    private int msgId;
+    @SerializedName("user_id")
+    @Expose
+    private int userId;
     @SerializedName("reply_id")
     @Expose
     private int replyId;
     @SerializedName("sender_id")
     @Expose
     private String senderId;
+    @SerializedName("sender_name")
+    @Expose
+    private String senderName;
+    @SerializedName("role")
+    @Expose
+    private String role;
     @SerializedName("msg")
     @Expose
     private String msg;
@@ -33,6 +45,12 @@ public class ListReply {
     @SerializedName("old_msg_id")
     @Expose
     private int oldMsgId;
+    @Expose
+    private boolean messageIsRead;
+    @SerializedName("is_opposite")
+    @Expose
+    private boolean isOpposite;
+
 
     public int getReplyId() {
         return replyId;
@@ -60,10 +78,6 @@ public class ListReply {
 
     public String getReplyTime() {
         return replyTime;
-    }
-
-    public Calendar getReplyCalendar() {
-        return ChatTimeConverter.unixToCalendar(Long.parseLong(replyTime));
     }
 
     public void setReplyTime(String replyTime) {
@@ -102,4 +116,51 @@ public class ListReply {
         this.oldMsgId = oldMsgId;
     }
 
+    public int getMsgId() {
+        return msgId;
+    }
+
+    public void setMsgId(int msgId) {
+        this.msgId = msgId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public boolean isMessageIsRead() {
+        return messageIsRead;
+    }
+
+    public void setMessageIsRead(boolean messageIsRead) {
+        this.messageIsRead = messageIsRead;
+    }
+
+    public boolean isOpposite() {
+        return isOpposite;
+    }
+
+    public void setOpposite(boolean opposite) {
+        isOpposite = opposite;
+    }
 }
