@@ -11,6 +11,11 @@ def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
 
+def getTkpdAbstraction() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
+}
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -94,6 +99,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    compile getTkpdAbstraction()
+
     testCompile rootProject.ext.testDependencies.junit
     testCompile rootProject.ext.testDependencies.mockitorCore
     testCompile rootProject.ext.testDependencies.assertJ
@@ -157,7 +164,6 @@ dependencies {
     }
 
     compile rootProject.ext.miscDependencies.captureActivity
-    compile rootProject.ext.miscDependencies.multiDex
     compile rootProject.ext.miscDependencies.parcelerApi
     apt rootProject.ext.miscDependencies.parceler
     compile rootProject.ext.miscDependencies.gson
@@ -177,7 +183,6 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
-    compile rootProject.ext.debugToolsDependencies.stetho
     compile(rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }

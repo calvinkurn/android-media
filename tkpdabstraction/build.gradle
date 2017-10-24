@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
 
 def getTkpdDesign() {
     return project.hasProperty('isArtifact') ?
@@ -37,4 +38,12 @@ dependencies {
     compile rootProject.ext.networkDependencies.retrofit
     compile rootProject.ext.networkDependencies.adapterRxJava
     compile rootProject.ext.networkDependencies.loggingInterceptor
+
+    compile rootProject.ext.miscDependencies.multiDex
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile rootProject.ext.debugToolsDependencies.stetho
 }

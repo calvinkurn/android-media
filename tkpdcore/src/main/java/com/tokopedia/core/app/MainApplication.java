@@ -22,6 +22,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
 import com.tkpd.library.TkpdMultiDexApplication;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
@@ -50,7 +51,7 @@ import rx.Subscriber;
  *
  * @author Trey Robinson
  */
-public abstract class MainApplication extends TkpdMultiDexApplication{
+public abstract class MainApplication extends BaseMainApplication{
 
 	public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
@@ -59,7 +60,6 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private static Context context;
 	private static Activity activity;
 	private static Boolean isResetNotification = false;
 	private static Boolean isResetDrawer = false;
@@ -108,10 +108,6 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
         }
 
         return isInBackground;
-    }
-
-    public synchronized static Context getAppContext() {
-        return MainApplication.context;
     }
 
     /**
@@ -261,13 +257,11 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
     public void onCreate() {
         super.onCreate();
         instance = this;
-        MainApplication.context = getApplicationContext();
         init();
         initFacebook();
         initCrashlytics();
         initializeAnalytics();
         initANRWatchDogs();
-        initStetho();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -387,10 +381,6 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
 
     public void setAppComponent(AppComponent appComponent){
         this.appComponent = appComponent;
-    }
-
-    public void initStetho() {
-        if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
     }
 
     private void initBranch() {
