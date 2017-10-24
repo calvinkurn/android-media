@@ -46,9 +46,6 @@ dependencies {
 
     compile rootProject.ext.debugToolsDependencies.stetho
 
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
-
 //    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
 //        exclude group: 'com.android.support', module: 'support-annotations'
 //    })
