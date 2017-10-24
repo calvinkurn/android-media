@@ -1,6 +1,5 @@
 package com.tokopedia.core.share;
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;

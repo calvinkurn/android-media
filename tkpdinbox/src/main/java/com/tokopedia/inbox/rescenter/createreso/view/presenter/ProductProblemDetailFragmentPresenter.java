@@ -209,8 +209,8 @@ public class ProductProblemDetailFragmentPresenter
 
     @Override
     public String getDeliveryDate(List<StatusViewModel> statusList) {
-        for(StatusViewModel statusViewModel : statusList){
-            if(!statusViewModel.isDelivered() && statusViewModel.getInfo() != null){
+        for (StatusViewModel statusViewModel : statusList) {
+            if (!statusViewModel.isDelivered() && statusViewModel.getInfo() != null) {
                 return statusViewModel.getInfo().getDate();
             }
         }

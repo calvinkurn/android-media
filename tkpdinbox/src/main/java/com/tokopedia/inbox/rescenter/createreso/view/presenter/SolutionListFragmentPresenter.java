@@ -101,12 +101,11 @@ public class SolutionListFragmentPresenter
                                     editAppealSolutionModel.resolutionId,
                                     editAppealSolutionModel.solution),
                     new EditSolutionWithoutRefundSubscriber(mainView));
-        }
-         else {
+        } else {
             postAppealSolutionUseCase.execute(PostAppealSolutionUseCase.
-                    postAppealSolutionUseCaseParamsWithoutRefund(
-                            editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.solution),
+                            postAppealSolutionUseCaseParamsWithoutRefund(
+                                    editAppealSolutionModel.resolutionId,
+                                    editAppealSolutionModel.solution),
                     new AppealSolutionWithoutRefundSubscriber(mainView));
         }
     }
