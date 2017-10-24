@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   mainBannerImageSmall: {
     width: width - 30,
-    height: 140,
+    height: Math.round(width * .3),
     marginBottom: 10,
     ...Platform.select({
       ios: {
