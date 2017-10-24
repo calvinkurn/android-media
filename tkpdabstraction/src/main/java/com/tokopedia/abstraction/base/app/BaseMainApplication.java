@@ -1,6 +1,5 @@
 package com.tokopedia.abstraction.base.app;
 
-import android.app.Application;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 
@@ -16,7 +15,7 @@ import android.support.multidex.MultiDexApplication;
  * Created by User on 10/24/2017.
  */
 
-public abstract class BaseMainApplication extends MultiDexApplication{
+public class BaseMainApplication extends MultiDexApplication{
     protected static Context context;
 
     private BaseAppComponent baseAppComponent;
