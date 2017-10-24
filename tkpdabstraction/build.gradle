@@ -34,6 +34,15 @@ dependencies {
     compile rootProject.ext.miscDependencies.roundCornerProgressBar
     compile rootProject.ext.networkDependencies.glide
     compile rootProject.ext.miscDependencies.gson
+    compile rootProject.ext.miscDependencies.rxAndroid
+    compile rootProject.ext.miscDependencies.rxJava
+    compile rootProject.ext.networkDependencies.converterGson
+    compile rootProject.ext.networkDependencies.retrofit
+    compile rootProject.ext.networkDependencies.adapterRxJava
+    compile rootProject.ext.networkDependencies.loggingInterceptor
+
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.debugToolsDependencies.stetho
 
