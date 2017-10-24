@@ -529,6 +529,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.rlBrands = (RelativeLayout) holder.MainView.findViewById(R.id.rl_title_layout);
         holder.tokoCashHeaderView = (TokoCashHeaderView) holder
                 .MainView.findViewById(R.id.toko_cash_header_layout);
+        holder.tokoCashHeaderView.setActionListener(this);
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();
