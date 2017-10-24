@@ -3,6 +3,8 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFactory;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationActionDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
@@ -14,7 +16,7 @@ import java.util.List;
  * Created by yoasfs on 10/10/17.
  */
 
-public class ChatRightViewModel implements Parcelable {
+public class ChatRightViewModel implements Visitable<DetailChatTypeFactory> {
 
     private ConversationActionDomain action;
     private String message;
@@ -78,36 +80,7 @@ public class ChatRightViewModel implements Parcelable {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
+    public int type(DetailChatTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.action, flags);
-        dest.writeString(this.message);
-        dest.writeParcelable(this.createTime, flags);
-        dest.writeTypedList(this.attachment);
-        dest.writeParcelable(this.flag, flags);
-    }
-
-    protected ChatRightViewModel(Parcel in) {
-        this.action = in.readParcelable(ConversationActionDomain.class.getClassLoader());
-        this.message = in.readString();
-        this.createTime = in.readParcelable(ConversationCreateTimeDomain.class.getClassLoader());
-        this.attachment = in.createTypedArrayList(ConversationAttachmentDomain.CREATOR);
-        this.flag = in.readParcelable(ConversationFlagDomain.class.getClassLoader());
-    }
-
-    public static final Creator<ChatRightViewModel> CREATOR = new Creator<ChatRightViewModel>() {
-        @Override
-        public ChatRightViewModel createFromParcel(Parcel source) {
-            return new ChatRightViewModel(source);
-        }
-
-        @Override
-        public ChatRightViewModel[] newArray(int size) {
-            return new ChatRightViewModel[size];
-        }
-    };
 }

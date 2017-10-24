@@ -52,4 +52,8 @@ public class ChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public int getItemCount() {
         return list.size();
     }
+
+    public void addItem(Visitable item) {
+        this.list.add(item);
+    }
 }

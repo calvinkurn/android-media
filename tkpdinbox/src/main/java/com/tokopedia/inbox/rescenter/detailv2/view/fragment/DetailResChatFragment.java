@@ -17,8 +17,12 @@ import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.NextActionActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatFragmentPresenter;
+import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFactoryImpl;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
@@ -35,11 +39,12 @@ public class DetailResChatFragment
 
     public static final int NEXT_STATUS_CURRENT = 1;
 
-    TextView tvNextStep;
-    RecyclerView rvChat;
-    ProgressBar progressBar;
-    LinearLayout mainView;
-    CardView cvNextStep;
+    private TextView tvNextStep;
+    private RecyclerView rvChat;
+    private ProgressBar progressBar;
+    private LinearLayout mainView;
+    private CardView cvNextStep;
+    private ChatAdapter chatAdapter;
 
     private String resolutionId;
     private DetailResChatDomain detailResChatDomain;
@@ -128,6 +133,7 @@ public class DetailResChatFragment
         progressBar.setVisibility(View.GONE);
 
         presenter.initView(resolutionId);
+        chatAdapter = new ChatAdapter(new DetailChatTypeFactoryImpl(this));
     }
 
     @Override
@@ -163,6 +169,7 @@ public class DetailResChatFragment
         this.detailResChatDomain = detailResChatDomain;
         mainView.setVisibility(View.VISIBLE);
         initNextStep(detailResChatDomain.getNextAction());
+        initChatData(detailResChatDomain);
     }
 
     @Override
@@ -188,6 +195,18 @@ public class DetailResChatFragment
                 tvNextStep.setText(nextStep.getName());
             }
         }
+    }
+
+    private void initChatData(DetailResChatDomain detailResChatDomain) {
+        for (ConversationDomain conversationDomain : detailResChatDomain.getConversation()) {
+            chatAdapter.addItem(new ChatRightViewModel(
+                    conversationDomain.getAction(),
+                    conversationDomain.getMessage(),
+                    conversationDomain.getCreateTime(),
+                    conversationDomain.getAttachment(),
+                    conversationDomain.getFlag()));
+        }
+        chatAdapter.notifyDataSetChanged();
     }
 
     @Override

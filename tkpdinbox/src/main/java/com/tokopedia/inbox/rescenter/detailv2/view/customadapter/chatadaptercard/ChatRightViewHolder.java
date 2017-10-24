@@ -14,7 +14,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.C
  * Created by yoasfs on 23/10/17.
  */
 
-public class ChatRightViewHolder extends AbstractViewHolder<ChatRightViewModel>{
+public class ChatRightViewHolder extends AbstractViewHolder<ChatRightViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_detail_chat_right;

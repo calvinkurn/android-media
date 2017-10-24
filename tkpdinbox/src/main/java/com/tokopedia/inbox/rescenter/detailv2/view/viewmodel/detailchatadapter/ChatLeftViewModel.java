@@ -6,6 +6,7 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter;
  */
 
 public class ChatLeftViewModel extends ChatRightViewModel {
+
     public ChatLeftViewModel() {
 
     }
