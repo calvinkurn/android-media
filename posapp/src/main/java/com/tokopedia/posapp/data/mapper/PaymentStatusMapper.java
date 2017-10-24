@@ -58,9 +58,12 @@ public class PaymentStatusMapper implements Func1<Response<TkpdResponse>, Paymen
                 domain.setTokocashUsage(data.getData().get(0).getTokocashUsage());
                 domain.setPairData(data.getData().get(0).getPairData());
                 return domain;
+            } else {
+                throw new RuntimeException("Failed to get payment data");
             }
+        } else {
+            throw new RuntimeException("Failed to get payment data");
         }
-        return null;
     }
 
     private List<PaymentStatusItemDomain> getItems(List<PaymentStatusItem> items) {

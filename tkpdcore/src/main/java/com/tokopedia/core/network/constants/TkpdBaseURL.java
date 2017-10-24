@@ -866,6 +866,6 @@ public class TkpdBaseURL {
         public static final String CREATE_PAYMENT = "o2o/v1/payment/create";
         public static final String PROCESS_CREDIT_CARD = "o2o/v1/payment/process/creditcard";
         public static final String GET_PAYMENT_STATUS = "o2o/v1/payment/status";
-        public static final String CREATE_ORDER = "o2o/payment_action";
+        public static final String CREATE_ORDER = "o2o/v1/payment_action";
     }
 }

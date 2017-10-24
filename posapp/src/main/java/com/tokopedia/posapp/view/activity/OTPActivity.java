@@ -34,6 +34,7 @@ import com.tokopedia.posapp.deeplink.Constants;
 import com.tokopedia.posapp.di.component.DaggerPaymentComponent;
 import com.tokopedia.posapp.domain.model.payment.PaymentStatusDomain;
 import com.tokopedia.posapp.view.OTP;
+import com.tokopedia.posapp.view.Product;
 import com.tokopedia.posapp.view.presenter.OTPPresenter;
 import com.tokopedia.posapp.view.viewmodel.otp.OTPData;
 
@@ -153,6 +154,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
     }
 
     private void goToCart() {
+        startActivity(LocalCartActivity.newTopInstance(this));
         finish();
     }
 
@@ -167,6 +169,8 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         tkpdProgressDialog.dismiss();
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         e.printStackTrace();
+        startActivity(ProductListActivity.newTopIntent(this));
+        finish();
     }
 
     @Override

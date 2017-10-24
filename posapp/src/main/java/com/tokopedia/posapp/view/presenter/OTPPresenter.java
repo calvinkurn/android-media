@@ -171,7 +171,9 @@ public class OTPPresenter implements OTP.Presenter {
 
     @Override
     public void processPayment() {
-        if (otpData != null && otpData.getOtpDetailTransaction() != null) {
+        if (otpData != null
+                && otpData.getOtpDetailTransaction() != null
+                && otpData.getOtpDetailTransaction().getTransactionId() != null) {
             RequestParams requestParams = RequestParams.create();
             requestParams.putString(PARAM_MERCHANT_CODE, PosConstants.Payment.MERCHANT_CODE);
             requestParams.putString(PARAM_TRANSACTION_ID, otpData.getOtpDetailTransaction().getTransactionId());

@@ -147,7 +147,7 @@ public class CachePresenter implements Cache.Presenter {
             @Override
             public Observable<ProductListDomain> call() {
                 if(isRequestNextProduct) {
-                    return getProductListUseCase.createObservable(getProductParam(productPage));
+                    return getProductListUseCase.createObservable(getGatewayProductParam(productPage));
                 }
 
                 return Observable.error(null);

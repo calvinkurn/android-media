@@ -28,9 +28,9 @@ public class CreateOrderMapper implements Func1<Response<TkpdResponse>, CreateOr
             createOrderDomain.setOrderId(paymentAction.getOrderId());
             createOrderDomain.setInvoiceRef(paymentAction.getInvoiceRef());
             createOrderDomain.setStatus(true);
+            return createOrderDomain;
         } else {
-            createOrderDomain.setStatus(false);
+            throw new RuntimeException("Failed to create order");
         }
-        return createOrderDomain;
     }
 }
