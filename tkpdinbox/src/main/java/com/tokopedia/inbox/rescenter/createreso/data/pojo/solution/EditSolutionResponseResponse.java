@@ -17,6 +17,7 @@ public class EditSolutionResponseResponse {
     @SerializedName("freeReturn")
     @Expose
     private EditFreeReturnResponse freeReturn;
+
     public List<EditSolutionResponse> getSolution() {
         return solution;
     }

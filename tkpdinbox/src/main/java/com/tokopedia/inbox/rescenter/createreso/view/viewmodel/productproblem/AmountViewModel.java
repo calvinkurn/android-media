@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by yoasfs on 14/08/17.
  */
 
-public class AmountViewModel implements Parcelable{
+public class AmountViewModel implements Parcelable {
     private String idr;
     private int integer;
 
