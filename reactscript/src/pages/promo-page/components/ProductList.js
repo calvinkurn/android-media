@@ -19,11 +19,11 @@ const ProductList = ({ products }) => (
   <View style={styles.container}>
     {
       products.reduce((prev, curr, index) => (index % 2 === 0 ? prev.push([curr]) : prev[prev.length - 1].push(curr)) && prev, [])
-        .map((pRow, i) => (
-          <View style={styles.productsRow} key={i} >
+        .map((pRow, idx) => (
+          <View style={styles.productsRow} key={idx} >
             {
               pRow.map((p, index) => (
-                <Product product={p} key={index} />
+                <Product product={p} index={index} key={index} />
               ))
             }
           </View>

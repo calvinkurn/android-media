@@ -10,16 +10,12 @@ import BannerContainer from '../containers/BannerContainer'
 class Categories extends PureComponent {
   componentDidMount() {
     const { offset, limit } = this.props.categories.pagination
-    this.props.getCategories(offset, limit)
+    this.props.getCategories(0, limit)
     this.props.getApplinkEnv()
   }
 
   renderCategory = ({ item }) => {
     const applink = this.props.applinkEnv
-
-    console.log(item)
-    // console.log(this.props.dataSlug)
-    // console.log(applink)
     
     return <Category 
       category={item} 
