@@ -78,13 +78,19 @@ public class ProductAdditionalInfoView extends RelativeLayout {
 
     @SuppressWarnings("deprecation")
     public void convertDetailWithHtml(final Product product) {
-        Spanned detail = Html.fromHtml(product.getDetail() + "<a href=\"" + product.getDetailUrl() + "\"> " +
-                product.getDetailUrlText() + "</a>");
+        CharSequence detail;
+        if (TextUtils.isEmpty(product.getDetailUrl()) ||  TextUtils.isEmpty(product.getDetailUrlText())) {
+            detail = product.getDetail();
+        } else {
+            Spanned detilUrl = Html.fromHtml("<a href=\"" + product.getDetailUrl() + "\"> " +
+                    product.getDetailUrlText() + "</a>");
+            detail = product.getDetail() + detilUrl;
+        }
         tvInfo.setText(detail);
         tvInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!TextUtils.isEmpty(product.getDetailUrl())) {
+                if (!TextUtils.isEmpty(product.getDetailUrl()) & !TextUtils.isEmpty(product.getDetailUrlText())) {
                     actionListener.onProductLinkClicked(product.getDetailUrl());
                 }
             }
