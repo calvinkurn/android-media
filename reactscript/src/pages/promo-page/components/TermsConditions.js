@@ -7,8 +7,8 @@ const entities = new Entities()
 
 class TermsConds extends Component {
     render(){
-        const { termsCondition } = this.props.navigation.state.params
-        const decodeHtml = entities.decode(termsCondition)
+        const { extra } = this.props.data
+        const decodeHtml = entities.decode(extra)
 
         return (
             <WebView source={{html: decodeHtml}} />
@@ -16,13 +16,8 @@ class TermsConds extends Component {
     }
  
     static navigationOptions = {
-        title: 'Syarat & Ketentuan',
-        headerTintColor: '#FFF',
-        fontWeight: '300',
-        headerStyle: {
-            backgroundColor: '#42B549'
-        }
-      };
+        header: null
+    }
 }
 
 export default TermsConds

@@ -50,6 +50,16 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
         ).putExtras(bundle);
     }
 
+    @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO_TERMS})
+    public static Intent getOffiicialStoreTermsIntent(Context context, Bundle bundle) {
+        return ReactNativeActivity.createOfficialStoreTerms(
+                context,
+                ReactConst.Screen.PROMO,
+                context.getString(R.string.official_store_term_conditions_title),
+                bundle
+        );
+    }
+
     public static Intent createOfficialStoresReactNativeActivity(Context context,
                                                                  String reactScreenName,
                                                                  String pageTitle) {
@@ -69,6 +79,15 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(EXTRA_TITLE, "");
         extras.putString(EXTRA_URL, url);
+        intent.putExtras(extras);
+        return intent;
+    }
+
+    private static Intent createOfficialStoreTerms(Context context, String reactScreenName, String title, Bundle extras) {
+        Intent intent = new Intent(context, ReactNativeActivity.class);
+        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
+        extras.putString(ReactConst.SUB_PAGE, ReactConst.Screen.PROMO_TERMS);
+        extras.putString(EXTRA_TITLE, title);
         intent.putExtras(extras);
         return intent;
     }

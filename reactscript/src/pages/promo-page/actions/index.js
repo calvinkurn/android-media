@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { NetworkModule, NavigationModule } from 'NativeModules'
 
 
@@ -7,6 +6,38 @@ const BASE_API_URL = {
     mojito_prod: 'https://mojito.tokopedia.com/os/api/v1/ospromo',
     mojito_staging: 'https://mojito-staging.tokopedia.com/os/api/v1/ospromo',
 }
+
+const BASE_API_CATEGORIES = {
+    staging: 'https://staging.tokopedia.com/official-store/promo',
+    production: 'https://tokopedia.com/official-store/promo'
+  }
+
+
+// =================== Get Env for Navigation =================== //
+export const GETAPPLINK = 'GETAPPLINK'
+export const getApplink = () => {
+    return {
+        type: GETAPPLINK,
+        payload: get_Applink()
+    }
+}
+
+get_Applink = () => {
+    let applink;
+    return NavigationModule.getFlavor()
+        .then(res => {
+            if (res === 'live'){
+                applink = BASE_API_CATEGORIES.production
+            } else if (res === 'staging'){
+                applink = BASE_API_CATEGORIES.staging
+            }
+            return applink
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
+
 
 
 
@@ -54,13 +85,9 @@ doTopBanner = async (dataSlug) => {
 }
 
 setTitle = (banners) => {
-    console.log(banners)
-    console.log(banners.data.data.promo_name)
     const promo_name = banners.data.data.promo_name || 'Tokopedia'
-    console.log(promo_name)
     return NavigationModule.setTitleToolbar(promo_name)
         .then(res => {
-            console.log(res)
             return res
         })
         .catch(err => {
@@ -95,8 +122,9 @@ export const fetchCategories = (dataSlug, offset, limit) => {
 
 
 doCategories = async (dataSlug, offset, limit) => {
+    console.log(offset, limit)
     const env = await getEnv(dataSlug)
-    const categories  = await fetcProdCategories(dataSlug, offset, limit, env)
+    const categories = await fetcProdCategories(dataSlug, offset, limit, env)
     return categories
 }
 

@@ -35,8 +35,13 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void navigate(String appLinks, String extra) {
-        ((TkpdCoreRouter) context.getApplicationContext())
-                .actionApplink(this.getCurrentActivity(), appLinks);
+        if(!extra.isEmpty()) {
+            ((TkpdCoreRouter) context.getApplicationContext())
+                    .actionApplink(this.getCurrentActivity(), appLinks, extra);
+        } else {
+            ((TkpdCoreRouter) context.getApplicationContext())
+                    .actionApplink(this.getCurrentActivity(), appLinks);
+        }
     }
 
     @ReactMethod

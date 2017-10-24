@@ -1,32 +1,42 @@
 import React from 'react'
-import { View, Image, StyleSheet, Text, Platform, TouchableOpacity } from 'react-native'
+import { View, Image, StyleSheet, Text, Platform, TouchableHighlight, Dimensions } from 'react-native'
 import PropTypes from 'prop-types'
 import unescape from 'lodash/unescape'
 import { NavigationModule } from 'NativeModules'
 
+const { width, height } = Dimensions.get('window')
 
 const styles = StyleSheet.create({
   productCell: {
-    borderRightWidth: 1,
+    width: '50%',
     borderColor: '#e0e0e0',
     backgroundColor: '#FFF',
-    width: '50%',
-    borderTopWidth: 1,
   },
   productImageWrapper: {
-    borderBottomWidth: 1,
-    borderColor: 'rgba(255,255,255,0)',
     padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   productImage: {
-    height: 185,
-    borderRadius: 3,
+    width: (width - 40) / 2,
+    height: (width - 40) / 2,
+    ...Platform.select({
+      ios: {
+        resizeMode: 'contain'
+      },
+      android: {
+        borderWidth: 1,
+        borderRadius: 3,
+        borderColor: 'transparent',
+        overlayColor: '#FFF',
+      }
+    })
   },
   productName: {
     fontSize: 13,
     fontWeight: '600',
     color: 'rgba(0,0,0,.7)',
-    height: 40,
+    height: 41,
     paddingHorizontal: 10,
   },
   priceContainer: {
@@ -88,12 +98,13 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   shopSection: {
-    flex: 1,
     flexDirection: 'row',
-    padding: 10,
-    borderTopWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderColor: '#e0e0e0',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
+    borderTopWidth: 1,
   },
   shopImage: {
     width: 28,
@@ -110,13 +121,6 @@ const styles = StyleSheet.create({
       }
     })
   },
-  shopImageWrapper: {
-    width: 30,
-    height: 30,
-    borderRadius: 3,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
   shopNameWrapper: {
     flex: 3 / 4,
     marginTop: 7,
@@ -126,7 +130,7 @@ const styles = StyleSheet.create({
   },
   badgeImageContainer: {
     width: 20,
-    height: 30,
+    height: 28,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -144,38 +148,40 @@ const styles = StyleSheet.create({
   },
 })
 
-const Product = ({ product }) => (
-  <View style={styles.productCell}>
-    <TouchableOpacity onPress={() => {
+const Product = ({ product, index }) => (
+  <View style={[styles.productCell, index % 2 === 0 ? {borderRightWidth: 1} : {borderRightWidth: 0}]}>
+    <TouchableHighlight underlayColor={'#FFF'} onPress={() => {
       NavigationModule.navigateWithMobileUrl(product.data.url_app, product.data.url, '')}}>
-      <View style={styles.productImageWrapper}>
-        <Image source={{ uri: product.data.image_url }} style={styles.productImage} />
-      </View>
-      <Text
-        style={styles.productName}
-        ellipsizeMode="tail"
-        numberOfLines={2}>{unescape(product.data.name)}
-      </Text>
-      <View style={styles.priceContainer}>
-        <View style={styles.productGridNormalPrice}>
-          {
-            product.data.discount_percentage && (
-              <View style={{ height: 15 }}>
-                <Text style={styles.productGridNormalPriceText}>{product.data.original_price}</Text>
-              </View>
-            )
-          }
+      <View>
+        <View style={styles.productImageWrapper}>
+          <Image source={{ uri: product.data.image_url }} style={styles.productImage} />
         </View>
-        <View style={styles.priceWrapper}>
-          <Text style={styles.price}>{product.data.price}</Text>
-          {product.data.discount_percentage && (
-            <View style={styles.productGridCampaignRate}>
-              <Text style={styles.productGridCampaignRateText}>{`${product.data.discount_percentage}% OFF`}</Text>
-            </View>)
-          }
+        <Text
+          style={styles.productName}
+          ellipsizeMode="tail"
+          numberOfLines={2}>{unescape(product.data.name)}
+        </Text>
+        <View style={styles.priceContainer}>
+          <View style={styles.productGridNormalPrice}>
+            {
+              product.data.discount_percentage && (
+                <View style={{ height: 15 }}>
+                  <Text style={styles.productGridNormalPriceText}>{product.data.original_price}</Text>
+                </View>
+              )
+            }
+          </View>
+          <View style={styles.priceWrapper}>
+            <Text style={styles.price}>{product.data.price}</Text>
+            {product.data.discount_percentage && (
+              <View style={styles.productGridCampaignRate}>
+                <Text style={styles.productGridCampaignRateText}>{`${product.data.discount_percentage}% OFF`}</Text>
+              </View>)
+            }
+          </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
     <View style={styles.productBadgeWrapper}>
       {
         product.data.labels.map((l, i) => {
@@ -204,28 +210,25 @@ const Product = ({ product }) => (
     </View>
 
     {/* Brand Section */}
-    <TouchableOpacity onPress={() => {
+    <TouchableHighlight underlayColor={'#FFF'} onPress={() => {
       console.log(product)
       NavigationModule.navigateWithMobileUrl(product.data.shop.url_app, product.data.shop.url, '')}}>
       <View style={styles.shopSection}>
-          <View style={styles.shopImageWrapper}>
-            <Image source={{ uri: product.brand_logo }} style={styles.shopImage} />
-          </View>
-          <View style={styles.shopNameWrapper}>
-            <Text
-              style={{ lineHeight: 15 }}
-              ellipsizeMode="tail"
-              numberOfLines={1}
-            >{unescape(product.data.shop.name)}
-            </Text>
-          </View>
-          {product.data.badges.map(b => (b.title === 'Free Return' ? (
-            <View key={product.data.id} style={styles.badgeImageContainer}>
-              <Image source={{ uri: b.image_url }} style={styles.badgeImage} />
-            </View>) : null))
-          }
+        <Image source={{ uri: product.brand_logo }} style={styles.shopImage} />
+        <View style={styles.shopNameWrapper}>
+          <Text
+            style={{ lineHeight: 15 }}
+            ellipsizeMode="tail"
+            numberOfLines={1}>{unescape(product.data.shop.name)}</Text>
+        </View>
+        {
+          product.data.badges.map(b => (b.title === 'Free Return' ? (
+          <View key={product.data.id} style={styles.badgeImageContainer}>
+            <Image source={{ uri: b.image_url }} style={styles.badgeImage} />
+          </View>) : null))
+        }
       </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
   </View>
 )
 

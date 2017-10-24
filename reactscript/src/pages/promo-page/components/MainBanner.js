@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Dimensions,
   Platform,
-  TouchableOpacity
+  TouchableHighlight
 } from 'react-native'
 import { NavigationModule } from 'NativeModules';
 
@@ -22,12 +22,13 @@ const MainBanner = ({ dataMainBanners }) => {
       {
         arrImages.map((image, idx) => (
           idx === 0 ? null
-          : <TouchableOpacity
+          : <TouchableHighlight 
+              underlayColor={'#FFF'}
               key={image.image_id}
               onPress={() => {
-                NavigationModule.navigateWithMobileUrl(image.destination_url_apps, image.destination_url, '')}}>
+                NavigationModule.navigateWithMobileUrl('', `${image.destination_url}?override_url=1`, '')}}>
               <Image source={{uri: image.file_url}} style={idx === 1 ? styles.mainBannerImageBig : styles.mainBannerImageSmall} />
-            </TouchableOpacity>
+            </TouchableHighlight>
         ))
       }
     </View>
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   },
   mainBannerImageSmall: {
     width: width - 30,
-    height: 140,
+    height: Math.round(width * .3),
     marginBottom: 10,
     ...Platform.select({
       ios: {

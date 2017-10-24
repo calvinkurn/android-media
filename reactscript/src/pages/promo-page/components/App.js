@@ -11,7 +11,7 @@ import CategoryContainer from '../containers/CategoryContainer'
 
 class App extends Component {
     componentDidMount(){
-        console.log(this.props)
+        this.props.dispatch(reloadState())
     }
 
 

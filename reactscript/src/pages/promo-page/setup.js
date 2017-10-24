@@ -9,25 +9,23 @@ import { Provider } from 'react-redux'
 import store from './store/Store'
 import App from './components/App'
 import TermsConditions from './components/TermsConditions'
-import { StackNavigator } from 'react-navigation'
 
-
-const PromoApp = StackNavigator({
-    App : { screen: App },
-    TermsPage: { screen: TermsConditions }
-})
 
 class Root extends Component {
-    componentDidMount(){
-        console.log(this.props.data)
-    }
-
     render() {
-        return (
-            <Provider store={store}>
-                <PromoApp screenProps={this.props.data} />
-            </Provider>
-        )
+        if (this.props.data.SubPage === 'promo-terms'){
+            return (
+                <Provider store={store}>
+                    <TermsConditions data={this.props.data} />
+                </Provider>
+            )
+        } else {
+            return (
+                <Provider store={store}>
+                    <App screenProps={this.props.data} />
+                </Provider>
+            )
+        }
     }
 }
 
