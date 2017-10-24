@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -76,6 +73,7 @@ public class SolutionListFragment extends BaseDaggerFragment
         fragment.setArguments(bundle);
         return fragment;
     }
+
     public static SolutionListFragment newEditAppealInstance(EditAppealSolutionModel editAppealSolutionModel) {
         SolutionListFragment fragment = new SolutionListFragment();
         Bundle bundle = new Bundle();
@@ -130,7 +128,7 @@ public class SolutionListFragment extends BaseDaggerFragment
     protected void setupArguments(Bundle arguments) {
         if (arguments.getParcelable(RESULT_VIEW_MODEL_DATA) instanceof ResultViewModel) {
             resultViewModel = arguments.getParcelable(RESULT_VIEW_MODEL_DATA);
-        } else if (arguments.getParcelable(EDIT_APPEAL_MODEL_DATA) instanceof EditAppealSolutionModel){
+        } else if (arguments.getParcelable(EDIT_APPEAL_MODEL_DATA) instanceof EditAppealSolutionModel) {
             editAppealSolutionModel = arguments.getParcelable(EDIT_APPEAL_MODEL_DATA);
             isEditAppeal = true;
         }

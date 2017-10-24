@@ -9,7 +9,7 @@ import java.util.List;
  * Created by yoasfs on 14/08/17.
  */
 
-public class StatusViewModel implements Parcelable{
+public class StatusViewModel implements Parcelable {
     private boolean delivered;
     private String name;
     private List<StatusTroubleViewModel> trouble;

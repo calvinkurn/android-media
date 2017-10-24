@@ -130,7 +130,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        ActionParameterPassData actionParameterPassData = (ActionParameterPassData)arguments.get(KEY_PARAM_PASS_DATA);
+        ActionParameterPassData actionParameterPassData = (ActionParameterPassData) arguments.get(KEY_PARAM_PASS_DATA);
         orderId = actionParameterPassData.getOrderID();
     }
 
@@ -335,10 +335,9 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                 problemResultString += " & ";
                 problemResultString += (isType1Selected ?
                         problemResultList.size() - 1 :
-                        problemResultList.size()) + " " +context.getString(R.string.string_problem_product);
+                        problemResultList.size()) + " " + context.getString(R.string.string_problem_product);
             }
-        }
-        else  {
+        } else {
             problemResultString += (isType1Selected ?
                     problemResultList.size() - 1 :
                     problemResultList.size()) + " " + context.getString(R.string.string_problem_product);
@@ -347,7 +346,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     }
 
     public void updateSolutionString(ResultViewModel resultViewModel, TextView textView) {
-        textView.setText(resultViewModel.refundAmount != 0 && resultViewModel.solutionName != null?
+        textView.setText(resultViewModel.refundAmount != 0 && resultViewModel.solutionName != null ?
                 resultViewModel.solutionName.replace(
                         context.getResources().getString(R.string.string_return_value),
                         CurrencyFormatter.formatDotRupiah(String.valueOf(resultViewModel.refundAmount))) :
@@ -382,6 +381,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         rlProgress.setEnabled(true);
         rlProgress.setClickable(true);
     }
+
     public void dismissProgressBar() {
         if (rlProgress.getVisibility() == View.VISIBLE) {
             rlProgress.setVisibility(View.GONE);

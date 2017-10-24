@@ -115,10 +115,10 @@ public class SolutionDetailFragmentPresenter
                     new EditSolutionWithRefundSubscriber(mainView));
         } else {
             postAppealSolutionUseCase.execute(PostAppealSolutionUseCase.
-                    postAppealSolutionUseCaseParams(
-                            editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.solution,
-                            editAppealSolutionModel.refundAmount),
+                            postAppealSolutionUseCaseParams(
+                                    editAppealSolutionModel.resolutionId,
+                                    editAppealSolutionModel.solution,
+                                    editAppealSolutionModel.refundAmount),
                     new AppealSolutionWithRefundSubscriber(mainView));
         }
     }
