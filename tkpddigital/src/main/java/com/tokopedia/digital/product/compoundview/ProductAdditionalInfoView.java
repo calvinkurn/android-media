@@ -2,6 +2,9 @@ package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -11,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.Product;
@@ -78,15 +82,16 @@ public class ProductAdditionalInfoView extends RelativeLayout {
 
     @SuppressWarnings("deprecation")
     public void convertDetailWithHtml(final Product product) {
-        CharSequence detail;
         if (TextUtils.isEmpty(product.getDetailUrl()) ||  TextUtils.isEmpty(product.getDetailUrlText())) {
-            detail = product.getDetail();
+            tvInfo.setText(product.getDetail());
         } else {
-            Spanned detailUrl = Html.fromHtml("<a href=\"" + product.getDetailUrl() + "\"> " +
-                    product.getDetailUrlText() + "</a>");
-            detail = product.getDetail() + " " + detailUrl;
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder(product.getDetail());
+            String detailUrl = "<a href=\"" + product.getDetailUrl() + "\"> " +
+                    product.getDetailUrlText() + "</a>";
+            stringBuilder.append(" ");
+            stringBuilder.append(MethodChecker.fromHtml(detailUrl));
+            tvInfo.setText(stringBuilder);
         }
-        tvInfo.setText(detail);
         tvInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
