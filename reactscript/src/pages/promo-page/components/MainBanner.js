@@ -25,7 +25,8 @@ const MainBanner = ({ dataMainBanners }) => {
           : <TouchableHighlight 
               underlayColor={'#FFF'}
               key={image.image_id}
-              onPress={() => NavigationModule.navigateWithMobileUrl('', image.destination_url, '')}>
+              onPress={() => {
+                NavigationModule.navigateWithMobileUrl('', `${image.destination_url}?override_url=1`, '')}}>
               <Image source={{uri: image.file_url}} style={idx === 1 ? styles.mainBannerImageBig : styles.mainBannerImageSmall} />
             </TouchableHighlight>
         ))
