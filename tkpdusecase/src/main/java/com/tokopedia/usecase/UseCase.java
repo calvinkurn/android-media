@@ -1,8 +1,5 @@
 package com.tokopedia.usecase;
 
-import com.tokopedia.usecase.executor.PostExecutionThread;
-import com.tokopedia.usecase.executor.ThreadExecutor;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
