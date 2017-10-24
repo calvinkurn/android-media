@@ -2,7 +2,8 @@ import { NetworkModule, SessionModule } from 'NativeModules'
 import { 
   BASE_API_URL_PAYMENT,
   BASE_API_URL_SCROOGE,
-  BASE_API_URL_PCIDSS
+  BASE_API_URL_PCIDSS,
+  BASE_API_URL_ORDER
 } from '../lib/api.js'
 
 // ==================== Session Data ===================== //
