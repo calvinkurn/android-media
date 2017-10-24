@@ -44,11 +44,6 @@ import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 
-/**
- * Example application for adding an L1 image cache to Volley.
- *
- * @author Trey Robinson
- */
 public abstract class MainApplication extends BaseMainApplication{
 
 	public static final int DATABASE_VERSION = 7;
@@ -269,8 +264,7 @@ public abstract class MainApplication extends BaseMainApplication{
         initDbFlow();
 
         daggerBuilder = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
-                .netModule(new NetModule());
+                .appModule(new AppModule(this));
         getApplicationComponent().inject(this);
 
         locationUtils = new LocationUtils(this);
