@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.data.source.db.FlightAirportDB;
+import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 
 /**
  * Created by nathan on 10/19/17.
