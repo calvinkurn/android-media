@@ -88,7 +88,6 @@ setTitle = (banners) => {
     const promo_name = banners.data.data.promo_name || 'Tokopedia'
     return NavigationModule.setTitleToolbar(promo_name)
         .then(res => {
-            console.log(res)
             return res
         })
         .catch(err => {
@@ -115,7 +114,6 @@ fetchBanners = async (dataSlug, env) => {
 // =================== Fetch Products Categories =================== //
 export const FETCH_CATEGORIES = 'FETCH_CATEGORIES'
 export const fetchCategories = (dataSlug, offset, limit) => {
-    console.log(offset, limit)
     return {
         type: FETCH_CATEGORIES,
         payload: doCategories(dataSlug, offset, limit)    
@@ -133,7 +131,6 @@ doCategories = async (dataSlug, offset, limit) => {
 
 fetcProdCategories = async (dataSlug, offset, limit, env) => {
     const url = `${env}/categories?promo=${dataSlug.slug}&device=mobile&limit=${limit}&offset=${offset}`
-    console.log(url)
     return NetworkModule.getResponse(url, 'GET', '', true)
         .then(res => {
             let jsonResponse = JSON.parse(res)
