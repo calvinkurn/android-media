@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.WalletTokenRefresh;
@@ -36,23 +37,42 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
         final Request finalRequest = newRequest.build();
         Response response = getResponse(chain, finalRequest);
 
-        if (isUnauthorizeWalletToken(finalRequest, response)) {
-            WalletTokenRefresh walletTokenRefresh = new WalletTokenRefresh();
-            try {
-                walletTokenRefresh.refreshToken();
-                Request newRequestWallet = reCreateRequestWithNewAccessToken(chain);
-                Response responseNew = chain.proceed(newRequestWallet);
-                return responseNew;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (isNeedRelogin(response)) {
+            doRelogin();
+            response = getResponse(chain, finalRequest);
         }
 
-        return super.intercept(chain);
+        if (!response.isSuccessful()) {
+            throwChainProcessCauseHttpError(response);
+        }
+
+        if (isUnauthorizeWalletToken(finalRequest, response)) {
+            WalletTokenRefresh walletTokenRefresh = new WalletTokenRefresh();
+            walletTokenRefresh.refreshToken();
+            Request newRequestWallet = reCreateRequestWithNewAccessToken(chain);
+            Response responseNew = chain.proceed(newRequestWallet);
+            if (isUnauthorizeWalletToken(newRequestWallet, responseNew)) {
+                ServerErrorHandler.showForceLogoutDialog();
+                sendForceLogoutAnalytics(responseNew);
+            }
+            return responseNew;
+        }
+
+        String bodyResponse = response.body().string();
+        checkResponse(bodyResponse, response);
+
+        return createNewResponse(response, bodyResponse);
     }
 
     private boolean isUnauthorizeWalletToken(Request request, Response response) {
-        return response.code() == 401 && request.header(AUTHORIZATION).contains(BEARER);
+        try {
+            String responseString = response.peekBody(512).string();
+            return response.code() == 401 || responseString.toLowerCase().contains("invalid_request")
+                    && request.header(AUTHORIZATION).contains(BEARER);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private Request reCreateRequestWithNewAccessToken(Chain chain) {
