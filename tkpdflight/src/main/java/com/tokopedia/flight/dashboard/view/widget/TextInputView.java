@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 
 /**
@@ -19,9 +20,7 @@ import com.tokopedia.flight.R;
 
 public class TextInputView extends BaseCustomView {
 
-    private ImageView imageView;
-    private TextInputLayout textInputLayout;
-    private EditText editText;
+    private TkpdHintTextInputLayout textInputLayout;
 
     private Drawable iconDrawable;
     private String titleText;
@@ -43,7 +42,6 @@ public class TextInputView extends BaseCustomView {
     }
 
     private void init(AttributeSet attrs) {
-        init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TextInputView);
         try {
             iconDrawable = styledAttributes.getDrawable(R.styleable.TextInputView_tiv_icon);
@@ -52,18 +50,14 @@ public class TextInputView extends BaseCustomView {
         } finally {
             styledAttributes.recycle();
         }
+        init();
     }
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_text_input_view, this);
-        imageView = (ImageView) view.findViewById(R.id.image_view);
-        textInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout);
-        editText = (EditText) view.findViewById(R.id.edit_text);
-    }
+        ImageView imageView = (ImageView) view.findViewById(R.id.image_view);
+        textInputLayout = (TkpdHintTextInputLayout) view.findViewById(R.id.text_input_layout);
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
         if (iconDrawable == null) {
             imageView.setVisibility(View.GONE);
         } else {
@@ -71,9 +65,21 @@ public class TextInputView extends BaseCustomView {
             imageView.setVisibility(View.VISIBLE);
         }
         if (!TextUtils.isEmpty(titleText)) {
-            textInputLayout.setHint(titleText);
+            textInputLayout.setLabel(titleText);
         }
-        invalidate();
-        requestLayout();
+        if (TextUtils.isEmpty(hintText)) {
+            if (!TextUtils.isEmpty(titleText)) {
+                textInputLayout.setHint(titleText);
+            } else {
+                textInputLayout.setHint(null);
+            }
+        } else {
+            textInputLayout.setHint(hintText);
+        }
     }
+
+    public CharSequence getText(){
+        return textInputLayout.getEditText().getText();
+    }
+
 }

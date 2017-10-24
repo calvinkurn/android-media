@@ -30,6 +30,14 @@
         <item name="android:textColor">@drawable/color_state_disable_text</item>
     </style>
 
+    <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
+
+    <style name="successTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/tkpd_main_green</item>
+    </style>
+
     <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -105,6 +113,17 @@
         <item name="colorControlNormal">@color/colorGray</item>
         <item name="colorControlActivated">@color/tkpd_main_green</item>
         <item name="colorControlHighlight">@color/tkpd_main_green</item>
+    </style>
+
+    <style name="HintTextInputLayout" parent="TextInputLayout">
+        <item name="defaultTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="focusedTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="disabledTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="android:theme">@style/HintTextInputLayoutColorLine</item>
+    </style>
+
+    <style name="HintTextInputLayoutColorLine" parent="TextInputLayoutColorLine">
+        <item name="android:textColorHint">@color/grey_500</item>
     </style>
 
     <style name="CheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">

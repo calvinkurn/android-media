@@ -1,5 +1,7 @@
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+//TODO just for test
+//apply plugin: 'com.android.library'
 
 def getTkpdAbstraction() {
     return project.hasProperty('isArtifact') ?
@@ -11,6 +13,8 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
+        //TODO just to test
+        applicationId "com.tokopedia.flight"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -40,11 +44,8 @@ dependencies {
     compile rootProject.ext.dbDependencies.dbFlowCore
     compile rootProject.ext.dbDependencies.dbFlow
 
-    compile rootProject.ext.miscDependencies.dagger
-    apt rootProject.ext.miscDependencies.daggerCompiler
-
-    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+    /*androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile rootProject.ext.testDependencies.junit
+    testCompile rootProject.ext.testDependencies.junit*/
 }

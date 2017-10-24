@@ -16,4 +16,5 @@
     <string name="flight_title_product_list">Product List</string>
     <string name="flight_title_transaction_list">Daftar Transaksi</string>
     <string name="flight_title_subscribe">Langganan</string>
+    <string name="search_flight">Search Flight</string>
 </resources>

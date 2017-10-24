@@ -11,7 +11,7 @@ import com.tokopedia.design.utils.CurrencyFormatHelper;
  * Created by Nathaniel on 3/3/2017.
  */
 
-public class NumberTextWatcher implements TextWatcher {
+public class NumberTextWatcher extends AfterTextWatcher {
 
     private static final String DEFAULT_VALUE = "0";
 
@@ -27,16 +27,6 @@ public class NumberTextWatcher implements TextWatcher {
     public NumberTextWatcher(EditText editText, String defaultValue) {
         this.editText = editText;
         this.defaultValue = defaultValue;
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-
     }
 
     protected void applyFormatter() {
