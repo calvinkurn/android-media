@@ -2,11 +2,8 @@ package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
 import android.text.Html;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.URLSpan;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.Product;
@@ -88,7 +84,9 @@ public class ProductAdditionalInfoView extends RelativeLayout {
         tvInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionListener.onProductLinkClicked(product.getDetailUrl());
+                if (!TextUtils.isEmpty(product.getDetailUrl())) {
+                    actionListener.onProductLinkClicked(product.getDetailUrl());
+                }
             }
         });
     }
