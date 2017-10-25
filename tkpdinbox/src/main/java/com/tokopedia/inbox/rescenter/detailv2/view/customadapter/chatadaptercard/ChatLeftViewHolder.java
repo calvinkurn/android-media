@@ -36,7 +36,7 @@ public class ChatLeftViewHolder extends AbstractViewHolder<ChatLeftViewModel> {
     @Override
     public void bind(ChatLeftViewModel element) {
         tvMessage.setText(element.getMessage());
-        if (element.getAttachment().size() == 0) {
+        if (element.getAttachment() == null || element.getAttachment().size() == 0) {
             rvAttachment.setVisibility(View.GONE);
         }
     }

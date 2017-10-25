@@ -2,6 +2,7 @@ package com.tokopedia.inbox.rescenter.detailv2.view.fragment;
 
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatFragmentPresenter;
 import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFactoryImpl;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
@@ -134,6 +136,11 @@ public class DetailResChatFragment
 
         presenter.initView(resolutionId);
         chatAdapter = new ChatAdapter(new DetailChatTypeFactoryImpl(this));
+        rvChat.setAdapter(chatAdapter);
+        rvChat.setLayoutManager(new LinearLayoutManager(
+                getActivity(),
+                LinearLayoutManager.VERTICAL,
+                false));
     }
 
     @Override
@@ -177,6 +184,7 @@ public class DetailResChatFragment
         this.detailResChatDomain = detailResChatDomain;
         mainView.setVisibility(View.VISIBLE);
         initNextStep(detailResChatDomain.getNextAction());
+        initChatData(detailResChatDomain);
     }
 
     @Override
@@ -199,12 +207,21 @@ public class DetailResChatFragment
 
     private void initChatData(DetailResChatDomain detailResChatDomain) {
         for (ConversationDomain conversationDomain : detailResChatDomain.getConversation()) {
-            chatAdapter.addItem(new ChatRightViewModel(
-                    conversationDomain.getAction(),
-                    conversationDomain.getMessage(),
-                    conversationDomain.getCreateTime(),
-                    conversationDomain.getAttachment(),
-                    conversationDomain.getFlag()));
+            if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
+                chatAdapter.addItem(new ChatRightViewModel(
+                        conversationDomain.getAction(),
+                        conversationDomain.getMessage(),
+                        conversationDomain.getCreateTime(),
+                        conversationDomain.getAttachment(),
+                        conversationDomain.getFlag()));
+            } else {
+                chatAdapter.addItem(new ChatLeftViewModel(
+                        conversationDomain.getAction(),
+                        conversationDomain.getMessage(),
+                        conversationDomain.getCreateTime(),
+                        conversationDomain.getAttachment(),
+                        conversationDomain.getFlag()));
+            }
         }
         chatAdapter.notifyDataSetChanged();
     }

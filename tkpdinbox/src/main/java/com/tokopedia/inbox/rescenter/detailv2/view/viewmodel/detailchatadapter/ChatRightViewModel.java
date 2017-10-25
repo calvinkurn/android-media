@@ -18,11 +18,11 @@ import java.util.List;
 
 public class ChatRightViewModel implements Visitable<DetailChatTypeFactory> {
 
-    private ConversationActionDomain action;
-    private String message;
-    private ConversationCreateTimeDomain createTime;
-    private List<ConversationAttachmentDomain> attachment;
-    private ConversationFlagDomain flag;
+    protected ConversationActionDomain action;
+    protected String message;
+    protected ConversationCreateTimeDomain createTime;
+    protected List<ConversationAttachmentDomain> attachment;
+    protected ConversationFlagDomain flag;
 
     public ChatRightViewModel() {
     }

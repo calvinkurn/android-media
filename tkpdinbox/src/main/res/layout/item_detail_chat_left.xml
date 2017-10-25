@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black_54"/>
 
-                <RelativeLayout
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_attachment"
                     android:layout_marginTop="@dimen/margin_small"
                     android:layout_width="wrap_content"
