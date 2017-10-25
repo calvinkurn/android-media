@@ -28,6 +28,7 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.detail.customview.DetailView;
 import com.tokopedia.inbox.rescenter.detail.customview.ReplyEditorView;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
@@ -457,9 +458,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     private Intent getIntentEditResCenter() {
         if (apiModelData.getDetail().getResolutionBy().getByCustomer() == 1) {
-            return EditResCenterActivity.newBuyerInstance(getActivity(), passData, apiModelData);
+//            return EditResCenterActivity.newBuyerInstance(getActivity(), passData, apiModelData);
+            return SolutionListActivity.newBuyerEditInstance(getActivity(),
+                    passData.getResCenterId());
         } else {
-            return EditResCenterActivity.newSellerInstance(getActivity(), passData, apiModelData);
+//            return EditResCenterActivity.newSellerInstance(getActivity(), passData, apiModelData);
+            return SolutionListActivity.newSellerEditInstance(getActivity(),
+                    passData.getResCenterId());
         }
     }
 

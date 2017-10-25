@@ -30,4 +30,9 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity {
             super.onBackPressed();
         }
     }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
 }

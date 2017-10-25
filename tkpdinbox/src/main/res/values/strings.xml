@@ -40,6 +40,9 @@
     <string name="label_complaint_attachment">Lampiran Bukti:</string>
     <string name="title_activity_list_product_rescenter">Produk Yang Dikomplain</string>
     <string name="title_activity_product_detail_rescenter">Komplain Produk</string>
+    <string name="title_activity_solution_list">Pilih Solusi</string>
+    <string name="title_activity_solution_detail">Masukan Jumlah Uang</string>
+    <string name="title_activity_attachment">Bukti &amp; Keterangan</string>
     <string name="hint_write_message">Tulis pesan</string>
     <string name="dot">•</string>
     <string name="title_activity_rescenter_discussion">Diskusi</string>
@@ -53,10 +56,81 @@
     <string name="error_reply_discussion_resolution_reach_max">Maksimal video yg dapat diupload 1 buah</string>
     <string name="error_reply_discussion_resolution_not_support">Extensi file belum disupport</string>
     <string name="error_reply_discussion_resolution_file_not_allowed">Maaf, file Extension tidak disupport</string>
-    <string name="error_reply_discussion_resolution_reach_max_size">Maksimum ukuran file adalah 20mb</string>
-
+    <string name="error_reply_discussion_resolution_reach_max_size_video">Maksimum ukuran file adalah 20mb</string>
+    <string name="error_reply_discussion_resolution_reach_max_size_image">Maksimum ukuran gambar adalah 15mb</string>
+    <string name="error_reply_discussion_resolution_min_size">Ukuran panjang dan lebar minimal adalah 300px</string>
     <string name="is_it_helpful">Apakah jawaban ini membantu?</string>
     <string name="yes">Ya</string>
     <string name="no">Tidak</string>
+    <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
 
+    <!--new create reso-->
+    <string name="string_product_problem">1. Barang &amp; Masalah</string>
+    <string name="string_choose_product_problem">Pilih Barang &amp; Masalah</string>
+    <string name="string_solution">2. Solusi</string>
+    <string name="string_choose_solution">Pilih Solusi</string>
+    <string name="string_prove_information">3. Bukti &amp; Keterangan</string>
+    <string name="string_upload_prove_information">Unggah Bukti &amp; Keterangan</string>
+    <string name="string_button_create_complain">Buat Komplain</string>
+    <string name="string_difference_ongkir">Selisih Ongkos Kirim </string>
+    <string name="string_problem_product"> Barang Bermasalah</string>
+    <string name="string_return_rp">Kembalikan Rp </string>
+    <string name="string_to_buyer"> ke Pembeli</string>
+    <string name="string_returning">Kembalikan </string>
+    <string name="string_step3_complete">Bukti &amp; keterangan sudah diunggah</string>
+    <string name="string_return_value">$amount</string>
+
+    <!--step 1-->
+    <string name="string_button_save_choose">Simpan dan Pilih Barang Lain</string>
+    <string name="string_product_status">Status Barang</string>
+    <string name="string_product_arrived">Sudah Sampai</string>
+    <string name="string_product_not_arrived">Belum Sampai</string>
+    <string name="string_choose_problem">Pilih Masalah</string>
+    <string name="string_complain_reason">Alasan Komplain</string>
+    <string name="string_product_qty">Jumlah Barang</string>
+    <string name="string_button_save">Simpan</string>
+    <string name="string_button_cancel">Batal</string>
+    <string name="string_support_free_return">Produk Ini Didukung Free Returns</string>
+    <string name="string_continue">Lanjut</string>
+    <string name="string_adapter_product_problem">Kendala Produk</string>
+    <string name="string_adapter_money">Kendala Ongkos Kirim</string>
+    <string name="string_shipping_name">[$shipping_name$]</string>
+    <string name="string_shipping_name_identifier">$shipping_name$</string>
+
+    <!--step 2-->
+    <string name="string_money_amount_returned">Jumlah uang yang ingin dikembalikan</string>
+    <string name="string_input_amount">Masukkan Jumlah Uang</string>
+
+    <!--step 3-->
+    <string name="string_upload_prove">Unggah Bukti</string>
+    <string name="string_information_container">Isi Keterangan</string>
+    <string name="string_button_upload_proof">Upload Bukti &amp; Keterangan</string>
+    <string name="string_information">Keterangan</string>
+    <string name="string_min_30_char">Minimal 30 karakter</string>
+
+    <!--info reso string-->
+    <string name="string_info_information">Informasi</string>
+    <string name="string_info_1">Untuk pengiriman menggunakan</string>
+    <string name="string_info_2">komplain \"Barang belum diterima\" dapat dilakukan setelah</string>
+    <string name="string_btn_close">Tutup</string>
+
+    <!--create complain string-->
+    <string name="string_create_complain_title">Buat Komplain?</string>
+    <string name="string_detail_create_complain">Pastikan detil komplain sudah benar:</string>
+    <string name="string_problem">Masalah:</string>
+    <string name="string_create_complain_solution">Solusi:</string>
+    <string name="string_create_complain">Buat Komplain</string>
+    <string name="string_return">Kembali</string>
+    <string name="ticker_day">Hari</string>
+    <string name="ticker_separator">:</string>
+    <string name="ticker_hour">Jam</string>
+    <string name="ticker_minute">Menit</string>
+    <string name="ticker_second">Detik</string>
+
+    <!--edit appeal solution-->
+    <string name="string_edit_title">Ubah Solusi</string>
+    <string name="string_appeal_title">Naik Banding</string>
+    <string name="string_edit_message">Tekan \"Ubah\" untuk mengubah solusi menjadi:</string>
+    <string name="string_appeal_message">Solusi akan diubah menjadi </string>
+    <string name="string_edit_button">Ubah</string>
 </resources>

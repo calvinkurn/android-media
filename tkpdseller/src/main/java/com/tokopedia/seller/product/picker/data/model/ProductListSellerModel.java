@@ -101,7 +101,7 @@ public class ProductListSellerModel {
         private String isProductManager;
         @SerializedName("default_sort")
         @Expose
-        private Integer defaultSort;
+        private int defaultSort;
         @SerializedName("total_data")
         @Expose
         private Object totalData;
@@ -116,16 +116,16 @@ public class ProductListSellerModel {
         private String etalaseName;
         @SerializedName("shop_is_gold")
         @Expose
-        private Integer shopIsGold;
+        private int shopIsGold;
         @SerializedName("etalase_id")
         @Expose
         private Object etalaseId;
         @SerializedName("is_inbox_manager")
         @Expose
-        private Integer isInboxManager;
+        private int isInboxManager;
         @SerializedName("is_tx_manager")
         @Expose
-        private Integer isTxManager;
+        private int isTxManager;
 
         /**
          *
@@ -150,7 +150,7 @@ public class ProductListSellerModel {
          * @return
          *     The defaultSort
          */
-        public Integer getDefaultSort() {
+        public int getDefaultSort() {
             return defaultSort;
         }
 
@@ -159,7 +159,7 @@ public class ProductListSellerModel {
          * @param defaultSort
          *     The default_sort
          */
-        public void setDefaultSort(Integer defaultSort) {
+        public void setDefaultSort(int defaultSort) {
             this.defaultSort = defaultSort;
         }
 
@@ -230,7 +230,7 @@ public class ProductListSellerModel {
          * @return
          *     The shopIsGold
          */
-        public Integer getShopIsGold() {
+        public int getShopIsGold() {
             return shopIsGold;
         }
 
@@ -239,7 +239,7 @@ public class ProductListSellerModel {
          * @param shopIsGold
          *     The shop_is_gold
          */
-        public void setShopIsGold(Integer shopIsGold) {
+        public void setShopIsGold(int shopIsGold) {
             this.shopIsGold = shopIsGold;
         }
 
@@ -266,7 +266,7 @@ public class ProductListSellerModel {
          * @return
          *     The isInboxManager
          */
-        public Integer getIsInboxManager() {
+        public int getIsInboxManager() {
             return isInboxManager;
         }
 
@@ -275,7 +275,7 @@ public class ProductListSellerModel {
          * @param isInboxManager
          *     The is_inbox_manager
          */
-        public void setIsInboxManager(Integer isInboxManager) {
+        public void setIsInboxManager(int isInboxManager) {
             this.isInboxManager = isInboxManager;
         }
 
@@ -284,7 +284,7 @@ public class ProductListSellerModel {
          * @return
          *     The isTxManager
          */
-        public Integer getIsTxManager() {
+        public int getIsTxManager() {
             return isTxManager;
         }
 
@@ -293,7 +293,7 @@ public class ProductListSellerModel {
          * @param isTxManager
          *     The is_tx_manager
          */
-        public void setIsTxManager(Integer isTxManager) {
+        public void setIsTxManager(int isTxManager) {
             this.isTxManager = isTxManager;
         }
 
@@ -306,13 +306,22 @@ public class ProductListSellerModel {
         private String productImage;
         @SerializedName("product_shop_id")
         @Expose
-        private Integer productShopId;
+        private int productShopId;
         @SerializedName("product_currency")
         @Expose
         private String productCurrency;
         @SerializedName("product_returnable")
         @Expose
-        private Integer productReturnable;
+        private int productReturnable;
+        @SerializedName("product_is_wholesale")
+        @Expose
+        private int productWholesale;
+        @SerializedName("product_using_stock")
+        @Expose
+        private int productUsingStock;
+        @SerializedName("product_stock")
+        @Expose
+        private int productStock;
         @SerializedName("product_rating_point")
         @Expose
         private String productRatingPoint;
@@ -321,7 +330,7 @@ public class ProductListSellerModel {
         private String productUrl;
         @SerializedName("product_shop_owner")
         @Expose
-        private Integer productShopOwner;
+        private int productShopOwner;
         @SerializedName("product_etalase_id")
         @Expose
         private String productEtalaseId;
@@ -360,7 +369,7 @@ public class ProductListSellerModel {
         private String productImageFull;
         @SerializedName("product_preorder")
         @Expose
-        private Integer productPreorder;
+        private int productPreorder;
         @SerializedName("product_count_review")
         @Expose
         private String productCountReview;
@@ -373,6 +382,8 @@ public class ProductListSellerModel {
         @SerializedName("product_rating_desc")
         @Expose
         private String productRatingDesc;
+        private int productCashback;
+        private int productCashbackAmount;
 
         /**
          *
@@ -397,7 +408,7 @@ public class ProductListSellerModel {
          * @return
          *     The productShopId
          */
-        public Integer getProductShopId() {
+        public int getProductShopId() {
             return productShopId;
         }
 
@@ -406,7 +417,7 @@ public class ProductListSellerModel {
          * @param productShopId
          *     The product_shop_id
          */
-        public void setProductShopId(Integer productShopId) {
+        public void setProductShopId(int productShopId) {
             this.productShopId = productShopId;
         }
 
@@ -433,7 +444,7 @@ public class ProductListSellerModel {
          * @return
          *     The productReturnable
          */
-        public Integer getProductReturnable() {
+        public int getProductReturnable() {
             return productReturnable;
         }
 
@@ -442,7 +453,7 @@ public class ProductListSellerModel {
          * @param productReturnable
          *     The product_returnable
          */
-        public void setProductReturnable(Integer productReturnable) {
+        public void setProductReturnable(int productReturnable) {
             this.productReturnable = productReturnable;
         }
 
@@ -487,7 +498,7 @@ public class ProductListSellerModel {
          * @return
          *     The productShopOwner
          */
-        public Integer getProductShopOwner() {
+        public int getProductShopOwner() {
             return productShopOwner;
         }
 
@@ -496,7 +507,7 @@ public class ProductListSellerModel {
          * @param productShopOwner
          *     The product_shop_owner
          */
-        public void setProductShopOwner(Integer productShopOwner) {
+        public void setProductShopOwner(int productShopOwner) {
             this.productShopOwner = productShopOwner;
         }
 
@@ -721,7 +732,7 @@ public class ProductListSellerModel {
          * @return
          *     The productPreorder
          */
-        public Integer getProductPreorder() {
+        public int getProductPreorder() {
             return productPreorder;
         }
 
@@ -730,7 +741,7 @@ public class ProductListSellerModel {
          * @param productPreorder
          *     The product_preorder
          */
-        public void setProductPreorder(Integer productPreorder) {
+        public void setProductPreorder(int productPreorder) {
             this.productPreorder = productPreorder;
         }
 
@@ -806,6 +817,45 @@ public class ProductListSellerModel {
             this.productRatingDesc = productRatingDesc;
         }
 
+        public void setProductCashback(int productCashback) {
+            this.productCashback = productCashback;
+        }
+
+        public void setProductCashbackAmount(int productCashbackAmount) {
+            this.productCashbackAmount = productCashbackAmount;
+        }
+
+        public int getProductCashback() {
+            return productCashback;
+        }
+
+        public int getProductCashbackAmount() {
+            return productCashbackAmount;
+        }
+
+        public int getProductWholesale() {
+            return productWholesale;
+        }
+
+        public void setProductWholesale(int productWholesale) {
+            this.productWholesale = productWholesale;
+        }
+
+        public int getProductUsingStock() {
+            return productUsingStock;
+        }
+
+        public void setProductUsingStock(int productUsingStock) {
+            this.productUsingStock = productUsingStock;
+        }
+
+        public int getProductStock() {
+            return productStock;
+        }
+
+        public void setProductStock(int productStock) {
+            this.productStock = productStock;
+        }
     }
 
     public static class Paging {

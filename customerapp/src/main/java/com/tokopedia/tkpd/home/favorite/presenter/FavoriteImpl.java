@@ -94,14 +94,6 @@ public class FavoriteImpl implements Favorite {
     }
 
     @Override
-    public void setLocalyticFlow(Context context) {
-        if (context != null) {
-            String screenName = context.getString(R.string.home_fav_store);
-            ScreenTracking.screenLoca(screenName);
-        }
-    }
-
-    @Override
     public void sendAppsFlyerData(Context context) {
         ScreenTracking.sendAFGeneralScreenEvent(Jordan.AF_SCREEN_FAVORIT);
     }

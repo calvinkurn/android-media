@@ -22,6 +22,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
@@ -162,6 +163,7 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @OnClick(R2.id.tv_submit_promo)
     public void actionSubmitPromo() {
+        RideGATracking.eventClickApplyPromoSearch(getScreenName(),getPromo()); //19
         presenter.actionApplyPromo();
     }
 
@@ -315,6 +317,7 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void onItemClicked(String promoCode) {
+        RideGATracking.eventClickApplyOffers(getScreenName(),promoCode); //20
         promoEditText.setText(promoCode.toUpperCase());
         presenter.actionApplyPromo();
     }

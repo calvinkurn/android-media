@@ -12,6 +12,7 @@ import java.util.List;
 public class Info {
 
     private static final int SHOP_GOLD_MERCHANT_VALUE = 1;
+    public static final int SHOP_OFFICIAL_VALUE = 1;
 
     @SerializedName("shop_status_title")
     @Expose

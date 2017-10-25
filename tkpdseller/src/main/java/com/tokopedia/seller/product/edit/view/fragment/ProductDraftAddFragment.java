@@ -54,14 +54,18 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        draftId = getArguments().getString(DRAFT_PRODUCT_ID);
+
         presenter.attachView(this);
-        fetchInputData();
+        if (savedInstanceState == null) {
+            fetchInputData();
+        }
         return view;
     }
 
     protected void fetchInputData() {
         showLoading();
-        draftId = getArguments().getString(DRAFT_PRODUCT_ID);
         presenter.fetchDraftData(draftId);
     }
 

@@ -183,6 +183,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         loadingAddProduct.setVisibility(View.GONE);
         if (this.shareData != null) {
             if (shareData.getType() != null) {
+                subtitle.setText(R.string.product_share_subtitle);
                 switch (shareData.getType()) {
                     case ShareData.CATALOG_TYPE:
                         tvTitle.setText(R.string.product_share_catalog);
@@ -201,6 +202,10 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                         break;
                     case ShareData.RIDE_TYPE:
                         tvTitle.setText(R.string.product_share_ride_trip);
+                        break;
+                    case ShareData.APP_SHARE_TYPE:
+                        tvTitle.setText(R.string.product_share_app);
+                        subtitle.setText(R.string.product_share_app_subtitle);
                         break;
                 }
             }
@@ -266,6 +271,10 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         String productUri = data.getString(TkpdState.ProductService.PRODUCT_URI);
         if (StringUtils.isNotBlank(productUri)) {
             shareData.setUri(productUri);
+        }
+        String productId = data.getString(TkpdState.ProductService.PRODUCT_ID);
+        if (StringUtils.isNotBlank(productId)) {
+            shareData.setId(productId);
         }
     }
 
@@ -386,7 +395,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void showDialogShareFb() {
+    public void showDialogShareFb(String shortUrl) {
         shareDialog = new ShareDialog(this);
         callbackManager = CallbackManager.Factory.create();
         shareDialog.registerCallback(callbackManager, new
@@ -411,14 +420,14 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                 });
 
         if (ShareDialog.canShow(ShareLinkContent.class)) {
-            if (shareData != null && !TextUtils.isEmpty(shareData.getUri())) {
+            if (shareData != null && !TextUtils.isEmpty(shortUrl)) {
                 ShareLinkContent.Builder linkBuilder = new ShareLinkContent.Builder()
-                        .setContentUrl(Uri.parse(shareData.getUri()));
+                        .setContentUrl(Uri.parse(shortUrl));
                 if (!TextUtils.isEmpty(shareData.getName())) {
                     linkBuilder.setContentTitle(shareData.getName());
                 }
-                if (!TextUtils.isEmpty(shareData.getTextContent())) {
-                    linkBuilder.setContentDescription(shareData.getTextContent());
+                if (!TextUtils.isEmpty(shareData.getTextContent(getActivity()))) {
+                    linkBuilder.setContentDescription(shareData.getTextContent(getActivity()));
                 }
                 if (!TextUtils.isEmpty(shareData.getDescription())) {
                     linkBuilder.setQuote(shareData.getDescription());

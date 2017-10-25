@@ -84,6 +84,7 @@ public interface Constants {
         String REPUTATION = "tokopedia://review";
         String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
         String WEBVIEW = "tokopedia://webview";
+        String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
         String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
         String DIGITAL = "tokopedia://digital";
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
@@ -106,6 +107,9 @@ public interface Constants {
         String OFFICIAL_STORES = "tokopedia://official-stores";
         String RESCENTER = "tokopedia://resolution/{resolution_id}";
         String REFERRAL = "tokopedia://referral";
+        String BROWSER = "tokopedia://browser";
+        String REGISTER = "tokopedia://registration";
+        String FAVORITE = "tokopedia://home/favorite";
 
         interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";
@@ -117,6 +121,7 @@ public interface Constants {
             String TOPADS_DASHBOARD = "sellerapp://topads";
             String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
             String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
+            String BROWSER = "sellerapp://browser";
         }
     }
 

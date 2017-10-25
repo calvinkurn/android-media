@@ -1,8 +1,8 @@
 package com.tokopedia.digital.product.domain;
 
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.data.entity.response.ResponseLastOrderData;
 import com.tokopedia.digital.product.data.entity.response.ResponseRecentNumberData;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
@@ -32,7 +32,6 @@ public class LastOrderNumberRepository implements ILastOrderNumberRepository {
     @Override
     public Observable<OrderClientNumber> getLastOrder(TKPDMapParam<String, String> param
     ) {
-
         return digitalEndpointService.getApi().getLastOrder(param)
                 .map(new Func1<Response<TkpdDigitalResponse>, OrderClientNumber>() {
                     @Override

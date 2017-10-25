@@ -59,7 +59,6 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
 
                 HotListModel hlm = (HotListModel) data.get(getAdapterPosition());
                 UnifyTracking.eventHotlist(hlm.getHotListName());
-                TrackingUtils.eventLoca(AppScreen.EVENT_CLICKED_HOTLIST);
                 TrackingUtils.sendMoEngageClickHotListEvent(hlm);
                 hotList.moveToOtherActivity(temp);
             }

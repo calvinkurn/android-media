@@ -28,8 +28,8 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/ic_gm_featured_product"
-        android:layout_width="@dimen/image_add_video_url_width"
-        android:layout_height="@dimen/image_add_video_url_width"
+        android:layout_width="@dimen/image_width_xl"
+        android:layout_height="@dimen/image_width_xl"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_toEndOf="@id/ic_drag_and_drop_gm_featured_product_container"
@@ -68,7 +68,7 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/check_box_margin"
         android:layout_marginRight="@dimen/check_box_margin"
-        android:theme="@style/checkBoxStyle" />
+        android:theme="@style/checkBoxStyleSeller" />
 
     <View
         android:layout_width="match_parent"

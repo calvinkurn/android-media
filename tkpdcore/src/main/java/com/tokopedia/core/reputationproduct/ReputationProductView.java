@@ -45,4 +45,8 @@ public class ReputationProductView extends TActivity {
         return (ReviewProductModel) getIntent().getParcelableExtra("data_model");
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

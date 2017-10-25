@@ -25,6 +25,15 @@ public class Datum {
     private String labelEdit; // 17
     private String labelPerClick; // 18
     private String labelOf; // 19
+    private int groupBid;
+
+    public int getGroupBid() {
+        return groupBid;
+    }
+
+    public void setGroupBid(int groupBid) {
+        this.groupBid = groupBid;
+    }
 
     public int getKeywordId() {
         return keywordId;

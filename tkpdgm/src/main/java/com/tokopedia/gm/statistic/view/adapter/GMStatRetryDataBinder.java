@@ -10,6 +10,6 @@ import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 public class GMStatRetryDataBinder extends BaseRetryDataBinder {
 
     public GMStatRetryDataBinder(DataBindAdapter dataBindAdapter) {
-        super(dataBindAdapter, R.drawable.ic_gm_statistic_error);
+        super(dataBindAdapter, R.drawable.ic_cloud_error);
     }
 }
