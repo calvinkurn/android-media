@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native'
-import { Text } from '../../common/TKPText'
-import PopUp from '../../common/TKPPopupModal'
-import { config } from '../../lib/config'
-import { icons } from '../icon/index'
+import { Text } from '../../../common/TKPText'
+import PopUp from '../../../common/TKPPopupModal'
+import { config } from '../../../lib/config'
+import { icons } from '../../icon/index'
 
 class CartItem extends Component {
   constructor(props) {

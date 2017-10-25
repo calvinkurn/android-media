@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { Modal, View, TouchableWithoutFeedback, Image, ScrollView } from 'react-native'
 import CartItem from './CartItem'
-import Button from '../../common/TKPPrimaryBtn'
-import PopUp from '../../common/TKPPopupModal'
-import { Text } from '../../common/TKPText'
-import Processing from '../Processing'
+import Button from '../../../common/TKPPrimaryBtn'
+import PopUp from '../../../common/TKPPopupModal'
+import { Text } from '../../../common/TKPText'
+import Processing from '../../Processing'
 import { NavigationModule } from 'NativeModules'
 import { connect } from 'react-redux'
-import { PaymentCheckoutToNative } from '../../actions/index'
-import { icons } from '../icon/index'
+import { PaymentCheckoutToNative } from '../../../actions/index'
+import { icons } from '../../icon/index'
 
 
 class CartItemList extends Component {
