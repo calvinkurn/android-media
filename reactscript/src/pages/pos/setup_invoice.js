@@ -3,6 +3,7 @@ import { Provider } from 'react-redux'
 import store from './store/Store'
 // import PaymentProcessing from './components/PaymentProcessing'
 import PaymentInvoice from './components/PaymentInvoice'
+import InvoiceErrorPage from './components/ErrorPage'
 // import { StackNavigator } from 'react-navigation'
 
 
@@ -24,7 +25,10 @@ class Root extends Component {
     render() {
         return (
             <Provider store={store}>
-                <PaymentInvoice screenProps={this.props} />
+                {this.props.data.isError ? (
+                    <InvoiceErrorPage screenProps={this.props} />
+                    ) : (<PaymentInvoice screenProps={this.props} />)
+                }
             </Provider>
         )
     }

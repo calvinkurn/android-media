@@ -570,7 +570,7 @@ const transactionHistory = (state = {
 }
 
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   products,
   etalase,
   cart,
@@ -582,5 +582,13 @@ const rootReducer = combineReducers({
   transactionHistory,
   shop
 })
+
+const rootReducer = (state, action) => {
+  if (action.type === 'RELOAD_STATE') {
+    state = undefined
+  }
+
+  return appReducer(state, action)
+}
 
 export default rootReducer

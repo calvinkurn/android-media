@@ -13,6 +13,10 @@ export const BASE_API_URL_PCIDSS = {
     PRODUCTION: ''
 }
 
+export const BASE_API_URL_ORDER = {
+    STAGING: 'https://api-staging.tokopedia.com',
+    PRODUCTION: 'https://api.tokopedia.com'
+}
 
 // export const BASE_API_URL_PAYMENT = {
 //     STAGING: 'https://payment-staging.tokopedia.com',
@@ -28,8 +32,3 @@ export const BASE_API_URL_PCIDSS = {
 //     STAGING: 'https://pay-staging.tokopedia.id',
 //     PRODUCTION: 'https://pay.tokopedia.id'
 // }
-
-export const BASE_API_URL_ORDER = {
-    STAGING: 'https://api-staging.tokopedia.com',
-    PRODUCTION: 'https://api.tokopedia.com'
-}
