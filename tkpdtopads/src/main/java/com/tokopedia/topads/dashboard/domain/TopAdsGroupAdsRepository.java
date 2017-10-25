@@ -4,6 +4,7 @@ import com.tokopedia.topads.dashboard.data.model.request.CreateGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 
 import java.util.List;
@@ -22,5 +23,5 @@ public interface TopAdsGroupAdsRepository {
 
     Observable<TopAdsDetailGroupDomainModel> saveDetailGroup(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel);
 
-    Observable<String> getSuggestion(GetSuggestionBody getSuggestionBody);
+    Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody);
 }

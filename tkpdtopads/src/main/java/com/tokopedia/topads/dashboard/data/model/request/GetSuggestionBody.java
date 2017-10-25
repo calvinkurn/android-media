@@ -1,6 +1,7 @@
 
 package com.tokopedia.topads.dashboard.data.model.request;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -18,7 +19,7 @@ public class GetSuggestionBody {
     private long shopId;
     @SerializedName("ids")
     @Expose
-    private List<Long> ids = null;
+    private List<Long> ids = new ArrayList<>();
     @SerializedName("source")
     @Expose
     private String source;
@@ -56,6 +57,14 @@ public class GetSuggestionBody {
 
     public void setIds(List<Long> ids) {
         this.ids = ids;
+    }
+
+    public void addId(Long id){
+        ids.add(id);
+    }
+
+    public void addId(String id){
+        addId(Long.valueOf(id));
     }
 
     public String getSource() {

@@ -9,6 +9,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
@@ -75,6 +76,9 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
         hideLoading();
         showSnackBarError(errorMessage);
     }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) { /* this class not do anything about this */ }
 
     @Override
     public void goToGroupDetail(String groupId) {

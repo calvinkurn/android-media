@@ -1,6 +1,9 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailProductUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveDetailProductUseCase;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
@@ -19,15 +22,20 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
 
     private TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase;
     private TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase;
+    private TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
     private TopAdsEditPromoFragmentListener listener;
 
     public TopAdsDetailEditProductPresenterImpl(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase,
                                                 TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
-                                                TopAdsProductListUseCase topAdsProductListUseCase) {
+                                                TopAdsProductListUseCase topAdsProductListUseCase,
+                                                TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase) {
         super(topAdsProductListUseCase);
+        this.topAdsGetSuggestionUseCase = topAdsGetSuggestionUseCase;
         this.topAdsGetDetailProductUseCase = topAdsGetDetailProductUseCase;
         this.topAdsSaveDetailProductUseCase = topAdsSaveDetailProductUseCase;
     }
+
+
 
     @Override
     public void saveAd(TopAdsDetailProductViewModel adViewModel) {
@@ -45,6 +53,26 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
             @Override
             public void onNext(TopAdsDetailProductDomainModel domainModel) {
                 getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
+            }
+        });
+    }
+
+    @Override
+    public void getSuggestionBid(GetSuggestionBody getSuggestionBody) {
+        topAdsGetSuggestionUseCase.execute(TopAdsGetSuggestionUseCase.createRequestParams(getSuggestionBody), new Subscriber<GetSuggestionResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GetSuggestionResponse s) {
+                getView().onSuggestionSuccess(s);
             }
         });
     }

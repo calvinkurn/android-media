@@ -11,6 +11,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
@@ -48,6 +50,22 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     protected void initView(View view) {
         super.initView(view);
         submitButton.setText(getString(R.string.label_top_ads_save));
+    }
+
+    @Override
+    protected void loadSuggestionBid() {
+        GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
+        getSuggestionBody.setRounding(true);
+        if(SessionHandler.getShopID(getActivity()) != null)
+            getSuggestionBody.setShopId(Long.valueOf(SessionHandler.getShopID(getActivity())));
+        getSuggestionBody.setSource("top_ads_new_cost_without_group");
+        getSuggestionBody.setDataType("summary");
+        getSuggestionBody.setSuggestionType("dep_bid");
+        for (TopAdsProductViewModel topAdsProductViewModel : stepperModel.getTopAdsProductViewModels()) {
+            getSuggestionBody.addId(topAdsProductViewModel.getId()+"");
+        }
+
+        topAdsDetailNewProductPresenter.getSuggestionBid(getSuggestionBody);
     }
 
     @Override
@@ -105,6 +123,16 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     public void onSaveAdError(String errorMessage) {
         hideLoading();
         showSnackBarError(errorMessage);
+    }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        setSuggestionBidText(s);
+    }
+
+    @Override
+    protected void onSuggestionTitleUseClick() {
+
     }
 
     @Override

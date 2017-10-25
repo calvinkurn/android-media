@@ -9,6 +9,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -78,5 +79,10 @@ public class TopAdsNewScheduleShopFragment extends TopAdsNewScheduleFragment<Top
         if(stepperListener != null) {
             stepperListener.finishPage();
         }
+    }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        // TODO things todo
     }
 }

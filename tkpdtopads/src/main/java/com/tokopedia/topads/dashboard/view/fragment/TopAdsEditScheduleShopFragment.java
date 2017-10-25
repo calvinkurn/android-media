@@ -8,6 +8,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -52,6 +53,11 @@ public class TopAdsEditScheduleShopFragment extends TopAdsNewScheduleFragment<St
     public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
         super.onSaveAdSuccess(topAdsDetailAdViewModel);
         getActivity().finish();
+    }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        // TODO this things
     }
 
     @Override

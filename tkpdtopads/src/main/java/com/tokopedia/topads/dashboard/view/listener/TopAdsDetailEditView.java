@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.listener;
 
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 
 /**
@@ -14,4 +15,6 @@ public interface TopAdsDetailEditView extends TopAdsGetProductDetailView {
     void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel);
 
     void onSaveAdError(String errorMessage);
+
+    void onSuggestionSuccess(GetSuggestionResponse s);
 }
