@@ -107,6 +107,8 @@ public interface Constants {
         String OFFICIAL_STORES = "tokopedia://official-stores";
         String RESCENTER = "tokopedia://resolution/{resolution_id}";
         String REFERRAL = "tokopedia://referral";
+        String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
+        String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
         String BROWSER = "tokopedia://browser";
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";

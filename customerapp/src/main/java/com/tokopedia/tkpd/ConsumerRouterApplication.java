@@ -412,6 +412,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void actionApplink(Activity activity, String linkUrl, String extra) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.putExtra("extra", extra);
+        intent.setData(Uri.parse(linkUrl));
+        deepLinkDelegate.dispatchFrom(activity, intent);
+    }
+
+    @Override
     public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
         activity.startActivity(BannerWebView.getCallingIntent(activity, mobileUrl));
     }
@@ -575,6 +584,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public String getFlavor() {
+        return BuildConfig.FLAVOR;
+    }
+
     public Observable<GMFeaturedProductDomainModel> getFeaturedProduct() {
         GMFeaturedProductDomainModel gmFeaturedProductDomainModel = new GMFeaturedProductDomainModel();
         gmFeaturedProductDomainModel.setData(new ArrayList<GMFeaturedProductDomainModel.Datum>());
