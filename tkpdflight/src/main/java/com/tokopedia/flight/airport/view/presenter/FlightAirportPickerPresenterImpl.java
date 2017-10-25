@@ -7,4 +7,5 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
  */
 
 public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<FlightAirportPickerView> implements FlightAirportPickerPresenter {
+
 }
