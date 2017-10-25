@@ -14,10 +14,8 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
 
 public class InvoiceFragment extends ReactNativeFragment {
 
-    public static InvoiceFragment newInstance(String data) {
+    public static InvoiceFragment newInstance(Bundle bundle) {
         InvoiceFragment fragment = new InvoiceFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(InvoiceActivity.DATA, data);
         fragment.setArguments(bundle);
         return fragment;
     }

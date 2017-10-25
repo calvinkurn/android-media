@@ -77,7 +77,7 @@ public class InvoiceActivity extends BasePresenterActivity {
             getSupportActionBar().setTitle("Invoice");
         }
 
-        InvoiceFragment fragment = InvoiceFragment.newInstance(getIntent().getStringExtra(DATA));
+        InvoiceFragment fragment = InvoiceFragment.newInstance(getIntent().getExtras());
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getSupportFragmentManager().findFragmentByTag(
                 InvoiceFragment.class.getSimpleName()) == null) {

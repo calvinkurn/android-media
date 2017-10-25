@@ -117,7 +117,8 @@ public class ProductListActivity extends ReactDrawerPresenterActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_credit_card) {
-            startActivity(new Intent(this, ReactInstallmentActivity.class));
+//            startActivity(new Intent(this, ReactInstallmentActivity.class));
+            startActivity(InvoiceActivity.newErrorIntent(this, "Error title", "Error message detail description"));
             return true;
         } else if(item.getItemId() == R.id.action_cart) {
             startActivity(new Intent(this, LocalCartActivity.class));
