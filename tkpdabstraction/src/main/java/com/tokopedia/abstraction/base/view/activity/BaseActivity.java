@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.abstraction.constant.TkpdState;
-import com.tokopedia.abstraction.session.SessionHandler;
 import com.tokopedia.abstraction.utils.DialogForceLogout;
 import com.tokopedia.abstraction.utils.GlobalConfig;
 import com.tokopedia.abstraction.utils.LocalCacheHandler;
@@ -35,7 +34,7 @@ public class BaseActivity extends AppCompatActivity implements
 
     private static final long DISMISS_TIME = 10000;
 
-    protected SessionHandler sessionHandler;
+//    protected SessionHandler sessionHandler;
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private LocalCacheHandler cache;
@@ -92,7 +91,7 @@ public class BaseActivity extends AppCompatActivity implements
     protected void onDestroy() {
         super.onDestroy();
 //        HockeyAppHelper.unregisterManager();
-        sessionHandler = null;
+//        sessionHandler = null;
         cache = null;
     }
 
