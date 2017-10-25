@@ -7,6 +7,8 @@ import com.tokopedia.flight.airport.data.source.cloud.service.FlightAirportServi
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
@@ -19,6 +21,7 @@ public class FlightAirportDataListCloudSource extends DataListCloudSource<Flight
 
     private FlightAirportService flightAirportService;
 
+    @Inject
     public FlightAirportDataListCloudSource(FlightAirportService flightAirportService) {
         super(flightAirportService);
         this.flightAirportService = flightAirportService;

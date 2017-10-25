@@ -1,8 +1,10 @@
 package com.tokopedia.flight.airport.view.adapter;
 
 import android.view.View;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 
 /**
@@ -10,12 +12,19 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
  */
 
 public class FlightAirportViewHolder extends BaseViewHolder<FlightAirportDB> {
+
+    private TextView city;
+    private TextView airport;
+
     public FlightAirportViewHolder(View itemView) {
         super(itemView);
+        city = (TextView) itemView.findViewById(R.id.city);
+        airport = (TextView) itemView.findViewById(R.id.airport);
     }
 
     @Override
     public void bindObject(FlightAirportDB flightAirportDB) {
-
+        city.setText(getString(R.string.flight_label_city, flightAirportDB.getCityName(), flightAirportDB.getCountryName()));
+        airport.setText(getString(R.string.flight_label_airport, flightAirportDB.getAirportId(), flightAirportDB.getAirportName()));
     }
 }

@@ -12,5 +12,5 @@ import rx.Observable;
  */
 
 public interface FlightRepository {
-    Observable<List<FlightAirportDB>> getAirportList(RequestParams requestParams);
+    Observable<List<FlightAirportDB>> getAirportList(String query);
 }

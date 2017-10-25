@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 
@@ -23,6 +25,7 @@ public abstract class DataListCacheSource {
 
     protected abstract long getExpiredTimeInSec();
 
+    @Inject
     public DataListCacheSource(@ApplicationContext Context context) {
         sharedPrefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
