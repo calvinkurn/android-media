@@ -33,7 +33,7 @@ public class TopAdsOkHttpFactory extends OkHttpFactory {
 
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(apiCacheInterceptor)
-                .addInterceptor(fingerprintInterceptor)
+//                .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(topAdsAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy)
@@ -44,7 +44,7 @@ public class TopAdsOkHttpFactory extends OkHttpFactory {
     public OkHttpClient buildClientTopAdsAuth(String authorizationString) {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new ApiCacheInterceptor())
-                .addInterceptor(new FingerprintInterceptor())
+//                .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new TopAdsAuthInterceptor(authorizationString))
                 .addInterceptor(new TkpdErrorResponseInterceptor(TopAdsResponseError.class))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())

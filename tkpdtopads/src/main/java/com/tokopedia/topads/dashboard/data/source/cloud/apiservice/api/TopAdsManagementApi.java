@@ -26,6 +26,7 @@ import java.util.Map;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
@@ -66,27 +67,33 @@ public interface TopAdsManagementApi {
     @GET(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> getDetailProduct(@QueryMap Map<String, String> params);
 
+    @Headers({"Content-Type: application/json"})
     @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_PRODUCT_AD)
     Observable<Response<DataResponse<ProductAdBulkAction>>> bulkActionProductAd(@Body DataRequest<ProductAdBulkAction> body);
 
+    @Headers({"Content-Type: application/json"})
     @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_GROUP_AD)
     Observable<Response<DataResponse<GroupAdBulkAction>>> bulkActionGroupAd(@Body DataRequest<GroupAdBulkAction> body);
 
+    @Headers({"Content-Type: application/json"})
     @PATCH(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> editProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
 
     @POST(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> createProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
 
+    @Headers({"Content-Type: application/json"})
     @POST(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> createGroupAd(@Body DataRequest<CreateGroupRequest> body);
 
     @GET(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> getDetailGroup(@QueryMap Map<String, String> params);
 
+    @Headers({"Content-Type: application/json"})
     @PATCH(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> editGroupAd(@Body DataRequest<EditGroupRequest> body);
 
+    @Headers({"Content-Type: application/json"})
     @POST(TopAdsNetworkConstant.GET_SUGGESTION)
     Observable<Response<String>> getSuggestion(@Body DataRequest<GetSuggestionBody> body);
 
