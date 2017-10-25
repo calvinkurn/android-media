@@ -4,6 +4,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStore;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
@@ -152,5 +153,10 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     @Override
     public Observable<String> sendTip(TKPDMapParam<String, Object> parameters) {
         return mRideApi.sendTip(parameters);
+    }
+
+    @Override
+    public Observable<PaymentMethodListEntity> getPaymentMethodList(TKPDMapParam<String, Object> parameters) {
+        return mRideApi.getPaymentMethodList(parameters);
     }
 }

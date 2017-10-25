@@ -440,8 +440,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     }
 
     private void getOverViewPolyLineBetweenUserAndDestination(final boolean animation, final RideRequest result) {
-
-
         if (result.getLocation() != null && result.getLocation().getLatitude() != 0 && result.getLocation().getLongitude() != 0) {
             userLocationLatitude = result.getLocation().getLatitude();
             userLocationLongitude = result.getLocation().getLongitude();

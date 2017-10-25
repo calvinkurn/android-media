@@ -6,6 +6,7 @@ import com.tokopedia.ride.bookingride.data.RideAddressCacheImpl;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
@@ -19,6 +20,7 @@ import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.UpdateDestinationEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
+import com.tokopedia.ride.common.ride.domain.model.PaymentMethodList;
 import com.tokopedia.ride.common.ride.domain.model.PriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.Receipt;
@@ -56,6 +58,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final PriceEstimateEntityMapper priceEstimateEntityMapper;
     private final RideHistoryWrapperMapper rideHistoryWrapperMapper;
     private final UpdateDestinationEntityMapper updateDestinationEntityMapper;
+    private final PaymentMethodListMapper paymentMethodListMapper;
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory) {
         mBookingRideDataStoreFactory = bookingRideDataStoreFactory;
@@ -71,6 +74,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         priceEstimateEntityMapper = new PriceEstimateEntityMapper();
         rideHistoryWrapperMapper = new RideHistoryWrapperMapper();
         updateDestinationEntityMapper = new UpdateDestinationEntityMapper();
+        paymentMethodListMapper = new PaymentMethodListMapper();
     }
 
     @Override
@@ -350,5 +354,17 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     @Override
     public Observable<String> sendTip(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore().sendTip(parameters);
+    }
+
+    @Override
+    public Observable<PaymentMethodList> getPaymentMethodList(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getPaymentMethodList(parameters)
+                .map(new Func1<PaymentMethodListEntity, PaymentMethodList>() {
+                    @Override
+                    public PaymentMethodList call(PaymentMethodListEntity paymentMethodListEntity) {
+                        return paymentMethodListMapper.transform(paymentMethodListEntity);
+                    }
+                });
     }
 }
