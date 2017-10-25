@@ -1,11 +1,9 @@
 package com.tokopedia.usecase;
 
-import com.tokopedia.usecase.executor.PostExecutionThread;
-import com.tokopedia.usecase.executor.ThreadExecutor;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
@@ -18,18 +16,9 @@ public abstract class UseCase<T> implements Interactor<T> {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    protected ThreadExecutor threadExecutor;
-    protected PostExecutionThread postExecutionThread;
     protected Subscription subscription = Subscriptions.empty();
 
-    public UseCase(ThreadExecutor threadExecutor,
-                   PostExecutionThread postExecutionThread) {
-        this.threadExecutor = threadExecutor;
-        this.postExecutionThread = postExecutionThread;
-    }
-
     public UseCase() {
-        this(null, null);
     }
 
     public abstract Observable<T> createObservable(RequestParams requestParams);
@@ -60,12 +49,12 @@ public abstract class UseCase<T> implements Interactor<T> {
             if (sync) {
                 observable = Observable.just(createObservable(requestParams)
                         .defaultIfEmpty(null).toBlocking().first())
-                        .subscribeOn(Schedulers.from(threadExecutor))
-                        .observeOn(postExecutionThread.getScheduler());
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .observeOn(Schedulers.io());
             } else {
                 observable = createObservable(requestParams)
-                        .subscribeOn(Schedulers.from(threadExecutor))
-                        .observeOn(postExecutionThread.getScheduler());
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .observeOn(Schedulers.io());
             }
             if (subscriber != null) {
                 subscription = observable.subscribe(subscriber);

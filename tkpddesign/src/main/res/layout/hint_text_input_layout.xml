@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:addStatesFromChildren="true"
+    android:focusable="true">
+    <TextView
+        android:id="@+id/tv_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Label"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp" />
+    <FrameLayout
+        android:id="@+id/frame_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-8dp"
+        android:layout_marginBottom="-6dp">
+        <!-- will be infalted programmatically -->
+    </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_helper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="HelperText"/>
+            <TextView
+                android:id="@+id/tv_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="ErrorText"/>
+            <TextView
+                android:id="@+id/tv_success"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Toped Sukses"/>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|top"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            tools:text="2/20"/>
+    </LinearLayout>
+
+</LinearLayout>

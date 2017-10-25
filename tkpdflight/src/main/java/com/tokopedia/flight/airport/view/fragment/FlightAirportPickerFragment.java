@@ -2,6 +2,7 @@ package com.tokopedia.flight.airport.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,21 +16,21 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB>{
+public class FlightAirportPickerFragment extends Fragment{
 
     public static FlightAirportPickerFragment getInstance() {
         return new FlightAirportPickerFragment();
     }
 
-    @Override
-    protected void initInjector() {
-
-    }
-
-    @Override
-    protected BaseListAdapter<FlightAirportDB> getNewAdapter() {
-        return null;
-    }
+//    @Override
+//    protected void initInjector() {
+//
+//    }
+//
+//    @Override
+//    protected BaseListAdapter<FlightAirportDB> getNewAdapter() {
+//        return null;
+//    }
 
     @Nullable
     @Override
@@ -38,18 +39,18 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
         return view;
     }
 
-    @Override
-    public void onItemClicked(FlightAirportDB flightAirportDB) {
-
-    }
-
-    @Override
-    protected void searchForPage(int page) {
-
-    }
-
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
+//    @Override
+//    public void onItemClicked(FlightAirportDB flightAirportDB) {
+//
+//    }
+//
+//    @Override
+//    protected void searchForPage(int page) {
+//
+//    }
+//
+//    @Override
+//    protected String getScreenName() {
+//        return null;
+//    }
 }
