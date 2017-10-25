@@ -1,6 +1,8 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter;
 
 
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFactory;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationActionDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
@@ -12,11 +14,17 @@ import java.util.List;
  * Created by yoasfs on 23/10/17.
  */
 
-public class ChatLeftViewModel extends ChatRightViewModel {
+public class ChatLeftViewModel implements Visitable<DetailChatTypeFactory> {
+
+    protected ConversationActionDomain action;
+    protected String message;
+    protected ConversationCreateTimeDomain createTime;
+    protected List<ConversationAttachmentDomain> attachment;
+    protected ConversationFlagDomain flag;
 
     public ChatLeftViewModel() {
-
     }
+
     public ChatLeftViewModel(ConversationActionDomain action,
                               String message,
                               ConversationCreateTimeDomain createTime,
@@ -27,5 +35,50 @@ public class ChatLeftViewModel extends ChatRightViewModel {
         this.createTime = createTime;
         this.attachment = attachment;
         this.flag = flag;
+    }
+
+    public ConversationActionDomain getAction() {
+        return action;
+    }
+
+    public void setAction(ConversationActionDomain action) {
+        this.action = action;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public ConversationCreateTimeDomain getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(ConversationCreateTimeDomain createTime) {
+        this.createTime = createTime;
+    }
+
+    public List<ConversationAttachmentDomain> getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(List<ConversationAttachmentDomain> attachment) {
+        this.attachment = attachment;
+    }
+
+    public ConversationFlagDomain getFlag() {
+        return flag;
+    }
+
+    public void setFlag(ConversationFlagDomain flag) {
+        this.flag = flag;
+    }
+
+    @Override
+    public int type(DetailChatTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 }
