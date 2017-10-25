@@ -307,8 +307,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 && data.getProductPreorder().getPreorderStatus() == 1) {
             tvPreOrder.setVisibility(View.VISIBLE);
             tvPreOrderInfo.setVisibility(View.VISIBLE);
-            tvPreOrderInfo.setText(MessageFormat.format("{0}{1} {2}",
-                    String.valueOf(tvPreOrderInfo.getText()),
+            tvPreOrderInfo.setText(MessageFormat.format("{0} {1}",
                     data.getProductPreorder().getPreorderProcessTime(),
                     data.getProductPreorder().getPreorderProcessTimeTypeString()));
             btnBuy.setText(getString(R.string.title_pre_order));
