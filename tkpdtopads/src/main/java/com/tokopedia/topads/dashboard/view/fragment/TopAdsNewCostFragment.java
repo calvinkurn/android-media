@@ -19,6 +19,7 @@ import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
@@ -30,6 +31,8 @@ import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
  */
 
 public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends TopAdsDetailAdViewModel> extends BasePresenterFragment {
+
+    private static final String TAG = "TopAdsNewCostFragment";
 
     protected T stepperModel;
     protected StepperListener stepperListener;
@@ -46,6 +49,8 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     protected ProgressDialog progressDialog;
     protected TextView headerText;
     protected TextView titleCost;
+    protected TextView titleSuggestionBidUse;
+    protected TextView titleSuggestionBid;
 
     protected V detailAd;
 
@@ -79,6 +84,37 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         budgetPerDayEditText.setText(budgetPerDayEditText.getText());
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        titleSuggestionBid = (TextView) view.findViewById(R.id.text_suggestion_bid);
+        titleSuggestionBidUse = (TextView)view.findViewById(R.id.text_suggestion_bid_use);
+        titleSuggestionBidUse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void setActionVar() {
+        super.setActionVar();
+        loadSuggestionBid();
+    }
+
+    protected abstract void loadSuggestionBid();
+
+    protected abstract void onSuggestionTitleUseClick();
+
+    protected void setSuggestionBidText(GetSuggestionResponse data){
+        setSuggestionBidText(data.getData().get(0).getMedianFmt());
+    }
+
+    protected void setSuggestionBidText(String data){
+        CommonUtils.dumper(TAG+" >> "+ data);
+        titleSuggestionBid.setText(getRecSuggestionBid(data));
+    }
+
+    protected String getRecSuggestionBid(String data){
+        return getString(R.string.label_top_ads_max_price_description, data);
     }
 
     @Override

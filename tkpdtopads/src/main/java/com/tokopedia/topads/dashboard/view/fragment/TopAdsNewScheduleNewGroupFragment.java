@@ -6,6 +6,8 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -41,7 +43,7 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .topAdsComponent(getComponent(TopAdsComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);
@@ -69,6 +71,11 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
         if(stepperListener != null) {
             stepperListener.finishPage();
         }
+    }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        // TODO insert this thing
     }
 
     private void trackingNewScheduleTopads() {

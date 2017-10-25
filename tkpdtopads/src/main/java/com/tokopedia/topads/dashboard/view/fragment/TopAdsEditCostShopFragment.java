@@ -6,8 +6,10 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditShopPresenter;
 
@@ -15,7 +17,7 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditShopPresent
  * Created by zulfikarrahman on 8/8/17.
  */
 
-public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDetailEditShopPresenter, TopAdsDetailShopViewModel> {
+public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDetailEditShopPresenter, TopAdsDetailShopViewModel, Ad> {
 
     @Override
     protected void initInjector() {
@@ -43,11 +45,26 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
         return new TopAdsDetailShopViewModel();
     }
 
+    @Override
+    protected void loadSuggestionBid() {
+
+    }
+
+    @Override
+    protected void onSuggestionTitleUseClick() {
+
+    }
+
     public static Fragment createInstance(String shopId) {
         Fragment fragment = new TopAdsEditCostShopFragment();
         Bundle bundle = new Bundle();
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, shopId);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        // TODO this need to be inserted
     }
 }

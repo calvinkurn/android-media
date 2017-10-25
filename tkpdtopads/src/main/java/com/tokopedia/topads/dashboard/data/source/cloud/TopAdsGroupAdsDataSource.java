@@ -13,6 +13,7 @@ import com.tokopedia.topads.dashboard.data.model.request.CreateGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.request.EditGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
@@ -70,12 +71,12 @@ public class TopAdsGroupAdsDataSource {
         return topAdsManagementApi.editGroupAd(getSaveGroupDetailRequest(topAdsDetailGroupDomainModel)).map(topAdsDetailGroupDomainMapper);
     }
 
-    public Observable<String> getSuggestion(GetSuggestionBody getSuggestionBody){
+    public Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody){
         DataRequest<GetSuggestionBody> dataRequest = new DataRequest<>();
         dataRequest.setData(getSuggestionBody);
-        return topAdsManagementApi.getSuggestion(dataRequest).map(new Func1<Response<String>, String>() {
+        return topAdsManagementApi.getSuggestion(dataRequest).map(new Func1<Response<GetSuggestionResponse>, GetSuggestionResponse>() {
             @Override
-            public String call(Response<String> stringResponse) {
+            public GetSuggestionResponse call(Response<GetSuggestionResponse> stringResponse) {
                 return stringResponse.body();
             }
         });

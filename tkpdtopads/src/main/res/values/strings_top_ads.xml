@@ -71,7 +71,7 @@
     <string name="label_top_ads_total_selected_product">%02d / 50 Terpilih</string>
     <string name="label_top_ads_total_selected_product_zero">%1$d / 50 Terpilih</string>
     <string name="label_top_ads_max_price_hint">Biaya Maks</string>
-    <string name="label_top_ads_max_price_description">Sesuaikan biaya dengan anggaran promo Anda.</string>
+    <string name="label_top_ads_max_price_description">Rekomendasi Biaya %1$s </string>
     <string name="label_top_ads_limit_price_description">Batas anggaran dihitung dari akumulasi biaya promo jika dalam satu grup promo.</string>
     <string name="label_top_ads_icon">Icon TopAds</string>
     <string name="top_ads_label_cost">Biaya</string>

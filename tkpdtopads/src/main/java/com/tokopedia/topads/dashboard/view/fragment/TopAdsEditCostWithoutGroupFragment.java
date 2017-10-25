@@ -9,6 +9,8 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
@@ -20,7 +22,7 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 8/8/17.
  */
 
-public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<TopAdsDetailEditProductPresenter, TopAdsDetailProductViewModel> {
+public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<TopAdsDetailEditProductPresenter, TopAdsDetailProductViewModel, GroupAd> {
 
     @Override
     protected void initInjector() {
@@ -57,6 +59,11 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
         return new TopAdsDetailProductViewModel();
     }
 
+    @Override
+    protected void loadSuggestionBid() {
+
+    }
+
     public static Fragment createInstance(String adId) {
         Fragment fragment = new TopAdsEditCostWithoutGroupFragment();
         Bundle bundle = new Bundle();
@@ -68,5 +75,15 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
     @Override
     public void onErrorLoadTopAdsProduct(String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        setSuggestionBidText(s);
+    }
+
+    @Override
+    protected void onSuggestionTitleUseClick() {
+
     }
 }

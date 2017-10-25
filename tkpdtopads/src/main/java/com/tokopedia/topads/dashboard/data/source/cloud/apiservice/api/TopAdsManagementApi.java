@@ -18,6 +18,7 @@ import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.seller.common.data.response.DataResponse;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 
 import java.util.List;
@@ -79,6 +80,7 @@ public interface TopAdsManagementApi {
     @PATCH(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> editProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
 
+    @Headers({"Content-Type: application/json"})
     @POST(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> createProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
 
@@ -93,8 +95,9 @@ public interface TopAdsManagementApi {
     @PATCH(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> editGroupAd(@Body DataRequest<EditGroupRequest> body);
 
+    // http://docs.topadssuggestion.apiary.io/#introduction/what-is-the-content-of-this-document?
     @Headers({"Content-Type: application/json"})
     @POST(TopAdsNetworkConstant.GET_SUGGESTION)
-    Observable<Response<String>> getSuggestion(@Body DataRequest<GetSuggestionBody> body);
+    Observable<Response<GetSuggestionResponse>> getSuggestion(@Body DataRequest<GetSuggestionBody> body);
 
 }
