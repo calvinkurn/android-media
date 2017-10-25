@@ -728,6 +728,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 .setPrice(productManageViewModel.getProductPrice())
                 .setUri(productManageViewModel.getProductUrl())
                 .setType(ShareData.PRODUCT_TYPE)
+                .setId(productManageViewModel.getProductId())
                 .build();
         Intent intent = ShareActivity.createIntent(getActivity(), shareData);
         startActivity(intent);
