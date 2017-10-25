@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -36,6 +33,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppe
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
+import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
 
 import javax.inject.Inject;
 
@@ -75,6 +73,7 @@ public class SolutionListFragment extends BaseDaggerFragment
         fragment.setArguments(bundle);
         return fragment;
     }
+
     public static SolutionListFragment newEditAppealInstance(EditAppealSolutionModel editAppealSolutionModel) {
         SolutionListFragment fragment = new SolutionListFragment();
         Bundle bundle = new Bundle();
@@ -129,7 +128,7 @@ public class SolutionListFragment extends BaseDaggerFragment
     protected void setupArguments(Bundle arguments) {
         if (arguments.getParcelable(RESULT_VIEW_MODEL_DATA) instanceof ResultViewModel) {
             resultViewModel = arguments.getParcelable(RESULT_VIEW_MODEL_DATA);
-        } else if (arguments.getParcelable(EDIT_APPEAL_MODEL_DATA) instanceof EditAppealSolutionModel){
+        } else if (arguments.getParcelable(EDIT_APPEAL_MODEL_DATA) instanceof EditAppealSolutionModel) {
             editAppealSolutionModel = arguments.getParcelable(EDIT_APPEAL_MODEL_DATA);
             isEditAppeal = true;
         }
@@ -307,7 +306,7 @@ public class SolutionListFragment extends BaseDaggerFragment
         textView.setText(solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
                 solutionViewModel.getSolutionName().replace(
                         context.getResources().getString(R.string.string_return_value),
-                        solutionViewModel.getAmount().getIdr()) :
+                        CurrencyFormatter.formatDotRupiah(solutionViewModel.getAmount().getIdr())) :
                 solutionViewModel.getName());
     }
 

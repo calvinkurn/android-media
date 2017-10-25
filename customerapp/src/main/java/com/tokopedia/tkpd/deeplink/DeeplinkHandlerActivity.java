@@ -33,6 +33,8 @@ import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 
+import io.branch.referral.Branch;
+
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         CoreDeeplinkModule.class,
@@ -65,6 +67,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(Branch.getInstance()!=null) {
+            Branch.getInstance().initSession(this);
+        }
         DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {

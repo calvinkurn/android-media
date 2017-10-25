@@ -2,7 +2,6 @@ package com.tokopedia.inbox.rescenter.createreso.view.di;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -230,8 +229,8 @@ public class CreateResoModule {
     @CreateResoScope
     @Provides
     GetEditSolutionUseCase provideGetEditSolutionUseCase(ThreadExecutor threadExecutor,
-                                                        PostExecutionThread postExecutionThread,
-                                                        EditSolutionRepository editSolutionRepository) {
+                                                         PostExecutionThread postExecutionThread,
+                                                         EditSolutionRepository editSolutionRepository) {
         return new GetEditSolutionUseCase(threadExecutor,
                 postExecutionThread,
                 editSolutionRepository);
@@ -319,8 +318,8 @@ public class CreateResoModule {
     @CreateResoScope
     @Provides
     GetAppealSolutionUseCase provideGetAppealSolutionUseCase(ThreadExecutor threadExecutor,
-                                                            PostExecutionThread postExecutionThread,
-                                                            AppealSolutionRepository appealSolutionRepository) {
+                                                             PostExecutionThread postExecutionThread,
+                                                             AppealSolutionRepository appealSolutionRepository) {
         return new GetAppealSolutionUseCase(threadExecutor,
                 postExecutionThread,
                 appealSolutionRepository);
@@ -329,8 +328,8 @@ public class CreateResoModule {
     @CreateResoScope
     @Provides
     PostEditSolutionUseCase providePostEditSolutionUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 PostEditSolutionRepository postEditSolutionRepository) {
+                                                           PostExecutionThread postExecutionThread,
+                                                           PostEditSolutionRepository postEditSolutionRepository) {
         return new PostEditSolutionUseCase(threadExecutor,
                 postExecutionThread,
                 postEditSolutionRepository);
@@ -339,8 +338,8 @@ public class CreateResoModule {
     @CreateResoScope
     @Provides
     PostAppealSolutionUseCase providePostAppealSolutionUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             PostAppealSolutionRepository postAppealSolutionRepository) {
+                                                               PostExecutionThread postExecutionThread,
+                                                               PostAppealSolutionRepository postAppealSolutionRepository) {
         return new PostAppealSolutionUseCase(threadExecutor,
                 postExecutionThread,
                 postAppealSolutionRepository);
