@@ -4,5 +4,6 @@
         <attr name="tiv_title_text" format="string" />
         <attr name="tiv_hint_text" format="string" />
         <attr name="tiv_icon" format="reference" />
+        <attr name="allow_input_manually" format="boolean" />
     </declare-styleable>
 </resources>

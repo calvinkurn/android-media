@@ -123,7 +123,7 @@
     </style>
 
     <style name="HintTextInputLayoutColorLine" parent="TextInputLayoutColorLine">
-        <item name="android:textColorHint">@color/grey_500</item>
+        <item name="android:textColorHint">@color/grey_300</item>
     </style>
 
     <style name="CheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">

@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,6 +26,7 @@ public class TextInputView extends BaseCustomView {
     private Drawable iconDrawable;
     private String titleText;
     private String hintText;
+    private boolean allowInputManually;
 
     public TextInputView(Context context) {
         super(context);
@@ -47,6 +49,7 @@ public class TextInputView extends BaseCustomView {
             iconDrawable = styledAttributes.getDrawable(R.styleable.TextInputView_tiv_icon);
             hintText = styledAttributes.getString(R.styleable.TextInputView_tiv_hint_text);
             titleText = styledAttributes.getString(R.styleable.TextInputView_tiv_title_text);
+            allowInputManually = styledAttributes.getBoolean(R.styleable.TextInputView_allow_input_manually, false);
         } finally {
             styledAttributes.recycle();
         }
@@ -57,6 +60,7 @@ public class TextInputView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_text_input_view, this);
         ImageView imageView = (ImageView) view.findViewById(R.id.image_view);
         textInputLayout = (TkpdHintTextInputLayout) view.findViewById(R.id.text_input_layout);
+        EditText etText = textInputLayout.getEditText();
 
         if (iconDrawable == null) {
             imageView.setVisibility(View.GONE);
@@ -64,9 +68,7 @@ public class TextInputView extends BaseCustomView {
             imageView.setImageDrawable(iconDrawable);
             imageView.setVisibility(View.VISIBLE);
         }
-        if (!TextUtils.isEmpty(titleText)) {
-            textInputLayout.setLabel(titleText);
-        }
+        textInputLayout.setLabel(titleText);
         if (TextUtils.isEmpty(hintText)) {
             if (!TextUtils.isEmpty(titleText)) {
                 textInputLayout.setHint(titleText);
@@ -76,10 +78,21 @@ public class TextInputView extends BaseCustomView {
         } else {
             textInputLayout.setHint(hintText);
         }
+        textInputLayout.setClickable(allowInputManually);
+        etText.setClickable(allowInputManually);
+        textInputLayout.setEnabled(allowInputManually);
+        etText.setEnabled(allowInputManually);
     }
 
     public CharSequence getText(){
         return textInputLayout.getEditText().getText();
     }
 
+    public void setText(CharSequence text) {
+        textInputLayout.getEditText().setText(text);
+    }
+
+    public void setHintText(String hintText) {
+        this.hintText = hintText;
+    }
 }
