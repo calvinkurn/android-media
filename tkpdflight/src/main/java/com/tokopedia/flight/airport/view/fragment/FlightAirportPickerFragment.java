@@ -1,21 +1,23 @@
 package com.tokopedia.flight.airport.view.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapter;
+import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenter;
+import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenterImpl;
+
+import javax.inject.Inject;
 
 /**
  * Created by nathan on 10/19/17.
  */
 
 public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB>{
+
+    @Inject
+    FlightAirportPickerPresenter flightAirportPickerPresenter;
 
     public static FlightAirportPickerFragment getInstance() {
         return new FlightAirportPickerFragment();
@@ -28,14 +30,12 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
 
     @Override
     protected BaseListAdapter<FlightAirportDB> getNewAdapter() {
-        return null;
+        return new FlightAirportAdapter();
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_airport_picker, container, false);
-        return view;
+    protected int getFragmentLayout() {
+        return R.layout.fragment_flight_airport_picker;
     }
 
     @Override

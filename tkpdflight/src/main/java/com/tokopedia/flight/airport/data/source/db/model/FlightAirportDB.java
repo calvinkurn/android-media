@@ -14,7 +14,7 @@ import com.tokopedia.flight.common.database.TkpdFightDatabase;
 @Table(database = TkpdFightDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class FlightAirportDB extends BaseModel implements ItemType {
 
-    private static final int TYPE = 12345;
+    public static final int TYPE = 12345;
 
     @PrimaryKey()
     @Column(name = "country_id")
