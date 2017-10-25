@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventType;
+import com.moe.pushlibrary.PayloadBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -1291,9 +1292,16 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventLocaGoodReview(Integer accuracy, Integer quality) {
-        if (accuracy > 3 && quality > 3) {
-
-        }
+        CommonUtils.dumper("moengagenps review ulasan "+accuracy+" "+quality);
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrInt(
+                AppEventTracking.MOENGAGE.QUALITY_SCORE,
+                quality
+        );
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.SUBMIT_ULASAN_REVIEW
+        );
     }
 
     public static void sendAFCompleteRegistrationEvent() {
