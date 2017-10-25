@@ -2051,6 +2051,7 @@ di Tokopedia Sekarang!</string>
     <string name="product_share_hotlist">Bagikan Hotlist Ini!</string>
     <string name="product_share_shop">Bagikan Toko Ini!</string>
     <string name="product_share_catalog">Bagikan Katalog Ini!</string>
+    <string name="product_share_app">Bagikan Aplikasi Tokopedia</string>
     <string name="drawer_loading">Loading..</string>
     <string name="album_name_all">Semua Media</string>
     <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
@@ -2091,5 +2092,7 @@ di Tokopedia Sekarang!</string>
     <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli & bayar ini itu lewat aplikasi Tokopedia]]></string>
     <string name="app_share_btn_label">Undang Teman</string>
     <string name="tambah_produk">+ Tambah Produk</string>
+    <string name="product_share_subtitle">Dimana saja dan kapan saja</string>
+    <string name="product_share_app_subtitle">Pilih cara berbagimu</string>
 
 </resources>

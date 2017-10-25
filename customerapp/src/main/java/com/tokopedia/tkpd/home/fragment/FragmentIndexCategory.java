@@ -268,8 +268,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void initData() {
+
         loadDummyPromos();
         rechargeCategoryPresenter.fetchDataRechargeCategory();
+
         getAnnouncement();
         getPromo();
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
@@ -300,6 +302,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         });
     }
 
+
+
     private void getAnnouncement() {
         if (!category.isTickerClosed()) {
             category.fetchTickers(new Category.FetchTickersListener() {
@@ -307,6 +311,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 public void onSuccess(final ArrayList<Ticker.Tickers> tickersResponse) {
                     holder.tickerContainer.setVisibility(View.VISIBLE);
                     if (tickersResponse.size() > 1) {
+                        tickerShowed.clear();
                         tickerIncrementPage = runnableIncrementTicker();
                         tickerShowed.clear();
                         tickerHandler = new Handler();

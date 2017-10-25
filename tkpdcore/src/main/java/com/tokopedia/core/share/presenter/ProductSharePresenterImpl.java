@@ -12,7 +12,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
-import com.tokopedia.core.util.BranchShareLinkGenerator;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -65,7 +65,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             if(expired){
                 LoginManager.getInstance().logOut();
             }
-            BranchShareLinkGenerator.generateBranchLink(data, activity, new BranchShareLinkGenerator.GenerateShareContents() {
+            BranchSdkUtils.generateBranchLink(data, activity, new BranchSdkUtils.GenerateShareContents() {
                 @Override
                 public void onCreateShareContents(String shareContents, String shareUri) {
                     fragment.showDialogShareFb(shareUri);
@@ -207,7 +207,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     public void shareCopy(final ShareData data) {
 
         data.setSource("Copy");
-        BranchShareLinkGenerator.generateBranchLink(data, activity, new BranchShareLinkGenerator.GenerateShareContents() {
+        BranchSdkUtils.generateBranchLink(data, activity, new BranchSdkUtils.GenerateShareContents() {
             @Override
             public void onCreateShareContents(String shareContents, String shareUri) {
                 ClipboardHandler.CopyToClipboard(activity, shareUri);

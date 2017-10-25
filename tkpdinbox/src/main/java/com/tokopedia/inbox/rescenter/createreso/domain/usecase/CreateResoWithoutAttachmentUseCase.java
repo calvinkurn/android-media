@@ -8,8 +8,6 @@ import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoWithou
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoWithoutAttachmentDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 
-import org.json.JSONObject;
-
 import rx.Observable;
 
 /**
