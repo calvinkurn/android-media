@@ -24,4 +24,9 @@ public class MessageRepositoryImpl implements MessageRepository{
     public Observable<InboxChatViewModel> getMessage(TKPDMapParam<String, Object> mapParam) {
         return messageFactory.createCloudMessageDataSource().getMessage(mapParam);
     }
+
+    @Override
+    public Observable<InboxChatViewModel> deleteMessage(TKPDMapParam<String, Object> parameters) {
+        return messageFactory.createCloudMessageDataSource().deleteMessage(parameters);
+    }
 }

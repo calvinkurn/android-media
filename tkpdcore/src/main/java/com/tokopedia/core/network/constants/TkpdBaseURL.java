@@ -851,5 +851,6 @@ public class TkpdBaseURL {
         public static final String REPLY = "/tc/v1/reply";
         public static final String LISTEN_WEBSOCKET = "/connect";
         public static final String SEARCH = "/tc/v1/search";
+        public static final String DELETE = "/tc/v1/delete";
     }
 }

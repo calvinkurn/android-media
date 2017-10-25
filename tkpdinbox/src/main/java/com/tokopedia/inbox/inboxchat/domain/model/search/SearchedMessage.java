@@ -13,6 +13,11 @@ public class SearchedMessage {
     @Expose
     private Replies replies;
 
+    @SerializedName("time_machine_status")
+    @Expose
+    private int timeMachineStatus;
+
+
     public Contacts getContacts() {
         return contacts;
     }
@@ -29,4 +34,11 @@ public class SearchedMessage {
         this.replies = replies;
     }
 
+    public int getTimeMachineStatus() {
+        return timeMachineStatus;
+    }
+
+    public void setTimeMachineStatus(int timeMachineStatus) {
+        this.timeMachineStatus = timeMachineStatus;
+    }
 }

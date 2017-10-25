@@ -9,16 +9,16 @@ public class Contacts {
 
     @SerializedName("has_next")
     @Expose
-    private int hasNext;
+    private boolean hasNext;
     @SerializedName("data")
     @Expose
     private List<Datum> data = null;
 
-    public int getHasNext() {
+    public boolean isHasNext() {
         return hasNext;
     }
 
-    public void setHasNext(int hasNext) {
+    public void setHasNext(boolean hasNext) {
         this.hasNext = hasNext;
     }
 

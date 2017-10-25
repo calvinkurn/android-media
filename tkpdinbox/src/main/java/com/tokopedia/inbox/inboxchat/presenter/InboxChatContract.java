@@ -68,6 +68,8 @@ public class InboxChatContract {
         void moveViewToTop();
 
         void setOptionsMenu();
+
+        void finishSearch();
     }
 
     interface Presenter extends CustomerPresenter<View>{
