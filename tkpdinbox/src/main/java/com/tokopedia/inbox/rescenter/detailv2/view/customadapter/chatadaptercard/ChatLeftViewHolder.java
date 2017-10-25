@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
@@ -35,7 +36,7 @@ public class ChatLeftViewHolder extends AbstractViewHolder<ChatLeftViewModel> {
 
     @Override
     public void bind(ChatLeftViewModel element) {
-        tvMessage.setText(element.getMessage());
+        tvMessage.setText(MethodChecker.fromHtml(element.getMessage()));
         if (element.getAttachment() == null || element.getAttachment().size() == 0) {
             rvAttachment.setVisibility(View.GONE);
         }

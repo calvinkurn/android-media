@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,6 +30,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.Conve
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
 import javax.inject.Inject;
 
@@ -47,6 +50,8 @@ public class DetailResChatFragment
     private LinearLayout mainView;
     private CardView cvNextStep;
     private ChatAdapter chatAdapter;
+    private EditText etChat;
+    private ImageView ivSend;
 
     private String resolutionId;
     private DetailResChatDomain detailResChatDomain;
@@ -131,6 +136,8 @@ public class DetailResChatFragment
         mainView = (LinearLayout) view.findViewById(R.id.main_view);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         cvNextStep = (CardView) view.findViewById(R.id.cv_next_step);
+        etChat = (EditText) view.findViewById(R.id.et_chat);
+        ivSend = (ImageView) view.findViewById(R.id.iv_send);
         mainView.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
 
@@ -152,6 +159,13 @@ public class DetailResChatFragment
                         getActivity(),
                         resolutionId,
                         detailResChatDomain.getNextAction()));
+            }
+        });
+
+        ivSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.sendIconPressed(etChat.getText().toString());
             }
         });
 
@@ -177,6 +191,11 @@ public class DetailResChatFragment
         mainView.setVisibility(View.VISIBLE);
         initNextStep(detailResChatDomain.getNextAction());
         initChatData(detailResChatDomain);
+    }
+
+    @Override
+    public void errorInputMessage(String error) {
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
     @Override
@@ -224,6 +243,16 @@ public class DetailResChatFragment
             }
         }
         chatAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void successReplyDiscussion(DiscussionItemViewModel discussionItemViewModel) {
+        etChat.setText("");
+    }
+
+    @Override
+    public void errorReplyDiscussion(String error) {
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
     @Override
