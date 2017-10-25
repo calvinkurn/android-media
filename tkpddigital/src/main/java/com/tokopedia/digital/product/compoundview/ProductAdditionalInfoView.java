@@ -83,9 +83,9 @@ public class ProductAdditionalInfoView extends RelativeLayout {
     @SuppressWarnings("deprecation")
     public void convertDetailWithHtml(final Product product) {
         if (TextUtils.isEmpty(product.getDetailUrl()) ||  TextUtils.isEmpty(product.getDetailUrlText())) {
-            tvInfo.setText(product.getDetail());
+            tvInfo.setText(MethodChecker.fromHtml(product.getDetail()));
         } else {
-            SpannableStringBuilder stringBuilder = new SpannableStringBuilder(product.getDetail());
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder(MethodChecker.fromHtml(product.getDetail()));
             String detailUrl = "<a href=\"" + product.getDetailUrl() + "\"> " +
                     product.getDetailUrlText() + "</a>";
             stringBuilder.append(" ");
