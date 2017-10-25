@@ -16,7 +16,7 @@ import org.w3c.dom.Text;
  * Created by yoasfs on 23/10/17.
  */
 
-public class ChatLeftViewHolder extends AbstractViewHolder<ChatLeftViewModel>{
+public class ChatLeftViewHolder extends AbstractViewHolder<ChatLeftViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_detail_chat_left;
