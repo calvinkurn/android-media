@@ -27,11 +27,13 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity{
     }
 
     protected void inflateFragment() {
-        if (getNewFragment() == null)
+        Fragment newFragment = getNewFragment();
+        if (newFragment == null) {
             return;
+        }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.parent_view, getNewFragment(), getTagFragment())
+                .replace(R.id.parent_view, newFragment, getTagFragment())
                 .commit();
     }
 

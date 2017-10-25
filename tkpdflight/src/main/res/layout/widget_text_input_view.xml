@@ -9,19 +9,21 @@
 
     <ImageView
         android:id="@+id/image_view"
+        android:layout_marginTop="@dimen/margin_vs"
         android:layout_width="@dimen/image_width_s"
         android:layout_height="@dimen/image_width_s"
+        android:scaleType="fitCenter"
         tools:src="@drawable/ic_smiley_positive" />
 
-    <android.support.design.widget.TextInputLayout
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
         android:id="@+id/text_input_layout"
-        style="@style/TextInputLayout"
+        style="@style/HintTextInputLayout"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms">
 
-        <EditText
+        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </android.support.design.widget.TextInputLayout>
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
 </LinearLayout>

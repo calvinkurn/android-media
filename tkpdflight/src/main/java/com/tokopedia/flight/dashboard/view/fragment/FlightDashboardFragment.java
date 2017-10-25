@@ -3,6 +3,7 @@ package com.tokopedia.flight.dashboard.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +20,7 @@ import com.tokopedia.flight.dashboard.view.widget.TextInputView;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightDashboardFragment extends BaseDaggerFragment{
+public class FlightDashboardFragment extends Fragment {
 
     private static final int REQUEST_CODE_AIRPORT_DEPARTURE = 1;
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
@@ -28,26 +29,18 @@ public class FlightDashboardFragment extends BaseDaggerFragment{
         return new FlightDashboardFragment();
     }
 
-    private TextInputView airportDepartureTextInputView;
-    private TextInputView airportArrivalTextInputView;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
-    @Override
-    protected void initInjector() {
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup   container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_dashboard, container, false);
-        airportDepartureTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_departure_airport);
-        airportArrivalTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_arrival_airport);
+        TextInputView airportDepartureTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_departure_airport);
+        TextInputView airportArrivalTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_arrival_airport);
         airportDepartureTextInputView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,8 +67,4 @@ public class FlightDashboardFragment extends BaseDaggerFragment{
         }
     }
 
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
 }

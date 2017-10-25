@@ -17,13 +17,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="@string/flight_search_one_way" />
+            android:text="@string/flight_search_one_way"
+            style="@style/RadioButton"/>
 
         <RadioButton
             android:id="@+id/radioFemale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/flight_search_return" />
+            android:text="@string/flight_search_return"
+            style="@style/RadioButton"/>
 
     </RadioGroup>
 
@@ -44,7 +46,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tiv_icon="@drawable/ic_flight_departure"
-                app:tiv_title_text="@string/flight_search_airport_departure_title" />
+                app:tiv_title_text="@string/flight_search_airport_departure_title"
+                app:tiv_hint_text="@string/flight_search_airport_departure_title"/>
 
             <com.tokopedia.flight.dashboard.view.widget.TextInputView
                 android:id="@+id/text_input_view_arrival_airport"
@@ -52,7 +55,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_vs"
                 app:tiv_icon="@drawable/ic_flight_arrival"
-                app:tiv_title_text="@string/flight_search_airport_arrival_title" />
+                app:tiv_title_text="@string/flight_search_airport_arrival_title"
+                app:tiv_hint_text="@string/flight_search_airport_arrival_title"/>
         </LinearLayout>
 
         <ImageView
@@ -65,7 +69,7 @@
         android:id="@+id/text_input_view_date_departure"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_ms"
         app:tiv_icon="@drawable/ic_flight_calendar"
         app:tiv_title_text="@string/flight_search_date_departure_title" />
 
@@ -73,7 +77,7 @@
         android:id="@+id/text_input_view_date_arrival"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_ms"
         app:tiv_icon="@drawable/ic_flight_calendar"
         app:tiv_title_text="@string/flight_search_date_arrival_title" />
 
@@ -81,7 +85,7 @@
         android:id="@+id/text_input_view_passenger"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_ms"
         app:tiv_icon="@drawable/ic_flight_passenger"
         app:tiv_title_text="@string/flight_search_passenger_title" />
 
@@ -89,7 +93,7 @@
         android:id="@+id/text_input_view_class"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_ms"
         app:tiv_icon="@drawable/ic_flight_class"
         app:tiv_title_text="@string/flight_search_passenger_class_title" />
 </LinearLayout>

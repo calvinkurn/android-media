@@ -6,11 +6,13 @@ import android.graphics.drawable.Drawable;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 
 /**
@@ -19,13 +21,12 @@ import com.tokopedia.flight.R;
 
 public class TextInputView extends BaseCustomView {
 
-    private ImageView imageView;
-    private TextInputLayout textInputLayout;
-    private EditText editText;
+    private TkpdHintTextInputLayout textInputLayout;
 
     private Drawable iconDrawable;
     private String titleText;
     private String hintText;
+    private boolean allowInputManually;
 
     public TextInputView(Context context) {
         super(context);
@@ -43,37 +44,67 @@ public class TextInputView extends BaseCustomView {
     }
 
     private void init(AttributeSet attrs) {
-        init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TextInputView);
         try {
             iconDrawable = styledAttributes.getDrawable(R.styleable.TextInputView_tiv_icon);
             hintText = styledAttributes.getString(R.styleable.TextInputView_tiv_hint_text);
             titleText = styledAttributes.getString(R.styleable.TextInputView_tiv_title_text);
+            allowInputManually = styledAttributes.getBoolean(R.styleable.TextInputView_allow_input_manually, false);
         } finally {
             styledAttributes.recycle();
         }
+        init();
     }
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_text_input_view, this);
-        imageView = (ImageView) view.findViewById(R.id.image_view);
-        textInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout);
-        editText = (EditText) view.findViewById(R.id.edit_text);
-    }
+        ImageView imageView = (ImageView) view.findViewById(R.id.image_view);
+        textInputLayout = (TkpdHintTextInputLayout) view.findViewById(R.id.text_input_layout);
+        EditText etText = textInputLayout.getEditText();
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
         if (iconDrawable == null) {
             imageView.setVisibility(View.GONE);
         } else {
             imageView.setImageDrawable(iconDrawable);
             imageView.setVisibility(View.VISIBLE);
         }
-        if (!TextUtils.isEmpty(titleText)) {
-            textInputLayout.setHint(titleText);
+        textInputLayout.setLabel(titleText);
+        if (TextUtils.isEmpty(hintText)) {
+            if (!TextUtils.isEmpty(titleText)) {
+                textInputLayout.setHint(titleText);
+            } else {
+                textInputLayout.setHint(null);
+            }
+        } else {
+            textInputLayout.setHint(hintText);
         }
-        invalidate();
-        requestLayout();
+        if (allowInputManually) {
+
+        }
+        textInputLayout.setClickable(allowInputManually);
+        etText.setClickable(allowInputManually);
+        textInputLayout.setEnabled(allowInputManually);
+        etText.setEnabled(allowInputManually);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (allowInputManually) {
+            return super.onInterceptTouchEvent(ev);
+        } else {
+            return true;
+        }
+    }
+
+    public CharSequence getText(){
+        return textInputLayout.getEditText().getText();
+    }
+
+    public void setText(CharSequence text) {
+        textInputLayout.getEditText().setText(text);
+    }
+
+    public void setHintText(String hintText) {
+        this.hintText = hintText;
     }
 }
