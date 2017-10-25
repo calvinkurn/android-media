@@ -16,9 +16,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -40,7 +44,9 @@ public class RideInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_X_AUTHORIZATION = "X-Tkpd-Authorization";
     private static final String AUTO_RIDE = "AUTO_RIDE";
+    private static final String X_FORWARDED_FOR = "x-forwarded-for";
     private static final String DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data";
+
     private String authorizationString;
 
     public RideInterceptor(String authorizationString) {
@@ -153,6 +159,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         headerMap.put(HEADER_X_AUTHORIZATION, headerMap.get(HEADER_AUTHORIZATION));
         headerMap.put(HEADER_AUTHORIZATION, authorizationString);
         headerMap.put(AUTO_RIDE, "true");
+        headerMap.put(X_FORWARDED_FOR, getIPAddress(true));
         return headerMap;
     }
 
@@ -162,5 +169,33 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         } catch (Error e) {
             throw new UnknownHostException("tidak ada koneksi internet");
         }
+    }
+
+    private static String getIPAddress(boolean useIPv4) {
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                for (InetAddress addr : addrs) {
+                    if (!addr.isLoopbackAddress()) {
+                        String sAddr = addr.getHostAddress();
+                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+                        boolean isIPv4 = sAddr.indexOf(':') < 0;
+
+                        if (useIPv4) {
+                            if (isIPv4)
+                                return sAddr;
+                        } else {
+                            if (!isIPv4) {
+                                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
+                                return delim < 0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+        } // for now eat exceptions
+        return "";
     }
 }

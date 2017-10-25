@@ -1422,7 +1422,5 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void startTopupTokoCashChangeDestinationActivity(PendingPayment pendingPayment, String requestId) {
         Intent topupIntent = TopupTokoCashChangeDestination.getCallingIntent(getActivity(), pendingPayment, requestId);
         startActivityForResult(topupIntent, REQUEST_CODE_TOPUP_PENDING_PAYMENT_CHANGE_DESTINATION);
-
     }
-
 }

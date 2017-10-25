@@ -4,6 +4,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
@@ -99,6 +100,10 @@ public interface RideApi {
     @POST(RideUrl.SEND_TIP)
     @FormUrlEncoded
     Observable<String> sendTip(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @POST(RideUrl.PAYMENT_METHOD_LIST)
+    @FormUrlEncoded
+    Observable<PaymentMethodListEntity> getPaymentMethodList(@FieldMap TKPDMapParam<String, Object> parameters);
 
     @GET(RideUrl.GET_NEARBY_CARS)
     Observable<NearbyRidesEntity> getNearbyCars(@QueryMap TKPDMapParam<String, Object> parameters);
