@@ -14,12 +14,12 @@ import com.tokopedia.core.database.DbFlowDatabase;
 @Table(database = DbFlowDatabase.class,
         uniqueColumnGroups = {@UniqueGroup(groupNumber = 1, uniqueConflict = ConflictAction.ABORT)})
 public class CacheApiWhitelist extends BaseModel {
-    @Column
     @PrimaryKey
+    @Column
     private String host;
 
-    @Column
     @PrimaryKey
+    @Column
     private String path;
 
     @Column

@@ -13,6 +13,7 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
 
     private String inspired;
     protected ArrayList<InspirationProductViewModel> listProduct;
+    private int rowNumber;
 
 
     public InspirationViewModel(String title, ArrayList<InspirationProductViewModel> listProduct) {
@@ -39,5 +40,13 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public void setInspired(String inspired) {
         this.inspired = inspired;
+    }
+
+    public void setRowNumber(int rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
+    public int getRowNumber() {
+        return rowNumber;
     }
 }

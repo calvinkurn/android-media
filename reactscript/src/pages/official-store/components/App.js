@@ -22,6 +22,8 @@ import Seo from '../components/seo'
 import OfficialStoreIntro from '../components/OfficialStoreIntro'
 import { fetchBanners, fetchCampaigns, fetchBrands, refreshState, reloadState } from '../actions/actions'
 import NotConnect from '../NotConnect'
+import GridContainer from '../containers/gridContainer'
+import AllBrand from './AllBrand'
 
 import { NavigationModule } from 'NativeModules'
 
@@ -102,6 +104,8 @@ class App extends Component {
             }>
             <OfficialStoreIntro />
             <BannerContainer />
+            <AllBrand />
+            <GridContainer />
             <CampaignContainer />
             <BrandContainer />
             <Infographic /> 

@@ -97,8 +97,7 @@
 
     <color name="color_complain_header">#c0000000</color>
     <color name="color_complain_body">#8a000000</color>
-
-
+    <color name="color_free_return_text">#0c87c8</color>
     <color name="color_free_return_stroke">#bce8f1</color>
     <color name="color_free_return">#d5f9ff</color>
     <color name="digital_ussd_light_yellow">#fff5dd</color>

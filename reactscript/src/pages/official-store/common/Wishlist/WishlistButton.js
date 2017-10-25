@@ -32,7 +32,8 @@ class Wishlist extends Component {
   render() {
     const isWishlist = this.props.isWishlist || false
     const { productId } = this.props
-    // const Touchable = Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity
+    
+    
     return (
       <View style={styles.wrapper}>
         <TouchableOpacity onPress={() => this._onTap(isWishlist, productId)}>

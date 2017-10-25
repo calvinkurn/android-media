@@ -19,6 +19,7 @@ import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.etalase.di.component.DaggerEtalasePickerComponent;
@@ -28,8 +29,12 @@ import com.tokopedia.seller.product.etalase.view.adapter.EtalasePickerAdapter;
 import com.tokopedia.seller.product.etalase.view.adapter.EtalasePickerAdapterListener;
 import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerFragmentListener;
 import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerView;
+import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseViewModel;
 import com.tokopedia.seller.product.etalase.view.presenter.EtalasePickerPresenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -44,7 +49,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     @Inject
     EtalasePickerPresenter presenter;
 
-    private EtalasePickerAdapter adapter;
+    protected EtalasePickerAdapter adapter;
     private EtalasePickerFragmentListener listener;
     private TkpdProgressDialog tkpdProgressDialog;
 
@@ -215,9 +220,12 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.menu_etalase_picker, menu);
+        inflater.inflate(R.menu.menu_product_etalase_picker, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setOnQueryTextListener(this);
+        if (getActivity() instanceof BaseSimpleActivity) {
+            ((BaseSimpleActivity) getActivity()).updateOptionMenuColor(menu);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 

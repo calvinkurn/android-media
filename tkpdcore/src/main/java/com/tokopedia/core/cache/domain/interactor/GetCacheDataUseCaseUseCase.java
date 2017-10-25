@@ -3,7 +3,6 @@ package com.tokopedia.core.cache.domain.interactor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.cache.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.core.cache.data.source.db.CacheApiData;
 import com.tokopedia.core.cache.domain.ApiCacheRepository;
 
@@ -20,33 +19,17 @@ public class GetCacheDataUseCaseUseCase extends BaseApiCacheInterceptorUseCase<S
         super(threadExecutor, postExecutionThread, apiCacheRepository);
     }
 
-    public GetCacheDataUseCaseUseCase(ApiCacheRepositoryImpl apiCacheRepository) {
-        super(apiCacheRepository);
-    }
-
-
     @Override
     public Observable<String> createChildObservable(RequestParams requestParams) {
-        return apiCacheRepository.isInWhiteList(paramsCacheApiData.getHost(), paramsCacheApiData.getPath()).filter(new Func1<Boolean, Boolean>() {
+        return apiCacheRepository.isInWhiteList(cacheApiData.getHost(), cacheApiData.getPath()).filter(new Func1<Boolean, Boolean>() {
             @Override
             public Boolean call(Boolean aBoolean) {
                 return aBoolean;
             }
-        }).flatMap(new Func1<Boolean, Observable<CacheApiData>>() {
+        }).flatMap(new Func1<Boolean, Observable<String>>() {
             @Override
-            public Observable<CacheApiData> call(Boolean aBoolean) {
-                return apiCacheRepository.queryDataFrom(paramsCacheApiData.getHost(), paramsCacheApiData.getPath(), paramsCacheApiData.getRequestParam());
-            }
-        }).map(new Func1<CacheApiData, String>() {
-            @Override
-            public String call(CacheApiData cacheApiData) {
-                if (cacheApiData != null) {
-
-                    paramsCacheApiData.setResponseDate(cacheApiData.responseDate);
-                    paramsCacheApiData.setExpiredDate(cacheApiData.expiredDate);
-                    paramsCacheApiData.setResponseBody(cacheApiData.responseBody);
-                }
-                return paramsCacheApiData.getResponseBody();
+            public Observable<String> call(Boolean aBoolean) {
+                return apiCacheRepository.getCachedResponse(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
             }
         });
     }

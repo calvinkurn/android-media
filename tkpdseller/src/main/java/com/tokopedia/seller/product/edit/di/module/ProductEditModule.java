@@ -48,5 +48,4 @@ public class ProductEditModule extends ProductDraftModule {
     FetchVideoEditProductDataSource provideFetchVideoEditProductDataSource(GoldMerchantService goldMerchantService) {
         return new FetchVideoEditProductDataSource(goldMerchantService);
     }
-
 }

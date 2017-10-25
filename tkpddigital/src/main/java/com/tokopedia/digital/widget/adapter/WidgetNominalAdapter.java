@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.database.recharge.product.Attributes;
-import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.product.Promo;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.widget.model.product.Attributes;
+import com.tokopedia.digital.widget.model.product.Product;
+import com.tokopedia.digital.widget.model.product.Promo;
 
 import java.util.List;
 

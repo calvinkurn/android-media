@@ -108,6 +108,9 @@ public interface Constants {
         String REFERRAL = "tokopedia://referral";
         String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
         String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
+        String BROWSER = "tokopedia://browser";
+        String REGISTER = "tokopedia://registration";
+        String FAVORITE = "tokopedia://home/favorite";
 
         interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";
@@ -119,6 +122,7 @@ public interface Constants {
             String TOPADS_DASHBOARD = "sellerapp://topads";
             String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
             String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
+            String BROWSER = "sellerapp://browser";
         }
     }
 

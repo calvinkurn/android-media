@@ -92,12 +92,14 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
 
     @Override
     public void onMessageError(int type, Object... data) {
-
+        if (!isAdded()) {
+            return;
+        }
         switch (type){
             case InstagramMediaPresenterImpl.FAILED_LOAD_IMAGE:
             case InstagramMediaPresenterImpl.MAXIMUM_IMAGE_SELECTED:
                 if(data[0] != null && data[0] instanceof String) {
-                    Toast.makeText(getContext(), (String) data[0], Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), (String) data[0], Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -165,7 +167,6 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
                         instagramMedia.getSelectedModel()
                 );
             }
-            instagramMedia.clearSelectedModel();
         }
         return true;
     }

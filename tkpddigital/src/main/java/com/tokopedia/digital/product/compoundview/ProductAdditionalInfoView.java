@@ -1,7 +1,9 @@
 package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
+import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
@@ -79,24 +81,16 @@ public class ProductAdditionalInfoView extends RelativeLayout {
     }
 
     @SuppressWarnings("deprecation")
-    public void convertDetailWithHtml(Product product) {
-        CharSequence detail = MethodChecker.fromHtml(product.getDetail());
-        SpannableStringBuilder strBuilderDetail = new SpannableStringBuilder(detail);
-        URLSpan[] urls = strBuilderDetail.getSpans(0, detail.length(), URLSpan.class);
-        for (final URLSpan span : urls) {
-            int start = strBuilderDetail.getSpanStart(span);
-            int end = strBuilderDetail.getSpanEnd(span);
-            int flags = strBuilderDetail.getSpanFlags(span);
-            ClickableSpan clickable = new ClickableSpan() {
-                public void onClick(View view) {
-                    actionListener.onProductLinkClicked(span.getURL());
-                }
-            };
-            strBuilderDetail.setSpan(clickable, start, end, flags);
-            strBuilderDetail.removeSpan(span);
-        }
-        tvInfo.setText(strBuilderDetail);
-        tvInfo.setMovementMethod(LinkMovementMethod.getInstance());
+    public void convertDetailWithHtml(final Product product) {
+        Spanned detail = Html.fromHtml(product.getDetail() + "<a href=\"" + product.getDetailUrl() + "\"> " +
+                product.getDetailUrlText() + "</a>");
+        tvInfo.setText(detail);
+        tvInfo.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onProductLinkClicked(product.getDetailUrl());
+            }
+        });
     }
 
     public interface ActionListener {
