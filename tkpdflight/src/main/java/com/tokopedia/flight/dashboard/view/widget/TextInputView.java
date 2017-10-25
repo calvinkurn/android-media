@@ -78,10 +78,22 @@ public class TextInputView extends BaseCustomView {
         } else {
             textInputLayout.setHint(hintText);
         }
+        if (allowInputManually) {
+
+        }
         textInputLayout.setClickable(allowInputManually);
         etText.setClickable(allowInputManually);
         textInputLayout.setEnabled(allowInputManually);
         etText.setEnabled(allowInputManually);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (allowInputManually) {
+            return super.onInterceptTouchEvent(ev);
+        } else {
+            return true;
+        }
     }
 
     public CharSequence getText(){
