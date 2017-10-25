@@ -69,6 +69,8 @@ public class InboxChatContract {
 
         void setOptionsMenu();
 
+        void finishSearch();
+
         void addTimeMachine();
     }
 

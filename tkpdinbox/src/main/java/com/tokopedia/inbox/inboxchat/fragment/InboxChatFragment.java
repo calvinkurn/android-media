@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
@@ -57,6 +58,8 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     SwipeToRefresh swipeToRefresh;
 
 //    FloatingActionButton fab;
+
+    View searchLoading;
 
     @Inject
     InboxChatPresenter presenter;
@@ -102,6 +105,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     }
 
     private void initView(View parentView) {
+        searchLoading = parentView.findViewById(R.id.loading_search);
         mainList = (RecyclerView) parentView.findViewById(R.id.chat_list);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
 //        fab = (FloatingActionButton) parentView.findViewById(R.id.fab);
@@ -212,6 +216,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
                 }
             }
         });
+        searchLoading.setVisibility(View.GONE);
         presenter.getMessage();
     }
 
@@ -257,7 +262,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     public void setOptionsMenu() {
         if (!isMultiActionEnabled) {
             contextMenu = ((AppCompatActivity) getActivity()).startSupportActionMode(callbackContext);
-            LayoutInflater mInflater=LayoutInflater.from(getActivity());
+            LayoutInflater mInflater = LayoutInflater.from(getActivity());
             View mCustomView = mInflater.inflate(R.layout.header_chat, null);
             contextMenu.setCustomView(mCustomView);
 
@@ -267,9 +272,9 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
             ((InboxChatActivity) getActivity()).showTabLayout(false);
             if (adapter.getSelected() == 0) {
                 contextMenu.finish();
-                ((InboxChatActivity)getActivity()).showTabLayout(true);
+                ((InboxChatActivity) getActivity()).showTabLayout(true);
             }
-            contextMenu.setTitle(String.valueOf(adapter.getSelected()) +" "+ getString(R.string.title_inbox_chat));
+            contextMenu.setTitle(String.valueOf(adapter.getSelected()) + " " + getString(R.string.title_inbox_chat));
         }
 
     }
@@ -406,13 +411,21 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
         }
     }
 
+
+    @Override
+    public void finishSearch() {
+        searchLoading.setVisibility(View.GONE);
+    }
+
     @Override
     public void onSearchSubmitted(String text) {
         if(text.length()>0) {
             presenter.initSearch(text);
+            searchLoading.setVisibility(View.VISIBLE);
         }else {
             presenter.refreshData();
         }
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
     @Override

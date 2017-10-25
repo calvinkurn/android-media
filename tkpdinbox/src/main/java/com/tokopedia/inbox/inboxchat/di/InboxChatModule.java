@@ -9,6 +9,7 @@ import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.ReplyFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.SearchFactory;
+import com.tokopedia.inbox.inboxchat.data.mapper.DeleteMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetReplyMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.ReplyMessageMapper;
@@ -38,8 +39,9 @@ public class InboxChatModule {
     @Provides
     MessageFactory provideMessageFactory(
             ChatService chatService,
-            GetMessageMapper getMessageMapper){
-        return new MessageFactory(chatService, getMessageMapper);
+            GetMessageMapper getMessageMapper,
+            DeleteMessageMapper deleteMessageMapper){
+        return new MessageFactory(chatService, getMessageMapper, deleteMessageMapper);
     }
 
     @InboxChatScope
@@ -75,6 +77,12 @@ public class InboxChatModule {
     @Provides
     ReplyMessageMapper provideReplyMessageMapper(){
         return new ReplyMessageMapper();
+    }
+
+    @InboxChatScope
+    @Provides
+    DeleteMessageMapper provideDeleteMessageMapper(){
+        return new DeleteMessageMapper();
     }
 
 

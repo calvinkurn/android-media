@@ -205,7 +205,7 @@ public class InboxChatAdapter extends BaseLinearRecyclerViewAdapter
         SpannableString spannableString = new SpannableString(span);
 
         //Search for all occurrences of the keyword in the string
-        int indexOfKeyword = spannableString.toString().indexOf(keyword);
+        int indexOfKeyword = spannableString.toString().toLowerCase().indexOf(keyword);
 
         while (indexOfKeyword < span.length() && indexOfKeyword >= 0) {
             //Create a background color span on the keyword
@@ -237,7 +237,12 @@ public class InboxChatAdapter extends BaseLinearRecyclerViewAdapter
 
 
     private void setLabel(InboxChatAdapter.ViewHolder holder, String label) {
-        holder.label.setText(label);
+        if(label!=null && label.length()>0){
+            holder.label.setVisibility(View.VISIBLE);
+            holder.label.setText(label);
+        }else {
+            holder.label.setVisibility(View.GONE);
+        }
     }
 
     private void setTime(InboxChatAdapter.ViewHolder holder, int position) {

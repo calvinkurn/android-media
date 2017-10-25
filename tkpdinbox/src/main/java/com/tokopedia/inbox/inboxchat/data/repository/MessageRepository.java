@@ -14,4 +14,7 @@ import rx.Observable;
 public interface MessageRepository {
 
     Observable<InboxChatViewModel> getMessage(TKPDMapParam<String, Object> requestParams);
+
+
+    Observable<InboxChatViewModel> deleteMessage(TKPDMapParam<String, Object> parameters);
 }

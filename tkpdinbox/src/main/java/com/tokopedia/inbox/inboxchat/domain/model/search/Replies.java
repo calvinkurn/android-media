@@ -9,16 +9,16 @@ public class Replies {
 
     @SerializedName("has_next")
     @Expose
-    private int hasNext;
+    private boolean hasNext;
     @SerializedName("data")
     @Expose
     private List<Datum> data = null;
 
     public boolean isHasNext() {
-        return hasNext==1;
+        return hasNext;
     }
 
-    public void setHasNext(int hasNext) {
+    public void setHasNext(boolean hasNext) {
         this.hasNext = hasNext;
     }
 

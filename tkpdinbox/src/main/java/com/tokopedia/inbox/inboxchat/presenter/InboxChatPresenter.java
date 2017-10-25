@@ -119,6 +119,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         bundle.putString(PARAM_SENDER_NAME, listMessage.getName());
         bundle.putString(PARAM_SENDER_TAG, listMessage.getLabel());
         bundle.putString(PARAM_SENDER_ID, String.valueOf(listMessage.getSenderId()));
+        bundle.putInt(PARAM_MODE, viewModel.getMode());
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         getView().startActivityForResult(intent, OPEN_DETAIL_MESSAGE);
@@ -181,7 +182,10 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         search(keyword);
     }
     public void search(String keyword) {
-        searchMessageUseCase.execute(SearchMessageUseCase.generateParam(keyword, pagingHandler.getPage()), new SearchMessageSubscriber(getView(), this));
+        if(!isRequesting) {
+            searchMessageUseCase.execute(SearchMessageUseCase.generateParam(keyword, pagingHandler.getPage()), new SearchMessageSubscriber(getView(), this));
+            isRequesting = true;
+        }
     }
 
     public boolean isRequesting() {

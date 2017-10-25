@@ -11,6 +11,7 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
+import com.tokopedia.inbox.inboxchat.data.mapper.DeleteMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepositoryImpl;
@@ -62,7 +63,7 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
     public InboxMessageFragmentPresenterImpl(InboxMessageFragment viewListener) {
 
         chatService = new ChatService();
-        messageFactory = new MessageFactory(chatService, new GetMessageMapper());
+        messageFactory = new MessageFactory(chatService, new GetMessageMapper(), new DeleteMessageMapper());
         messageRepo = new MessageRepositoryImpl(messageFactory);
         getMessageListUseCase = new GetMessageListUseCase(new JobExecutor(), new UIThread(), messageRepo);
 

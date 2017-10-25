@@ -44,4 +44,8 @@ public interface ChatApi {
     @Headers("Cookie:_SID_TOKOPEDIA_")
     @GET(TkpdBaseURL.Chat.SEARCH)
     Observable<Response<TkpdResponse>> searchChat(@QueryMap Map<String, Object> requestParams);
+
+
+    @POST(TkpdBaseURL.Chat.DELETE)
+    Observable<Response<TkpdResponse>> deleteMessage(@FieldMap Map<String, Object> parameters);
 }

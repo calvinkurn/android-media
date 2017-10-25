@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -19,7 +19,8 @@
         <com.tokopedia.core.customwidget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_below="@id/simpleSearchView">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/chat_list"
@@ -28,7 +29,21 @@
                 android:layout_gravity="center"
                 android:scrollbars="vertical" />
         </com.tokopedia.core.customwidget.SwipeToRefresh>
-    </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/loading_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/simpleSearchView"
+            android:alpha="0.8"
+            android:background="#000000">
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

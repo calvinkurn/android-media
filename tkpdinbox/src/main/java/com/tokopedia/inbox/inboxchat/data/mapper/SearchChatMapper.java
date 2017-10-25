@@ -38,6 +38,7 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
                 viewModel.setTime(item.getCreateTime());
                 viewModel.setUnreadCounter(0);
                 viewModel.setReadStatus(STATE_CHAT_READ);
+                viewModel.setLabel(getRole(item.getOppositeType()));
                 viewModel.setSpanMode(ChatListViewModel.SPANNED_CONTACT);
                 list.add(viewModel);
                 if(index==0){
@@ -56,6 +57,7 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
                 viewModel.setTime(item.getCreateTime());
                 viewModel.setUnreadCounter(0);
                 viewModel.setReadStatus(STATE_CHAT_READ);
+                viewModel.setLabel(getRole(item.getOppositeType()));
                 viewModel.setSpanMode(ChatListViewModel.SPANNED_MESSAGE);
                 list.add(viewModel);
                 if(index==0){
@@ -68,5 +70,15 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
         } else {
             return new InboxChatViewModel();
         }
+    }
+
+    private String getRole(int oppositeType) {
+        switch (oppositeType){
+            case 1:
+                return "Pengguna";
+            case 2:
+                return "Penjual";
+        }
+        return null;
     }
 }
