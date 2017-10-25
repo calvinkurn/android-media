@@ -25,7 +25,6 @@ public abstract class DataListCacheSource {
 
     protected abstract long getExpiredTimeInSec();
 
-    @Inject
     public DataListCacheSource(@ApplicationContext Context context) {
         sharedPrefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }

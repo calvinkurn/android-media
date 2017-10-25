@@ -21,7 +21,6 @@ public class FlightAirportDataListCloudSource extends DataListCloudSource<Flight
 
     private FlightAirportService flightAirportService;
 
-    @Inject
     public FlightAirportDataListCloudSource(FlightAirportService flightAirportService) {
         super(flightAirportService);
         this.flightAirportService = flightAirportService;
