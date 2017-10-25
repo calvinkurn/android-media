@@ -58,5 +58,9 @@
     <string name="is_it_helpful">Apakah jawaban ini membantu?</string>
     <string name="yes">Ya</string>
     <string name="no">Tidak</string>
+    <string name="time_machine">Untuk melihat percakapan sebelumnya, kunjungi Riwayat Pesan</string>
+    <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
+        Pesan</string>
+
 
 </resources>

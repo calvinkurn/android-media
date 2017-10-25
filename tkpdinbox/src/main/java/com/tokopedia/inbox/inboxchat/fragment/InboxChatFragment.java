@@ -274,6 +274,11 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
 
     }
 
+    @Override
+    public void addTimeMachine() {
+        adapter.showTimeMachine();
+    }
+
 
     @Override
     public String getNav() {

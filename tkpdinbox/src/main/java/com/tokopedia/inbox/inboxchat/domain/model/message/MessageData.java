@@ -14,7 +14,9 @@ public class MessageData {
     @SerializedName("paging_next")
     @Expose
     private boolean hasNext;
-
+    @SerializedName("time_machine_status")
+    @Expose
+    private int timeMachineStatus;
 
     public List<ListMessage> getList() {
         return list;
@@ -30,5 +32,9 @@ public class MessageData {
 
     public void setHasNext(boolean hasNext) {
         this.hasNext = hasNext;
+    }
+
+    public int getTimeMachineStatus() {
+        return timeMachineStatus;
     }
 }

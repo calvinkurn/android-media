@@ -10,6 +10,7 @@ public class InboxChatViewModel {
 
     public final static int GET_CHAT_MODE = 1;
     public final static int SEARCH_CHAT_MODE = 2;
+    private boolean hasTimeMachine;
 
     public InboxChatViewModel() {
         mode = GET_CHAT_MODE;
@@ -43,5 +44,13 @@ public class InboxChatViewModel {
 
     public void setHasNext(boolean hasNext) {
         this.hasNext = hasNext;
+    }
+
+    public void setHasTimeMachine(boolean hasTimeMachine) {
+        this.hasTimeMachine = hasTimeMachine;
+    }
+
+    public boolean isHasTimeMachine() {
+        return hasTimeMachine;
     }
 }

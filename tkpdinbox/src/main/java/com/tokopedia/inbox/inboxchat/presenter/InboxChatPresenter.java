@@ -85,6 +85,10 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         } else {
             getView().getAdapter().showEmptyFull(false);
         }
+
+        if(!pagingHandler.CheckNextPage() && result.isHasTimeMachine()){
+            getView().addTimeMachine();
+        }
     }
 
     @Override

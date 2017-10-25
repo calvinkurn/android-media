@@ -26,6 +26,7 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
+import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactoryImpl;
@@ -54,11 +55,12 @@ import rx.functions.Func1;
  * Created by stevenfredian on 9/19/17.
  */
 
-public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomContract.View, InboxMessageConstant, WebSocketInterface {
+public class ChatRoomFragment extends BaseDaggerFragment
+        implements ChatRoomContract.View, InboxMessageConstant, WebSocketInterface {
 
+    private static final String ARGS_MESSAGE_ID = "message_id";
     @Inject
     ChatRoomPresenter presenter;
-
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -103,7 +105,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
         sendButton = (ImageView) rootView.findViewById(R.id.send_but);
         replyColumn = (EditText) rootView.findViewById(R.id.new_comment);
         refreshHandler = new RefreshHandler(getActivity(), rootView, onRefresh());
-        replyWatcher =  Events.text(replyColumn);
+        replyWatcher = Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
         presenter.attachView(this);
         initListener();
@@ -131,7 +133,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
         replyIsTyping = replyWatcher.map(new Func1<String, Boolean>() {
             @Override
             public Boolean call(String s) {
-                return s.length()>0;
+                return s.length() > 0;
             }
         });
 
@@ -140,7 +142,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
             public void call(Boolean aBoolean) {
                 Log.i("call: ", "isTyping");
                 try {
-                    presenter.setIsTyping(getArguments().getString("message_id"));
+                    presenter.setIsTyping(getArguments().getString(ARGS_MESSAGE_ID));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -153,7 +155,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
                     public void call(Boolean aBoolean) {
                         Log.i("call: ", "stopTyping");
                         try {
-                            presenter.stopTyping(getArguments().getString("message_id"));
+                            presenter.stopTyping(getArguments().getString(ARGS_MESSAGE_ID));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -275,6 +277,16 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
     @Override
     public WebSocketInterface getInterface() {
         return this;
+    }
+
+    @Override
+    public void onGoToTimeMachine(String url) {
+        startActivity(TimeMachineActivity.getCallingIntent(getActivity(), url));
+    }
+
+    @Override
+    public void addTimeMachine() {
+        adapter.showTimeMachine();
     }
 
     @Override
@@ -401,8 +413,8 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
 
     @Override
     public void onIncomingEvent(WebSocketResponse response) {
-        switch (response.getCode()){
-            case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING :
+        switch (response.getCode()) {
+            case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
                 setOnlineDesc("sedang mengetik");
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
@@ -416,6 +428,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
 
     @Override
     public void newWebSocket() {
-        presenter.recreateWebSocket();
+        if (getActivity() != null)
+            presenter.recreateWebSocket();
     }
 }

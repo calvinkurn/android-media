@@ -33,6 +33,10 @@ public class ReplyData {
     @Expose
     private int success;
 
+    @SerializedName("time_machine_status")
+    @Expose
+    private int timeMachineStatus;
+
     public List<ListReply> getList() {
         return list;
     }
@@ -89,4 +93,7 @@ public class ReplyData {
         this.success = success;
     }
 
+    public int getTimeMachineStatus() {
+        return timeMachineStatus;
+    }
 }

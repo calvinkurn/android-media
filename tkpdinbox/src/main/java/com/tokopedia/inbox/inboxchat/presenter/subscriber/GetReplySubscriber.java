@@ -84,7 +84,6 @@ public class GetReplySubscriber extends Subscriber<ReplyData> {
                 temp.setMsgId(item.getMsgId());
                 temp.setRole(item.getRole());
                 temp.setSenderName(item.getSenderName());
-
                 list.add(temp);
             } else {
 
@@ -108,6 +107,7 @@ public class GetReplySubscriber extends Subscriber<ReplyData> {
         domainData.setList(list);
         domainData.setTextAreaReply(model.getTextAreaReply());
         domainData.setHasNext(model.isHasNext());
+        domainData.setHasTimeMachine(model.getTimeMachineStatus() == 1);
         return domainData;
     }
 }

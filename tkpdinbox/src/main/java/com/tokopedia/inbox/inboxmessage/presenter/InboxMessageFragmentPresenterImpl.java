@@ -437,15 +437,14 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
 
     @Override
     public void goToDetailMessage(int position, ListMessage message) {
-        Intent intent = new Intent(viewListener.getActivity(), InboxMessageDetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(PARAM_NAV, viewListener.getArguments().getString(PARAM_NAV));
-        bundle.putParcelable(PARAM_MESSAGE, null);
-        bundle.putString(PARAM_MESSAGE_ID, String.valueOf(message.getMsgId()));
-        bundle.putInt(PARAM_POSITION, position);
-        bundle.putString(PARAM_SENDER_NAME, message.getAttributes().getContact().getAttributes().getName());
-        bundle.putString(PARAM_SENDER_TAG, message.getAttributes().getContact().getAttributes().getTag());
-        intent.putExtras(bundle);
+
+        Intent intent = InboxMessageDetailActivity.getCallingIntent(viewListener.getActivity(),
+                viewListener.getArguments().getString(PARAM_NAV),
+                String.valueOf(message.getMsgId()),
+                position,
+                message.getAttributes().getContact().getAttributes().getName(),
+                message.getAttributes().getContact().getAttributes().getTag()
+        );
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         viewListener.startActivityForResult(intent, OPEN_DETAIL_MESSAGE);
         viewListener.getActivity().overridePendingTransition(0, 0);

@@ -3,7 +3,6 @@ package com.tokopedia.inbox.inboxmessage.activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -29,7 +28,6 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
-import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageDetailFragment;
 import com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageIntentService;
@@ -49,7 +47,6 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setToolbarColor();
         MainApplication.setCurrentActivity(this);
     }
 
@@ -64,10 +61,11 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
         super.onPause();
         MainApplication.setCurrentActivity(null);
     }
+
     @Override
     protected void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.app_bar);
-        LayoutInflater mInflater=LayoutInflater.from(this);
+        LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.header_chat, null);
         toolbar.addView(mCustomView);
         setSupportActionBar(toolbar);
@@ -88,18 +86,6 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        }
-    }
-
-    private void setToolbarColor() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View view = getWindow().getDecorView();
-            int flags = view.getSystemUiVisibility();
-
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
         }
     }
 
@@ -252,5 +238,24 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
     public void onGetNotif(Bundle data) {
         ChatRoomFragment something = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(TAG);
         something.restackList(data);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    public static Intent getCallingIntent(Context context, String nav, String messageId,
+                                          int position, String senderName, String senderTag) {
+        Intent intent = new Intent(context, InboxMessageDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_NAV, nav);
+        bundle.putParcelable(PARAM_MESSAGE, null);
+        bundle.putString(PARAM_MESSAGE_ID, messageId);
+        bundle.putInt(PARAM_POSITION, position);
+        bundle.putString(PARAM_SENDER_NAME, senderName);
+        bundle.putString(PARAM_SENDER_TAG, senderTag);
+        intent.putExtras(bundle);
+        return intent;
     }
 }

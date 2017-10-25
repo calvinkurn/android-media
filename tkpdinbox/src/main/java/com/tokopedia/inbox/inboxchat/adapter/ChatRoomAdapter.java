@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.inboxchat.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -15,8 +14,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
-import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,18 +25,20 @@ import java.util.List;
  * Created by stevenfredian on 9/27/17.
  */
 
-public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
+public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private final ChatRoomTypeFactory typeFactory;
     private List<Visitable> list;
     private EmptyModel emptyModel;
     private LoadingModel loadingModel;
+    private TimeMachineModel timeMachineModel;
 
-    public ChatRoomAdapter(ChatRoomTypeFactory typeFactory){
+    public ChatRoomAdapter(ChatRoomTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
         this.emptyModel = new EmptyModel();
         this.loadingModel = new LoadingModel();
+        this.timeMachineModel = new TimeMachineModel("");
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        if(list.get(position) instanceof ListReplyViewModel){
+        if (list.get(position) instanceof ListReplyViewModel) {
             showTime(holder.itemView.getContext(), holder.getAdapterPosition());
         }
         holder.bind(list.get(holder.getAdapterPosition()));
@@ -68,16 +68,16 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
                 Calendar calBefore = ChatTimeConverter.unixToCalendar(prevTime);
                 if (compareTime(context, myTime, prevTime)) {
                     ((ListReplyViewModel) list.get(position)).setShowTime(false);
-                }else{
+                } else {
                     ((ListReplyViewModel) list.get(position)).setShowTime(true);
                 }
-            }catch (NumberFormatException | ClassCastException e){
+            } catch (NumberFormatException | ClassCastException e) {
                 ((ListReplyViewModel) list.get(position)).setShowTime(true);
             }
-        }else {
+        } else {
             try {
                 ((ListReplyViewModel) list.get(position)).setShowTime(true);
-            }catch (ClassCastException e){
+            } catch (ClassCastException e) {
                 e.printStackTrace();
             }
         }
@@ -138,22 +138,22 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
 
     public void addReply(Visitable item) {
         this.list.add(item);
-        notifyItemInserted(this.list.size()-1);
+        notifyItemInserted(this.list.size() - 1);
     }
 
-    public void showLoading(){
+    public void showLoading() {
         this.list.add(0, loadingModel);
         notifyItemInserted(0);
     }
 
-    public void removeLoading(){
+    public void removeLoading() {
         this.list.remove(loadingModel);
         notifyItemRemoved(0);
     }
 
 
     public boolean checkLoadMore(int index) {
-        if(index>=0) {
+        if (index >= 0) {
             return (list.get(index) instanceof LoadingModel);
         }
         return false;
@@ -162,5 +162,10 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
     public ReplyParcelableModel getLastItem() {
         ListReplyViewModel item = (ListReplyViewModel) list.get(list.size() - 1);
         return new ReplyParcelableModel(item.getSenderId(), item.getMsg(), item.getReplyTime());
+    }
+
+    public void showTimeMachine() {
+        this.list.add(0, timeMachineModel);
+        notifyItemInserted(0);
     }
 }

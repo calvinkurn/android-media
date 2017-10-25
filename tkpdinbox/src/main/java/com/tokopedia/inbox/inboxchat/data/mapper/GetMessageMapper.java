@@ -42,6 +42,7 @@ public class GetMessageMapper implements Func1<Response<TkpdResponse>, InboxChat
                 list.add(viewModel);
             }
             inboxChatViewModel.setList(list);
+            inboxChatViewModel.setHasTimeMachine(data.getTimeMachineStatus() == 1);
             return inboxChatViewModel;
         }else {
             return null;
