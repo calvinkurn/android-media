@@ -22,7 +22,7 @@ public class CreateOrderMapper implements Func1<Response<TkpdResponse>, CreateOr
         CreateOrderDomain createOrderDomain = new CreateOrderDomain();
         if(response.isSuccessful()
                 && response.body() != null
-                && response.body().getStatus().equals(SUCCESS)) {
+                && response.body().getStatus().equals("200 Ok")) {
             Log.d("o2o", response.body().getStrResponse());
             PaymentAction paymentAction = response.body().convertDataObj(PaymentAction.class);
             createOrderDomain.setOrderId(paymentAction.getOrderId());

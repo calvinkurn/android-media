@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.posapp.R;
+import com.tokopedia.posapp.deeplink.Constants;
 import com.tokopedia.posapp.view.fragment.InvoiceFragment;
 
 /**
@@ -17,11 +19,31 @@ import com.tokopedia.posapp.view.fragment.InvoiceFragment;
 public class InvoiceActivity extends BasePresenterActivity {
 
     public static final String DATA = "data";
+    private static final String IS_ERROR = "isError";
+    public static final String ERROR_TITLE = "errorTitle";
+    public static final String ERROR_MESSAGE = "errorMessage";
+
+    @DeepLink(Constants.Applinks.PAYMENT_INVOICE)
+    public static Intent newApplinkIntent(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, InvoiceActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtras(bundle);
+        return intent;
+    }
 
     public static Intent newTopIntent(Context context, String data) {
         return new Intent(context, InvoiceActivity.class)
                 .putExtra(DATA, data)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    }
+
+    public static Intent newErrorIntent(Context context, String errorTitle, String errorMessage) {
+        Intent intent = new Intent(context, InvoiceActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(IS_ERROR, true);
+        intent.putExtra(ERROR_TITLE, errorTitle);
+        intent.putExtra(ERROR_MESSAGE, errorMessage);
+        return intent;
     }
 
     @Override
@@ -49,7 +71,11 @@ public class InvoiceActivity extends BasePresenterActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(false);
-        getSupportActionBar().setTitle("Invoice");
+        if(getIntent().getBooleanExtra(IS_ERROR, false)) {
+            getSupportActionBar().setTitle("Error");
+        } else {
+            getSupportActionBar().setTitle("Invoice");
+        }
 
         InvoiceFragment fragment = InvoiceFragment.newInstance(getIntent().getStringExtra(DATA));
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();

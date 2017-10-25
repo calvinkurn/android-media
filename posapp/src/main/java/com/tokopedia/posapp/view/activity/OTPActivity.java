@@ -149,21 +149,20 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
     public void onLoadDataError(Throwable e) {
         e.printStackTrace();
         CommonUtils.UniversalToast(this, e.getMessage());
-        goToErrorPage();
+        goToErrorPage("Error", e.getMessage());
     }
 
     @Override
     public void onLoadDataError(List<String> errorList) {
         if(errorList.get(0) != null) CommonUtils.UniversalToast(this, errorList.get(0));
-        goToErrorPage();
+        goToErrorPage("Error", errorList.get(0));
     }
 
     @Override
     public void onPaymentError(Throwable e) {
         tkpdProgressDialog.dismiss();
-        Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         e.printStackTrace();
-        goToErrorPage();
+        goToErrorPage("Transaction Failed", e.getMessage());
     }
 
     @Override
@@ -179,7 +178,11 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d("o2o override ", url);
-            return true;
+            if(url.contains("/payment/thanks")) {
+                processPayment();
+                return true;
+            }
+            return shouldOverrideUrlLoading(view, url);
         }
 
         @Override
@@ -218,10 +221,8 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
             Log.d("o2o", "initial " + url);
             progressBar.setVisibility(View.VISIBLE);
             if(url.contains("/payment/thanks")) {
-                tkpdProgressDialog.showDialog();
-                otpPresenter.processPayment();
-                scroogeWebView.setEnabled(false);
-                scroogeWebView.setVisibility(View.GONE);
+                processPayment();
+                return;
             }
             super.onPageStarted(view, url, favicon);
         }
@@ -245,6 +246,13 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
             view.stopLoading();
             showToastMessageWithForceCloseView(message);
         }
+    }
+
+    private void processPayment() {
+        tkpdProgressDialog.showDialog();
+        otpPresenter.processPayment();
+        scroogeWebView.setEnabled(false);
+        scroogeWebView.setVisibility(View.GONE);
     }
 
     private class OTPWebViewChromeClient extends WebChromeClient {
@@ -281,11 +289,11 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     public void showToastMessageWithForceCloseView(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        goToErrorPage();
+        goToErrorPage("OTP error", message);
     }
 
-    private void goToErrorPage() {
-        LocalCartActivity.newTopInstance(this).startActivities();
+    private void goToErrorPage(String title, String message) {
+        startActivity(InvoiceActivity.newErrorIntent(this, title, message));
         finish();
     }
 }
