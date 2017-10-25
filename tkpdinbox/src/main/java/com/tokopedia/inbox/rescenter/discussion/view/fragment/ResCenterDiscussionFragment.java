@@ -534,7 +534,7 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
             if (length >= 20000) {
                 NetworkErrorHelper.showSnackbar(
                         getActivity(),
-                        getActivity().getString(R.string.error_reply_discussion_resolution_reach_max_size)
+                        getActivity().getString(R.string.error_reply_discussion_resolution_reach_max_size_video)
                 );
                 return false;
             }

@@ -294,7 +294,9 @@ public class DeepLinkChecker {
     }
 
     public static void openHomepage(Context context, int tab) {
-        if (context.getApplicationContext() instanceof TkpdCoreRouter){
+        if (context != null &&
+                context.getApplicationContext() != null &&
+                context.getApplicationContext() instanceof TkpdCoreRouter){
             Intent intent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
             intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, tab);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);

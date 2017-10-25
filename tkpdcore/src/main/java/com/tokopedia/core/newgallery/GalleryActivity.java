@@ -716,4 +716,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         return AppScreen.SCREEN_GALLERY_BROWSER;
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

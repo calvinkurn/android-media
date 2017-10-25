@@ -323,33 +323,12 @@
                         android:textSize="14sp"
                         tools:text="-" />
 
-                    <TextView
-                        android:id="@+id/tv_label_cashback"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_label_discount"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center"
-                        android:text="@string/label_cashback"
-                        android:textColor="@color/grey_800"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tv_cashback"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_below="@id/tv_label_discount"
-                        android:paddingTop="8dp"
-                        android:textColor="@color/black_full"
-                        android:textSize="14sp"
-                        tools:text="-" />
 
                     <View
                         android:id="@+id/fare_sep"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_below="@id/tv_label_cashback"
+                        android:layout_below="@id/tv_label_discount"
                         android:layout_marginBottom="8dp"
                         android:layout_marginTop="8dp"
                         android:background="@color/grey_300" />
@@ -373,6 +352,28 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_below="@id/fare_sep"
+                        android:textColor="@color/black_full"
+                        android:textSize="14sp"
+                        tools:text="-" />
+
+                    <TextView
+                        android:id="@+id/tv_label_cashback"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/label_total_charged"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/label_cashback"
+                        android:textColor="@color/grey_800"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tv_cashback"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/label_total_charged"
+                        android:paddingTop="8dp"
                         android:textColor="@color/black_full"
                         android:textSize="14sp"
                         tools:text="-" />

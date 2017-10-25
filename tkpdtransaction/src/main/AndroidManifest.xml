@@ -46,6 +46,9 @@
         <activity
             android:name=".wallet.WalletActivity"
             android:label="@string/toko_cash_info"/>
+        <activity
+            android:name=".bcaoneklik.activity.CreditCardAuthenticationActivity"
+            android:label="Pengaturan Autentikasi"/>
 
         <activity android:name=".bcaoneklik.BcaOneClickActivity"/>
 
