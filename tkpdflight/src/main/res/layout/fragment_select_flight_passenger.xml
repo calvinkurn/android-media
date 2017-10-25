@@ -1,0 +1,16 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokopedia.flight.dashboard.view.fragment.SelectFlightPassengerFragment">
+
+    <com.tokopedia.flight.dashboard.view.widget.SelectPassengerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:spv_title="dewasa"
+        app:spv_subtitle="umur yang seharusnya"
+        app:spv_icon="@drawable/ic_passenger_adult"
+        app:spv_max_value="7"
+        app:spv_min_value="0" />
+</FrameLayout>
