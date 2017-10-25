@@ -2513,11 +2513,29 @@ public class UnifyTracking extends TrackingUtils {
         eventProductManage(AppEventTracking.Action.CLICK_SORT_PRODUCT,label);
     }
 
-    public static void eventProductManageFilterProduct(String label){
+    public static void eventProductManageFilterProduct(String label) {
         eventProductManage(AppEventTracking.Action.CLICK_FILTER_PRODUCT,label);
     }
 
     public static void eventProductManageOverflowMenu(String label){
         eventProductManage(AppEventTracking.Action.CLICK_OVERFLOW_MENU,label);
+    }
+
+    public static void eventSelectNumberOnUserProfileNative(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.RECHARGE + label,
+                AppEventTracking.Action.SELECT_NUMBER_ON_USER_PROFILE,
+                label
+        ).getEvent());
+    }
+
+    public static void eventSelectNumberOnUserProfileWidget(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                AppEventTracking.Action.SELECT_NUMBER_ON_USER_PROFILE,
+                label
+        ).getEvent());
     }
 }

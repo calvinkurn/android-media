@@ -1004,6 +1004,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
+        if (orderClientNumber != null) {
+            UnifyTracking.eventSelectNumberOnUserProfileNative(categoryDataState.getName());
+        }
+
         if (categoryDataState.isSupportedStyle()) {
             switch (categoryDataState.getOperatorStyle()) {
                 case CategoryData.STYLE_PRODUCT_CATEGORY_1 :

@@ -1,11 +1,7 @@
 package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
