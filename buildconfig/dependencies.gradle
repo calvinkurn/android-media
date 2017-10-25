@@ -22,7 +22,7 @@ ext {
     tkpdFeedVersion = '1.+'
     tkpdRideVersion = '1.+'
     tkpdReactNativeVersion = '1.+'
-    compileSdkVersion = 25
+    compileSdkVersion = 24
     minSdkVersion = 16
     targetSdkVersion = 25
     espressoVersion = "2.2.2"

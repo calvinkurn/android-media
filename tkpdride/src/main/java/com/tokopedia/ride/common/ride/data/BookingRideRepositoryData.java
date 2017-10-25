@@ -1,8 +1,11 @@
 package com.tokopedia.ride.common.ride.data;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.bookingride.data.NearbyRidesDestinationMapper;
 import com.tokopedia.ride.bookingride.data.RideAddressCache;
 import com.tokopedia.ride.bookingride.data.RideAddressCacheImpl;
+import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
@@ -59,6 +62,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final RideHistoryWrapperMapper rideHistoryWrapperMapper;
     private final UpdateDestinationEntityMapper updateDestinationEntityMapper;
     private final PaymentMethodListMapper paymentMethodListMapper;
+    private final NearbyRidesDestinationMapper nearbyRidesDestinationMapper;
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory) {
         mBookingRideDataStoreFactory = bookingRideDataStoreFactory;
@@ -75,6 +79,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         rideHistoryWrapperMapper = new RideHistoryWrapperMapper();
         updateDestinationEntityMapper = new UpdateDestinationEntityMapper();
         paymentMethodListMapper = new PaymentMethodListMapper();
+        nearbyRidesDestinationMapper = new NearbyRidesDestinationMapper();
     }
 
     @Override
@@ -366,5 +371,10 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                         return paymentMethodListMapper.transform(paymentMethodListEntity);
                     }
                 });
+
+    public Observable<NearbyRides> getNearbyCars(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getNearbyCars(parameters)
+                .map(nearbyRidesDestinationMapper);
     }
 }

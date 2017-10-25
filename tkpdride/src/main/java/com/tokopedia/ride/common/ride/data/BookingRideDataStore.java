@@ -1,6 +1,7 @@
 package com.tokopedia.ride.common.ride.data;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
@@ -67,4 +68,6 @@ public interface BookingRideDataStore {
     Observable<String> sendTip(TKPDMapParam<String, Object> parameters);
 
     Observable<PaymentMethodListEntity> getPaymentMethodList(TKPDMapParam<String, Object> parameters);
+
+    Observable<NearbyRidesEntity> getNearbyCars(TKPDMapParam<String, Object> parameters);
 }

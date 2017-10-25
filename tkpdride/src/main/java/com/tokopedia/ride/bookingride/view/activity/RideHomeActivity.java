@@ -61,6 +61,7 @@ import com.tokopedia.ride.R2;
 import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.view.RideHomeContract;
 import com.tokopedia.ride.bookingride.view.RideHomePresenter;
 import com.tokopedia.ride.bookingride.view.adapter.SeatAdapter;
@@ -624,6 +625,14 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
+    public void renderNearbyRides(NearbyRides nearbyRides) {
+        RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (fragment != null) {
+            fragment.renderNearbyRides(nearbyRides);
+        }
+    }
+
+    @Override
     public void onProductClicked(ConfirmBookingPassData confirmBookingPassData) {
         onBottomContainerChangeToBookingScreen();
 
@@ -794,6 +803,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             RideGATracking.eventClickOnTrip(getScreenName());
             actionNavigateToHistory();
             return true;
+        } else if (i == R.id.action_payment) {
+            actionNavigateToPayment();
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
@@ -802,6 +814,10 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     private void actionNavigateToHistory() {
         Intent intent = RideHistoryActivity.getCallingIntent(this);
         startActivity(intent);
+    }
+
+    private void actionNavigateToPayment() {
+        startActivity(ManagePaymentOptionsActivity.getCallingActivity(this));
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.tokopedia.ride.bookingride.di.scope.BookingRideScope;
 import com.tokopedia.ride.bookingride.domain.AutoCompletePredictionUseCase;
 import com.tokopedia.ride.bookingride.domain.GetCurrentRideRequestUseCase;
 import com.tokopedia.ride.bookingride.domain.GetDistanceMatrixUseCase;
+import com.tokopedia.ride.bookingride.domain.GetNearbyCarsUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPlaceDetailUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPriceEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
@@ -96,6 +97,14 @@ public class BookingRideModule {
 
     @Provides
     @BookingRideScope
+    GetNearbyCarsUseCase provideGetNearbyCarsUseCase(ThreadExecutor threadExecutor,
+                                                     PostExecutionThread postExecutionThread,
+                                                     BookingRideRepository bookingRideRepository) {
+        return new GetNearbyCarsUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
+    }
+
+    @Provides
+    @BookingRideScope
     MapService provideMapService() {
         return new MapService();
     }
@@ -123,6 +132,4 @@ public class BookingRideModule {
                                                        MapService mapService) {
         return new GetPlaceDetailUseCase(threadExecutor, postExecutionThread, mapsRepository, mapService);
     }
-
-
 }

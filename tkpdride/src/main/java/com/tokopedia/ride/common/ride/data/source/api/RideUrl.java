@@ -30,4 +30,5 @@ public interface RideUrl {
     String UPDATE_REQUEST = "/uber/request/update";
     String SEND_TIP = "/uber/tip/send";
     String PAYMENT_METHOD_LIST = "v1/uber/payment_method/list";
+    String GET_NEARBY_CARS = "/uber/cars";
 }

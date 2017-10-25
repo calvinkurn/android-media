@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/keyline_1">
+
+        <TextView
+            android:id="@+id/label_card_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_card_number"
+            android:textColor="@color/grey_700"
+            android:textSize="@dimen/font_small" />
+
+
+        <TextView
+            android:id="@+id/txt_card_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=".... .... .... 8978"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_large"
+            tools:text=".... .... .... 8978" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/grey_300" />
+
+        <TextView
+            android:id="@+id/label_card_expiration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_med"
+            android:text="@string/label_expiration_date"
+            android:textColor="@color/grey_700"
+            android:textSize="@dimen/font_small" />
+
+
+        <TextView
+            android:id="@+id/txt_card_expiration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="10/2020"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_large"
+            tools:text="10/2020" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="16dp"
+            android:background="@color/grey_300" />
+    </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_alignParentBottom="true">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:textColor="@color/grey_600"
+        android:layout_margin="@dimen/margin_small"
+        android:text="@string/edit"
+        android:background="@drawable/button_rounded"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:layout_margin="@dimen/margin_small"
+        android:text="@string/delete"
+        tools:text="@string/delete"
+        android:background="@drawable/rounded_filled_theme_bttn_orange"/>
+</LinearLayout>
+
+</RelativeLayout>

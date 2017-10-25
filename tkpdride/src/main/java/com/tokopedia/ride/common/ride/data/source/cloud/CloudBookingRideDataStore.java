@@ -1,6 +1,7 @@
 package com.tokopedia.ride.common.ride.data.source.cloud;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStore;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
@@ -18,7 +19,6 @@ import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
-import com.tokopedia.ride.common.ride.data.entity.TipListEntity;
 import com.tokopedia.ride.common.ride.data.entity.UpdateDestinationEntity;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 
@@ -158,5 +158,10 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     @Override
     public Observable<PaymentMethodListEntity> getPaymentMethodList(TKPDMapParam<String, Object> parameters) {
         return mRideApi.getPaymentMethodList(parameters);
+    }
+  
+    @Override
+    public Observable<NearbyRidesEntity> getNearbyCars(TKPDMapParam<String, Object> parameters) {
+        return mRideApi.getNearbyCars(parameters);
     }
 }

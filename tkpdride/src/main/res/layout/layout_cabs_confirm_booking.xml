@@ -42,10 +42,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:paddingBottom="10dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"
             android:visibility="visible">
 
             <ImageView
@@ -114,13 +114,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:visibility="visible">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:drawableLeft="@drawable/ic_tokocash_icon"
                     android:drawablePadding="5dp"
                     android:gravity="center"
@@ -128,6 +128,22 @@
                     android:text="@string/crux_cabs_please_pay_in_cash"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
+
+
+                <TextView
+                    android:id="@+id/tv_change_payment_method"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|right"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:paddingTop="@dimen/new_margin_small"
+                    android:paddingBottom="@dimen/new_margin_small"
+                    android:paddingRight="@dimen/margin_small_sm"
+                    android:text="@string/change_payment_method"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp" />
+
             </LinearLayout>
 
             <LinearLayout
