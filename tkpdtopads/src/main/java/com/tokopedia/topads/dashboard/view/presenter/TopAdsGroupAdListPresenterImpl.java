@@ -2,7 +2,8 @@ package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.topads.common.view.listener.TopAdsSuggestionViewListener;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
@@ -27,13 +28,13 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
 
     protected final TopAdsGroupAdInteractor groupAdInteractor;
     private TopAdsGetSuggestionUseCase getSuggestionUseCase;
-    private String shopID;
+    private GetShopInfoUseCase getShopInfoUseCase;
 
-    public TopAdsGroupAdListPresenterImpl(Context context, TopAdsSuggestionViewListener baseListViewListener, TopAdsGetSuggestionUseCase getSuggestionUseCase, String shopID) {
+    public TopAdsGroupAdListPresenterImpl(Context context, BaseListViewListener baseListViewListener, TopAdsGetSuggestionUseCase getSuggestionUseCase, GetShopInfoUseCase getShopInfoUseCase) {
         super(context, baseListViewListener);
         this.groupAdInteractor = new TopAdsGroupAdInteractorImpl(context);
         this.getSuggestionUseCase = getSuggestionUseCase;
-        this.shopID = shopID;
+        this.getShopInfoUseCase = getShopInfoUseCase;
     }
 
     @Override
@@ -45,13 +46,14 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
         searchAdRequest.setKeyword(keyword);
         searchAdRequest.setStatus(status);
         searchAdRequest.setPage(page);
+
         groupAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<GroupAd>>>() {
             @Override
             public void onSuccess(final PageDataResponse<List<GroupAd>> pageDataResponse) {
 
                 GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
                 getSuggestionBody.setRounding(true);
-                getSuggestionBody.setShopId(Long.valueOf(shopID));
+                getSuggestionBody.setShopId(Long.valueOf(getShopInfoUseCase.getData(RequestParams.EMPTY).getInfo().getShopId()));
                 getSuggestionBody.setSource("top_ads_new_cost_without_group");
                 getSuggestionBody.setDataType("detail");
                 getSuggestionBody.setSuggestionType("group_bid");

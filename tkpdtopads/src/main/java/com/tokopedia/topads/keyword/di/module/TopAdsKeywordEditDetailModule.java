@@ -49,12 +49,6 @@ public class TopAdsKeywordEditDetailModule {
 
     @TopAdsKeywordScope
     @Provides
-    ShopApi provideShopApi(@WsV4QualifierWithErrorHander Retrofit retrofit) {
-        return retrofit.create(ShopApi.class);
-    }
-
-    @TopAdsKeywordScope
-    @Provides
     TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
         return retrofit.create(TomeApi.class);
     }
@@ -63,12 +57,6 @@ public class TopAdsKeywordEditDetailModule {
     @Provides
     KeywordApi provideKeywordApi(@TopAdsQualifier Retrofit retrofit){
         return retrofit.create(KeywordApi.class);
-    }
-
-    @TopAdsKeywordScope
-    @Provides
-    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource) {
-        return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
     }
 
     @TopAdsKeywordScope

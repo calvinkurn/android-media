@@ -50,26 +50,6 @@ public class TopAdsKeywordModule {
 
     @TopAdsKeywordScope
     @Provides
-    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource) {
-        return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
-    }
-
-    @TopAdsKeywordScope
-    @Provides
-    TopAdsKeywordListPresenterImpl provideTopAdsKeywordListPresenter(
-            KeywordDashboardUseCase keywordDashboardUseCase
-    ) {
-        return new TopAdsKeywordListPresenterImpl(keywordDashboardUseCase);
-    }
-
-    @TopAdsKeywordScope
-    @Provides
-    ShopApi provideShopApi(@WsV4Qualifier Retrofit retrofit) {
-        return retrofit.create(ShopApi.class);
-    }
-
-    @TopAdsKeywordScope
-    @Provides
     TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit) {
         return retrofit.create(TomeApi.class);
     }

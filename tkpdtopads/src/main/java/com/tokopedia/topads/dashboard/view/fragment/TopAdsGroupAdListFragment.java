@@ -9,10 +9,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
-import com.tokopedia.topads.common.view.listener.TopAdsSuggestionViewListener;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
@@ -46,6 +46,9 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     @Inject
     TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
 
+    @Inject
+    GetShopInfoUseCase getShopInfoUseCase;
+
     @Override
     protected void initInjector() {
         super.initInjector();
@@ -58,22 +61,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsGroupAdListPresenterImpl(getActivity(), new TopAdsSuggestionViewListener() {
-            @Override
-            public void onSuggestionSuccess(GetSuggestionResponse s) {
-                CommonUtils.dumper(s.toString());
-            }
-
-            @Override
-            public void onSearchLoaded(@NonNull List list, int totalItem) {
-                TopAdsGroupAdListFragment.this.onSearchLoaded(list, totalItem);
-            }
-
-            @Override
-            public void onLoadSearchError(Throwable t) {
-                TopAdsGroupAdListFragment.this.onLoadSearchError(t);
-            }
-        }, topAdsGetSuggestionUseCase, SessionHandler.getShopID(getActivity()));
+        presenter = new TopAdsGroupAdListPresenterImpl(getActivity(), this, topAdsGetSuggestionUseCase, getShopInfoUseCase);
     }
 
     @Override
