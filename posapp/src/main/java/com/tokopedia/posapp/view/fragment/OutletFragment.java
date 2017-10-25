@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.R;
@@ -44,12 +45,15 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
     private TextView textShopName;
     private EditText editSearchOutlet;
     private OutletAdapter adapter;
+    private GridLayoutManager gridLayoutManager;
 
     @Inject
     OutletPresenter outletPresenter;
 
     @Inject
     ShopPresenter shopPresenter;
+
+    private EndlessRecyclerviewListener scrollListener;
 
     public static OutletFragment createInstance(Bundle bundle) {
         OutletFragment fragment = new OutletFragment();
@@ -172,21 +176,25 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
         editSearchOutlet = parentView.findViewById(R.id.edit_search_outlet);
 
         adapter = new OutletAdapter(getContext(), this);
-        recyclerOutlet.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        recyclerOutlet.setLayoutManager(gridLayoutManager);
         recyclerOutlet.setAdapter(adapter);
+
+        scrollListener = new EndlessRecyclerviewListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                outletPresenter.getNextOutlet(editSearchOutlet.getText().toString());
+            }
+        };
+
+        recyclerOutlet.addOnScrollListener(scrollListener);
 
         editSearchOutlet.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                submitQuery(editSearchOutlet.getText());
+                outletPresenter.getOutlet(editSearchOutlet.getText().toString().trim());
                 return true;
             }
         });
-    }
-
-    private void submitQuery(CharSequence query) {
-        if (query != null && TextUtils.getTrimmedLength(query) > 0) {
-            outletPresenter.getOutlet(query.toString());
-        }
     }
 }

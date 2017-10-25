@@ -22,18 +22,25 @@ public class LocalCartActivity extends ReactNativeActivity {
     @DeepLink(Constants.Applinks.CART)
     public static TaskStackBuilder newInstance(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
-        Intent detailsIntent =  new Intent(context, LocalCartActivity.class).setData(uri).putExtras(extras);
-        Intent parentIntent =  new Intent(context, ProductListActivity.class);
+        Intent cartIntent =  new Intent(context, LocalCartActivity.class).setData(uri).putExtras(extras);
+        Intent parentIntent =  new Intent(context, ProductListActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(parentIntent);
-        taskStackBuilder.addNextIntent(detailsIntent);
+        taskStackBuilder.addNextIntent(cartIntent);
 
         return taskStackBuilder;
     }
 
-    public static Intent newTopInstance(Context context) {
-        return new Intent(context, LocalCartActivity.class)
+    public static TaskStackBuilder newTopInstance(Context context) {
+        Intent cartIntent =  new Intent(context, LocalCartActivity.class);
+        Intent parentIntent =  new Intent(context, ProductListActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(cartIntent);
+
+        return taskStackBuilder;
     }
 
     @Override

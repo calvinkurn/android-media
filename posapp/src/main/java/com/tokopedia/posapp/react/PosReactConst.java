@@ -18,6 +18,7 @@ public interface PosReactConst {
         String TRANSACTION_HISTORY = "HISTORY";
         String INSTALLMENT = "CICILAN";
         String INVOICE = "INVOICE";
+        String PAYMENT_ERROR = "PAYMENT_ERROR";
     }
 
     interface CacheTable {

@@ -91,6 +91,9 @@
         <activity
             android:name=".view.activity.InvoiceActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.PaymentErrorActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

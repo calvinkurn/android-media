@@ -34,7 +34,6 @@ import com.tokopedia.posapp.deeplink.Constants;
 import com.tokopedia.posapp.di.component.DaggerPaymentComponent;
 import com.tokopedia.posapp.domain.model.payment.PaymentStatusDomain;
 import com.tokopedia.posapp.view.OTP;
-import com.tokopedia.posapp.view.Product;
 import com.tokopedia.posapp.view.presenter.OTPPresenter;
 import com.tokopedia.posapp.view.viewmodel.otp.OTPData;
 
@@ -61,7 +60,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
     @Inject
     Gson gson;
 
-    @DeepLink(Constants.Applinks.OTP)
+    @DeepLink(Constants.Applinks.PAYMENT_OTP)
     public static Intent newInstance(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
 
@@ -150,18 +149,13 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
     public void onLoadDataError(Throwable e) {
         e.printStackTrace();
         CommonUtils.UniversalToast(this, e.getMessage());
-        goToCart();
-    }
-
-    private void goToCart() {
-        startActivity(LocalCartActivity.newTopInstance(this));
-        finish();
+        goToErrorPage();
     }
 
     @Override
     public void onLoadDataError(List<String> errorList) {
         if(errorList.get(0) != null) CommonUtils.UniversalToast(this, errorList.get(0));
-        goToCart();
+        goToErrorPage();
     }
 
     @Override
@@ -169,8 +163,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
         tkpdProgressDialog.dismiss();
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         e.printStackTrace();
-        startActivity(ProductListActivity.newTopIntent(this));
-        finish();
+        goToErrorPage();
     }
 
     @Override
@@ -233,6 +226,12 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
             super.onPageStarted(view, url, favicon);
         }
 
+        @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            showError(view, errorCode);
+        }
+
         private void showError(WebView view, int errorCode) {
             String message;
             switch (errorCode) {
@@ -282,6 +281,11 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     public void showToastMessageWithForceCloseView(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        goToErrorPage();
+    }
+
+    private void goToErrorPage() {
+        LocalCartActivity.newTopInstance(this).startActivities();
         finish();
     }
 }
