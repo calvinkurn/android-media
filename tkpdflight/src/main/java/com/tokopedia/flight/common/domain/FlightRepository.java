@@ -1,0 +1,16 @@
+package com.tokopedia.flight.common.domain;
+
+import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.usecase.RequestParams;
+
+import java.util.List;
+
+import rx.Observable;
+
+/**
+ * Created by zulfikarrahman on 10/25/17.
+ */
+
+public interface FlightRepository {
+    Observable<List<FlightAirportDB>> getAirportList(RequestParams requestParams);
+}
