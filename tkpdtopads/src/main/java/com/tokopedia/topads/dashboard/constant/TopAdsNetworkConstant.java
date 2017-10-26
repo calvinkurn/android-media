@@ -64,4 +64,14 @@ public class TopAdsNetworkConstant {
 
     public static final int TYPE_PRODUCT_STAT = 1;
     public static final int TYPE_PRODUCT_SHOP = 2;
+
+    public static final String CONTENT_TYPE_APPLICATION_JSON = "Content-Type: application/json";
+    public static final String SUGGESTION_TYPE_DEPARTMENT_ID = "dep_bid";
+    public static final String SUGGESTION_TYPE_GROUP_ID = "group_bid";
+    public static final String SUGGESTION_DATA_TYPE_DETAIL = "detail";
+    public static final String SUGGESTION_DATA_TYPE_SUMMARY = "summary";
+    public static final String SOURCE_GROUP_AD_LIST = "top_ads_group_ad_list";
+    public static final String SOURCE_NEW_COST_GROUP = "top_ads_new_cost_new_group";
+    public static final String SOURCE_NEW_COST_WITHOUT_GROUP = "top_ads_new_cost_without_group";
+    public static final String SHOP_ID = "shop_id";
 }

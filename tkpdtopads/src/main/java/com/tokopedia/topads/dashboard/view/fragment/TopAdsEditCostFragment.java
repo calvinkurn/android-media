@@ -52,13 +52,10 @@ public abstract class TopAdsEditCostFragment<T extends TopAdsDetailEditPresenter
     protected void setActionVar() {
         super.setActionVar();
         loadAdDetail();
-        loadSuggestionBid();
     }
 
     @Override
-    protected void loadSuggestionBid() {
-
-    }
+    protected void loadSuggestionBid() { /*override by its child */ }
 
     private void loadAdDetail() {
         if (!TextUtils.isEmpty(adId)) {

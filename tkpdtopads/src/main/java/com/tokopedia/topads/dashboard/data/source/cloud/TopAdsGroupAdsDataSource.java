@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.data.source.cloud;
 import android.content.Context;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
@@ -71,8 +72,9 @@ public class TopAdsGroupAdsDataSource {
         return topAdsManagementApi.editGroupAd(getSaveGroupDetailRequest(topAdsDetailGroupDomainModel)).map(topAdsDetailGroupDomainMapper);
     }
 
-    public Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody){
+    public Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody, String shopId){
         DataRequest<GetSuggestionBody> dataRequest = new DataRequest<>();
+        getSuggestionBody.setShopId(Long.valueOf(shopId));
         dataRequest.setData(getSuggestionBody);
         return topAdsManagementApi.getSuggestion(dataRequest).map(new Func1<Response<GetSuggestionResponse>, GetSuggestionResponse>() {
             @Override

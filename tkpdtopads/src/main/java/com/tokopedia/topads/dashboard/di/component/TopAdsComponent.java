@@ -13,6 +13,7 @@ import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.common.di.module.TopAdsNetworkModule;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsQualifier;
@@ -61,4 +62,6 @@ public interface TopAdsComponent {
     ImageHandler imageHandler();
 
     GetDepositTopAdsUseCase getDepositTopAdsUseCase();
+
+    ShopInfoRepository shopInfoRepository();
 }

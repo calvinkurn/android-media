@@ -68,35 +68,35 @@ public interface TopAdsManagementApi {
     @GET(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> getDetailProduct(@QueryMap Map<String, String> params);
 
-    @Headers({"Content-Type: application/json"})
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_PRODUCT_AD)
     Observable<Response<DataResponse<ProductAdBulkAction>>> bulkActionProductAd(@Body DataRequest<ProductAdBulkAction> body);
 
-    @Headers({"Content-Type: application/json"})
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_GROUP_AD)
     Observable<Response<DataResponse<GroupAdBulkAction>>> bulkActionGroupAd(@Body DataRequest<GroupAdBulkAction> body);
 
-    @Headers({"Content-Type: application/json"})
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @PATCH(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> editProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
 
-    @Headers({"Content-Type: application/json"})
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @POST(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> createProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
 
-    @Headers({"Content-Type: application/json"})
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @POST(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> createGroupAd(@Body DataRequest<CreateGroupRequest> body);
 
     @GET(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> getDetailGroup(@QueryMap Map<String, String> params);
 
-    @Headers({"Content-Type: application/json"})
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @PATCH(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> editGroupAd(@Body DataRequest<EditGroupRequest> body);
 
     // http://docs.topadssuggestion.apiary.io/#introduction/what-is-the-content-of-this-document?
-    @Headers({"Content-Type: application/json"})
+    @Headers({TopAdsNetworkConstant.CONTENT_TYPE_APPLICATION_JSON})
     @POST(TopAdsNetworkConstant.GET_SUGGESTION)
     Observable<Response<GetSuggestionResponse>> getSuggestion(@Body DataRequest<GetSuggestionBody> body);
 

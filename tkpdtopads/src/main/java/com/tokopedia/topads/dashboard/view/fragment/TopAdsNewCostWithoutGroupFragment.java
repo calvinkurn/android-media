@@ -8,6 +8,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
@@ -23,6 +24,7 @@ import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -54,18 +56,13 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
 
     @Override
     protected void loadSuggestionBid() {
-        GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
-        getSuggestionBody.setRounding(true);
-        if(SessionHandler.getShopID(getActivity()) != null)
-            getSuggestionBody.setShopId(Long.valueOf(SessionHandler.getShopID(getActivity())));
-        getSuggestionBody.setSource("top_ads_new_cost_without_group");
-        getSuggestionBody.setDataType("summary");
-        getSuggestionBody.setSuggestionType("dep_bid");
+        // get id from view model
+        List<String> ids = new ArrayList<>();
         for (TopAdsProductViewModel topAdsProductViewModel : stepperModel.getTopAdsProductViewModels()) {
-            getSuggestionBody.addId(topAdsProductViewModel.getId()+"");
+            ids.add(topAdsProductViewModel.getDepartmentId()+"");
         }
 
-        topAdsDetailNewProductPresenter.getSuggestionBid(getSuggestionBody);
+        topAdsDetailNewProductPresenter.getSuggestionBid(ids, TopAdsNetworkConstant.SOURCE_NEW_COST_WITHOUT_GROUP);
     }
 
     @Override
