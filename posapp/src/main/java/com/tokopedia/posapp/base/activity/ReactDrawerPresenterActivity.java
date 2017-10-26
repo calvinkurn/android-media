@@ -30,6 +30,7 @@ public abstract class ReactDrawerPresenterActivity<T> extends DrawerPresenterAct
     private ReactInstanceManager reactInstanceManager;
     protected View vCart;
     private TextView tvNotif;
+    private CartFactory cartFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,34 +61,46 @@ public abstract class ReactDrawerPresenterActivity<T> extends DrawerPresenterAct
 
     }
 
-    protected void initInjector() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getCartCount();
+    }
+
+    protected void initCartInjector() {
         AppComponent appComponent = ((MainApplication) this.getApplicationContext()).getAppComponent();
         CartComponent cartComponent = DaggerCartComponent.builder().appComponent(appComponent).build();
-        CartFactory cartFactory = cartComponent.provideCartFactory();
-        cartFactory.local().getAllCartProducts().map(new Func1<List<CartDomain>, String>() {
-            @Override
-            public String call(List<CartDomain> cartDomains) {
-                if (cartDomains.size() > 0)
-                    return cartDomains.size() + "";
-                else
-                    return "null";
-            }
-        }).subscribe(new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
+        cartFactory = cartComponent.provideCartFactory();
+        getCartCount();
+    }
 
-            }
+    protected void getCartCount() {
+        if(cartFactory != null) {
+            cartFactory.local().getAllCartProducts().map(new Func1<List<CartDomain>, String>() {
+                @Override
+                public String call(List<CartDomain> cartDomains) {
+                    if (cartDomains.size() > 0)
+                        return cartDomains.size() + "";
+                    else
+                        return "null";
+                }
+            }).subscribe(new Subscriber<String>() {
+                @Override
+                public void onCompleted() {
 
-            @Override
-            public void onError(Throwable e) {
+                }
 
-            }
+                @Override
+                public void onError(Throwable e) {
 
-            @Override
-            public void onNext(String o) {
-                updateNotification(o);
-            }
-        });
+                }
+
+                @Override
+                public void onNext(String o) {
+                    updateNotification(o);
+                }
+            });
+        }
     }
 
     private void updateNotification(String s) {

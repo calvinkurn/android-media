@@ -180,19 +180,24 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
         recyclerOutlet.setLayoutManager(gridLayoutManager);
         recyclerOutlet.setAdapter(adapter);
 
-        scrollListener = new EndlessRecyclerviewListener(gridLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                outletPresenter.getNextOutlet(editSearchOutlet.getText().toString());
-            }
-        };
-
-        recyclerOutlet.addOnScrollListener(scrollListener);
+//        scrollListener = new EndlessRecyclerviewListener(gridLayoutManager) {
+//            @Override
+//            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+//                outletPresenter.getNextOutlet(editSearchOutlet.getText().toString());
+//            }
+//        };
+//
+//        recyclerOutlet.addOnScrollListener(scrollListener);
 
         editSearchOutlet.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                outletPresenter.getOutlet(editSearchOutlet.getText().toString().trim());
+                if (keyEvent != null
+                        && keyEvent.getAction() == KeyEvent.ACTION_DOWN
+                        && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    outletPresenter.getOutlet(editSearchOutlet.getText().toString().trim());
+                    scrollListener.resetState();
+                }
                 return true;
             }
         });
