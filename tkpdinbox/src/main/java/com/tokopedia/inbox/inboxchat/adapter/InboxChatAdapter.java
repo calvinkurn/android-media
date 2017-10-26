@@ -220,7 +220,6 @@ public class InboxChatAdapter extends BaseLinearRecyclerViewAdapter
             setUnselectedState(holder, position);
     }
 
-
     private void setReadStatus(InboxChatAdapter.ViewHolder holder, int position) {
         int readStatus = list.get(position).getReadStatus();
         int counter = list.get(position).getUnreadCounter();
@@ -229,7 +228,6 @@ public class InboxChatAdapter extends BaseLinearRecyclerViewAdapter
         else if (readStatus == STATE_CHAT_READ)
             setReadState(holder);
     }
-
 
     private void setLabel(InboxChatAdapter.ViewHolder holder, String label) {
         if(label!=null && label.length()>0){
@@ -293,6 +291,7 @@ public class InboxChatAdapter extends BaseLinearRecyclerViewAdapter
             }
         };
     }
+
     private void setSelectedState(InboxChatAdapter.ViewHolder holder) {
         Context context = holder.mainView.getContext();
         holder.mainView.setBackgroundColor(context.getResources().getColor(R.color.green_selected));
@@ -326,7 +325,6 @@ public class InboxChatAdapter extends BaseLinearRecyclerViewAdapter
         this.list.addAll(list);
         notifyDataSetChanged();
     }
-
 
     public void addList(ArrayList<ChatListViewModel> list) {
         int index = this.list.size();

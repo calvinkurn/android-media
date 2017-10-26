@@ -3,6 +3,7 @@ package com.tokopedia.inbox.inboxchat.domain.model.search;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.inbox.inboxchat.domain.model.message.Contact;
 
 public class Datum {
 
@@ -33,12 +34,9 @@ public class Datum {
     @SerializedName("create_by")
     @Expose
     private int createBy;
-    @SerializedName("user")
+    @SerializedName("contact")
     @Expose
-    private User user;
-    @SerializedName("shop")
-    @Expose
-    private Shop shop;
+    private Contact contact;
 
     public int getMsgId() {
         return msgId;
@@ -112,20 +110,11 @@ public class Datum {
         this.createBy = createBy;
     }
 
-    public User getUser() {
-        return user;
+    public Contact getContact() {
+        return contact;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
-
-    public Shop getShop() {
-        return shop;
-    }
-
-    public void setShop(Shop shop) {
-        this.shop = shop;
-    }
-
 }

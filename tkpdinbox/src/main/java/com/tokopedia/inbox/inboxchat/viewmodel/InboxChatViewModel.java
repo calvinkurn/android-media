@@ -19,6 +19,10 @@ public class InboxChatViewModel {
 
     boolean hasNext;
 
+    boolean hasNextContacts;
+
+    boolean hasNextReplies;
+
     ArrayList<ChatListViewModel> list;
 
     public int getMode() {
@@ -43,5 +47,21 @@ public class InboxChatViewModel {
 
     public void setHasNext(boolean hasNext) {
         this.hasNext = hasNext;
+    }
+
+    public boolean isHasNextContacts() {
+        return hasNextContacts;
+    }
+
+    public void setHasNextContacts(boolean hasNextContacts) {
+        this.hasNextContacts = hasNextContacts;
+    }
+
+    public boolean isHasNextReplies() {
+        return hasNextReplies;
+    }
+
+    public void setHasNextReplies(boolean hasNextReplies) {
+        this.hasNextReplies = hasNextReplies;
     }
 }

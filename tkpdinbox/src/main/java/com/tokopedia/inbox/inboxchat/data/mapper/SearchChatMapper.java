@@ -26,14 +26,19 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
 
             InboxChatViewModel inboxChatViewModel = new InboxChatViewModel();
             inboxChatViewModel.setMode(InboxChatViewModel.SEARCH_CHAT_MODE);
+
+            inboxChatViewModel.setHasNextContacts(data.getContacts().isHasNext());
+            inboxChatViewModel.setHasNextReplies(data.getReplies().isHasNext());
+
             ArrayList<ChatListViewModel> list = new ArrayList<>();
 
             int index = 0;
             for(Datum item : data.getContacts().getData()){
                 ChatListViewModel viewModel = new ChatListViewModel();
                 viewModel.setId(String.valueOf(item.getMsgId()));
-                viewModel.setName(item.getOppositeName());
-                viewModel.setSpan(MethodChecker.fromHtml(item.getOppositeName()));
+                viewModel.setName(item.getContact().getAttributes().getName());
+                viewModel.setSpan(MethodChecker.fromHtml(item.getContact().getAttributes().getName()));
+                viewModel.setImage(item.getContact().getAttributes().getThumbnail());
                 viewModel.setMessage(item.getLastMessage());
                 viewModel.setTime(item.getCreateTime());
                 viewModel.setUnreadCounter(0);
@@ -51,8 +56,9 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
             for(Datum item : data.getReplies().getData()){
                 ChatListViewModel viewModel = new ChatListViewModel();
                 viewModel.setId(String.valueOf(item.getMsgId()));
-                viewModel.setName(item.getOppositeName());
+                viewModel.setName(item.getContact().getAttributes().getName());
                 viewModel.setSpan(MethodChecker.fromHtml(item.getLastMessage()));
+                viewModel.setImage(item.getContact().getAttributes().getThumbnail());
                 viewModel.setMessage(item.getLastMessage());
                 viewModel.setTime(item.getCreateTime());
                 viewModel.setUnreadCounter(0);
