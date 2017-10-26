@@ -60,7 +60,7 @@ public class InspirationViewHolder extends AbstractViewHolder<InspirationViewMod
     public void bind(InspirationViewModel inspirationViewModel) {
         inspirationViewModel.setRowNumber(getAdapterPosition());
         adapter.setData(inspirationViewModel);
-        textView.setText(inspirationViewModel.getInspired());
+        textView.setText(inspirationViewModel.getTitle());
     }
 
 }

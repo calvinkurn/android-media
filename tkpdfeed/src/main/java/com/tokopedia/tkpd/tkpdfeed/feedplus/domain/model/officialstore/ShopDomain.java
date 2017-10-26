@@ -17,18 +17,12 @@ public class ShopDomain {
 
     private final
     @Nullable
-    String url_app;
-
-
-    private final
-    @Nullable
     String location;
 
 
-    public ShopDomain(String name, String url, String url_app, String location) {
+    public ShopDomain(String name, String url, String location) {
         this.name = name;
         this.url = url;
-        this.url_app = url_app;
         this.location = location;
     }
 
@@ -47,8 +41,4 @@ public class ShopDomain {
         return location;
     }
 
-    @Nullable
-    public String getUrl_app() {
-        return url_app;
-    }
 }

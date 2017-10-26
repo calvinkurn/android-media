@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
@@ -54,6 +55,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_NEW_PRODUCT = "new_product";
     private static final String TYPE_PROMOTION = "promotion";
     private static final String TYPE_TOPPICKS = "toppick";
+    private static final String TYPE_INSPIRATION = "inspirasi";
+
     private final int page;
 
 
@@ -185,15 +188,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return badgeList;
     }
 
-    private void addInspirationData(ArrayList<Visitable> listFeedView,
-                                    List<DataInspirationDomain> listInspiration) {
-        for (DataInspirationDomain domain : listInspiration) {
-            InspirationViewModel model = convertToInspirationViewModel(domain);
-            if (model.getListProduct() != null && model.getListProduct().size() > 0)
-                listFeedView.add(model);
-        }
-    }
-
     private void addFeedData(ArrayList<Visitable> listFeedView,
                              List<DataFeedDomain> listFeedDomain) {
         if (listFeedDomain != null)
@@ -230,6 +224,12 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         ToppicksViewModel toppicks = convertToToppicksViewModel(domain);
                         if (toppicks.getList() != null && !toppicks.getList().isEmpty())
                             listFeedView.add(toppicks);
+                    case TYPE_INSPIRATION:
+                        InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain);
+                        if (inspirationViewModel != null
+                                && inspirationViewModel.getListProduct() != null
+                                && !inspirationViewModel.getListProduct().isEmpty())
+                            listFeedView.add(inspirationViewModel);
                     default:
                         break;
                 }
@@ -293,7 +293,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 productDomain.getData().getUrl_app(),
                 productDomain.getData().getShop().getName(),
                 productDomain.getBrand_logo(),
-                productDomain.getData().getShop().getUrl_app(),
+                productDomain.getData().getShop().getUrl(),
                 convertLabels(productDomain.getData().getLabels()),
                 isFreeReturn(productDomain.getData().getBadges()));
     }
@@ -343,28 +343,34 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         );
     }
 
-    private InspirationViewModel convertToInspirationViewModel(
-            DataInspirationDomain domain) {
-        return new InspirationViewModel(domain.getTitle(),
-                convertToRecommendationListViewModel(domain));
+    private InspirationViewModel convertToInspirationViewModel(DataFeedDomain domain) {
+        if (domain.getContent() != null
+                && !domain.getContent().getInspirationDomains().isEmpty()) {
+            return new InspirationViewModel(
+                    domain.getContent().getInspirationDomains().get(0).getTitle(),
+                    convertToRecommendationListViewModel(domain.getContent()
+                            .getInspirationDomains().get(0).getListInspirationItem()));
+        } else {
+            return null;
+        }
     }
 
     private ArrayList<InspirationProductViewModel> convertToRecommendationListViewModel(
-            DataInspirationDomain domains) {
+            List<InspirationItemDomain> domains) {
         ArrayList<InspirationProductViewModel> listRecommendation = new ArrayList<>();
-        if (domains.getRecommendation() != null && domains.getRecommendation().size() == 4)
-            for (InspirationRecommendationDomain recommendationDomain : domains.getRecommendation()) {
+        if (domains != null && domains.size() == 4)
+            for (InspirationItemDomain recommendationDomain : domains) {
                 listRecommendation.add(convertToRecommendationViewModel(recommendationDomain));
             }
         return listRecommendation;
     }
 
     private InspirationProductViewModel convertToRecommendationViewModel(
-            InspirationRecommendationDomain recommendationDomain) {
+            InspirationItemDomain recommendationDomain) {
         return new InspirationProductViewModel(recommendationDomain.getId(),
                 recommendationDomain.getName(),
                 recommendationDomain.getPrice(),
-                recommendationDomain.getImage_url(),
+                recommendationDomain.getImageUrl(),
                 recommendationDomain.getUrl(),
                 page);
     }

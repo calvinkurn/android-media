@@ -4,7 +4,6 @@ import com.apollographql.android.rx.RxApollo;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloWatcher;
 import com.tkpdfeed.feeds.FeedCheck;
-import com.tkpdfeed.feeds.Feeds;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.CheckNewFeedMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.CheckFeedDomain;
