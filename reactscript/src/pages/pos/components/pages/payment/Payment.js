@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, TextInput, TouchableNativeFeedback, View, KeyboardAvoidingView, Button, Image, ScrollView, Picker, Dimensions } from 'react-native'
-import { selectPaymentOptions, makePayment } from '../actions/index'
-import { ccFormat, getCardType } from '../lib/utility'
+import { selectPaymentOptions, makePayment } from '../../../actions/index'
+import { ccFormat, getCardType } from '../../../lib/utility'
 import { NavigationModule } from 'NativeModules'
-import { Text } from '../common/TKPText'
+import { Text } from '../../../common/TKPText'
 
 
 class payment extends Component {

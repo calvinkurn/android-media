@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, ListView } from 'react-native';
-import { emailValidation } from '../lib/utility'
+import { emailValidation } from '../../../lib/utility'
 import PopupDialog, { DialogTitle } from 'react-native-popup-dialog';
 import { NavigationModule } from 'NativeModules'
 import Dash from 'react-native-dash';
 
-import PopUp from '../common/TKPPopupModal'
-import { Text } from '../common/TKPText'
+import PopUp from '../../../common/TKPPopupModal'
+import { Text } from '../../../common/TKPText'
+import { reloadState } from '../../../actions/index'
+
+
 
 class PaymentInvoice extends Component {
   constructor(props) {
@@ -17,6 +20,10 @@ class PaymentInvoice extends Component {
       email: "",
       emailErrorMessage: ""
     };
+  }
+
+  componentDidMount(){
+    this.props.dispatch(reloadState('invoice'))
   }
 
   _handleButtonPress = () => {

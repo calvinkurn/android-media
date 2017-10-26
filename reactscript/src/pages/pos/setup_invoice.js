@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import store from './store/Store'
 // import PaymentProcessing from './components/PaymentProcessing'
-import PaymentInvoice from './components/PaymentInvoice'
+import PaymentInvoice from './components/pages/invoice/PaymentInvoice'
 import InvoiceErrorPage from './components/ErrorPage'
 // import { StackNavigator } from 'react-navigation'
 
