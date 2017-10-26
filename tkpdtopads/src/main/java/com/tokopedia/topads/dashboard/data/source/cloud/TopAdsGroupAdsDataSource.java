@@ -72,9 +72,9 @@ public class TopAdsGroupAdsDataSource {
         return topAdsManagementApi.editGroupAd(getSaveGroupDetailRequest(topAdsDetailGroupDomainModel)).map(topAdsDetailGroupDomainMapper);
     }
 
-    public Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody, ShopModel shopModel){
+    public Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody, String shopId){
         DataRequest<GetSuggestionBody> dataRequest = new DataRequest<>();
-        getSuggestionBody.setShopId(Long.valueOf(shopModel.getInfo().getShopId()));
+        getSuggestionBody.setShopId(Long.valueOf(shopId));
         dataRequest.setData(getSuggestionBody);
         return topAdsManagementApi.getSuggestion(dataRequest).map(new Func1<Response<GetSuggestionResponse>, GetSuggestionResponse>() {
             @Override

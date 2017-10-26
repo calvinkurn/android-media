@@ -55,8 +55,8 @@ public class TopAdsGroupAdsRepositoryImpl implements TopAdsGroupAdsRepository {
     }
 
     @Override
-    public Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody, ShopModel shopModel) {
+    public Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody, String shopId) {
         TopAdsGroupAdsDataSource topAdsGroupAdsDataSource = topAdsGroupAdFactory.createGroupAdsDataSource();
-        return topAdsGroupAdsDataSource.getSuggestion(getSuggestionBody, shopModel);
+        return topAdsGroupAdsDataSource.getSuggestion(getSuggestionBody, shopId);
     }
 }

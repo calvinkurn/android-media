@@ -42,7 +42,7 @@ public class TopAdsGetSuggestionUseCase extends UseCase<GetSuggestionResponse> {
         return shopInfoRepository.getShopInfo().flatMap(new Func1<ShopModel, Observable<GetSuggestionResponse>>() {
             @Override
             public Observable<GetSuggestionResponse> call(ShopModel shopModel) {
-                return topAdsGroupAdsRepository.getSuggestion((GetSuggestionBody) requestParams.getObject(TopAdsNetworkConstant.PARAM_SUGGESTION), shopModel);
+                return topAdsGroupAdsRepository.getSuggestion((GetSuggestionBody) requestParams.getObject(TopAdsNetworkConstant.PARAM_SUGGESTION), shopModel.getInfo().getShopId());
             }
         });
     }

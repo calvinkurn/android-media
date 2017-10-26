@@ -25,5 +25,5 @@ public interface TopAdsGroupAdsRepository {
 
     Observable<TopAdsDetailGroupDomainModel> saveDetailGroup(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel);
 
-    Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody, ShopModel shopModel);
+    Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody, String shopId);
 }
