@@ -1,0 +1,91 @@
+package com.tokopedia.flight.dashboard.view.presenter;
+
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.flight.R;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.SelectFlightPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.validator.SelectFlightPassengerValidator;
+
+import javax.inject.Inject;
+
+/**
+ * Created by alvarisi on 10/26/17.
+ */
+
+public class SelectFlightPassengerPresenterImpl extends BaseDaggerPresenter<SelectFlightPassengerView> implements SelectFlightPassengerPresenter {
+    private SelectFlightPassengerValidator validator;
+
+    @Inject
+    public SelectFlightPassengerPresenterImpl(SelectFlightPassengerValidator validator) {
+        this.validator = validator;
+    }
+
+    @Override
+    public void onAdultPassengerCountChange(int number) {
+        SelectFlightPassengerViewModel passengerViewModel = clonePassData(getView().getCurrentPassengerViewModel());
+        passengerViewModel.setAdult(number);
+        if (validatePassenger(passengerViewModel)) {
+            getView().renderPassengerView(passengerViewModel);
+        }
+        else
+            getView().renderPassengerView(getView().getCurrentPassengerViewModel());
+    }
+
+    private SelectFlightPassengerViewModel clonePassData(SelectFlightPassengerViewModel passengerViewModel) {
+        SelectFlightPassengerViewModel selectFlightPassengerViewModel = null;
+        try {
+            selectFlightPassengerViewModel = (SelectFlightPassengerViewModel) passengerViewModel.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("CloneNotSupportedException SelectFlightPassengerViewModel");
+        }
+        return selectFlightPassengerViewModel;
+    }
+
+    private boolean validatePassenger(SelectFlightPassengerViewModel passengerPassData) {
+        boolean isValid = true;
+        if (!validator.validateTotalPassenger(passengerPassData)) {
+            isValid = false;
+            getView().showTotalPassengerErrorMessage(R.string.select_passenger_total_passenger_error_message);
+        } else if (!validator.validateInfantNotGreaterThanAdult(passengerPassData)) {
+            isValid = false;
+            getView().showInfantGreaterThanAdultErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
+        } else if (!validator.validateAdultCountAtleastOne(passengerPassData)) {
+            isValid = false;
+            getView().showAdultShouldAtleastOneErrorMessage(R.string.select_passenger_adult_atleast_one_error_message);
+        }
+        return isValid;
+    }
+
+    @Override
+    public void onChildrenPassengerCountChange(int number) {
+        SelectFlightPassengerViewModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
+        passengerPassData.setChildren(number);
+        if (validatePassenger(passengerPassData))
+            getView().renderPassengerView(passengerPassData);
+        else
+            getView().renderPassengerView(getView().getCurrentPassengerViewModel());
+    }
+
+    @Override
+    public void onInfantPassengerCountChange(int number) {
+        SelectFlightPassengerViewModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
+        passengerPassData.setInfant(number);
+        if (validatePassenger(passengerPassData))
+            getView().renderPassengerView(passengerPassData);
+        else
+            getView().renderPassengerView(getView().getCurrentPassengerViewModel());
+    }
+
+    @Override
+    public void initialize() {
+        getView().renderPassengerView(getView().getCurrentPassengerViewModel());
+    }
+
+    @Override
+    public void onSaveButtonClicked() {
+        SelectFlightPassengerViewModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
+        if (validatePassenger(passengerPassData)) {
+            getView().actionNavigateBack(passengerPassData);
+        }
+    }
+}

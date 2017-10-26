@@ -3,7 +3,6 @@ package com.tokopedia.flight.airport.data.source;
 import com.tokopedia.abstraction.base.data.source.DataListSource;
 import com.tokopedia.abstraction.base.data.source.cache.DataListCacheSource;
 import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
-import com.tokopedia.abstraction.base.data.source.database.DataListDBSource;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
