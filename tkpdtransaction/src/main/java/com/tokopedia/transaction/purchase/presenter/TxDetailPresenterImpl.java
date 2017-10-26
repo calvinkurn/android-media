@@ -168,7 +168,8 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                                             .replace("XXX",
                                                     orderData.getOrderDetail().getDetailPdfUri())
                             ).toString(),
-                            TkpdInboxRouter.TX_ASK_SELLER);
+                            TkpdInboxRouter.TX_ASK_SELLER,
+                            orderData.getOrderShop().getShopPic());
             viewListener.navigateToActivity(intent);
         }
     }

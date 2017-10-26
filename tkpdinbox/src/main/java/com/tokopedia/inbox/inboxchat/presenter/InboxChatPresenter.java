@@ -26,7 +26,7 @@ import javax.inject.Inject;
  */
 
 public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.View>
-        implements InboxChatContract.Presenter, InboxMessageConstant{
+        implements InboxChatContract.Presenter, InboxMessageConstant {
 
     private final GetMessageListUseCase getMessageListUseCase;
     private final SearchMessageUseCase searchMessageUseCase;
@@ -37,7 +37,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     @Inject
     InboxChatPresenter(GetMessageListUseCase getMessageListUseCase,
-                       SearchMessageUseCase searchMessageUseCase){
+                       SearchMessageUseCase searchMessageUseCase) {
         this.getMessageListUseCase = getMessageListUseCase;
         this.searchMessageUseCase = searchMessageUseCase;
     }
@@ -77,9 +77,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     public void setResult(InboxChatViewModel result) {
         viewModel = result;
 
-        if(pagingHandler.getPage()==1) {
+        if (pagingHandler.getPage() == 1) {
             getView().getAdapter().setList(result.getList());
-        }else {
+        } else {
             getView().getAdapter().addList(result.getList());
         }
 
@@ -87,6 +87,10 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             getView().getAdapter().showEmptyFull(true);
         } else {
             getView().getAdapter().showEmptyFull(false);
+        }
+
+        if (!pagingHandler.CheckNextPage() && result.isHasTimeMachine()) {
+            getView().addTimeMachine();
         }
     }
 
@@ -113,17 +117,15 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void goToDetailMessage(int position, ChatListViewModel listMessage) {
-        Intent intent = new Intent(getView().getActivity(), InboxMessageDetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(PARAM_NAV, getView().getArguments().getString(PARAM_NAV));
-        bundle.putParcelable(PARAM_MESSAGE, null);
-        bundle.putString(PARAM_MESSAGE_ID, String.valueOf(listMessage.getId()));
-        bundle.putInt(PARAM_POSITION, position);
-        bundle.putString(PARAM_SENDER_NAME, listMessage.getName());
-        bundle.putString(PARAM_SENDER_TAG, listMessage.getLabel());
-        bundle.putString(PARAM_SENDER_ID, String.valueOf(listMessage.getSenderId()));
-        bundle.putInt(PARAM_MODE, viewModel.getMode());
-        intent.putExtras(bundle);
+        Intent intent = InboxMessageDetailActivity.getCallingIntent(getView().getActivity(),
+                getView().getArguments().getString(PARAM_NAV),
+                String.valueOf(listMessage.getId()),
+                position,
+                listMessage.getName(),
+                listMessage.getLabel(),
+                listMessage.getSenderId(),
+                listMessage.getRole(),
+                viewModel.getMode());
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         getView().startActivityForResult(intent, OPEN_DETAIL_MESSAGE);
         getView().overridePendingTransition(0, 0);
@@ -184,8 +186,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         pagingHandler.resetPage();
         search(keyword);
     }
+
     public void search(String keyword) {
-        if(!isRequesting) {
+        if (!isRequesting) {
             searchMessageUseCase.execute(SearchMessageUseCase.generateParam(keyword, pagingHandler.getPage()), new SearchMessageSubscriber(getView(), this));
             isRequesting = true;
         }
@@ -209,12 +212,12 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     public void onLoadMore() {
         if (!isRequesting) {
             pagingHandler.nextPage();
-            if(viewModel.getMode() == InboxChatViewModel.GET_CHAT_MODE){
+            if (viewModel.getMode() == InboxChatViewModel.GET_CHAT_MODE) {
                 getMessage();
-            }else if(viewModel.getMode() == InboxChatViewModel.SEARCH_CHAT_MODE) {
+            } else if (viewModel.getMode() == InboxChatViewModel.SEARCH_CHAT_MODE) {
                 search(getView().getKeyword());
             }
-        }else{
+        } else {
             getView().finishLoading();
         }
     }

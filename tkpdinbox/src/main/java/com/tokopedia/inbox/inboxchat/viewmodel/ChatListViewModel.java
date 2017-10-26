@@ -29,6 +29,7 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     Spanned span;
     int spanMode;
     int sectionSize;
+    private String role;
     Contact contact;
 
     public ChatListViewModel() {
@@ -149,8 +150,16 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
         this.contact = contact;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
     @Override
     public int type(InboxChatTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
+
 }

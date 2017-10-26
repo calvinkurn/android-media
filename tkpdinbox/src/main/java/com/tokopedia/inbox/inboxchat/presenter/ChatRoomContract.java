@@ -58,8 +58,15 @@ public class ChatRoomContract {
         void setOnlineDesc(String s);
 
         WebSocketInterface getInterface();
+
+        void onGoToTimeMachine(String url);
+
+        void addTimeMachine();
+
+        void addUrlToReply(String url);
     }
 
     interface Presenter extends CustomerPresenter<View>{
+        void getAttachProductDialog(String shopId, String senderRole);
     }
 }

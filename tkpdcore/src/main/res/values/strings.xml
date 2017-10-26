@@ -1262,7 +1262,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_sender_city">Asal</string>
     <string name="title_receiver_city">Tujuan</string>
     <!--string related to Android PlayStore Review Dialog -->
-    <string name="label_find_own_product">Cari Produk Kamu</string>
+    <string name="label_find_own_product">Cari Produk </string>
     <string name="title_activity_buy_credit">BuyCredit</string>
     <!--string related to Security Question -->
     <string name="msg_security_question">Hi Toppers, Mohon kesediaannya menjawab pertanyaan berikut untuk membantu kami memastikan bahwa Anda adalah pemilik akun Tokopedia ini.</string>

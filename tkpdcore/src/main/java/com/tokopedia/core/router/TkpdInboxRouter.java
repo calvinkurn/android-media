@@ -17,16 +17,14 @@ public interface TkpdInboxRouter {
 
     Intent getAskBuyerIntent(Context context, String toUserId,
                              String customerName, String customSubject,
-                             String customMessage, String source);
+                             String customMessage, String source, String avatarUrl);
 
     Intent getAskSellerIntent(Context context, String toShopId,
                               String shopName, String customSubject,
-                              String customMessage, String source);
+                              String customMessage, String source, String avatarUrl);
 
-    Intent getAskSellerIntent(Context context, String toShopId, String shopName, String source);
+    Intent getAskSellerIntent(Context context, String toShopId, String shopName, String source,
+                              String avatarUrl);
 
-    Intent getAskUserIntent(Context context, String toUserId, String userName, String source);
-
-    Intent getAskSellerIntent(Context context, String toShopId, String shopName,
-                              String customSubject, String source);
+    Intent getAskUserIntent(Context context, String toUserId, String userName, String source, String avatarUrl);
 }

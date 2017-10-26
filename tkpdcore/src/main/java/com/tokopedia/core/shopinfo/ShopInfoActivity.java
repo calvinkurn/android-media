@@ -855,7 +855,8 @@ public class ShopInfoActivity extends BaseActivity
                         .getAskSellerIntent(this,
                                 shopModel.info.shopId,
                                 shopModel.info.shopName,
-                                TkpdInboxRouter.SHOP);
+                                TkpdInboxRouter.SHOP,
+                                shopModel.getInfo().getShopAvatar());
                 startActivity(intent);
             }
         } else {

@@ -12,6 +12,7 @@ import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.TimeMachineListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.STATE_CHAT_U
  * Created by stevenfredian on 10/25/17.
  */
 
-public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder>{
+public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private final InboxChatTypeFactory typeFactory;
     private List<Visitable> list;
@@ -31,6 +32,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     private LoadingModel loadingModel;
     private int selected = 0;
     private InboxChatPresenter presenter;
+    private TimeMachineListViewModel timeMachineChatModel;
 
     public NewInboxChatAdapter(InboxChatTypeFactory typeFactory, InboxChatPresenter presenter) {
         this.typeFactory = typeFactory;
@@ -39,6 +41,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
         this.loadingModel = new LoadingModel();
         this.presenter = presenter;
         this.listMove = new ArrayList<>();
+        this.timeMachineChatModel = new TimeMachineListViewModel("");
     }
 //
 //    @Override
@@ -119,14 +122,14 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
         notifyItemRangeInserted(index, list.size());
     }
 
-    public void showLoading(){
+    public void showLoading() {
         this.list.add(loadingModel);
-        notifyItemInserted(list.size()-1);
+        notifyItemInserted(list.size() - 1);
     }
 
-    public void removeLoading(){
+    public void removeLoading() {
         this.list.remove(loadingModel);
-        notifyItemRemoved(list.size()-1);
+        notifyItemRemoved(list.size() - 1);
     }
 
     public void showEmptyFull(boolean b) {
@@ -138,7 +141,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public boolean checkLoadMore(int index) {
-        if(index>=0) {
+        if (index >= 0) {
             return (list.get(index) instanceof LoadingModel);
         }
         return false;
@@ -149,8 +152,8 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
         for (int i = 0; i < list.size(); i++) {
             ChatListViewModel temp = (ChatListViewModel) list.get(i);
             currentId = String.valueOf(temp.getId());
-            if(currentId.equals(senderId)){
-                if(showNotif){
+            if (currentId.equals(senderId)) {
+                if (showNotif) {
                     int unread = temp.getUnreadCounter();
                     unread++;
                     temp.setMessage(lastReply);
@@ -170,5 +173,10 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     public void clearSelection() {
 
+    }
+
+    public void showTimeMachine() {
+        this.list.add(timeMachineChatModel);
+        notifyItemInserted(list.size() - 1);
     }
 }

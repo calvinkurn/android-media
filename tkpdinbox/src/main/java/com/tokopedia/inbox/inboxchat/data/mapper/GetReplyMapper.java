@@ -30,14 +30,14 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
 
     @Override
     public ChatRoomViewModel call(Response<TkpdResponse> response) {
-        if(response.isSuccessful()){
+        if (response.isSuccessful()) {
             ReplyData data = response.body().convertDataObj(ReplyData.class);
 
             ChatRoomViewModel chatRoomViewModel = new ChatRoomViewModel();
 
             ArrayList<Visitable> list = new ArrayList<>();
 
-            for(ListReply item : data.getList()){
+            for (ListReply item : data.getList()) {
                 if (!item.isOpposite()) {
                     MyChatViewModel temp = new MyChatViewModel();
                     temp.setReplyId(item.getReplyId());
@@ -75,9 +75,9 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
             chatRoomViewModel.setChatList(list);
             chatRoomViewModel.setHasNext(data.isHasNext());
             chatRoomViewModel.setTextAreaReply(data.getTextAreaReply());
-
+            chatRoomViewModel.setHasTimeMachine(data.getTimeMachineStatus() == 1);
             return chatRoomViewModel;
-        }else {
+        } else {
             return null;
         }
     }

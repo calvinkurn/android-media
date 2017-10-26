@@ -71,7 +71,7 @@ public interface KunyitApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.KunyitMessage.SEND_MESSAGE)
-    Observable<Response<TkpdResponse>> sendMessage(@FieldMap Map<String, String> stringStringMap);
+    Observable<Response<TkpdResponse>> sendMessage(@FieldMap Map<String, Object> stringStringMap);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.KunyitMessage.SEND_REPLY_MESSAGE)

@@ -41,6 +41,10 @@ public class InboxChatAdapter extends BaseLinearRecyclerViewAdapter
         implements InboxMessageConstant {
 
 
+    public void showTimeMachine() {
+
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.user_name)
@@ -109,6 +113,7 @@ public class InboxChatAdapter extends BaseLinearRecyclerViewAdapter
                 return new InboxChatAdapter.ViewHolder(LayoutInflater.from(viewGroup.getContext())
                         .inflate(R.layout.message_item, viewGroup, false));
             default:
+
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
 

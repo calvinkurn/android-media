@@ -12,6 +12,7 @@ import android.view.WindowManager;
 
 import com.tkpd.library.ui.view.CustomSearchView;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.shopinfo.models.productmodel.ShopProduct;
@@ -41,10 +42,29 @@ public class GetProductUrlUtil {
     }
 
     public static GetProductUrlUtil createInstance(Context context) {
-        GetProductUrlUtil util = new GetProductUrlUtil();
+        GetProductUrlUtil util = new GetProductUrlUtil(context);
         util.context = context;
         util.paging = new PagingHandler();
         return util;
+    }
+
+    public static GetProductUrlUtil createInstance(Context context, String shopId) {
+        GetProductUrlUtil util = new GetProductUrlUtil(context, shopId);
+        util.context = context;
+        util.paging = new PagingHandler();
+        return util;
+    }
+
+    public GetProductUrlUtil(Context context) {
+        this.context = context;
+        this.paging = new PagingHandler();
+        this.shopId = SessionHandler.getShopID(MainApplication.getAppContext());
+    }
+
+    public GetProductUrlUtil(Context context, String shopId) {
+        this.context = context;
+        this.paging = new PagingHandler();
+        this.shopId = shopId;
     }
 
     private PagingHandler paging;
@@ -56,6 +76,7 @@ public class GetProductUrlUtil {
     private ProductAdapter adapter;
     private boolean hasShop;
     private GetProductPass pass;
+    private String shopId;
 
 
     public void getOwnShopProductUrl(OnGetUrlInterface listener) {
@@ -76,7 +97,7 @@ public class GetProductUrlUtil {
         adapter = ProductAdapter.createInstance(context);
         linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         pass = new GetProductPass();
-        pass.setShopId(SessionHandler.getShopID(context));
+        pass.setShopId(shopId);
 
     }
 
@@ -228,12 +249,12 @@ public class GetProductUrlUtil {
     private Map<String, String> getParamProductUrl(String query) {
         pass.setStart(String.valueOf((paging.getPage() - 1) * Integer.parseInt(GetProductPass.DEFAULT_ROWS)));
         pass.setQuery(query);
-        pass.setShopId(SessionHandler.getShopID(context));
+        pass.setShopId(shopId);
         return pass.getProductUrlParam();
     }
 
     private void checkHasShop() {
-        if (SessionHandler.getShopID(context).equals("0")) {
+        if (shopId.equals("0")) {
             setHasNoShop();
         } else {
             setHasShop();

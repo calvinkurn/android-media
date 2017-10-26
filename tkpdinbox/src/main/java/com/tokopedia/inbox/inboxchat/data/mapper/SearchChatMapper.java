@@ -33,7 +33,7 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
             ArrayList<ChatListViewModel> list = new ArrayList<>();
 
             int index = 0;
-            for(Datum item : data.getContacts().getData()){
+            for (Datum item : data.getContacts().getData()) {
                 ChatListViewModel viewModel = new ChatListViewModel();
                 viewModel.setId(String.valueOf(item.getMsgId()));
                 viewModel.setName(item.getContact().getAttributes().getName());
@@ -46,14 +46,14 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
                 viewModel.setLabel(getRole(item.getOppositeType()));
                 viewModel.setSpanMode(ChatListViewModel.SPANNED_CONTACT);
                 list.add(viewModel);
-                if(index==0){
+                if (index == 0) {
                     viewModel.setSectionSize(data.getContacts().getData().size());
                 }
                 index++;
             }
 
             index = 0;
-            for(Datum item : data.getReplies().getData()){
+            for (Datum item : data.getReplies().getData()) {
                 ChatListViewModel viewModel = new ChatListViewModel();
                 viewModel.setId(String.valueOf(item.getMsgId()));
                 viewModel.setName(item.getContact().getAttributes().getName());
@@ -65,8 +65,9 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
                 viewModel.setReadStatus(STATE_CHAT_READ);
                 viewModel.setLabel(getRole(item.getOppositeType()));
                 viewModel.setSpanMode(ChatListViewModel.SPANNED_MESSAGE);
+                viewModel.setRole("user");
                 list.add(viewModel);
-                if(index==0){
+                if (index == 0) {
                     viewModel.setSectionSize(data.getReplies().getData().size());
                 }
                 index++;
@@ -79,7 +80,7 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
     }
 
     private String getRole(int oppositeType) {
-        switch (oppositeType){
+        switch (oppositeType) {
             case 1:
                 return "Pengguna";
             case 2:

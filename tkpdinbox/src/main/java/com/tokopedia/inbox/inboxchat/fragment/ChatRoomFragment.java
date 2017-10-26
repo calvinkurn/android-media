@@ -26,6 +26,7 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
+import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactoryImpl;
@@ -38,6 +39,7 @@ import com.tokopedia.inbox.inboxchat.util.Events;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
+import com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity;
 
 import org.json.JSONException;
 
@@ -54,11 +56,11 @@ import rx.functions.Func1;
  * Created by stevenfredian on 9/19/17.
  */
 
-public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomContract.View, InboxMessageConstant, WebSocketInterface {
+public class ChatRoomFragment extends BaseDaggerFragment
+        implements ChatRoomContract.View, InboxMessageConstant, WebSocketInterface {
 
     @Inject
     ChatRoomPresenter presenter;
-
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -76,6 +78,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
     private LinearLayoutManager layoutManager;
     private ImageView sendButton;
     private EditText replyColumn;
+    private ImageView attachButton;
     RefreshHandler refreshHandler;
     private View mainHeader;
     private Toolbar toolbar;
@@ -102,6 +105,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
         replyView = rootView.findViewById(R.id.add_comment_area);
         sendButton = (ImageView) rootView.findViewById(R.id.send_but);
         replyColumn = (EditText) rootView.findViewById(R.id.new_comment);
+        attachButton = (ImageView) rootView.findViewById(R.id.add_url);
 //        refreshHandler = new RefreshHandler(getActivity(), rootView, onRefresh());
         replyWatcher =  Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
@@ -131,7 +135,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
         replyIsTyping = replyWatcher.map(new Func1<String, Boolean>() {
             @Override
             public Boolean call(String s) {
-                return s.length()>0;
+                return s.length() > 0;
             }
         });
 
@@ -140,7 +144,8 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
             public void call(Boolean aBoolean) {
                 Log.i("call: ", "isTyping");
                 try {
-                    presenter.setIsTyping(getArguments().getString("message_id"));
+                    presenter.setIsTyping(getArguments().getString(InboxMessageDetailActivity
+                            .PARAM_MESSAGE_ID));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -153,12 +158,30 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
                     public void call(Boolean aBoolean) {
                         Log.i("call: ", "stopTyping");
                         try {
-                            presenter.stopTyping(getArguments().getString("message_id"));
+                            presenter.stopTyping(getArguments().getString(InboxMessageDetailActivity
+                                    .PARAM_MESSAGE_ID));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 });
+
+        attachButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.getAttachProductDialog(
+                        getArguments().getString(InboxMessageDetailActivity
+                                .PARAM_SENDER_ID, ""),
+                        getArguments().getString(InboxMessageDetailActivity.PARAM_SENDER_ROLE, "")
+                );
+            }
+        });
+    }
+
+    @Override
+    public void addUrlToReply(String url) {
+        replyColumn.setText(replyColumn.getText() + "\n" + url);
+        replyColumn.setSelection(replyColumn.length());
     }
 
     private void initVar() {
@@ -275,6 +298,16 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
     @Override
     public WebSocketInterface getInterface() {
         return this;
+    }
+
+    @Override
+    public void onGoToTimeMachine(String url) {
+        startActivity(TimeMachineActivity.getCallingIntent(getActivity(), url));
+    }
+
+    @Override
+    public void addTimeMachine() {
+        adapter.showTimeMachine();
     }
 
     @Override
@@ -401,8 +434,8 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
 
     @Override
     public void onIncomingEvent(WebSocketResponse response) {
-        switch (response.getCode()){
-            case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING :
+        switch (response.getCode()) {
+            case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
                 setOnlineDesc("sedang mengetik");
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
@@ -416,6 +449,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
 
     @Override
     public void newWebSocket() {
-        presenter.recreateWebSocket();
+        if (getActivity() != null)
+            presenter.recreateWebSocket();
     }
 }

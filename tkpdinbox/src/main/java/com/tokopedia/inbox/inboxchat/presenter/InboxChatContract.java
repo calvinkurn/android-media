@@ -71,6 +71,10 @@ public class InboxChatContract {
         void setOptionsMenu();
 
         void finishSearch();
+
+        void addTimeMachine();
+
+        void onGoToTimeMachine(String url);
     }
 
     interface Presenter extends CustomerPresenter<View>{

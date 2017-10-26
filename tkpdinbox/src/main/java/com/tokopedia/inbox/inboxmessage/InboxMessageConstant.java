@@ -26,8 +26,7 @@ public interface InboxMessageConstant {
     String PARAM_SENDER_NAME = "name";
     String PARAM_SENDER_TAG = "tag";
     String PARAM_SENDER_ID = "sender_id";
-    String PARAM_MODE = "sender_id";
-
+    String PARAM_MODE = "mode";
 
     String MOVE_ALL = "move_to_inbox_all";
     String ARCHIVE_ALL = "archive_inbox_all";

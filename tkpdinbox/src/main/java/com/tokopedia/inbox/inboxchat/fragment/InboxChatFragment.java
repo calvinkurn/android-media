@@ -28,6 +28,7 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
+import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.adapter.NewInboxChatAdapter;
@@ -277,6 +278,17 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
         }
 
     }
+
+    @Override
+    public void addTimeMachine() {
+        adapter.showTimeMachine();
+    }
+
+    @Override
+    public void onGoToTimeMachine(String url) {
+        startActivity(TimeMachineActivity.getCallingIntent(getActivity(), url));
+    }
+
 
     @Override
     public String getNav() {

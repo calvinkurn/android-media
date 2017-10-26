@@ -8,13 +8,15 @@ import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
 import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
+import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineListViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.TimeMachineListViewModel;
 
 /**
  * Created by stevenfredian on 9/27/17.
  */
 
-public class InboxChatTypeFactoryImpl extends BaseAdapterTypeFactory implements InboxChatTypeFactory{
+public class InboxChatTypeFactoryImpl extends BaseAdapterTypeFactory implements InboxChatTypeFactory {
 
     InboxChatContract.View viewListener;
     InboxChatPresenter presenter;
@@ -32,6 +34,8 @@ public class InboxChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
 
         if (type == ListChatViewHolder.LAYOUT)
             viewHolder = new ListChatViewHolder(view, viewListener, presenter);
+        else if (type == TimeMachineListViewHolder.LAYOUT)
+            viewHolder = new TimeMachineListViewHolder(view, viewListener);
         else
             return super.createViewHolder(view, type);
 
@@ -41,5 +45,10 @@ public class InboxChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
     @Override
     public int type(ChatListViewModel chatListViewModel) {
         return ListChatViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(TimeMachineListViewModel timeMachineListViewModel) {
+        return TimeMachineListViewHolder.LAYOUT;
     }
 }

@@ -19,6 +19,7 @@ public class ChatRoomViewModel {
     int textAreaReply;
     List<Visitable> chatList;
     boolean hasNext;
+    private boolean hasTimeMachine;
 
     public String getNameHeader() {
         return nameHeader;
@@ -82,5 +83,13 @@ public class ChatRoomViewModel {
 
     public void setHasNext(boolean hasNext) {
         this.hasNext = hasNext;
+    }
+
+    public boolean isHasTimeMachine() {
+        return hasTimeMachine;
+    }
+
+    public void setHasTimeMachine(boolean hasTimeMachine) {
+        this.hasTimeMachine = hasTimeMachine;
     }
 }

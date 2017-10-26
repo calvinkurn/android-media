@@ -13,8 +13,7 @@ public class GetReplyViewModel {
     private List<Visitable> list;
     private boolean hasNext;
     private int textAreaReply;
-
-
+    private boolean hasTimeMachine;
 
     public List<Visitable> getList() {
         return list;
@@ -38,5 +37,13 @@ public class GetReplyViewModel {
 
     public void setHasNext(boolean hasNext) {
         this.hasNext = hasNext;
+    }
+
+    public void setHasTimeMachine(boolean hasTimeMachine) {
+        this.hasTimeMachine = hasTimeMachine;
+    }
+
+    public boolean isHasTimeMachine() {
+        return hasTimeMachine;
     }
 }
