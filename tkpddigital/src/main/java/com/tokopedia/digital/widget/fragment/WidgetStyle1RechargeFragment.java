@@ -198,7 +198,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 } else {
                     if (category.getAttributes().isValidatePrefix()) {
                         if (selectedOperator == null) {
-                            if ((temp.length() >= 3 && temp.length() <= 4) || temp.length() > minLengthDefaultOperator) {
+                            if (temp.length() >= 3) {
                                 presenter.validatePhonePrefix(temp, category.getId(),
                                         category.getAttributes().isValidatePrefix());
                             }
