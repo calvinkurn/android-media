@@ -5,6 +5,7 @@ import android.view.View;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
@@ -29,6 +30,9 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
     @Inject
     TopAdsDetailNewProductPresenter topAdsDetailNewProductPresenter;
 
+    @Inject
+    ShopInfoRepository shopInfoRepository;
+
     @Override
     protected void initInjector() {
         super.initInjector();
@@ -52,8 +56,8 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
     protected void loadSuggestionBid() {
         GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
         getSuggestionBody.setRounding(true);
-        if(SessionHandler.getShopID(getActivity()) != null)
-            getSuggestionBody.setShopId(Long.valueOf(SessionHandler.getShopID(getActivity())));
+        if(shopInfoRepository.getShopId() != null)
+            getSuggestionBody.setShopId(Long.valueOf(shopInfoRepository.getShopId()));
         getSuggestionBody.setSource(TopAdsNetworkConstant.SOURCE_NEW_COST_GROUP);
         getSuggestionBody.setDataType(TopAdsNetworkConstant.SUGGESTION_DATA_TYPE_SUMMARY);
         getSuggestionBody.setSuggestionType(TopAdsNetworkConstant.SUGGESTION_TYPE_DEPARTMENT_ID);
