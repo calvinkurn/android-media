@@ -151,6 +151,14 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
 
+
+                String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
+                if (!TextUtils.isEmpty(errorMessage)) {
+                    maxPriceInputLayout.setError(errorMessage);
+                } else {
+                    maxPriceInputLayout.setError(null);
+                }
+
                 String suggestionBidRaw = getSuggestionBidRaw();
                 if(suggestionBidRaw == null)
                     return;
