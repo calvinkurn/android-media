@@ -11,6 +11,8 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB_Table;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 
@@ -19,6 +21,10 @@ import rx.Subscriber;
  */
 
 public class FlightAirportDataListDBSource implements DataListDBSource<FlightAirportCountry> {
+
+    @Inject
+    public FlightAirportDataListDBSource() {
+    }
 
     @Override
     public Observable<Boolean> isDataAvailable() {

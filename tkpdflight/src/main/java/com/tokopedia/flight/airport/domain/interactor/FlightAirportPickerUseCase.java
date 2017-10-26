@@ -7,6 +7,8 @@ import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -14,14 +16,22 @@ import rx.Observable;
  */
 
 public class FlightAirportPickerUseCase extends UseCase<List<FlightAirportDB>> {
+    public static final String KEYWORD = "keyword";
     private final FlightRepository flightRepository;
 
+    @Inject
     public FlightAirportPickerUseCase(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;
     }
 
     @Override
     public Observable<List<FlightAirportDB>> createObservable(RequestParams requestParams) {
-        return flightRepository.getAirportList(requestParams);
+        return flightRepository.getAirportList(requestParams.getString(KEYWORD, ""));
+    }
+
+    public static RequestParams createRequestParams(String text) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(KEYWORD, text);
+        return requestParams;
     }
 }
