@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboard.view.fragment.passdata;
+package com.tokopedia.flight.dashboard.view.fragment.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,36 +7,36 @@ import android.os.Parcelable;
  * Created by alvarisi on 10/25/17.
  */
 
-public class SelectFlightPassengerPassData implements Parcelable {
+public class SelectFlightPassengerViewModel implements Parcelable, Cloneable  {
     private int adult;
     private int children;
     private int infant;
 
-    public SelectFlightPassengerPassData() {
+    public SelectFlightPassengerViewModel() {
     }
 
 
-    public SelectFlightPassengerPassData(int adult, int children, int infant) {
+    public SelectFlightPassengerViewModel(int adult, int children, int infant) {
         this.adult = adult;
         this.children = children;
         this.infant = infant;
     }
 
-    protected SelectFlightPassengerPassData(Parcel in) {
+    protected SelectFlightPassengerViewModel(Parcel in) {
         adult = in.readInt();
         children = in.readInt();
         infant = in.readInt();
     }
 
-    public static final Creator<SelectFlightPassengerPassData> CREATOR = new Creator<SelectFlightPassengerPassData>() {
+    public static final Creator<SelectFlightPassengerViewModel> CREATOR = new Creator<SelectFlightPassengerViewModel>() {
         @Override
-        public SelectFlightPassengerPassData createFromParcel(Parcel in) {
-            return new SelectFlightPassengerPassData(in);
+        public SelectFlightPassengerViewModel createFromParcel(Parcel in) {
+            return new SelectFlightPassengerViewModel(in);
         }
 
         @Override
-        public SelectFlightPassengerPassData[] newArray(int size) {
-            return new SelectFlightPassengerPassData[size];
+        public SelectFlightPassengerViewModel[] newArray(int size) {
+            return new SelectFlightPassengerViewModel[size];
         }
     };
 
@@ -87,23 +87,28 @@ public class SelectFlightPassengerPassData implements Parcelable {
             infant = 0;
         }
 
-        public SelectFlightPassengerPassData.Builder setAdult(int adult) {
+        public SelectFlightPassengerViewModel.Builder setAdult(int adult) {
             this.adult = adult;
             return this;
         }
 
-        public SelectFlightPassengerPassData.Builder setChildren(int children) {
+        public SelectFlightPassengerViewModel.Builder setChildren(int children) {
             this.children = children;
             return this;
         }
 
-        public SelectFlightPassengerPassData.Builder setInfant(int infant) {
+        public SelectFlightPassengerViewModel.Builder setInfant(int infant) {
             this.infant = infant;
             return this;
         }
 
-        public SelectFlightPassengerPassData build() {
-            return new SelectFlightPassengerPassData(adult, children, infant);
+        public SelectFlightPassengerViewModel build() {
+            return new SelectFlightPassengerViewModel(adult, children, infant);
         }
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
