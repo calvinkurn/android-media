@@ -136,7 +136,7 @@ public interface AppEventTracking {
         String HOME_DASHBOARD_CLICK_SELLER = "homeDashboardClicked";
         String EVENT_MANAGE_PRODUCT = "eventManageProduct";
 
-        String EVENT_CLICK_USER_PROFILE = "cllickUserProfile";
+        String EVENT_CLICK_USER_PROFILE = "clickUserProfile";
     }
 
     interface Category {
