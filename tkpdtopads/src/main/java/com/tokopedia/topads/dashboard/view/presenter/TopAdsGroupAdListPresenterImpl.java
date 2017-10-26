@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
@@ -29,13 +29,13 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
 
     protected final TopAdsGroupAdInteractor groupAdInteractor;
     private TopAdsGetSuggestionUseCase getSuggestionUseCase;
-    private GetShopInfoUseCase getShopInfoUseCase;
+    private ShopInfoRepository shopInfoRepository;
 
-    public TopAdsGroupAdListPresenterImpl(Context context, BaseListViewListener baseListViewListener, TopAdsGetSuggestionUseCase getSuggestionUseCase, GetShopInfoUseCase getShopInfoUseCase) {
+    public TopAdsGroupAdListPresenterImpl(Context context, BaseListViewListener baseListViewListener, TopAdsGetSuggestionUseCase getSuggestionUseCase, ShopInfoRepository shopInfoRepository) {
         super(context, baseListViewListener);
         this.groupAdInteractor = new TopAdsGroupAdInteractorImpl(context);
         this.getSuggestionUseCase = getSuggestionUseCase;
-        this.getShopInfoUseCase = getShopInfoUseCase;
+        this.shopInfoRepository = shopInfoRepository;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
 
                 GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
                 getSuggestionBody.setRounding(true);
-                getSuggestionBody.setShopId(Long.valueOf(getShopInfoUseCase.getData(RequestParams.EMPTY).getInfo().getShopId()));
+                getSuggestionBody.setShopId(Long.valueOf(shopInfoRepository.getShopId()));
                 getSuggestionBody.setSource(TopAdsNetworkConstant.SOURCE_GROUP_AD_LIST);
                 getSuggestionBody.setDataType(TopAdsNetworkConstant.SUGGESTION_DATA_TYPE_DETAIL);
                 getSuggestionBody.setSuggestionType(TopAdsNetworkConstant.SUGGESTION_TYPE_GROUP_ID);
