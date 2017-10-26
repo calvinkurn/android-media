@@ -3,11 +3,18 @@ package com.tokopedia.digital.widget.interactor;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.model.mapper.OperatorMapper;
 import com.tokopedia.digital.widget.model.mapper.ProductMapper;
 import com.tokopedia.digital.widget.model.operator.Operator;
 import com.tokopedia.digital.widget.model.product.Product;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +29,7 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nabillasabbaha on 7/21/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
@@ -82,7 +90,6 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                 return Observable.just(new ArrayList<Product>());
                             }
                         })
-
                         .unsubscribeOn(Schedulers.from(threadExecutor))
                         .subscribeOn(Schedulers.from(threadExecutor))
                         .observeOn(postExecutionThread.getScheduler())
@@ -150,7 +157,6 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                 .subscribeOn(Schedulers.from(threadExecutor))
                 .observeOn(postExecutionThread.getScheduler())
                 .subscribe(subscriber));
-
     }
 
     private Observable<List<Integer>> getIdOperators(final int categoryId) {
@@ -252,13 +258,16 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     }
 
     @Override
-    public void getRecentData(Subscriber<List<String>> subscriber, final int categoryId) {
-        compositeSubscription.add(
-                digitalWidgetRepository.getObservableRecentData(categoryId)
-                        .unsubscribeOn(Schedulers.from(threadExecutor))
-                        .subscribeOn(Schedulers.from(threadExecutor))
-                        .observeOn(postExecutionThread.getScheduler())
-                        .subscribe(subscriber));
+    public void getNumberList(Subscriber<DigitalNumberList> subscriber,
+                              TKPDMapParam<String, String> param) {
+        if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
+            compositeSubscription.add(
+                    digitalWidgetRepository.getObservableNumberList(param)
+                            .subscribeOn(Schedulers.from(threadExecutor))
+                            .unsubscribeOn(Schedulers.from(threadExecutor))
+                            .observeOn(postExecutionThread.getScheduler())
+                            .subscribe(subscriber));
+        }
     }
 
     private Func1<Product, Boolean> isProductValidToOperator(final int categoryId, final int operatorId) {

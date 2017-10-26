@@ -12,6 +12,7 @@ import rx.Observable;
 
 public abstract class DataListCloudSource<T> {
 
+
     public DataListCloudSource(BaseService service) {
 
     }

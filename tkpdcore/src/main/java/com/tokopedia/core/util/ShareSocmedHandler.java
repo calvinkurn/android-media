@@ -223,7 +223,7 @@ public class ShareSocmedHandler {
      */
 
     public static void ShareSpecific(final ShareData data, final Activity context, final String packageName, final String targetType, final Bitmap image, final String altUrl) {
-        BranchShareLinkGenerator.generateBranchLink(data, context, new BranchShareLinkGenerator.GenerateShareContents() {
+        BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
             @Override
             public void onCreateShareContents(String shareContents, String shareUri) {
                 ShareData(context, packageName, targetType, shareContents, shareUri, image, altUrl);
@@ -321,7 +321,7 @@ public class ShareSocmedHandler {
 
                             @Override
                             public void onNext(final File file) {
-                                BranchShareLinkGenerator.generateBranchLink(data, context, new BranchShareLinkGenerator.GenerateShareContents() {
+                                BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
                                     @Override
                                     public void onCreateShareContents(String shareContents, String shareUri) {
                                         ShareDataWithSpecificUri(file, targetType, image, context, shareContents, shareUri, packageName, altUrl);
@@ -485,7 +485,7 @@ public class ShareSocmedHandler {
 
     public static void ShareIntentImageUri(final ShareData data, final Activity context, final String title, String imageUri) {
 
-        BranchShareLinkGenerator.generateBranchLink(data, context, new BranchShareLinkGenerator.GenerateShareContents() {
+        BranchSdkUtils.generateBranchLink(data, context, new BranchSdkUtils.GenerateShareContents() {
             @Override
             public void onCreateShareContents(String shareContents, String shareUri) {
                 Intent share = new Intent(Intent.ACTION_SEND);

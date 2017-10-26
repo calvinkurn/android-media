@@ -10,6 +10,8 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -20,6 +22,7 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
 
     private FlightAirportDataListDBSource dataListDBSource;
 
+    @Inject
     public FlightAirportDataListSource(DataListCacheSource dataListCacheManager, FlightAirportDataListDBSource dataListDBManager, DataListCloudSource<FlightAirportCountry> dataListCloudManager) {
         super(dataListCacheManager, dataListDBManager, dataListCloudManager);
         this.dataListDBSource = dataListDBManager;

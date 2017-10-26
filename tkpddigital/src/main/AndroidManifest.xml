@@ -40,6 +40,9 @@
 
         <activity android:name=".tokocash.activity.SuccessActivateTokoCashActivity"
             android:screenOrientation="portrait" />
+
+        <activity android:name=".product.activity.DigitalSearchNumberActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

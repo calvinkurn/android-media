@@ -455,16 +455,14 @@ public class TxListPresenterImpl implements TxListPresenter {
         TextView tvComplainTitle = (TextView) dialog.findViewById(R.id.tvComplainTitle);
         TextView tvComplainBody = (TextView) dialog.findViewById(R.id.tvComplainBody);
         tvComplainTitle.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupTitle()));
-        tvComplainBody.setText(Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsg()));
+        tvComplainBody.setText(orderData.getOrderDetail().getDetailComplaintPopupMsgV2() != null ?
+                Html.fromHtml(orderData.getOrderDetail().getDetailComplaintPopupMsgV2()) :
+                "");
 
         llFreeReturn.setVisibility(View.GONE);
-        btnBack.setVisibility(View.GONE);
+        btnBack.setVisibility(View.VISIBLE);
         btnNotReceive.setVisibility(View.GONE);
-        if (orderData.getOrderButton().getButtonComplaintNotReceived().equals("1"))
-            btnNotReceive.setVisibility(View.VISIBLE);
-        else
-            btnBack.setVisibility(View.VISIBLE);
-      
+
         //will be used later
 //        if (orderData.getOrderDetail().getDetailFreeReturn() == 1) {
 //            llFreeReturn.setVisibility(View.VISIBLE);
@@ -475,13 +473,6 @@ public class TxListPresenterImpl implements TxListPresenter {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-            }
-        });
-        btnNotReceive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                showNotReceiveDialog(context, orderData);
             }
         });
 

@@ -22,7 +22,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightAirportDB>> getAirportList(RequestParams requestParams) {
-        return flightAirportDataListSource.getAirportList("");
+    public Observable<List<FlightAirportDB>> getAirportList(String query) {
+        return flightAirportDataListSource.getAirportList(query);
     }
 }
