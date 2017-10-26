@@ -84,7 +84,7 @@ class PaymentInvoice extends Component {
               <Image style={{ width: 111, height: 85 }} source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Success_icon.png' }} />
               <Text style={styles.text1}> Transaksi Berhasil! </Text>
               <Text style={styles.text2}> Terima kasih telah berbelanja di toko kami</Text>
-              <Text style={styles.text3}> IVR/20170609/XVII/VI/13461162</Text>
+              <Text style={styles.text3}> {this.props.invoiceNo}</Text>
             </View>
 
             <ListView
@@ -325,6 +325,7 @@ const mapStateToProps = (state, ownProps) => {
     itemList,
     bankLogo: objData.bankLogo, 
     bankName: objData.bankName,
+    invoiceNo: objData.invoiceRef,
   }
 }
 
