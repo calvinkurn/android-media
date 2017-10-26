@@ -3,9 +3,12 @@ package com.tokopedia.digital.tokocash.domain;
 import com.google.gson.Gson;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.digital.tokocash.entity.HelpHistoryTokoCashEntity;
+import com.tokopedia.digital.tokocash.entity.ParamsActionHistoryEntity;
 import com.tokopedia.digital.tokocash.entity.ResponseHelpHistoryEntity;
-import com.tokopedia.digital.tokocash.network.apiservice.HistoryTokoCashService;
 import com.tokopedia.digital.tokocash.entity.TokoCashHistoryEntity;
+import com.tokopedia.digital.tokocash.entity.WithdrawSaldoEntity;
+import com.tokopedia.digital.tokocash.model.ParamsActionHistory;
+import com.tokopedia.digital.tokocash.network.apiservice.HistoryTokoCashService;
 import com.tokopedia.digital.tokocash.network.request.RequestHelpHistory;
 import com.tokopedia.digital.utils.DeviceUtil;
 
@@ -35,12 +38,12 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
 
     @Override
     public Observable<TokoCashHistoryEntity> getTokoCashHistoryData(String type, String startDate,
-                                                                    String endDate, String afterId) {
+                                                                    String endDate, int page) {
         Map<String, String> mapHistoryData = new HashMap<>();
-        mapHistoryData.put("type" ,type);
+        mapHistoryData.put("type", type);
         mapHistoryData.put("start_date", startDate);
         mapHistoryData.put("end_date", endDate);
-        mapHistoryData.put("after_id", afterId);
+        mapHistoryData.put("page", String.valueOf(page));
         return historyTokoCashService.getApi().getHistoryTokocash(mapHistoryData)
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<TokoCashHistoryEntity>>() {
                     @Override
@@ -54,7 +57,7 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
     @Override
     public Observable<List<HelpHistoryTokoCashEntity>> getHelpHistoryData() {
         String helpHistoryList = DeviceUtil.loadJSONFromAsset("help_history_tokocash.json");
-        return Observable.just(Arrays.asList((HelpHistoryTokoCashEntity[])gson.fromJson(helpHistoryList,
+        return Observable.just(Arrays.asList((HelpHistoryTokoCashEntity[]) gson.fromJson(helpHistoryList,
                 HelpHistoryTokoCashEntity[].class)));
     }
 
@@ -71,6 +74,20 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
                     public Observable<ResponseHelpHistoryEntity> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
                         return Observable
                                 .just(tkpdDigitalResponseResponse.body().convertDataObj(ResponseHelpHistoryEntity.class));
+                    }
+                });
+    }
+
+    @Override
+    public Observable<WithdrawSaldoEntity> moveToSaldo(String url, ParamsActionHistory paramsActionHistory) {
+        ParamsActionHistoryEntity paramsActionHistoryEntity = new ParamsActionHistoryEntity();
+        paramsActionHistoryEntity.setRefundId(paramsActionHistory.getRefundId());
+        paramsActionHistoryEntity.setRefundType(paramsActionHistory.getRefundType());
+        return historyTokoCashService.getApi().withdrawSaldoFromTokocash(url, paramsActionHistoryEntity)
+                .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<WithdrawSaldoEntity>>() {
+                    @Override
+                    public Observable<WithdrawSaldoEntity> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                        return Observable.just(tkpdDigitalResponseResponse.body().convertDataObj(WithdrawSaldoEntity.class));
                     }
                 });
     }

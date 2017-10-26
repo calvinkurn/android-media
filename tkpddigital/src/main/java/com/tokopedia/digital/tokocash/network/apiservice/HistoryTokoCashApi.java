@@ -2,6 +2,7 @@ package com.tokopedia.digital.tokocash.network.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
+import com.tokopedia.digital.tokocash.entity.ParamsActionHistoryEntity;
 import com.tokopedia.digital.tokocash.network.request.RequestHelpHistory;
 
 import java.util.Map;
@@ -11,6 +12,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -24,4 +26,8 @@ public interface HistoryTokoCashApi {
 
     @POST(TkpdBaseURL.Wallet.POST_COMPLAINT)
     Observable<Response<TkpdDigitalResponse>> postHelpHistory(@Body RequestHelpHistory requestHelpHistory);
+
+    @POST
+    Observable<Response<TkpdDigitalResponse>> withdrawSaldoFromTokocash(@Url String url,
+                                                                        @Body ParamsActionHistoryEntity paramsActionHistoryEntity);
 }

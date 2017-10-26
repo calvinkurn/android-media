@@ -59,7 +59,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
 
     private static final int SELECTION_TYPE_PERIOD_DATE = 0;
     private static final int EXTRA_INTENT_DATE_PICKER = 50;
-    private static final String FORMAT_DATE = "dd+MMM+yyyy";
+    private static final String FORMAT_DATE = "dd+MMMM+yyyy";
     private static final String ALL_TRANSACTION_TYPE = "all";
     private static final String EXTRA_START_DATE = "EXTRA_START_DATE";
     private static final String EXTRA_END_DATE = "EXTRA_END_DATE";
@@ -148,7 +148,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         initialFilterRecyclerView();
         initialHistoryRecyclerView();
         showLoading();
-        presenter.getHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
+        presenter.getInitHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
     }
 
     private void initialRangeDateFilter() {
@@ -209,14 +209,14 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
             @Override
             public void clearFilter() {
                 typeFilterSelected = "";
-                presenter.getHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
+                presenter.getInitHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
                 endlessRecyclerviewListener.resetState();
             }
 
             @Override
             public void selectFilter(String typeFilter) {
                 typeFilterSelected = typeFilter;
-                presenter.getHistoryTokoCash(typeFilter, startDateFormatted, endDateFormatted);
+                presenter.getInitHistoryTokoCash(typeFilter, startDateFormatted, endDateFormatted);
                 endlessRecyclerviewListener.resetState();
             }
         };
@@ -303,7 +303,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
 
                 startDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(startDate);
                 endDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(endDate);
-                presenter.getHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
+                presenter.getInitHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
                 endlessRecyclerviewListener.resetState();
             }
         }

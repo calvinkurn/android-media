@@ -7,17 +7,20 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.tokocash.model.ActionHistory;
 import com.tokopedia.digital.tokocash.model.ItemHistory;
+import com.tokopedia.digital.tokocash.model.WalletToDepositPassData;
 
 import butterknife.BindView;
 
@@ -28,6 +31,7 @@ import butterknife.BindView;
 public class DetailTransactionActivity extends BasePresenterActivity {
 
     private static final String ITEM_HISTORY_KEY = "item_history";
+    private static final int REQUEST_MOVE_TO_SALDO = 110;
 
     @BindView(R2.id.icon_item_history)
     ImageView iconItem;
@@ -43,8 +47,8 @@ public class DetailTransactionActivity extends BasePresenterActivity {
     TextView transactionId;
     @BindView(R2.id.bantuan_btn)
     Button bantuanBtn;
-    @BindView(R2.id.opsi_btn)
-    Button opsiBtn;
+    @BindView(R2.id.button_opsi)
+    LinearLayout buttonOpsiContainer;
     @BindView(R2.id.notes_item_history)
     TextView notesItem;
 
@@ -84,13 +88,23 @@ public class DetailTransactionActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-
+        if (itemHistory.getActionHistoryList() != null) {
+            for (ActionHistory actionHistory : itemHistory.getActionHistoryList()) {
+                if (actionHistory.getType().equals("button")) {
+                    View view = LayoutInflater.from(getApplicationContext())
+                            .inflate(R.layout.item_button_opsi, buttonOpsiContainer, false);
+                    Button buttonOpsi = (Button) view.findViewById(R.id.opsi_btn);
+                    buttonOpsi.setText(actionHistory.getTitle());
+                    buttonOpsi.setOnClickListener(getOpsiListener(actionHistory));
+                    buttonOpsiContainer.addView(view);
+                }
+            }
+        }
     }
 
     @Override
     protected void setViewListener() {
         bantuanBtn.setOnClickListener(getHelpListener());
-        opsiBtn.setOnClickListener(getOpsiListener(itemHistory));
     }
 
     @Override
@@ -120,26 +134,46 @@ public class DetailTransactionActivity extends BasePresenterActivity {
             notesItem.setVisibility(View.GONE);
         }
         if (itemHistory.getActionHistoryList() != null && itemHistory.getActionHistoryList().size() > 0) {
-            opsiBtn.setVisibility(View.VISIBLE);
-            opsiBtn.setText(itemHistory.getActionHistoryList().get(0).getTitle());
-            bantuanBtn.setBackground(ContextCompat.getDrawable(this, R.drawable.digital_white_grey_button_more_rounded));
+            buttonOpsiContainer.setVisibility(View.VISIBLE);
+            bantuanBtn.setBackground(ContextCompat.getDrawable(this, R.drawable.digital_white_border_grey));
             bantuanBtn.setTextColor(ContextCompat.getColor(this, R.color.black_38));
         } else {
-            opsiBtn.setVisibility(View.GONE);
+            buttonOpsiContainer.setVisibility(View.GONE);
             bantuanBtn.setBackground(ContextCompat.getDrawable(this, R.color.medium_green));
             bantuanBtn.setTextColor(ContextCompat.getColor(this, R.color.white));
         }
     }
 
     @NonNull
-    private View.OnClickListener getOpsiListener(final ItemHistory itemHistory) {
+    private View.OnClickListener getOpsiListener(final ActionHistory actionHistory) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO : untuk opsi listener, kayak misal pindahkan saldo
-                Toast.makeText(getApplicationContext(), "Opsi bantuan" + itemHistory.getTitle(), Toast.LENGTH_SHORT).show();
+                if (actionHistory.getType().equals("button") && actionHistory.getName().equals("movetosaldo")) {
+                    WalletToDepositPassData walletToDepositPassData =
+                            new WalletToDepositPassData.Builder()
+                                    .amountFormatted(itemHistory.getAmountPending())
+                                    .method(actionHistory.getMethod())
+                                    .params(actionHistory.getParams())
+                                    .name(actionHistory.getName())
+                                    .url(actionHistory.getUrl())
+                                    .title(actionHistory.getTitle())
+                                    .build();
+                    startActivityForResult(WalletToDepositActivity.newInstance(getApplicationContext(), walletToDepositPassData), REQUEST_MOVE_TO_SALDO);
+                }
             }
         };
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_MOVE_TO_SALDO) {
+            if (resultCode == WalletToDepositActivity.RESULT_WALLET_TO_DEPOSIT_SUCCESS ||
+                    resultCode == WalletToDepositActivity.RESULT_WALLET_TO_DEPOSIT_FAILED) {
+                finish();
+            }
+        }
     }
 
     @NonNull
@@ -152,5 +186,13 @@ public class DetailTransactionActivity extends BasePresenterActivity {
                 startActivityForResult(intent, 201);
             }
         };
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (buttonOpsiContainer.getChildCount() > 0) {
+            buttonOpsiContainer.removeAllViews();
+        }
+        super.onDestroy();
     }
 }

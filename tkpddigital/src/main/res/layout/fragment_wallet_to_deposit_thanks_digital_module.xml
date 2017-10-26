@@ -25,8 +25,10 @@
         android:gravity="center"
         android:lineSpacingExtra="5sp"
         android:paddingTop="@dimen/digital_padding_10"
+        android:paddingRight="@dimen/digital_padding_20"
+        android:paddingLeft="@dimen/digital_padding_20"
         android:visibility="gone"
-        tools:text="jabsdjabs;ldablsdla ohasdjha pajsdja;sd jaslkdjlasd jaskdja;sd laskda"
+        tools:text="Pemindahan Dana ke Saldo Tokopedia Gagal"
         tools:visibility="visible"/>
 
     <TextView
