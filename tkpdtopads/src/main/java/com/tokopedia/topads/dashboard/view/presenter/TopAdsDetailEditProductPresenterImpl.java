@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailProductUseCase;
@@ -12,6 +13,8 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsEditPromoFragmentListener;
 import com.tokopedia.topads.dashboard.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
+
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -58,26 +61,6 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
     }
 
     @Override
-    public void getSuggestionBid(GetSuggestionBody getSuggestionBody) {
-        topAdsGetSuggestionUseCase.execute(TopAdsGetSuggestionUseCase.createRequestParams(getSuggestionBody), new Subscriber<GetSuggestionResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GetSuggestionResponse s) {
-                getView().onSuggestionSuccess(s);
-            }
-        });
-    }
-
-    @Override
     public void getDetailAd(String adId) {
         topAdsGetDetailProductUseCase.execute(TopAdsGetDetailProductUseCase.createRequestParams(adId), new Subscriber<TopAdsDetailProductDomainModel>() {
             @Override
@@ -102,5 +85,34 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
         super.detachView();
         topAdsGetDetailProductUseCase.unsubscribe();
         topAdsSaveDetailProductUseCase.unsubscribe();
+    }
+
+    @Override
+    public void getSuggestionBid(List<String> ids, String source) {
+        GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
+        getSuggestionBody.setRounding(true);
+        getSuggestionBody.setSource(source);
+        getSuggestionBody.setDataType(TopAdsNetworkConstant.SUGGESTION_DATA_TYPE_SUMMARY);
+        getSuggestionBody.setSuggestionType(TopAdsNetworkConstant.SUGGESTION_TYPE_DEPARTMENT_ID);
+        for (String id : ids) {
+            ids.add(id);
+        }
+
+        topAdsGetSuggestionUseCase.execute(TopAdsGetSuggestionUseCase.createRequestParams(getSuggestionBody), new Subscriber<GetSuggestionResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GetSuggestionResponse s) {
+                getView().onSuggestionSuccess(s);
+            }
+        });
     }
 }

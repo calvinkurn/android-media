@@ -13,6 +13,7 @@ import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 import java.util.List;
 
 import rx.Observable;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 
 /**
  * Created by zulfikarrahman on 2/20/17.
@@ -54,8 +55,8 @@ public class TopAdsGroupAdsRepositoryImpl implements TopAdsGroupAdsRepository {
     }
 
     @Override
-    public Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody) {
+    public Observable<GetSuggestionResponse> getSuggestion(GetSuggestionBody getSuggestionBody, ShopModel shopModel) {
         TopAdsGroupAdsDataSource topAdsGroupAdsDataSource = topAdsGroupAdFactory.createGroupAdsDataSource();
-        return topAdsGroupAdsDataSource.getSuggestion(getSuggestionBody);
+        return topAdsGroupAdsDataSource.getSuggestion(getSuggestionBody, shopModel);
     }
 }

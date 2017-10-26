@@ -29,13 +29,11 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
 
     protected final TopAdsGroupAdInteractor groupAdInteractor;
     private TopAdsGetSuggestionUseCase getSuggestionUseCase;
-    private ShopInfoRepository shopInfoRepository;
 
-    public TopAdsGroupAdListPresenterImpl(Context context, BaseListViewListener baseListViewListener, TopAdsGetSuggestionUseCase getSuggestionUseCase, ShopInfoRepository shopInfoRepository) {
+    public TopAdsGroupAdListPresenterImpl(Context context, BaseListViewListener baseListViewListener, TopAdsGetSuggestionUseCase getSuggestionUseCase) {
         super(context, baseListViewListener);
         this.groupAdInteractor = new TopAdsGroupAdInteractorImpl(context);
         this.getSuggestionUseCase = getSuggestionUseCase;
-        this.shopInfoRepository = shopInfoRepository;
     }
 
     @Override
@@ -54,7 +52,6 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
 
                 GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
                 getSuggestionBody.setRounding(true);
-                getSuggestionBody.setShopId(Long.valueOf(shopInfoRepository.getShopId()));
                 getSuggestionBody.setSource(TopAdsNetworkConstant.SOURCE_GROUP_AD_LIST);
                 getSuggestionBody.setDataType(TopAdsNetworkConstant.SUGGESTION_DATA_TYPE_DETAIL);
                 getSuggestionBody.setSuggestionType(TopAdsNetworkConstant.SUGGESTION_TYPE_GROUP_ID);

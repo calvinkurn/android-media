@@ -19,6 +19,9 @@ import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -29,9 +32,6 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
 
     @Inject
     TopAdsDetailNewProductPresenter topAdsDetailNewProductPresenter;
-
-    @Inject
-    ShopInfoRepository shopInfoRepository;
 
     @Override
     protected void initInjector() {
@@ -54,18 +54,13 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
 
     @Override
     protected void loadSuggestionBid() {
-        GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
-        getSuggestionBody.setRounding(true);
-        if(shopInfoRepository.getShopId() != null)
-            getSuggestionBody.setShopId(Long.valueOf(shopInfoRepository.getShopId()));
-        getSuggestionBody.setSource(TopAdsNetworkConstant.SOURCE_NEW_COST_GROUP);
-        getSuggestionBody.setDataType(TopAdsNetworkConstant.SUGGESTION_DATA_TYPE_SUMMARY);
-        getSuggestionBody.setSuggestionType(TopAdsNetworkConstant.SUGGESTION_TYPE_DEPARTMENT_ID);
+        // get id from view model
+        List<String> ids = new ArrayList<>();
         for (TopAdsProductViewModel topAdsProductViewModel : stepperModel.getTopAdsProductViewModels()) {
-            getSuggestionBody.addId(topAdsProductViewModel.getDepartmentId()+"");
+            ids.add(topAdsProductViewModel.getDepartmentId()+"");
         }
 
-        topAdsDetailNewProductPresenter.getSuggestionBid(getSuggestionBody);
+        topAdsDetailNewProductPresenter.getSuggestionBid(ids, TopAdsNetworkConstant.SOURCE_NEW_COST_GROUP);
     }
 
     @Override

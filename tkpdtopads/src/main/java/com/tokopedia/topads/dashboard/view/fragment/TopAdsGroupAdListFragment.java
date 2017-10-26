@@ -39,9 +39,6 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     @Inject
     TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
 
-    @Inject
-    ShopInfoRepository shopInfoRepository;
-
     @Override
     protected void initInjector() {
         super.initInjector();
@@ -54,7 +51,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsGroupAdListPresenterImpl(getActivity(), this, topAdsGetSuggestionUseCase, shopInfoRepository);
+        presenter = new TopAdsGroupAdListPresenterImpl(getActivity(), this, topAdsGetSuggestionUseCase);
     }
 
     @Override
