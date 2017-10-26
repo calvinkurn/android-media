@@ -28,10 +28,10 @@ class POS extends Component {
     }
   }
 
-  componentDidMount(){
-    console.log(this.props)
-    this.props.dispatch(reloadState('POS'))
-  }
+  // componentDidMount(){
+  //   console.log(this.props)
+  //   this.props.dispatch(reloadState('POS'))
+  // }
 
 
 

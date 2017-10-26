@@ -8,7 +8,7 @@ import Dash from 'react-native-dash';
 
 import PopUp from '../../../common/TKPPopupModal'
 import { Text } from '../../../common/TKPText'
-import { reloadState } from '../../../actions/index'
+import { reloadState, clearCart } from '../../../actions/index'
 
 
 
@@ -23,7 +23,10 @@ class PaymentInvoice extends Component {
   }
 
   componentDidMount(){
-    this.props.dispatch(reloadState('invoice'))
+    const { dispatch } = this.props
+    
+    dispatch(reloadState('invoice'))
+    dispatch(clearCart())
   }
 
   _handleButtonPress = () => {
@@ -35,8 +38,8 @@ class PaymentInvoice extends Component {
     }
     this.setState({
       emailErrorMessage
-    });
-  };
+    })
+  }
 
   _renderProductList(rowData, sectionID, rowID) {
     return (
