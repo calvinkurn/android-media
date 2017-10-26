@@ -23,7 +23,8 @@ import {
   FETCH_SHOP_NAME,
   FETCH_SHOP_ID,
   PAYMENT_CHECKOUT_TO_NATIVE,
-  MAKE_PAYMENT_V2
+  MAKE_PAYMENT_V2,
+  RELOAD_STATE,
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
 import { icons } from '../components/icon/index'

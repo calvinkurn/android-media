@@ -6,6 +6,7 @@ import {
   incrementQty,
   decrementQty,
   clearCart,
+  reloadState,
   fetchCartFromCache
 } from '../actions/index'
 
@@ -21,6 +22,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    clearState: () => {
+      dispatch(reloadState())
+    },
     fetchCartList: () => {
       dispatch(fetchCartFromCache())
     },
