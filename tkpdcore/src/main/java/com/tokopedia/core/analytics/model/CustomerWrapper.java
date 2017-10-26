@@ -4,6 +4,9 @@ import java.util.Map;
 
 /**
  * @author by alvarisi on 10/27/16.
+ *
+ * Modified by : Hafizh Herdi
+ *
  */
 
 public class CustomerWrapper extends BaseAnalyticsModel {
@@ -19,6 +22,20 @@ public class CustomerWrapper extends BaseAnalyticsModel {
     private String shopId;
     private String shopName;
     private String dateOfBirth;
+    private String totalItemSold;
+    private String regDate;
+    private String dateShopCreated;
+    private String shopLocation;
+    private String tokocashAmt;
+    private String saldoAmt;
+    private String topAdsAmt;
+    private boolean isTopadsUser;
+    private boolean hasPurchasedMarketplace;
+    private boolean hasPurchasedDigital;
+    private boolean hasPurchasedTiket;
+    private String lastTransactionDate;
+    private String totalActiveProduct;
+    private String shopScore;
 
     private Map<String, String> mAttr;
 
@@ -27,19 +44,145 @@ public class CustomerWrapper extends BaseAnalyticsModel {
     }
 
     public CustomerWrapper(CustomerWrapper.Builder builder) {
-        mCustomerId     = builder.mCustomerId;
-        mFirstName      = builder.mFirstName;
-        mLastName       = builder.mLastName;
-        mFullName       = builder.mFullName;
-        mEmailAddress   = builder.mEmailAddress;
-        mMethod         = builder.mMethod;
-        mAttr           = builder.mAttr;
-        phoneNumber     = builder.phoneNumber;
-        isGoldMerchant  = builder.isGoldMerchant;
-        isSeller        = builder.isSeller;
-        shopId          = builder.shopId;
-        shopName        = builder.shopName;
-        dateOfBirth     = builder.dateOfBirth;
+        mCustomerId             = builder.mCustomerId;
+        mFirstName              = builder.mFirstName;
+        mLastName               = builder.mLastName;
+        mFullName               = builder.mFullName;
+        mEmailAddress           = builder.mEmailAddress;
+        mMethod                 = builder.mMethod;
+        mAttr                   = builder.mAttr;
+        phoneNumber             = builder.phoneNumber;
+        isGoldMerchant          = builder.isGoldMerchant;
+        isSeller                = builder.isSeller;
+        shopId                  = builder.shopId;
+        shopName                = builder.shopName;
+        dateOfBirth             = builder.dateOfBirth;
+        totalItemSold           = builder.totalItemSold;
+        regDate                 = builder.regDate;
+        dateShopCreated         = builder.dateShopCreated;
+        shopLocation            = builder.shopLocation;
+        tokocashAmt             = builder.tokocashAmt;
+        saldoAmt                = builder.saldoAmt;
+        topAdsAmt               = builder.topAdsAmt;
+        isTopadsUser            = builder.isTopadsUser;
+        hasPurchasedMarketplace = builder.hasPurchasedMarketplace;
+        hasPurchasedDigital     = builder.hasPurchasedDigital;
+        hasPurchasedTiket       = builder.hasPurchasedTiket;
+        lastTransactionDate     = builder.lastTransactionDate;
+        totalActiveProduct      = builder.totalActiveProduct;
+        shopScore               = builder.shopScore;
+    }
+
+    public String getShopScore() {
+        return shopScore;
+    }
+
+    public void setShopScore(String shopScore) {
+        this.shopScore = shopScore;
+    }
+
+    public String getTotalActiveProduct() {
+        return totalActiveProduct;
+    }
+
+    public void setTotalActiveProduct(String totalActiveProduct) {
+        this.totalActiveProduct = totalActiveProduct;
+    }
+
+    public String getLastTransactionDate() {
+        return lastTransactionDate;
+    }
+
+    public void setLastTransactionDate(String lastTransactionDate) {
+        this.lastTransactionDate = lastTransactionDate;
+    }
+
+    public boolean isHasPurchasedTiket() {
+        return hasPurchasedTiket;
+    }
+
+    public void setHasPurchasedTiket(boolean hasPurchasedTiket) {
+        this.hasPurchasedTiket = hasPurchasedTiket;
+    }
+
+    public void setHasPurchasedDigital(boolean hasPurchasedDigital) {
+        this.hasPurchasedDigital = hasPurchasedDigital;
+    }
+
+    public boolean isHasPurchasedDigital() {
+        return hasPurchasedDigital;
+    }
+
+    public void setHasPurchasedMarketplace(boolean hasPurchasedMarketplace) {
+        this.hasPurchasedMarketplace = hasPurchasedMarketplace;
+    }
+
+    public boolean isHasPurchasedMarketplace() {
+        return hasPurchasedMarketplace;
+    }
+
+    public boolean isTopadsUser() {
+        return isTopadsUser;
+    }
+
+    public void setTopadsUser(boolean topadsUser) {
+        isTopadsUser = topadsUser;
+    }
+
+    public String getTopAdsAmt() {
+        return topAdsAmt;
+    }
+
+    public void setTopAdsAmt(String topAdsAmt) {
+        this.topAdsAmt = topAdsAmt;
+    }
+
+    public String getSaldoAmt() {
+        return saldoAmt;
+    }
+
+    public void setSaldoAmt(String saldoAmt) {
+        this.saldoAmt = saldoAmt;
+    }
+
+    public String getTokocashAmt() {
+        return tokocashAmt;
+    }
+
+    public void setTokocashAmt(String tokocashAmt) {
+        this.tokocashAmt = tokocashAmt;
+    }
+
+    public String getShopLocation() {
+        return shopLocation;
+    }
+
+    public void setShopLocation(String shopLocation) {
+        this.shopLocation = shopLocation;
+    }
+
+    public String getDateShopCreated() {
+        return dateShopCreated;
+    }
+
+    public void setDateShopCreated(String dateShopCreated) {
+        this.dateShopCreated = dateShopCreated;
+    }
+
+    public void setRegDate(String regDate) {
+        this.regDate = regDate;
+    }
+
+    public String getRegDate() {
+        return regDate;
+    }
+
+    public String getTotalItemSold() {
+        return totalItemSold;
+    }
+
+    public void setTotalItemSold(String totalItemSold) {
+        this.totalItemSold = totalItemSold;
     }
 
     public String getPhoneNumber() {
@@ -212,10 +355,94 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         private String shopId;
         private String shopName;
         private String dateOfBirth;
+        private String totalItemSold;
+        private String regDate;
+        private String dateShopCreated;
+        private String shopLocation;
+        private String tokocashAmt;
+        private String saldoAmt;
+        private String topAdsAmt;
+        private boolean isTopadsUser;
+        private boolean hasPurchasedMarketplace;
+        private boolean hasPurchasedDigital;
+        private boolean hasPurchasedTiket;
+        private String lastTransactionDate;
+        private String totalActiveProduct;
+        private String shopScore;
 
         private Map<String, String> mAttr;
 
         public Builder() {
+        }
+
+        public CustomerWrapper.Builder setShopScore(String shopScore) {
+            this.shopScore = shopScore;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setTotalActiveProduct(String totalActiveProduct) {
+            this.totalActiveProduct = totalActiveProduct;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setLastTransactionDate(String lastTransactionDate) {
+            this.lastTransactionDate = lastTransactionDate;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setHasPurchasedTiket(boolean hasPurchasedTiket) {
+            this.hasPurchasedTiket = hasPurchasedTiket;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setHasPurchasedMarketplace(boolean hasPurchasedMarketplace) {
+            this.hasPurchasedMarketplace = hasPurchasedMarketplace;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setHasPurchasedDigital(boolean hasPurchasedDigital) {
+            this.hasPurchasedDigital = hasPurchasedDigital;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setTopadsUser(boolean topadsUser) {
+            isTopadsUser = topadsUser;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setTopAdsAmt(String topAdsAmt) {
+            this.topAdsAmt = topAdsAmt;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setSaldoAmt(String saldoAmt) {
+            this.saldoAmt = saldoAmt;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setTokocashAmt(String tokocashAmt) {
+            this.tokocashAmt = tokocashAmt;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setShopLocation(String shopLocation) {
+            this.shopLocation = shopLocation;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setDateShopCreated(String dateShopCreated) {
+            this.dateShopCreated = dateShopCreated;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setRegDate(String regDate) {
+            this.regDate = regDate;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setTotalItemSold(String totalItemSold) {
+            this.totalItemSold = totalItemSold;
+            return this;
         }
 
         public CustomerWrapper.Builder setShopId(String shopId) {

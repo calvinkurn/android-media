@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 /**
  * Created by Nisie on 2/26/16.
  */
-abstract public class DataBinder<T extends RecyclerView.ViewHolder> {
+public abstract class DataBinder<T extends RecyclerView.ViewHolder> {
 
     private DataBindAdapter mDataBindAdapter;
 
@@ -23,5 +23,4 @@ abstract public class DataBinder<T extends RecyclerView.ViewHolder> {
     public final void notifyDataSetChanged() {
         mDataBindAdapter.notifyDataSetChanged();
     }
-
 }

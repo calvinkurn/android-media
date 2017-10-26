@@ -1,5 +1,8 @@
 package com.tokopedia.flight.airport.data.source.db.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -12,9 +15,9 @@ import com.tokopedia.flight.common.database.TkpdFlightDatabase;
  * @author sebastianuskh on 4/13/17.
  */
 @Table(database = TkpdFlightDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
-public class FlightAirportDB extends BaseModel implements ItemType {
+public class FlightAirportDB extends BaseModel implements ItemType, Parcelable {
 
-    private static final int TYPE = 12345;
+    public static final int TYPE = 12345;
 
     @PrimaryKey
     @Column(name = "country_id")
@@ -122,4 +125,49 @@ public class FlightAirportDB extends BaseModel implements ItemType {
     public int getType() {
         return TYPE;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.countryId);
+        dest.writeString(this.cityId);
+        dest.writeString(this.airportId);
+        dest.writeString(this.countryName);
+        dest.writeLong(this.phoneCode);
+        dest.writeString(this.cityName);
+        dest.writeString(this.cityCode);
+        dest.writeString(this.airportName);
+        dest.writeString(this.aliases);
+    }
+
+    public FlightAirportDB() {
+    }
+
+    protected FlightAirportDB(Parcel in) {
+        this.countryId = in.readString();
+        this.cityId = in.readString();
+        this.airportId = in.readString();
+        this.countryName = in.readString();
+        this.phoneCode = in.readLong();
+        this.cityName = in.readString();
+        this.cityCode = in.readString();
+        this.airportName = in.readString();
+        this.aliases = in.readString();
+    }
+
+    public static final Creator<FlightAirportDB> CREATOR = new Creator<FlightAirportDB>() {
+        @Override
+        public FlightAirportDB createFromParcel(Parcel source) {
+            return new FlightAirportDB(source);
+        }
+
+        @Override
+        public FlightAirportDB[] newArray(int size) {
+            return new FlightAirportDB[size];
+        }
+    };
 }

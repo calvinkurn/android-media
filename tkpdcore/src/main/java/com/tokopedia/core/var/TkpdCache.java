@@ -8,7 +8,8 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 /**
  * Created by Nisie on 11/11/15.
  */
-public class TkpdCache {
+public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
+
     public static final String ADD = "ADD";
     public static final String NOTIFICATION_DATA = "NOTIFICATION_DATA";
     public static final String USER_INFO = "USER_INFO";
@@ -19,7 +20,7 @@ public class TkpdCache {
     public static final String LOCA_STATUS_UPDATE = "LOCA_STATUS_UPDATE";
     public static final String LOCA_GCM_NOTIFICATION = "LOCA_GCM_NOTIFICATION";
     public static final String GCM_NOTIFICATION = "GCM_NOTIFICATION";
-    public static final String STATUS_UPDATE = "STATUS_UPDATE";
+
     public static final String LOGIN_ID = "LOGIN_ID";
     public static final String REGISTERED = "REGISTERED";
     public static final String LOGIN_UUID = "LOGIN_UUID";
@@ -103,7 +104,6 @@ public class TkpdCache {
         public static final String NOTIFICATION_CODE = "notification_code";
         public static final String PREV_CODE = "prev_code";
         public static final String PREV_TIME = "prev_time";
-        public static final String STATUS = "status";
 
         public static final String TOTAL_NOTIF = "total_notif";
         public static final String MESSAGE_COUNT = "message_count";

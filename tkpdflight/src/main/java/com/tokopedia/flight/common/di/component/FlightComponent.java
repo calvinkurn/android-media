@@ -16,5 +16,6 @@ import dagger.Component;
 @FlightScope
 @Component(modules = FlightModule.class, dependencies = BaseAppComponent.class)
 public interface FlightComponent {
-
+    @ApplicationContext
+    Context context();
 }

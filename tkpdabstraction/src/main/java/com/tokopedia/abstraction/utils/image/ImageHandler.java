@@ -51,26 +51,28 @@ public class ImageHandler {
         return scaledBitmap;
     }
 
-	/**
-	 * rotate bitmap if only jpeg, not for other extension
-	 * @param bitmap
-	 * @param file
-	 * @return
-	 * @throws IOException
-	 */
-	public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
-		ExifInterface exif = new ExifInterface(file);
-		String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
-		int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
-		int rotationAngle = 0;
-		if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
-		if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
-		if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
-		Matrix matrix = new Matrix();
-		matrix.setRotate(rotationAngle, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
-		Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-        return rotatedBitmap;
+    /**
+     * rotate bitmap if only jpeg, not for other extension
+     *
+     * @param bitmap
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
+        ExifInterface exif = new ExifInterface(file);
+        String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+        int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
+        int rotationAngle = 0;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
+        if (rotationAngle == 0) {
+            return bitmap;
+        }
+        Matrix matrix = new Matrix();
+        matrix.setRotate(rotationAngle, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     public static void loadImageWithId(ImageView imageview, int resId) {
@@ -168,7 +170,7 @@ public class ImageHandler {
                 .into(imageview);
     }
 
-    public static void loadImage(Context context, ImageView imageview, String url,int placeholder) {
+    public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
@@ -179,7 +181,7 @@ public class ImageHandler {
                 .into(imageview);
     }
 
-    public static void loadImage(Context context, ImageView imageview, String url,int placeholder,int error_image) {
+    public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
@@ -264,23 +266,6 @@ public class ImageHandler {
                 .centerCrop()
                 .into(target);
     }
-
-//    public static void loadImageBitmapNotification(Context context, String url, BuildAndShowNotification.
-//            OnGetFileListener listener) {
-//        FutureTarget<File> futureTarget = Glide.with(context)
-//                .load(url)
-//                .downloadOnly(210, 100);
-//
-//        try {
-//            File file = futureTarget.get();
-//            if(file.exists()){
-//                listener.onFileReady(file);
-//            }
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//
-//    }
 
     public static void loadImageCircle2(Context context, final ImageView imageView,
                                         final String url) {
@@ -415,7 +400,7 @@ public class ImageHandler {
     }
 
     public static void loadImageFitTransformation(Context context, ImageView imageView, String url,
-        BitmapTransformation transformation){
+                                                  BitmapTransformation transformation) {
         Glide.with(context)
                 .load(url)
                 .dontAnimate()

@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 

@@ -306,6 +306,12 @@
         <item name="android:textColor">@color/black_70</item>
     </style>
 
+    <style name="WebViewToolbarSubtitleText"
+           parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_54</item>
+    </style>
     <!--
         <style name="UserVoiceTheme" parent="Theme.AppCompat.Light">
             <item name="android:popupMenuStyle">@style/PopupMenu.Tokopedia</item>

@@ -6,4 +6,20 @@
         <attr name="tiv_icon" format="reference" />
         <attr name="allow_input_manually" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="NumberPickerWithCounterView">
+        <attr name="npc_min_value" format="integer" />
+        <attr name="npc_max_value" format="integer" />
+        <attr name="npc_value" format="integer" />
+        <attr name="npc_enabled" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="SelectPassengerView">
+        <attr name="spv_title" format="string" />
+        <attr name="spv_subtitle" format="string" />
+        <attr name="spv_value" format="integer" />
+        <attr name="spv_icon" format="reference" />
+        <attr name="spv_min_value" format="integer" />
+        <attr name="spv_max_value" format="integer" />
+    </declare-styleable>
 </resources>
