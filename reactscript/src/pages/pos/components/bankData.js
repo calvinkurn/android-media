@@ -1,78 +1,83 @@
+import { icons } from '../lib/config'
+
+
 export const bankData = [{
       id: 1,
       bankName : 'BANK CENTRAL ASIA',
-      bankImage : require('./img/Logo-BCA.png'),
+      bankImage : icons.bca,
       isSelected: false
     },
     {
-      id:2,
+      id: 2,
       bankName : 'BANK MANDIRI',
-      bankImage : require('./img/Logo-Mandiri.png'),
+      bankImage : icons.mandiri,
       isSelected: false
     },
     {
-      id:3,
+      id: 3,
       bankName : 'BANK NEGARA INDONESIA',
-      bankImage : require('./img/Logo-BNI.png'),
+      bankImage : icons.bni,
       isSelected: false
     },
     {
-      id:4,
+      id: 4,
       bankName : 'BANK CIMB NIAGA',
-      bankImage : require('./img/Logo-CIMB.png'),
+      bankImage : icons.cimb,
       isSelected: false
     },
     {
-      id:5,
+      id: 5,
       bankName : 'CITIBANK',
-      bankImage : require('./img/Logo-Citi.png')
+      bankImage : icons.citi
     },
     {
-      id:6,
+      id: 6,
       bankName : 'BANK ANZ INDONESIA',
-      bankImage : require('./img/Logo-ANZ.png')
+      bankImage : icons.anz
     },
     {
-      id:7,
+      id: 7,
       bankName : 'BANK DANAMON INDONESIA',
-      bankImage : require('./img/Logo-Danamon.png')
+      bankImage : icons.danamon
     },
     {
-      id:8,
+      id: 8,
       bankName : 'BANK RAKYAT INDONESIA',
-      bankImage : require('./img/Logo-BRI.png')
+      bankImage : icons.bri
     },
     {
-      id:9,
+      id: 9,
       bankName : 'HSBC INDONESIA',
-      bankImage : require('./img/Logo-HSBC.png')
+      bankImage : icons.hsbc
     },
     {
-      id:10,
+      id: 10,
       bankName : 'BANK PERMATA',
-      bankImage : require('./img/Logo-Permata.png')
+      bankImage : icons.permata
     },
     {
-      id:11,
+      id: 11,
       bankName : 'BANK BUKOPIN',
-      bankImage : require('./img/Logo-Bukopin.png')
+      bankImage : icons.bukopin
     },
     {
-      id:12,
-      bankName : 'STANDARD CHARTERED BANK',
-      bankImage : require('./img/Logo-Standard.png')
+      id: 12,
+      bankName: 'STANDARD CHARTERED BANK',
+      bankImage: icons.standard
     },
     {
-      id:13,
-      bankName : 'BANK INTERNASIONAL INDONESIA',
-      bankImage : require('./img/Logo-Maybank.png')
+      id: 13,
+      bankName: 'BANK INTERNASIONAL INDONESIA',
+      bankImage: icons.maybank
     },
     {
-      id:14,
-      bankName : 'BANK UOB BUANA',
-      bankImage : require('./img/Logo-UOB.png')
+      id: 14,
+      bankName: 'BANK UOB BUANA',
+      bankImage: icons.uob
     }
 ];
+
+
 
 export const emiData = [
       {

@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 
 import NotFound from './SearchNotFound'
-import { Text } from '../../common/TKPText'
+import { Text } from '../../../common/TKPText'
 
 class SearchBar extends Component {
   constructor(props) {

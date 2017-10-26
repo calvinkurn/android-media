@@ -27,7 +27,7 @@ import {
   RELOAD_STATE,
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
-import { icons } from '../components/icon/index'
+// import { icons } from '../components/icon/index'
 
 
 
