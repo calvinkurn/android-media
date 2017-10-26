@@ -8,6 +8,4 @@ public interface Visitable<T> {
 
     int type(T favoriteTypeFactory);
 
-
-
 }

@@ -51,6 +51,10 @@ public class ListReply {
     @Expose
     private boolean isOpposite;
 
+    @SerializedName("is_highlight")
+    @Expose
+    private boolean isHighlight;
+
 
     public int getReplyId() {
         return replyId;
@@ -162,5 +166,13 @@ public class ListReply {
 
     public void setOpposite(boolean opposite) {
         isOpposite = opposite;
+    }
+
+    public boolean isHighlight() {
+        return isHighlight;
+    }
+
+    public void setHighlight(boolean highlight) {
+        isHighlight = highlight;
     }
 }

@@ -12,21 +12,24 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineModel;
+import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
+import com.tokopedia.inbox.inboxchat.viewmodel.TimeMachineListViewModel;
 
 /**
  * @author by nisie on 10/25/17.
  */
 
-public class TimeMachineListViewHolder extends AbstractViewHolder<TimeMachineModel> {
+public class TimeMachineListViewHolder extends AbstractViewHolder<TimeMachineListViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.time_machine_inbox_layout;
 
-    protected TextView timeMachineText;
+    private final InboxChatContract.View viewListener;
+    private TextView timeMachineText;
 
-    public TimeMachineListViewHolder(View itemView) {
+    public TimeMachineListViewHolder(View itemView, InboxChatContract.View viewListener) {
         super(itemView);
+        this.viewListener = viewListener;
         timeMachineText = (TextView) itemView.findViewById(R.id.time_machine_text);
 
         Spannable spannable = new SpannableString(MainApplication.getAppContext().getString(R.string
@@ -54,7 +57,12 @@ public class TimeMachineListViewHolder extends AbstractViewHolder<TimeMachineMod
     }
 
     @Override
-    public void bind(TimeMachineModel element) {
-
+    public void bind(final TimeMachineListViewModel element) {
+        timeMachineText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToTimeMachine(element.getUrl());
+            }
+        });
     }
 }

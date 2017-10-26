@@ -3,11 +3,15 @@ package com.tokopedia.inbox.inboxchat.viewmodel;
 import android.text.Spanned;
 import android.text.SpannedString;
 
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactory;
+import com.tokopedia.inbox.inboxchat.domain.model.message.Contact;
+
 /**
  * Created by stevenfredian on 10/19/17.
  */
 
-public class ChatListViewModel {
+public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
 
     public static final int NO_SPAN = 0;
     public static final int SPANNED_CONTACT = 1;
@@ -26,6 +30,7 @@ public class ChatListViewModel {
     int spanMode;
     int sectionSize;
     private String role;
+    Contact contact;
 
     public ChatListViewModel() {
         spanMode = NO_SPAN;
@@ -137,6 +142,14 @@ public class ChatListViewModel {
         this.sectionSize = sectionSize;
     }
 
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
+    }
+
     public String getRole() {
         return role;
     }
@@ -144,4 +157,9 @@ public class ChatListViewModel {
     public void setRole(String role) {
         this.role = role;
     }
+    @Override
+    public int type(InboxChatTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
 }

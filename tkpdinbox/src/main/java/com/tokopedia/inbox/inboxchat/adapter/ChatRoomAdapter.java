@@ -14,7 +14,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,14 +31,14 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private List<Visitable> list;
     private EmptyModel emptyModel;
     private LoadingModel loadingModel;
-    private TimeMachineModel timeMachineModel;
+    private TimeMachineChatModel timeMachineChatModel;
 
     public ChatRoomAdapter(ChatRoomTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
         this.emptyModel = new EmptyModel();
         this.loadingModel = new LoadingModel();
-        this.timeMachineModel = new TimeMachineModel("");
+        this.timeMachineChatModel = new TimeMachineChatModel("");
     }
 
     @Override
@@ -165,7 +165,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void showTimeMachine() {
-        this.list.add(0, timeMachineModel);
+        this.list.add(0, timeMachineChatModel);
         notifyItemInserted(0);
     }
 }

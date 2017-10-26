@@ -42,7 +42,7 @@ public class SearchMessageSubscriber extends Subscriber<InboxChatViewModel>{
     @Override
     public void onNext(InboxChatViewModel inboxChatViewModel) {
         presenter.setResult(inboxChatViewModel);
-        presenter.prepareNextPage(inboxChatViewModel.isHasNext());
+        presenter.prepareNextPage(inboxChatViewModel.isHasNextReplies());
     }
 
 }

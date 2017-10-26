@@ -11,7 +11,7 @@ import com.tokopedia.inbox.inboxchat.viewholder.OppositeChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 /**
  * Created by stevenfredian on 9/27/17.
@@ -36,7 +36,7 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     }
 
     @Override
-    public int type(TimeMachineModel timeMachineModel) {
+    public int type(TimeMachineChatModel timeMachineChatModel) {
         return TimeMachineChatViewHolder.LAYOUT;
     }
 

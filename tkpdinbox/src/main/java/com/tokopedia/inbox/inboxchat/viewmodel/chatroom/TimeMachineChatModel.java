@@ -10,11 +10,11 @@ import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
  * @author by nisie on 10/24/17.
  */
 
-public class TimeMachineModel implements Visitable<ChatRoomTypeFactory> {
+public class TimeMachineChatModel implements Visitable<ChatRoomTypeFactory> {
 
     private String url = TkpdBaseURL.User.URL_INBOX_MESSAGE_TIME_MACHINE;
 
-    public TimeMachineModel(String url) {
+    public TimeMachineChatModel(String url) {
         if (!TextUtils.isEmpty(url))
             this.url = url;
     }

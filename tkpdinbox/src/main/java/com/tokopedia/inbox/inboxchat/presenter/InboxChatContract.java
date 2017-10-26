@@ -4,6 +4,7 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.inboxchat.adapter.InboxChatAdapter;
+import com.tokopedia.inbox.inboxchat.adapter.NewInboxChatAdapter;
 import com.tokopedia.inbox.inboxmessage.adapter.InboxMessageAdapter;
 
 import android.content.Context;
@@ -33,7 +34,7 @@ public class InboxChatContract {
 
         RefreshHandler getRefreshHandler();
 
-        InboxChatAdapter getAdapter();
+        NewInboxChatAdapter getAdapter();
 
         void finishLoading();
 
@@ -72,6 +73,8 @@ public class InboxChatContract {
         void finishSearch();
 
         void addTimeMachine();
+
+        void onGoToTimeMachine(String url);
     }
 
     interface Presenter extends CustomerPresenter<View>{

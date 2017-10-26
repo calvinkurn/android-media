@@ -2,12 +2,8 @@ package com.tokopedia.inbox.inboxchat.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
@@ -22,30 +18,27 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
-import com.tokopedia.inbox.inboxchat.adapter.InboxChatAdapter;
+import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
+import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactory;
+import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactoryImpl;
+import com.tokopedia.inbox.inboxchat.adapter.NewInboxChatAdapter;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
-import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
 
 /**
  * Created by stevenfredian on 9/14/17.
@@ -64,7 +57,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     @Inject
     InboxChatPresenter presenter;
 
-    InboxChatAdapter adapter;
+    NewInboxChatAdapter adapter;
     RefreshHandler refreshHandler;
 
     boolean isRetryShowing = false;
@@ -75,6 +68,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     SnackbarRetry snackbarRetry;
     Snackbar snackbarUndo;
     SearchInputView searchInputView;
+    private InboxChatTypeFactory typeFactory;
 
     boolean isMultiActionEnabled = false;
     ActionMode.Callback callbackContext;
@@ -99,7 +93,8 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
         View parentView = inflater.inflate(R.layout.fragment_inbox_message, container, false);
 
         initView(parentView);
-        adapter = InboxChatAdapter.createAdapter(getActivity(), presenter);
+//        adapter = InboxChatAdapter.createAdapter(getActivity(), presenter);
+
 
         return parentView;
     }
@@ -123,6 +118,8 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         callbackContext = initCallbackActionMode();
         ((InboxChatActivity) getActivity()).showTabLayout(false);
+
+        typeFactory = new InboxChatTypeFactoryImpl(this, presenter);
     }
 
     private ActionMode.Callback initCallbackActionMode() {
@@ -137,25 +134,25 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
 
             @Override
             public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                mode.setTitle(String.valueOf(adapter.getSelected()));
-                switch (adapter.getChosenMessageStatus()) {
-                    case STATE_CHAT_READ:
-                        menu.findItem(R.id.action_mark_as_unread).setVisible(true);
-                        menu.findItem(R.id.action_mark_as_read).setVisible(false);
-                        break;
-                    case STATE_CHAT_UNREAD:
-                        menu.findItem(R.id.action_mark_as_read).setVisible(true);
-                        menu.findItem(R.id.action_mark_as_unread).setVisible(false);
-                        break;
-                    case STATE_CHAT_BOTH:
-                        menu.findItem(R.id.action_mark_as_unread).setVisible(true);
-                        menu.findItem(R.id.action_mark_as_read).setVisible(true);
-                        break;
-                    default:
-                        menu.findItem(R.id.action_mark_as_unread).setVisible(false);
-                        menu.findItem(R.id.action_mark_as_read).setVisible(false);
-                        break;
-                }
+                mode.setTitle(String.valueOf(presenter.getSelected()));
+//                switch (adapter.getChosenMessageStatus()) {
+//                    case STATE_CHAT_READ:
+//                        menu.findItem(R.id.action_mark_as_unread).setVisible(true);
+//                        menu.findItem(R.id.action_mark_as_read).setVisible(false);
+//                        break;
+//                    case STATE_CHAT_UNREAD:
+//                        menu.findItem(R.id.action_mark_as_read).setVisible(true);
+//                        menu.findItem(R.id.action_mark_as_unread).setVisible(false);
+//                        break;
+//                    case STATE_CHAT_BOTH:
+//                        menu.findItem(R.id.action_mark_as_unread).setVisible(true);
+//                        menu.findItem(R.id.action_mark_as_read).setVisible(true);
+//                        break;
+//                    default:
+//                        menu.findItem(R.id.action_mark_as_unread).setVisible(false);
+//                        menu.findItem(R.id.action_mark_as_read).setVisible(false);
+//                        break;
+//                }
                 return true;
             }
 
@@ -193,8 +190,8 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
 
             @Override
             public void onDestroyActionMode(ActionMode mode) {
-                adapter.setSelected(0);
-                adapter.clearSelection();
+//                adapter.setSelected(0);
+//                adapter.clearSelection();
                 isMultiActionEnabled = false;
                 enableActions();
             }
@@ -204,6 +201,9 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        adapter = new NewInboxChatAdapter(typeFactory, presenter);
+
         mainList.setAdapter(adapter);
         mainList.setLayoutManager(layoutManager);
         mainList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -262,19 +262,19 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     public void setOptionsMenu() {
         if (!isMultiActionEnabled) {
             contextMenu = ((AppCompatActivity) getActivity()).startSupportActionMode(callbackContext);
-            LayoutInflater mInflater = LayoutInflater.from(getActivity());
-            View mCustomView = mInflater.inflate(R.layout.header_chat, null);
-            contextMenu.setCustomView(mCustomView);
+//            LayoutInflater mInflater = LayoutInflater.from(getActivity());
+//            View mCustomView = mInflater.inflate(R.layout.header_chat, null);
+//            contextMenu.setCustomView(mCustomView);
 
         }
         if (contextMenu != null) {
             contextMenu.invalidate();
             ((InboxChatActivity) getActivity()).showTabLayout(false);
-            if (adapter.getSelected() == 0) {
+            if (presenter.getSelected() == 0) {
                 contextMenu.finish();
                 ((InboxChatActivity) getActivity()).showTabLayout(true);
             }
-            contextMenu.setTitle(String.valueOf(adapter.getSelected()) + " " + getString(R.string.title_inbox_chat));
+            contextMenu.setTitle(String.valueOf(presenter.getSelected()) + " " + getString(R.string.title_inbox_chat));
         }
 
     }
@@ -282,6 +282,11 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     @Override
     public void addTimeMachine() {
         adapter.showTimeMachine();
+    }
+
+    @Override
+    public void onGoToTimeMachine(String url) {
+        startActivity(TimeMachineActivity.getCallingIntent(getActivity(), url));
     }
 
 
@@ -295,13 +300,13 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
         if (getActivity() instanceof DrawerPresenterActivity)
             ((DrawerPresenterActivity) getActivity()).setDrawerEnabled(true);
 
-        if (adapter.getSelected() == 0) {
+//        if (adapter.getSelected() == 0) {
 //            fab.show();
-            ((InboxChatActivity)getActivity()).showTabLayout(true);
-        }
-        if (presenter.hasActionListener()) {
-            adapter.setEnabled(true);
-        }
+//            ((InboxChatActivity)getActivity()).showTabLayout(true);
+//        }
+//        if (presenter.hasActionListener()) {
+//            adapter.setEnabled(true);
+//        }
     }
 
     @Override
@@ -310,7 +315,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
             ((DrawerPresenterActivity) getActivity()).setDrawerEnabled(false);
 //        if (fab.isShown())
 //            fab.hide();
-        adapter.setEnabled(false);
+//        adapter.setEnabled(false);
     }
 
     @Override
@@ -366,7 +371,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     }
 
     @Override
-    public InboxChatAdapter getAdapter() {
+    public NewInboxChatAdapter getAdapter() {
         return adapter;
     }
 
@@ -374,6 +379,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     public void finishLoading() {
         refreshHandler.finishRefresh();
         progressDialog.dismiss();
+        adapter.removeLoading();
     }
 
     @Override
@@ -384,8 +390,8 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     @Override
     public void removeError() {
         adapter.showEmptyFull(false);
-        adapter.showRetry(false);
-        adapter.showRetryFull(false);
+//        adapter.showRetry(false);
+//        adapter.showRetryFull(false);
         isRetryShowing = false;
 //        NetworkErrorHelper.hideEmptyState(getView());
     }

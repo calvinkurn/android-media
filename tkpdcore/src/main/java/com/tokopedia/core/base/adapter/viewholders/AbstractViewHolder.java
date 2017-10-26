@@ -16,6 +16,4 @@ public abstract class AbstractViewHolder<T> extends RecyclerView.ViewHolder {
     }
 
     public abstract void bind(T element);
-
-
 }

@@ -16,6 +16,9 @@ import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity;
 import com.tokopedia.inbox.inboxmessage.model.InboxMessagePass;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -67,7 +70,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         } else if (pagingHandler.getPage() == 1 && getView().getAdapter().getList().size() == 0 && !getView().getRefreshHandler().isRefreshing()) {
             getView().getAdapter().showLoadingFull(true);
         } else if (!getView().getRefreshHandler().isRefreshing()) {
-            getView().getAdapter().showLoading(true);
+            getView().getAdapter().showLoading();
         }
     }
 
@@ -109,6 +112,10 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         getView().setOptionsMenu();
     }
 
+    public int getSelected(){
+        return getView().getAdapter().getListMove().size();
+    }
+
     public void goToDetailMessage(int position, ChatListViewModel listMessage) {
         Intent intent = InboxMessageDetailActivity.getCallingIntent(getView().getActivity(),
                 getView().getArguments().getString(PARAM_NAV),
@@ -131,7 +138,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     public void refreshData() {
         getView().finishContextMode();
         if (!isRequesting) {
-            getView().getAdapter().showLoading(false);
+            getView().getAdapter().removeLoading();
             pagingHandler.resetPage();
             inboxMessagePass.setPage(String.valueOf(pagingHandler.getPage()));
             getView().getRefreshHandler().setRefreshing(true);
@@ -196,10 +203,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void prepareNextPage(boolean hasNext) {
+        getView().getAdapter().removeLoading();
         if (hasNext) {
-            getView().getAdapter().showLoading(true);
-        } else {
-            getView().getAdapter().showLoading(false);
+            getView().getAdapter().showLoading();
         }
     }
 
