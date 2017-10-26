@@ -64,4 +64,6 @@ public class TopAdsNetworkConstant {
 
     public static final int TYPE_PRODUCT_STAT = 1;
     public static final int TYPE_PRODUCT_SHOP = 2;
+
+    public static final String CONTENT_TYPE_APPLICATION_JSON = "Content-Type: application/json";
 }
