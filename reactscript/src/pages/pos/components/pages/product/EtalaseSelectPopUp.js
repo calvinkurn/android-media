@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Modal, View, StyleSheet, FlatList, TouchableNativeFeedback } from 'react-native'
-import { Text } from '../../common/TKPText'
+import { Text } from '../../../common/TKPText'
 
 class EtalaseSelectPopUp extends Component {
   constructor(props) {

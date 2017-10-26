@@ -11,9 +11,9 @@ import {
   TextInput,
 } from 'react-native'
 import { Text } from '../common/TKPText'
-import Picker from '../components/product/EtalaseSelectPopUp'
+import Picker from '../components/pages/product/EtalaseSelectPopUp'
 import { fetchProducts, fetchEtalase, pullToRefresh, onEtalaseChange, resetProductList, fetchShopId } from '../actions/index'
-import Product from '../components/product/Product'
+import Product from '../components/pages/product/Product'
 import SearchContainer from '../containers/SearchContainer'
 
 class VisibleProductList extends Component {

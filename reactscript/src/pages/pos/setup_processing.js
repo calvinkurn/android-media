@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import store from './store/Store'
-import PaymentProcessing from './components/PaymentProcessing'
-import PaymentInvoice from './components/PaymentInvoice'
+import PaymentProcessing from './components/pages/payment/PaymentProcessing'
+import PaymentInvoice from './components/pages/invoice/PaymentInvoice'
 import { StackNavigator } from 'react-navigation'
 
 

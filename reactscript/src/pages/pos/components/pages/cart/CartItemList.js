@@ -33,7 +33,6 @@ class CartItemList extends Component {
   }
 
   paymentCheckoutClicked = () => {
-    console.log("checkout clicked, total")
     this.props.dispatch(PaymentCheckoutToNative())
   }
 

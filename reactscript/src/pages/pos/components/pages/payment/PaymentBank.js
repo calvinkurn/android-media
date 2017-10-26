@@ -6,8 +6,8 @@ import {
 } from 'react-native';
 import PopupDialog, { DialogTitle } from 'react-native-popup-dialog';
 import { StackNavigator } from 'react-navigation';
-import { getBankList, selectBank, getEmiList, selectEmi, makePayment } from '../actions/index';
-import { Text } from '../common/TKPText'
+import { getBankList, selectBank, getEmiList, selectEmi, makePayment } from '../../../actions/index';
+import { Text } from '../../../common/TKPText'
 import { NavigationModule } from 'NativeModules'
 
 
