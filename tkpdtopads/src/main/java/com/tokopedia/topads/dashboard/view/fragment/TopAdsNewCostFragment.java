@@ -100,6 +100,9 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     }
 
     private String getSuggestionBidRaw(){
+        if(suggestionBidText == null)
+            return null;
+
         return suggestionBidText.substring(prefixSuggestion.length()).trim();
     }
 
@@ -148,19 +151,16 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
 
-                if(number >= Double.valueOf(getSuggestionBidRaw())){
+                String suggestionBidRaw = getSuggestionBidRaw();
+                if(suggestionBidRaw == null)
+                    return;
+
+                if(number >= Double.valueOf(suggestionBidRaw)){
                     titleSuggestionBid.setText(R.string.top_ads_label_price_desc);
                     titleSuggestionBidUse.setVisibility(View.GONE);
                 }else{
                     setSuggestionBidText(suggestionBidText);
                     titleSuggestionBidUse.setVisibility(View.VISIBLE);
-                }
-
-                String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
-                if (!TextUtils.isEmpty(errorMessage)) {
-                    maxPriceInputLayout.setError(errorMessage);
-                } else {
-                    maxPriceInputLayout.setError(null);
                 }
             }
         });

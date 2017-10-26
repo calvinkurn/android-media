@@ -2,8 +2,10 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
@@ -47,12 +49,13 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
 
     @Override
     protected void loadSuggestionBid() {
-
+        setSuggestionBidText((GetSuggestionResponse)null);
+        titleSuggestionBidUse.setVisibility(View.GONE);
     }
 
     @Override
     protected void onSuggestionTitleUseClick() {
-
+        titleSuggestionBid.setText(getString(R.string.static_suggestion_bid_recommendation));
     }
 
     public static Fragment createInstance(String shopId) {
@@ -64,7 +67,5 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
     }
 
     @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) {
-        // TODO this need to be inserted
-    }
+    public void onSuggestionSuccess(GetSuggestionResponse s) { /* remain empty*/ }
 }
