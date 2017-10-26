@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 //import SearchScreen from '../components/search/SearchScreen'
-import SearchScreen from '../components/search/SearchBar'
+import SearchScreen from '../components/pages/search/SearchBar'
 import {
   fetchSearchProduct,
   onSearchResultTap,

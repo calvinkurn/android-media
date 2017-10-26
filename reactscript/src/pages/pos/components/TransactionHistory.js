@@ -5,8 +5,10 @@ import { emailValidation } from '../lib/utility'
 import PopupDialog, { DialogTitle } from 'react-native-popup-dialog';
 import { getTransactionHistory } from '../actions/index';
 import { Text } from '../common/TKPText'
-
+import { icons } from '../lib/config'
 import PopUp from '../common/TKPPopupModal'
+
+
 
 class TransactionHistory extends Component {
 
@@ -89,9 +91,9 @@ class TransactionHistory extends Component {
               }
             >
               {(this.state.selectedOrder != rowItem.orderId) ?
-                <Image source={require('./img/arrow-down.png')} style={{ height: 12, width: 12, resizeMode: 'cover', marginTop: 5, marginLeft: 7 }} />
+                <Image source={{ uri: icons.arrow_down }} style={{ height: 12, width: 12, resizeMode: 'cover', marginTop: 5, marginLeft: 7 }} />
                 :
-                <Image source={require('./img/arrow-up.png')} style={{ height: 12, width: 12, resizeMode: 'cover', marginTop: 5, marginLeft: 7 }} />
+                <Image source={{ uri: icons.arrow_up }} style={{ height: 12, width: 12, resizeMode: 'cover', marginTop: 5, marginLeft: 7 }} />
               }
             </TouchableNativeFeedback>
           </View>
@@ -112,7 +114,7 @@ class TransactionHistory extends Component {
             <View style={{ flexDirection: 'column' }}>
               <Text style={[styles.font13, styles.fontcolor61]}>Metode Pembayaran</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image source={require('./img/Logo-BCA.png')} style={{ height: 24, width: 48, resizeMode: 'cover' }} >
+                <Image source={{ uri: icons.bca }} style={{ height: 24, width: 48, resizeMode: 'cover' }} >
                 </Image>
                 <Text style={[styles.font15, styles.fontcolor54]}>BCA</Text>
               </View>

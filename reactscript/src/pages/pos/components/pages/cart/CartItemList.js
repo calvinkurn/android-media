@@ -8,7 +8,7 @@ import Processing from '../../Processing'
 import { NavigationModule } from 'NativeModules'
 import { connect } from 'react-redux'
 import { PaymentCheckoutToNative } from '../../../actions/index'
-import { icons } from '../../icon/index'
+import { icons } from '../../../lib/config'
 
 
 class CartItemList extends Component {
@@ -72,7 +72,7 @@ class CartItemList extends Component {
                 <View style={styles.headerContainer}>
                   <View>
                     <TouchableWithoutFeedback onPress={this.onBackPress}>
-                      <Image source={{ uri: icons.logo_icon_back }} style={{resizeMode:'contain', width:25, height:25 }} />
+                      <Image source={{ uri: icons.icon_back }} style={{resizeMode:'contain', width:25, height:25 }} />
                     </TouchableWithoutFeedback>
                   </View>
                   <View style={{ left: -220 }}>
@@ -80,7 +80,7 @@ class CartItemList extends Component {
                   </View>
                   <View>
                     <TouchableWithoutFeedback onPress={() => { this.toggleScreen(true) }}>
-                      <Image source={{ uri: icons.logo_trash_all }} style={{resizeMode:'contain', width:25, height:25 }} />
+                      <Image source={{ uri: icons.trash_all }} style={{resizeMode:'contain', width:25, height:25 }} />
                     </TouchableWithoutFeedback>
                   </View>
                 </View>
@@ -128,7 +128,7 @@ class CartItemList extends Component {
                 <View style={styles.headerContainer}>
                   <View>
                     <TouchableWithoutFeedback onPress={this.onBackPress}>
-                      <Image source={{ uri: icons.logo_icon_back }} style={{resizeMode:'contain', width:25, height:25 }} />
+                      <Image source={{ uri: icons.icon_back }} style={{resizeMode:'contain', width:25, height:25 }} />
                     </TouchableWithoutFeedback>
                   </View>
                   <View style={{ left: -220 }}>
@@ -143,7 +143,7 @@ class CartItemList extends Component {
                     backgroundColor: '#fff',
                     borderRadius: 5
                   }}>
-                    <Image source={{ uri: icons.logo_shop_basket }}
+                    <Image source={{ uri: icons.shopping_basket }}
                       style={{ width: 200, height: 200, marginBottom: 15, marginTop: 50 }} />
                     <Text style={{ marginBottom: 50 }}>Tidak Ada barang dalam keranjang</Text>
                   </View>
