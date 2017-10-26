@@ -19,7 +19,7 @@ public class SingleFeedDetailViewModel extends FeedDetailViewModel{
     public SingleFeedDetailViewModel(Integer productId, String name, String price,
                                      String imageSource, String url, String cashback,
                                      boolean isWholesale, boolean isPreorder, boolean isFreeReturn,
-                                     boolean isWishlist, float rating) {
+                                     boolean isWishlist, Double rating) {
         super(productId, name, price, imageSource, url, cashback,
                 isWholesale, isPreorder, isFreeReturn, isWishlist, rating);
     }

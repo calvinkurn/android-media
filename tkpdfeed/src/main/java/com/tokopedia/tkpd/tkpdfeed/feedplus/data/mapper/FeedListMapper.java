@@ -131,7 +131,6 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
     private FeedDomain convertToDataFeedDomain(Feeds.Data data) {
 
         return new FeedDomain(convertToFeedDomain(data),
-                convertToInspiration(data),
                 data.feed().links().pagination().has_next_page());
     }
 
@@ -154,8 +153,8 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
         return dataInspirationDomains;
     }
 
-    private List<InspirationRecommendationDomain>
-    convertToInspirationRecommendation(List<Feeds.Data.Recommendation> recommendations) {
+    private List<InspirationRecommendationDomain> convertToInspirationRecommendation(
+            List<Feeds.Data.Recommendation> recommendations) {
         List<InspirationRecommendationDomain> listRecommendation = new ArrayList<>();
         if (recommendations != null) {
             for (Feeds.Data.Recommendation recommendation : recommendations) {
@@ -178,8 +177,7 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
                 pagination.prev_page());
     }
 
-    private DataInspirationDomain
-    createDataInspirationDomain(String source,
+    private DataInspirationDomain createDataInspirationDomain(String source,
                                 String title,
                                 String foreign_title,
                                 InspirationPaginationDomain pagination,
@@ -296,6 +294,7 @@ public class FeedListMapper implements Func1<Feeds.Data, FeedDomain> {
                 List<TopPicksDomain> topPicksDomains =
                         convertToTopPicksDomain(datum.content().top_picks());
                 ShopFeedDomain shopFeedDomain = createShopFeedDomain(datum.source().shop());
+                List<DataInspirationDomain> inspirationDomains = convertToInspiration(data);
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.content(),
                         productFeedDomains,
