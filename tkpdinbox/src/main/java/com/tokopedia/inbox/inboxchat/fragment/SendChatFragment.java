@@ -85,7 +85,7 @@ public class SendChatFragment extends BaseDaggerFragment
         attachButton = (ImageView) rootView.findViewById(R.id.add_url);
         tempMessageView = rootView.findViewById(R.id.temp_message);
         tempMessage = (TextView) rootView.findViewById(R.id.message);
-        tempDate = (TextView) rootView.findViewById(R.id.date);
+        tempDate = (TextView) rootView.findViewById(R.id.hour);
         presenter.attachView(this);
         prepareView();
         initListener();
