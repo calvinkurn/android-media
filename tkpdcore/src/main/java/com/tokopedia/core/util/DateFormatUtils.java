@@ -17,6 +17,8 @@ public class DateFormatUtils {
     public static final String FORMAT_DD_MMMM_YYYY = "dd MMMM yyyy";
     public static final String FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
     public static final String FORMAT_D_MMMM_YYYY = "d MMMM yyyy";
+    public static final String FORMAT_T_Z = "yyyy-MM-dd'T'HH:mm:ssZZ";
+    public static final String FORMAT_DD_MMM_YYYY_HH_MM = "dd MMM yyyy hh:mm";
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
 
     @SuppressLint("SimpleDateFormat")

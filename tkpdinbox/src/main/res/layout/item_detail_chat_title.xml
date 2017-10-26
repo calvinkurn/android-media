@@ -16,11 +16,13 @@
             android:layout_height="20dp"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btn_title"
+            <TextView
+                android:id="@+id/tv_user_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_title_admin"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:textSize="@dimen/font_caption"
                 context:text="sistem tokopedia"
                 android:paddingLeft="@dimen/padding_ms"

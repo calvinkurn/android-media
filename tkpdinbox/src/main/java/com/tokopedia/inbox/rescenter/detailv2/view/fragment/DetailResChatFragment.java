@@ -232,8 +232,7 @@ public class DetailResChatFragment
                         (detailResChatDomain.getShop(),
                                 detailResChatDomain.getLast(),
                                 conversationDomain));
-            }
-            if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
+            } else if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
                 chatAdapter.addItem(new ChatRightViewModel(
                         conversationDomain.getAction(),
                         conversationDomain.getMessage(),
