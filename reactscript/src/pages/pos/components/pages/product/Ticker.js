@@ -1,14 +1,26 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Image, TouchableOpacity, DeviceEventEmitter } from 'react-native'
 import { NavigationModule } from 'NativeModules'
-import { Text } from '../../common/TKPText'
+import { Text } from '../../../common/TKPText'
 import { connect } from 'react-redux'
-import { fetchShopName } from '../../actions/index'
+import { fetchShopName } from '../../../actions/index'
 
 class Ticker extends Component{
   componentDidMount(){
     this.props.dispatch(fetchShopName())
+
+    this.paymentSuccessReloadState =  DeviceEventEmitter.addListener("clearState", (res) => {
+      console.log(res)
+      if (res){
+        this.props.dispatch(fetchShopName())
+      }
+    })
   }
+
+  componentWillUnmount(){
+    this.paymentSuccessReloadState.remove()
+  }
+
 
   render() {
     return (

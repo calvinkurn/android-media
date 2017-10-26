@@ -23,7 +23,8 @@ import {
   FETCH_SHOP_NAME,
   FETCH_SHOP_ID,
   PAYMENT_CHECKOUT_TO_NATIVE,
-  MAKE_PAYMENT_V2
+  MAKE_PAYMENT_V2,
+  RELOAD_STATE,
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
 import { icons } from '../components/icon/index'
@@ -570,7 +571,7 @@ const transactionHistory = (state = {
 }
 
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   products,
   etalase,
   cart,
@@ -582,5 +583,13 @@ const rootReducer = combineReducers({
   transactionHistory,
   shop
 })
+
+const rootReducer = (state, action) => {
+  if (action.type === 'RELOAD_STATE') {
+    state = undefined
+  }
+
+  return appReducer(state, action)
+}
 
 export default rootReducer

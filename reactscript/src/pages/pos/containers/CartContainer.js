@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import CartItemList from '../components/cart/CartItemList'
+import CartItemList from '../components/pages/cart/CartItemList'
 import {
   removeFromCart,
   incrementQty,
   decrementQty,
   clearCart,
+  reloadState,
   fetchCartFromCache
 } from '../actions/index'
 
@@ -21,6 +22,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    clearState: () => {
+      dispatch(reloadState())
+    },
     fetchCartList: () => {
       dispatch(fetchCartFromCache())
     },

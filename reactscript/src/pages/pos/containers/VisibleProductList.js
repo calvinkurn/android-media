@@ -9,11 +9,12 @@ import {
   TouchableNativeFeedback,
   Image,
   TextInput,
+  DeviceEventEmitter,
 } from 'react-native'
 import { Text } from '../common/TKPText'
-import Picker from '../components/product/EtalaseSelectPopUp'
+import Picker from '../components/pages/product/EtalaseSelectPopUp'
 import { fetchProducts, fetchEtalase, pullToRefresh, onEtalaseChange, resetProductList, fetchShopId } from '../actions/index'
-import Product from '../components/product/Product'
+import Product from '../components/pages/product/Product'
 import SearchContainer from '../containers/SearchContainer'
 
 class VisibleProductList extends Component {
@@ -21,6 +22,9 @@ class VisibleProductList extends Component {
     super(props)
     this.state = { showEtalasePicker: false }
   }
+
+
+
 
   closePopUp = () => {
     this.setState({ showEtalasePicker: false })
@@ -45,7 +49,22 @@ class VisibleProductList extends Component {
     dispatch(fetchShopId())
     dispatch(fetchEtalase(1987772))
     dispatch(fetchProducts(1987772, 0, 25, 0, null, queryText))
+
+    this.paymentSuccessReloadState =  DeviceEventEmitter.addListener("clearState", (res) => {
+      console.log(res)
+      if (res){
+        dispatch(resetProductList())
+        dispatch(fetchShopId())
+        dispatch(fetchEtalase(1987772))
+        dispatch(fetchProducts(1987772, 0, 25, 0, null, queryText))
+      }
+    })
   }
+
+  componentWillUnmount(){
+    this.paymentSuccessReloadState.remove()
+  }
+
 
   renderProduct = ({ item }) => {
     return <Product product={item} key={item.product_id} />

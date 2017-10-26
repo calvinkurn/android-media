@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Button, Image, TouchableWithoutFeedback} from 'react-native';
-import { makePayment } from '../actions/index'
+import { makePayment } from '../../../actions/index'
 import { NavigationModule } from 'NativeModules'
 
 

@@ -34,6 +34,7 @@ import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.posapp.PosAppRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.service.HadesBroadcastReceiver;
@@ -350,6 +351,10 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                         sessionHandler.forceLogout();
                         if (GlobalConfig.isSellerApp()) {
                             Intent intent = SellerRouter.getAcitivitySplashScreenActivity(getBaseContext());
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        } else if(GlobalConfig.isPosApp()) {
+                            Intent intent = PosAppRouter.getSplashScreenIntent(getBaseContext(), true);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         } else {

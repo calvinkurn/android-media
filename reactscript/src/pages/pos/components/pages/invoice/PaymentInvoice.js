@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, ListView } from 'react-native';
-import { emailValidation } from '../lib/utility'
+import { emailValidation } from '../../../lib/utility'
 import PopupDialog, { DialogTitle } from 'react-native-popup-dialog';
 import { NavigationModule } from 'NativeModules'
 import Dash from 'react-native-dash';
 
-import PopUp from '../common/TKPPopupModal'
-import { Text } from '../common/TKPText'
+import PopUp from '../../../common/TKPPopupModal'
+import { Text } from '../../../common/TKPText'
+import { reloadState, clearCart } from '../../../actions/index'
+
+
 
 class PaymentInvoice extends Component {
   constructor(props) {
@@ -19,6 +22,13 @@ class PaymentInvoice extends Component {
     };
   }
 
+  componentDidMount(){
+    const { dispatch } = this.props
+    
+    dispatch(reloadState('invoice'))
+    dispatch(clearCart())
+  }
+
   _handleButtonPress = () => {
     let emailErrorMessage = "";
     if (!emailValidation(this.state.email)) {
@@ -28,8 +38,8 @@ class PaymentInvoice extends Component {
     }
     this.setState({
       emailErrorMessage
-    });
-  };
+    })
+  }
 
   _renderProductList(rowData, sectionID, rowID) {
     return (
@@ -77,9 +87,9 @@ class PaymentInvoice extends Component {
               <View style={{ flexDirection: 'column' }}>
                 <Text style={{ fontSize: 13, color: '#00000061' }}>Metode Pembayaran</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Image source={require('./img/Logo-BCA.png')} style={{ height: 48, width: 24, resizeMode: 'cover' }} >
+                  <Image source={{ uri: this.props.bankLogo }} style={{ height: 48, width: 70, resizeMode: 'contain' }} >
                   </Image>
-                  <Text style={{ fontSize: 15, color: '#0000008a', marginLeft: 10 }}>BCA</Text>
+                  <Text style={{ fontSize: 15, color: '#0000008a', marginLeft: 10 }}>{this.props.bankName}</Text>
                 </View>
               </View>
               <View style={{ flexDirection: 'row' }}>
@@ -159,12 +169,13 @@ class PaymentInvoice extends Component {
   }
 
   static navigationOptions = {
-    headerLeft: null,
-    title: 'Payment Invoice',
-    headerTintColor: '#FFF',
-    headerStyle: {
-        backgroundColor: '#42B549'
-    }
+    header: null
+    // headerLeft: null,
+    // title: 'Payment Invoice',
+    // headerTintColor: '#FFF',
+    // headerStyle: {
+    //     backgroundColor: '#42B549'
+    // }
   };
 
 }
@@ -292,11 +303,15 @@ const ds = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 !== r2
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
+  const objData = JSON.parse(ownProps.screenProps.data.data)
+  // console.log(objData)
   const itemList = ds.cloneWithRows(state.paymentInvoice.items);
   return {
     ...state.paymentInvoice,
-    itemList
+    itemList,
+    bankLogo: objData.bankLogo, 
+    bankName: objData.bankName,
   }
 }
 

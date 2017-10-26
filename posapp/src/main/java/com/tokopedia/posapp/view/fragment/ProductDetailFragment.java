@@ -64,6 +64,8 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     private ProductPass productPass;
 
+    private ProductDetailFragmentListener listener;
+
     @Inject
     ProductPresenter productPresenter;
 
@@ -96,33 +98,14 @@ public class ProductDetailFragment extends BaseDaggerFragment
         return parentView;
     }
 
-    private void initView(View view) {
-        pictureView = view.findViewById(R.id.view_picture);
-        headerInfoView = view.findViewById(R.id.view_header);
-        priceSimulationView = view.findViewById(R.id.view_price_simulation);
-        videoDescriptionLayout = view.findViewById(R.id.video_layout);
-        buttonBuy = view.findViewById(R.id.button_buy);
-        buttonAddToCart = view.findViewById(R.id.button_add_to_cart);
-    }
-
-    void initListener() {
-        pictureView.setListener(this);
-        headerInfoView.setListener(this);
-        priceSimulationView.setListener(this);
-        videoDescriptionLayout.setListener(this);
-        buttonAddToCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addToCartPresenter.add(Integer.parseInt(productPass.getProductId()), 1);
-            }
-        });
-
-        buttonBuy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addToCartPresenter.addAndCheckout(Integer.parseInt(productPass.getProductId()), 1);
-            }
-        });
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof ProductDetailFragmentListener) {
+            listener = (ProductDetailFragmentListener) context;
+        } else {
+            throw new RuntimeException("Need to implement ProductDetailFragmentListener");
+        }
     }
 
     @Override
@@ -557,5 +540,39 @@ public class ProductDetailFragment extends BaseDaggerFragment
     @Override
     public void onPromoAdsClicked() {
 
+    }
+
+    private void initView(View view) {
+        pictureView = view.findViewById(R.id.view_picture);
+        headerInfoView = view.findViewById(R.id.view_header);
+        priceSimulationView = view.findViewById(R.id.view_price_simulation);
+        videoDescriptionLayout = view.findViewById(R.id.video_layout);
+        buttonBuy = view.findViewById(R.id.button_buy);
+        buttonAddToCart = view.findViewById(R.id.button_add_to_cart);
+    }
+
+    void initListener() {
+        pictureView.setListener(this);
+        headerInfoView.setListener(this);
+        priceSimulationView.setListener(this);
+        videoDescriptionLayout.setListener(this);
+        buttonAddToCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addToCartPresenter.add(Integer.parseInt(productPass.getProductId()), 1);
+                listener.onAddToCart();
+            }
+        });
+
+        buttonBuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addToCartPresenter.addAndCheckout(Integer.parseInt(productPass.getProductId()), 1);
+            }
+        });
+    }
+
+    public interface ProductDetailFragmentListener {
+        void onAddToCart();
     }
 }

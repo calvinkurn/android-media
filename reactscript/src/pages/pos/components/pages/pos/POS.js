@@ -10,13 +10,16 @@ import {
   // TouchableNativeFeedback,
   // TouchableWithoutFeedback
 } from 'react-native'
-import VisibleProductList from '../containers/VisibleProductList'
-import Ticker from '../components/product/Ticker'
-import CartContainer from '../containers/CartContainer'
-import SearchContainer from '../containers/SearchContainer'
+import VisibleProductList from '../../../containers/VisibleProductList'
+import Ticker from '../product/Ticker'
+import CartContainer from '../../../containers/CartContainer'
+import SearchContainer from '../../../containers/SearchContainer'
+import { reloadState } from '../../../actions/index'
 // import PasswordPopup from './PasswordPopup'
+import { connect } from 'react-redux'
 
-export default class POS extends Component {
+
+class POS extends Component {
   constructor() {
     super()
     this.state = {
@@ -24,6 +27,14 @@ export default class POS extends Component {
       searchOpen: false
     }
   }
+
+  // componentDidMount(){
+  //   console.log(this.props)
+  //   this.props.dispatch(reloadState('POS'))
+  // }
+
+
+
   onActionSelected = (position) => {
     if (position === 1) {
       console.log('onActionSelected called')
@@ -60,3 +71,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   }
 })
+
+
+export default connect()(POS)
