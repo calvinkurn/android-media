@@ -92,11 +92,11 @@
                 android:layout_centerInParent="true"
                 android:layout_toLeftOf="@+id/send_but"
                 android:layout_toRightOf="@+id/add_url"
+                android:background="@color/white"
                 android:hint="@string/chat_edit_text"
                 android:inputType="textMultiLine"
                 android:maxLines="5"
                 android:padding="@dimen/padding_vs"
-                android:background="@color/white"
                 android:textSize="@dimen/font_medium" />
 
             <ImageView
@@ -123,30 +123,23 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/add_comment_area"
             android:layout_below="@id/header"
-            android:layout_centerInParent="true"
-            />
+            android:layout_centerInParent="true" />
 
-        <com.tokopedia.core.customwidget.SwipeToRefresh
-            android:id="@+id/swipe_refresh_layout"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/reply_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/add_comment_area"
-            android:layout_below="@id/header">
+            android:layout_below="@id/header"
+            android:layout_gravity="center"
+            android:scrollbars="vertical" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/reply_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:scrollbars="vertical" />
-
-        </com.tokopedia.core.customwidget.SwipeToRefresh>
 
         <TextView
             android:id="@+id/header_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/swipe_refresh_layout"
+            android:layout_alignTop="@id/reply_list"
             android:layout_centerHorizontal="true"
             android:background="@drawable/bg_yellow_border_yelow"
             android:gravity="center_horizontal"

@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepository;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
+import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 
 import rx.Observable;
 
@@ -13,7 +14,7 @@ import rx.Observable;
  * Created by stevenfredian on 9/12/17.
  */
 
-public class GetReplyListUseCase extends UseCase<ReplyData> {
+public class GetReplyListUseCase extends UseCase<ChatRoomViewModel> {
 
     private final ReplyRepository replyRepository;
 
@@ -23,7 +24,7 @@ public class GetReplyListUseCase extends UseCase<ReplyData> {
     }
 
     @Override
-    public Observable<ReplyData> createObservable(RequestParams requestParams) {
+    public Observable<ChatRoomViewModel> createObservable(RequestParams requestParams) {
         return replyRepository.getReply(requestParams.getParameters());
     }
 

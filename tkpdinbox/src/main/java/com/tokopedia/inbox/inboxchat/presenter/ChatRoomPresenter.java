@@ -16,6 +16,7 @@ import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
+import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -112,15 +113,15 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 new GetReplySubscriber(getView(), this));
     }
 
-    public void setResult(GetReplyViewModel replyData) {
+    public void setResult(ChatRoomViewModel replyData) {
         getView().setCanLoadMore(false);
         getView().setHeader();
-        if (pagingHandler.getPage() == 1) {
-            getView().getAdapter().setList(replyData.getList());
+        if(pagingHandler.getPage()==1) {
+            getView().getAdapter().setList(replyData.getChatList());
             getView().scrollToBottom();
             getView().hideMainLoading();
-        } else {
-            getView().getAdapter().addList(replyData.getList());
+        }else {
+            getView().getAdapter().addList(replyData.getChatList());
         }
         getView().setTextAreaReply(replyData.getTextAreaReply() == 1);
         getView().setCanLoadMore(replyData.isHasNext());
@@ -130,7 +131,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
-    public void finishRequest(int i) {
+    public void finishRequest() {
         isRequesting = false;
     }
 
@@ -177,7 +178,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             pagingHandler.resetPage();
             getReply();
         } else {
-            getView().getRefreshHandler().finishRefresh();
+//            getView().getRefreshHandler().finishRefresh();
         }
     }
 

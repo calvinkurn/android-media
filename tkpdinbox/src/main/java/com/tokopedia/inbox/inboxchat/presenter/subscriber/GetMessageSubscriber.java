@@ -27,16 +27,17 @@ public class GetMessageSubscriber extends Subscriber<InboxChatViewModel>{
 
     @Override
     public void onCompleted() {
-        presenter.setRequesting(false);
+
     }
 
     @Override
     public void onError(Throwable e) {
-        e.printStackTrace();
+        presenter.setRequesting(false);
     }
 
     @Override
     public void onNext(InboxChatViewModel messageData) {
+        presenter.setRequesting(false);
         view.enableActions();
 //                if (pagingHandler.getPage() == 1 && !isFilterUsed()) {
 //                    cacheInteractor.setInboxMessageCache(viewListener.getArguments().getString(PARAM_NAV), result);
