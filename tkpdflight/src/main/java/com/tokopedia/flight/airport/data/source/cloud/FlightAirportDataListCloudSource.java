@@ -7,8 +7,6 @@ import com.tokopedia.flight.airport.data.source.cloud.service.FlightAirportServi
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;

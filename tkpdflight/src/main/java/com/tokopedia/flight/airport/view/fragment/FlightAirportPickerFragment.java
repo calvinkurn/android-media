@@ -2,7 +2,6 @@ package com.tokopedia.flight.airport.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;

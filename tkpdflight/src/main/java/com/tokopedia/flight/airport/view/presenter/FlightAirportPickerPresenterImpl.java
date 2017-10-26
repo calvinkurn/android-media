@@ -8,8 +8,6 @@ import java.util.List;
 
 import rx.Subscriber;
 
-import javax.inject.Inject;
-
 /**
  * Created by zulfikarrahman on 10/24/17.
  */
