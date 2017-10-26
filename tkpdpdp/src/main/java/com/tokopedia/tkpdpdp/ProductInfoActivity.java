@@ -159,7 +159,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     public void shareProductInfo(@NonNull ShareData shareData) {
         presenter.processToShareProduct(this, shareData);
         startActivity(ShareActivity.createIntent(ProductInfoActivity.this, shareData));
-        //inflateNewFragment(ProductShareFragment.newInstance(shareData), ProductShareFragment.class.getSimpleName());
     }
 
     @Override
