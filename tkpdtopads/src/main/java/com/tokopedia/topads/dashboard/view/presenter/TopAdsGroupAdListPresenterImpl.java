@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
@@ -54,9 +55,9 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
                 GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
                 getSuggestionBody.setRounding(true);
                 getSuggestionBody.setShopId(Long.valueOf(getShopInfoUseCase.getData(RequestParams.EMPTY).getInfo().getShopId()));
-                getSuggestionBody.setSource("top_ads_new_cost_without_group");
-                getSuggestionBody.setDataType("detail");
-                getSuggestionBody.setSuggestionType("group_bid");
+                getSuggestionBody.setSource(TopAdsNetworkConstant.SOURCE_GROUP_AD_LIST);
+                getSuggestionBody.setDataType(TopAdsNetworkConstant.SUGGESTION_DATA_TYPE_DETAIL);
+                getSuggestionBody.setSuggestionType(TopAdsNetworkConstant.SUGGESTION_TYPE_GROUP_ID);
                 for (GroupAd groupAd : pageDataResponse.getData()) {
                     getSuggestionBody.addId(groupAd.getId());
                 }

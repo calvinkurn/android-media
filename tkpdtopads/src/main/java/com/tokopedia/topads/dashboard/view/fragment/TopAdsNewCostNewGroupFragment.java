@@ -6,6 +6,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
@@ -53,9 +54,9 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
         getSuggestionBody.setRounding(true);
         if(SessionHandler.getShopID(getActivity()) != null)
             getSuggestionBody.setShopId(Long.valueOf(SessionHandler.getShopID(getActivity())));
-        getSuggestionBody.setSource("top_ads_new_cost_new_group");
-        getSuggestionBody.setDataType("summary");
-        getSuggestionBody.setSuggestionType("dep_bid");
+        getSuggestionBody.setSource(TopAdsNetworkConstant.SOURCE_NEW_COST_GROUP);
+        getSuggestionBody.setDataType(TopAdsNetworkConstant.SUGGESTION_DATA_TYPE_SUMMARY);
+        getSuggestionBody.setSuggestionType(TopAdsNetworkConstant.SUGGESTION_TYPE_DEPARTMENT_ID);
         for (TopAdsProductViewModel topAdsProductViewModel : stepperModel.getTopAdsProductViewModels()) {
             getSuggestionBody.addId(topAdsProductViewModel.getDepartmentId()+"");
         }
