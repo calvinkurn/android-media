@@ -885,9 +885,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 getFeedAnalyticsHeader(page, rowNumber) +
                         FeedTrackingEventLabel.Click.TOPPICKS_SEE_ALL);
     }
+
     private void onProductShareClicked(@NonNull ShareData data) {
-                Intent intent = new Intent(getActivity(), ShareActivity.class);
-                intent.putExtra(ShareData.TAG, data);
-                startActivity(intent);
-            }
+        startActivity(ShareActivity.createIntent(getActivity(),data));
+    }
 }

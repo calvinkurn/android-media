@@ -102,10 +102,11 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
 
-    public static ProductShareFragment newInstance(@NonNull ShareData shareData) {
+    public static ProductShareFragment newInstance(@NonNull ShareData shareData,boolean isAddingProduct) {
         ProductShareFragment fragment = new ProductShareFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARGS_SHARE_DATA, shareData);
+        args.putBoolean(IS_ADDING_PRODUCT, isAddingProduct);
         fragment.setArguments(args);
         return fragment;
     }
