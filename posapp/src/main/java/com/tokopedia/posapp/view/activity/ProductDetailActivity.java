@@ -34,10 +34,11 @@ import rx.functions.Func1;
  */
 
 public class ProductDetailActivity extends BasePresenterActivity
-        implements HasComponent {
+        implements HasComponent, ProductDetailFragment.ProductDetailFragmentListener {
 
     protected View vCart;
     private TextView tvNotif;
+    private CartFactory cartFactory;
 
     @DeepLink(Constants.Applinks.PRODUCT_INFO)
     public static Intent getIntentFromDeeplink(Context context, Bundle extras) {
@@ -137,31 +138,37 @@ public class ProductDetailActivity extends BasePresenterActivity
     protected void initInjector() {
         AppComponent appComponent = ((MainApplication) this.getApplicationContext()).getAppComponent();
         CartComponent cartComponent = DaggerCartComponent.builder().appComponent(appComponent).build();
-        CartFactory cartFactory = cartComponent.provideCartFactory();
-        cartFactory.local().getAllCartProducts().map(new Func1<List<CartDomain>, String>() {
-            @Override
-            public String call(List<CartDomain> cartDomains) {
-                if (cartDomains.size() > 0)
-                    return cartDomains.size() + "";
-                else
-                    return "null";
-            }
-        }).subscribe(new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
+        cartFactory = cartComponent.provideCartFactory();
+        getCartCount();
+    }
 
-            }
+    private void getCartCount() {
+        if(cartFactory != null) {
+            cartFactory.local().getAllCartProducts().map(new Func1<List<CartDomain>, String>() {
+                @Override
+                public String call(List<CartDomain> cartDomains) {
+                    if (cartDomains.size() > 0)
+                        return cartDomains.size() + "";
+                    else
+                        return "null";
+                }
+            }).subscribe(new Subscriber<String>() {
+                @Override
+                public void onCompleted() {
 
-            @Override
-            public void onError(Throwable e) {
+                }
 
-            }
+                @Override
+                public void onError(Throwable e) {
 
-            @Override
-            public void onNext(String o) {
-                updateNotification(o);
-            }
-        });
+                }
+
+                @Override
+                public void onNext(String o) {
+                    updateNotification(o);
+                }
+            });
+        }
     }
 
     private void updateNotification(String s) {
@@ -187,5 +194,10 @@ public class ProductDetailActivity extends BasePresenterActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onAddToCart() {
+        getCartCount();
     }
 }

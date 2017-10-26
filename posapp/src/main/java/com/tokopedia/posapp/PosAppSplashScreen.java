@@ -1,9 +1,11 @@
 package com.tokopedia.posapp;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.router.posapp.PosAppRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.view.activity.LoginActivity;
 import com.tokopedia.posapp.view.activity.OTPActivity;
@@ -13,6 +15,14 @@ import com.tokopedia.posapp.view.activity.OTPActivity;
  */
 
 public class PosAppSplashScreen extends SplashScreen {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getIntent().getBooleanExtra(PosAppRouter.IS_LOGOUT, false)) {
+            PosSessionHandler.clearPosUserData(this);
+        }
+    }
+
     @Override
     public void finishSplashScreen() {
         Intent intent;

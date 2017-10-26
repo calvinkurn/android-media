@@ -110,7 +110,7 @@ public class ProductListActivity extends ReactDrawerPresenterActivity {
                 m.performIdentifierAction(item.getItemId(), 0);
             }
         });
-        initInjector();
+        initCartInjector();
         return super.onCreateOptionsMenu(menu);
     }
 

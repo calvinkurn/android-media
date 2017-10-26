@@ -12,6 +12,10 @@ public class GeneralResponse<T> {
     @Expose
     private String sucess;
 
+    @SerializedName("status")
+    @Expose
+    private String status;
+
     @SerializedName("code")
     @Expose
     private int code;
@@ -30,6 +34,14 @@ public class GeneralResponse<T> {
 
     public void setSucess(String sucess) {
         this.sucess = sucess;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getCode() {

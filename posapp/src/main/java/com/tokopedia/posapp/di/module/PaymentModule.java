@@ -32,8 +32,8 @@ public class PaymentModule {
     }
 
     @Provides
-    CreateOrderMapper provideCreateOrderMapper() {
-        return new CreateOrderMapper();
+    CreateOrderMapper provideCreateOrderMapper(Gson gson) {
+        return new CreateOrderMapper(gson);
     }
 
     @Provides
