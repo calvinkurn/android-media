@@ -19,6 +19,8 @@ public class ActionHistory implements Parcelable {
 
     private String name;
 
+    private String type;
+
     public ActionHistory() {
     }
 
@@ -26,7 +28,9 @@ public class ActionHistory implements Parcelable {
         title = in.readString();
         method = in.readString();
         url = in.readString();
+        params = in.readParcelable(ParamsActionHistory.class.getClassLoader());
         name = in.readString();
+        type = in.readString();
     }
 
     @Override
@@ -34,7 +38,9 @@ public class ActionHistory implements Parcelable {
         dest.writeString(title);
         dest.writeString(method);
         dest.writeString(url);
+        dest.writeParcelable(params, flags);
         dest.writeString(name);
+        dest.writeString(type);
     }
 
     @Override
@@ -92,5 +98,13 @@ public class ActionHistory implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

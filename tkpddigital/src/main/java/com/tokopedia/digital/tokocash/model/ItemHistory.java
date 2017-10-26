@@ -35,6 +35,8 @@ public class ItemHistory implements Parcelable {
 
     private String notes;
 
+    private String amountPending;
+
     private List<ActionHistory> actionHistoryList;
 
     public ItemHistory() {
@@ -54,7 +56,31 @@ public class ItemHistory implements Parcelable {
         amountChangesSymbol = in.readString();
         amount = in.readLong();
         notes = in.readString();
+        amountPending = in.readString();
         actionHistoryList = in.createTypedArrayList(ActionHistory.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(transactionId);
+        dest.writeLong(transactionDetailId);
+        dest.writeString(transactionType);
+        dest.writeString(title);
+        dest.writeString(urlImage);
+        dest.writeString(description);
+        dest.writeString(transactionInfoId);
+        dest.writeString(transactionInfoDate);
+        dest.writeString(amountChanges);
+        dest.writeString(amountChangesSymbol);
+        dest.writeLong(amount);
+        dest.writeString(notes);
+        dest.writeString(amountPending);
+        dest.writeTypedList(actionHistoryList);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<ItemHistory> CREATOR = new Creator<ItemHistory>() {
@@ -173,25 +199,11 @@ public class ItemHistory implements Parcelable {
         this.notes = notes;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getAmountPending() {
+        return amountPending;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(transactionId);
-        parcel.writeLong(transactionDetailId);
-        parcel.writeString(transactionType);
-        parcel.writeString(title);
-        parcel.writeString(urlImage);
-        parcel.writeString(description);
-        parcel.writeString(transactionInfoId);
-        parcel.writeString(transactionInfoDate);
-        parcel.writeString(amountChanges);
-        parcel.writeString(amountChangesSymbol);
-        parcel.writeLong(amount);
-        parcel.writeString(notes);
-        parcel.writeTypedList(actionHistoryList);
+    public void setAmountPending(String amountPending) {
+        this.amountPending = amountPending;
     }
 }

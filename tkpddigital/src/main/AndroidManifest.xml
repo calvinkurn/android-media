@@ -52,10 +52,10 @@
         <activity android:name=".product.activity.DigitalUssdActivity"></activity>
 
         <activity
-            android:name=".wallets.wallettodeposit.WalletToDepositActivity"
+            android:name=".tokocash.activity.WalletToDepositActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".wallets.wallettodeposit.WalletToDepositThanksActivity"
+            android:name=".tokocash.activity.WalletToDepositThanksActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".wallets.accountsetting.WalletAccountSettingActivity"

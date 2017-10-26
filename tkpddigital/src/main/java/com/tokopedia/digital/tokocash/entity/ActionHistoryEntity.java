@@ -18,12 +18,7 @@ public class ActionHistoryEntity {
 
     private String name;
 
-    protected ActionHistoryEntity(Parcel in) {
-        title = in.readString();
-        method = in.readString();
-        url = in.readString();
-        name = in.readString();
-    }
+    private String type;
 
     public String getTitle() {
         return title;
@@ -63,5 +58,13 @@ public class ActionHistoryEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

@@ -32,6 +32,8 @@ public class ItemHistoryEntity {
 
     private String notes;
 
+    private String amount_pending;
+
     private List<ActionHistoryEntity> actions;
 
     public long getTransaction_id() {
@@ -136,5 +138,13 @@ public class ItemHistoryEntity {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getAmount_pending() {
+        return amount_pending;
+    }
+
+    public void setAmount_pending(String amount_pending) {
+        this.amount_pending = amount_pending;
     }
 }

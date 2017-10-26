@@ -141,4 +141,14 @@
     <string name="error_message_load_spinner_help">Gagal load data kategori kendala bantuan</string>
     <string name="error_message_send_help">Gagal mengirimkan tiket bantuan</string>
     <string name="success_message_send_help">Sukses mengirimkan tiket bantuan</string>
+    <string name="tokocash_title_confirmation_move_saldo">Anda akan memindahkan dana dari Tokocash ke Saldo Tokopedia sebesar</string>
+    <string name="tokocash_button_move_saldo">Pindahkan ke Saldo</string>
+    <string name="tokocash_success_title_move_saldo">Dana Telah Dipindahkan</string>
+    <string name="tokocash_success_subtitle_move_saldo">Pemindahan Dana ke Saldo Tokopedia berhasil</string>
+    <string name="tokocash_success_amount">Anda berhasil memindahkan Rp %s ke Saldo Tokopedia</string>
+    <string name="tokocash_move_page">Ke Halaman TokoCash</string>
+    <string name="tokocash_failed_title_move_saldo">Dana Gagal Dipindahkan</string>
+    <string name="tokocash_failed_subtitle_move_saldo">Pemindahan Dana ke Saldo Tokopedia Gagal</string>
+    <string name="tokocash_try_again">Coba Lagi</string>
+
 </resources>

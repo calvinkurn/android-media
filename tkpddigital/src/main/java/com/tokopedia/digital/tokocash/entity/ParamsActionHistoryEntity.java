@@ -1,35 +1,31 @@
 package com.tokopedia.digital.tokocash.entity;
 
-import android.os.Parcel;
-
 /**
  * Created by nabillasabbaha on 8/23/17.
  */
 
 public class ParamsActionHistoryEntity {
 
-    private String refundId;
+    private String refund_id;
 
-    private String refundType;
+    private String refund_type;
 
-    protected ParamsActionHistoryEntity(Parcel in) {
-        refundId = in.readString();
-        refundType = in.readString();
+    public ParamsActionHistoryEntity() {
     }
 
     public String getRefundId() {
-        return refundId;
+        return refund_id;
     }
 
     public void setRefundId(String refundId) {
-        this.refundId = refundId;
+        this.refund_id = refundId;
     }
 
     public String getRefundType() {
-        return refundType;
+        return refund_type;
     }
 
     public void setRefundType(String refundType) {
-        this.refundType = refundType;
+        this.refund_type = refundType;
     }
 }
