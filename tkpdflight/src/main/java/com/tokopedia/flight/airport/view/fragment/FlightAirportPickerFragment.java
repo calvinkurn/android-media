@@ -10,7 +10,7 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
 import com.tokopedia.flight.airport.di.FlightAirportModule;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapter;
-import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenterImpl;
+import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenter;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerView;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
@@ -25,7 +25,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     private static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
 
     @Inject
-    FlightAirportPickerPresenterImpl flightAirportPickerPresenter;
+    FlightAirportPickerPresenter flightAirportPickerPresenter;
 
     public static FlightAirportPickerFragment getInstance() {
         return new FlightAirportPickerFragment();
@@ -61,12 +61,18 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
 
     @Override
     protected void searchForPage(int page) {
-
+        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText());
     }
 
     @Override
     public void onSearchSubmitted(String text) {
         super.onSearchSubmitted(text);
+        flightAirportPickerPresenter.getAirportList(text);
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+        super.onSearchTextChanged(text);
         flightAirportPickerPresenter.getAirportList(text);
     }
 
