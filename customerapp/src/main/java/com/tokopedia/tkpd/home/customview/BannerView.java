@@ -110,6 +110,11 @@ public class BannerView extends BaseCustomView {
 
         resetImpressionStatus();
 
+        bannerIndicator.setVisibility(VISIBLE);
+        indicatorItems.clear();
+        bannerIndicator.removeAllViews();
+
+
         BannerPagerAdapter bannerPagerAdapter = new BannerPagerAdapter(promoList);
 
         bannerRecyclerView.setHasFixedSize(true);
