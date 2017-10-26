@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapter;
-import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenter;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenterImpl;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerView;
 
@@ -18,7 +17,7 @@ import javax.inject.Inject;
 public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB> implements FlightAirportPickerView{
 
     @Inject
-    FlightAirportPickerPresenter flightAirportPickerPresenter;
+    FlightAirportPickerPresenterImpl flightAirportPickerPresenter;
 
     public static FlightAirportPickerFragment getInstance() {
         return new FlightAirportPickerFragment();
