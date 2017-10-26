@@ -100,7 +100,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     }
 
     private String getSuggestionBidRaw(){
-        return suggestionBidText.replaceFirst(prefixSuggestion, "").trim();
+        return suggestionBidText.substring(prefixSuggestion.length()).trim();
     }
 
     @Override
@@ -150,8 +150,10 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
                 if(number >= Double.valueOf(getSuggestionBidRaw())){
                     titleSuggestionBid.setText(R.string.top_ads_label_price_desc);
+                    titleSuggestionBidUse.setVisibility(View.GONE);
                 }else{
                     setSuggestionBidText(suggestionBidText);
+                    titleSuggestionBidUse.setVisibility(View.VISIBLE);
                 }
 
                 String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
