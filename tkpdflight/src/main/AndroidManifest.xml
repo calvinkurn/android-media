@@ -12,7 +12,12 @@
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
+
         <activity android:name=".dashboard.view.activity.SelectFlightPassengerActivity"></activity>
+
+        <activity
+            android:name=".flightsearch.view.activity.FlightSearchActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
