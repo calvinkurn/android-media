@@ -13,9 +13,6 @@ class PaymentInvoice extends Component {
   constructor(props) {
     super(props);
 
-    console.log(this.props)
-    console.log(this.props.screenProps.data.data)
-    console.log(JSON.parse(this.props.screenProps.data.data))
     this.state = {
       email: "",
       emailErrorMessage: ""
@@ -42,9 +39,9 @@ class PaymentInvoice extends Component {
         </View>
         <View style={{ width: '76%', height: '20%', flexDirection: 'column', justifyContent: 'flex-start' }}>
           <Text style={[styles.font14, styles.fontcolor71, { width: '80%' }]}>{rowData.name} </Text>
-          <Text style={[styles.font13, styles.fontcolor61, { marginTop: 10 }]}>Jumlah Barang: {rowData.qty}</Text>
+          <Text style={[styles.font13, styles.fontcolor61, { marginTop: 10 }]}>Jumlah Barang: {rowData.quantity}</Text>
         </View>
-        <Text style={[styles.font14, styles.fontcolor71]}>{rowData.price}</Text>
+        <Text style={[styles.font14, styles.fontcolor71]}>Rp {rowData.price}</Text>
       </View>
     );
   }
@@ -55,22 +52,9 @@ class PaymentInvoice extends Component {
 
   render() {
     console.log(this.props)
+    const paymentDetails = this.props.screenProps.data.data.paymentDetails;
     return (
       <View style={{ flex: 1 }}>
-        {/* <View style={{
-          height: 55,
-          backgroundColor: '#42b549',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-around'
-        }}>
-          <View style={{ width: '5%', left: 10 }}>
-
-          </View>
-          <View style={{ width: '90%' }}>
-            <Text style={{ fontSize: 20, color: '#fff' }}>Invoice</Text>
-          </View>
-        </View> */}
         <ScrollView>
           <View style={styles.containers} >
             <View style={[styles.row, styles.row1]} >
@@ -82,7 +66,7 @@ class PaymentInvoice extends Component {
 
             <ListView
               contentContainerStyle={[styles.row, styles.row2]}
-              dataSource={this.props.itemList}
+              dataSource={this.props.screenProps.data.data.items}
               enableEmptySections={true}
               renderRow={this._renderProductList.bind(this)} />
               <View style={{paddingRight: '2%', paddingLeft: '3%', backgroundColor: '#FFFFFF'}}>
@@ -100,7 +84,7 @@ class PaymentInvoice extends Component {
               </View>
               <View style={{ flexDirection: 'row' }}>
                 <Text style={{ fontSize: 16, color: '#0000008a' }}>Total Pembayaran</Text>
-                <Text style={{ fontSize: 16, color: '#000000b3' }}> {this.props.totalPrice}</Text>
+                <Text style={{ fontSize: 16, color: '#000000b3' }}> Rp {paymentDetails.amount}</Text>
               </View>
             </View>
                 <View style={[styles.row, styles.row3]} >
