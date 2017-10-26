@@ -4,6 +4,7 @@ package com.tokopedia.inbox.inboxchat.data.repository;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
+import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 
 import rx.Observable;
 
@@ -13,7 +14,7 @@ import rx.Observable;
 
 public interface ReplyRepository {
 
-    Observable<ReplyData> getReply(TKPDMapParam<String, Object> requestParams);
+    Observable<ChatRoomViewModel> getReply(TKPDMapParam<String, Object> requestParams);
 
     Observable<ReplyActionData> replyMessage(TKPDMapParam<String, Object> parameters);
 }

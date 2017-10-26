@@ -6,12 +6,30 @@ package com.tokopedia.inbox.inboxchat.viewmodel;
 
 public class ChatConversationViewModel {
 
+    String replyId;
+    String senderId;
     String name;
     boolean isOpposite;
     String label;
     String time;
     String date;
     boolean isHighlight;
+
+    public String getReplyId() {
+        return replyId;
+    }
+
+    public void setReplyId(String id) {
+        this.replyId = id;
+    }
+
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
+    }
 
     public String getName() {
         return name;

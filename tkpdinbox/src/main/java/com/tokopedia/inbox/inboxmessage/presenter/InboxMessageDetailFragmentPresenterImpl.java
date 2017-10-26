@@ -230,31 +230,31 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
 //                    }
 //                });
 
-        getReplyListUseCase.execute(GetReplyListUseCase.generateParam(viewListener.getArguments().getString(PARAM_MESSAGE_ID), pagingHandler.getPage()), new Subscriber<ReplyData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(ReplyData model) {
-                viewListener.setViewEnabled(true);
-
-                if (pagingHandler.getPage() == 1) {
-                    viewListener.getAdapter().clearData();
-//                    cacheInteractor.setInboxMessageDetailCache(viewListener.getArguments().getString(PARAM_MESSAGE_ID), result);
-                }
-
-                viewListener.finishLoading();
-                viewListener.setTextAreaReply(model.getTextAreaReply()==1);
-                setResult(model);
-            }
-        });
+//        getReplyListUseCase.execute(GetReplyListUseCase.generateParam(viewListener.getArguments().getString(PARAM_MESSAGE_ID), pagingHandler.getPage()), new Subscriber<ReplyData>() {
+//            @Override
+//            public void onCompleted() {
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//
+//            }
+//
+//            @Override
+//            public void onNext(ReplyData model) {
+//                viewListener.setViewEnabled(true);
+//
+//                if (pagingHandler.getPage() == 1) {
+//                    viewListener.getAdapter().clearData();
+////                    cacheInteractor.setInboxMessageDetailCache(viewListener.getArguments().getString(PARAM_MESSAGE_ID), result);
+//                }
+//
+//                viewListener.finishLoading();
+//                viewListener.setTextAreaReply(model.getTextAreaReply()==1);
+//                setResult(model);
+//            }
+//        });
     }
 
     private void showLoading() {

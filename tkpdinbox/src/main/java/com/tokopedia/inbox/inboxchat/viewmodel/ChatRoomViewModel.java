@@ -1,5 +1,8 @@
 package com.tokopedia.inbox.inboxchat.viewmodel;
 
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
+
 import java.util.List;
 
 /**
@@ -13,7 +16,9 @@ public class ChatRoomViewModel {
     String onlineTime;
     boolean onlineStatus;
     String imageHeader;
-    List<ChatConversationViewModel> chatList;
+    int textAreaReply;
+    List<Visitable> chatList;
+    boolean hasNext;
 
     public String getNameHeader() {
         return nameHeader;
@@ -55,11 +60,27 @@ public class ChatRoomViewModel {
         this.imageHeader = imageHeader;
     }
 
-    public List<ChatConversationViewModel> getChatList() {
+    public List<Visitable> getChatList() {
         return chatList;
     }
 
-    public void setChatList(List<ChatConversationViewModel> chatList) {
+    public void setChatList(List<Visitable> chatList) {
         this.chatList = chatList;
+    }
+
+    public int getTextAreaReply() {
+        return textAreaReply;
+    }
+
+    public void setTextAreaReply(int textAreaReply) {
+        this.textAreaReply = textAreaReply;
+    }
+
+    public boolean isHasNext() {
+        return hasNext;
+    }
+
+    public void setHasNext(boolean hasNext) {
+        this.hasNext = hasNext;
     }
 }

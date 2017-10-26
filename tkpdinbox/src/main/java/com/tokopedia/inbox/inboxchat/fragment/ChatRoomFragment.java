@@ -102,7 +102,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
         replyView = rootView.findViewById(R.id.add_comment_area);
         sendButton = (ImageView) rootView.findViewById(R.id.send_but);
         replyColumn = (EditText) rootView.findViewById(R.id.new_comment);
-        refreshHandler = new RefreshHandler(getActivity(), rootView, onRefresh());
+//        refreshHandler = new RefreshHandler(getActivity(), rootView, onRefresh());
         replyWatcher =  Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
         presenter.attachView(this);
@@ -110,15 +110,15 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
         return rootView;
     }
 
-
-    private RefreshHandler.OnRefreshHandlerListener onRefresh() {
-        return new RefreshHandler.OnRefreshHandlerListener() {
-            @Override
-            public void onRefresh(View view) {
-                presenter.onRefresh();
-            }
-        };
-    }
+//
+//    private RefreshHandler.OnRefreshHandlerListener onRefresh() {
+//        return new RefreshHandler.OnRefreshHandlerListener() {
+//            @Override
+//            public void onRefresh(View view) {
+//                presenter.onRefresh();
+//            }
+//        };
+//    }
 
     private void initListener() {
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -229,7 +229,7 @@ public class ChatRoomFragment extends BaseDaggerFragment implements ChatRoomCont
 
     @Override
     public void finishLoading() {
-        refreshHandler.finishRefresh();
+//        refreshHandler.finishRefresh();
     }
 
     @Override

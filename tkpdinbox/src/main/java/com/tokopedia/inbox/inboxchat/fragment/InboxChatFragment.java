@@ -215,7 +215,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
                 }
             }
         });
-        searchLoading.setVisibility(View.GONE);
+        searchLoading.setVisibility(View.VISIBLE);
         presenter.getMessage();
     }
 
@@ -368,6 +368,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
         refreshHandler.finishRefresh();
         progressDialog.dismiss();
         adapter.removeLoading();
+        searchLoading.setVisibility(View.GONE);
     }
 
     @Override
