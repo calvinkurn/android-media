@@ -20,6 +20,7 @@ public class PosAppSplashScreen extends SplashScreen {
         super.onCreate(savedInstanceState);
         if(getIntent().getBooleanExtra(PosAppRouter.IS_LOGOUT, false)) {
             PosSessionHandler.clearPosUserData(this);
+            PosCacheHandler.clearUserData(this);
         }
     }
 
