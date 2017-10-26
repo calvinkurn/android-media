@@ -2,14 +2,17 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -59,11 +62,6 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
         return new TopAdsDetailProductViewModel();
     }
 
-    @Override
-    protected void loadSuggestionBid() {
-
-    }
-
     public static Fragment createInstance(String adId) {
         Fragment fragment = new TopAdsEditCostWithoutGroupFragment();
         Bundle bundle = new Bundle();
@@ -85,5 +83,16 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
     @Override
     protected void onSuggestionTitleUseClick() {
 
+    }
+
+    @Override
+    protected void loadSuggestionBid() {
+        setSuggestionBidText((GetSuggestionResponse)null);
+        titleSuggestionBidUse.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void setSuggestionBidText(GetSuggestionResponse data) {
+        titleSuggestionBid.setText(getString(R.string.static_suggestion_bid_recommendation));
     }
 }

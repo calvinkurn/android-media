@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
@@ -53,6 +55,8 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     protected TextView titleSuggestionBid;
 
     protected V detailAd;
+    private String suggestionBidText;
+    private String prefixSuggestion;
 
     protected void onClickedNext() {
         showLoading();
@@ -89,9 +93,14 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         titleSuggestionBidUse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                maxPriceEditText.setText(suggestionBidText.replaceFirst(prefixSuggestion, "").trim());
             }
         });
+        prefixSuggestion = getString(R.string.title_currency_rp_space);
+    }
+
+    private String getSuggestionBidRaw(){
+        return suggestionBidText.replaceFirst(prefixSuggestion, "").trim();
     }
 
     @Override
@@ -104,17 +113,24 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
     protected abstract void onSuggestionTitleUseClick();
 
-    protected void setSuggestionBidText(GetSuggestionResponse data){
+    protected void setSuggestionBidText(@Nullable GetSuggestionResponse data){
+        if(data == null)
+            return;
         setSuggestionBidText(data.getData().get(0).getMedianFmt());
     }
 
-    protected void setSuggestionBidText(String data){
+    protected void setSuggestionBidText(@Nullable String data){
+        if(data == null)
+            return;
+
+        this.suggestionBidText = data;
+
         CommonUtils.dumper(TAG+" >> "+ data);
-        titleSuggestionBid.setText(getRecSuggestionBid(data));
+        titleSuggestionBid.setText(MethodChecker.fromHtml(getRecSuggestionBid(data)));
     }
 
     protected String getRecSuggestionBid(String data){
-        return getString(R.string.label_top_ads_max_price_description, data);
+        return getString(R.string.label_top_ads_max_price_description)+" <b>"+data+"</b> ";
     }
 
     @Override
@@ -131,6 +147,13 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
             @Override
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
+
+                if(number >= Double.valueOf(getSuggestionBidRaw())){
+                    titleSuggestionBid.setText(R.string.top_ads_label_price_desc);
+                }else{
+                    setSuggestionBidText(suggestionBidText);
+                }
+
                 String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
                 if (!TextUtils.isEmpty(errorMessage)) {
                     maxPriceInputLayout.setError(errorMessage);

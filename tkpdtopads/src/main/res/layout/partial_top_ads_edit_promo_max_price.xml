@@ -35,7 +35,8 @@
             android:id="@+id/text_suggestion_bid_use"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Terapkan"/>
+            android:textColor="@color/tkpd_main_green"
+            android:text="@string/apply_text_description"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -57,7 +57,7 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
         getSuggestionBody.setDataType("summary");
         getSuggestionBody.setSuggestionType("dep_bid");
         for (TopAdsProductViewModel topAdsProductViewModel : stepperModel.getTopAdsProductViewModels()) {
-            getSuggestionBody.addId(topAdsProductViewModel.getId()+"");
+            getSuggestionBody.addId(topAdsProductViewModel.getDepartmentId()+"");
         }
 
         topAdsDetailNewProductPresenter.getSuggestionBid(getSuggestionBody);
