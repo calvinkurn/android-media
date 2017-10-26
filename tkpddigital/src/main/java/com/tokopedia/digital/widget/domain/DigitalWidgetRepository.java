@@ -4,18 +4,20 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
-import com.tokopedia.digital.widget.data.entity.lastorder.LastOrderEntity;
 import com.tokopedia.digital.widget.data.entity.operator.OperatorEntity;
 import com.tokopedia.digital.widget.data.entity.product.ProductEntity;
-import com.tokopedia.digital.widget.data.entity.recentnumber.RecentNumberEntity;
+import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteList;
+import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteNumber;
+import com.tokopedia.digital.widget.data.entity.response.ResponseMetaFavoriteNumber;
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
+import com.tokopedia.digital.widget.data.mapper.IFavoriteNumberMapper;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -24,6 +26,7 @@ import rx.functions.Func1;
 
 /**
  * Created by nabillasabbaha on 7/28/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public class DigitalWidgetRepository implements IDigitalWidgetRepository {
@@ -33,14 +36,16 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     private final static String KEY_PRODUCT = "RECHARGE_PRODUCT";
     private final static String KEY_OPERATOR = "RECHARGE_OPERATOR";
     private final static String KEY_STATUS_CURRENT = "RECHARGE_STATUS_CURRENT";
-    private final static String KEY_RECENT_NUMBER = "RECHARGE_RECENT_NUMBER";
 
     private static int CACHE_DURATION = 60 * 30;
 
     private final DigitalEndpointService digitalEndpointService;
+    private final IFavoriteNumberMapper favoriteNumberMapper;
 
-    public DigitalWidgetRepository(DigitalEndpointService digitalEndpointService) {
+    public DigitalWidgetRepository(DigitalEndpointService digitalEndpointService,
+                                   IFavoriteNumberMapper favoriteNumberMapper) {
         this.digitalEndpointService = digitalEndpointService;
+        this.favoriteNumberMapper = favoriteNumberMapper;
     }
 
     @Override
@@ -53,7 +58,6 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                     }
                 });
     }
-
 
     private Observable<List<CategoryEntity>> getObservableCategoryDataDB() {
         return Observable.just(new GlobalCacheManager())
@@ -213,12 +217,11 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                 .first(new Func1<StatusEntity, Boolean>() {
                     @Override
                     public Boolean call(StatusEntity status) {
-                        return status != null;
+                        return status != null && status.getAttributes() != null;
                     }
                 })
                 .doOnNext(validateStatus(true));
     }
-
 
     private Observable<StatusEntity> getObservableStatusDB() {
         return Observable.just(true)
@@ -295,81 +298,28 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     @Override
-    public Observable<List<String>> getObservableRecentData(final int categoryId) {
-        return Observable.just(true)
-                .flatMap(new Func1<Boolean, Observable<RecentNumberEntity>>() {
-                    @Override
-                    public Observable<RecentNumberEntity> call(Boolean aBoolean) {
-                        GlobalCacheManager manager = new GlobalCacheManager();
-                        List<RecentNumberEntity> recentNumberEntities = CacheUtil.convertStringToModel(
-                                manager.getValueString(KEY_RECENT_NUMBER),
-                                new TypeToken<List<RecentNumberEntity>>() {
-                                }.getType());
-                        return Observable.from(recentNumberEntities);
-                    }
-                })
-                .filter(new Func1<RecentNumberEntity, Boolean>() {
-                    @Override
-                    public Boolean call(RecentNumberEntity recentNumberEntity) {
-                        return recentNumberEntity.getRelationships().getCategory().equals(String.valueOf(categoryId));
-                    }
-                })
-                .map(new Func1<RecentNumberEntity, String>() {
-                    @Override
-                    public String call(RecentNumberEntity recentNumberEntity) {
-                        return recentNumberEntity.getAttributes().getClientNumber();
-                    }
-                })
-                .toList()
-                .onErrorReturn(new Func1<Throwable, List<String>>() {
-                    @Override
-                    public List<String> call(Throwable throwable) {
-                        return null;
-                    }
-                });
+    public Observable<DigitalNumberList> getObservableNumberList(TKPDMapParam<String, String> param) {
+        return digitalEndpointService.getApi().getNumberList(param)
+                .map(getFuncTransformNumberList());
     }
 
-    @Override
-    public Observable<Boolean> storeObservableRecentDataNetwork(Map<String, String> params) {
-        return digitalEndpointService.getApi().getRecentNumber(MapNulRemover.removeNull(params))
-                .map(new Func1<Response<TkpdDigitalResponse>, List<RecentNumberEntity>>() {
-                    @Override
-                    public List<RecentNumberEntity> call(Response<TkpdDigitalResponse> recentNumberResponse) {
-                        return recentNumberResponse.body().convertDataList(RecentNumberEntity[].class);
-                    }
-                })
-                .doOnNext(new Action1<List<RecentNumberEntity>>() {
-                    @Override
-                    public void call(List<RecentNumberEntity> recentNumberEntities) {
-                        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-                        globalCacheManager.setKey(KEY_RECENT_NUMBER);
-                        globalCacheManager.setValue(CacheUtil.convertModelToString(recentNumberEntities,
-                                new TypeToken<StatusEntity>() {
-                                }.getType()));
-                        globalCacheManager.setCacheDuration(CACHE_DURATION);
-                        globalCacheManager.store();
-                    }
-                })
-                .map(new Func1<List<RecentNumberEntity>, Boolean>() {
-                    @Override
-                    public Boolean call(List<RecentNumberEntity> recentNumberEntities) {
-                        return true;
-                    }
-                });
+    private Func1<Response<TkpdDigitalResponse>, DigitalNumberList> getFuncTransformNumberList() {
+        return new Func1<Response<TkpdDigitalResponse>, DigitalNumberList>() {
+            @Override
+            public DigitalNumberList call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                List<ResponseFavoriteNumber> responseFavoriteNumbers = tkpdDigitalResponseResponse
+                        .body().convertDataList(ResponseFavoriteNumber[].class);
+
+                ResponseMetaFavoriteNumber responseMetaFavoriteNumber =
+                        tkpdDigitalResponseResponse.body().convertMetaObj(ResponseMetaFavoriteNumber.class);
+
+                ResponseFavoriteList responseFavoriteList =  new ResponseFavoriteList(responseMetaFavoriteNumber,
+                        responseFavoriteNumbers);
+
+                return favoriteNumberMapper
+                        .transformDigitalFavoriteNumberItemDataList(responseFavoriteList);
+            }
+        };
     }
 
-    @Override
-    public Observable<LastOrderEntity> getObservableLastOrderNetwork(Map<String, String> params) {
-        return digitalEndpointService.getApi().getLastOrder(MapNulRemover.removeNull(params))
-                .map(new Func1<Response<TkpdDigitalResponse>, LastOrderEntity>() {
-                    @Override
-                    public LastOrderEntity call(Response<TkpdDigitalResponse> recentNumberResponse) {
-                        if (recentNumberResponse.isSuccessful()) {
-                            return recentNumberResponse.body().convertDataObj(LastOrderEntity.class);
-                        } else {
-                            return null;
-                        }
-                    }
-                });
-    }
 }

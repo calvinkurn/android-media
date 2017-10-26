@@ -13,6 +13,7 @@ import android.view.View;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.completetrip.view.viewmodel.TokoCashProduct;
 
 import java.util.ArrayList;
@@ -85,6 +86,7 @@ public class PendingFareChooserActivity extends BaseActivity implements TokoCash
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            RideGATracking.eventBackPress(getScreenName());
             onBackPressed();
             return true;
         } else {

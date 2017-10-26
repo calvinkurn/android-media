@@ -31,7 +31,7 @@ public class DynamicFilterDetailBrandActivity extends AbstractDynamicFilterDetai
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterDetailBrandActivity.class);
             intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
-            intent.putExtra(EXTRA_OPTION_LIST, Parcels.wrap(optionList));
+            intent.putParcelableArrayListExtra(EXTRA_OPTION_LIST, mappingParcelableOption(optionList));
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
             activity.startActivityForResult(intent, REQUEST_CODE);

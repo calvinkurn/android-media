@@ -2,7 +2,6 @@ package com.tokopedia.abstraction.common.network.factory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.abstraction.common.network.converter.StringResponseConverter;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -25,13 +24,6 @@ public class RetrofitFactory {
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-    }
-
-    public static Retrofit.Builder createBasicRetrofit(String baseUrl) {
-        return new Retrofit.Builder()
-                .addConverterFactory(new StringResponseConverter())
-                .baseUrl(baseUrl)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
 }

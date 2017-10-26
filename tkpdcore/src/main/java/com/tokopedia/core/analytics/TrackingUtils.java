@@ -13,6 +13,7 @@ import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.model.Product;
@@ -85,6 +86,32 @@ public class TrackingUtils extends TrackingConfig {
             PushManager.getInstance().refreshToken(MainApplication.getAppContext(),FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
     }
 
+    public static void setMoEUserAttributes(UserAttribute.Data profileData){
+        if(profileData!=null) {
+            CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
+                    .setTotalItemSold(profileData.shopInfoMoengage().stats()!=null ? profileData.shopInfoMoengage().stats().shop_item_sold() : "0")
+                    .setRegDate(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(profileData.profile().register_date(),"T")))
+                    .setDateShopCreated(profileData.shopInfoMoengage().info()!=null ? profileData.shopInfoMoengage().info().date_shop_created(): "")
+                    .setShopLocation(profileData.shopInfoMoengage().info()!=null ? profileData.shopInfoMoengage().info().shop_location() :"")
+                    .setTokocashAmt(profileData.wallet() != null ? profileData.wallet().rawBalance()+"" : "")
+                    .setSaldoAmt(profileData.saldo() != null ? profileData.saldo().deposit()+"" : "")
+                    .setTopAdsAmt(profileData.topadsDeposit() != null ? profileData.topadsDeposit().topads_amount()+"" : "")
+                    .setTopadsUser(profileData.topadsDeposit().is_topads_user() != null ? profileData.topadsDeposit().is_topads_user() : false)
+                    .setHasPurchasedMarketplace(profileData.paymentAdminProfile().is_purchased_marketplace()!= null ? profileData.paymentAdminProfile().is_purchased_marketplace():false)
+                    .setHasPurchasedDigital(profileData.paymentAdminProfile().is_purchased_digital()!= null ? profileData.paymentAdminProfile().is_purchased_digital():false)
+                    .setHasPurchasedTiket(profileData.paymentAdminProfile().is_purchased_ticket()!= null ? profileData.paymentAdminProfile().is_purchased_ticket():false)
+                    .setLastTransactionDate(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(profileData.paymentAdminProfile()!= null ? profileData.paymentAdminProfile().last_purchase_date():"","T")))
+                    .setTotalActiveProduct(profileData.shopInfoMoengage().info()!= null ? profileData.shopInfoMoengage().info().total_active_product()+"":"")
+                    .setShopScore(profileData.shopInfoMoengage().info()!= null ? profileData.shopInfoMoengage().info().shop_score()+"":"")
+                    .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(profileData.profile().bday()!=null?profileData.profile().bday():"","T")))
+                    .build();
+
+            getMoEngine().setUserData(customerWrapper);
+        }
+        if(!TextUtils.isEmpty(FCMCacheManager.getRegistrationId(MainApplication.getAppContext())))
+            PushManager.getInstance().refreshToken(MainApplication.getAppContext(),FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
+    }
+
     public static void setMoEUserAttributes(Bundle bundle, String label){
         AccountsParameter accountsParameter = bundle.getParcelable(AppEventTracking.ACCOUNTS_KEY);
 
@@ -109,7 +136,6 @@ public class TrackingUtils extends TrackingConfig {
                     .setShopId(String.valueOf(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopId():""))
                     .setSeller(!TextUtils.isEmpty(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopName():""))
                     .setFirstName(getFirstName(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getFullName():""))
-                    .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(accountsParameter.getInfoModel()!=null?accountsParameter.getInfoModel().getBday():"","T")))
                     .setMethod(label)
                     .build();
 
@@ -523,7 +549,7 @@ public class TrackingUtils extends TrackingConfig {
         getAFEngine().sendTrackEvent(AFInAppEventType.CONTENT_VIEW, listViewEvent);
     }
 
-    static void sendGTMEvent(Map<String, Object> dataLayers){
+    public static void sendGTMEvent(Map<String, Object> dataLayers){
         getGTMEngine().sendEvent(dataLayers);
     }
 

@@ -6,14 +6,12 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author kulomady on 12/22/16.
  */
-public class Option implements Serializable, Parcelable {
+public class Option implements Parcelable {
 
     public static final String KEY_PRICE_MIN = "pmin";
     public static final String KEY_PRICE_MAX = "pmax";
@@ -222,29 +220,6 @@ public class Option implements Serializable, Parcelable {
 
     public Option() {}
 
-    protected Option(Parcel in) {
-        name = in.readString();
-        key = in.readString();
-        value = in.readString();
-        inputType = in.readString();
-        hexColor = in.readString();
-        metric = in.readString();
-        totalData = in.readString();
-        keyMin = in.readString();
-        keyMax = in.readString();
-        valMin = in.readString();
-        valMax = in.readString();
-        iconUrl = in.readString();
-        inputState = in.readString();
-        isPopular = in.readByte() == 0x01;
-        if (in.readByte() == 0x01) {
-            levelTwoCategoryList = new ArrayList<>();
-            in.readList(levelTwoCategoryList, LevelTwoCategory.class.getClassLoader());
-        } else {
-            levelTwoCategoryList = null;
-        }
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -252,37 +227,45 @@ public class Option implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(key);
-        dest.writeString(value);
-        dest.writeString(inputType);
-        dest.writeString(hexColor);
-        dest.writeString(metric);
-        dest.writeString(totalData);
-        dest.writeString(keyMin);
-        dest.writeString(keyMax);
-        dest.writeString(valMin);
-        dest.writeString(valMax);
-        dest.writeString(iconUrl);
-        dest.writeString(inputState);
-        if (isPopular) {
-            dest.writeByte((byte) (0x01));
-        } else {
-            dest.writeByte((byte) (0x00));
-        }
-        if (levelTwoCategoryList == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(levelTwoCategoryList);
-        }
+        dest.writeString(this.name);
+        dest.writeString(this.key);
+        dest.writeString(this.value);
+        dest.writeString(this.inputType);
+        dest.writeString(this.hexColor);
+        dest.writeString(this.metric);
+        dest.writeString(this.totalData);
+        dest.writeString(this.keyMin);
+        dest.writeString(this.keyMax);
+        dest.writeString(this.valMin);
+        dest.writeString(this.valMax);
+        dest.writeString(this.iconUrl);
+        dest.writeByte(this.isPopular ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(this.levelTwoCategoryList);
+        dest.writeString(this.inputState);
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Option> CREATOR = new Parcelable.Creator<Option>() {
+    protected Option(Parcel in) {
+        this.name = in.readString();
+        this.key = in.readString();
+        this.value = in.readString();
+        this.inputType = in.readString();
+        this.hexColor = in.readString();
+        this.metric = in.readString();
+        this.totalData = in.readString();
+        this.keyMin = in.readString();
+        this.keyMax = in.readString();
+        this.valMin = in.readString();
+        this.valMax = in.readString();
+        this.iconUrl = in.readString();
+        this.isPopular = in.readByte() != 0;
+        this.levelTwoCategoryList = in.createTypedArrayList(LevelTwoCategory.CREATOR);
+        this.inputState = in.readString();
+    }
+
+    public static final Creator<Option> CREATOR = new Creator<Option>() {
         @Override
-        public Option createFromParcel(Parcel in) {
-            return new Option(in);
+        public Option createFromParcel(Parcel source) {
+            return new Option(source);
         }
 
         @Override

@@ -32,6 +32,7 @@ import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
@@ -377,8 +378,8 @@ public abstract class MainApplication extends BaseMainApplication{
 
     private void initBranch() {
         Branch.getAutoInstance(this);
-        //Set userId to Branch.io sdk, userId, 127 chars or less
-        if(SessionHandler.isV4Login(this))
-            Branch.getInstance().setIdentity(SessionHandler.getLoginID(this));
+        if (SessionHandler.isV4Login(this)) {
+            BranchSdkUtils.sendLoginEvent(SessionHandler.getLoginID(this));
+        }
     }
 }

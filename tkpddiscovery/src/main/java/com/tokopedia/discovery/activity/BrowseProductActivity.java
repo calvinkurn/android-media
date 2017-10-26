@@ -473,7 +473,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public void openCategoryNavigation(
-                           String departmentId) {
+            String departmentId) {
         CategoryNavigationActivity.moveTo(BrowseProductActivity.this, departmentId);
 
     }

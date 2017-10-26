@@ -45,8 +45,6 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.Arrays;
 
-import io.branch.referral.Branch;
-
 public class SessionHandler {
     private static final String SAVE_REAL = "SAVE_REAL";
     private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
@@ -507,9 +505,8 @@ public class SessionHandler {
         TrackingUtils.eventPushUserID();
         Crashlytics.setUserIdentifier(u_id);
 
-        //Set userId to Branch.io sdk, userId, 127 chars or less
-        if (Branch.getInstance() != null)
-            Branch.getInstance().setIdentity(u_id);
+        BranchSdkUtils.sendLoginEvent(u_id);
+
         //return status;
     }
 
@@ -523,8 +520,7 @@ public class SessionHandler {
         }
 
         //Set logout to Branch.io sdk,
-        if (Branch.getInstance() != null)
-            Branch.getInstance().logout();
+        BranchSdkUtils.sendLogoutEvent();
     }
 
     private void clearUserData() {
