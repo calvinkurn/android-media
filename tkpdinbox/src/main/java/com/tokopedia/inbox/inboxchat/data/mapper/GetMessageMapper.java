@@ -39,6 +39,7 @@ public class GetMessageMapper implements Func1<Response<TkpdResponse>, InboxChat
                 viewModel.setTime(item.getAttributes().getLastReplyTime());
                 viewModel.setReadStatus(item.getAttributes().getReadStatus());
                 viewModel.setUnreadCounter(item.getAttributes().getUnreads());
+                viewModel.setRole(item.getAttributes().getContact().getRole());
                 list.add(viewModel);
             }
             inboxChatViewModel.setList(list);

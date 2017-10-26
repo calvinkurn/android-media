@@ -82,7 +82,7 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:padding="@dimen/padding_small"
-                android:src="@drawable/ic_attach_product" />
+                android:src="@drawable/ic_attach" />
 
 
             <EditText

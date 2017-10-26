@@ -4,6 +4,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxchat.fragment.DummyFragment;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
+import com.tokopedia.inbox.inboxchat.fragment.SendChatFragment;
 
 import dagger.Component;
 
@@ -19,4 +20,7 @@ public interface InboxChatComponent {
     void inject (ChatRoomFragment fragment);
 
     void inject (DummyFragment fragment);
+
+    void inject (SendChatFragment fragment);
+
 }

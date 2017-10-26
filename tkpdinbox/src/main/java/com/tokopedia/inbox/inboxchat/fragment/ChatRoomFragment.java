@@ -39,6 +39,7 @@ import com.tokopedia.inbox.inboxchat.util.Events;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
+import com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity;
 
 import org.json.JSONException;
 
@@ -58,7 +59,6 @@ import rx.functions.Func1;
 public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, WebSocketInterface {
 
-    private static final String ARGS_MESSAGE_ID = "message_id";
     @Inject
     ChatRoomPresenter presenter;
 
@@ -78,6 +78,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private LinearLayoutManager layoutManager;
     private ImageView sendButton;
     private EditText replyColumn;
+    private ImageView attachButton;
     RefreshHandler refreshHandler;
     private View mainHeader;
     private Toolbar toolbar;
@@ -104,6 +105,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyView = rootView.findViewById(R.id.add_comment_area);
         sendButton = (ImageView) rootView.findViewById(R.id.send_but);
         replyColumn = (EditText) rootView.findViewById(R.id.new_comment);
+        attachButton = (ImageView) rootView.findViewById(R.id.add_url);
         refreshHandler = new RefreshHandler(getActivity(), rootView, onRefresh());
         replyWatcher = Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
@@ -142,7 +144,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void call(Boolean aBoolean) {
                 Log.i("call: ", "isTyping");
                 try {
-                    presenter.setIsTyping(getArguments().getString(ARGS_MESSAGE_ID));
+                    presenter.setIsTyping(getArguments().getString(InboxMessageDetailActivity
+                            .PARAM_MESSAGE_ID));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -155,12 +158,30 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     public void call(Boolean aBoolean) {
                         Log.i("call: ", "stopTyping");
                         try {
-                            presenter.stopTyping(getArguments().getString(ARGS_MESSAGE_ID));
+                            presenter.stopTyping(getArguments().getString(InboxMessageDetailActivity
+                                    .PARAM_MESSAGE_ID));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 });
+
+        attachButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.getAttachProductDialog(
+                        getArguments().getString(InboxMessageDetailActivity
+                                .PARAM_SENDER_ID, ""),
+                        getArguments().getString(InboxMessageDetailActivity.PARAM_SENDER_ROLE, "")
+                );
+            }
+        });
+    }
+
+    @Override
+    public void addUrlToReply(String url) {
+        replyColumn.setText(replyColumn.getText() + "\n" + url);
+        replyColumn.setSelection(replyColumn.length());
     }
 
     private void initVar() {

@@ -183,7 +183,8 @@ public class PeopleInfoFragment extends BasePresenterFragment<PeopleInfoFragment
                     .getAskUserIntent(getActivity(),
                             userInfo.getUserId(),
                             userInfo.getUserName(),
-                            TkpdInboxRouter.PROFILE);
+                            TkpdInboxRouter.PROFILE,
+                            userInfo.getUserImage());
             startActivity(intent);
         }
     }

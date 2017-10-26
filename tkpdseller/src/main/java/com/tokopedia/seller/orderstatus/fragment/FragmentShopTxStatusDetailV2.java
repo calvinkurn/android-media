@@ -317,7 +317,8 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
                                                     .replace("XXX",
                                                             presenter.getOrderData().getOrderDetail()
                                                                     .getDetailPdfUri())).toString(),
-                                    TkpdInboxRouter.TX_ASK_BUYER);
+                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    presenter.getOrderData().getOrderCustomer().getCustomerImage());
                     startActivity(intent);
                 }
             }

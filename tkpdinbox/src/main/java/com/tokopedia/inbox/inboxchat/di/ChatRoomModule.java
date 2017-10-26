@@ -3,19 +3,23 @@ package com.tokopedia.inbox.inboxchat.di;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
+import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.ReplyFactory;
 import com.tokopedia.inbox.inboxchat.data.mapper.DeleteMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetReplyMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.ReplyMessageMapper;
+import com.tokopedia.inbox.inboxchat.data.mapper.SendMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepositoryImpl;
+import com.tokopedia.inbox.inboxchat.data.repository.SendMessageSource;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -32,7 +36,7 @@ public class ChatRoomModule {
     MessageFactory provideMessageFactory(
             ChatService chatService,
             GetMessageMapper getMessageMapper,
-            DeleteMessageMapper deleteMessageMapper){
+            DeleteMessageMapper deleteMessageMapper) {
         return new MessageFactory(chatService, getMessageMapper, deleteMessageMapper);
     }
 
@@ -41,43 +45,44 @@ public class ChatRoomModule {
     ReplyFactory provideReplyFactory(
             ChatService chatService,
             GetReplyMapper getReplyMapper,
-            ReplyMessageMapper replyMessageMapper){
+            ReplyMessageMapper replyMessageMapper) {
         return new ReplyFactory(chatService, getReplyMapper, replyMessageMapper);
     }
 
     @InboxChatScope
     @Provides
-    GetReplyMapper provideGetReplyMapper(){
+    GetReplyMapper provideGetReplyMapper() {
         return new GetReplyMapper();
     }
 
     @InboxChatScope
     @Provides
-    GetMessageMapper provideGetMessageMapper(){
+    GetMessageMapper provideGetMessageMapper() {
         return new GetMessageMapper();
     }
 
     @InboxChatScope
     @Provides
-    ReplyMessageMapper provideReplyMessageMapper(){
+    ReplyMessageMapper provideReplyMessageMapper() {
         return new ReplyMessageMapper();
     }
 
     @InboxChatScope
     @Provides
-    DeleteMessageMapper provideDeleteMessageMapper(){
+    DeleteMessageMapper provideDeleteMessageMapper() {
         return new DeleteMessageMapper();
     }
 
     @InboxChatScope
     @Provides
-    MessageRepository provideMessageRepository(MessageFactory messageFactory){
-        return new MessageRepositoryImpl(messageFactory);
+    MessageRepository provideMessageRepository(MessageFactory messageFactory,
+                                               SendMessageSource sendMessageSource) {
+        return new MessageRepositoryImpl(messageFactory, sendMessageSource);
     }
 
     @InboxChatScope
     @Provides
-    ReplyRepository provideReplyRepository(ReplyFactory replyFactory){
+    ReplyRepository provideReplyRepository(ReplyFactory replyFactory) {
         return new ReplyRepositoryImpl(replyFactory);
     }
 
@@ -85,7 +90,7 @@ public class ChatRoomModule {
     @Provides
     GetMessageListUseCase provideGetMessageListUseCase(ThreadExecutor threadExecutor,
                                                        PostExecutionThread postExecutor,
-                                                       MessageRepository messageRepository){
+                                                       MessageRepository messageRepository) {
         return new GetMessageListUseCase(threadExecutor, postExecutor, messageRepository);
     }
 
@@ -93,8 +98,8 @@ public class ChatRoomModule {
     @InboxChatScope
     @Provides
     GetReplyListUseCase provideGetReplyListUseCase(ThreadExecutor threadExecutor,
-                                 PostExecutionThread postExecutor,
-                                 ReplyRepository replyRepository){
+                                                   PostExecutionThread postExecutor,
+                                                   ReplyRepository replyRepository) {
         return new GetReplyListUseCase(threadExecutor, postExecutor, replyRepository);
     }
 
@@ -103,13 +108,33 @@ public class ChatRoomModule {
     @Provides
     ReplyMessageUseCase provideReplyMessageUseCase(ThreadExecutor threadExecutor,
                                                    PostExecutionThread postExecutor,
-                                                   ReplyRepository replyRepository){
+                                                   ReplyRepository replyRepository) {
         return new ReplyMessageUseCase(threadExecutor, postExecutor, replyRepository);
     }
 
     @InboxChatScope
     @Provides
-    ChatService provideChatService(){
+    ChatService provideChatService() {
         return new ChatService();
+    }
+
+    @InboxChatScope
+    @Provides
+    KunyitService provideKunyitService() {
+        return new KunyitService();
+    }
+
+    @InboxChatScope
+    @Provides
+    SendMessageMapper provideSendMessageMapper() {
+        return new SendMessageMapper();
+    }
+
+
+    @InboxChatScope
+    @Provides
+    SendMessageSource provideSendMessageSource(KunyitService kunyitService,
+                                               SendMessageMapper sendMessageMapper) {
+        return new SendMessageSource(kunyitService, sendMessageMapper);
     }
 }

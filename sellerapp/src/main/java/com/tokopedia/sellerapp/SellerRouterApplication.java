@@ -50,7 +50,7 @@ import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.common.logout.GMLogout;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
-import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
+import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -81,7 +81,6 @@ import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
-import com.tokopedia.topads.dashboard.domain.interactor.DashboardTopadsInteractorImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 
@@ -512,33 +511,22 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
-                                    String customSubject, String customMessage, String source) {
+                                    String customSubject, String customMessage, String source,
+                                    String avatar) {
         return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
-                customSubject, customMessage, source);
+                customSubject, customMessage, source, avatar);
     }
 
     @Override
-    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
-                                     String customSubject, String customMessage, String source) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
-                customSubject, customMessage, source);
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String
+            source, String avatar) {
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
     }
 
     @Override
-    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String source) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source);
-    }
-
-    @Override
-    public Intent getAskUserIntent(Context context, String userId, String userName, String source) {
-        return SendMessageActivity.getAskUserIntent(context, userId, userName, source);
-    }
-
-    @Override
-    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
-                                     String customSubject, String source) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
-                customSubject, source);
+    public Intent getAskUserIntent(Context context, String userId, String userName, String
+            source, String avatar) {
+        return SendMessageActivity.getAskUserIntent(context, userId, userName, source, avatar);
     }
 
     @Override

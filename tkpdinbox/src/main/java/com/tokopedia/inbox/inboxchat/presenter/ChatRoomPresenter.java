@@ -1,18 +1,17 @@
 package com.tokopedia.inbox.inboxchat.presenter;
 
-import com.google.gson.JsonObject;
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
-import com.tokopedia.inbox.inboxchat.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.domain.model.GetReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
@@ -20,6 +19,7 @@ import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -36,9 +36,12 @@ import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_MESSAG
 
 public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View> implements ChatRoomContract.Presenter {
 
+    private static final String ROLE_SHOP = "shop";
+
     private final GetMessageListUseCase getMessageListUseCase;
     private final GetReplyListUseCase getReplyListUseCase;
     private final ReplyMessageUseCase replyMessageUseCase;
+    private final SessionHandler sessionHandler;
     public PagingHandler pagingHandler;
     boolean isRequesting;
     private OkHttpClient client;
@@ -50,10 +53,12 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Inject
     ChatRoomPresenter(GetMessageListUseCase getMessageListUseCase,
                       GetReplyListUseCase getReplyListUseCase,
-                      ReplyMessageUseCase replyMessageUseCase) {
+                      ReplyMessageUseCase replyMessageUseCase,
+                      SessionHandler sessionHandler) {
         this.getMessageListUseCase = getMessageListUseCase;
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -196,5 +201,25 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         json.put("data", data);
         ws.send(json.toString());
         flagTyping = false;
+    }
+
+    @Override
+    public void getAttachProductDialog(String shopId, String senderRole) {
+        String id = "0";
+
+        if (senderRole.equals(ROLE_SHOP) && !TextUtils.isEmpty(shopId))
+            id = String.valueOf(shopId);
+        else if (!TextUtils.isEmpty(sessionHandler.getShopID())
+                && !sessionHandler.getShopID().equals("0")) {
+            id = sessionHandler.getShopID();
+        }
+
+        GetProductUrlUtil getProd = GetProductUrlUtil.createInstance(getView().getContext(), id);
+        getProd.getOwnShopProductUrl(new GetProductUrlUtil.OnGetUrlInterface() {
+            @Override
+            public void onGetUrl(String url) {
+                getView().addUrlToReply(url);
+            }
+        });
     }
 }

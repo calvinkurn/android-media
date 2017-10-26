@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.domain.model.message.MessageData;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 
 import rx.Observable;
 
@@ -14,10 +15,13 @@ import rx.Observable;
 
 public class MessageRepositoryImpl implements MessageRepository{
 
+    private final SendMessageSource sendMessageSource;
     private MessageFactory messageFactory;
 
-    public MessageRepositoryImpl(MessageFactory messageFactory){
+    public MessageRepositoryImpl(MessageFactory messageFactory,
+                                 SendMessageSource sendMessageSource){
         this.messageFactory = messageFactory;
+        this.sendMessageSource = sendMessageSource;
     }
 
     @Override
@@ -28,5 +32,10 @@ public class MessageRepositoryImpl implements MessageRepository{
     @Override
     public Observable<InboxChatViewModel> deleteMessage(TKPDMapParam<String, Object> parameters) {
         return messageFactory.createCloudMessageDataSource().deleteMessage(parameters);
+    }
+
+    @Override
+    public Observable<SendMessageViewModel> sendMessage(TKPDMapParam<String, Object> requestParams) {
+        return sendMessageSource.sendMessage(requestParams);
     }
 }

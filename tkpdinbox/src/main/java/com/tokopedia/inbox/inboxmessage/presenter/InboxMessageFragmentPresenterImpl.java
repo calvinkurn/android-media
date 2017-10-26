@@ -64,8 +64,8 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
 
         chatService = new ChatService();
         messageFactory = new MessageFactory(chatService, new GetMessageMapper(), new DeleteMessageMapper());
-        messageRepo = new MessageRepositoryImpl(messageFactory);
-        getMessageListUseCase = new GetMessageListUseCase(new JobExecutor(), new UIThread(), messageRepo);
+//        messageRepo = new MessageRepositoryImpl(messageFactory);
+//        getMessageListUseCase = new GetMessageListUseCase(new JobExecutor(), new UIThread(), messageRepo);
 
         this.viewListener = viewListener;
         this.networkInteractor = new InboxMessageRetrofitInteractorImpl();
@@ -444,8 +444,10 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
                 String.valueOf(message.getMsgId()),
                 position,
                 message.getAttributes().getContact().getAttributes().getName(),
-                message.getAttributes().getContact().getAttributes().getTag()
-        );
+                message.getAttributes().getContact().getAttributes().getTag(),
+                String.valueOf(message.getAttributes().getContact().getId()),
+                message.getAttributes().getContact().getRole(),
+                InboxChatViewModel.GET_CHAT_MODE);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         viewListener.startActivityForResult(intent, OPEN_DETAIL_MESSAGE);
         viewListener.getActivity().overridePendingTransition(0, 0);
@@ -460,6 +462,7 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
 
     @Override
     public void generateSearchParam() {
+
         pagingHandler.resetPage();
         inboxMessagePass.setPage(String.valueOf(pagingHandler.getPage()));
         inboxMessagePass.setFilter(viewListener.getFilter());

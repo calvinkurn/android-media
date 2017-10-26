@@ -6,6 +6,7 @@ import android.content.Context;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
+import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.ReplyFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.SearchFactory;
@@ -14,16 +15,19 @@ import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetReplyMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.ReplyMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.SearchChatMapper;
+import com.tokopedia.inbox.inboxchat.data.mapper.SendMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.SearchRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.SearchRepositoryImpl;
+import com.tokopedia.inbox.inboxchat.data.repository.SendMessageSource;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -94,8 +98,9 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    MessageRepository provideMessageRepository(MessageFactory messageFactory){
-        return new MessageRepositoryImpl(messageFactory);
+    MessageRepository provideMessageRepository(MessageFactory messageFactory,
+                                               SendMessageSource sendMessageSource){
+        return new MessageRepositoryImpl(messageFactory, sendMessageSource);
     }
 
     @InboxChatScope
@@ -148,5 +153,37 @@ public class InboxChatModule {
     @Provides
     ChatService provideChatService(){
         return new ChatService();
+    }
+
+    @InboxChatScope
+    @Provides
+    KunyitService provideKunyitService() {
+        return new KunyitService();
+    }
+
+    @InboxChatScope
+    @Provides
+    SendMessageMapper provideSendMessageMapper() {
+        return new SendMessageMapper();
+    }
+
+
+    @InboxChatScope
+    @Provides
+    SendMessageSource provideSendMessageSource(KunyitService kunyitService,
+                                               SendMessageMapper sendMessageMapper) {
+        return new SendMessageSource(kunyitService, sendMessageMapper);
+    }
+
+    @InboxChatScope
+    @Provides
+    SendMessageUseCase provideSendMessageUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutor,
+                                                 MessageRepository messageRepository) {
+        return new SendMessageUseCase(
+                threadExecutor,
+                postExecutor,
+                messageRepository
+        );
     }
 }

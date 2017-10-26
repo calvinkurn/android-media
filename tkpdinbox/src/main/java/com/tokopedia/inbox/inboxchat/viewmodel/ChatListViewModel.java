@@ -25,6 +25,7 @@ public class ChatListViewModel {
     Spanned span;
     int spanMode;
     int sectionSize;
+    private String role;
 
     public ChatListViewModel() {
         spanMode = NO_SPAN;
@@ -134,5 +135,13 @@ public class ChatListViewModel {
 
     public void setSectionSize(int sectionSize) {
         this.sectionSize = sectionSize;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

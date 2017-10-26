@@ -33,6 +33,9 @@ import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageDetailFragment;
 import com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageIntentService;
 import com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageResultReceiver;
 
+import static com.tokopedia.core.inboxreputation.InboxReputationConstant.PARAM_POSITION;
+import static com.tokopedia.core.otp.domain.interactor.RequestOtpUseCase.PARAM_MODE;
+
 /**
  * Created by Nisie on 5/19/16.
  */
@@ -42,6 +45,8 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
 
 
     private static final String TAG = "INBOX_MESSAGE_DETAIL_FRAGMENT";
+    public static final String PARAM_SENDER_ROLE = "PARAM_SENDER_ROLE";
+
     InboxMessageResultReceiver mReceiver;
 
     @Override
@@ -246,7 +251,8 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
     }
 
     public static Intent getCallingIntent(Context context, String nav, String messageId,
-                                          int position, String senderName, String senderTag) {
+                                          int position, String senderName, String senderTag,
+                                          String senderId, String role, int mode) {
         Intent intent = new Intent(context, InboxMessageDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_NAV, nav);
@@ -255,6 +261,9 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
         bundle.putInt(PARAM_POSITION, position);
         bundle.putString(PARAM_SENDER_NAME, senderName);
         bundle.putString(PARAM_SENDER_TAG, senderTag);
+        bundle.putString(PARAM_SENDER_ID, senderId);
+        bundle.putString(PARAM_SENDER_ROLE, role);
+        bundle.putInt(PARAM_MODE, mode);
         intent.putExtras(bundle);
         return intent;
     }

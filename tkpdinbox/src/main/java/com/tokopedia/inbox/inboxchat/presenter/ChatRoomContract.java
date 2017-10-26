@@ -62,8 +62,11 @@ public class ChatRoomContract {
         void onGoToTimeMachine(String url);
 
         void addTimeMachine();
+
+        void addUrlToReply(String url);
     }
 
     interface Presenter extends CustomerPresenter<View>{
+        void getAttachProductDialog(String shopId, String senderRole);
     }
 }
