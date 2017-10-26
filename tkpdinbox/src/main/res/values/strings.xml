@@ -138,4 +138,12 @@
     <string name="string_title_next_step">Langkah Selanjutnya</string>
     <string name="string_detail_problem">Masalah</string>
     <string name="string_buyer_solution">Solusi dari Pembeli</string>
+
+    <!--chat bubble-->
+    <string name="string_buyer_solution2">Solusi dari Pembeli:</string>
+    <string name="string_buyer_prove">Bukti:</string>
+    <string name="string_buyer_text">Keterangan:</string>
+    <string name="string_complaint_product">Produk yang Dikomplain:</string>
+    <string name="string_see_all_product">Lihat Semua Produk</string>
+    <string name="string_seller_choice">Penjual dapat memilih untuk:</string>
 </resources>

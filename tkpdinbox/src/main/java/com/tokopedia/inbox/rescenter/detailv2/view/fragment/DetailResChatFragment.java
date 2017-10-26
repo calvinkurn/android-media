@@ -24,6 +24,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatFragmentPresenter;
 import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFactoryImpl;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
@@ -226,6 +227,12 @@ public class DetailResChatFragment
 
     private void initChatData(DetailResChatDomain detailResChatDomain) {
         for (ConversationDomain conversationDomain : detailResChatDomain.getConversation()) {
+            if (conversationDomain.getAction().getType().equals("create")) {
+                chatAdapter.addItem(new ChatCreateLeftViewModel
+                        (detailResChatDomain.getShop(),
+                                detailResChatDomain.getLast(),
+                                conversationDomain));
+            }
             if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
                 chatAdapter.addItem(new ChatRightViewModel(
                         conversationDomain.getAction(),

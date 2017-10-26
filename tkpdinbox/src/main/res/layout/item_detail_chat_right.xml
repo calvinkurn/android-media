@@ -12,7 +12,6 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:layout_marginTop="@dimen/margin_small"
             android:id="@+id/cv_bubble_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:context="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_marginRight="80dp"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/item_detail_chat_title"
+            android:id="@+id/layout_title"/>
+
+        <FrameLayout
+            android:layout_marginTop="@dimen/margin_vs"
+            android:id="@+id/ff_bubble_left_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="120dp"
+            android:minHeight="25dp"
+            android:background="@drawable/bg_bubble_left"
+            android:padding="@dimen/padding_small">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_create_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/fontvs"
+                    context:text="title"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/fontvs"
+                    android:text="@string/string_buyer_solution2"/>
+
+                <TextView
+                    android:id="@+id/tv_buyer_solution"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:layout_marginTop="@dimen/margin_vs"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/fontvs"
+                    android:text="@string/string_buyer_prove"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_prove"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="100dp"
+                    android:visibility="visible"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/fontvs"
+                    android:text="@string/string_buyer_text"/>
+
+                <TextView
+                    android:id="@+id/tv_buyer_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:layout_marginTop="@dimen/margin_vs"/>
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <include layout="@layout/item_detail_chat_date"
+            android:id="@+id/layout_date_1"/>
+
+
+        <LinearLayout
+            android:layout_marginTop="@dimen/margin_vs"
+            android:id="@+id/ff_bubble_left_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="120dp"
+            android:minHeight="25dp"
+            android:background="@drawable/bg_bubble_left"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_small"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:textSize="@dimen/fontvs"
+                    android:text="@string/string_complaint_product"
+                    android:textStyle="bold"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_complained_product"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:visibility="visible"/>
+
+            </LinearLayout>
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_bubble_button">
+
+                <Button
+                    android:id="@+id/btn_see_all_product"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/transparent"
+                    android:text="@string/string_see_all_product"
+                    android:textSize="@dimen/fontvs"
+                    android:textAllCaps="false"
+                    android:textColor="@color/tkpd_main_green"/>
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <include layout="@layout/item_detail_chat_date"
+            android:id="@+id/layout_date_2"/>
+
+        <FrameLayout
+            android:layout_marginTop="@dimen/margin_vs"
+            android:id="@+id/ff_bubble_left_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="120dp"
+            android:minHeight="25dp"
+            android:background="@drawable/bg_bubble_left"
+            android:padding="@dimen/padding_small">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:textStyle="bold"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:textSize="@dimen/fontvs"
+                    android:text="@string/string_seller_choice"/>
+
+                <TextView
+                    android:id="@+id/tv_seller_choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_54"
+                    android:layout_marginTop="@dimen/margin_vs"/>
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <include layout="@layout/item_detail_chat_date"
+            android:id="@+id/layout_date_3"/>
+    </LinearLayout>
+
+
+</RelativeLayout>
