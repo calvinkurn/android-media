@@ -6,7 +6,10 @@ import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFac
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationActionDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationFlagDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.CustomerDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ShopDomain;
 
 import java.util.List;
 
@@ -16,65 +19,41 @@ import java.util.List;
 
 public class ChatLeftViewModel implements Visitable<DetailChatTypeFactory> {
 
-    protected ConversationActionDomain action;
-    protected String message;
-    protected ConversationCreateTimeDomain createTime;
-    protected List<ConversationAttachmentDomain> attachment;
-    protected ConversationFlagDomain flag;
+    private ShopDomain shop;
+    private CustomerDomain customer;
+    private ConversationDomain conversation;
 
     public ChatLeftViewModel() {
     }
 
-    public ChatLeftViewModel(ConversationActionDomain action,
-                              String message,
-                              ConversationCreateTimeDomain createTime,
-                              List<ConversationAttachmentDomain> attachment,
-                              ConversationFlagDomain flag) {
-        this.action = action;
-        this.message = message;
-        this.createTime = createTime;
-        this.attachment = attachment;
-        this.flag = flag;
+    public ChatLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation) {
+        this.shop = shop;
+        this.customer = customer;
+        this.conversation = conversation;
     }
 
-    public ConversationActionDomain getAction() {
-        return action;
+    public ShopDomain getShop() {
+        return shop;
     }
 
-    public void setAction(ConversationActionDomain action) {
-        this.action = action;
+    public void setShop(ShopDomain shop) {
+        this.shop = shop;
     }
 
-    public String getMessage() {
-        return message;
+    public CustomerDomain getCustomer() {
+        return customer;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setCustomer(CustomerDomain customer) {
+        this.customer = customer;
     }
 
-    public ConversationCreateTimeDomain getCreateTime() {
-        return createTime;
+    public ConversationDomain getConversation() {
+        return conversation;
     }
 
-    public void setCreateTime(ConversationCreateTimeDomain createTime) {
-        this.createTime = createTime;
-    }
-
-    public List<ConversationAttachmentDomain> getAttachment() {
-        return attachment;
-    }
-
-    public void setAttachment(List<ConversationAttachmentDomain> attachment) {
-        this.attachment = attachment;
-    }
-
-    public ConversationFlagDomain getFlag() {
-        return flag;
-    }
-
-    public void setFlag(ConversationFlagDomain flag) {
-        this.flag = flag;
+    public void setConversation(ConversationDomain conversation) {
+        this.conversation = conversation;
     }
 
     @Override

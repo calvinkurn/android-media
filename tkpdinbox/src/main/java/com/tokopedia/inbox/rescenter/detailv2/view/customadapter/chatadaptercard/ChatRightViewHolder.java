@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
@@ -21,6 +22,7 @@ public class ChatRightViewHolder extends AbstractViewHolder<ChatRightViewModel> 
     public static final int LAYOUT = R.layout.item_detail_chat_right;
 
     DetailResChatFragmentListener.View mainView;
+    View layoutDate;
     TextView tvMessage, tvDate;
     RecyclerView rvAttachment;
 
@@ -28,18 +30,21 @@ public class ChatRightViewHolder extends AbstractViewHolder<ChatRightViewModel> 
         super(itemView);
         this.mainView = mainView;
         tvMessage = (TextView) itemView.findViewById(R.id.tv_message);
-        tvDate = (TextView) itemView.findViewById(R.id.tv_date);
         rvAttachment = (RecyclerView) itemView.findViewById(R.id.rv_attachment);
+        layoutDate = itemView.findViewById(R.id.layout_date);
+        tvDate = (TextView) layoutDate.findViewById(R.id.tv_date);
     }
 
     @Override
     public void bind(ChatRightViewModel element) {
-        if (element.getMessage() != null) {
-            tvMessage.setText(MethodChecker.fromHtml(element.getMessage()));
+        if (element.getConversation().getMessage() != null) {
+            tvMessage.setText(MethodChecker.fromHtml(element.getConversation().getMessage()));
         }
-        if (element.getAttachment() == null || element.getAttachment().size() == 0) {
+        if (element.getConversation().getAttachment() == null || element.getConversation().getAttachment().size() == 0) {
             rvAttachment.setVisibility(View.GONE);
         }
+        String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
+        tvDate.setText(date);
     }
 
 }

@@ -28,7 +28,7 @@ public class ConversationResponse {
     @SerializedName("createTime")
     private ConversationCreateTimeResponse createTime;
 
-    @SerializedName("attachment")
+    @SerializedName("attachments")
     private List<ConversationAttachmentResponse> attachment;
 
     @SerializedName("trouble")
@@ -37,7 +37,7 @@ public class ConversationResponse {
     @SerializedName("solution")
     private ConversationSolutionResponse solution;
 
-    @SerializedName("product")
+    @SerializedName("products")
     private List<ConversationProductResponse> product;
 
     @SerializedName("button")

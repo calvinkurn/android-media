@@ -2,6 +2,8 @@ package com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercar
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +13,9 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.createreso.view.adapter.AttachmentAdapter;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProductAdapter;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProveAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
 
@@ -25,11 +30,15 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
     @LayoutRes
     public static final int LAYOUT = R.layout.item_detail_create_left;
 
+    public static final int COUNT_MAX_PRODUCT = 5;
+
     DetailResChatFragmentListener.View mainView;
     View layoutTitle, layoutDate1, layoutDate2, layoutDate3;
     TextView tvTitle, tvBuyerSolution, tvBuyerText, tvSellerChoice, tvUserTitle, tvUsername, tvDate1, tvDate2, tvDate3;
     RecyclerView rvProve, rvProduct;
     Button btnSeeAllProduct;
+    ChatProveAdapter proveAdapter;
+    ChatProductAdapter productAdapter;
 
     public ChatCreateLeftViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
         super(itemView);
@@ -65,12 +74,17 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
 
         tvUserTitle.setText("Sistem Tokopedia");
         tvUsername.setText("Toped");
-        String date = DateFormatUtils.formatDate(
-                DateFormatUtils.FORMAT_T_Z,
-                DateFormatUtils.FORMAT_DD_MMM_YYYY_HH_MM,
-                element.getConversationDomain().getCreateTime().getTimestamp());
+        String date = DateFormatUtils.formatDateForResoChatV2(element.getConversationDomain().getCreateTime().getTimestamp());
         tvDate1.setText(date);
         tvDate2.setText(date);
         tvDate3.setText(date);
+
+        rvProve.setLayoutManager(new LinearLayoutManager(context));
+        proveAdapter = new ChatProveAdapter(context, element.getConversationDomain().getAttachment());
+        rvProve.setAdapter(proveAdapter);
+
+        rvProduct.setLayoutManager(new GridLayoutManager(context, COUNT_MAX_PRODUCT));
+        productAdapter = new ChatProductAdapter(context, element.getConversationDomain().getProduct(), COUNT_MAX_PRODUCT);
+        rvProduct.setAdapter(productAdapter);
     }
 }

@@ -45,6 +45,8 @@ public class DetailResChatFragment
 
     public static final int NEXT_STATUS_CURRENT = 1;
 
+    public static final String ACTION_CREATE = "create";
+
     private TextView tvNextStep;
     private RecyclerView rvChat;
     private ProgressBar progressBar;
@@ -227,25 +229,21 @@ public class DetailResChatFragment
 
     private void initChatData(DetailResChatDomain detailResChatDomain) {
         for (ConversationDomain conversationDomain : detailResChatDomain.getConversation()) {
-            if (conversationDomain.getAction().getType().equals("create")) {
+            if (conversationDomain.getAction().getType().equals(ACTION_CREATE)) {
                 chatAdapter.addItem(new ChatCreateLeftViewModel
                         (detailResChatDomain.getShop(),
                                 detailResChatDomain.getLast(),
                                 conversationDomain));
             } else if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
                 chatAdapter.addItem(new ChatRightViewModel(
-                        conversationDomain.getAction(),
-                        conversationDomain.getMessage(),
-                        conversationDomain.getCreateTime(),
-                        conversationDomain.getAttachment(),
-                        conversationDomain.getFlag()));
+                        detailResChatDomain.getShop(),
+                        detailResChatDomain.getCustomer(),
+                        conversationDomain));
             } else {
                 chatAdapter.addItem(new ChatLeftViewModel(
-                        conversationDomain.getAction(),
-                        conversationDomain.getMessage(),
-                        conversationDomain.getCreateTime(),
-                        conversationDomain.getAttachment(),
-                        conversationDomain.getFlag()));
+                        detailResChatDomain.getShop(),
+                        detailResChatDomain.getCustomer(),
+                        conversationDomain));
             }
         }
         chatAdapter.notifyDataSetChanged();

@@ -3,36 +3,30 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * Created by yoasfs on 10/10/17.
  */
 
 public class ConversationProductDomain implements Parcelable {
 
-    private ConversationAttachmentDomain image;
+    private List<ConversationAttachmentDomain> image;
     private String message;
     private int resId;
 
-    public ConversationProductDomain(ConversationAttachmentDomain image, String message, int resId) {
+    public ConversationProductDomain(List<ConversationAttachmentDomain> image, String message, int resId) {
         this.image = image;
         this.message = message;
         this.resId = resId;
     }
 
-    public ConversationAttachmentDomain getImage() {
+    public List<ConversationAttachmentDomain> getImage() {
         return image;
     }
 
-    public void setImage(ConversationAttachmentDomain image) {
+    public void setImage(List<ConversationAttachmentDomain> image) {
         this.image = image;
-    }
-
-    public int getResId() {
-        return resId;
-    }
-
-    public void setResId(int resId) {
-        this.resId = resId;
     }
 
     public String getMessage() {
@@ -43,6 +37,14 @@ public class ConversationProductDomain implements Parcelable {
         this.message = message;
     }
 
+    public int getResId() {
+        return resId;
+    }
+
+    public void setResId(int resId) {
+        this.resId = resId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -50,18 +52,18 @@ public class ConversationProductDomain implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.image, flags);
+        dest.writeTypedList(this.image);
         dest.writeString(this.message);
         dest.writeInt(this.resId);
     }
 
     protected ConversationProductDomain(Parcel in) {
-        this.image = in.readParcelable(ConversationAttachmentDomain.class.getClassLoader());
+        this.image = in.createTypedArrayList(ConversationAttachmentDomain.CREATOR);
         this.message = in.readString();
         this.resId = in.readInt();
     }
 
-    public static final Parcelable.Creator<ConversationProductDomain> CREATOR = new Parcelable.Creator<ConversationProductDomain>() {
+    public static final Creator<ConversationProductDomain> CREATOR = new Creator<ConversationProductDomain>() {
         @Override
         public ConversationProductDomain createFromParcel(Parcel source) {
             return new ConversationProductDomain(source);

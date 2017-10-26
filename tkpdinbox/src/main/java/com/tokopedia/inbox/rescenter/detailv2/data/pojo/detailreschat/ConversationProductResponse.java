@@ -2,6 +2,8 @@ package com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by yoasfs on 10/10/17.
  */
@@ -9,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 public class ConversationProductResponse {
 
     @SerializedName("image")
-    private ConversationAttachmentResponse image;
+    private List<ConversationAttachmentResponse> image;
 
     @SerializedName("resId")
     private int resId;
@@ -17,11 +19,11 @@ public class ConversationProductResponse {
     @SerializedName("message")
     private String message;
 
-    public ConversationAttachmentResponse getImage() {
+    public List<ConversationAttachmentResponse> getImage() {
         return image;
     }
 
-    public void setImage(ConversationAttachmentResponse image) {
+    public void setImage(List<ConversationAttachmentResponse> image) {
         this.image = image;
     }
 
