@@ -12,11 +12,14 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:id="@+id/cv_bubble_left"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:id="@+id/cv_bubble_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="120dp"
+            android:minWidth="20dp"
             android:minHeight="25dp"
+            android:layout_gravity="right"
+            android:foregroundGravity="right"
             android:background="@drawable/bg_bubble_right"
             android:padding="@dimen/padding_small">
 
@@ -41,7 +44,10 @@
         </FrameLayout>
 
         <include layout="@layout/item_detail_chat_date_right"
-            android:id="@+id/layout_date"/>
+            android:id="@+id/layout_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
 
     </LinearLayout>
 

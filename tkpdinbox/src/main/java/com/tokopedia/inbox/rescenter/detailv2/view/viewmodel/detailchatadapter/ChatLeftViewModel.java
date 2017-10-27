@@ -22,14 +22,16 @@ public class ChatLeftViewModel implements Visitable<DetailChatTypeFactory> {
     private ShopDomain shop;
     private CustomerDomain customer;
     private ConversationDomain conversation;
+    private boolean isShowTitle;
 
     public ChatLeftViewModel() {
     }
 
-    public ChatLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation) {
+    public ChatLeftViewModel(ShopDomain shop, CustomerDomain customer, ConversationDomain conversation, boolean isShowTitle) {
         this.shop = shop;
         this.customer = customer;
         this.conversation = conversation;
+        this.isShowTitle = isShowTitle;
     }
 
     public ShopDomain getShop() {
@@ -54,6 +56,14 @@ public class ChatLeftViewModel implements Visitable<DetailChatTypeFactory> {
 
     public void setConversation(ConversationDomain conversation) {
         this.conversation = conversation;
+    }
+
+    public boolean isShowTitle() {
+        return isShowTitle;
+    }
+
+    public void setShowTitle(boolean showTitle) {
+        isShowTitle = showTitle;
     }
 
     @Override

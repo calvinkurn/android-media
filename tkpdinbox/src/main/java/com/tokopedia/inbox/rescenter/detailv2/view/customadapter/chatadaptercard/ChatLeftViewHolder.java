@@ -54,6 +54,8 @@ public class ChatLeftViewHolder extends AbstractViewHolder<ChatLeftViewModel> {
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
         tvDate.setText(date);
 
+        layoutTitle.setVisibility(element.isShowTitle() ? View.VISIBLE : View.GONE);
+
         if (element.getConversation().getAction().getBy() == ACTION_BY_SELLER) {
             tvUserTitle.setText("Penjual");
             tvUsername.setText(element.getShop().getName());

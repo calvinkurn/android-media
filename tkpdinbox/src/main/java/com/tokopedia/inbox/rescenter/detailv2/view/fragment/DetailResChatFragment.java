@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
@@ -27,11 +28,16 @@ import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFac
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.inject.Inject;
 
@@ -147,10 +153,7 @@ public class DetailResChatFragment
         presenter.initView(resolutionId);
         chatAdapter = new ChatAdapter(new DetailChatTypeFactoryImpl(this));
         rvChat.setAdapter(chatAdapter);
-        rvChat.setLayoutManager(new LinearLayoutManager(
-                getActivity(),
-                LinearLayoutManager.VERTICAL,
-                false));
+        rvChat.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     @Override
@@ -168,10 +171,36 @@ public class DetailResChatFragment
         ivSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ConversationDomain conversationDomain = getTempConversationDomain(etChat.getText().toString());
+                chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
+                chatAdapter.notifyDataSetChanged();
+                rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
                 presenter.sendIconPressed(etChat.getText().toString());
             }
         });
 
+    }
+
+    public ConversationDomain getTempConversationDomain(String message) {
+        return  new ConversationDomain(
+                0,
+                null,
+                message,
+                null,
+                null,
+                getConversationCreateTime(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    public ConversationCreateTimeDomain getConversationCreateTime() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat(DateFormatUtils.FORMAT_T_Z);
+        return new ConversationCreateTimeDomain(format.format(calendar.getTime()), "");
     }
 
     @Override
@@ -228,23 +257,35 @@ public class DetailResChatFragment
     }
 
     private void initChatData(DetailResChatDomain detailResChatDomain) {
+        int lastAction = 0;
         for (ConversationDomain conversationDomain : detailResChatDomain.getConversation()) {
             if (conversationDomain.getAction().getType().equals(ACTION_CREATE)) {
                 chatAdapter.addItem(new ChatCreateLeftViewModel
                         (detailResChatDomain.getShop(),
                                 detailResChatDomain.getLast(),
                                 conversationDomain));
-            } else if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
-                chatAdapter.addItem(new ChatRightViewModel(
-                        detailResChatDomain.getShop(),
-                        detailResChatDomain.getCustomer(),
-                        conversationDomain));
             } else {
-                chatAdapter.addItem(new ChatLeftViewModel(
-                        detailResChatDomain.getShop(),
-                        detailResChatDomain.getCustomer(),
-                        conversationDomain));
+                boolean isShowTitle;
+                if (lastAction == conversationDomain.getAction().getBy()) {
+                    isShowTitle = false;
+                } else {
+                    lastAction = conversationDomain.getAction().getBy();
+                    isShowTitle = true;
+                }
+                if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
+                    chatAdapter.addItem(new ChatRightViewModel(
+                            detailResChatDomain.getShop(),
+                            detailResChatDomain.getCustomer(),
+                            conversationDomain));
+                } else {
+                    chatAdapter.addItem(new ChatLeftViewModel(
+                            detailResChatDomain.getShop(),
+                            detailResChatDomain.getCustomer(),
+                            conversationDomain,
+                            isShowTitle));
+                }
             }
+
         }
         chatAdapter.notifyDataSetChanged();
     }
@@ -257,6 +298,7 @@ public class DetailResChatFragment
     @Override
     public void errorReplyDiscussion(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
+        chatAdapter.deleteLastItem();
     }
 
     @Override
