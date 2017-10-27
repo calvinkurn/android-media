@@ -2,6 +2,7 @@ package com.tokopedia.digital.tokocash.network.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
+import com.tokopedia.digital.tokocash.entity.OAuthInfoEntity;
 import com.tokopedia.digital.tokocash.entity.ParamsActionHistoryEntity;
 import com.tokopedia.digital.tokocash.network.request.RequestHelpHistory;
 
@@ -30,4 +31,10 @@ public interface HistoryTokoCashApi {
     @POST
     Observable<Response<TkpdDigitalResponse>> withdrawSaldoFromTokocash(@Url String url,
                                                                         @Body ParamsActionHistoryEntity paramsActionHistoryEntity);
+
+    @GET(TkpdBaseURL.Wallet.GET_OAUTH_INFO)
+    Observable<OAuthInfoEntity> getOAuthInfo();
+
+    @GET(TkpdBaseURL.Wallet.GET_LINKED_ACCOUNT_LIST)
+    Observable<Response<TkpdDigitalResponse>> getLinkedAccountList();
 }

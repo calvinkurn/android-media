@@ -2,7 +2,9 @@ package com.tokopedia.digital.tokocash.domain;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
+import com.tokopedia.digital.tokocash.entity.AccountTokoCashListEntity;
 import com.tokopedia.digital.tokocash.entity.HelpHistoryTokoCashEntity;
+import com.tokopedia.digital.tokocash.entity.OAuthInfoEntity;
 import com.tokopedia.digital.tokocash.entity.ParamsActionHistoryEntity;
 import com.tokopedia.digital.tokocash.entity.ResponseHelpHistoryEntity;
 import com.tokopedia.digital.tokocash.entity.TokoCashHistoryEntity;
@@ -90,5 +92,28 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
                         return Observable.just(tkpdDigitalResponseResponse.body().convertDataObj(WithdrawSaldoEntity.class));
                     }
                 });
+    }
+
+    @Override
+    public Observable<OAuthInfoEntity> getOAuthInfo() {
+        return historyTokoCashService.getApi().getOAuthInfo();
+    }
+
+    @Override
+    public Observable<AccountTokoCashListEntity> getLinkedAccountList() {
+//        return historyTokoCashService.getApi().getLinkedAccountList()
+//                .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<List<AccountTokoCashEntity>>>() {
+//                    @Override
+//                    public Observable<List<AccountTokoCashEntity>> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+//                        return Observable.just(tkpdDigitalResponseResponse.body().convertDataList(AccountTokoCashEntity[].class));
+//                    }
+//                });
+        String accountTokoCashDummy = DeviceUtil.loadJSONFromAsset("account_list_dummy_tokocash.json");
+        return Observable.just(gson.fromJson(accountTokoCashDummy, AccountTokoCashListEntity.class));
+    }
+
+    @Override
+    public Observable<Boolean> unlinkAccountTokoCash(String userId) {
+        return null;
     }
 }

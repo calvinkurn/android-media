@@ -1,6 +1,9 @@
 package com.tokopedia.digital.tokocash.domain;
 
+import com.tokopedia.digital.tokocash.entity.AccountTokoCashEntity;
+import com.tokopedia.digital.tokocash.entity.AccountTokoCashListEntity;
 import com.tokopedia.digital.tokocash.entity.HelpHistoryTokoCashEntity;
+import com.tokopedia.digital.tokocash.entity.OAuthInfoEntity;
 import com.tokopedia.digital.tokocash.entity.ResponseHelpHistoryEntity;
 import com.tokopedia.digital.tokocash.entity.TokoCashHistoryEntity;
 import com.tokopedia.digital.tokocash.entity.WithdrawSaldoEntity;
@@ -24,4 +27,10 @@ public interface IHistoryTokoCashRepository {
     Observable<ResponseHelpHistoryEntity> submitHelpHistory(String subject, String message, String category, String transactionId);
 
     Observable<WithdrawSaldoEntity> moveToSaldo(String url, ParamsActionHistory paramsActionHistory);
+
+    Observable<OAuthInfoEntity> getOAuthInfo();
+
+    Observable<AccountTokoCashListEntity> getLinkedAccountList();
+
+    Observable<Boolean> unlinkAccountTokoCash(String userId);
 }

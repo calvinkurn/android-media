@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 xmlns:tools="http://schemas.android.com/tools"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="wrap_content">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -21,7 +21,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:descendantFocusability="beforeDescendants"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
 
                 <LinearLayout
                     android:id="@+id/header_container"
@@ -37,82 +40,116 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingBottom="@dimen/digital_padding_14"
-                        tools:text="Anda dapat mengelola TokoCash dengan akun Tokopedia melalui halaman ini."/>
+                        android:text="Anda dapat mengelola TokoCash dengan akun Tokopedia melalui halaman ini." />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:text="Nama"
+                        android:textColor="@color/digital_voucher_notes"
+                        android:textSize="@dimen/fontvs" />
 
-                    <com.tokopedia.design.text.TkpdTextInputLayout
-                        android:id="@+id/til_et_name"
-                        style="@style/TextInputLayout"
+                    <TextView
+                        android:id="@+id/name_account"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="@dimen/digital_padding_16"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
-                        app:success_focus_color="@color/font_black_secondary_54"
-                        app:success_leave_color="@color/font_black_secondary_54">
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_marginTop="@dimen/margin_vs"
+                        android:textColor="@color/digital_voucher"
+                        android:textSize="@dimen/fonts" />
 
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/et_name"
-                            style="@style/TextSubTitleMedium"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingBottom="@dimen/digital_padding_14"
-                            tools:hint="Nama"
-                            tools:text="Angga Keren"/>
-                    </com.tokopedia.design.text.TkpdTextInputLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="@dimen/margin_sm"
+                        android:background="@color/separator_tokocash" />
 
-                    <com.tokopedia.design.text.TkpdTextInputLayout
-                        android:id="@+id/til_et_email"
-                        style="@style/TextInputLayout"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:text="Email"
+                        android:textColor="@color/digital_voucher_notes"
+                        android:textSize="@dimen/fontvs" />
+
+                    <TextView
+                        android:id="@+id/email_account"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="@dimen/digital_padding_16"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
-                        app:success_focus_color="@color/font_black_secondary_54"
-                        app:success_leave_color="@color/font_black_secondary_54">
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_marginTop="@dimen/margin_vs"
+                        android:textColor="@color/digital_voucher"
+                        android:textSize="@dimen/fonts" />
 
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/et_email"
-                            style="@style/TextSubTitleMedium"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingBottom="@dimen/digital_padding_14"
-                            tools:hint="Email"
-                            tools:text="angga.keren@toped.com"/>
-                    </com.tokopedia.design.text.TkpdTextInputLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="@dimen/margin_sm"
+                        android:background="@color/separator_tokocash" />
 
-                    <com.tokopedia.design.text.TkpdTextInputLayout
-                        android:id="@+id/til_et_phone"
-                        style="@style/TextInputLayout"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:text="Nomor Handphone"
+                        android:textColor="@color/digital_voucher_notes"
+                        android:textSize="@dimen/fontvs" />
+
+                    <TextView
+                        android:id="@+id/phone_account"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="@dimen/digital_padding_16"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
-                        app:success_focus_color="@color/font_black_secondary_54"
-                        app:success_leave_color="@color/font_black_secondary_54">
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_marginTop="@dimen/margin_vs"
+                        android:textColor="@color/digital_voucher"
+                        android:textSize="@dimen/fonts" />
 
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/et_phone"
-                            style="@style/TextSubTitleMedium"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingBottom="@dimen/digital_padding_14"
-                            tools:hint="Nomor Handphone"
-                            tools:text="08666666666666"/>
-                    </com.tokopedia.design.text.TkpdTextInputLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="@dimen/margin_sm"
+                        android:background="@color/separator_tokocash" />
 
 
                 </LinearLayout>
 
                 <android.support.v4.widget.Space
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/digital_padding_30"/>
+                    android:layout_height="@dimen/digital_padding_10" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_account_list"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/digital_padding_10"
+                        android:paddingLeft="@dimen/digital_padding_20"
+                        android:paddingRight="@dimen/digital_padding_20"
+                        android:paddingTop="@dimen/digital_padding_10"
+                        android:text="Akun yang Terhubung ke TokoCash"
+                        android:textColor="@color/digital_item_title"
+                        android:textSize="@dimen/font_medium" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/separator_tokocash" />
+
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_account_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
             </LinearLayout>
+
         </android.support.v4.widget.NestedScrollView>
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
+
 </android.support.design.widget.CoordinatorLayout>

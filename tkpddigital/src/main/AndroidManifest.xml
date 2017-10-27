@@ -58,7 +58,7 @@
             android:name=".tokocash.activity.WalletToDepositThanksActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".wallets.accountsetting.WalletAccountSettingActivity"
+            android:name=".tokocash.activity.WalletAccountSettingActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".tokocash.activity.HelpHistoryDetailActivity"
             android:screenOrientation="portrait" />

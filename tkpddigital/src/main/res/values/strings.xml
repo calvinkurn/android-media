@@ -90,6 +90,7 @@
     <string name="tokocash_toolbar_success_activation">Aktivasi TokoCash Berhasil</string>
 
     <string name="title_menu_history_tokocash">Riwayat Transaksi</string>
+    <string name="title_menu_account_setting_tokocash">Pengaturan Akun</string>
     <string name="title_menu_help_tokocash">Bantuan</string>
     <string name="range_date_today">Hari ini</string>
     <string name="range_date_seven_days_ago">7 Hari Terakhir</string>
@@ -150,5 +151,7 @@
     <string name="tokocash_failed_title_move_saldo">Dana Gagal Dipindahkan</string>
     <string name="tokocash_failed_subtitle_move_saldo">Pemindahan Dana ke Saldo Tokopedia Gagal</string>
     <string name="tokocash_try_again">Coba Lagi</string>
-
+    <string name="tokocash_linked_account_date">Terhubung sejak: %s</string>
+    <string name="tokocash_unlink_account_button">Hapus Akses</string>
+    <string name="tokocash_title_account_setting">Pengaturan Akun</string>
 </resources>

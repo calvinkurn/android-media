@@ -36,11 +36,12 @@
 
             <TextView
                 android:id="@+id/tv_registered_date"
-                style="@style/TextSubTitleMedium"
+                style="@style/TextSubTitleSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/digital_padding_6"
-                tools:text="Terhubung sejak dahulu kala disaat negara api menyerang"/>
+                android:textColor="@color/digital_voucher_notes"
+                tools:text="Terhubung sejak dahulu kala"/>
 
         </LinearLayout>
     </LinearLayout>
@@ -51,10 +52,10 @@
         android:layout_height="wrap_content"
         android:background="@drawable/digital_white_button"
         android:padding="@dimen/digital_padding_10"
-        android:textColor="@color/digital_item_sub_title"
-        android:textSize="12sp"
+        android:textColor="@color/digital_voucher"
+        android:textSize="@dimen/fontvs"
         android:visibility="visible"
-        tools:text="Hapus Akses"
+        android:text="@string/tokocash_unlink_account_button"
         tools:visibility="visible"/>
 
     <android.support.v4.widget.Space
