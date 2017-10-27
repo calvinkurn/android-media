@@ -8,7 +8,7 @@ def getTkpdAbstraction() {
 
 def getTkpdUseCase() {
     return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.abstraction : project(':tkpdusecase');
+            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
 }
 
 android {

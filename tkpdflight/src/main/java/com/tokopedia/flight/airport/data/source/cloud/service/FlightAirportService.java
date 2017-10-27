@@ -1,9 +1,11 @@
 package com.tokopedia.flight.airport.data.source.cloud.service;
 
+import com.tokopedia.abstraction.common.network.TkpdOkHttpBuilder;
 import com.tokopedia.abstraction.common.network.services.BaseService;
 import com.tokopedia.flight.airport.data.source.cloud.api.FlightAirportApi;
 import com.tokopedia.flight.common.constant.FlightUrl;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 public class FlightAirportService extends BaseService<FlightAirportApi> {

@@ -35,6 +35,12 @@ public class SelectPassengerView extends BaseCustomView {
     private int minValue;
     private String title;
     private String subtitle;
+    private OnPassengerCountChangeListener onPassengerCountChangeListener;
+
+
+    public interface OnPassengerCountChangeListener {
+        boolean onChange(int number);
+    }
 
     public SelectPassengerView(@NonNull Context context) {
         super(context);
@@ -78,6 +84,8 @@ public class SelectPassengerView extends BaseCustomView {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        numberPickerWithCounterView.setOnPickerActionListener(getOnPickerActionListener());
+
         numberPickerWithCounterView.setMaxValue(maxValue);
         numberPickerWithCounterView.setMinValue(minValue);
         numberPickerWithCounterView.setNumber(selectedNumber);
@@ -95,7 +103,38 @@ public class SelectPassengerView extends BaseCustomView {
         }
     }
 
+    @NonNull
+    private NumberPickerWithCounterView.OnPickerActionListener getOnPickerActionListener() {
+        return new NumberPickerWithCounterView.OnPickerActionListener() {
+            @Override
+            public void onNumberChange(int num) {
+                if (onPassengerCountChangeListener != null)
+                    onPassengerCountChangeListener.onChange(num);
+            }
+        };
+    }
+
     public int getValue() {
         return numberPickerWithCounterView.getValue();
     }
+
+    public void setValue(int numberOfPassenger) {
+        numberPickerWithCounterView.setNumber(numberOfPassenger);
+    }
+
+    public void setOnPassengerCountChangeListener(OnPassengerCountChangeListener listener) {
+        this.onPassengerCountChangeListener = listener;
+        numberPickerWithCounterView.setOnPickerActionListener(getOnPickerActionListener());
+    }
+
+
+    public void setMinimalPassenger(int number) {
+        numberPickerWithCounterView.setMinValue(number);
+    }
+
+
+    public void setMaximalPassenger(int number) {
+        numberPickerWithCounterView.setMaxValue(number);
+    }
+
 }

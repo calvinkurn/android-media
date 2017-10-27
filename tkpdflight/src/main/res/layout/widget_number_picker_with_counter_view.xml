@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="top"
@@ -16,13 +16,15 @@
         android:src="@drawable/bg_button_counter_minus" />
 
 
-    <com.tokopedia.design.text.DecimalInputView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/decimal_input_view"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_vs"
         android:layout_weight="1"
-        app:decimal_input_hint="12"
-        app:decimal_max_length="@integer/product_max_counter_int_length" />
+        android:gravity="center"
+        android:textSize="@dimen/font_headline"
+        tools:text="12" />
 
     <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/image_button_plus"
