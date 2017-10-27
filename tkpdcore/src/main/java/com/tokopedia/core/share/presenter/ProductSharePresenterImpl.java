@@ -8,10 +8,9 @@ import com.tkpd.library.utils.ConnectionDetector;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.share.fragment.ProductShareFragment;
+import com.tokopedia.core.share.listener.ShareView;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
@@ -24,13 +23,15 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     private static final String TAG = ProductSharePresenterImpl.class.getSimpleName();
 
     private final Activity activity;
-    private final ProductShareFragment fragment;
+   // private final ProductShareFragment fragment;
     private static final String FACEBOOK = "well";
     LocalCacheHandler facebookCache;
+    private ShareView view;
 
-    public ProductSharePresenterImpl(BasePresenterFragment baseFragment) {
-        this.activity = baseFragment.getActivity();
-        this.fragment = (ProductShareFragment) baseFragment;
+    public ProductSharePresenterImpl(ShareView view) {
+        this.activity = view.getActivity();
+       // this.fragment = (ProductShareFragment) baseFragment;
+        this.view=view;
         facebookCache = new LocalCacheHandler(activity, FACEBOOK);
     }
 
@@ -68,7 +69,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             BranchSdkUtils.generateBranchLink(data, activity, new BranchSdkUtils.GenerateShareContents() {
                 @Override
                 public void onCreateShareContents(String shareContents, String shareUri) {
-                    fragment.showDialogShareFb(shareUri);
+                    view.showDialogShareFb(shareUri);
                 }
             });
 

@@ -46,8 +46,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.IS_ADD
  * Created by Angga.Prasetiyo on 11/12/2015.
  * Modified by Alvarisi on 17/12/2016
  */
-public class ProductShareFragment extends BasePresenterFragment<ProductSharePresenter> implements ShareView {
-    public static final String TAG = "ProductShareFragment";
+public class ProductBottomShareFragment extends BasePresenterFragment<ProductSharePresenter>  implements ShareView{
+    public static final String TAG = "ProductBottomShareFragment";
     private static final String ARGS_SHARE_DATA = "ARGS_SHARE_DATA";
 
 
@@ -101,8 +101,8 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
 
-    public static ProductShareFragment newInstance(@NonNull ShareData shareData, boolean isAddingProduct) {
-        ProductShareFragment fragment = new ProductShareFragment();
+    public static ProductBottomShareFragment newInstance(@NonNull ShareData shareData, boolean isAddingProduct) {
+        ProductBottomShareFragment fragment = new ProductBottomShareFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARGS_SHARE_DATA, shareData);
         args.putBoolean(IS_ADDING_PRODUCT, isAddingProduct);
@@ -115,8 +115,8 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
      *
      * @return
      */
-    public static ProductShareFragment newInstance(boolean isAddingProduct) {
-        ProductShareFragment fragment = new ProductShareFragment();
+    public static ProductBottomShareFragment newInstance(boolean isAddingProduct) {
+        ProductBottomShareFragment fragment = new ProductBottomShareFragment();
         Bundle args = new Bundle();
         args.putBoolean(IS_ADDING_PRODUCT, isAddingProduct);
         fragment.setArguments(args);
@@ -173,7 +173,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_card_share_prod;
+        return R.layout.fragment_card_bottom_share_prod;
     }
 
     @Override
@@ -229,20 +229,20 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         progressBar.setVisibility(View.GONE);
         errorImage.setVisibility(View.VISIBLE);
         loadingAddProduct.setText(messageError +
-                "\n" + getString(R.string.error_failed_add_product));
+                "\n" +getString(R.string.error_failed_add_product));
         loadingAddProduct.setVisibility(View.VISIBLE);
         setIconShareVisibility(View.GONE);
         setVisibilityTitle(View.GONE);
     }
 
     private void setIconShareVisibility(int visibility) {
-        bbmShare.setVisibility(visibility);
+        bbmShare.setVisibility(View.GONE);
         whatsappShare.setVisibility(visibility);
         lineShare.setVisibility(visibility);
-        instagramShare.setVisibility(visibility);
+        instagramShare.setVisibility(View.GONE);
         facebookShare.setVisibility(visibility);
         twitterShare.setVisibility(visibility);
-        pinterestShare.setVisibility(visibility);
+        pinterestShare.setVisibility(View.GONE);
         gplusShare.setVisibility(visibility);
         copyUrl.setVisibility(visibility);
         moreShare.setVisibility(visibility);
@@ -300,7 +300,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
             public void onReceive(Context context, Intent intent) {
                 Bundle bundle = intent.getExtras();
                 int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
-                switch (status) {
+                switch (status){
                     case TkpdState.ProductService.STATUS_DONE:
                         setData(bundle);
                         addingProduct(false);

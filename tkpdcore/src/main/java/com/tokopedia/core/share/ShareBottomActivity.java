@@ -15,10 +15,10 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.share.fragment.ProductBottomShareFragment;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
-import com.tokopedia.core.share.listener.ShareView;
 
-public class ShareBottomActivity extends BaseActivity implements ShareView {
+public class ShareBottomActivity extends BaseActivity {
     private ShareData data;
 
     public static Intent createIntent(Context context, ShareData shareData) {
@@ -45,7 +45,7 @@ public class ShareBottomActivity extends BaseActivity implements ShareView {
         }
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, ProductShareFragment.newInstance(data, true, true),
+        fragmentTransaction.replace(R.id.container, ProductBottomShareFragment.newInstance(data, false),
                 ProductShareFragment.class.getSimpleName());
         fragmentTransaction.commit();
 

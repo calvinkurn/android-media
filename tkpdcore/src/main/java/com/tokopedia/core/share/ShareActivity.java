@@ -12,9 +12,8 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
-import com.tokopedia.core.share.listener.ShareView;
 
-public class ShareActivity extends TActivity implements ShareView {
+public class ShareActivity extends TActivity {
     private ShareData data;
     public static Intent createIntent(Context context, ShareData shareData) {
         Intent intent = new Intent(context, ShareActivity.class);
