@@ -409,7 +409,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
                 holder.AcceptButton.setVisibility(View.GONE);
             holder.Deadline.setText(payment.getPaymentProcessDueDate());
         }else{
-            holder.Deadline.setVisibility(View.GONE);
+            holder.Deadline.setText(orderDetail.getDetailPayDueDate());
         }
 
         if (permission.equals("0")) {
