@@ -2,7 +2,6 @@ package com.tokopedia.flight.airport.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
@@ -12,7 +11,6 @@ import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
 import com.tokopedia.flight.airport.di.FlightAirportModule;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapter;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenter;
-import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenterImpl;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerView;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
@@ -63,7 +61,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
 
     @Override
     protected void searchForPage(int page) {
-
+        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText());
     }
 
     @Override
