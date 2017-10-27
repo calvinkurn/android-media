@@ -44,7 +44,7 @@ class PaymentInvoice extends Component {
 
   _renderProductList = ({item}) => {
     return (
-      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%' }}>
+      <View style={{ marginLeft: 20, marginRight: 20, flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%', backgroundColor: 'white' }}>
         <View style={{ width: "12%", height: '20%' }}>
           <Image source={{ uri: item.imageUrl }} style={styles.productImage} ></Image>
         </View>
@@ -78,15 +78,18 @@ class PaymentInvoice extends Component {
               <Text style={styles.text3}>{data.invoiceRef}</Text>
             </View>
 
-            <FlatList 
-              data={data.items}
-              keyExtractor={item => item.id}
-              renderItem={this._renderProductList}
-              numColumns={1} />
-
-              <View style={{paddingRight: '2%', paddingLeft: '3%', backgroundColor: '#FFFFFF'}}>
-                  <Dash style={{width:"100%", height:2}} dashColor="#F0F0F0"/>
-              </View>
+            <View style={{ backgroundColor: 'white' }}>
+              <FlatList 
+                data={data.items}
+                keyExtractor={item => item.id}
+                renderItem={this._renderProductList}
+                numColumns={1} 
+                style={{ backgroundColor: 'white' }} />
+            </View>
+            
+            <View style={{paddingRight: '2%', paddingLeft: '3%', backgroundColor: '#FFFFFF'}}>
+              <Dash style={{width:"100%", height:2}} dashColor="#F0F0F0"/>
+            </View>
 
             <View style={[styles.row, styles.row4]} >
               <View style={{ flexDirection: 'column' }}>
@@ -99,7 +102,7 @@ class PaymentInvoice extends Component {
               </View>
               <View style={{ flexDirection: 'row' }}>
                 <Text style={{ fontSize: 16, color: '#0000008a' }}>Total Pembayaran</Text>
-                <Text style={{ fontSize: 16, color: '#000000b3' }}> Rp {paymentDetails[0].amount}</Text>
+                <Text style={{ fontSize: 16, color: '#000000b3' }}> Rp {(paymentDetails[0].amount).toLocaleString("id")}</Text>
               </View>
             </View>
                 <View style={[styles.row, styles.row3]} >
