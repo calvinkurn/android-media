@@ -5,6 +5,8 @@ import { selectPaymentOptions, makePayment } from '../../../actions/index'
 import { ccFormat, getCardType } from '../../../lib/utility'
 import { NavigationModule } from 'NativeModules'
 import { Text } from '../../../common/TKPText'
+import { icons } from '../../../lib/config'
+
 
 
 class payment extends Component {
@@ -31,13 +33,18 @@ class payment extends Component {
   }
 
 
-  componentWillMount(){
-    console.log(this.props)
-    console.log(this.props.navigation.state.params)
-  }
-
-
   _handleButtonPress = () => {
+    const { 
+      selectedBankData, 
+      selectBank, 
+      selectIdBank, 
+      selectedEmiId,
+      checkout_data,
+      ccNum,
+      mon,
+      year,
+      cvv,
+    } = this.props
 
     const errorMessage = {
       ccNum: '',
@@ -45,77 +52,76 @@ class payment extends Component {
       date: ''
     };
 
-    if (!this.props.ccNum ||
-      !this.props.ccNum.trim() ||
-      this.props.ccNum.length < 19 ||
-      getCardType(this.props.ccNum) === "") {
+    // Validation 1
+    if (!ccNum || !ccNum.trim() || ccNum.length < 19 || getCardType(ccNum) === "") {
       errorMessage.ccNum = 'Nomor kartu kredit tidak valid'
     }
     
+    // Validation 2
     // start of oka
-    if(this.props.navigation.state.params.selectedEmiId == 0) {
-      if(!this.props.navigation.state.params.selectedBankData.validate_bin.find((value) => {
-              return this.props.ccNum.replace(' ', '').startsWith(value);
-        }))  {
-        errorMessage.ccNum = 'Nomor kartu kredit tidak sesuai dengan bank yang dipilih ' + this.props.navigation.state.params.selectBank;
+    if(selectedEmiId === 0) {
+      if(!selectedBankData.validate_bin.find((value) => {
+        return ccNum.replace(' ', '').startsWith(value)
+      }))  {
+        errorMessage.ccNum = 'Nomor kartu kredit tidak sesuai dengan bank yang dipilih ' + selectBank
       }
     } else {
-      if(!this.props.navigation.state.params.selectedBankData.installment_bin.find((value) => {
-                return this.props.ccNum.replace(' ', '').startsWith(value);
-          }))  {
-          errorMessage.ccNum = 'Nomor kartu kredit tidak boleh mengambil cicilan';
+      if(!selectedBankData.installment_bin.find((value) => {
+        return ccNum.replace(' ', '').startsWith(value)
+      }))  {
+        errorMessage.ccNum = 'Nomor kartu kredit tidak boleh mengambil cicilan';
       }
     }
     // end of oka
 
-    if (!this.props.mon || !this.props.year) {
+    // Validation 3
+    if (!mon || !year) {
       errorMessage.date = 'Masukan tanggal'
     }
 
-    if (!this.props.cvv || this.props.cvv.length < 3) {
+    // Validation 4
+    if (!cvv || cvv.length < 3) {
       errorMessage.cvv = 'CVV tidak valid'
     }
 
     this.setState({ errorMessage })
     
+    // Validation 5
     if (errorMessage.ccNum == '' && errorMessage.cvv == '' && errorMessage.date == '') {
-      const checkout_data = this.props.navigation.state.params.checkout_data
-      // console.log(checkout_data)
       const json_checkout_data = JSON.parse(checkout_data)
-      console.log(json_checkout_data)
       const data_process = {
         checkout_data: json_checkout_data,
-        selectedEmiId: this.props.navigation.state.params.selectedEmiId,
-        selectedBankData: this.props.navigation.state.params.selectedBankData,
+        selectedEmiId: selectedEmiId,
+        selectedBankData: selectedBankData,
         ccNum: this.props.ccNum,
         mon: this.props.mon,
         year: this.props.year,
         cvv: this.props.cvv
       }
-
-      // console.log(this.props.navigation.state.params.selectedBankData)
-
-      // this.props.dispatch(makePayment(checkout_data, this.props.navigation.state.params.selectedEmiId, 
-      //   this.props.ccNum, this.props.mon + '/' + this.props.year, this.props.cvv));
-
-       NavigationModule.navigate('posapp://payment/process', JSON.stringify(data_process))
+      
+      NavigationModule.navigate('posapp://payment/process', JSON.stringify(data_process))
     }
-  };
+  }
+
+
 
   _cardType = () => {
-    const cardType = getCardType(this.props.ccNum);
+    const cardType = getCardType(this.props.ccNum)
+
     switch (cardType) {
       case 'MASTER':
-      return ( <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-MasterCard.png' }}
-          style={styles.cardLogo} resizeMode={'contain'} />);
+      return ( <Image source={{ uri: icons.mastercard }}
+          style={styles.cardLogo} resizeMode={'contain'} />)
       case 'VISA':
-      return ( <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-Visa.png' }}
-          style={styles.cardLogo} resizeMode={'contain'} />);
+      return ( <Image source={{ uri: icons.visa }}
+          style={styles.cardLogo} resizeMode={'contain'} />)
       case 'JCB':
-      return (<Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-JCB.png' }}
-          style={styles.cardLogo} resizeMode={'contain'} />);
+      return (<Image source={{ uri: icons.jcb }}
+          style={styles.cardLogo} resizeMode={'contain'} />)
     }
-  };
+  }
+
+
 
   static navigationOptions = {
     title: 'Pembayaran',
@@ -124,27 +130,23 @@ class payment extends Component {
         backgroundColor: '#42B549'
     }
     // headerMode: 'none'
-  };
-
-  _getCreditCardType() {
-
   }
 
+
+
   render() {
-    const data_props = this.props.navigation.state.params
-    const checkout_data = JSON.parse(this.props.navigation.state.params.checkout_data)
-    const total_payment = (data_props.total_payment).toLocaleString("id")
-    console.log(data_props)
-    console.log(checkout_data)
-    // console.log(this.state)
+    const { dataPaymentBank } = this.props
+    
+    const checkout_data = JSON.parse(dataPaymentBank.checkout_data)
+    const total_payment = (dataPaymentBank.total_payment).toLocaleString("id")
+    
     let years = this.state.years().map((i) => {
       return <Picker.Item key={i} value={i} label={i.toString()} />
-    });
+    })
 
     let months = this.state.months.map((i) => {
       return <Picker.Item key={i} value={i} label={i.toString()} />
-    });
-    
+    })
 
     return (
       <View style={styles.mainContainers} >
@@ -154,30 +156,22 @@ class payment extends Component {
           <View style={styles.containers} >
 
             <View style={[styles.row, styles.row1]} >
-              <Text style={styles.row1Text}>
-                Total Pembayaran
-            </Text>
-              <Text style={styles.row1Text}>
-                Rp {total_payment}
-            </Text>
+              <Text style={styles.row1Text}>Total Pembayaran</Text>
+              <Text style={styles.row1Text}>Rp {total_payment}</Text>
             </View>
 
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', paddingBottom: 0, paddingHorizontal: 20 }} >
               <View style={{ flex: 0.5 }}>
-                <Text style={styles.row2Text}>
-                  Kartu Kredit
-              </Text>
+                <Text style={styles.row2Text}>Kartu Kredit</Text>
               </View>
               <View style={{ flex: 0.5, alignItems: 'flex-end' }}>
-              <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/secure-guarantee.png' }} style={{width:75,height:55}} resizeMode={'contain'}/>
+                <Image source={{ uri: icons.secure_guarantee }} style={{width:75,height:55}} resizeMode={'contain'}/>
               </View>
             </View>
 
             <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#fff', paddingBottom: 0, paddingHorizontal: 20 }} >
               <View style={{ flex: 0.5, justifyContent: 'flex-end', borderBottomWidth: 2, borderBottomColor: '#F0F0F0' }}>
-                <Text style={[styles.row4Text]}>
-                  Nomor kartu kredit
-              </Text>
+                <Text style={[styles.row4Text]}>Nomor kartu kredit</Text>
                 <TextInput
                   underlineColorAndroid={'transparent'}
                   style={{ fontSize: 16, paddingLeft: 0, paddingVertical: 0 }}
@@ -192,19 +186,19 @@ class payment extends Component {
               <View style={{ flex: 0.5, height: 60, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end', borderBottomWidth: 2, borderBottomColor: '#F0F0F0' }}>
                 {
                   (getCardType(this.props.ccNum) === 'MASTER') ?
-                  <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-MasterCard.png' }} style={{width:60,height:60,flex:0.2}} resizeMode={'contain'} />
+                  <Image source={{ uri: icons.mastercard }} style={{width:60,height:60,flex:0.2}} resizeMode={'contain'} />
                     :
                     (getCardType(this.props.ccNum) === 'VISA') ?
-                    <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-Visa.png' }} style={{width:60,height:60,flex:0.2}}  resizeMode={'contain'} />
+                    <Image source={{ uri: icons.visa }} style={{width:60,height:60,flex:0.2}}  resizeMode={'contain'} />
                       :
                       (getCardType(this.props.ccNum) === 'JCB') ?
-                      <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-JCB.png' }} style={{width:60,height:60,flex:0.2}}  resizeMode={'contain'} />
+                      <Image source={{ uri: icons.jcb }} style={{width:60,height:60,flex:0.2}}  resizeMode={'contain'} />
                         :
                         (
                           <View style={{ flexDirection: 'row', marginRight: -10 }}>
-                            <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-MasterCard.png' }} style={styles.cardLogo} resizeMode={'contain'} />
-                            <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-Visa.png' }} style={styles.cardLogo}  resizeMode={'contain'} />
-                            <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Logo-JCB.png' }} style={styles.cardLogo}  resizeMode={'contain'} />
+                            <Image source={{ uri: icons.mastercard }} style={styles.cardLogo} resizeMode={'contain'} />
+                            <Image source={{ uri: icons.visa }} style={styles.cardLogo}  resizeMode={'contain'} />
+                            <Image source={{ uri: icons.jcb }} style={styles.cardLogo}  resizeMode={'contain'} />
                           </View>
                         )
                 }
@@ -233,17 +227,13 @@ class payment extends Component {
                 <Text style={[styles.row4Text, styles.errorText]}>
                {this.state.errorMessage.ccNum}
               </Text>
-              <Text style={[styles.row4Text, {color: '#00000061'}]}>
-                Masukan nomor kartu kredit
-              </Text>
+              <Text style={[styles.row4Text, {color: '#00000061'}]}>Masukan nomor kartu kredit</Text>
             </View>
           </View>
 
           <View style={{ backgroundColor: '#fff', flexDirection: 'row', paddingTop: 25 }}>
             <View style={{ flex: 0.4, marginLeft: 20 }}>
-              <Text style={styles.row4Text}>
-                Masa Berlaku
-              </Text>
+              <Text style={styles.row4Text}>Masa Berlaku</Text>
               <View style={{ flexDirection: 'row', marginLeft: -3 }}>
                 <View style={{ borderBottomWidth: 2.5, borderBottomColor: '#F0F0F0', marginRight: 20 }}>
                   <Picker style={{ width: width * .15 }}
@@ -264,9 +254,7 @@ class payment extends Component {
               </View>
             </View>
             <View style={{ flex: 0.275, marginRight: 15, borderBottomWidth: 2, borderBottomColor: '#F0F0F0', marginBottom: 1 }}>
-              <Text style={styles.row4Text}>
-                CVV
-              </Text>
+              <Text style={styles.row4Text}>CVV</Text>
               <View style={{ flex: 1, backgroundColor: 'white', flexDirection: 'row', alignItems: 'center' }}>
                 <TextInput
                   underlineColorAndroid={'transparent'}
@@ -279,7 +267,7 @@ class payment extends Component {
                   onChangeText={(text) => this.props.dispatch(selectPaymentOptions('cvv', text))}
                 />
                 <View style={{ flex: 1, marginBottom: -5 }}>
-                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/cvv-icon.png' }} style={styles.cvvLogo} resizeMode={'contain'}/>
+                <Image source={{ uri: icons.cvv }} style={styles.cvvLogo} resizeMode={'contain'}/>
                 </View>
               </View>
             </View>
@@ -291,9 +279,7 @@ class payment extends Component {
               <Text style={styles.errorText}>
                 {this.state.errorMessage.date}
               </Text>
-              <Text style={[styles.row4Text, {color: '#00000061'}]}>
-                Masukan CVV
-              </Text>
+              <Text style={[styles.row4Text, {color: '#00000061'}]}>Masukan CVV</Text>
             </View>
           </View>
           {/*
@@ -367,9 +353,7 @@ class payment extends Component {
                 backgroundColor: '#FF5722',
                 borderRadius: 3
               }}>
-                <Text style={{ color: '#fff', fontSize: 16 }}>
-                  Bayar
-                  </Text>
+                <Text style={{ color: '#fff', fontSize: 16 }}>Bayar</Text>
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -379,6 +363,8 @@ class payment extends Component {
     )
   }
 }
+
+
 
 let { height, width } = Dimensions.get('window');
 
@@ -449,8 +435,7 @@ const styles = StyleSheet.create({
     height: 30,
   },
   row7: {
-    height: 50,
-    flexDirection: 'row', justifyContent: 'center'
+    height: 50, flexDirection: 'row', justifyContent: 'center'
   },
   buttonContainer: {
     marginTop: 20,
@@ -478,9 +463,16 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
+  console.log(ownProps)
   return {
     ...state.payment,
+    selectedBankData: ownProps.navigation.state.params.selectedBankData,
+    selectBank: ownProps.navigation.state.params.selectBank,
+    selectIdBank: ownProps.navigation.state.params.selectIdBank,
+    selectedEmiId: ownProps.navigation.state.params.selectedEmiId,
+    checkout_data: ownProps.navigation.state.params.checkout_data,
+    dataPaymentBank: ownProps.navigation.state.params,
   }
 }
 
