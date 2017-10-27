@@ -78,6 +78,7 @@ public class OTPPresenter implements OTP.Presenter {
     private GetAllCartUseCase getAllCartUseCase;
     private Context context;
     private BankDomain bankDomain;
+    private String transactionId;
 
     @Inject
     public OTPPresenter(CheckPaymentStatusUseCase checkPaymentStatusUseCase,
@@ -110,6 +111,8 @@ public class OTPPresenter implements OTP.Presenter {
                     viewListener.onLoadDataError(errorList);
                     return;
                 }
+
+                setTransactionId(response.getString("transaction_id"));
 
                 bankDomain = getBankData(response);
 
@@ -160,8 +163,8 @@ public class OTPPresenter implements OTP.Presenter {
         if (form.has(PARAM_SIGNATURE)) {
             detailTransaction.setSignature(getFormItem(PARAM_SIGNATURE, form));
         }
-        if (form.has(PARAM_TRANSACTION_ID)) {
-            detailTransaction.setTransactionId(getFormItem(PARAM_TRANSACTION_ID, form));
+        if (transactionId != null && !transactionId.isEmpty()) {
+            detailTransaction.setTransactionId(transactionId);
         }
         if (form.has(PARAM_ID)) {
             detailTransaction.setId(getFormItem(PARAM_ID, form));
@@ -204,6 +207,15 @@ public class OTPPresenter implements OTP.Presenter {
                     });
         } else {
             viewListener.onLoadDataError(new Exception("Data error"));
+        }
+    }
+
+    @Override
+    public void setTransactionId(String transactionId) {
+        if(transactionId != null && !transactionId.isEmpty()) {
+            this.transactionId = transactionId;
+        } else {
+            throw new RuntimeException("Transaction Id not found");
         }
     }
 

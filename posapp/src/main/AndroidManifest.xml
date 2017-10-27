@@ -87,6 +87,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.OTPActivity"
+            android:label="OTP"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.InvoiceActivity"

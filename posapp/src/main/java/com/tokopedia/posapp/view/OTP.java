@@ -14,6 +14,8 @@ public interface OTP {
         void initializeData(String jsonData);
 
         void processPayment();
+
+        void setTransactionId(String transactionId);
     }
 
     interface View {
