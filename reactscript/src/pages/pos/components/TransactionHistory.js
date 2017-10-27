@@ -11,14 +11,12 @@ import PopUp from '../common/TKPPopupModal'
 
 
 class TransactionHistory extends Component {
-
   constructor(props) {
-
     super(props);
 
     this.state = {
       selectedOrder: ""
-    };
+    }
   }
 
   componentDidMount() {
