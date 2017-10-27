@@ -87,11 +87,11 @@ class PaymentInvoice extends Component {
               <Text style={styles.text3}> {this.props.invoiceNo}</Text>
             </View>
 
-            <ListView
+            {/* <ListView
               contentContainerStyle={[styles.row, styles.row2]}
               dataSource={this.props.itemList}
               enableEmptySections={true}
-              renderRow={this._renderProductList.bind(this)} />
+              renderRow={this._renderProductList.bind(this)} /> */}
               <View style={{paddingRight: '2%', paddingLeft: '3%', backgroundColor: '#FFFFFF'}}>
                   <Dash style={{width:"100%", height:2}} dashColor="#F0F0F0"/>
               </View>
