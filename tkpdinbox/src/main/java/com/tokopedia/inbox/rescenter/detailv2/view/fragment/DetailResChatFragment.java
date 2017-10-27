@@ -1,21 +1,32 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.fragment;
 
+import android.Manifest;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.gallery.GalleryActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.DateFormatUtils;
+import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
@@ -28,39 +39,53 @@ import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFac
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
+import com.tokopedia.inbox.rescenter.discussion.view.adapter.AttachmentAdapter;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by yoasfs on 10/6/17.
  */
 
+@RuntimePermissions
 public class DetailResChatFragment
         extends BaseDaggerFragment
-        implements DetailResChatFragmentListener.View{
+        implements DetailResChatFragmentListener.View {
 
     public static final int NEXT_STATUS_CURRENT = 1;
 
     public static final String ACTION_CREATE = "create";
 
     private TextView tvNextStep;
-    private RecyclerView rvChat;
+    private RecyclerView rvChat, rvAttachment;
     private ProgressBar progressBar;
     private LinearLayout mainView;
     private CardView cvNextStep;
     private ChatAdapter chatAdapter;
+    private AttachmentAdapter attachmentAdapter;
     private EditText etChat;
-    private ImageView ivSend;
+    private ImageView ivSend, ivAttachment;
+    ImageUploadHandler uploadImageDialog;
 
     private String resolutionId;
     private DetailResChatDomain detailResChatDomain;
@@ -87,6 +112,81 @@ public class DetailResChatFragment
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void actionCamera() {
+        uploadImageDialog.actionCamera();
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void actionImagePicker() {
+        if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
+            startActivityForResult(
+                    GalleryActivity.createIntent(getActivity()),
+                    uploadImageDialog.REQUEST_CODE_GALLERY
+            );
+        } else {
+            uploadImageDialog.actionImagePicker();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        DetailResChatFragmentPermissionsDispatcher.onRequestPermissionsResult(DetailResChatFragment.this, requestCode, grantResults);
+    }
+
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showDeniedForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showNeverAskForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
     @Override
@@ -140,22 +240,49 @@ public class DetailResChatFragment
 
     @Override
     protected void initView(View view) {
+        uploadImageDialog = ImageUploadHandler.createInstance(getActivity());
         tvNextStep = (TextView) view.findViewById(R.id.tv_next_step);
         rvChat = (RecyclerView) view.findViewById(R.id.rv_chat);
+        rvAttachment = (RecyclerView) view.findViewById(R.id.rv_attachment);
         mainView = (LinearLayout) view.findViewById(R.id.main_view);
-        progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         cvNextStep = (CardView) view.findViewById(R.id.cv_next_step);
         etChat = (EditText) view.findViewById(R.id.et_chat);
         ivSend = (ImageView) view.findViewById(R.id.iv_send);
+        ivAttachment = (ImageView) view.findViewById(R.id.iv_attachment);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         mainView.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
 
         presenter.initView(resolutionId);
+        presenter.initUploadImageHandler(getActivity(), uploadImageDialog);
+        rvChat.setLayoutManager(new LinearLayoutManager(getActivity()));
         chatAdapter = new ChatAdapter(new DetailChatTypeFactoryImpl(this));
         rvChat.setAdapter(chatAdapter);
-        rvChat.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvAttachment.setLayoutManager(new LinearLayoutManager(getActivity()));
+        attachmentAdapter = AttachmentAdapter.createAdapter(getActivity(), true);
+        attachmentAdapter.setListener(getAttachmentAdapterListener());
+        rvAttachment.setAdapter(attachmentAdapter);
     }
 
+    private AttachmentAdapter.ProductImageListener getAttachmentAdapterListener() {
+        return new AttachmentAdapter.ProductImageListener() {
+            @Override
+            public View.OnClickListener onImageClicked(final int position, AttachmentViewModel imageUpload) {
+                return null;
+            }
+
+            @Override
+            public View.OnClickListener onDeleteImage(final int position, AttachmentViewModel imageUpload) {
+                return new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        attachmentAdapter.getList().remove(position);
+                        attachmentAdapter.notifyDataSetChanged();
+                    }
+                };
+            }
+        };
+    }
     @Override
     protected void setViewListener() {
         cvNextStep.setOnClickListener(new View.OnClickListener() {
@@ -171,17 +298,64 @@ public class DetailResChatFragment
         ivSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConversationDomain conversationDomain = getTempConversationDomain(etChat.getText().toString());
+                ConversationDomain conversationDomain;
+                if (attachmentAdapter.getList().size() == 0) {
+                    conversationDomain = getTempConversationDomain(etChat.getText().toString());
+                } else {
+                    conversationDomain = getTempConversationDomain(etChat.getText().toString(), attachmentAdapter.getList());
+                }
+
                 chatAdapter.addItem(new ChatRightViewModel(null, null, conversationDomain));
                 chatAdapter.notifyDataSetChanged();
                 rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-                presenter.sendIconPressed(etChat.getText().toString());
+                presenter.sendIconPressed(etChat.getText().toString(), attachmentAdapter.getList());
+            }
+        });
+
+        ivAttachment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (attachmentAdapter.getList().size() < 5) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage(context.getString(R.string.dialog_upload_option));
+                    builder.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            DetailResChatFragmentPermissionsDispatcher.actionImagePickerWithCheck(DetailResChatFragment.this);
+                        }
+                    }).setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            DetailResChatFragmentPermissionsDispatcher.actionCameraWithCheck(DetailResChatFragment.this);
+                        }
+                    });
+
+                    Dialog dialog = builder.create();
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.show();
+                } else {
+                    NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.max_upload_detail_res_center));
+                }
             }
         });
 
     }
 
-    public ConversationDomain getTempConversationDomain(String message) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ImageUploadHandler.REQUEST_CODE:
+                presenter.handleDefaultOldUploadImageHandlerResult(resultCode, data);
+                break;
+            case ImageUploadHandler.REQUEST_CODE_GALLERY:
+                presenter.handleNewGalleryResult(resultCode, data);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private ConversationDomain getTempConversationDomain(String message) {
         return  new ConversationDomain(
                 0,
                 null,
@@ -197,10 +371,40 @@ public class DetailResChatFragment
                 null);
     }
 
-    public ConversationCreateTimeDomain getConversationCreateTime() {
+    private ConversationDomain getTempConversationDomain(String message, List<AttachmentViewModel> attachmentList) {
+        return  new ConversationDomain(
+                0,
+                null,
+                message,
+                null,
+                null,
+                getConversationCreateTime(),
+                getConversationAttachmentTemp(attachmentList),
+                null,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    private ConversationCreateTimeDomain getConversationCreateTime() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat(DateFormatUtils.FORMAT_T_Z);
         return new ConversationCreateTimeDomain(format.format(calendar.getTime()), "");
+    }
+
+    private List<ConversationAttachmentDomain> getConversationAttachmentTemp(List<AttachmentViewModel> attachmentList) {
+        List<ConversationAttachmentDomain> domainList = new ArrayList<>();
+        for (AttachmentViewModel attachment : attachmentList) {
+            ConversationAttachmentDomain domain = new ConversationAttachmentDomain(
+                    attachment.getFileType() == AttachmentViewModel.FILE_IMAGE ?
+                            "image" :
+                            "video",
+                    attachment.getImgThumb(),
+                    attachment.getImgLarge());
+            domainList.add(domain);
+        }
+        return domainList;
     }
 
     @Override
@@ -291,7 +495,25 @@ public class DetailResChatFragment
     }
 
     @Override
+    public void showSnackBarError(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void addAttachmentFile(AttachmentViewModel attachment) {
+        attachmentAdapter.addImage(attachment);
+    }
+
+    @Override
+    public List<AttachmentViewModel> getAttachmentListFromAdapter() {
+        return attachmentAdapter.getList();
+    }
+
+    @Override
     public void successReplyDiscussion(DiscussionItemViewModel discussionItemViewModel) {
+        attachmentAdapter.getList().clear();
+        attachmentAdapter.notifyDataSetChanged();
+        rvAttachment.setVisibility(View.GONE);
         etChat.setText("");
     }
 
@@ -299,6 +521,7 @@ public class DetailResChatFragment
     public void errorReplyDiscussion(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
         chatAdapter.deleteLastItem();
+        etChat.requestFocus();
     }
 
     @Override

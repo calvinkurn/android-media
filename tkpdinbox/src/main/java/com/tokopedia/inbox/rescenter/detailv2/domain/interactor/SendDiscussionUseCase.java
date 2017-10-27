@@ -158,6 +158,16 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
                 });
     }
 
+    public static RequestParams getSendReplyParams(String resolutionId, String message, List<AttachmentViewModel> attachmentList) {
+        RequestParams params = RequestParams.create();
+        params.putString(SendDiscussionV2UseCase.PARAM_RESOLUTION_ID, resolutionId);
+        params.putString(PARAM_MESSAGE, message);
+        if (attachmentList != null && attachmentList.size() > 0) {
+            params.putObject(SendDiscussionV2UseCase.PARAM_ATTACHMENT, attachmentList);
+        }
+        return params;
+    }
+
     private RequestParams getCreatePictureParam(RequestParams requestParams) {
         RequestParams params = RequestParams.create();
         params.putString(CreatePictureUseCase.PARAM_ATTACHMENT_STRING,

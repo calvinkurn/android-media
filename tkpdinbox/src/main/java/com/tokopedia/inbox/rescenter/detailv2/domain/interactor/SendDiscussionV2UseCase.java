@@ -11,6 +11,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.UploadImageData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.UploadImageModel;
+import com.tokopedia.inbox.rescenter.discussion.domain.interactor.*;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.NewReplyDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.generatehost.GenerateHostModel;
@@ -69,6 +70,17 @@ public class SendDiscussionV2UseCase extends UseCase<DiscussionItemViewModel> {
         params.putString(PARAM_MESSAGE, message);
         return params;
     }
+
+    public static RequestParams getSendReplyParams(String resolutionId, String message, List<AttachmentViewModel> attachmentList) {
+        RequestParams params = RequestParams.create();
+        params.putString(SendDiscussionV2UseCase.PARAM_RESOLUTION_ID, resolutionId);
+        params.putString(PARAM_MESSAGE, message);
+        if (attachmentList != null && attachmentList.size() > 0) {
+            params.putObject(SendDiscussionV2UseCase.PARAM_ATTACHMENT, attachmentList);
+        }
+        return params;
+    }
+
     @Override
     public Observable<DiscussionItemViewModel> createObservable(RequestParams requestParams) {
         ActionDiscussionModel params = new ActionDiscussionModel();
