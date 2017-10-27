@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 
@@ -28,19 +30,19 @@ public abstract class DataListCacheSource {
     }
 
     public Observable<Boolean> isExpired() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                subscriber.onNext(sharedPrefs.getLong(getPrefKeyName(), 0) < System.currentTimeMillis());
+                subscriber.onNext(sharedPrefs.getLong(getPrefKeyName(), 0) + getExpiredTimeInSec() < (System.currentTimeMillis()/1000L));
             }
         });
     }
 
     public Observable<Boolean> updateExpiredTime() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                sharedPrefs.edit().putLong(getPrefKeyName(), System.currentTimeMillis() + getExpiredTimeInSec()).apply();
+                sharedPrefs.edit().putLong(getPrefKeyName(), System.currentTimeMillis() / 1000L).apply();
                 subscriber.onNext(true);
             }
         });

@@ -98,6 +98,45 @@ android {
         abortOnError false
     }
 
+    buildTypes {
+        debug {
+            minifyEnabled false
+            zipAlignEnabled false
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", "true"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+        release {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", "true"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
+            ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
+            if (allowSplit()) {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
+                    }
+                    variant.assemble.doLast {
+                        variant.outputs.each { output ->
+                            if (output.zipAlign) {
+                                archiveAPK(variant, output);
+                            }
+                        }
+                    }
+                }
+            } else {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
+                    }
+                }
+            }
+        }
+    }
+
     splits {
         density {
             enable allowSplit()
