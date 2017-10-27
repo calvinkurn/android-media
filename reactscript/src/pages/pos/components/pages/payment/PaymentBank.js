@@ -65,7 +65,8 @@ class PaymentBank extends Component {
         selectIdBank: this.state.selectIdBank,
         selectedEmiId: selected_installment,
         selectedBankData: selectedBankData,
-        total_payment: payment_amount
+        total_payment: payment_amount,
+        
       })
     }
   };
