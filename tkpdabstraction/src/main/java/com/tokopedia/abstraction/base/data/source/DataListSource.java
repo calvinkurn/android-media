@@ -14,53 +14,68 @@ import rx.functions.Func1;
  * Created by nathan on 10/23/17.
  */
 
-public abstract class DataListSource<T> {
+public abstract class DataListSource<T,U> {
 
     private DataListCacheSource dataListCacheManager;
-    private DataListDBSource<T> dataListDBManager;
+    private DataListDBSource<T,U> dataListDBManager;
     private DataListCloudSource<T> dataListCloudManager;
 
-    public DataListSource(DataListCacheSource dataListCacheManager, DataListDBSource<T> dataListDBManager, DataListCloudSource<T> dataListCloudManager) {
+    public DataListSource(DataListCacheSource dataListCacheManager, DataListDBSource<T,U> dataListDBManager, DataListCloudSource<T> dataListCloudManager) {
         this.dataListCacheManager = dataListCacheManager;
         this.dataListDBManager = dataListDBManager;
         this.dataListCloudManager = dataListCloudManager;
     }
 
-    protected Observable<Boolean> updateLatestData(final HashMap<String, Object> params) {
-        return dataListDBManager.isDataAvailable().flatMap(new Func1<Boolean, Observable<Boolean>>() {
+    private Observable<List<U>> getRefreshedData(final HashMap<String, Object> params) {
+        return dataListDBManager.deleteAll().flatMap(new Func1<Boolean, Observable<List<U>>>() {
             @Override
-            public Observable<Boolean> call(Boolean aBoolean) {
-                if (!aBoolean) {
-                    return getRefreshDataObservable(params);
-                }
-                return dataListCacheManager.isExpired().flatMap(new Func1<Boolean, Observable<Boolean>>() {
+            public Observable<List<U>> call(Boolean aBoolean) {
+                return dataListCloudManager.getData(params).flatMap(new Func1<List<T>, Observable<List<U>>>() {
                     @Override
-                    public Observable<Boolean> call(Boolean aBoolean) {
-                        if (!aBoolean) {
-                            return Observable.just(true);
-                        }
-                        return getRefreshDataObservable(params);
+                    public Observable<List<U>> call(List<T> ts) {
+                        return dataListDBManager.insertAll(ts).flatMap(new Func1<Boolean, Observable<List<U>>>() {
+                            @Override
+                            public Observable<List<U>> call(Boolean isSuccessInsertData) {
+                                if (!isSuccessInsertData) {
+                                    return null;
+                                } else {
+                                    return dataListCacheManager.updateExpiredTime().flatMap(new Func1<Boolean, Observable<List<U>>>() {
+                                        @Override
+                                        public Observable<List<U>> call(Boolean isSuccessUpdateExpiredTime) {
+                                            if (!isSuccessUpdateExpiredTime) {
+                                                return null;
+                                            } else {
+                                                return dataListDBManager.getData(params);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     }
                 });
             }
         });
     }
 
-    private Observable<Boolean> getRefreshDataObservable(final HashMap<String, Object> params) {
-        return dataListDBManager.deleteAll().flatMap(new Func1<Boolean, Observable<Boolean>>() {
+    public Observable<List<U>> getDataList(final HashMap<String, Object> params){
+        return dataListCacheManager.isExpired().flatMap(new Func1<Boolean, Observable<List<U>>>() {
             @Override
-            public Observable<Boolean> call(Boolean aBoolean) {
-                return dataListCloudManager.getData(params).flatMap(new Func1<List<T>, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(List<T> ts) {
-                        return dataListDBManager.insertAll(ts).flatMap(new Func1<Boolean, Observable<Boolean>>() {
-                            @Override
-                            public Observable<Boolean> call(Boolean aBoolean) {
-                                return dataListCacheManager.updateExpiredTime();
+            public Observable<List<U>> call(Boolean isCacheExpired) {
+                if (isCacheExpired) {
+                    return getRefreshedData(params);
+                } else {
+                    return dataListDBManager.isDataAvailable().flatMap(new Func1<Boolean, Observable<List<U>>>() {
+                        @Override
+                        public Observable<List<U>> call(Boolean isDataAvailable) {
+                            if (!isDataAvailable) {
+                                return getRefreshedData(params);
+                            } else {
+                                return dataListDBManager.getData(params);
                             }
-                        });
-                    }
-                });
+                        }
+                    });
+                }
             }
         });
     }
