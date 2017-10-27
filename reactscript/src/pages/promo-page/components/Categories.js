@@ -17,11 +17,15 @@ class Categories extends PureComponent {
   renderCategory = ({ item }) => {
     const applink = this.props.applinkEnv
     
-    return <Category 
-      category={item} 
-      products={item.products}
-      dataSlug={this.props.dataSlug} 
-      applink={applink} />
+    return (
+      <View style={{ paddingBottom: 25 }}>
+        <Category 
+          category={item} 
+          products={item.products}
+          dataSlug={this.props.dataSlug} 
+          applink={applink} />
+      </View>
+    )
   }
 
   loadMore = () => {
@@ -32,7 +36,7 @@ class Categories extends PureComponent {
     this.props.getCategories(offset, limit)
   }
 
-  renderFooter = () => <Footer />
+  // renderFooter = () => <Footer />
 
   renderHeader = () => (
     <View>
@@ -45,16 +49,20 @@ class Categories extends PureComponent {
 
   render() {
     const categories = this.props.categories.items
-    return (<FlatList
-      data={categories}
-      keyExtractor={item => item.category_id}
-      renderItem={this.renderCategory}
-      onEndReached={this.loadMore}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={this.renderFooter}
-      ListHeaderComponent={this.renderHeader}
-      style={{backgroundColor: '#F8F8F8'}}
-    />)
+    return (
+      <View>
+        <FlatList
+          data={categories}
+          keyExtractor={item => item.category_id}
+          renderItem={this.renderCategory}
+          onEndReached={this.loadMore}
+          onEndReachedThreshold={0.5}
+          /* ListFooterComponent={this.renderFooter} */
+          ListHeaderComponent={this.renderHeader}
+          style={{ backgroundColor: '#F8F8F8' }}
+        />
+      </View>
+    )
   }
 }
 

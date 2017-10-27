@@ -9,7 +9,7 @@ const BASE_API_URL = {
 
 const BASE_API_CATEGORIES = {
     staging: 'https://staging.tokopedia.com/official-store/promo',
-    production: 'https://tokopedia.com/official-store/promo'
+    production: 'https://www.tokopedia.com/official-store/promo',
   }
 
 
