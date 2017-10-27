@@ -52,7 +52,7 @@ class PaymentInvoice extends Component {
           <Text style={[styles.font14, styles.fontcolor71, { width: '80%' }]}>{item.name} </Text>
           <Text style={[styles.font13, styles.fontcolor61, { marginTop: 10 }]}>Jumlah Barang: {item.quantity}</Text>
         </View>
-        <Text style={[styles.font14, styles.fontcolor71]}>Rp {item.price}</Text>
+        <Text style={[styles.font14, styles.fontcolor71]}>Rp {(item.price).toLocaleString("id")}</Text>
       </View>
     );
   }
