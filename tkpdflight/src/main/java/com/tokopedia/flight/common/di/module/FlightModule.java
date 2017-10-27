@@ -7,6 +7,7 @@ import com.tokopedia.flight.common.di.scope.FlightScope;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -16,10 +17,19 @@ import retrofit2.Retrofit;
 @FlightScope
 @Module
 public class FlightModule {
+
     @FlightScope
     @Provides
-    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder) {
-        return okHttpClientBuilder.build();
+    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        return logging;
+    }
+
+    @FlightScope
+    @Provides
+    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder, HttpLoggingInterceptor httpLoggingInterceptor) {
+        return okHttpClientBuilder.addInterceptor(httpLoggingInterceptor).build();
     }
 
     @FlightScope
