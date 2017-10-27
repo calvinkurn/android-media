@@ -1,3 +1,34 @@
+import { SessionModule } from 'NativeModules'
+
+
+// ============== Global Function ============== //
+export const getUserId = () => {
+    return SessionModule.getUserId()
+        .then(res => { return res })
+        .catch(err => console.log(err))
+}
+
+export const getAddrId = () => {
+    return SessionModule.getAddrId()
+      .then(res => { return res })
+      .catch(err => console.log(err))
+}
+
+export const getShopId = () => {
+    return SessionModule.getShopId()
+      .then(res => { return res })
+      .catch(err => console.log(err))
+}
+
+export const getEnv = () => {
+    return SessionModule.getEnv()
+      .then(res => { return res })
+      .catch(err => console.log(err))
+}
+// ============== Global Function ============== //
+
+
+
 export const getCardType = (number) => {
     if (!number)
         return "";

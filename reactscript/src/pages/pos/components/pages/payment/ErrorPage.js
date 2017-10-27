@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, TouchableOpacity, Text } from 'react-native'
 import { NavigationModule } from 'NativeModules'
 import { connect } from 'react-redux'
+import { reloadState } from '../../../actions/index'
 
 
 class InvoiceErrorPage extends Component {
