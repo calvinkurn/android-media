@@ -39,7 +39,7 @@ public class ProductManageSortActivity extends BaseSimpleActivity implements Has
     @Override
     protected void setToolbarColorWhite() {
         super.setToolbarColorWhite();
-        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_grey_main));
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close));
     }
 
     @Override

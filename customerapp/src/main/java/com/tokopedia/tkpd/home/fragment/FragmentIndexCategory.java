@@ -88,7 +88,7 @@ import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.OnGetBrandsListener;
-import com.tokopedia.tkpd.home.ReactNativeOfficialStoresActivity;
+import com.tokopedia.tkpd.home.ReactNativeActivity;
 import com.tokopedia.tkpd.home.TopPicksView;
 import com.tokopedia.tkpd.home.adapter.BrandsRecyclerViewAdapter;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
@@ -687,7 +687,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 if (firebaseRemoteConfig != null
                         && firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
                     getActivity().startActivity(
-                            ReactNativeOfficialStoresActivity.createReactNativeActivity(
+                            ReactNativeActivity.createOfficialStoresReactNativeActivity(
                                     getActivity(), ReactConst.Screen.OFFICIAL_STORE,
                                     getString(R.string.react_native_banner_official_title)
                             )

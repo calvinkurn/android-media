@@ -235,6 +235,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void actionApplink(Activity activity, String linkUrl, String extra) {
+
+    }
+
+    @Override
     public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
 
     }
@@ -574,6 +579,10 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public String getFlavor() {
+        return BuildConfig.FLAVOR;
+    }
+
     public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
         if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
                 || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {

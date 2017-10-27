@@ -50,6 +50,8 @@ public interface TkpdCoreRouter {
 
     void actionApplink(Activity activity, String linkUrl);
 
+    void actionApplink(Activity activity, String linkUrl, String extra);
+
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
     Intent getHomeIntent(Context context);
@@ -75,6 +77,8 @@ public interface TkpdCoreRouter {
     Intent getRegisterIntent(Context context);
 
     void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber);
+
+    String getFlavor();
 
     boolean isSupportedDelegateDeepLink(String appLinks);
 

@@ -30,7 +30,6 @@ public class StatusMapper implements Func1<StatusEntity, Status> {
                 version.setProduct(statusEntity.getAttributes().getVersion().getProduct());
                 attributes.setVersion(version);
             }
-
             status.setAttributes(attributes);
         }
 
