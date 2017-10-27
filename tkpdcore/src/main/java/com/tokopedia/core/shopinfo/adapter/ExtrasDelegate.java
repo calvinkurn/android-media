@@ -63,7 +63,12 @@ public class ExtrasDelegate {
         final Context context = parent.getContext().getApplicationContext();
 
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result_shop_info, parent, false);
+        View view = null;
+        if(shopId != null)
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result_shop_info, parent, false);
+        else
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_no_result, parent, false);
+
         ImageHandler.loadImageWithId(((ImageView)view.findViewById(R.id.no_result_image)), R.drawable.status_no_result);
 
         if(shopId != null && parent.getContext() != null && parent.getContext() instanceof Activity){
