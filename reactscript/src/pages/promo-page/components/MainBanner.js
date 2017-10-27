@@ -7,7 +7,8 @@ import {
   Platform,
   TouchableHighlight
 } from 'react-native'
-import { NavigationModule } from 'NativeModules';
+import { NavigationModule } from 'NativeModules'
+import _ from 'lodash'
 
 
 const { width, height } = Dimensions.get('window')
@@ -15,7 +16,7 @@ const { width, height } = Dimensions.get('window')
 const MainBanner = ({ dataMainBanners }) => {
   const bannersImage = dataMainBanners.images
   // remapping array position
-  let arrImages = bannersImage.reduceRight((prev, curr) => prev.concat(curr), [])
+  let arrImages = _.sortBy(bannersImage, [function(o) {return o.positions}])
 
   return (
     <View style={styles.mainBannerContainer}>
