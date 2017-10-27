@@ -20,24 +20,25 @@ import rx.functions.Func1;
  * @author normansyahputa on 5/18/17.
  */
 
-public class FlightAirportDataListSource extends DataListSource<FlightAirportCountry> {
-
-    private FlightAirportDataListDBSource dataListDBSource;
+public class FlightAirportDataListSource extends DataListSource<FlightAirportCountry, FlightAirportDB> {
 
     @Inject
     public FlightAirportDataListSource(DataListCacheSource dataListCacheManager, FlightAirportDataListDBSource dataListDBManager, DataListCloudSource<FlightAirportCountry> dataListCloudManager) {
         super(dataListCacheManager, dataListDBManager, dataListCloudManager);
-        this.dataListDBSource = dataListDBManager;
     }
 
     public Observable<List<FlightAirportDB>> getAirportList(final String queryText) {
-        HashMap<String, Object> params = new HashMap();
-        params.put(FlightAirportDataListCloudSource.KEYWORD, queryText);
-        return updateLatestData(params).flatMap(new Func1<Boolean, Observable<List<FlightAirportDB>>>() {
-            @Override
-            public Observable<List<FlightAirportDB>> call(Boolean isDataAvailable) {
-                return dataListDBSource.getAirportList(queryText);
-            }
-        });
+        final HashMap<String, Object> map = generateGetParam(queryText);
+        return getDataList(map);
+    }
+
+    public static HashMap<String, Object> generateGetParam(String query){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(FlightAirportDataListCloudSource.KEYWORD, query);
+        return map;
+    }
+
+    public static String getQueryFromMap(HashMap<String, Object> params){
+        return (String) params.get(FlightAirportDataListCloudSource.KEYWORD);
     }
 }

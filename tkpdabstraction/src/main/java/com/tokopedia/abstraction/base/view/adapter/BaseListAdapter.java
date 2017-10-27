@@ -40,7 +40,21 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public final RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case VIEW_LOADING:
+            case VIEW_RETRY:
+            case VIEW_EMPTY:
+                return super.onCreateViewHolder(parent, viewType);
+            default:
+                return onCreateItemViewHolder(parent, viewType);
+        }
+    }
+
+    public abstract BaseViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType);
+
+    @Override
+    public final void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case VIEW_LOADING:
             case VIEW_RETRY:
