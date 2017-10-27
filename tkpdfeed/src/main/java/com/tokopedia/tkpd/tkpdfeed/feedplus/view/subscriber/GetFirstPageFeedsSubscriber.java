@@ -9,8 +9,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.DataInspirationDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.inspiration.InspirationRecommendationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.BadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.LabelDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreDomain;
@@ -21,6 +19,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
@@ -234,6 +233,33 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                 }
             }
+        listFeedView.add(convertToKolViewModel());
+
+    }
+
+    private KolViewModel convertToKolViewModel() {
+        return new KolViewModel(
+                "Rekomendasi untuk Anda",
+                "Young Lex",
+                "https://imagerouter.tokopedia" +
+                        ".com/img/500-square/product-1/2017/10/25/0/0_58b4e859-5079-4493-9de4-c8b2b521584a_720_720.jpg",
+                "Artis",
+                false,
+                "https://imagerouter.tokopedia" +
+                        ".com/img/500-square/product-1/2017/10/25/113005/113005_b772b000-d42d-4c7f-9033-8629e5839f66",
+                "Rp 25000 - Lihat semua Produk",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt vitae eros nec sodales. Cras a blandit ligula. Donec nec massa at est facilisis blandit. Integer auctor pellentesque tellus a elementum. Morbi sed mattis velit. Mauris hendrerit urna tempor lectus suscipit tincidunt. Nulla ex sem, accumsan non leo ac, vestibulum pretium justo. Cras lacus elit, malesuada quis enim eget, consequat efficitur eros. Curabitur nec metus eget lacus fringilla dictum. Curabitur at euismod nisi. Phasellus quis enim ut nisl commodo pharetra. Quisque blandit nisl sit amet magna viverra, quis dignissim lorem porttitor. Maecenas posuere tincidunt velit ac pellentesque. Etiam non fermentum dui, a dignissim erat. In ac lorem id dui placerat bibendum.\n" +
+                        "\n" +
+                        "Nulla mi velit, gravida in euismod vel, ullamcorper auctor lorem. Vestibulum congue nulla quis elit aliquet, a fringilla ipsum tincidunt. Aenean vel sem fermentum, malesuada magna et, dictum enim. Cras neque elit, gravida et sagittis vel, rhoncus vitae nisi. Nunc et aliquet arcu. Donec consequat nec mauris vel euismod. Suspendisse volutpat, leo eu pretium congue, velit lorem ornare magna, in ullamcorper ligula mi eget turpis. Mauris eu leo justo. Donec blandit scelerisque turpis rutrum pharetra. Quisque id lorem dapibus, congue mauris ut, laoreet sem.\n" +
+                        "\n",
+                false,
+                "200",
+                "222",
+                page,
+                "https://www.tokopedia.com/sorachan-shoppu",
+                "221417982",
+                "111111"
+        );
     }
 
     private ToppicksViewModel convertToToppicksViewModel(DataFeedDomain domain) {

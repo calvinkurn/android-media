@@ -45,5 +45,10 @@
     <string name="share_others">Lainnya</string>
     <string name="discount_off">% Off</string>
     <string name="title_toppicks">Top Picks</string>
+    <string name="action_follow_english">Follow</string>
+    <string name="read_more_english">Read More</string>
+    <string name="action_like">Like</string>
+    <string name="following">Following</string>
+    <string name="title_comment_kol">Comments</string>
 
 </resources>

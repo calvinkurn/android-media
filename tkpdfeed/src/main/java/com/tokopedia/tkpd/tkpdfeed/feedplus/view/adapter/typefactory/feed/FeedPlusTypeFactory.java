@@ -6,6 +6,7 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.AddFeedModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
@@ -22,7 +23,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksView
  * @author by nisie on 5/15/17.
  */
 
-public interface FeedPlusTypeFactory  {
+public interface FeedPlusTypeFactory {
 
     int type(ActivityCardViewModel viewModel);
 
@@ -51,6 +52,8 @@ public interface FeedPlusTypeFactory  {
     int type(EmptyTopAdsProductModel emptyModel);
 
     int type(ToppicksViewModel toppicksViewModel);
+
+    int type(KolViewModel kolViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.toppicks;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

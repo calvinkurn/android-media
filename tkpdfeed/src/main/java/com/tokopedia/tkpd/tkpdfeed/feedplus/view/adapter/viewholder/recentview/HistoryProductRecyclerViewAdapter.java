@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.recentview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

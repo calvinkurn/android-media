@@ -21,6 +21,22 @@ public interface FeedPlus{
 
     interface View extends CustomerView {
 
+        interface Kol {
+            void onGoToKolProfile(int page, int rowNumber, String url);
+
+            void onGoToProductPageFromKol(int page, int rowNumber, String productId);
+
+            void onFollowKolClicked(int page, int rowNumber, String id);
+
+            void onUnfollowKolClicked(int page, int rowNumber, String id);
+
+            void onUnlikeKol(int page, int rowNumber, String id);
+
+            void onLikeKol(int page, int rowNumber, String id);
+
+            void onGoToKolComment(int page, int rowNumber, String id);
+        }
+
         void setFirstCursor(String firstCursor);
 
         interface Toppicks {

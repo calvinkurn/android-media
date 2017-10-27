@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.ToppicksAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 
@@ -38,7 +37,6 @@ public class ToppicksViewHolder extends AbstractViewHolder<ToppicksViewModel> {
         adapter = new ToppicksAdapter(toppicksListener);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
-
     }
 
     @Override
