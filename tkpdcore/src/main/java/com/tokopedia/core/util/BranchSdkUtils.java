@@ -111,7 +111,7 @@ public class BranchSdkUtils {
     private static String getApplinkPath(String url, String id) {
         if (url.contains(Constants.Schemes.APPLINKS + "://")) {
             url = url.replace(Constants.Schemes.APPLINKS + "://", "");
-            url = url.replaceAll("\\{.*?\\} ?", id);
+            url = url.replaceAll("\\{.*?\\} ?", id == null ? "" : id);
         } else if (url.contains(TkpdBaseURL.WEB_DOMAIN)) {
             url = url.replace(TkpdBaseURL.WEB_DOMAIN, "");
         } else if (url.contains(TkpdBaseURL.MOBILE_DOMAIN)) {

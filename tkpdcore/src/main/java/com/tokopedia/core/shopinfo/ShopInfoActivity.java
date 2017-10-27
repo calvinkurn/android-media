@@ -753,7 +753,6 @@ public class ShopInfoActivity extends BaseActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent shareIntent = new Intent(ShopInfoActivity.this, ShareActivity.class);
                 ShareData shareData = ShareData.Builder.aShareData()
                         .setType(ShareData.SHOP_TYPE)
                         .setName(getString(R.string.message_share_shop))
@@ -761,8 +760,7 @@ public class ShopInfoActivity extends BaseActivity
                         .setUri(shopModel.info.shopUrl)
                         .setId(shopModel.info.shopId)
                         .build();
-                shareIntent.putExtra(ShareData.TAG, shareData);
-                startActivity(shareIntent);
+                startActivity(ShareActivity.createIntent(ShopInfoActivity.this,shareData));
             }
         };
     }
