@@ -3,6 +3,8 @@ package com.tokopedia.abstraction.common.network.interceptor;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import javax.inject.Inject;
+
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -14,6 +16,7 @@ public class TkpdBaseInterceptor implements Interceptor {
     private static final String TAG = TkpdBaseInterceptor.class.getSimpleName();
     protected int maxRetryAttempt = 3;
 
+    @Inject
     public TkpdBaseInterceptor() {
     }
 

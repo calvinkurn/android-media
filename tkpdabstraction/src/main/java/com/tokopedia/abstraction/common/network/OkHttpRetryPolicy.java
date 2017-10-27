@@ -1,5 +1,7 @@
 package com.tokopedia.abstraction.common.network;
 
+import javax.inject.Inject;
+
 /**
  * Created by ricoharisin on 2/28/17.
  */
@@ -10,7 +12,6 @@ public class OkHttpRetryPolicy {
     public int writeTimeout;
     public int connectTimeout;
     public int maxRetryAttempt;
-
 
     public OkHttpRetryPolicy(int readTimeout, int writeTimeout, int connectTimeout, int maxRetryAttempt) {
         this.readTimeout = readTimeout;

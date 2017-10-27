@@ -4,6 +4,7 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdFlightGeneratedDatabaseHolder;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.utils.GlobalConfig;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.common.di.component.DaggerFlightComponent;
 import com.tokopedia.flight.common.di.component.FlightComponent;
@@ -18,6 +19,7 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
 
     @Override
     public void onCreate() {
+        GlobalConfig.DEBUG = BuildConfig.DEBUG;
         super.onCreate();
         initDBFlow();
     }
