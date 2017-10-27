@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Button, Image, TouchableWithoutFeedback} from 'react-native';
 import { makePayment } from '../../../actions/index'
 import { NavigationModule } from 'NativeModules'
+import { icons } from '../../../lib/config'
 
 
 class PaymentProcessing extends Component {
@@ -34,20 +35,23 @@ class PaymentProcessing extends Component {
 
     
     if (processing_status_msg === 'SUCCESS' && !processing_isFetchingParams && !processing_showLoadingPage){
+      const { transaction_id } = this.props.checkoutData.data.data.data
       const objData = {
         ...processing_data, 
         bank_id: selectedBankData.bank_id,
         bank_logo: selectedBankData.bank_logo,
-        bank_name: selectedBankData.bank_name
+        bank_name: selectedBankData.bank_name,
+        transaction_id
       }
       console.log(objData)
+
       NavigationModule.navigate('posapp://payment/otp', JSON.stringify(objData))
     }
 
     return (
       <View style={{ flex: 1 }}>
         <View style={{ width: "100%", marginTop: "60%", flexDirection: 'column',alignItems: 'center', justifyContent: 'center'}}>
-          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/loading.gif' }}  style={{width: 110, height: 110}} />
+          <Image source={{ uri: icons.loading }}  style={{width: 110, height: 110}} />
           <Text style={{fontSize:17, marginTop:"2%"}}>Pembayaran sedang diproses...</Text>
         </View>
       </View>
@@ -61,8 +65,9 @@ class PaymentProcessing extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const data_process_json = JSON.parse(ownProps.screenProps.data.data_process)
-  console.log(data_process_json)
-  console.log(state)
+  // console.log(data_process_json)
+  // console.log(state)
+  // console.log(state.checkout)
 
   return {
     ...state.paymentV2,
@@ -71,6 +76,7 @@ const mapStateToProps = (state, ownProps) => {
     processing_data: state.paymentV2.processing_data.data,
     processing_status_msg: state.paymentV2.processing_status_msg,
     selectedBankData: data_process_json.selectedBankData,
+    checkoutData: state.checkout,
   }
 }
 

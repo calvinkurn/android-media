@@ -1,10 +1,17 @@
 import React, { Component } from 'react'
 import { View, TouchableOpacity, Text } from 'react-native'
 import { NavigationModule } from 'NativeModules'
-
+import { connect } from 'react-redux'
+import { reloadState } from '../../../actions/index'
 
 
 class InvoiceErrorPage extends Component {
+    componentDidMount(){
+        const { dispatch } = this.props
+        dispatch(reloadState('invoice'))
+    }
+
+
     render (){
         return (
             <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -32,4 +39,4 @@ class InvoiceErrorPage extends Component {
     }
 }
 
-export default InvoiceErrorPage
+export default connect()(InvoiceErrorPage)

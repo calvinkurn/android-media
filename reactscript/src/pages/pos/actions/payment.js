@@ -5,22 +5,13 @@ import {
   BASE_API_URL_PCIDSS,
   BASE_API_URL_ORDER
 } from '../lib/api.js'
+import { 
+  getUserId, 
+  getAddrId,
+  getShopId,
+  getEnv,
+} from '../lib/utility'
 
-// ==================== Session Data ===================== //
-const getUserId = () => {
-  return SessionModule.getUserId()
-    .then(res => { return res })
-    .catch(err => console.log(err))
-}
-
-const getAddrId = () => {
-  return SessionModule.getAddrId()
-    .then(res => { return res })
-    .catch(err => console.log(err))
-}
-
-
-// ==================== Session Data ===================== //
 
 
 //  ==================== Make Payment V2 Native ===================== //
@@ -44,11 +35,6 @@ const postDataToNative = async (data) => {
   return otp
 }
 
-const getEnv = () => {
-  return SessionModule.getEnv()
-    .then(res => { return res })
-    .catch(err => console.log(err))
-}
 
 const getBaseAPI = (env) => {
   let data_api = {}
@@ -84,7 +70,6 @@ const getGatewayCode = (data) => {
 }
 
 const makePaymentV2 = (api_url, data, gateway_code) => {
-  console.log(data)
   const checkoutData = data.checkout_data.data.data
   const exp_month = (data.expiry_date).substring(0, (data.expiry_date).indexOf('/'))
   const exp_year = (data.expiry_date).substring((data.expiry_date).indexOf("/") + 1)
@@ -103,12 +88,10 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
     transaction_id: checkoutData.transaction_id,
     signature: checkoutData.signature
   }
-  console.log(data_params)
 
   return NetworkModule.getResponseJson(`${api_url.api_url_pcidss}`, `POST`, JSON.stringify(data_params), true)
     .then(res => {
       const jsonResponse = JSON.parse(res)
-      console.log(jsonResponse)
       if (jsonResponse.status === '200 Ok'){
         if (jsonResponse.data.errors === null){
           return jsonResponse
@@ -144,7 +127,6 @@ const fetchTransactionHistory = async (page) => {
     page: page,
     os_type: '1'
   }
-  console.log(data)
   const txHistory = await apiGetTransactionHistory(`${api_url.api_url_order}/api/order/i/v1/o2o/get_order_list_details`, data)
   return txHistory
 }

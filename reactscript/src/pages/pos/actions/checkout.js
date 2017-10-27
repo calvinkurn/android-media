@@ -4,6 +4,13 @@ import {
   BASE_API_URL_SCROOGE,
   BASE_API_URL_PCIDSS
 } from '../lib/api.js'
+import { 
+  getUserId, 
+  getAddrId,
+  getShopId,
+  getEnv,
+} from '../lib/utility'
+
 
 
 // ===================== Make Payment ===================== //
@@ -35,28 +42,10 @@ const doPayment = async () => {
     cart: local_cart
   }
   const paymentToNative_getParams = await makePaymentToNativeStepOne(data_payment)
-  console.log(paymentToNative_getParams)
   const paymentToNative_secondStep = await makePaymentToNativeStepTwo(paymentToNative_getParams, data_payment, local_cart)
   return paymentToNative_secondStep
 }
 
-const getUserId = () => {
-  return SessionModule.getUserId()
-    .then(res => { return res })
-    .catch(err => console.log(err))
-}
-
-const getAddrId = () => {
-  return SessionModule.getAddrId()
-    .then(res => { return res })
-    .catch(err => console.log(err))
-}
-
-const getShopId = () => {
-  return SessionModule.getShopId()
-    .then(res => { return res })
-    .catch(err => console.log(err))
-}
 
 const getCart = async () => {
   let objData = []
@@ -68,7 +57,6 @@ const getCart = async () => {
       quantity: data.quantity
     })
   })
-
   return objData
 }
 
@@ -81,11 +69,6 @@ const fetchCart = () => {
     .catch(error => console.log(error))
 }
 
-const getEnv = () => {
-  return SessionModule.getEnv()
-    .then(res => { return res })
-    .catch(err => console.log(err))
-}
 
 const getBaseAPI = (env) => {
   let data_api = {}
@@ -107,6 +90,7 @@ const getBaseAPI = (env) => {
     return data_api
   }
 }
+
 
 const makePaymentToNativeStepOne = (data_payment) => {
   const data = {
@@ -152,7 +136,6 @@ const makePaymentToNativeStepTwo = (paymentToNative_getParams, data_payment, loc
 
   if (!paymentParams) return 
 
-
   const data_cart = paymentToNative_getParams.jsonResponse.data.data.parameter.items || []
   data_cart.map((res) => {
     data_items.push({
@@ -183,7 +166,6 @@ const makePaymentToNativeStepTwo = (paymentToNative_getParams, data_payment, loc
   return NetworkModule.getResponseJson(`${data_payment.base_api_url_scrooge}`, `POST`, payloadString, false)
     .then(res => {
       const jsonResponse = JSON.parse(res)
-      console.log(jsonResponse)
       if (jsonResponse.status === '200 Ok'){
         if (jsonResponse.data.code === 200 && jsonResponse.data.message === 'Success'){
           return jsonResponse
