@@ -42,6 +42,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.IS_ADDING_PRODUCT;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.IS_HIDE_TITLE;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
@@ -99,6 +100,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     TextView subtitle;
     private BroadcastReceiver addProductReceiver;
     private boolean isAdding = false;
+    private boolean isHideTitle = false;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
 
@@ -107,6 +109,15 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         Bundle args = new Bundle();
         args.putParcelable(ARGS_SHARE_DATA, shareData);
         args.putBoolean(IS_ADDING_PRODUCT, isAddingProduct);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static ProductShareFragment newInstance(@NonNull ShareData shareData,boolean hideTitle,boolean hideSubTitle) {
+        ProductShareFragment fragment = new ProductShareFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(ARGS_SHARE_DATA, shareData);
+        args.putBoolean(IS_HIDE_TITLE, hideTitle);
         fragment.setArguments(args);
         return fragment;
     }
@@ -170,6 +181,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     protected void setupArguments(Bundle arguments) {
         this.shareData = arguments.getParcelable(ARGS_SHARE_DATA);
         this.isAdding = arguments.getBoolean(ProductDetailRouter.IS_ADDING_PRODUCT);
+        this.isHideTitle = arguments.getBoolean(ProductDetailRouter.IS_HIDE_TITLE);
     }
 
     @Override
@@ -182,6 +194,9 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         getActivity().invalidateOptionsMenu();
         progressBar.setVisibility(View.GONE);
         loadingAddProduct.setVisibility(View.GONE);
+        if(isHideTitle){
+            setVisibilityTitle(View.GONE);
+        }
         if (this.shareData != null) {
             if (shareData.getType() != null) {
                 subtitle.setText(R.string.product_share_subtitle);

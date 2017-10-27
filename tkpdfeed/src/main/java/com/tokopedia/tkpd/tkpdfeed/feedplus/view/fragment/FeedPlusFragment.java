@@ -47,6 +47,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.share.ShareBottomActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -887,6 +888,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onProductShareClicked(@NonNull ShareData data) {
-        startActivity(ShareActivity.createIntent(getActivity(),data));
+        startActivity(ShareBottomActivity.createIntent(getActivity(),data));
+        getActivity().overridePendingTransition(R.anim.pull_up,R.anim.push_down);
     }
 }

@@ -497,7 +497,9 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name="com.tokopedia.core.referral.ReferralActivity" />
+        <activity android:name=".referral.ReferralActivity" />
+        <activity android:name=".share.ShareBottomActivity"
+            android:theme="@style/Theme.AppCompat.Translucent"></activity>
     </application>
 
 </manifest>
