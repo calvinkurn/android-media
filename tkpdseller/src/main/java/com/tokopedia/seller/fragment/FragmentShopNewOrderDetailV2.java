@@ -401,11 +401,16 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             holder.viewDefaultDestination.setVisibility(View.VISIBLE);
             holder.viewPickupLocationCourier.setVisibility(View.GONE);
         }
-        if (payment.getPaymentProcessDayLeft() > 0 && orderDetail.getDetailPartialOrder().equals("1"))
-            holder.PartialButton.setVisibility(View.VISIBLE);
+
+        if(payment != null){
+            if (payment.getPaymentProcessDayLeft() != null && payment.getPaymentProcessDayLeft() > 0 && orderDetail.getDetailPartialOrder().equals("1"))
+                holder.PartialButton.setVisibility(View.VISIBLE);
+            else if (payment.getPaymentProcessDayLeft() < 0)
+                holder.AcceptButton.setVisibility(View.GONE);
+        }
+
         holder.Deadline.setText(payment.getPaymentProcessDueDate());
-        if (payment.getPaymentProcessDayLeft() < 0)
-            holder.AcceptButton.setVisibility(View.GONE);
+
         if (permission.equals("0")) {
             holder.AcceptButton.setVisibility(View.GONE);
             holder.RejectButton.setVisibility(View.GONE);
