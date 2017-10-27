@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard;
 
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -9,6 +10,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProveAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
 
@@ -32,6 +34,7 @@ public class ChatLeftViewHolder extends AbstractViewHolder<ChatLeftViewModel> {
     View layoutDate, layoutTitle;
     TextView tvMessage, tvDate, tvUserTitle, tvUsername;
     RecyclerView rvAttachment;
+    ChatProveAdapter adapter;
 
     public ChatLeftViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
         super(itemView);
@@ -50,6 +53,11 @@ public class ChatLeftViewHolder extends AbstractViewHolder<ChatLeftViewModel> {
         tvMessage.setText(MethodChecker.fromHtml(element.getConversation().getMessage()));
         if (element.getConversation().getAttachment() == null || element.getConversation().getAttachment().size() == 0) {
             rvAttachment.setVisibility(View.GONE);
+        } else {
+            rvAttachment.setVisibility(View.VISIBLE);
+            adapter = new ChatProveAdapter(itemView.getContext(), element.getConversation().getAttachment());
+            rvAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
+            rvAttachment.setAdapter(adapter);
         }
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
         tvDate.setText(date);
