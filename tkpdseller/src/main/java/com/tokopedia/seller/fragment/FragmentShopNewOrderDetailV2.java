@@ -407,9 +407,10 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
                 holder.PartialButton.setVisibility(View.VISIBLE);
             else if (payment.getPaymentProcessDayLeft() < 0)
                 holder.AcceptButton.setVisibility(View.GONE);
+            holder.Deadline.setText(payment.getPaymentProcessDueDate());
+        }else{
+            holder.Deadline.setVisibility(View.GONE);
         }
-
-        holder.Deadline.setText(payment.getPaymentProcessDueDate());
 
         if (permission.equals("0")) {
             holder.AcceptButton.setVisibility(View.GONE);
