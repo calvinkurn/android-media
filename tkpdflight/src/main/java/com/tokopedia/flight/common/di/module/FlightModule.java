@@ -16,35 +16,4 @@ import retrofit2.Retrofit;
 @Module
 public class FlightModule {
 
-//    @FlightScope
-//    @Provides
-//    DatePickerPresenter provideDatePickerPresenter(FetchDatePickerUseCase fetchDatePickerUseCase,
-//                                                   SaveDatePickerUseCase saveDatePickerUseCase,
-//                                                   ClearDatePickerUseCase clearDatePickerUseCase) {
-//        return new DatePickerPresenterImpl(fetchDatePickerUseCase, saveDatePickerUseCase, clearDatePickerUseCase);
-//    }
-//
-//    @ProductScope
-//    @Provides
-//    DatePickerRepository provideDatePickerRepository(DatePickerDataSource datePickerDataSource) {
-//        return new DatePickerRepositoryImpl(datePickerDataSource);
-//    }
-//
-//    @ProductScope
-//    @Provides
-//    GlobalCacheManager provideGlobalCacheManager(){
-//        return new GlobalCacheManager();
-//    }
-//
-//    @ProductScope
-//    @Provides
-//    public ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
-//        return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
-//    }
-//
-//    @ProductScope
-//    @Provides
-//    public ShopApi provideShopApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
-//        return retrofit.create(ShopApi.class);
-//    }
 }
