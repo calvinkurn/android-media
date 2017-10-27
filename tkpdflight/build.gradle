@@ -6,6 +6,11 @@ def getTkpdAbstraction() {
             rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
 }
 
+def getTkpdUseCase() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -35,6 +40,7 @@ apt {
 
 dependencies {
     compile getTkpdAbstraction()
+    compile getTkpdUseCase()
 
     apt rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore

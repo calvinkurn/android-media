@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.data.source.cache.DataListCacheSource;
 import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
 import com.tokopedia.abstraction.base.data.source.database.DataListDBSource;
 
+import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
@@ -25,12 +26,12 @@ public abstract class DataListSource<T> {
         this.dataListCloudManager = dataListCloudManager;
     }
 
-    private Observable<Boolean> updateLatestData() {
+    protected Observable<Boolean> updateLatestData(final HashMap<String, Object> params) {
         return dataListDBManager.isDataAvailable().flatMap(new Func1<Boolean, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
                 if (!aBoolean) {
-                    return getRefreshDataObservable();
+                    return getRefreshDataObservable(params);
                 }
                 return dataListCacheManager.isExpired().flatMap(new Func1<Boolean, Observable<Boolean>>() {
                     @Override
@@ -38,18 +39,18 @@ public abstract class DataListSource<T> {
                         if (!aBoolean) {
                             return Observable.just(true);
                         }
-                        return getRefreshDataObservable();
+                        return getRefreshDataObservable(params);
                     }
                 });
             }
         });
     }
 
-    private Observable<Boolean> getRefreshDataObservable() {
+    private Observable<Boolean> getRefreshDataObservable(final HashMap<String, Object> params) {
         return dataListDBManager.deleteAll().flatMap(new Func1<Boolean, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
-                return dataListCloudManager.getData().flatMap(new Func1<List<T>, Observable<Boolean>>() {
+                return dataListCloudManager.getData(params).flatMap(new Func1<List<T>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(List<T> ts) {
                         return dataListDBManager.insertAll(ts).flatMap(new Func1<Boolean, Observable<Boolean>>() {
