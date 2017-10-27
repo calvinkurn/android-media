@@ -73,6 +73,7 @@ public class DetailResChatFragment
         implements DetailResChatFragmentListener.View {
 
     public static final int NEXT_STATUS_CURRENT = 1;
+    private static final int COUNT_MAX_ATTACHMENT = 5;
 
     public static final String ACTION_CREATE = "create";
 
@@ -258,7 +259,7 @@ public class DetailResChatFragment
         rvChat.setLayoutManager(new LinearLayoutManager(getActivity()));
         chatAdapter = new ChatAdapter(new DetailChatTypeFactoryImpl(this));
         rvChat.setAdapter(chatAdapter);
-        rvAttachment.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvAttachment.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         attachmentAdapter = AttachmentAdapter.createAdapter(getActivity(), true);
         attachmentAdapter.setListener(getAttachmentAdapterListener());
         rvAttachment.setAdapter(attachmentAdapter);
@@ -277,6 +278,9 @@ public class DetailResChatFragment
                     @Override
                     public void onClick(View v) {
                         attachmentAdapter.getList().remove(position);
+                        if (attachmentAdapter.getList().size() == 0) {
+                            rvAttachment.setVisibility(View.GONE);
+                        }
                         attachmentAdapter.notifyDataSetChanged();
                     }
                 };
@@ -315,7 +319,7 @@ public class DetailResChatFragment
         ivAttachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (attachmentAdapter.getList().size() < 5) {
+                if (attachmentAdapter.getList().size() < COUNT_MAX_ATTACHMENT) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage(context.getString(R.string.dialog_upload_option));
                     builder.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
@@ -502,6 +506,10 @@ public class DetailResChatFragment
     @Override
     public void addAttachmentFile(AttachmentViewModel attachment) {
         attachmentAdapter.addImage(attachment);
+        if (attachmentAdapter.getList().size() != 0) {
+            rvAttachment.setVisibility(View.VISIBLE);
+        }
+        attachmentAdapter.notifyDataSetChanged();
     }
 
     @Override
