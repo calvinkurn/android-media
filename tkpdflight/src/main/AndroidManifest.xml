@@ -11,8 +11,7 @@
             android:name=".airport.view.activity.FlightAirportPickerActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".dashboard.view.activity.SelectFlightPassengerActivity"></activity>
 
         <activity
