@@ -45,4 +45,10 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
             }
         };
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        flightAirportPickerUseCase.unsubscribe();
+    }
 }

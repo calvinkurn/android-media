@@ -65,15 +65,15 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     }
 
     @Override
-    public void onSearchSubmitted(String text) {
-        super.onSearchSubmitted(text);
+    public void onSearchTextChanged(String text) {
+        super.onSearchTextChanged(text);
         flightAirportPickerPresenter.getAirportList(text);
     }
 
     @Override
-    public void onSearchTextChanged(String text) {
-        super.onSearchTextChanged(text);
-        flightAirportPickerPresenter.getAirportList(text);
+    public void onDestroy() {
+        super.onDestroy();
+        flightAirportPickerPresenter.detachView();
     }
 
     @Override
