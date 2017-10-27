@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, ListView } from 'react-native';
+import { FlatList, StyleSheet, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, ListView } from 'react-native';
 import { emailValidation } from '../../../lib/utility'
 import PopupDialog, { DialogTitle } from 'react-native-popup-dialog';
 import { NavigationModule } from 'NativeModules'
@@ -42,17 +42,17 @@ class PaymentInvoice extends Component {
     })
   }
 
-  _renderProductList(rowData, sectionID, rowID) {
+  _renderProductList = ({item}) => {
     return (
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%' }}>
         <View style={{ width: "12%", height: '20%' }}>
-          <Image source={{ uri: rowData.imageUrl }} style={styles.productImage} ></Image>
+          <Image source={{ uri: item.imageUrl }} style={styles.productImage} ></Image>
         </View>
         <View style={{ width: '76%', height: '20%', flexDirection: 'column', justifyContent: 'flex-start' }}>
-          <Text style={[styles.font14, styles.fontcolor71, { width: '80%' }]}>{rowData.name} </Text>
-          <Text style={[styles.font13, styles.fontcolor61, { marginTop: 10 }]}>Jumlah Barang: {rowData.quantity}</Text>
+          <Text style={[styles.font14, styles.fontcolor71, { width: '80%' }]}>{item.name} </Text>
+          <Text style={[styles.font13, styles.fontcolor61, { marginTop: 10 }]}>Jumlah Barang: {item.quantity}</Text>
         </View>
-        <Text style={[styles.font14, styles.fontcolor71]}>Rp {rowData.price}</Text>
+        <Text style={[styles.font14, styles.fontcolor71]}>Rp {item.price}</Text>
       </View>
     );
   }
@@ -78,11 +78,12 @@ class PaymentInvoice extends Component {
               <Text style={styles.text3}>{data.invoiceRef}</Text>
             </View>
 
-            {/* <ListView
-              contentContainerStyle={[styles.row, styles.row2]}
-              dataSource={data.items}
-              enableEmptySections={true}
-              renderRow={this._renderProductList.bind(this)} /> */}
+            <FlatList 
+              data={data.items}
+              keyExtractor={item => item.id}
+              renderItem={this._renderProductList}
+              numColumns={1} />
+
               <View style={{paddingRight: '2%', paddingLeft: '3%', backgroundColor: '#FFFFFF'}}>
                   <Dash style={{width:"100%", height:2}} dashColor="#F0F0F0"/>
               </View>

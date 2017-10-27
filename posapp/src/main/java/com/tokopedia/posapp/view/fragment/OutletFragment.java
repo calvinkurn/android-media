@@ -196,7 +196,7 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
                         && keyEvent.getAction() == KeyEvent.ACTION_DOWN
                         && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                     outletPresenter.getOutlet(editSearchOutlet.getText().toString().trim());
-                    scrollListener.resetState();
+//                    scrollListener.resetState();
                 }
                 return true;
             }
