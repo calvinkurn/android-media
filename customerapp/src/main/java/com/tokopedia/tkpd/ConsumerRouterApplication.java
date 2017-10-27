@@ -41,6 +41,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.DateLabelUtils;
@@ -163,8 +164,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToProductDetail(Context context, String productUrl) {
-        Intent intent = ProductInfoActivity.createInstance(context, productUrl);
-        context.startActivity(intent);
+        DeepLinkChecker.openProduct(productUrl, context);
     }
 
     @Override

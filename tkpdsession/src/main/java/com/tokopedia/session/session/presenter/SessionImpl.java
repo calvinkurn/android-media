@@ -3,24 +3,16 @@ package com.tokopedia.session.session.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 
-import com.localytics.android.Customer;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.analytics.AppEventTracking;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by m.normansyah on 04/11/2015.
@@ -170,48 +162,33 @@ public class SessionImpl implements Session {
     }
 
     @Override
-    public void sendLocalyticsEvent(Bundle bundle, int type) {
+    public void sendAnalyticsEvent(Bundle bundle, int type) {
         CommonUtils.dumper("MoEngage called login events type "+bundle.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, 0));
         if (type == DownloadService.LOGIN_ACCOUNTS_INFO ||
                 type == DownloadService.REGISTER_PASS_PHONE)
             return;
         switch (bundle.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, 0)){
             case DownloadService.REGISTER_GOOGLE:
-                sendLocalyticsRegisterEvent(bundle, AppEventTracking.GTMCacheValue.GMAIL);
+                sendMoEngageRegisterEvent(bundle, AppEventTracking.GTMCacheValue.GMAIL);
                 break;
             case DownloadService.REGISTER_FACEBOOK:
-                sendLocalyticsRegisterEvent(bundle, AppEventTracking.GTMCacheValue.FACEBOOK);
+                sendMoEngageRegisterEvent(bundle, AppEventTracking.GTMCacheValue.FACEBOOK);
                 break;
             case DownloadService.REGISTER_WEBVIEW:
-                sendLocalyticsRegisterEvent(bundle, AppEventTracking.GTMCacheValue.WEBVIEW);
+                sendMoEngageRegisterEvent(bundle, AppEventTracking.GTMCacheValue.WEBVIEW);
                 break;
             case DownloadService.LOGIN_GOOGLE:
-                sendLocalyticsLoginEvent(bundle, AppEventTracking.GTMCacheValue.GMAIL);
                 sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.GMAIL);
                 break;
             case DownloadService.LOGIN_FACEBOOK:
-                sendLocalyticsLoginEvent(bundle, AppEventTracking.GTMCacheValue.FACEBOOK);
                 sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.FACEBOOK);
                 break;
             case DownloadService.LOGIN_WEBVIEW:
-                sendLocalyticsLoginEvent(bundle, AppEventTracking.GTMCacheValue.WEBVIEW);
                 sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.WEBVIEW);
                 break;
             case DownloadService.LOGIN_ACCOUNTS_TOKEN:
-                sendLocalyticsLoginEvent(bundle, AppEventTracking.GTMCacheValue.EMAIL);
                 sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.EMAIL);
                 break;
-        }
-    }
-
-    @Override
-    public void sendNotifLocalyticsCallback(Intent intent) {
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            if (bundle.containsKey("ll")){
-                Jordan.init(context).getLocalyticsContainer()
-                        .sendNotificationCallback(intent);
-            }
         }
     }
 
@@ -219,46 +196,7 @@ public class SessionImpl implements Session {
         TrackingUtils.setMoEUserAttributes(bundle,label);
     }
 
-    private void sendLocalyticsLoginEvent(Bundle bundle, String label){
-
-        Map<String, String> attributesLogin = new HashMap<String, String>();
-        Jordan.init(context).getLocalyticsContainer().sendEventLogin(
-                new Customer.Builder()
-                        .setCustomerId(
-                                bundle.getString(AppEventTracking.USER_ID_KEY,
-                                        AppEventTracking.NOT_AVAILABLE)
-                        )
-                        .setFirstName(bundle.getString(AppEventTracking.FULLNAME_KEY,
-                                AppEventTracking.NOT_AVAILABLE))
-                        .setEmailAddress(
-                                bundle.getString(AppEventTracking.EMAIL_KEY,
-                                        AppEventTracking.NOT_AVAILABLE)
-                        )
-                        .build()
-                , label,
-                attributesLogin
-        );
-    }
-
-    private void sendLocalyticsRegisterEvent(Bundle bundle, String label){
-
-        Map<String, String> attributesLogin = new HashMap<>();
-        Jordan.init(context).getLocalyticsContainer().sendEventRegister(
-                new Customer.Builder()
-                        .setCustomerId(
-                                bundle.getString(AppEventTracking.USER_ID_KEY,
-                                        AppEventTracking.NOT_AVAILABLE)
-                        )
-                        .setFirstName(bundle.getString(AppEventTracking.FULLNAME_KEY,
-                                AppEventTracking.NOT_AVAILABLE))
-                        .setEmailAddress(
-                                bundle.getString(AppEventTracking.EMAIL_KEY,
-                                        AppEventTracking.NOT_AVAILABLE)
-                        )
-                        .build()
-                , label,
-                attributesLogin
-        );
+    private void sendMoEngageRegisterEvent(Bundle bundle, String label){
 
         TrackingUtils.setMoEngageUser(new CustomerWrapper.Builder()
                 .setCustomerId(

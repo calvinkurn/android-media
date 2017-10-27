@@ -165,29 +165,6 @@ public class TopPayPresenter implements ITopPayPresenter {
             }
         }
 
-
-        /**
-         * Localytics Block
-         *
-         */
-        Map<String, String> values = new HashMap<>();
-        values.put(
-                view.getStringFromResource(com.tokopedia.core.R.string.event_payment_method),
-                thanksTopPayData.getParameter().getGatewayName());
-        values.put(
-                view.getStringFromResource(
-                        com.tokopedia.core.R.string.event_value_total_transaction
-                ), revenue
-        );
-        values.put(view.getStringFromResource(
-                com.tokopedia.core.R.string.value_total_quantity), qty + ""
-        );
-        values.put(view.getStringFromResource(
-                com.tokopedia.core.R.string.value_shipping_fee), totalShipping + ""
-        );
-
-        PaymentTracking.eventTransactionLoca(values, locaProducts);
-
         /**
          * AppsFlyer Block
          *

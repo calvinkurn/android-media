@@ -132,6 +132,8 @@
     <string name="error_message_not_found_product">Produk yang anda pilih saat ini tidak tersedia</string>
     <string name="ussd_batal_label">Batal</string>
 
+    <string name="input_number">Masukkan nomor</string>
+
     <string name="title_help_history">Bantuan</string>
     <string name="tokocash">Tokocash</string>
     <string name="title_spinner_help_category">Pilih Kategori Kendala</string>
