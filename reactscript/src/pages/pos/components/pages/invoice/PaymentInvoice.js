@@ -62,7 +62,10 @@ class PaymentInvoice extends Component {
 
   render() {
     console.log(this.props)
-    const paymentDetails = this.props.screenProps.data.data.paymentDetails;
+    const data = JSON.parse(this.props.screenProps.data.data);
+    console.log(data)
+    const paymentDetails = data.paymentDetails;
+    console.log(paymentDetails)
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
@@ -71,14 +74,14 @@ class PaymentInvoice extends Component {
               <Image style={{ width: 111, height: 85 }} source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Success_icon.png' }} />
               <Text style={styles.text1}> Transaksi Berhasil! </Text>
               <Text style={styles.text2}> Terima kasih telah berbelanja di toko kami</Text>
-              <Text style={styles.text3}> IVR/20170609/XVII/VI/13461162</Text>
+              <Text style={styles.text3}>{data.invoiceRef}</Text>
             </View>
 
-            <ListView
+            {/* <ListView
               contentContainerStyle={[styles.row, styles.row2]}
-              dataSource={this.props.screenProps.data.data.items}
+              dataSource={data.items}
               enableEmptySections={true}
-              renderRow={this._renderProductList.bind(this)} />
+              renderRow={this._renderProductList.bind(this)} /> */}
               <View style={{paddingRight: '2%', paddingLeft: '3%', backgroundColor: '#FFFFFF'}}>
                   <Dash style={{width:"100%", height:2}} dashColor="#F0F0F0"/>
               </View>
@@ -94,7 +97,7 @@ class PaymentInvoice extends Component {
               </View>
               <View style={{ flexDirection: 'row' }}>
                 <Text style={{ fontSize: 16, color: '#0000008a' }}>Total Pembayaran</Text>
-                <Text style={{ fontSize: 16, color: '#000000b3' }}> Rp {paymentDetails.amount}</Text>
+                <Text style={{ fontSize: 16, color: '#000000b3' }}> Rp {paymentDetails[0].amount}</Text>
               </View>
             </View>
                 <View style={[styles.row, styles.row3]} >
