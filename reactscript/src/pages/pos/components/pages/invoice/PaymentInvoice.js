@@ -49,9 +49,9 @@ class PaymentInvoice extends Component {
         </View>
         <View style={{ width: '76%', height: '20%', flexDirection: 'column', justifyContent: 'flex-start' }}>
           <Text style={[styles.font14, styles.fontcolor71, { width: '80%' }]}>{rowData.name} </Text>
-          <Text style={[styles.font13, styles.fontcolor61, { marginTop: 10 }]}>Jumlah Barang: {rowData.qty}</Text>
+          <Text style={[styles.font13, styles.fontcolor61, { marginTop: 10 }]}>Jumlah Barang: {rowData.quantity}</Text>
         </View>
-        <Text style={[styles.font14, styles.fontcolor71]}>{rowData.price}</Text>
+        <Text style={[styles.font14, styles.fontcolor71]}>Rp {rowData.price}</Text>
       </View>
     );
   }
@@ -62,34 +62,24 @@ class PaymentInvoice extends Component {
 
   render() {
     console.log(this.props)
+    const data = JSON.parse(this.props.screenProps.data.data);
+    console.log(data)
+    const paymentDetails = data.paymentDetails;
+    console.log(paymentDetails)
     return (
       <View style={{ flex: 1 }}>
-        {/* <View style={{
-          height: 55,
-          backgroundColor: '#42b549',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-around'
-        }}>
-          <View style={{ width: '5%', left: 10 }}>
-
-          </View>
-          <View style={{ width: '90%' }}>
-            <Text style={{ fontSize: 20, color: '#fff' }}>Invoice</Text>
-          </View>
-        </View> */}
         <ScrollView>
           <View style={styles.containers} >
             <View style={[styles.row, styles.row1]} >
               <Image style={{ width: 111, height: 85 }} source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/Success_icon.png' }} />
               <Text style={styles.text1}> Transaksi Berhasil! </Text>
               <Text style={styles.text2}> Terima kasih telah berbelanja di toko kami</Text>
-              <Text style={styles.text3}> {this.props.invoiceNo}</Text>
+              <Text style={styles.text3}>{data.invoiceRef}</Text>
             </View>
 
             {/* <ListView
               contentContainerStyle={[styles.row, styles.row2]}
-              dataSource={this.props.itemList}
+              dataSource={data.items}
               enableEmptySections={true}
               renderRow={this._renderProductList.bind(this)} /> */}
               <View style={{paddingRight: '2%', paddingLeft: '3%', backgroundColor: '#FFFFFF'}}>
@@ -107,7 +97,7 @@ class PaymentInvoice extends Component {
               </View>
               <View style={{ flexDirection: 'row' }}>
                 <Text style={{ fontSize: 16, color: '#0000008a' }}>Total Pembayaran</Text>
-                <Text style={{ fontSize: 16, color: '#000000b3' }}> {this.props.totalPrice}</Text>
+                <Text style={{ fontSize: 16, color: '#000000b3' }}> Rp {paymentDetails[0].amount}</Text>
               </View>
             </View>
                 <View style={[styles.row, styles.row3]} >

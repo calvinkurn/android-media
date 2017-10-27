@@ -33,7 +33,7 @@ public class CreateOrderMapper implements Func1<Response<TkpdResponse>, CreateOr
                 && response.body().getStatus().equals("200 Ok")) {
             Log.d("o2o", response.body().getStrResponse());
             GeneralResponse<PaymentAction> paymentAction = gson.fromJson(
-                    response.body().getStrResponse(),
+                    response.body().getStringData(),
                     new TypeToken<GeneralResponse<PaymentAction>>(){}.getType()
             );
 
