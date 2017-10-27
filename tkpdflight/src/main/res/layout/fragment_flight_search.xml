@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/background_apps"
     android:orientation="vertical">
 
     <android.support.v4.widget.NestedScrollView
@@ -17,15 +17,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/partial_flight_dashboard_banner" />
+            <com.tokopedia.design.price.PriceRangeInputView
+                android:id="@+id/price_range_input_view"
+                style="@style/LabelLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-            <include layout="@layout/partial_flight_dashboard_search" />
+            <com.tokopedia.design.price.PriceRangeInputView
+                android:id="@+id/duration_range_input_view"
+                style="@style/LabelLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_ms" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <Button
         android:id="@+id/button_submit"
-        style="@style/Button.Submit.Orange"
+        style="@style/Button.Submit.Green"
         android:text="@string/flight_search_search_ticket" />
 </LinearLayout>
