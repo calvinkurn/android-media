@@ -9,10 +9,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailGroupFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailProductFragment;
 import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -22,33 +25,12 @@ import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 
-public class TopAdsDetailGroupActivity extends TActivity
+public class TopAdsDetailGroupActivity extends BaseSimpleActivity
         implements TopAdsDetailGroupFragment.OnTopAdsDetailGroupListener {
 
     private ShowCaseDialog showCaseDialog;
 
     public static final String TAG = TopAdsDetailGroupFragment.class.getSimpleName();
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_top_ads_detail_group);
-
-        GroupAd ad = null;
-        String adId = null;
-        if (getIntent() != null && getIntent().getExtras() != null) {
-            ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
-            adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
-        }
-
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
-        if(fragment == null){
-            fragment = TopAdsDetailGroupFragment.createInstance(ad, adId);
-        }
-        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, fragment, TAG)
-                .commit();
-    }
 
     @Override
     public String getScreenName() {
@@ -125,5 +107,32 @@ public class TopAdsDetailGroupActivity extends TActivity
         Intent intent = new Intent(context, TopAdsDetailGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
         return intent;
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
+        if(fragment != null){
+            return fragment;
+        }else{
+            GroupAd ad = null;
+            String adId = null;
+            if (getIntent() != null && getIntent().getExtras() != null) {
+                ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
+                adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
+            }
+            fragment = TopAdsDetailGroupFragment.createInstance(ad, adId);
+            return fragment;
+        }
+    }
+
+    @Override
+    protected String getTagFragment() {
+        return TAG;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 }

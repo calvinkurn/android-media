@@ -57,6 +57,11 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     SnackbarRetry snackbarRetry;
 
     @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
     protected BaseDatePickerPresenter getDatePickerPresenter() {
         return new BaseDatePickerPresenterImpl(this);
     }
