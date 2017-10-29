@@ -18,7 +18,7 @@ import java.util.List;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public abstract class SelectionLabelView<T> extends BaseCustomView {
+public abstract class SelectionLabelView<T extends SelectionItem> extends BaseCustomView {
 
     private LabelView labelView;
     private RecyclerView recyclerView;
@@ -27,7 +27,7 @@ public abstract class SelectionLabelView<T> extends BaseCustomView {
 
     private String titleText;
 
-    protected abstract SelectionListAdapter getSelectionListAdapter();
+    protected abstract SelectionListAdapter<T> getSelectionListAdapter();
 
     public SelectionLabelView(Context context) {
         super(context);
@@ -73,7 +73,7 @@ public abstract class SelectionLabelView<T> extends BaseCustomView {
         requestLayout();
     }
 
-    public void setSelectionDataList(List<T> selectionDataList) {
-        adapter.setSelectionDataList(selectionDataList);
+    public void setItemList(List<T> itemList) {
+        adapter.setItemList(itemList);
     }
 }

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.design.label.selection.SelectionItem;
 import com.tokopedia.design.label.selection.text.SelectionTextLabelView;
 import com.tokopedia.design.price.PriceRangeInputView;
 import com.tokopedia.flight.R;
@@ -43,11 +44,15 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
 
             }
         });
-        List<String> stringList = new ArrayList<>();
-        stringList.add("test");
-        stringList.add("test1");
-        stringList.add("test2");
-        transitSelectionTextLabelView.setSelectionDataList(stringList);
+        List<SelectionItem<String>> selectionItemList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            SelectionItem<String> selectionItem = new SelectionItem<>();
+            selectionItem.setKey(String.valueOf(i));
+            selectionItem.setValue(String.valueOf(i));
+            selectionItemList.add(selectionItem);
+        }
+
+        transitSelectionTextLabelView.setItemList(selectionItemList);
         return view;
     }
 

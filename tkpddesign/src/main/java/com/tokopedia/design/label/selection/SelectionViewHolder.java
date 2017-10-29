@@ -10,7 +10,7 @@ import com.tokopedia.design.item.DeletableItemView;
  * Created by nathan on 10/29/17.
  */
 
-public abstract class SelectionViewHolder<T> extends RecyclerView.ViewHolder {
+public abstract class SelectionViewHolder<T extends SelectionItem> extends RecyclerView.ViewHolder {
 
     protected DeletableItemView selectedItem;
 

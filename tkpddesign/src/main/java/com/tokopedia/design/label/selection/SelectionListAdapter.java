@@ -11,20 +11,20 @@ import java.util.List;
  * Created by henrypriyono on 8/11/17.
  */
 
-public abstract class SelectionListAdapter<T> extends RecyclerView.Adapter<SelectionViewHolder<T>> {
+public abstract class SelectionListAdapter<T extends SelectionItem> extends RecyclerView.Adapter<SelectionViewHolder<T>> {
 
-    private List<T> selectionDataList;
+    private List<T> itemList;
 
     public SelectionListAdapter() {
-        selectionDataList = new ArrayList<>();
+        itemList = new ArrayList<>();
     }
 
     @Override
     public void onBindViewHolder(final SelectionViewHolder<T> holder, int position) {
-        holder.bind(selectionDataList.get(position), position, new DeletableItemView.OnDeleteListener() {
+        holder.bind(itemList.get(position), position, new DeletableItemView.OnDeleteListener() {
             @Override
             public void onDelete() {
-                selectionDataList.remove(holder.getAdapterPosition());
+                itemList.remove(holder.getAdapterPosition());
                 notifyItemRemoved(holder.getAdapterPosition());
                 notifyItemRangeChanged(holder.getAdapterPosition(), getItemCount());
             }
@@ -33,11 +33,11 @@ public abstract class SelectionListAdapter<T> extends RecyclerView.Adapter<Selec
 
     @Override
     public int getItemCount() {
-        return selectionDataList.size();
+        return itemList.size();
     }
 
-    public void setSelectionDataList(List<T> selectionDataList) {
-        this.selectionDataList = selectionDataList;
+    public void setItemList(List<T> itemList) {
+        this.itemList = itemList;
         notifyDataSetChanged();
     }
 }

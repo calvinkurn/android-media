@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
+import com.tokopedia.design.label.selection.SelectionItem;
 import com.tokopedia.design.label.selection.SelectionLabelView;
 import com.tokopedia.design.label.selection.SelectionListAdapter;
 
@@ -13,7 +14,7 @@ import com.tokopedia.design.label.selection.SelectionListAdapter;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class SelectionTextLabelView extends SelectionLabelView<String> {
+public class SelectionTextLabelView extends SelectionLabelView<SelectionItem<String>> {
 
     @Override
     protected SelectionListAdapter getSelectionListAdapter() {
