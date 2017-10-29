@@ -18,6 +18,7 @@ import android.view.View;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.seller.base.view.activity.BaseToolbarActivity;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.listener.DatePickerTabListener;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -40,7 +41,7 @@ import java.util.ArrayList;
  * Created by nathan on 5/15/17.
  */
 
-public class TopAdsKeywordListActivity extends BaseActivity implements
+public class TopAdsKeywordListActivity extends BaseToolbarActivity implements
         HasComponent<AppComponent>, SearchView.OnQueryTextListener,
         KeywordListListener.Listener,
         TopAdsAdListFragment.OnAdListFragmentListener,
@@ -61,35 +62,34 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     private MenuItem filter;
 
     @Override
+    protected void setupFragment(Bundle savedInstanceState) { /* remain empty */ }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_top_ads_keyword_list;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_top_ads_keyword_list);
         totalGroupAd = getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_TOTAL_GROUP_ADS, 0);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.indicator);
         keywordListTablayout = new KeywordListListener(tabLayout, this);
         viewPager = (ViewPager) findViewById(R.id.pager);
-
-        setSupportActionBar(toolbar);
-        ActionBar supportActionBar = getSupportActionBar();
-        if (supportActionBar != null) {
-            supportActionBar.setDisplayHomeAsUpEnabled(true);
-            supportActionBar.setDisplayShowHomeEnabled(true);
-            supportActionBar.setHomeButtonEnabled(true);
-        }
 
         pagerAdapter = getViewPagerAdapter();
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(keywordListTablayout);
         DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
-        tabLayout.setOnTabSelectedListener(tabListener);
+        tabLayout.addOnTabSelectedListener(tabListener);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_keyword_title));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_keyword_title_negative));
-    }
-
-    private void fabOnClick() {
-        getTopAdsBaseKeywordListFragment().onCreateAd();
     }
 
     private TopAdsPagerAdapter getViewPagerAdapter() {

@@ -48,6 +48,11 @@ public class TopAdsAddCreditActivity extends BaseSimpleActivity {
     }
 
     @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
     public String getScreenName() {
         return null;
     }

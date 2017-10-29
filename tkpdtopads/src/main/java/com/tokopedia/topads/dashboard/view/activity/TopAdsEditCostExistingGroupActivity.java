@@ -25,6 +25,11 @@ public class TopAdsEditCostExistingGroupActivity extends BaseSimpleActivity impl
     }
 
     @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
         if(fragment != null){

@@ -2,14 +2,19 @@ package com.tokopedia.topads.dashboard.view.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupAdListFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductAdListFragment;
 import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -23,18 +28,9 @@ import java.util.ArrayList;
  * Created by zulfikarrahman on 12/22/16.
  */
 
-public class TopAdsGroupAdListActivity extends TActivity
+public class TopAdsGroupAdListActivity extends BaseSimpleActivity
         implements TopAdsAdListFragment.OnAdListFragmentListener {
     private ShowCaseDialog showCaseDialog;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_top_ads_group_ad_list);
-        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsGroupAdListFragment.createInstance(), TopAdsGroupAdListFragment.class.getSimpleName())
-                .commit();
-    }
 
     @Override
     public String getScreenName() {
@@ -125,4 +121,24 @@ public class TopAdsGroupAdListActivity extends TActivity
 
     }
 
+    @Override
+    protected Fragment getNewFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
+        if(fragment != null){
+            return fragment;
+        }else{
+            fragment = TopAdsGroupAdListFragment.createInstance();
+            return fragment;
+        }
+    }
+
+    @Override
+    protected String getTagFragment() {
+        return TopAdsGroupAdListFragment.class.getSimpleName();
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
 }
