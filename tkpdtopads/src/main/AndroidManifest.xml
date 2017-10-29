@@ -73,13 +73,11 @@
         <activity
             android:name=".dashboard.view.activity.TopAdsStatisticProductActivity"
             android:label="@string/title_activity_statistic"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".dashboard.view.activity.TopAdsStatisticShopActivity"
             android:label="@string/title_activity_statistic"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".dashboard.view.activity.TopAdsAddProductListActivity"
             android:label="@string/title_activity_top_ads_list"
