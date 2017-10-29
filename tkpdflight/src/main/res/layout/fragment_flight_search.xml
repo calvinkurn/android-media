@@ -30,6 +30,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_ms" />
 
+            <com.tokopedia.design.label.selection.text.SelectionTextLabelView
+                android:id="@+id/selection_text_label_layout_transit"
+                style="@style/LabelLayout"
+                android:layout_marginTop="@dimen/margin_ms"
+                app:slv_title="@string/flight_search_filter_transit" />
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
