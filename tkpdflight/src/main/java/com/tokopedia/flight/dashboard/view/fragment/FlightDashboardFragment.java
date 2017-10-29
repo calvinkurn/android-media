@@ -16,6 +16,7 @@ import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.dashboard.view.activity.SelectFlightPassengerActivity;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.SelectFlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
+import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 
 /**
  * Created by nathan on 10/19/17.
@@ -44,6 +45,7 @@ public class FlightDashboardFragment extends Fragment {
         TextInputView airportDepartureTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_departure_airport);
         TextInputView airportArrivalTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_arrival_airport);
         TextInputView passengerTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_passenger);
+        TextInputView classTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_class);
         airportDepartureTextInputView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +68,13 @@ public class FlightDashboardFragment extends Fragment {
                         .build();
                 Intent intent = SelectFlightPassengerActivity.getCallingIntent(getActivity(), passData);
                 getActivity().startActivityForResult(intent, REQUEST_CODE_AIRPORT_PASSENGER);
+            }
+        });
+        classTextInputView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = FlightSearchFilterActivity.createInstance(getActivity());
+                getActivity().startActivity(intent);
             }
         });
 

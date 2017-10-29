@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="LabelView">
+        <attr name="lv_title" format="string" />
+        <attr name="lv_title_text_size" format="dimension" />
+        <attr name="lv_title_color" format="color" />
+        <attr name="lv_title_min_width" format="dimension" />
+        <attr name="lv_title_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <attr name="lv_content" format="string" />
+        <attr name="lv_content_color" format="color" />
+        <attr name="lv_content_text_size" format="dimension"/>
+        <attr name="lv_content_max_lines" format="integer" />
+        <attr name="lv_content_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <attr name="lv_font_size" format="dimension" />
+        <attr name="lv_show_arrow" format="boolean" />
+    </declare-styleable>
+
     <declare-styleable name="SearchInputView">
         <attr name="siv_search_icon" format="reference" />
         <attr name="siv_search_text" format="string" />

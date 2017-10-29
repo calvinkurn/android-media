@@ -83,4 +83,6 @@
     <dimen name="alphabetical_sidebar_magnifier_padding">10dp</dimen>
     <dimen name="alphabetical_sidebar_to_magnifier_distance">20dp</dimen>
     <dimen name="alphabetical_section_header_padding">16dp</dimen>
+
+    <dimen name="lv_min_title_width">100dp</dimen>
 </resources>
