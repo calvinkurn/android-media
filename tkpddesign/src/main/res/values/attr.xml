@@ -138,8 +138,8 @@
         <attr name="bav_label_2" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="PriceSeekbarDynamicBackground">
-        <attr name="backColor" format="color" />
-        <attr name="foreColor" format="color" />
+    <declare-styleable name="DynamicBackgroundSeekBar">
+        <attr name="dbsb_background_color" format="color" />
+        <attr name="dbsb_foreground_color" format="color" />
     </declare-styleable>
 </resources>

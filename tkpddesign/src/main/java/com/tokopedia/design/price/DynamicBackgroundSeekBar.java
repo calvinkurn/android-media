@@ -10,13 +10,12 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.tokopedia.design.R;
-import com.tokopedia.design.base.BaseCustomView;
 
 /**
  * Created by henrypriyono on 8/15/17.
  */
 
-public class PriceSeekbarDynamicBackground extends View {
+public class DynamicBackgroundSeekBar extends View {
 
     private float firstPointPercentage = 0;
     private float secondPointPercentage = 0;
@@ -25,27 +24,25 @@ public class PriceSeekbarDynamicBackground extends View {
     private int foreColor;
     private int backColor;
 
-    public PriceSeekbarDynamicBackground(Context context) {
+    public DynamicBackgroundSeekBar(Context context) {
         super(context);
         init();
     }
 
-    public PriceSeekbarDynamicBackground(Context context, @Nullable AttributeSet attrs) {
+    public DynamicBackgroundSeekBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
-    public PriceSeekbarDynamicBackground(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public DynamicBackgroundSeekBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
 
     private void init(Context context, AttributeSet attrs) {
-        TypedArray typedArray
-                = context.obtainStyledAttributes(attrs, R.styleable.PriceSeekbarDynamicBackground, 0, 0);
-
-        foreColor = typedArray.getColor(R.styleable.PriceSeekbarDynamicBackground_foreColor, Color.GREEN);
-        backColor = typedArray.getColor(R.styleable.PriceSeekbarDynamicBackground_backColor, Color.GRAY);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.DynamicBackgroundSeekBar, 0, 0);
+        foreColor = typedArray.getColor(R.styleable.DynamicBackgroundSeekBar_dbsb_foreground_color, Color.GREEN);
+        backColor = typedArray.getColor(R.styleable.DynamicBackgroundSeekBar_dbsb_background_color, Color.GRAY);
         typedArray.recycle();
 
         init();
