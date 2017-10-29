@@ -15,7 +15,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:divider="@drawable/bg_line_separator"
+            android:orientation="vertical"
+            android:showDividers="middle|beginning|end">
 
             <com.tokopedia.design.price.PriceRangeInputView
                 android:id="@+id/price_range_input_view"
@@ -35,6 +37,21 @@
                 style="@style/LabelLayout"
                 android:layout_marginTop="@dimen/margin_ms"
                 app:slv_title="@string/flight_search_filter_transit" />
+
+            <com.tokopedia.design.label.selection.text.SelectionTextLabelView
+                android:id="@+id/selection_text_label_layout_airplane"
+                style="@style/LabelLayout"
+                app:slv_title="@string/flight_search_filter_airplane" />
+
+            <com.tokopedia.design.label.selection.text.SelectionTextLabelView
+                android:id="@+id/selection_text_label_layout_departure_time"
+                style="@style/LabelLayout"
+                app:slv_title="@string/flight_search_filter_departure_time" />
+
+            <com.tokopedia.design.label.selection.text.SelectionTextLabelView
+                android:id="@+id/selection_text_label_layout_refund_policy"
+                style="@style/LabelLayout"
+                app:slv_title="@string/flight_search_filter_refund_policy" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

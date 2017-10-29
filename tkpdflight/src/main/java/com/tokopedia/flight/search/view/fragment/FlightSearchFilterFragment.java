@@ -28,6 +28,9 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
     }
 
     private SelectionTextLabelView transitSelectionTextLabelView;
+    private SelectionTextLabelView airplaneSelectionTextLabelView;
+    private SelectionTextLabelView departureTimeSelectionTextLabelView;
+    private SelectionTextLabelView refundPolicySelectionTextLabelView;
 
     @Override
     protected void initInjector() {
@@ -40,6 +43,9 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         View view = inflater.inflate(R.layout.fragment_flight_search, container, false);
         PriceRangeInputView priceRangeInputView = (PriceRangeInputView) view.findViewById(R.id.price_range_input_view);
         transitSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_transit);
+        airplaneSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_airplane);
+        departureTimeSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_departure_time);
+        refundPolicySelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_refund_policy);
         transitSelectionTextLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +65,42 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
             @Override
             public void onDelete(SelectionItem<String> selectionItem) {
                 CommonUtils.dumper(selectionItem.getKey() + " - " + selectionItem.getValue());
+            }
+        });
+        airplaneSelectionTextLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        airplaneSelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
+            @Override
+            public void onDelete(SelectionItem<String> selectionItem) {
+
+            }
+        });
+        departureTimeSelectionTextLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        departureTimeSelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
+            @Override
+            public void onDelete(SelectionItem<String> selectionItem) {
+
+            }
+        });
+        refundPolicySelectionTextLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        refundPolicySelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
+            @Override
+            public void onDelete(SelectionItem<String> selectionItem) {
+
             }
         });
         return view;

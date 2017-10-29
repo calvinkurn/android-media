@@ -36,4 +36,7 @@
     <string name="select_passenger_toolbar_title">Pilih Penumpang</string>
 
     <string name="flight_search_filter_transit">Transit</string>
+    <string name="flight_search_filter_airplane">Maskapai Penerbangan</string>
+    <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
+    <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
 </resources>
