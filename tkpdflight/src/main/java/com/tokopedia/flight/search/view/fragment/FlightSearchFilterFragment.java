@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.utils.CommonUtils;
 import com.tokopedia.design.label.selection.SelectionItem;
+import com.tokopedia.design.label.selection.SelectionLabelView;
 import com.tokopedia.design.label.selection.text.SelectionTextLabelView;
 import com.tokopedia.design.price.PriceRangeInputView;
 import com.tokopedia.flight.R;
@@ -53,6 +55,12 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         }
 
         transitSelectionTextLabelView.setItemList(selectionItemList);
+        transitSelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
+            @Override
+            public void onDelete(SelectionItem<String> selectionItem) {
+                CommonUtils.dumper(selectionItem.getKey() + " - " + selectionItem.getValue());
+            }
+        });
         return view;
     }
 

@@ -20,12 +20,25 @@ import java.util.List;
 
 public abstract class SelectionLabelView<T extends SelectionItem> extends BaseCustomView {
 
+    public interface OnDeleteListener<T> {
+        void onDelete(T t);
+    }
+
     private LabelView labelView;
     private RecyclerView recyclerView;
 
     private SelectionListAdapter<T> adapter;
 
     private String titleText;
+
+    public void setOnDeleteListener(final OnDeleteListener<T> onDeleteListener) {
+        adapter.setOnDeleteListener(new SelectionListAdapter.OnDeleteListener<T>() {
+            @Override
+            public void onDelete(T t) {
+                onDeleteListener.onDelete(t);
+            }
+        });
+    }
 
     protected abstract SelectionListAdapter<T> getSelectionListAdapter();
 
