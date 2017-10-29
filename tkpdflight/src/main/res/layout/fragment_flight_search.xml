@@ -23,14 +23,18 @@
                 android:id="@+id/price_range_input_view"
                 style="@style/LabelLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:driv_label_max="@string/flight_search_filter_price_max_label"
+                app:driv_label_min="@string/flight_search_filter_price_min_label" />
 
-            <com.tokopedia.design.price.PriceRangeInputView
+            <com.tokopedia.design.text.DecimalRangeInputView
                 android:id="@+id/duration_range_input_view"
                 style="@style/LabelLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_ms" />
+                android:layout_marginTop="@dimen/margin_ms"
+                app:driv_label_max="@string/flight_search_filter_duration_max_label"
+                app:driv_label_min="@string/flight_search_filter_duration_min_label" />
 
             <com.tokopedia.design.label.selection.text.SelectionTextLabelView
                 android:id="@+id/selection_text_label_layout_transit"

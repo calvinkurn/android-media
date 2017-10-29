@@ -1,6 +1,7 @@
-package com.tokopedia.design.price;
+package com.tokopedia.design.text;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.price.DynamicBackgroundSeekBar;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 
 import java.text.NumberFormat;
@@ -28,12 +30,11 @@ public class DecimalRangeInputView extends BaseCustomView {
     private static final int VALUE_STOP_COUNT = 100;
     private static final double DEFAULT_POWER = 2;
 
-    private View rootView;
     private TextView minLabelTextView;
     private TextView maxLabelTextView;
     private EditText minValueEditText;
     private EditText maxValueEditText;
-    private DynamicBackgroundSeekBar seekbarDynamicBackground;
+    private DynamicBackgroundSeekBar dynamicBackgroundSeekBar;
     private View minButton;
     private View maxButton;
 
@@ -41,61 +42,72 @@ public class DecimalRangeInputView extends BaseCustomView {
     private NumberTextWatcher minTextWatcher;
     private NumberTextWatcher maxTextWatcher;
 
-    private int seekbarButtonSize;
+    private int seekBarButtonSize;
     private int minBound = 0;
     private int maxBound = 0;
     private int minValue = 0;
     private int maxValue = 0;
     private float valueRange = 0;
-    private float seekbarWidth = 0;
-    private float seekbarRange = 0;
-    private float seekbarLeftOffset = 0;
+    private float seekBarWidth = 0;
+    private float seekBarRange = 0;
+    private float seekBarLeftOffset = 0;
     private int valueList[] = new int[VALUE_STOP_COUNT];
     private double baseRange = 0;
-    private double power = 0;
+    private double power = DEFAULT_POWER;
 
     private boolean isMinButtonDragging = false;
     private boolean isMaxButtonDragging = false;
 
+    private String minLabelText;
+    private String maxLabelText;
+
     public DecimalRangeInputView(@NonNull Context context) {
         super(context);
-        init(context);
+        init();
     }
 
     public DecimalRangeInputView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init(attrs);
     }
 
     public DecimalRangeInputView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init(attrs);
     }
 
-    private void init(Context context) {
-        seekbarButtonSize = context.getResources().getDimensionPixelSize(R.dimen.price_seekbar_button_size);
+    private void init(AttributeSet attrs) {
+        init();
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.DecimalRangeInputView);
+        try {
+            minLabelText = styledAttributes.getString(R.styleable.DecimalRangeInputView_driv_label_min);
+            maxLabelText = styledAttributes.getString(R.styleable.DecimalRangeInputView_driv_label_max);
+        } finally {
+            styledAttributes.recycle();
+        }
+    }
 
-        rootView = inflate(context, R.layout.widget_decimal_range_input_view, this);
-        rootView.getViewTreeObserver()
+    private void init() {
+        final View view = inflate(getContext(), R.layout.widget_decimal_range_input_view, this);
+        seekBarButtonSize = getResources().getDimensionPixelSize(R.dimen.price_seekbar_button_size);
+        view.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                seekbarLeftOffset = seekbarDynamicBackground.getX();
-                seekbarWidth = seekbarDynamicBackground.getWidth();
-                seekbarRange = seekbarWidth - 2 * seekbarButtonSize;
-                refreshButtonPosition();
-            }
-        });
-
-        seekbarDynamicBackground
-                = (DynamicBackgroundSeekBar) rootView.findViewById(R.id.seekbar_background);
-        minLabelTextView = (TextView) rootView.findViewById(R.id.min_label);
-        maxLabelTextView = (TextView) rootView.findViewById(R.id.max_label);
-        minValueEditText = (EditText) rootView.findViewById(R.id.min_value);
-        maxValueEditText = (EditText) rootView.findViewById(R.id.max_value);
-        minButton = rootView.findViewById(R.id.min_button);
-        maxButton = rootView.findViewById(R.id.max_button);
+                    @Override
+                    public void onGlobalLayout() {
+                        view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        seekBarLeftOffset = dynamicBackgroundSeekBar.getX();
+                        seekBarWidth = dynamicBackgroundSeekBar.getWidth();
+                        seekBarRange = seekBarWidth - 2 * seekBarButtonSize;
+                        refreshButtonPosition();
+                    }
+                });
+        dynamicBackgroundSeekBar = (DynamicBackgroundSeekBar) view.findViewById(R.id.seekbar_background);
+        minLabelTextView = (TextView) view.findViewById(R.id.min_label);
+        maxLabelTextView = (TextView) view.findViewById(R.id.max_label);
+        minValueEditText = (EditText) view.findViewById(R.id.min_value);
+        maxValueEditText = (EditText) view.findViewById(R.id.max_value);
+        minButton = view.findViewById(R.id.min_button);
+        maxButton = view.findViewById(R.id.max_button);
 
         minTextWatcher = new NumberTextWatcher(minValueEditText);
         maxTextWatcher = new NumberTextWatcher(maxValueEditText);
@@ -106,28 +118,49 @@ public class DecimalRangeInputView extends BaseCustomView {
         maxValueEditText.setOnFocusChangeListener(new MaxInputListener());
     }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        if (!TextUtils.isEmpty(minLabelText)) {
+            minLabelTextView.setText(minLabelText);
+        }
+        if (!TextUtils.isEmpty(maxLabelText)) {
+            maxLabelTextView.setText(maxLabelText);
+        }
+        invalidate();
+        requestLayout();
+    }
+
     public void setData(String minText, String maxText,
-                        int minBound, int maxBound,
-                        int minValue, int maxValue) {
+                        int minBound, int maxBound, int minValue, int maxValue) {
         setData(minText, maxText, minBound, maxBound, minValue, maxValue, 0);
     }
 
     public void setData(String minText, String maxText,
-                        int minBound, int maxBound,
-                        int minValue, int maxValue, double power) {
+                        int minBound, int maxBound, int minValue, int maxValue, double power) {
+        setLabel(minText, maxText);
+        setPower(power);
+        setData(minBound, maxBound, minValue, maxValue);
+    }
+
+    private void setLabel(String minText, String maxText) {
         minLabelTextView.setText(minText);
         maxLabelTextView.setText(maxText);
+    }
 
-        this.minBound = minBound;
-        this.maxBound = maxBound;
-        this.minValue = minValue;
-        this.maxValue = maxValue;
-
+    private void setPower(double power) {
         if (power > 0) {
             this.power = power;
         } else {
             this.power = DEFAULT_POWER;
         }
+    }
+
+    public void setData(int minBound, int maxBound, int minValue, int maxValue) {
+        this.minBound = minBound;
+        this.maxBound = maxBound;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
 
         updateValueCalculation();
         refreshButtonPosition();
@@ -142,11 +175,8 @@ public class DecimalRangeInputView extends BaseCustomView {
         valueList[VALUE_STOP_COUNT - 1] = maxBound;
 
         for (int i = 1; i < VALUE_STOP_COUNT - 1; i++) {
-
             double base = (double) i / (VALUE_STOP_COUNT - 1) * baseRange;
-
             valueList[i] = minBound + (int) Math.pow(base, power);
-
             int delta = valueList[i] - valueList[i - 1];
             if (delta > 0) {
                 int truncatedValue = valueList[i] % (int) Math.pow(10, (int) Math.log10(delta));
@@ -166,21 +196,21 @@ public class DecimalRangeInputView extends BaseCustomView {
     }
 
     private int getMaxButtonX() {
-        return getPositionFromValue(maxValue) + seekbarButtonSize;
+        return getPositionFromValue(maxValue) + seekBarButtonSize;
     }
 
     private int getPositionFromValue(int value) {
         double base = Math.pow(value - minBound, 1 / power);
-        double result = base / baseRange * seekbarRange;
-        return (int) (result + seekbarLeftOffset);
+        double result = base / baseRange * seekBarRange;
+        return (int) (result + seekBarLeftOffset);
     }
 
     private void refreshSeekbarBackground() {
-        seekbarDynamicBackground
-                .setFirstPointPercentage((minButton.getX() - seekbarLeftOffset) / seekbarWidth);
-        seekbarDynamicBackground
-                .setSecondPointPercentage((maxButton.getX() - seekbarLeftOffset) / seekbarWidth);
-        seekbarDynamicBackground.invalidate();
+        dynamicBackgroundSeekBar
+                .setFirstPointPercentage((minButton.getX() - seekBarLeftOffset) / seekBarWidth);
+        dynamicBackgroundSeekBar
+                .setSecondPointPercentage((maxButton.getX() - seekBarLeftOffset) / seekBarWidth);
+        dynamicBackgroundSeekBar.invalidate();
     }
 
     private void refreshInputText() {
@@ -189,7 +219,9 @@ public class DecimalRangeInputView extends BaseCustomView {
         maxValueEditText.setText(formatToRupiah(maxValue));
         minValueEditText.setSelection(minValueEditText.length());
         maxValueEditText.setSelection(maxValueEditText.length());
-        onValueChangedListener.onValueChanged(minValue, maxValue);
+        if (onValueChangedListener != null) {
+            onValueChangedListener.onValueChanged(minValue, maxValue);
+        }
         enableTextWatcher();
     }
 
@@ -218,7 +250,7 @@ public class DecimalRangeInputView extends BaseCustomView {
     }
 
     private int getMaxValue() {
-        int maxValue = getValueFromPosition(maxButton.getX() - seekbarButtonSize);
+        int maxValue = getValueFromPosition(maxButton.getX() - seekBarButtonSize);
         if (maxValue > minValue) {
             return maxValue;
         } else {
@@ -227,7 +259,7 @@ public class DecimalRangeInputView extends BaseCustomView {
     }
 
     private int getValueFromPosition(float x) {
-        float valueStopPosition = (x - seekbarLeftOffset) / seekbarRange * (VALUE_STOP_COUNT - 1);
+        float valueStopPosition = (x - seekBarLeftOffset) / seekBarRange * (VALUE_STOP_COUNT - 1);
         return valueList[Math.round(valueStopPosition)];
     }
 
@@ -252,7 +284,7 @@ public class DecimalRangeInputView extends BaseCustomView {
                 maxButton.setBackgroundResource(R.drawable.price_input_seekbar_button_neutral);
                 break;
             case MotionEvent.ACTION_MOVE:
-                float targetX = event.getRawX() - seekbarButtonSize;
+                float targetX = event.getRawX() - seekBarButtonSize;
                 if (isMinButtonDragging) {
                     float position = normalizeMinButtonPosition(targetX);
                     minButton.setX(position);
@@ -278,18 +310,18 @@ public class DecimalRangeInputView extends BaseCustomView {
     private float normalizeMinButtonPosition(float x) {
         if (x < 0) {
             return 0;
-        } else if (x > maxButton.getX() - seekbarButtonSize) {
-            return maxButton.getX() - seekbarButtonSize;
+        } else if (x > maxButton.getX() - seekBarButtonSize) {
+            return maxButton.getX() - seekBarButtonSize;
         } else {
             return x;
         }
     }
 
     private float normalizeMaxButtonPosition(float x) {
-        if (x > seekbarRange + seekbarLeftOffset + seekbarButtonSize) {
-            return seekbarRange + seekbarLeftOffset + seekbarButtonSize;
-        } else if (x < minButton.getX() + seekbarButtonSize) {
-            return minButton.getX() + seekbarButtonSize;
+        if (x > seekBarRange + seekBarLeftOffset + seekBarButtonSize) {
+            return seekBarRange + seekBarLeftOffset + seekBarButtonSize;
+        } else if (x < minButton.getX() + seekBarButtonSize) {
+            return minButton.getX() + seekBarButtonSize;
         } else {
             return x;
         }
@@ -298,7 +330,6 @@ public class DecimalRangeInputView extends BaseCustomView {
     private boolean isPointInsideView(float x, float y, View view) {
         Rect viewArea = new Rect();
         view.getGlobalVisibleRect(viewArea);
-
         return viewArea.contains((int) x, (int) y);
     }
 

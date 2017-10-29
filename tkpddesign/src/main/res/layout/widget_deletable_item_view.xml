@@ -29,8 +29,8 @@
 
     <View
         android:id="@+id/delete_button"
-        android:layout_width="@dimen/deletable_item_button_size"
-        android:layout_height="@dimen/deletable_item_button_size"
+        android:layout_width="@dimen/image_width_s"
+        android:layout_height="@dimen/image_width_s"
         android:background="@drawable/deletable_item_button" />
 
 </LinearLayout>

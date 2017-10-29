@@ -12,6 +12,7 @@ import com.tokopedia.design.label.selection.SelectionItem;
 import com.tokopedia.design.label.selection.SelectionLabelView;
 import com.tokopedia.design.label.selection.text.SelectionTextLabelView;
 import com.tokopedia.design.price.PriceRangeInputView;
+import com.tokopedia.design.text.DecimalRangeInputView;
 import com.tokopedia.flight.R;
 
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         return new FlightSearchFilterFragment();
     }
 
+    private PriceRangeInputView priceRangeInputView;
+    private DecimalRangeInputView durationDecimalRangeInputView;
     private SelectionTextLabelView transitSelectionTextLabelView;
     private SelectionTextLabelView airplaneSelectionTextLabelView;
     private SelectionTextLabelView departureTimeSelectionTextLabelView;
@@ -41,7 +44,8 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_search, container, false);
-        PriceRangeInputView priceRangeInputView = (PriceRangeInputView) view.findViewById(R.id.price_range_input_view);
+        priceRangeInputView = (PriceRangeInputView) view.findViewById(R.id.price_range_input_view);
+        durationDecimalRangeInputView = (DecimalRangeInputView) view.findViewById(R.id.duration_range_input_view);
         transitSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_transit);
         airplaneSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_airplane);
         departureTimeSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_departure_time);
@@ -60,6 +64,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
             selectionItemList.add(selectionItem);
         }
 
+        durationDecimalRangeInputView.setData(0, 10000, 100, 5000);
         transitSelectionTextLabelView.setItemList(selectionItemList);
         transitSelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
             @Override
