@@ -1,4 +1,4 @@
-package com.tokopedia.flight.airport.data.source.cache;
+package com.tokopedia.flight.airline.data.cache;
 
 import android.content.Context;
 
@@ -13,13 +13,13 @@ import javax.inject.Inject;
  * Created by hendry on 7/14/2017.
  */
 
-public class FlightAirportDataListCacheSource extends DataListCacheSource{
+public class FlightAirlineDataListCacheSource extends DataListCacheSource{
 
-    private static final String PREF_KEY_NAME = "PREF_KEY_AIRPORT_LIST";
-    private static final long ONE_WEEK = TimeUnit.DAYS.toSeconds(7);
+    private static final String PREF_KEY_NAME = "PREF_KEY_AIRLINE_LIST";
+    private static final long ONE_MONTH = TimeUnit.DAYS.toSeconds(30);
 
     @Inject
-    public FlightAirportDataListCacheSource(@ApplicationContext Context context) {
+    public FlightAirlineDataListCacheSource(@ApplicationContext Context context) {
         super(context);
     }
 
@@ -30,6 +30,6 @@ public class FlightAirportDataListCacheSource extends DataListCacheSource{
 
     @Override
     protected long getExpiredTimeInSec() {
-        return ONE_WEEK;
+        return ONE_MONTH;
     }
 }
