@@ -86,18 +86,18 @@ public class ExtrasDelegate {
             }else{
                 view.findViewById(R.id.button_add_product).setVisibility(View.GONE);
             }
-        }
 
-        view.findViewById(R.id.button_add_product).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(context != null && context instanceof TkpdCoreRouter){
-                    if(parent.getContext() != null && parent.getContext() instanceof Activity){
-                        ((TkpdCoreRouter)context).goToAddProduct(((Activity) parent.getContext()));
+            view.findViewById(R.id.button_add_product).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(context != null && context instanceof TkpdCoreRouter){
+                        if(parent.getContext() != null && parent.getContext() instanceof Activity){
+                            ((TkpdCoreRouter)context).goToAddProduct(((Activity) parent.getContext()));
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
         return new RecyclerView.ViewHolder(view) {
             @Override
             public String toString() {
