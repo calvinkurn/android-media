@@ -1,8 +1,5 @@
 package com.tokopedia.abstraction.base.data.source.cloud;
 
-import com.tokopedia.abstraction.common.network.services.BaseService;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

@@ -6,7 +6,6 @@ import com.tokopedia.flight.airport.data.source.cloud.api.FlightAirportApi;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

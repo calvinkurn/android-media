@@ -7,7 +7,6 @@ import com.tokopedia.flight.search.data.FlightSearchReturnDataListSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataListSource;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
