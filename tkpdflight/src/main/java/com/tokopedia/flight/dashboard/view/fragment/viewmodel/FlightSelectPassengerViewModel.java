@@ -7,36 +7,36 @@ import android.os.Parcelable;
  * Created by alvarisi on 10/25/17.
  */
 
-public class SelectFlightPassengerViewModel implements Parcelable, Cloneable  {
+public class FlightSelectPassengerViewModel implements Parcelable, Cloneable  {
     private int adult;
     private int children;
     private int infant;
 
-    public SelectFlightPassengerViewModel() {
+    public FlightSelectPassengerViewModel() {
     }
 
 
-    public SelectFlightPassengerViewModel(int adult, int children, int infant) {
+    public FlightSelectPassengerViewModel(int adult, int children, int infant) {
         this.adult = adult;
         this.children = children;
         this.infant = infant;
     }
 
-    protected SelectFlightPassengerViewModel(Parcel in) {
+    protected FlightSelectPassengerViewModel(Parcel in) {
         adult = in.readInt();
         children = in.readInt();
         infant = in.readInt();
     }
 
-    public static final Creator<SelectFlightPassengerViewModel> CREATOR = new Creator<SelectFlightPassengerViewModel>() {
+    public static final Creator<FlightSelectPassengerViewModel> CREATOR = new Creator<FlightSelectPassengerViewModel>() {
         @Override
-        public SelectFlightPassengerViewModel createFromParcel(Parcel in) {
-            return new SelectFlightPassengerViewModel(in);
+        public FlightSelectPassengerViewModel createFromParcel(Parcel in) {
+            return new FlightSelectPassengerViewModel(in);
         }
 
         @Override
-        public SelectFlightPassengerViewModel[] newArray(int size) {
-            return new SelectFlightPassengerViewModel[size];
+        public FlightSelectPassengerViewModel[] newArray(int size) {
+            return new FlightSelectPassengerViewModel[size];
         }
     };
 
@@ -87,23 +87,23 @@ public class SelectFlightPassengerViewModel implements Parcelable, Cloneable  {
             infant = 0;
         }
 
-        public SelectFlightPassengerViewModel.Builder setAdult(int adult) {
+        public FlightSelectPassengerViewModel.Builder setAdult(int adult) {
             this.adult = adult;
             return this;
         }
 
-        public SelectFlightPassengerViewModel.Builder setChildren(int children) {
+        public FlightSelectPassengerViewModel.Builder setChildren(int children) {
             this.children = children;
             return this;
         }
 
-        public SelectFlightPassengerViewModel.Builder setInfant(int infant) {
+        public FlightSelectPassengerViewModel.Builder setInfant(int infant) {
             this.infant = infant;
             return this;
         }
 
-        public SelectFlightPassengerViewModel build() {
-            return new SelectFlightPassengerViewModel(adult, children, infant);
+        public FlightSelectPassengerViewModel build() {
+            return new FlightSelectPassengerViewModel(adult, children, infant);
         }
     }
 

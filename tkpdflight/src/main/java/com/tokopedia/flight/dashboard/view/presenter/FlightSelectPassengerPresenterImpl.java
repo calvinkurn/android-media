@@ -2,7 +2,7 @@ package com.tokopedia.flight.dashboard.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.SelectFlightPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightSelectPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator;
 
 import javax.inject.Inject;
@@ -21,7 +21,7 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
 
     @Override
     public void onAdultPassengerCountChange(int number) {
-        SelectFlightPassengerViewModel passengerViewModel = clonePassData(getView().getCurrentPassengerViewModel());
+        FlightSelectPassengerViewModel passengerViewModel = clonePassData(getView().getCurrentPassengerViewModel());
         passengerViewModel.setAdult(number);
         if (validatePassenger(passengerViewModel)) {
             getView().renderPassengerView(passengerViewModel);
@@ -30,18 +30,18 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
             getView().renderPassengerView(getView().getCurrentPassengerViewModel());
     }
 
-    private SelectFlightPassengerViewModel clonePassData(SelectFlightPassengerViewModel passengerViewModel) {
-        SelectFlightPassengerViewModel selectFlightPassengerViewModel = null;
+    private FlightSelectPassengerViewModel clonePassData(FlightSelectPassengerViewModel passengerViewModel) {
+        FlightSelectPassengerViewModel flightSelectPassengerViewModel = null;
         try {
-            selectFlightPassengerViewModel = (SelectFlightPassengerViewModel) passengerViewModel.clone();
+            flightSelectPassengerViewModel = (FlightSelectPassengerViewModel) passengerViewModel.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
-            throw new RuntimeException("CloneNotSupportedException SelectFlightPassengerViewModel");
+            throw new RuntimeException("CloneNotSupportedException FlightSelectPassengerViewModel");
         }
-        return selectFlightPassengerViewModel;
+        return flightSelectPassengerViewModel;
     }
 
-    private boolean validatePassenger(SelectFlightPassengerViewModel passengerPassData) {
+    private boolean validatePassenger(FlightSelectPassengerViewModel passengerPassData) {
         boolean isValid = true;
         if (!validator.validateTotalPassenger(passengerPassData)) {
             isValid = false;
@@ -58,7 +58,7 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
 
     @Override
     public void onChildrenPassengerCountChange(int number) {
-        SelectFlightPassengerViewModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
+        FlightSelectPassengerViewModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
         passengerPassData.setChildren(number);
         if (validatePassenger(passengerPassData))
             getView().renderPassengerView(passengerPassData);
@@ -68,7 +68,7 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
 
     @Override
     public void onInfantPassengerCountChange(int number) {
-        SelectFlightPassengerViewModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
+        FlightSelectPassengerViewModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
         passengerPassData.setInfant(number);
         if (validatePassenger(passengerPassData))
             getView().renderPassengerView(passengerPassData);
@@ -83,7 +83,7 @@ public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<Flig
 
     @Override
     public void onSaveButtonClicked() {
-        SelectFlightPassengerViewModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
+        FlightSelectPassengerViewModel passengerPassData = clonePassData(getView().getCurrentPassengerViewModel());
         if (validatePassenger(passengerPassData)) {
             getView().actionNavigateBack(passengerPassData);
         }
