@@ -24,6 +24,7 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
     private boolean temporarilyFollowed;
     private String productId;
     private String id;
+    private boolean reviewExpanded;
 
     public KolViewModel(String title, String name, String avatar, String label,
                         boolean followed, String productImage, String productTooltip,
@@ -138,5 +139,13 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public void setLiked(boolean liked) {
         this.liked = liked;
+    }
+
+    public boolean isReviewExpanded() {
+        return reviewExpanded;
+    }
+
+    public void setReviewExpanded(boolean reviewExpanded) {
+        this.reviewExpanded = reviewExpanded;
     }
 }

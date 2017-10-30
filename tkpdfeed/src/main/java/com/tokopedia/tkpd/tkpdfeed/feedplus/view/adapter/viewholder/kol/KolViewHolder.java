@@ -11,7 +11,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.TooltipImageView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 
@@ -30,7 +29,9 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     private ImageView followIcon;
     private TextView followText;
     private View followButton;
-    private TooltipImageView tooltipImageView;
+    private ImageView reviewImage;
+    private TextView tooltip;
+    private View tooltipClickArea;
     private TextView kolText;
     private ImageView likeIcon;
     private TextView likeText;
@@ -50,7 +51,9 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         followIcon = (ImageView) itemView.findViewById(R.id.follow_icon);
         followText = (TextView) itemView.findViewById(R.id.follow_text);
         followButton = itemView.findViewById(R.id.follow_button);
-        tooltipImageView = (TooltipImageView) itemView.findViewById(R.id.tooltip_image);
+        reviewImage = (ImageView) itemView.findViewById(R.id.image);
+        tooltip = (TextView) itemView.findViewById(R.id.tooltip);
+        tooltipClickArea = itemView.findViewById(R.id.tooltip_area);
         kolText = (TextView) itemView.findViewById(R.id.kol_text);
         likeIcon = (ImageView) itemView.findViewById(R.id.like_icon);
         likeText = (TextView) itemView.findViewById(R.id.like_text);
@@ -70,16 +73,24 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         } else if (element.isFollowed() && element.isTemporarilyFollowed()) {
             followButton.setVisibility(View.VISIBLE);
             followText.setText(R.string.following);
+            followText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(),
+                    R.color.black_54));
             ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_tick);
         } else {
             followButton.setVisibility(View.VISIBLE);
             ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_plus_green);
-            followText.setText(R.string.action_follow);
+            followText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(),
+                    R.color.green_500));
+            followText.setText(R.string.action_follow_english);
         }
 
-        tooltipImageView.setImageTooltip(element.getProductImage(), element.getProductTooltip(),
-                onTooltipClicked(element));
-        kolText.setText(getKolText(element.getReview()));
+//        tooltipImageView.setImageTooltip(element.getProductImage(), element.getProductTooltip(),
+//                onTooltipClicked(element));
+
+        ImageHandler.LoadImage(reviewImage, element.getProductImage());
+        tooltip.setText(element.getProductTooltip());
+
+        kolText.setText(getKolText(element));
 
         if (element.isLiked()) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_icon_repsis_like_active);
@@ -140,6 +151,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
                 if (kolText.getText().toString().endsWith(MainApplication.getAppContext().getString(R
                         .string.read_more_english))) {
                     kolText.setText(element.getReview());
+                    element.setReviewExpanded(true);
                 }
             }
         });
@@ -174,6 +186,14 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             }
         });
 
+        tooltipClickArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToProductPageFromKol(element.getPage(), getAdapterPosition(),
+                        element.getId());
+            }
+        });
+
     }
 
     private void onLikeClicked(KolViewModel element) {
@@ -184,15 +204,17 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         }
     }
 
-    private Spanned getKolText(String review) {
-        if (MethodChecker.fromHtml(review).length() > MAX_CHAR) {
-            String subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR);
+    private Spanned getKolText(KolViewModel element) {
+        if (!element.isReviewExpanded() && MethodChecker.fromHtml(element.getReview()).length() >
+                MAX_CHAR) {
+            String subDescription = MethodChecker.fromHtml(element.getReview()).toString().substring(0,
+                    MAX_CHAR);
             return MethodChecker
                     .fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
                             + MainApplication.getAppContext().getString(R.string
                             .read_more_english));
         } else {
-            return MethodChecker.fromHtml(review);
+            return MethodChecker.fromHtml(element.getReview());
         }
     }
 

@@ -909,35 +909,35 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onFollowKolClicked(int page, int rowNumber, String id) {
-        if (adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setFollowed(true);
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setTemporarilyFollowed(true);
-            adapter.notifyItemChanged(rowNumber);
+        if (adapter.getlist().get(rowNumber - 1) instanceof KolViewModel) {
+            ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setFollowed(true);
+            ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setTemporarilyFollowed(true);
+            adapter.notifyItemChanged(rowNumber - 1);
         }
     }
 
     @Override
     public void onUnfollowKolClicked(int page, int rowNumber, String id) {
-        if (adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setFollowed(false);
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setTemporarilyFollowed(false);
-            adapter.notifyItemChanged(rowNumber);
+        if (adapter.getlist().get(rowNumber - 1) instanceof KolViewModel) {
+            ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setFollowed(false);
+            ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setTemporarilyFollowed(false);
+            adapter.notifyItemChanged(rowNumber - 1);
         }
     }
 
     @Override
     public void onUnlikeKol(int page, int rowNumber, String id) {
-        if(adapter.getlist().get(rowNumber) instanceof KolViewModel){
-            ((KolViewModel)adapter.getlist().get(rowNumber)).setLiked(false);
-            adapter.notifyItemChanged(rowNumber);
+        if (adapter.getlist().get(rowNumber - 1) instanceof KolViewModel) {
+            ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setLiked(false);
+            adapter.notifyItemChanged(rowNumber - 1);
         }
     }
 
     @Override
     public void onLikeKol(int page, int rowNumber, String id) {
-        if(adapter.getlist().get(rowNumber) instanceof KolViewModel){
-            ((KolViewModel)adapter.getlist().get(rowNumber)).setLiked(true);
-            adapter.notifyItemChanged(rowNumber);
+        if (adapter.getlist().get(rowNumber - 1) instanceof KolViewModel) {
+            ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setLiked(true);
+            adapter.notifyItemChanged(rowNumber - 1);
         }
     }
 

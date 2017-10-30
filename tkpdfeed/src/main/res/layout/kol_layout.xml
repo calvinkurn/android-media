@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_marginTop="@dimen/margin_sm"
-              android:background="@color/white"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300"
+        />
 
     <TextView
         android:id="@id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/separator"
         android:layout_gravity="center_vertical"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
@@ -21,23 +29,68 @@
         tools:text="Rekomendasi untuk Anda"/>
 
     <View
+        android:id="@+id/separator2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_below="@id/title"
         android:background="@color/grey_300"
         />
 
-    <include layout="@layout/kol_header"/>
+    <include
+        android:id="@+id/kol_header"
+        layout="@layout/kol_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator2"/>
 
-    <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.TooltipImageView
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/kol_header"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/ic_plus_green"/>
+
+    <RelativeLayout
         android:id="@+id/tooltip_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:layout_alignBottom="@id/image"
+        android:layout_alignTop="@id/image"
+        android:adjustViewBounds="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/tooltip_area"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/btn_height"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            >
+
+            <TextView
+                android:id="@+id/tooltip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/black_tooltip"
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="6sp"
+                android:padding="@dimen/padding_vs"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_xxsmall"
+                android:textStyle="normal"
+                tools:text="Rp 249000 - Lihat Produk"/>
+        </RelativeLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/kol_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/image"
         android:layout_marginBottom="@dimen/margin_vs"
         android:layout_marginTop="@dimen/margin_vs"
         android:fontFamily="sans-serif"
@@ -49,14 +102,18 @@
         tools:text="The snapback’s predecessor, the baseball cap, must be proud of its stylish spawn. Compared to fitted baseball caps worn by pro players, snapback are less expensive and much more attuned to contemporary urban culture. But earliest versions of the snapbac… Read More"/>
 
     <View
+        android:id="@+id/separator3"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_below="@id/kol_text"
         android:background="@color/grey_300"
         />
 
     <LinearLayout
+        android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/footer_height"
+        android:layout_below="@id/separator3"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
@@ -128,6 +185,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_below="@id/footer"
         android:background="@color/grey_300"
         />
-</LinearLayout>
+</RelativeLayout>
