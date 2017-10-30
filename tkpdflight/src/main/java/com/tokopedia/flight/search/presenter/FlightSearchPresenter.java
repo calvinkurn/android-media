@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.view.FlightSearchView;
+import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,7 +52,11 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
             @Override
             public void onNext(List<FlightSearchSingleRouteDB> flightSearchSingleRouteDBs) {
-                getView().onSearchLoaded(flightSearchSingleRouteDBs,flightSearchSingleRouteDBs.size());
+                List<FlightSearchViewModel> flightSearchViewModelList = new ArrayList<>();
+                for (int i = 0, sizei = flightSearchSingleRouteDBs.size(); i<sizei; i++) {
+                    flightSearchViewModelList.add(new FlightSearchViewModel(flightSearchSingleRouteDBs.get(i)));
+                }
+                getView().onSearchLoaded(flightSearchViewModelList,flightSearchSingleRouteDBs.size());
             }
         };
     }
