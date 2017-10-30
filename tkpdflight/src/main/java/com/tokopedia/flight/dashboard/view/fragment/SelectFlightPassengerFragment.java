@@ -16,7 +16,7 @@ import android.widget.Button;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.dashboard.view.di.FlightDashboardComponent;
+import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.SelectFlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.presenter.SelectFlightPassengerPresenterImpl;
 import com.tokopedia.flight.dashboard.view.presenter.SelectFlightPassengerView;

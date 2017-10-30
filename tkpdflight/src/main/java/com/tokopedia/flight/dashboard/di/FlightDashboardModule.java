@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboard.view.di;
+package com.tokopedia.flight.dashboard.di;
 
 import dagger.Module;
 

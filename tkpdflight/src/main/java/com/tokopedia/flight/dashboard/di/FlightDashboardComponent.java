@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboard.view.di;
+package com.tokopedia.flight.dashboard.di;
 
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.dashboard.view.fragment.SelectFlightPassengerFragment;

@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboard.view.di;
+package com.tokopedia.flight.dashboard.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
