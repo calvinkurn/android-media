@@ -63,6 +63,18 @@
         <item name="android:subtitleTextStyle">@style/MyActionBarSubTitleText</item>
     </style>
 
+    <style name="ActionBar.Solid.Tokopedia.Dark" parent="@android:style/Widget.Holo.ActionBar.Solid">
+        <item name="android:background">@drawable/border_bottom_green</item>
+        <item name="android:backgroundStacked">@color/tkpd_main_green</item>
+        <item name="android:backgroundSplit">@color/tkpd_main_green</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Tokopedia</item>
+        <item name="android:height">50dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="searchViewStyle">@style/Widget.AppCompat.SearchView</item>
+        <item name="android:titleTextStyle">@style/MyActionBarTitleText</item>
+        <item name="android:subtitleTextStyle">@style/MyActionBarSubTitleText</item>
+    </style>
+
     <!-- ActionBar title text -->
     <style name="MyActionBarTitleText" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textSize">@dimen/fontm</item>
@@ -242,6 +254,43 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowActionBar">false</item>
         <!--<item name="android:textColorSecondary">@android:color/white</item>-->
+        <item name="android:actionModeStyle">@style/CustomActionMode</item>
+        <item name="actionModeStyle">@style/CustomActionMode</item>
+        <item name="spinnerStyle">@style/Widget.AppCompat.Spinner.Underlined</item>
+    </style>
+
+    <style name="Theme.Tokopedia3.Dark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="android:spinnerItemStyle">?android:attr/spinnerItemStyle</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu.Tokopedia</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Tokopedia</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Tokopedia</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Tokopedia.Dark</item>
+        <item name="actionModeBackground">@color/tkpd_main_green</item>
+        <item name="android:actionModeBackground">@color/tkpd_main_green</item>
+        <item name="android:actionModeSplitBackground">@color/tkpd_main_green</item>
+        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Tokopedia
+        </item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_new_action_back</item>
+        <item name="android:windowBackground">@color/tkpd_bg_color_grery</item>
+        <item name="android:colorBackground">@color/tkpd_bg_color_grery</item>
+        <!-- Remove shadow from action bar -->
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="vpiTitlePageIndicatorStyle">@style/CustomTitlePageIndicator</item>
+        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/myPopupMenuTextAppearanceLarge
+        </item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/myPopupMenuTextAppearanceSmall
+        </item>
+        <item name="android:actionOverflowButtonStyle">@style/OverFlow</item>
+        <item name="android:colorPrimary">@color/tkpd_dark_green</item>
+        <item name="android:statusBarColor">@color/green_600</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:textColorSecondary">@android:color/black</item>
         <item name="android:actionModeStyle">@style/CustomActionMode</item>
         <item name="actionModeStyle">@style/CustomActionMode</item>
         <item name="spinnerStyle">@style/Widget.AppCompat.Spinner.Underlined</item>
