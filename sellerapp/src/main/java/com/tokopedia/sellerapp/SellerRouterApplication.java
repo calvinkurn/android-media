@@ -616,4 +616,9 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);
     }
+
+    @Override
+    public boolean isInMyShop(Context context, String shopId) {
+        return context != null && new SessionHandler(context).getShopID().trim().equalsIgnoreCase(shopId.trim());
+    }
 }

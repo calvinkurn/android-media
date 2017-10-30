@@ -34,6 +34,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
@@ -91,6 +92,8 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import retrofit2.http.HEAD;
 
 /**
  * @author by nisie on 5/15/17.
@@ -497,8 +500,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void goToAllPromo() {
-        Intent intent = BlogWebViewActivity.getIntent(getActivity(), TkpdBaseURL.URL_PROMO +
-                TkpdBaseURL.FLAG_APP);
+        Intent intent = new Intent(getContext(), BannerWebView.class);
+        intent.putExtra(BannerWebView.EXTRA_TITLE, getContext().getString(R.string.title_activity_promo));
+        intent.putExtra(BannerWebView.EXTRA_URL,
+                TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
+        );
         startActivity(intent);
     }
 
