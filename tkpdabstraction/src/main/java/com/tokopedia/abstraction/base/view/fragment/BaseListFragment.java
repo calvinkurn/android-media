@@ -12,17 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.utils.RefreshHandler;
-import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.utils.snackbar.SnackbarRetry;
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.binder.BaseRetryDataBinder;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.abstraction.base.view.adapter.binder.NoResultDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.binder.RetryDataBinder;
+import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.utils.RefreshHandler;
+import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.utils.snackbar.SnackbarRetry;
 
 import java.util.List;
 
@@ -254,6 +254,18 @@ public abstract class BaseListFragment<T extends ItemType> extends BaseDaggerFra
                 searchForPage(currentPage);
             }
         });
+    }
+
+    protected void showLoading(){
+        adapter.showLoading(true);
+        adapter.showLoadingFull(true);
+        adapter.showEmptyFull(false);
+        adapter.showRetryFull(false);
+        if (swipeToRefresh != null) {
+            swipeToRefresh.setEnabled(false);
+            swipeToRefresh.setRefreshing(true);
+        }
+        hideSnackBarRetry();
     }
 
     protected void hideLoading() {
