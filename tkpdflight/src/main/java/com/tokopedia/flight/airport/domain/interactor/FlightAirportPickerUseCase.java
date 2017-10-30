@@ -5,6 +5,7 @@ import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;

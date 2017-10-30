@@ -2,6 +2,7 @@ package com.tokopedia.flight.common.domain;
 
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;

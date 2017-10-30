@@ -7,5 +7,7 @@ package com.tokopedia.flight.common.constant;
 public class FlightUrl {
 
     public static final String BASE_URL = "https://private-anon-f36db6663d-travelapp1.apiary-mock.com";
-    public static final String FLIGHT_AIRPORT_PATH = "v1/flight/dropdown/airport";
+    public static final String FLIGHT_PATH = "v1/flight/";
+    public static final String FLIGHT_AIRPORT_PATH = FLIGHT_PATH + "dropdown/airport";
+    public static final String FLIGHT_SEARCH_SINGLE = FLIGHT_PATH + "search/single";
 }
