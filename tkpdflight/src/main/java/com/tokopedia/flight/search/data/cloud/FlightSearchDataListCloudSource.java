@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.flight.search.data.cloud.api.FlightSearchApi;
+import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
 
 import java.io.IOException;
@@ -24,11 +24,11 @@ import rx.Observable;
 
 public class FlightSearchDataListCloudSource extends DataListCloudSource<FlightSearchData> {
 
-    private FlightSearchApi flightSearchApi;
+    private FlightApi flightApi;
 
     @Inject
-    public FlightSearchDataListCloudSource(FlightSearchApi flightSearchApi) {
-        this.flightSearchApi = flightSearchApi;
+    public FlightSearchDataListCloudSource(FlightApi flightApi) {
+        this.flightApi = flightApi;
     }
 
     @Override

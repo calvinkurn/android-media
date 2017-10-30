@@ -5,10 +5,10 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.data.source.cache.DataListCacheSource;
 import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
 import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
+import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.search.data.cache.FlightSearchSingleDataListCacheSource;
 import com.tokopedia.flight.search.data.cloud.FlightSearchDataListCloudSource;
-import com.tokopedia.flight.search.data.cloud.api.FlightSearchApi;
 import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
 
 import dagger.Module;
@@ -31,14 +31,14 @@ public class FlightSearchModule {
 
     @FlightSearchScope
     @Provides
-    public DataListCloudSource<FlightSearchData> dataListCloudSource(FlightSearchApi flightSearchApi){
-        return new FlightSearchDataListCloudSource(flightSearchApi);
+    public DataListCloudSource<FlightSearchData> dataListCloudSource(FlightApi flightApi){
+        return new FlightSearchDataListCloudSource(flightApi);
     }
 
     @FlightSearchScope
     @Provides
-    public FlightSearchApi provideFlightSearchApi(@FlightQualifier Retrofit retrofit){
-        return retrofit.create(FlightSearchApi.class);
+    public FlightApi provideFlightApi(@FlightQualifier Retrofit retrofit){
+        return retrofit.create(FlightApi.class);
     }
 
 }

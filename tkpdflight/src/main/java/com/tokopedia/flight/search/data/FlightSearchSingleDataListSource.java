@@ -2,6 +2,8 @@ package com.tokopedia.flight.search.data;
 
 import com.tokopedia.abstraction.base.data.source.cache.DataListCacheSource;
 import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
+import com.tokopedia.flight.search.data.cache.FlightSearchSingleDataListCacheSource;
+import com.tokopedia.flight.search.data.cloud.FlightSearchDataListCloudSource;
 import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
 import com.tokopedia.flight.search.data.db.FlightSearchSingleDataListDBSource;
 
@@ -14,9 +16,9 @@ import javax.inject.Inject;
 public class FlightSearchSingleDataListSource extends AbsFlightSearchDataListSource {
 
     @Inject
-    public FlightSearchSingleDataListSource(DataListCacheSource dataListCacheManager,
+    public FlightSearchSingleDataListSource(FlightSearchSingleDataListCacheSource dataListCacheManager,
                                             FlightSearchSingleDataListDBSource flightSearchSingleDataListDBSource,
-                                            DataListCloudSource<FlightSearchData> dataListCloudManager) {
+                                            FlightSearchDataListCloudSource dataListCloudManager) {
         super(dataListCacheManager, flightSearchSingleDataListDBSource, dataListCloudManager);
     }
 }

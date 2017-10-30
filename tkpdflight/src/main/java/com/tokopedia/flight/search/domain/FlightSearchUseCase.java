@@ -1,7 +1,7 @@
 package com.tokopedia.flight.search.domain;
 
+import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
-import com.tokopedia.flight.search.data.repository.FlightSearchRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -16,17 +16,17 @@ import rx.Observable;
  */
 
 public class FlightSearchUseCase extends UseCase<List<FlightSearchSingleRouteDB>> {
-    private final FlightSearchRepository flightSearchRepository;
+    private final FlightRepository flightRepository;
 
     @Inject
-    public FlightSearchUseCase(FlightSearchRepository flightSearchRepository) {
-        this.flightSearchRepository = flightSearchRepository;
+    public FlightSearchUseCase(FlightRepository flightRepository) {
+        this.flightRepository = flightRepository;
     }
 
     //TODO request params for usecase
     @Override
     public Observable<List<FlightSearchSingleRouteDB>> createObservable(RequestParams requestParams) {
-        return flightSearchRepository.getFlightSearch(false);
+        return flightRepository.getFlightSearch(false);
     }
 
 }

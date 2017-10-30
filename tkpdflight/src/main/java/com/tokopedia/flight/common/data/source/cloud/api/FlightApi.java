@@ -1,13 +1,20 @@
 package com.tokopedia.flight.common.data.source.cloud.api;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.source.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -17,4 +24,10 @@ import rx.Observable;
 public interface FlightApi {
     @GET(FlightUrl.FLIGHT_CLASS_PATH)
     Observable<Response<DataResponse<List<FlightClassEntity>>>> getFlightClasses();
+
+    @POST(FlightUrl.FLIGHT_SEARCH_SINGLE)
+    Observable<Response<DataResponse<List<FlightSearchData>>>> searchFlightSingle(@Body JsonObject requestBody);
+
+    @GET(FlightUrl.FLIGHT_AIRPORT_PATH)
+    Observable<Response<DataResponse<List<FlightAirportCountry>>>> getFlightAirportList(@QueryMap Map<String, String> keyword);
 }

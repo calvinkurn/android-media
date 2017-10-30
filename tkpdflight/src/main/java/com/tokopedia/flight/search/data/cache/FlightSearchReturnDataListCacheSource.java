@@ -13,13 +13,13 @@ import javax.inject.Inject;
  * Created by hendry on 7/14/2017.
  */
 
-public class FlightSearchSingleDataListCacheSource extends DataListCacheSource{
+public class FlightSearchReturnDataListCacheSource extends DataListCacheSource{
 
-    private static final String PREF_KEY_NAME = "FLIGHT_SEARCH_SINGLE";
+    private static final String PREF_KEY_NAME = "FLIGHT_SEARCH_RETURN";
     private static final long ONE_HOUR = TimeUnit.HOURS.toSeconds(1);
 
     @Inject
-    public FlightSearchSingleDataListCacheSource(@ApplicationContext Context context) {
+    public FlightSearchReturnDataListCacheSource(@ApplicationContext Context context) {
         super(context);
     }
 
