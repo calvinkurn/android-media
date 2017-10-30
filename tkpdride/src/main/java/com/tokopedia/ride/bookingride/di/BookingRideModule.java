@@ -9,6 +9,7 @@ import com.tokopedia.ride.bookingride.domain.AutoCompletePredictionUseCase;
 import com.tokopedia.ride.bookingride.domain.GetCurrentRideRequestUseCase;
 import com.tokopedia.ride.bookingride.domain.GetDistanceMatrixUseCase;
 import com.tokopedia.ride.bookingride.domain.GetNearbyCarsUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPlaceDetailUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPriceEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
@@ -131,5 +132,13 @@ public class BookingRideModule {
                                                        MapsRepository mapsRepository,
                                                        MapService mapService) {
         return new GetPlaceDetailUseCase(threadExecutor, postExecutionThread, mapsRepository, mapService);
+    }
+
+    @Provides
+    @BookingRideScope
+    GetPaymentMethodListUseCase provideGetPaymentMethodListUseCase(ThreadExecutor threadExecutor,
+                                                    PostExecutionThread postExecutionThread,
+                                                    BookingRideRepository bookingRideRepository) {
+        return new GetPaymentMethodListUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
     }
 }

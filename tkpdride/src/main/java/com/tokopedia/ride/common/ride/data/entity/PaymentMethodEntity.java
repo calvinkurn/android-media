@@ -29,10 +29,13 @@ public class PaymentMethodEntity {
     private Boolean active;
     @SerializedName("save_body")
     @Expose
-    private String saveBody;
+    private ScroogeWebviewPostDataBodyEntity saveBody;
     @SerializedName("remove_body")
     @Expose
-    private String removeBody;
+    private ScroogeWebviewPostDataBodyEntity removeBody;
+    @SerializedName("masked_num")
+    @Expose
+    private String maskedNum;
     @SerializedName("expiry_month")
     @Expose
     private String expiryMonth;
@@ -111,19 +114,19 @@ public class PaymentMethodEntity {
         this.active = active;
     }
 
-    public String getSaveBody() {
+    public ScroogeWebviewPostDataBodyEntity getSaveBody() {
         return saveBody;
     }
 
-    public void setSaveBody(String saveBody) {
+    public void setSaveBody(ScroogeWebviewPostDataBodyEntity saveBody) {
         this.saveBody = saveBody;
     }
 
-    public String getRemoveBody() {
+    public ScroogeWebviewPostDataBodyEntity getRemoveBody() {
         return removeBody;
     }
 
-    public void setRemoveBody(String removeBody) {
+    public void setRemoveBody(ScroogeWebviewPostDataBodyEntity removeBody) {
         this.removeBody = removeBody;
     }
 
@@ -183,4 +186,11 @@ public class PaymentMethodEntity {
         this.bankImage = bankImage;
     }
 
+    public String getMaskedNum() {
+        return maskedNum;
+    }
+
+    public void setMaskedNum(String maskedNum) {
+        this.maskedNum = maskedNum;
+    }
 }

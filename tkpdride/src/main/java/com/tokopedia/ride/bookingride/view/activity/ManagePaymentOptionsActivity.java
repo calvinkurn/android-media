@@ -26,6 +26,10 @@ public class ManagePaymentOptionsActivity extends BaseActivity implements HasCom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_payment_options);
+
+        initInjector();
+        //executeInjector();
+
         setupToolbar();
         ManagePaymentOptionsFragment fragment = ManagePaymentOptionsFragment.newInstance();
         replaceFragment(R.id.fl_container, fragment);

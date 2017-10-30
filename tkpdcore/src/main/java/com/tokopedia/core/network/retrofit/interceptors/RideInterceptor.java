@@ -159,7 +159,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         headerMap.put(HEADER_X_AUTHORIZATION, headerMap.get(HEADER_AUTHORIZATION));
         headerMap.put(HEADER_AUTHORIZATION, authorizationString);
         headerMap.put(AUTO_RIDE, "true");
-        headerMap.put(X_FORWARDED_FOR, getIPAddress(true));
+        //headerMap.put(X_FORWARDED_FOR, getIPAddress(true));
         return headerMap;
     }
 

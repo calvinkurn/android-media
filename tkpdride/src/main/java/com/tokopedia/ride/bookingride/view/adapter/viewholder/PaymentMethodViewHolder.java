@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
@@ -43,6 +44,17 @@ public class PaymentMethodViewHolder extends AbstractViewHolder<PaymentMethodVie
         paymentMethodViewModel = element;
 
         paymentMethodName.setText(element.getName());
+
+        if (element.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_CC)) {
+            Glide.with(context).load(element.getImageUrl())
+                    .asBitmap()
+                    .fitCenter()
+                    .dontAnimate()
+                    .error(R.drawable.cabs_uber_ic)
+                    .into(imageView);
+        } else {
+            imageView.setImageResource(R.drawable.ic_tokocash_icon);
+        }
     }
 
     @OnClick(R2.id.container)

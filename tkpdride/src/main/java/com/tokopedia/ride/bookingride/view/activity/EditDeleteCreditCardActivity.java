@@ -21,18 +21,20 @@ import com.tokopedia.ride.bookingride.view.fragment.EditDeleteCreditCardFragment
 public class EditDeleteCreditCardActivity extends BaseActivity{
 
 
-    public static final String CARD_DETIALS_KEY = "CardDetails";
+    public static final String KEY_PAYMENT_METHOD_VIEW_MODEL = "CardDetails";
+
     public static Intent getCallingActivity(Activity activity, PaymentMethodViewModel paymentMethodViewModel) {
         Intent intent = new Intent(activity, EditDeleteCreditCardActivity.class);
-        intent.putExtra(CARD_DETIALS_KEY,paymentMethodViewModel);
+        intent.putExtra(KEY_PAYMENT_METHOD_VIEW_MODEL,paymentMethodViewModel);
         return intent;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_delete_credit_card);
 
-        PaymentMethodViewModel paymentMethodViewModel = (PaymentMethodViewModel) getIntent().getParcelableExtra(CARD_DETIALS_KEY);
+        PaymentMethodViewModel paymentMethodViewModel = (PaymentMethodViewModel) getIntent().getParcelableExtra(KEY_PAYMENT_METHOD_VIEW_MODEL);
         setupToolbar(paymentMethodViewModel.getType());
         EditDeleteCreditCardFragment fragment = EditDeleteCreditCardFragment.newInstance(paymentMethodViewModel);
         replaceFragment(R.id.fl_container, fragment);

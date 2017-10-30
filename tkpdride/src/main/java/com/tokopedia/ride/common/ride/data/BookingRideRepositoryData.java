@@ -371,6 +371,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                         return paymentMethodListMapper.transform(paymentMethodListEntity);
                     }
                 });
+    }
 
     public Observable<NearbyRides> getNearbyCars(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore()

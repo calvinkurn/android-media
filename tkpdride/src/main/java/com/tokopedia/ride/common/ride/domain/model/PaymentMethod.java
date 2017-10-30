@@ -1,9 +1,6 @@
 
 package com.tokopedia.ride.common.ride.domain.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 public class PaymentMethod {
 
     private String label;
@@ -13,8 +10,8 @@ public class PaymentMethod {
     private String method;
     private String tokenId;
     private Boolean active;
-    private String saveBody;
-    private String removeBody;
+    private ScroogeWebviewPostDataBody saveBody;
+    private ScroogeWebviewPostDataBody removeBody;
     private String expiryMonth;
     private String expiryYear;
     private String cardType;
@@ -22,6 +19,7 @@ public class PaymentMethod {
     private String image;
     private String cardTypeImage;
     private String bankImage;
+    private String maskedNumber;
 
     public String getLabel() {
         return label;
@@ -79,19 +77,19 @@ public class PaymentMethod {
         this.active = active;
     }
 
-    public String getSaveBody() {
+    public ScroogeWebviewPostDataBody getSaveBody() {
         return saveBody;
     }
 
-    public void setSaveBody(String saveBody) {
+    public void setSaveBody(ScroogeWebviewPostDataBody saveBody) {
         this.saveBody = saveBody;
     }
 
-    public String getRemoveBody() {
+    public ScroogeWebviewPostDataBody getRemoveBody() {
         return removeBody;
     }
 
-    public void setRemoveBody(String removeBody) {
+    public void setRemoveBody(ScroogeWebviewPostDataBody removeBody) {
         this.removeBody = removeBody;
     }
 
@@ -151,4 +149,11 @@ public class PaymentMethod {
         this.bankImage = bankImage;
     }
 
+    public String getMaskedNumber() {
+        return maskedNumber;
+    }
+
+    public void setMaskedNumber(String maskedNumber) {
+        this.maskedNumber = maskedNumber;
+    }
 }

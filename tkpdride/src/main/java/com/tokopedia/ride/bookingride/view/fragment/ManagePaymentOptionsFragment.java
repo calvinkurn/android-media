@@ -5,8 +5,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
@@ -14,7 +16,6 @@ import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.view.ManagePaymentOptionsContract;
 import com.tokopedia.ride.bookingride.view.ManagePaymentOptionsPresenter;
-import com.tokopedia.ride.bookingride.view.activity.AddCreditCardActivity;
 import com.tokopedia.ride.bookingride.view.activity.EditDeleteCreditCardActivity;
 import com.tokopedia.ride.bookingride.view.adapter.PaymentMethodAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.PaymentMethodItemClickListener;
@@ -23,7 +24,6 @@ import com.tokopedia.ride.bookingride.view.adapter.factory.PaymentMethodTypeFact
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,6 +41,8 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
     @BindView(R2.id.payment_method_list)
     RecyclerView paymentMethodsRecyclerView;
 
+    @BindView(R2.id.progress_bar)
+    ProgressBar progressBar;
 
     @Inject
     ManagePaymentOptionsPresenter presenter;
@@ -56,7 +58,9 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
 
     @Override
     public void onPaymentMethodSelected(PaymentMethodViewModel paymentMethodViewModel) {
-        startActivity(EditDeleteCreditCardActivity.getCallingActivity(getActivity(),paymentMethodViewModel));
+        if (paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_CC)) {
+            startActivity(EditDeleteCreditCardActivity.getCallingActivity(getActivity(), paymentMethodViewModel));
+        }
     }
 
     @Override
@@ -69,21 +73,34 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
 
     private void init() {
         //populate list of payment methods
-        List<Visitable> paymentMethods = new ArrayList<>();
-        PaymentMethodViewModel paymentMethodViewModel1 = new PaymentMethodViewModel("TokoCash", true, "");
-        PaymentMethodViewModel paymentMethodViewModel2 = new PaymentMethodViewModel("4355 **** ****", true, "");
-        paymentMethods.add(paymentMethodViewModel1);
-        paymentMethods.add(paymentMethodViewModel2);
+        presenter.renderPaymentMethodList();
+    }
 
+    @Override
+    public void showErrorMessage(String message) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
+    }
 
+    @Override
+    public void renderPaymentMethodList(List<Visitable> visitables) {
         PaymentMethodTypeFactory paymentMethodTypeFactory = new PaymentMethodAdapterTypeFactory(this);
         paymentMethodAdapter = new PaymentMethodAdapter(paymentMethodTypeFactory);
-        paymentMethodAdapter.setElement(paymentMethods);
+        paymentMethodAdapter.setElement(visitables);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         paymentMethodsRecyclerView.setLayoutManager(layoutManager);
         paymentMethodsRecyclerView.setHasFixedSize(true);
         paymentMethodsRecyclerView.setAdapter(paymentMethodAdapter);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -109,6 +126,6 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
 
     @OnClick(R2.id.layout_add_credit_card)
     public void actionAddCreditCard() {
-        startActivity(AddCreditCardActivity.getCallingActivity(getActivity()));
+        presenter.addCreditCard();
     }
 }
