@@ -3,6 +3,7 @@ package com.tokopedia.flight.airport.di;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.common.di.scope.FlightScope;
+import com.tokopedia.flight.common.domain.FlightRepository;
 
 import dagger.Component;
 import retrofit2.Retrofit;

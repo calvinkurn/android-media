@@ -3,6 +3,7 @@ package com.tokopedia.flight.airport.data.source;
 import com.tokopedia.abstraction.base.data.source.DataListSource;
 import com.tokopedia.abstraction.base.data.source.cache.DataListCacheSource;
 import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
+import com.tokopedia.flight.airport.data.source.cache.FlightAirportDataListCacheSource;
 import com.tokopedia.flight.airport.data.source.cloud.FlightAirportDataListCloudSource;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource;
@@ -24,7 +25,9 @@ import rx.functions.Func1;
 public class FlightAirportDataListSource extends DataListSource<FlightAirportCountry, FlightAirportDB> {
 
     @Inject
-    public FlightAirportDataListSource(DataListCacheSource dataListCacheManager, FlightAirportDataListDBSource dataListDBManager, DataListCloudSource<FlightAirportCountry> dataListCloudManager) {
+    public FlightAirportDataListSource(FlightAirportDataListCacheSource dataListCacheManager,
+                                       FlightAirportDataListDBSource dataListDBManager,
+                                       FlightAirportDataListCloudSource dataListCloudManager) {
         super(dataListCacheManager, dataListDBManager, dataListCloudManager);
     }
 

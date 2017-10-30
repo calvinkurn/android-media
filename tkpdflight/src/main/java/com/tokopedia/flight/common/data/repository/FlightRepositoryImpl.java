@@ -3,6 +3,9 @@ package com.tokopedia.flight.common.data.repository;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.search.data.FlightSearchReturnDataListSource;
+import com.tokopedia.flight.search.data.FlightSearchSingleDataListSource;
+import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +20,29 @@ public class FlightRepositoryImpl implements FlightRepository {
 
     private FlightAirportDataListSource flightAirportDataListSource;
 
-    public FlightRepositoryImpl(FlightAirportDataListSource flightAirportDataListSource) {
+    private FlightSearchSingleDataListSource flightSearchSingleDataListSource;
+    private FlightSearchReturnDataListSource flightSearchReturnDataListSource;
+
+    public FlightRepositoryImpl(FlightAirportDataListSource flightAirportDataListSource,
+                                FlightSearchSingleDataListSource flightSearchSingleDataListSource,
+                                FlightSearchReturnDataListSource flightSearchReturnDataListSource) {
         this.flightAirportDataListSource = flightAirportDataListSource;
+        this.flightSearchSingleDataListSource = flightSearchSingleDataListSource;
+        this.flightSearchReturnDataListSource = flightSearchReturnDataListSource;
     }
 
     @Override
     public Observable<List<FlightAirportDB>> getAirportList(String query) {
         return flightAirportDataListSource.getAirportList(query);
+    }
+
+    //TODO define query
+    @Override
+    public Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(boolean isReturningFlight) {
+        if (isReturningFlight) {
+            return flightSearchReturnDataListSource.getDataList();
+        } else {
+            return flightSearchSingleDataListSource.getDataList();
+        }
     }
 }

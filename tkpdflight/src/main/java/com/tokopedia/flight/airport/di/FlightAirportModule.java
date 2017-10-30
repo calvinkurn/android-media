@@ -14,6 +14,7 @@ import com.tokopedia.flight.airport.domain.interactor.FlightAirportPickerUseCase
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenter;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenterImpl;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
+import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.domain.FlightRepository;
 
@@ -33,30 +34,6 @@ public class FlightAirportModule {
     @Provides
     public FlightAirportPickerPresenter provideFlightAirportPickerPresenter(FlightAirportPickerUseCase flightAirportPickerUseCase){
         return new FlightAirportPickerPresenterImpl(flightAirportPickerUseCase);
-    }
-
-    @FlightAirportScope
-    @Provides
-    public FlightRepository provideFlightRepository(FlightAirportDataListSource flightAirportDataListSource){
-        return new FlightRepositoryImpl(flightAirportDataListSource);
-    }
-
-    @FlightAirportScope
-    @Provides
-    public DataListCacheSource dataListCacheSource(@ApplicationContext Context context){
-        return new FlightAirportDataListCacheSource(context);
-    }
-
-    @FlightAirportScope
-    @Provides
-    public DataListCloudSource<FlightAirportCountry> dataListCloudSource(FlightAirportApi flightAirportApi){
-        return new FlightAirportDataListCloudSource(flightAirportApi);
-    }
-
-    @FlightAirportScope
-    @Provides
-    public FlightAirportApi provideFlightAirportApi(@FlightQualifier Retrofit retrofit){
-        return retrofit.create(FlightAirportApi.class);
     }
 
 }

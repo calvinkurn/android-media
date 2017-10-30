@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.di.scope.ApplicationScope;
 import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
+import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.search.data.FlightSearchSingleDataListSource;
 
 import dagger.Component;
 import retrofit2.Retrofit;
@@ -23,4 +25,7 @@ public interface FlightComponent {
 
     @FlightQualifier
     Retrofit getFlightRetrofit();
+
+    FlightRepository flightRepository();
+
 }
