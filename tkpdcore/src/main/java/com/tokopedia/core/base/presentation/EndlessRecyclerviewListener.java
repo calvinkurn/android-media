@@ -90,4 +90,8 @@ public abstract class EndlessRecyclerviewListener extends RecyclerView.OnScrollL
     }
 
     public abstract void onLoadMore(int page, int totalItemsCount, RecyclerView view);
+
+    public void setVisibleThreshold(int visibleThreshold) {
+        this.visibleThreshold = visibleThreshold;
+    }
 }

@@ -90,7 +90,6 @@ public class CachePresenter implements Cache.Presenter {
         getEtalase();
         getProduct();
         getBankList();
-        getInstallmentTerms();
     }
 
     @Override
@@ -158,71 +157,12 @@ public class CachePresenter implements Cache.Presenter {
         .subscribe(new ProductSubscriber());
     }
 
-    private RequestParams getProductParam(int page) {
-        RequestParams params = AuthUtil.generateRequestParamsNetwork(context);
-        params.putString(SHOP_ID, SessionHandler.getShopID(context));
-        params.putString(SHOP_DOMAIN, SessionHandler.getShopDomain(context));
-        params.putString(PAGE, String.valueOf(page));
-        params.putString(KEYWORD, "");
-        params.putString(ETALASE_ID, "etalase");
-        params.putString(ORDER_BY, "0");
-        params.putString(PER_PAGE, "20");
-        params.putString(WHOLESALE, "1");
-
-        return params;
-    }
-
     private RequestParams getGatewayProductParam(int page) {
         RequestParams params = RequestParams.create();
         params.putString(SHOP_ID, SessionHandler.getShopID(context));
         params.putInt(START, 1 + (defaultRowPerPage * (page - 1)));
         params.putInt(ROW, defaultRowPerPage);
         return params;
-    }
-
-    private void getBankList() {
-        getBankUseCase
-                .createObservable(null)
-                .observeOn(Schedulers.newThread())
-                .flatMap(storeBankToCache())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<BankSavedResult>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(BankSavedResult o) {
-
-                    }
-                });
-    }
-
-    private Func1<List<BankDomain>, Observable<BankSavedResult>> storeBankToCache() {
-        return new Func1<List<BankDomain>, Observable<BankSavedResult>>() {
-            @Override
-            public Observable<BankSavedResult> call(List<BankDomain> bankDomains) {
-                RequestParams requestParams = RequestParams.create();
-                BankInstallmentDomain bankInstallmentDomain = new BankInstallmentDomain();
-                bankInstallmentDomain.setBankDomainList(bankDomains);
-
-                requestParams.putObject(
-                    StoreBankUsecase.BANK_INSTALLMENT_DOMAIN,
-                    bankInstallmentDomain
-                );
-                return storeBankUsecase.createObservable(requestParams);
-            }
-        };
-    }
-
-    private void getInstallmentTerms() {
-
     }
 
     private class ProductSubscriber extends Subscriber<ProductListDomain> {
@@ -267,5 +207,46 @@ public class CachePresenter implements Cache.Presenter {
         public void onNext(DataStatus dataStatus) {
             Log.d("oka save result", String.valueOf(dataStatus.getMessage()));
         }
+    }
+
+    private void getBankList() {
+        getBankUseCase
+                .createObservable(null)
+                .observeOn(Schedulers.newThread())
+                .flatMap(storeBankToCache())
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<BankSavedResult>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(BankSavedResult o) {
+
+                    }
+                });
+    }
+
+    private Func1<List<BankDomain>, Observable<BankSavedResult>> storeBankToCache() {
+        return new Func1<List<BankDomain>, Observable<BankSavedResult>>() {
+            @Override
+            public Observable<BankSavedResult> call(List<BankDomain> bankDomains) {
+                RequestParams requestParams = RequestParams.create();
+                BankInstallmentDomain bankInstallmentDomain = new BankInstallmentDomain();
+                bankInstallmentDomain.setBankDomainList(bankDomains);
+
+                requestParams.putObject(
+                    StoreBankUsecase.BANK_INSTALLMENT_DOMAIN,
+                    bankInstallmentDomain
+                );
+                return storeBankUsecase.createObservable(requestParams);
+            }
+        };
     }
 }

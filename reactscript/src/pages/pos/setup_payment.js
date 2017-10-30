@@ -20,6 +20,7 @@ const PaymentApp = StackNavigator({
 
 class Root extends Component {
     render() {
+        console.log("render payment bank")
         return (
             <Provider store={store}>
                 <PaymentApp screenProps={this.props.data} />

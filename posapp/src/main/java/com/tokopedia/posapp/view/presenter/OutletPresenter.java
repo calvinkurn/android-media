@@ -60,18 +60,26 @@ public class OutletPresenter extends BaseDaggerPresenter<Outlet.View>
     @Override
     public void setHasNextPage(String uriNext) {
         pagingHandler.setHasNext(PagingHandler.CheckHasNext(uriNext));
+        if(pagingHandler.CheckNextPage()) {
+            PagingHandler.PagingHandlerModel pagingHandlerModel = new PagingHandler.PagingHandlerModel();
+            pagingHandlerModel.setUriNext(uriNext);
+            pagingHandler.setPagingHandlerModel(pagingHandlerModel);
+        }
     }
 
     @Override
     public void getNextOutlet(String query) {
-        if(pagingHandler.CheckNextPage()) {
-            RequestParams params = AuthUtil.generateRequestParamsNetwork(context);
-            params.putString(PARAM_PAGE, pagingHandler.getNextPage()+"");
-            params.putString(PARAM_QUERY, query);
-            params.putString(PARAM_ORDER_BY, ORDER_BY_ADDRESS_NAME);
+        try {
+            if (pagingHandler.CheckNextPage()) {
+                RequestParams params = AuthUtil.generateRequestParamsNetwork(context);
+                params.putString(PARAM_PAGE, pagingHandler.getNextPage() + "");
+                params.putString(PARAM_QUERY, query);
+                params.putString(PARAM_ORDER_BY, ORDER_BY_ADDRESS_NAME);
 
-            getOutletUseCase.execute(params, new GetOutletSubscriber(getView()));
+                getOutletUseCase.execute(params, new GetOutletSubscriber(getView()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 }

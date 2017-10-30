@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import PopupDialog, { DialogTitle } from 'react-native-popup-dialog';
 import { StackNavigator } from 'react-navigation';
-import { getBankList, selectBank, getEmiList, selectEmi, makePayment } from '../../../actions/index';
+import { getBankList, selectBank, getEmiList, selectEmi, makePayment, reloadState } from '../../../actions/index';
 import { Text } from '../../../common/TKPText'
 import { NavigationModule } from 'NativeModules'
 
@@ -36,6 +36,7 @@ class PaymentBank extends Component {
 
   componentDidMount() {
     this.props.dispatch(getBankList());
+    this.props.navigation.setParams({ dispatch: this.props.dispatch });
   }
 
   _handleButtonPress = () => {
@@ -201,23 +202,26 @@ class PaymentBank extends Component {
   }
 
 
-  static navigationOptions = {
+  static navigationOptions = ({navigation}) => ({
     title: 'Pembayaran',
     headerTintColor: '#FFF',
     headerStyle: {
         backgroundColor: '#42B549'
     },
-    headerLeft: <TouchableOpacity><Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/arrow_back.png' }}
+    headerLeft: <TouchableOpacity onPress={() => PaymentBank.onBackPress(navigation.state.params)}><Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/arrow_back.png' }}
                 style={{ width: 15, height: 15, marginLeft: 20 }} /></TouchableOpacity>
-  };
+  });
 
+  static onBackPress(props) {
+    props.dispatch(reloadState('PaymentBank'))
+    NavigationModule.finish()
+  }
 
   _choosePaymentMethod(paymentMethod) {
     this.setState({
       paymentMethod
     })
   }
-
 
   render() {
     const checkout_data = JSON.parse(this.props.screenProps.checkout_data)
