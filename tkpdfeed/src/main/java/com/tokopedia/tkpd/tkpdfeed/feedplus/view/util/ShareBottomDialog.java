@@ -101,7 +101,6 @@ public class ShareBottomDialog {
     private void initVar(Context context) {
         GridLayoutManager layoutManager = new GridLayoutManager(context, 3);
         appGrid.setLayoutManager(layoutManager);
-
         list = new ArrayList<>();
     }
 
@@ -163,7 +162,7 @@ public class ShareBottomDialog {
                 //String shareText = shareModel.getContentMessage() + CHECK_NOW + shareModel.getUrl();
                 BranchSdkUtils.generateBranchLink(shareModel, activity, new BranchSdkUtils.GenerateShareContents() {
                     @Override
-                    public void onCreateShareContents(String shareContents, String shareUri) {
+                    public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                         Intent sendIntent = new Intent();
                         sendIntent.setAction(Intent.ACTION_SEND);
                         sendIntent.putExtra(Intent.EXTRA_TEXT, shareUri);
@@ -186,7 +185,7 @@ public class ShareBottomDialog {
 
                 BranchSdkUtils.generateBranchLink(shareModel, activity, new BranchSdkUtils.GenerateShareContents() {
                     @Override
-                    public void onCreateShareContents(String shareContents, String shareUri) {
+                    public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                         Intent smsIntent = MethodChecker.getSmsIntent(activity, shareUri);
                         activity.startActivity(smsIntent);
 
@@ -227,7 +226,7 @@ public class ShareBottomDialog {
     private void shareToApp(final String appName) {
         BranchSdkUtils.generateBranchLink(shareModel, activity, new BranchSdkUtils.GenerateShareContents() {
             @Override
-            public void onCreateShareContents(String shareContents, String shareUri) {
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
                 intent.setPackage(appName);
@@ -269,7 +268,7 @@ public class ShareBottomDialog {
 
                 BranchSdkUtils.generateBranchLink(shareModel, activity, new BranchSdkUtils.GenerateShareContents() {
                     @Override
-                    public void onCreateShareContents(String shareContents, String shareUri) {
+                    public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                         PlusShare.Builder builder = new PlusShare.Builder(activity);
 
                         builder.setType("text/plain");
@@ -309,7 +308,7 @@ public class ShareBottomDialog {
                 dismissDialog();
                 BranchSdkUtils.generateBranchLink(shareModel, activity, new BranchSdkUtils.GenerateShareContents() {
                     @Override
-                    public void onCreateShareContents(String shareContents, String shareUri) {
+                    public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                         ClipboardHandler.CopyToClipboard((Activity) activity, shareUri);
                         Toast.makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT).show();
 
@@ -331,7 +330,7 @@ public class ShareBottomDialog {
 
                 BranchSdkUtils.generateBranchLink(shareModel, activity, new BranchSdkUtils.GenerateShareContents() {
                     @Override
-                    public void onCreateShareContents(String shareContents, final String shareUri) {
+                    public void onCreateShareContents(String shareContents, final String shareUri, String branchUrl) {
                         final ShareDialog shareDialog;
 
                         if (fragment != null)
@@ -363,9 +362,10 @@ public class ShareBottomDialog {
 
                         if (ShareDialog.canShow(ShareLinkContent.class)) {
 
-                            if (shareModel != null && !TextUtils.isEmpty(shareUri)) {
+                            if (shareModel != null && !TextUtils.isEmpty(branchUrl)) {
                                 ShareLinkContent.Builder linkBuilder = new ShareLinkContent.Builder()
-                                        .setContentUrl(Uri.parse(shareUri));
+                                        .setContentUrl(Uri.parse(branchUrl));
+
                                 if (!TextUtils.isEmpty(shareModel.getName())) {
                                     linkBuilder.setContentTitle(shareModel.getName());
                                 }

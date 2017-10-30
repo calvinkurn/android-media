@@ -30,7 +30,6 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     private static final String FACEBOOK = "well";
     LocalCacheHandler facebookCache;
     private ShareView view;
-    private static final String facebookUrl="https://www.facebook.com/sharer/sharer.php?u=";
 
     public ProductSharePresenterImpl(ShareView view) {
         this.activity = view.getActivity();
@@ -72,21 +71,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             }
             BranchSdkUtils.generateBranchLink(data, activity, new BranchSdkUtils.GenerateShareContents() {
                 @Override
-                public void onCreateShareContents(String shareContents, String shareUri) {
-                    view.showDialogShareFb(shareUri);
-//                    if (isPackageInstalled(TkpdState.PackageName.Facebook)) {
-//                        view.showDialogShareFb(shareUri);
-//                    } else {
-//                        try {
-//                            shareUri = facebookUrl + shareUri;
-//                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(shareUri));
-//                            if (intent.resolveActivity(activity.getPackageManager()) != null) {
-//                                activity.startActivity(intent);
-//                            }
-//                        } catch (ActivityNotFoundException e) {
-//
-//                        }
-//                    }
+                public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                    view.showDialogShareFb(branchUrl);
                 }
             });
 
@@ -226,7 +212,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         data.setSource("Copy");
         BranchSdkUtils.generateBranchLink(data, activity, new BranchSdkUtils.GenerateShareContents() {
             @Override
-            public void onCreateShareContents(String shareContents, String shareUri) {
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 ClipboardHandler.CopyToClipboard(activity, shareUri);
             }
         });
@@ -246,7 +232,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
 
         BranchSdkUtils.generateBranchLink(data, activity, new BranchSdkUtils.GenerateShareContents() {
             @Override
-            public void onCreateShareContents(String shareContents, String shareUri) {
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 Intent smsIntent = MethodChecker.getSmsIntent(activity, shareUri);
                 activity.startActivity(smsIntent);
             }

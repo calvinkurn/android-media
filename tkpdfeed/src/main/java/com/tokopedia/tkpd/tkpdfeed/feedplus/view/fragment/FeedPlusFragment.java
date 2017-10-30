@@ -46,7 +46,6 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.share.ShareBottomActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -316,7 +315,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.fetchFirstPage();
-        if(trace!=null)
+        if (trace != null)
             trace.stop();
     }
 
@@ -349,25 +348,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                      String pageRowNumber) {
 
         ShareData shareData = ShareData.Builder.aShareData()
-                               .setName(title)
-                                .setDescription(contentMessage)
-                                .setImgUri(imgUrl)
-                                .setUri(shareUrl)
-                                .setType(ShareData.FEED_TYPE)
-                                .build();
-              // onProductShareClicked(shareData);
+                .setName(title)
+                .setDescription(contentMessage)
+                .setImgUri(imgUrl)
+                .setUri(shareUrl)
+                .setType(ShareData.FEED_TYPE)
+                .build();
 
         if (shareBottomDialog == null) {
             shareBottomDialog = new ShareBottomDialog(
                     FeedPlusFragment.this,
                     callbackManager);
         }
-shareBottomDialog.setShareModel(shareData);
-//        shareBottomDialog.setShareModel(
-//                new ShareModel(shareUrl,
-//                        title,
-//                        imgUrl,
-//                        contentMessage,pageRowNumber));
+        shareBottomDialog.setShareModel(shareData);
 
         shareBottomDialog.show();
 
@@ -516,7 +509,7 @@ shareBottomDialog.setShareModel(shareData);
 
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
-        if(listFeed.get(0) instanceof RecentViewViewModel){
+        if (listFeed.get(0) instanceof RecentViewViewModel) {
             topAdsRecyclerAdapter.setHasHeader(true);
         } else {
             topAdsRecyclerAdapter.setHasHeader(false);
@@ -528,7 +521,7 @@ shareBottomDialog.setShareModel(shareData);
     public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
         topAdsRecyclerAdapter.reset();
         topAdsRecyclerAdapter.shouldLoadAds(true);
-        if(listFeed.get(0) instanceof RecentViewViewModel){
+        if (listFeed.get(0) instanceof RecentViewViewModel) {
             topAdsRecyclerAdapter.setHasHeader(true);
         } else {
             topAdsRecyclerAdapter.setHasHeader(false);
@@ -552,7 +545,7 @@ shareBottomDialog.setShareModel(shareData);
         adapter.addList(listFeed);
         if (canShowTopads)
             adapter.addItem(new EmptyTopAdsProductModel(presenter.getUserId()));
-            adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
+        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
     }
 
@@ -564,7 +557,7 @@ shareBottomDialog.setShareModel(shareData);
         adapter.showEmpty();
         if (canShowTopads)
             adapter.addItem(new EmptyTopAdsProductModel(presenter.getUserId()));
-            adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
+        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
 
     }
@@ -901,10 +894,5 @@ shareBottomDialog.setShareModel(shareData);
         UnifyTracking.eventFeedClick(
                 getFeedAnalyticsHeader(page, rowNumber) +
                         FeedTrackingEventLabel.Click.TOPPICKS_SEE_ALL);
-    }
-
-    private void onProductShareClicked(@NonNull ShareData data) {
-        startActivity(ShareBottomActivity.createIntent(getActivity(),data));
-       // getActivity().overridePendingTransition(R.anim.pull_up,R.anim.push_down);
     }
 }
