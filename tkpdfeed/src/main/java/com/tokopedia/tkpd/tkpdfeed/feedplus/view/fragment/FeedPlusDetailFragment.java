@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -83,7 +84,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return "";
+        return AppScreen.SCREEN_FEED_DETAIL;
     }
 
     @Override

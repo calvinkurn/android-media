@@ -20,6 +20,9 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 
 public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
 
+    @LayoutRes
+    public static final int LAYOUT = R.layout.kol_layout;
+
     private static final int MAX_CHAR = 250;
     private final FeedPlus.View.Kol viewListener;
     private TextView title;
@@ -37,9 +40,6 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     private TextView likeText;
     private ImageView commentIcon;
     private TextView commentText;
-
-    @LayoutRes
-    public static final int LAYOUT = R.layout.kol_layout;
 
     public KolViewHolder(View itemView, FeedPlus.View.Kol viewListener) {
         super(itemView);

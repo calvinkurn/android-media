@@ -161,6 +161,26 @@ public class FeedPlusPresenter
 //                new CheckNewFeedSubscriber(viewListener));
     }
 
+    @Override
+    public void followKol(String id) {
+
+    }
+
+    @Override
+    public void unfollowKol(String id) {
+
+    }
+
+    @Override
+    public void likeKol(String id) {
+
+    }
+
+    @Override
+    public void unlikeKol(String id) {
+
+    }
+
 
     public String getUserId() {
         return sessionHandler.getLoginID();

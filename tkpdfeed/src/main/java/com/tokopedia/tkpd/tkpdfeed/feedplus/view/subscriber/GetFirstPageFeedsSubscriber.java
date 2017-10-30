@@ -19,6 +19,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignProductViewModel;
@@ -55,6 +57,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_PROMOTION = "promotion";
     private static final String TYPE_TOPPICKS = "toppick";
     private static final String TYPE_INSPIRATION = "inspirasi";
+    private static final String TYPE_TOPADS = "topads";
 
     private final int page;
 
@@ -234,7 +237,61 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 }
             }
         listFeedView.add(convertToKolViewModel());
+        listFeedView.add(convertToKolRecommendationViewModel());
 
+
+    }
+
+    private KolRecommendationViewModel convertToKolRecommendationViewModel() {
+        return new KolRecommendationViewModel(
+                "http://tokopedia.com/",
+                "Explore Posting dari Celgram favoritmu!",
+                convertToListKolRecommend()
+        );
+    }
+
+    private ArrayList<KolRecommendItemViewModel> convertToListKolRecommend() {
+        ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
+        list.add(new KolRecommendItemViewModel(
+                "1",
+                "Young Lex",
+                "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/7/27/20211570/20211570_19682ea4-4153-4845-bab5-de2c66712ac0_2048_0.jpg",
+                "https://www.tokopedia.com/feirin08",
+                "artis jadijadian"
+        ));
+        list.add(new KolRecommendItemViewModel(
+                "1",
+                "Young Lex2",
+                "https://imagerouter.tokopedia" +
+                        ".com/img/500-square/product-1/2017/10/29/1859776/1859776_ea45f195-eede-4bf7-9224-39bb15c54405_460_325.jpg",
+                "https://www.tokopedia.com/feirin08",
+                "artis jadijadian"
+        ));
+        list.add(new KolRecommendItemViewModel(
+                "1",
+                "Young Lex3",
+                "https://imagerouter.tokopedia" +
+                        ".com/img/500-square/product-1/2017/10/29/1859776/1859776_ea45f195-eede-4bf7-9224-39bb15c54405_460_325.jpg",
+                "https://www.tokopedia.com/feirin08",
+                "artis jadijadian"
+        ));
+        list.add(new KolRecommendItemViewModel(
+                "1",
+                "Young Lex4",
+                "https://imagerouter.tokopedia" +
+                        ".com/img/500-square/product-1/2017/10/29/1859776/1859776_ea45f195-eede-4bf7-9224-39bb15c54405_460_325.jpg",
+                "https://www.tokopedia.com/feirin08",
+                "artis jadijadian"
+        ));
+        list.add(new KolRecommendItemViewModel(
+                "1",
+                "Young Lex5",
+                "https://imagerouter.tokopedia" +
+                        ".com/img/500-square/product-1/2017/10/29/1859776/1859776_ea45f195-eede-4bf7-9224-39bb15c54405_460_325.jpg",
+                "https://www.tokopedia.com/feirin08",
+                "artis jadijadian"
+        ));
+        return list;
     }
 
     private KolViewModel convertToKolViewModel() {

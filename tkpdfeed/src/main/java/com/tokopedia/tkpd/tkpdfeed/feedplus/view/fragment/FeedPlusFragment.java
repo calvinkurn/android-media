@@ -914,6 +914,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setTemporarilyFollowed(true);
             adapter.notifyItemChanged(rowNumber - 1);
         }
+        presenter.followKol(id);
     }
 
     @Override
@@ -923,6 +924,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
             ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setTemporarilyFollowed(false);
             adapter.notifyItemChanged(rowNumber - 1);
         }
+        presenter.unfollowKol(id);
+
     }
 
     @Override
@@ -931,6 +934,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
             ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setLiked(false);
             adapter.notifyItemChanged(rowNumber - 1);
         }
+        presenter.unlikeKol(id);
+
     }
 
     @Override
@@ -939,10 +944,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
             ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setLiked(true);
             adapter.notifyItemChanged(rowNumber - 1);
         }
+        presenter.likeKol(id);
+
     }
 
     @Override
     public void onGoToKolComment(int page, int rowNumber, String id) {
         startActivity(KolCommentActivity.getCallingIntent(getActivity(), id));
+    }
+
+    @Override
+    public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
+        startActivity(KolProfileWebViewActivity.getCallingIntent(getActivity(), url));
     }
 }

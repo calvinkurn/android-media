@@ -35,6 +35,8 @@ public interface FeedPlus{
             void onLikeKol(int page, int rowNumber, String id);
 
             void onGoToKolComment(int page, int rowNumber, String id);
+
+            void onGoToListKolRecommendation(int page, int rowNumber, String url);
         }
 
         void setFirstCursor(String firstCursor);
@@ -162,5 +164,12 @@ public interface FeedPlus{
 
         void checkNewFeed(String cursor);
 
+        void followKol(String id);
+
+        void unfollowKol(String id);
+
+        void likeKol(String id);
+
+        void unlikeKol(String id);
     }
 }

@@ -42,6 +42,7 @@ public abstract class TActivity extends BaseActivity {
 
         parentView = (FrameLayout) findViewById(R.id.parent_view);
         setupToolbar();
+
     }
 
     protected int getContentId() {
