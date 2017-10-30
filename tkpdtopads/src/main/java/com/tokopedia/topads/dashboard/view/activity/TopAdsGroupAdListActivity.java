@@ -52,7 +52,7 @@ public class TopAdsGroupAdListActivity extends BaseSimpleActivity
             return;
         }
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar.getHeight() > 0) {
             final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
             int height = toolbar.getHeight();
