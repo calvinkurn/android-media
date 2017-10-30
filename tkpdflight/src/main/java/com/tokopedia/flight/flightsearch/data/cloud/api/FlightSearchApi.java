@@ -3,7 +3,7 @@ package com.tokopedia.flight.flightsearch.data.cloud.api;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.flight.flightsearch.data.db.FlightSearchSingleRouteDB;
+import com.tokopedia.flight.flightsearch.data.cloud.model.FlightSearchData;
 
 import java.util.List;
 
@@ -19,6 +19,6 @@ import rx.Observable;
 public interface FlightSearchApi {
 
     @POST(FlightUrl.FLIGHT_SEARCH_SINGLE)
-    Observable<Response<DataResponse<List<FlightSearchSingleRouteDB>>>> searchFlightSingle(@Body JsonObject requestBody);
+    Observable<Response<DataResponse<List<FlightSearchData>>>> searchFlightSingle(@Body JsonObject requestBody);
 
 }

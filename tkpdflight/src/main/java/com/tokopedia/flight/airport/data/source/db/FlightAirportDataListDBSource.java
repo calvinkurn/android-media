@@ -1,6 +1,7 @@
 package com.tokopedia.flight.airport.data.source.db;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.abstraction.base.data.source.database.DataListDBSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
@@ -10,6 +11,7 @@ import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportDetail;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB_Table;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class FlightAirportDataListDBSource implements DataListDBSource<FlightAir
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                subscriber.onNext(new Select().from(FlightAirportDB.class).hasData());
+                subscriber.onNext(new Select(Method.count()).from(FlightAirportDB.class).hasData());
             }
         });
     }
@@ -86,7 +88,7 @@ public class FlightAirportDataListDBSource implements DataListDBSource<FlightAir
                 .flatMap(new Func1<List<Boolean>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(List<Boolean> booleen) {
-                        return Observable.just(new Select().from(FlightAirportDB.class).count() > 0);
+                        return Observable.just(new Select(Method.count()).from(FlightAirportDB.class).hasData());
                     }
                 });
 

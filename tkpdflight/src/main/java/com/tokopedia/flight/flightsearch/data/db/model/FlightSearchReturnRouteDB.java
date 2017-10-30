@@ -1,4 +1,4 @@
-package com.tokopedia.flight.flightsearch.data.db;
+package com.tokopedia.flight.flightsearch.data.db.model;
 
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.Table;
