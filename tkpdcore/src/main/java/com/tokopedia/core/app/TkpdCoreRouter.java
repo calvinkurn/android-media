@@ -87,4 +87,6 @@ public interface TkpdCoreRouter {
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
 
     void goToAddProduct(Activity activity);
+
+    boolean isInMyShop(Context context, String shopId);
 }

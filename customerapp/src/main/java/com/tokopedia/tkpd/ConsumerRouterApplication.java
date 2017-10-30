@@ -621,4 +621,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             ProductAddActivity.start(activity);
         }
     }
+
+    @Override
+    public boolean isInMyShop(Context context, String shopId) {
+        return context != null && new SessionHandler(context).getShopID().trim().equalsIgnoreCase(shopId.trim());
+    }
 }
