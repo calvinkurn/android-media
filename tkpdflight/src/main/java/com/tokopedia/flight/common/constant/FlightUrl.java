@@ -10,4 +10,5 @@ public class FlightUrl {
     public static final String FLIGHT_PATH = "v1/flight/";
     public static final String FLIGHT_AIRPORT_PATH = FLIGHT_PATH + "dropdown/airport";
     public static final String FLIGHT_SEARCH_SINGLE = FLIGHT_PATH + "search/single";
+    public static final String FLIGHT_CLASS_PATH = FLIGHT_PATH +  "dropdown/class";
 }

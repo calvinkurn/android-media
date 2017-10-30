@@ -11,7 +11,6 @@ import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportDetail;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB_Table;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

@@ -4,7 +4,6 @@ import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;

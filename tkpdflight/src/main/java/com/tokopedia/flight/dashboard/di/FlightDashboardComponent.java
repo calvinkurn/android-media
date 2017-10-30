@@ -1,7 +1,7 @@
-package com.tokopedia.flight.dashboard.view.di;
+package com.tokopedia.flight.dashboard.di;
 
 import com.tokopedia.flight.common.di.component.FlightComponent;
-import com.tokopedia.flight.dashboard.view.fragment.SelectFlightPassengerFragment;
+import com.tokopedia.flight.dashboard.view.fragment.FlightSelectPassengerFragment;
 
 import dagger.Component;
 
@@ -11,5 +11,5 @@ import dagger.Component;
 @FlightDashboardScope
 @Component(modules = FlightDashboardModule.class, dependencies = FlightComponent.class)
 public interface FlightDashboardComponent {
-    void inject(SelectFlightPassengerFragment selectFlightPassengerFragment);
+    void inject(FlightSelectPassengerFragment flightSelectPassengerFragment);
 }

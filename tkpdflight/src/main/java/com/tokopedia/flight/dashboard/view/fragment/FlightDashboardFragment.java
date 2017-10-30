@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
-import com.tokopedia.flight.dashboard.view.activity.SelectFlightPassengerActivity;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.SelectFlightPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightSelectPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 
@@ -63,10 +63,10 @@ public class FlightDashboardFragment extends Fragment {
         passengerTextInputView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SelectFlightPassengerViewModel passData = new SelectFlightPassengerViewModel.Builder()
+                FlightSelectPassengerViewModel passData = new FlightSelectPassengerViewModel.Builder()
                         .setAdult(1)
                         .build();
-                Intent intent = SelectFlightPassengerActivity.getCallingIntent(getActivity(), passData);
+                Intent intent = FlightSelectPassengerActivity.getCallingIntent(getActivity(), passData);
                 getActivity().startActivityForResult(intent, REQUEST_CODE_AIRPORT_PASSENGER);
             }
         });
