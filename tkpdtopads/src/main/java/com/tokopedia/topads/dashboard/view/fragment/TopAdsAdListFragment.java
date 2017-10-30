@@ -94,7 +94,9 @@ public abstract class TopAdsAdListFragment<P extends
 
     @Override
     protected BaseDatePickerPresenter getDatePickerPresenter() {
-        return new BaseDatePickerPresenterImpl(getActivity());
+        BaseDatePickerPresenterImpl baseDatePickerPresenter = new BaseDatePickerPresenterImpl(getActivity());
+        baseDatePickerPresenter.setToolbarWhite(true);
+        return baseDatePickerPresenter;
     }
 
     protected BaseListAdapter<T> getNewAdapter() {

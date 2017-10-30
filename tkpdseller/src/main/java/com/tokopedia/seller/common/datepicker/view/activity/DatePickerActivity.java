@@ -35,6 +35,7 @@ public class DatePickerActivity extends BaseTabActivity {
     protected int maxDateRange;
 
     protected ArrayList<PeriodRangeModel> periodRangeModelList;
+    private boolean isToolbarWhite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +95,13 @@ public class DatePickerActivity extends BaseTabActivity {
             maxStartDate = extras.getLong(DatePickerConstant.EXTRA_MAX_END_DATE, -1);
             maxDateRange = extras.getInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, -1);
             periodRangeModelList = extras.getParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST);
+            isToolbarWhite = extras.getBoolean(DatePickerConstant.EXTRA_TOOLBAR_WHITE);
         }
+    }
+
+    @Override
+    public boolean isToolbarWhite() {
+        return isToolbarWhite;
     }
 
     @Override
