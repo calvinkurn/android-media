@@ -26,6 +26,8 @@ public interface ProductSharePresenter {
 
     void shareCopy(ShareData data);
 
+    void shareSms(ShareData data);
+
     void setFacebookCache();
 
     void shareCategory(ShareData data, String media);

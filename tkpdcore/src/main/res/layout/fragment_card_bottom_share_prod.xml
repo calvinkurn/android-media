@@ -142,7 +142,7 @@
                 android:textSize="@dimen/fontvvs" />
 
             <TextView
-                android:id="@+id/bbm_share"
+                android:id="@+id/sms_share"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".33"
@@ -192,35 +192,6 @@
                 android:textSize="@dimen/fontvvs" />
 
             <TextView
-                android:id="@+id/instagram_share"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".33"
-                android:background="@drawable/overflow_selected"
-                android:drawablePadding="@dimen/padding_vs"
-                android:drawableTop="@drawable/ic_instagram_share"
-                android:gravity="center"
-                android:visibility="gone"
-                android:padding="@dimen/padding_vs"
-                android:text="Instagram"
-                android:textColor="@color/black"
-                android:textSize="@dimen/fontvvs" />
-
-            <TextView
-                android:id="@+id/pinterest_share"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".33"
-                android:background="@drawable/overflow_selected"
-                android:drawablePadding="@dimen/padding_vs"
-                android:visibility="invisible"
-                android:drawableTop="@drawable/ic_pinterest_share"
-                android:gravity="center"
-                android:padding="@dimen/padding_vs"
-                android:text="Pinterest"
-                android:textColor="@color/black"
-                android:textSize="@dimen/fontvvs" />
-            <TextView
                 android:id="@+id/bbm_share"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -231,7 +202,7 @@
                 android:gravity="center"
                 android:padding="@dimen/padding_vs"
                 android:text="BBM"
-                android:visibility="gone"
+                android:visibility="invisible"
                 android:textColor="@color/black"
                 android:textSize="@dimen/fontvvs" />
         </LinearLayout>

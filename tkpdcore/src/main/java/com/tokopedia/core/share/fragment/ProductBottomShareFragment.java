@@ -64,26 +64,17 @@ public class ProductBottomShareFragment extends BasePresenterFragment<ProductSha
     @BindView(R2.id.loading_add_product)
     TextView loadingAddProduct;
 
-    @BindView(R2.id.bbm_share)
-    TextView bbmShare;
-
     @BindView(R2.id.whatsapp_share)
     TextView whatsappShare;
 
     @BindView(R2.id.line_share)
     TextView lineShare;
 
-    @BindView(R2.id.instagram_share)
-    TextView instagramShare;
-
     @BindView(R2.id.facebook_share)
     TextView facebookShare;
 
     @BindView(R2.id.twitter_share)
     TextView twitterShare;
-
-    @BindView(R2.id.pinterest_share)
-    TextView pinterestShare;
 
     @BindView(R2.id.google_plus_share)
     TextView gplusShare;
@@ -96,6 +87,10 @@ public class ProductBottomShareFragment extends BasePresenterFragment<ProductSha
 
     @BindView(R2.id.text_subtitle)
     TextView subtitle;
+
+    @BindView(R2.id.sms_share)
+    TextView smsShare;
+
     private BroadcastReceiver addProductReceiver;
     private boolean isAdding = false;
     private CallbackManager callbackManager;
@@ -236,13 +231,11 @@ public class ProductBottomShareFragment extends BasePresenterFragment<ProductSha
     }
 
     private void setIconShareVisibility(int visibility) {
-        bbmShare.setVisibility(View.GONE);
+        smsShare.setVisibility(View.VISIBLE);
         whatsappShare.setVisibility(visibility);
         lineShare.setVisibility(visibility);
-        instagramShare.setVisibility(View.GONE);
         facebookShare.setVisibility(visibility);
         twitterShare.setVisibility(visibility);
-        pinterestShare.setVisibility(View.GONE);
         gplusShare.setVisibility(visibility);
         copyUrl.setVisibility(visibility);
         moreShare.setVisibility(visibility);
@@ -338,11 +331,6 @@ public class ProductBottomShareFragment extends BasePresenterFragment<ProductSha
         super.onDestroy();
     }
 
-    @OnClick(R2.id.bbm_share)
-    void shareBBM() {
-        presenter.shareBBM(shareData);
-    }
-
     @OnClick(R2.id.whatsapp_share)
     void shareWhatsApp() {
         presenter.shareWhatsApp(shareData);
@@ -353,11 +341,6 @@ public class ProductBottomShareFragment extends BasePresenterFragment<ProductSha
         presenter.shareLine(shareData);
     }
 
-    @OnClick(R2.id.instagram_share)
-    void shareInstagram() {
-        presenter.shareInstagram(shareData);
-    }
-
     @OnClick(R2.id.facebook_share)
     void shareFb() {
         presenter.shareFb(shareData);
@@ -366,11 +349,6 @@ public class ProductBottomShareFragment extends BasePresenterFragment<ProductSha
     @OnClick(R2.id.twitter_share)
     void shareTwitter() {
         presenter.shareTwitter(shareData);
-    }
-
-    @OnClick(R2.id.pinterest_share)
-    void sharePinterest() {
-        presenter.sharePinterest(shareData);
     }
 
     @OnClick(R2.id.google_plus_share)
@@ -386,6 +364,11 @@ public class ProductBottomShareFragment extends BasePresenterFragment<ProductSha
     @OnClick(R2.id.more_share)
     void shareMore() {
         presenter.shareMore(shareData);
+    }
+
+    @OnClick(R2.id.sms_share)
+    void shareSms() {
+        presenter.shareSms(shareData);
     }
 
 
