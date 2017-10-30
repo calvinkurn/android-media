@@ -50,6 +50,11 @@ public class TopAdsGroupAdListPresenterImpl extends TopAdsAdListPresenterImpl<Gr
             @Override
             public void onSuccess(final PageDataResponse<List<GroupAd>> pageDataResponse) {
 
+                if(pageDataResponse.getData() == null || pageDataResponse.getData().isEmpty()){
+                    baseListViewListener.onSearchLoaded(pageDataResponse.getData(), pageDataResponse.getPage().getTotal());
+                    return;
+                }
+
                 GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
                 getSuggestionBody.setRounding(true);
                 getSuggestionBody.setSource(TopAdsNetworkConstant.SOURCE_GROUP_AD_LIST);
