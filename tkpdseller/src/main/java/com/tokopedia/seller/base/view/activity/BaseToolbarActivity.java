@@ -1,6 +1,8 @@
 package com.tokopedia.seller.base.view.activity;
 
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -13,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -65,6 +68,9 @@ public abstract class BaseToolbarActivity extends BaseActivity {
         int textColor = ContextCompat.getColor(this, TEXT_COLOR_BACKGROUND_WHITE);
         toolbar.setTitleTextColor(textColor);
         toolbar.setSubtitleTextColor(textColor);
+        int height = dpToPx(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_height_material));
+        int width = dpToPx(getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material));
+        toolbar.setOverflowIcon(resize(ContextCompat.getDrawable(this, R.drawable.overflow_btn), width, height));
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.white)));
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -74,6 +80,17 @@ public abstract class BaseToolbarActivity extends BaseActivity {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
+    }
+
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        return (int)((dp * displayMetrics.density) + 0.5);
+    }
+
+    private Drawable resize(Drawable image, int width, int height) {
+        Bitmap b = ((BitmapDrawable)image).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 50, 50, false);
+        return new BitmapDrawable(getResources(), bitmapResized);
     }
 
     protected boolean isShowCloseButton() {

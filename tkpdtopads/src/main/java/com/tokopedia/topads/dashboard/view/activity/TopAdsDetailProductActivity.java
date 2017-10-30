@@ -143,7 +143,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
 
         final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar.getHeight() > 0) {
             int height = toolbar.getHeight();
             int width = toolbar.getWidth();
