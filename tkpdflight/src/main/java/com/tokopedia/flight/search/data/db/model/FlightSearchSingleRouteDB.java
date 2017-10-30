@@ -1,5 +1,9 @@
 package com.tokopedia.flight.search.data.db.model;
 
+import android.text.TextUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -7,6 +11,14 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.common.database.TkpdFlightDatabase;
+import com.tokopedia.flight.search.data.cloud.model.Attributes;
+import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
+import com.tokopedia.flight.search.data.cloud.model.Route;
+
+import org.w3c.dom.Text;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * @author sebastianuskh on 4/13/17.
@@ -54,13 +66,13 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     int durationMinute;
 
     @Column(name = "total")
-    int total;
+    String total;
 
     @Column(name = "total_numeric")
     int totalNumeric;
 
     @Column(name = "before_total")
-    int beforeTotal;
+    String beforeTotal;
 
     @Column(name = "routes")
     String routes;
@@ -76,151 +88,118 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         return 0;
     }
 
+    public FlightSearchSingleRouteDB(){
+
+    }
+
+    public FlightSearchSingleRouteDB(FlightSearchData flightSearchData){
+        this.id = flightSearchData.getId();
+        this.type = flightSearchData.getFlightType();
+        Attributes attributes = flightSearchData.getAttributes();
+        this.aid = attributes.getAid();
+        this.departureAirport = attributes.getDepartureAirport();
+        this.departureTime = attributes.getDepartureTime();
+        this.departureTimeInt = attributes.getDepartureTimeInt();
+        this.arrivalAirport = attributes.getArrivalAirport();
+        this.arrivalTime = attributes.getArrivalTime();
+        this.arrivalTimeInt = attributes.getArrivalTimeInt();
+        this.totalTransit = attributes.getTotalTransit();
+        this.addDayArrival = attributes.getAddDayArrival();
+        this.duration = attributes.getDuration();
+        this.durationMinute = attributes.getDurationMinute();
+        this.total = attributes.getTotal();
+        this.totalNumeric = attributes.getTotalNumeric();
+        this.beforeTotal = attributes.getBeforeTotal();
+
+        List<Route> routeList = attributes.getRoutes();
+        this.routes = new Gson().toJson(routeList);
+
+        this.airline = "";
+        this.isRefundable = true;
+        for (int i = 0, sizei = routeList.size(); i<sizei; i++) {
+            if (! routeList.get(i).getRefundable()){
+                isRefundable = false;
+            }
+            if (!TextUtils.isEmpty(airline)) {
+                airline+="-";
+            }
+            airline+=routeList.get(i).getAirline();
+        }
+    }
+
+    public String getFlightType(){
+        return type;
+    }
+
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getAid() {
         return aid;
     }
 
-    public void setAid(String aid) {
-        this.aid = aid;
-    }
-
     public String getDepartureAirport() {
         return departureAirport;
-    }
-
-    public void setDepartureAirport(String departureAirport) {
-        this.departureAirport = departureAirport;
     }
 
     public String getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(String departureTime) {
-        this.departureTime = departureTime;
-    }
-
     public int getDepartureTimeInt() {
         return departureTimeInt;
-    }
-
-    public void setDepartureTimeInt(int departureTimeInt) {
-        this.departureTimeInt = departureTimeInt;
     }
 
     public String getArrivalAirport() {
         return arrivalAirport;
     }
 
-    public void setArrivalAirport(String arrivalAirport) {
-        this.arrivalAirport = arrivalAirport;
-    }
-
     public String getArrivalTime() {
         return arrivalTime;
-    }
-
-    public void setArrivalTime(String arrivalTime) {
-        this.arrivalTime = arrivalTime;
     }
 
     public int getArrivalTimeInt() {
         return arrivalTimeInt;
     }
 
-    public void setArrivalTimeInt(int arrivalTimeInt) {
-        this.arrivalTimeInt = arrivalTimeInt;
-    }
-
     public int getTotalTransit() {
         return totalTransit;
-    }
-
-    public void setTotalTransit(int totalTransit) {
-        this.totalTransit = totalTransit;
     }
 
     public int getAddDayArrival() {
         return addDayArrival;
     }
 
-    public void setAddDayArrival(int addDayArrival) {
-        this.addDayArrival = addDayArrival;
-    }
-
     public String getDuration() {
         return duration;
-    }
-
-    public void setDuration(String duration) {
-        this.duration = duration;
     }
 
     public int getDurationMinute() {
         return durationMinute;
     }
 
-    public void setDurationMinute(int durationMinute) {
-        this.durationMinute = durationMinute;
-    }
-
-    public int getTotal() {
+    public String getTotal() {
         return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
     }
 
     public int getTotalNumeric() {
         return totalNumeric;
     }
 
-    public void setTotalNumeric(int totalNumeric) {
-        this.totalNumeric = totalNumeric;
-    }
-
-    public int getBeforeTotal() {
+    public String getBeforeTotal() {
         return beforeTotal;
-    }
-
-    public void setBeforeTotal(int beforeTotal) {
-        this.beforeTotal = beforeTotal;
     }
 
     public String getRoutes() {
         return routes;
     }
 
-    public void setRoutes(String routes) {
-        this.routes = routes;
-    }
-
     public String getAirline() {
         return airline;
     }
 
-    public void setAirline(String airline) {
-        this.airline = airline;
-    }
-
     public boolean isRefundable() {
         return isRefundable;
-    }
-
-    public void setRefundable(boolean refundable) {
-        isRefundable = refundable;
     }
 }

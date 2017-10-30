@@ -49,11 +49,7 @@ public abstract class AbsFlightSearchDataListDBSource implements DataListDBSourc
                 .flatMap(new Func1<FlightSearchData, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(FlightSearchData flightSearchData) {
-                        FlightSearchSingleRouteDB flightSearchSingleRouteDB = new FlightSearchSingleRouteDB();
-                        //TODO add column
-                        flightSearchSingleRouteDB.setId(flightSearchData.getId());
-                        flightSearchSingleRouteDB.setDepartureAirport(flightSearchData.getAttributes().getDepartureAirport());
-                        flightSearchSingleRouteDB.setArrivalAirport(flightSearchData.getAttributes().getArrivalAirport());
+                        FlightSearchSingleRouteDB flightSearchSingleRouteDB = new FlightSearchSingleRouteDB(flightSearchData);
                         flightSearchSingleRouteDB.insert();
                         return Observable.just(true);
                     }
