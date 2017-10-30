@@ -8,11 +8,11 @@ import javax.inject.Inject;
  * Created by alvarisi on 10/26/17.
  */
 
-public class SelectFlightPassengerValidator {
+public class FlightSelectPassengerValidator {
     private static final int MAX_PASSENGER_VALUE = 7;
 
     @Inject
-    public SelectFlightPassengerValidator() {
+    public FlightSelectPassengerValidator() {
     }
 
     public boolean validateTotalPassenger(SelectFlightPassengerViewModel passData) {

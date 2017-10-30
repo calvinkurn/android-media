@@ -9,7 +9,7 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.SelectFlightPassen
  * Created by alvarisi on 10/26/17.
  */
 
-public interface SelectFlightPassengerView extends CustomerView {
+public interface FlightSelectPassengerView extends CustomerView {
     SelectFlightPassengerViewModel getCurrentPassengerViewModel();
 
     void showTotalPassengerErrorMessage(@StringRes int resId);

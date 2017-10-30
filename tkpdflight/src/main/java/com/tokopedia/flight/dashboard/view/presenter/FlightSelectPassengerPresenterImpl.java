@@ -3,7 +3,7 @@ package com.tokopedia.flight.dashboard.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.SelectFlightPassengerViewModel;
-import com.tokopedia.flight.dashboard.view.validator.SelectFlightPassengerValidator;
+import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator;
 
 import javax.inject.Inject;
 
@@ -11,11 +11,11 @@ import javax.inject.Inject;
  * Created by alvarisi on 10/26/17.
  */
 
-public class SelectFlightPassengerPresenterImpl extends BaseDaggerPresenter<SelectFlightPassengerView> implements SelectFlightPassengerPresenter {
-    private SelectFlightPassengerValidator validator;
+public class FlightSelectPassengerPresenterImpl extends BaseDaggerPresenter<FlightSelectPassengerView> implements FlightSelectPassengerPresenter {
+    private FlightSelectPassengerValidator validator;
 
     @Inject
-    public SelectFlightPassengerPresenterImpl(SelectFlightPassengerValidator validator) {
+    public FlightSelectPassengerPresenterImpl(FlightSelectPassengerValidator validator) {
         this.validator = validator;
     }
 

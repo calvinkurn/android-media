@@ -18,8 +18,8 @@ import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.SelectFlightPassengerViewModel;
-import com.tokopedia.flight.dashboard.view.presenter.SelectFlightPassengerPresenterImpl;
-import com.tokopedia.flight.dashboard.view.presenter.SelectFlightPassengerView;
+import com.tokopedia.flight.dashboard.view.presenter.FlightSelectPassengerPresenterImpl;
+import com.tokopedia.flight.dashboard.view.presenter.FlightSelectPassengerView;
 import com.tokopedia.flight.dashboard.view.widget.SelectPassengerView;
 
 import javax.inject.Inject;
@@ -27,7 +27,7 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SelectFlightPassengerFragment extends BaseDaggerFragment implements SelectFlightPassengerView {
+public class FlightSelectPassengerFragment extends BaseDaggerFragment implements FlightSelectPassengerView {
 
     private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private SelectPassengerView adultPassengerView;
@@ -37,11 +37,11 @@ public class SelectFlightPassengerFragment extends BaseDaggerFragment implements
     private SelectFlightPassengerViewModel passData;
 
     @Inject
-    SelectFlightPassengerPresenterImpl presenter;
+    FlightSelectPassengerPresenterImpl presenter;
 
     private OnFragmentInteractionListener interactionListener;
 
-    public SelectFlightPassengerFragment() {
+    public FlightSelectPassengerFragment() {
         // Required empty public constructor
     }
 
@@ -49,8 +49,8 @@ public class SelectFlightPassengerFragment extends BaseDaggerFragment implements
         void actionSavePassenger(SelectFlightPassengerViewModel passData);
     }
 
-    public static SelectFlightPassengerFragment newInstance(SelectFlightPassengerViewModel passData) {
-        SelectFlightPassengerFragment fragment = new SelectFlightPassengerFragment();
+    public static FlightSelectPassengerFragment newInstance(SelectFlightPassengerViewModel passData) {
+        FlightSelectPassengerFragment fragment = new FlightSelectPassengerFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_PASS_DATA, passData);
         fragment.setArguments(bundle);

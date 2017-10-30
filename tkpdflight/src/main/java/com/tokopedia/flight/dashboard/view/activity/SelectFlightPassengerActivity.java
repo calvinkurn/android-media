@@ -11,10 +11,10 @@ import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
-import com.tokopedia.flight.dashboard.view.fragment.SelectFlightPassengerFragment;
+import com.tokopedia.flight.dashboard.view.fragment.FlightSelectPassengerFragment;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.SelectFlightPassengerViewModel;
 
-public class SelectFlightPassengerActivity extends BaseSimpleActivity implements HasComponent<FlightDashboardComponent>, SelectFlightPassengerFragment.OnFragmentInteractionListener {
+public class SelectFlightPassengerActivity extends BaseSimpleActivity implements HasComponent<FlightDashboardComponent>, FlightSelectPassengerFragment.OnFragmentInteractionListener {
     public static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
 
     public static Intent getCallingIntent(Activity activity, SelectFlightPassengerViewModel viewModel) {
@@ -26,7 +26,7 @@ public class SelectFlightPassengerActivity extends BaseSimpleActivity implements
     @Override
     protected Fragment getNewFragment() {
         SelectFlightPassengerViewModel passengerPassData = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
-        return SelectFlightPassengerFragment.newInstance(passengerPassData);
+        return FlightSelectPassengerFragment.newInstance(passengerPassData);
     }
 
     @Override
