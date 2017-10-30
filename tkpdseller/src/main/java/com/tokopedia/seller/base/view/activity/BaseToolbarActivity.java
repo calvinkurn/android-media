@@ -58,7 +58,7 @@ public abstract class BaseToolbarActivity extends BaseActivity {
     }
 
     protected int getThemeActivity() {
-        return R.style.Theme_Tokopedia3_Dark;
+        return R.style.Theme_Tokopedia3;
     }
 
     protected void setToolbarColorWhite() {
