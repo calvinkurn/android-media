@@ -1,6 +1,7 @@
 package com.tokopedia.flight.search.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,13 +39,14 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         return fragment;
     }
 
+    @CallSuper
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    protected void initInjector() {
+    protected final void initInjector() {
         DaggerFlightSearchComponent.builder()
                 .flightComponent(((FlightModuleRouter)getActivity().getApplication()).getFlightComponent() )
                 .build()
@@ -53,22 +55,23 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    protected BaseListAdapter getNewAdapter() {
+    protected final BaseListAdapter<FlightSearchViewModel> getNewAdapter() {
         return new FlightSearchAdapter();
     }
 
     @Override
     protected void searchForPage(int page) {
-        flightSearchPresenter.searchFlight();
+        flightSearchPresenter.searchDepartureFlight();
     }
 
+    @CallSuper
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    @CallSuper
     @Override
     public void onResume() {
         super.onResume();
@@ -81,7 +84,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     protected int getFragmentLayout() {
-        return R.layout.fragment_base_list;
+        return R.layout.fragment_search_flight;
     }
 
     @Override
@@ -92,7 +95,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
-        // TODO
         Toast.makeText(getActivity(), flightSearchViewModel.getId(), Toast.LENGTH_LONG).show();
     }
 }

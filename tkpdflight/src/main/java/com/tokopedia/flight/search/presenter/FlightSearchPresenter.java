@@ -20,7 +20,6 @@ import rx.Subscriber;
 public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView> {
 
     private final FlightSearchUseCase flightSearchUseCase;
-    private Subscriber<List<FlightSearchSingleRouteDB>> subscriberSearchFlight;
 
     @Inject
     public FlightSearchPresenter(FlightSearchUseCase flightSearchUseCase) {
@@ -28,8 +27,14 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     }
 
     //TODO params
-    public void searchFlight() {
-        flightSearchUseCase.execute(null, getSubscriberSearchFlight());
+    public void searchDepartureFlight() {
+        flightSearchUseCase.execute(FlightSearchUseCase.generateRequestParams(false),
+                getSubscriberSearchFlight());
+    }
+
+    public void searchReturningFlight() {
+        flightSearchUseCase.execute(FlightSearchUseCase.generateRequestParams(true),
+                getSubscriberSearchFlight());
     }
 
     @Override

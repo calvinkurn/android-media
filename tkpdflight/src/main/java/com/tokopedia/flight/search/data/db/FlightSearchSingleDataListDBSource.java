@@ -1,5 +1,6 @@
 package com.tokopedia.flight.search.data.db;
 
+import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 
 import javax.inject.Inject;
@@ -18,5 +19,11 @@ public class FlightSearchSingleDataListDBSource extends AbsFlightSearchDataListD
     @Override
     protected Class<? extends FlightSearchSingleRouteDB> getDBClass() {
         return FlightSearchSingleRouteDB.class;
+    }
+
+    @Override
+    protected void insertSingleFlightData(FlightSearchData flightSearchData) {
+        FlightSearchSingleRouteDB flightSearchSingleRouteDB = new FlightSearchSingleRouteDB(flightSearchData);
+        flightSearchSingleRouteDB.insert();
     }
 }
