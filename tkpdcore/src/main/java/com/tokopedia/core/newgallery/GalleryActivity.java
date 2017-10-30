@@ -638,6 +638,9 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public void finishWithMultipleImage(ArrayList<String> imageUrls){
         Intent intent = new Intent();
         intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, imageUrls);
+        if (imageUrls!= null && imageUrls.size() == 1) {
+            intent.putExtra(GalleryActivity.IMAGE_URL, imageUrls.get(0));
+        }
         intent.putExtra(GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION, position);
         setResult(GalleryActivity.RESULT_CODE, intent);
         finish();
