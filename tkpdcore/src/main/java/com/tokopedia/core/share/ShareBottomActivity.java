@@ -55,7 +55,7 @@ public class ShareBottomActivity extends BaseActivity {
                 finish();
             }
         });
-        BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
+        BottomSheetBehavior.from((View) findViewById(R.id.touch_outside))
                 .setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                     @Override
                     public void onStateChanged(@NonNull View bottomSheet, int newState) {

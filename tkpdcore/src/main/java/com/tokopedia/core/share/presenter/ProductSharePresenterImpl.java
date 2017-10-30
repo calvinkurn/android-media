@@ -1,10 +1,8 @@
 package com.tokopedia.core.share.presenter;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
@@ -75,20 +73,20 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             BranchSdkUtils.generateBranchLink(data, activity, new BranchSdkUtils.GenerateShareContents() {
                 @Override
                 public void onCreateShareContents(String shareContents, String shareUri) {
-
-                    if (isPackageInstalled(TkpdState.PackageName.Facebook)) {
-                        view.showDialogShareFb(shareUri);
-                    } else {
-                        try {
-                            shareUri = facebookUrl + shareUri;
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(shareUri));
-                            if (intent.resolveActivity(activity.getPackageManager()) != null) {
-                                activity.startActivity(intent);
-                            }
-                        } catch (ActivityNotFoundException e) {
-
-                        }
-                    }
+                    view.showDialogShareFb(shareUri);
+//                    if (isPackageInstalled(TkpdState.PackageName.Facebook)) {
+//                        view.showDialogShareFb(shareUri);
+//                    } else {
+//                        try {
+//                            shareUri = facebookUrl + shareUri;
+//                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(shareUri));
+//                            if (intent.resolveActivity(activity.getPackageManager()) != null) {
+//                                activity.startActivity(intent);
+//                            }
+//                        } catch (ActivityNotFoundException e) {
+//
+//                        }
+//                    }
                 }
             });
 

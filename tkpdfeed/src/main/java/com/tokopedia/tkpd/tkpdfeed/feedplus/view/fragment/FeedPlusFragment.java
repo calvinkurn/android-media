@@ -46,7 +46,6 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.share.ShareBottomActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.ClipboardHandler;
@@ -66,6 +65,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabe
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
@@ -109,6 +109,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     RelativeLayout mainContent;
     View newFeed;
     Trace trace;
+    private ShareBottomDialog shareBottomDialog;
+
 
     @Inject
     FeedPlusPresenter presenter;
@@ -353,7 +355,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 .setUri(shareUrl)
                                 .setType(ShareData.FEED_TYPE)
                                 .build();
-               onProductShareClicked(shareData);
+              // onProductShareClicked(shareData);
+
+        if (shareBottomDialog == null) {
+            shareBottomDialog = new ShareBottomDialog(
+                    FeedPlusFragment.this,
+                    callbackManager);
+        }
+shareBottomDialog.setShareModel(shareData);
+//        shareBottomDialog.setShareModel(
+//                new ShareModel(shareUrl,
+//                        title,
+//                        imgUrl,
+//                        contentMessage,pageRowNumber));
+
+        shareBottomDialog.show();
 
     }
 
@@ -889,6 +905,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void onProductShareClicked(@NonNull ShareData data) {
         startActivity(ShareBottomActivity.createIntent(getActivity(),data));
-        getActivity().overridePendingTransition(R.anim.pull_up,R.anim.push_down);
+       // getActivity().overridePendingTransition(R.anim.pull_up,R.anim.push_down);
     }
 }
