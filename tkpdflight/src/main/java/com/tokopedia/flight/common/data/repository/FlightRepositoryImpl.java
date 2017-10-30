@@ -3,9 +3,11 @@ package com.tokopedia.flight.common.data.repository;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.search.constant.FlightSearchParamUtil;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataListSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataListSource;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -37,8 +39,8 @@ public class FlightRepositoryImpl implements FlightRepository {
 
     //TODO define query
     @Override
-    public Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(boolean isReturningFlight) {
-        if (isReturningFlight) {
+    public Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(RequestParams requestParams) {
+        if (FlightSearchParamUtil.isReturning(requestParams)) {
             return flightSearchReturnDataListSource.getDataList();
         } else {
             return flightSearchSingleDataListSource.getDataList();
