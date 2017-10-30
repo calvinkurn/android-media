@@ -14,6 +14,7 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsEditPromoFragmentListe
 import com.tokopedia.topads.dashboard.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
@@ -94,9 +95,11 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
         getSuggestionBody.setSource(source);
         getSuggestionBody.setDataType(TopAdsNetworkConstant.SUGGESTION_DATA_TYPE_SUMMARY);
         getSuggestionBody.setSuggestionType(TopAdsNetworkConstant.SUGGESTION_TYPE_DEPARTMENT_ID);
+        List<Long> ids_ = new ArrayList<>();
         for (String id : ids) {
-            ids.add(id);
+            ids_.add(Long.valueOf(id));
         }
+        getSuggestionBody.setIds(ids_);
 
         topAdsGetSuggestionUseCase.execute(TopAdsGetSuggestionUseCase.createRequestParams(getSuggestionBody), new Subscriber<GetSuggestionResponse>() {
             @Override
