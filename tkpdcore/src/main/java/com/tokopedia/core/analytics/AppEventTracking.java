@@ -649,7 +649,6 @@ public interface AppEventTracking {
         String PINTEREST = "Pinterest";
         String INSTAGRAM = "Instagram";
         String GOOGLE_PLUS = "Google Plus";
-        String SMS = "SMS";
         String OTHER = "Other";
     }
 

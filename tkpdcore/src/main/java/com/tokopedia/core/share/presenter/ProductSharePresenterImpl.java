@@ -1,8 +1,6 @@
 package com.tokopedia.core.share.presenter;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
@@ -15,7 +13,6 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.listener.ShareView;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -221,26 +218,6 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     }
 
     @Override
-    public void shareSms(ShareData data) {
-        if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            shareCategory(data, AppEventTracking.SOCIAL_MEDIA.SMS);
-        } else {
-            UnifyTracking.eventShare(
-                    AppEventTracking.SOCIAL_MEDIA.SMS
-            );
-        }
-
-        BranchSdkUtils.generateBranchLink(data, activity, new BranchSdkUtils.GenerateShareContents() {
-            @Override
-            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
-                Intent smsIntent = MethodChecker.getSmsIntent(activity, shareUri);
-                activity.startActivity(smsIntent);
-            }
-        });
-
-    }
-
-    @Override
     public void setFacebookCache() {
         facebookCache.setExpire(3600);
     }
@@ -250,16 +227,6 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         String[] shareParam = data.getSplittedDescription(",");
         if (shareParam.length == 2) {
             UnifyTracking.eventShareCategory(shareParam[0], shareParam[1] + "-" + media);
-        }
-    }
-
-    private boolean isPackageInstalled(String packagename) {
-        PackageManager pm = activity.getPackageManager();
-        try {
-            pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
         }
     }
 }
