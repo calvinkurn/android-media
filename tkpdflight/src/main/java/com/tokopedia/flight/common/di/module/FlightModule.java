@@ -1,15 +1,14 @@
 package com.tokopedia.flight.common.di.module;
 
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
-import com.tokopedia.flight.airport.data.source.cloud.api.FlightAirportApi;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
+import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataListSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataListSource;
-import com.tokopedia.flight.search.data.cloud.api.FlightSearchApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,13 +56,7 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public FlightAirportApi provideFlightAirportApi(@FlightQualifier Retrofit retrofit){
-        return retrofit.create(FlightAirportApi.class);
-    }
-
-    @FlightScope
-    @Provides
-    public FlightSearchApi provideFlightSearchApi(@FlightQualifier Retrofit retrofit){
-        return retrofit.create(FlightSearchApi.class);
+    public FlightApi provideFlightAirportApi(@FlightQualifier Retrofit retrofit){
+        return retrofit.create(FlightApi.class);
     }
 }
