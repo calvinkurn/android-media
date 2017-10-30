@@ -22,7 +22,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".flightsearch.view.activity.FlightSearchActivity"
+            android:name=".search.view.activity.FlightSearchActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"/>
     </application>

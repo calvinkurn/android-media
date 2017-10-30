@@ -1,4 +1,4 @@
-package com.tokopedia.flight.flightsearch.adapter;
+package com.tokopedia.flight.search.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportViewHolder;
-import com.tokopedia.flight.flightsearch.data.cloud.model.FlightSearchData;
+import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
 
 /**
  * Created by User on 10/26/2017.

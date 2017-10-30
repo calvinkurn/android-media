@@ -1,4 +1,4 @@
-package com.tokopedia.flight.flightsearch.view.activity;
+package com.tokopedia.flight.search.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.flightsearch.view.fragment.FlightSearchFragment;
+import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
 
 /**
  * Created by User on 10/26/2017.

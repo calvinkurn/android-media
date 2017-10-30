@@ -1,4 +1,4 @@
-package com.tokopedia.flight.flightsearch.data.cloud.model;
+package com.tokopedia.flight.search.data.cloud.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
