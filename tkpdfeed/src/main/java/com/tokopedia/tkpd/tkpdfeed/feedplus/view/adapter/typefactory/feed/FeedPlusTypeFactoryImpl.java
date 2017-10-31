@@ -23,6 +23,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.promo.PromoV
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.promo.PromotedProductViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.promo.PromotedShopViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.recentview.RecentViewViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.topads.FeedTopadsViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.toppicks.ToppicksViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
@@ -40,6 +41,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewMo
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
@@ -146,6 +148,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
+    public int type(FeedTopAdsViewModel feedTopAdsViewModel) {
+        return FeedTopadsViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(RetryModel retryModel) {
         return RetryViewHolder.LAYOUT;
     }
@@ -191,6 +198,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new KolViewHolder(view, kolViewListener);
         else if (type == KolRecommendationViewHolder.LAYOUT)
             viewHolder = new KolRecommendationViewHolder(view, kolViewListener);
+        else if (type == FeedTopadsViewHolder.LAYOUT)
+            viewHolder = new FeedTopadsViewHolder(view, topAdsItemClickListener);
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

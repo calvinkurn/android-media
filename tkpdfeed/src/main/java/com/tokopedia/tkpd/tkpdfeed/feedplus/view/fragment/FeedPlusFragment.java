@@ -361,34 +361,42 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     }
 
-    private void goToProductDetail(String productId) {
+    private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
         if (getActivity().getApplication() instanceof PdpRouter) {
             ((PdpRouter) getActivity().getApplication()).goToProductDetail(
                     getActivity(),
                     ProductPass.Builder.aProductPass()
                             .setProductId(productId)
+                            .setProductImage(imageSourceSingle)
+                            .setProductName(name)
+                            .setProductPrice(price)
+
                             .build()
             );
         }
     }
 
     @Override
-    public void onGoToProductDetail(int rowNumber, int page, String productId) {
-        goToProductDetail(productId);
+    public void onGoToProductDetail(int rowNumber, int page, String productId, String
+            imageSourceSingle, String name, String price) {
+        goToProductDetail(productId, imageSourceSingle, name, price);
         UnifyTracking.eventFeedViewProduct(productId,
                 getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_PDP);
     }
 
     @Override
-    public void onGoToProductDetailFromRecentView(String productId) {
-        goToProductDetail(productId);
+    public void onGoToProductDetailFromRecentView(String productId, String imgUri,
+                                                  String name, String price) {
+        goToProductDetail(productId, imgUri, name, price);
         UnifyTracking.eventFeedViewProduct(productId, FeedTrackingEventLabel.View.VIEW_RECENT,
                 FeedTrackingEventLabel.View.FEED_PDP);
     }
 
     @Override
-    public void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId) {
-        goToProductDetail(productId);
+    public void onGoToProductDetailFromInspiration(int page, int rowNumber,
+                                                   String productId, String imageSource,
+                                                   String name, String price) {
+        goToProductDetail(productId, imageSource, name, price);
         UnifyTracking.eventR3Product(productId, AppEventTracking.Action.CLICK,
                 getFeedAnalyticsHeader(page, rowNumber)
                         + FeedTrackingEventLabel.Click.FEED_RECOMMENDATION_PDP);
@@ -836,12 +844,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId) {
+    public void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId, String imageSourceSingle, String name, String price) {
         UnifyTracking.eventFeedClickProduct(
                 productId,
                 getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.Click
                         .OFFICIAL_STORE_CAMPAIGN_PDP);
-        goToProductDetail(productId);
+        goToProductDetail(productId, imageSourceSingle, name, price);
 
     }
 
@@ -903,8 +911,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductPageFromKol(int page, int rowNumber, String productId) {
-        goToProductDetail(productId);
+    public void onGoToProductPageFromKol(int page, int rowNumber, String productId, String productImage) {
+        goToProductDetail(productId, productImage, "", "");
     }
 
     @Override

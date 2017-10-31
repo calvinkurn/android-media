@@ -8,12 +8,11 @@ import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.CheckNewFeedUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.CheckNewFeedSubscriber;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -39,6 +38,7 @@ public class FeedPlusPresenter
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
+    private int currentTotalFeedSize;
 
     @Inject
     FeedPlusPresenter(SessionHandler sessionHandler,
@@ -54,6 +54,7 @@ public class FeedPlusPresenter
         this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
         this.checkNewFeedUseCase = checkNewFeedUseCase;
         this.pagingHandler = new PagingHandler();
+        this.currentTotalFeedSize = 0;
     }
 
     @Override
@@ -77,6 +78,7 @@ public class FeedPlusPresenter
         pagingHandler.resetPage();
         viewListener.showRefresh();
         currentCursor = "";
+        currentTotalFeedSize = 0;
         getFirstPageFeedsUseCase.execute(
                 getFirstPageFeedsUseCase.getRefreshParam(sessionHandler),
                 new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
@@ -149,6 +151,7 @@ public class FeedPlusPresenter
         pagingHandler.resetPage();
         viewListener.showRefresh();
         currentCursor = "";
+        currentTotalFeedSize = 0;
         getFirstPageFeedsCloudUseCase.execute(
                 getFirstPageFeedsCloudUseCase.getRefreshParam(sessionHandler),
                 new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));

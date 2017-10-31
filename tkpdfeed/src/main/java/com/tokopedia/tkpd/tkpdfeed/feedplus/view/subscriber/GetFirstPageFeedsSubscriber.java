@@ -34,6 +34,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.BadgeViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.recentview.RecentViewViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksItemViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.toppicks.ToppicksViewModel;
 
@@ -60,6 +61,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_TOPADS = "topads";
 
     private final int page;
+    private int currentTotalFeedSize;
 
 
     public GetFirstPageFeedsSubscriber(FeedPlus.View viewListener, int page) {
@@ -226,20 +228,30 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         ToppicksViewModel toppicks = convertToToppicksViewModel(domain);
                         if (toppicks.getList() != null && !toppicks.getList().isEmpty())
                             listFeedView.add(toppicks);
+                        break;
                     case TYPE_INSPIRATION:
                         InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain);
                         if (inspirationViewModel != null
                                 && inspirationViewModel.getListProduct() != null
                                 && !inspirationViewModel.getListProduct().isEmpty())
                             listFeedView.add(inspirationViewModel);
+                        break;
+                    case TYPE_TOPADS:
+                        FeedTopAdsViewModel topAdsViewModel = convertToTopadsViewModel(page);
+                        listFeedView.add(topAdsViewModel);
+                        break;
                     default:
                         break;
                 }
             }
+
         listFeedView.add(convertToKolViewModel());
         listFeedView.add(convertToKolRecommendationViewModel());
 
+    }
 
+    private FeedTopAdsViewModel convertToTopadsViewModel(int page) {
+        return new FeedTopAdsViewModel(page);
     }
 
     private KolRecommendationViewModel convertToKolRecommendationViewModel() {

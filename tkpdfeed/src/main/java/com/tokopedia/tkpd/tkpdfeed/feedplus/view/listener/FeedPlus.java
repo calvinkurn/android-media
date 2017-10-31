@@ -24,7 +24,7 @@ public interface FeedPlus{
         interface Kol {
             void onGoToKolProfile(int page, int rowNumber, String url);
 
-            void onGoToProductPageFromKol(int page, int rowNumber, String productId);
+            void onGoToProductPageFromKol(int page, int rowNumber, String productId, String productImage);
 
             void onFollowKolClicked(int page, int rowNumber, String id);
 
@@ -53,11 +53,11 @@ public interface FeedPlus{
                                   String contentMessage,
                                   String pageRowNumber);
 
-        void onGoToProductDetail(int rowNumber, int page, String productId);
+        void onGoToProductDetail(int rowNumber, int page, String id, String imageSourceSingle, String name, String productId);
 
-        void onGoToProductDetailFromRecentView(String productID);
+        void onGoToProductDetailFromRecentView(String productID, String imgUri, String name, String price);
 
-        void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId);
+        void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId, String imageSource, String name, String price);
 
         void onGoToFeedDetail(int page, int rowNumber, String feedId);
 
@@ -149,7 +149,8 @@ public interface FeedPlus{
 
         void onSeeAllOfficialStoresFromBrands(int page, int rowNumber);
 
-        void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId);
+        void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId,
+                                             String imageSourceSingle, String name, String price);
 
         void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl);
     }

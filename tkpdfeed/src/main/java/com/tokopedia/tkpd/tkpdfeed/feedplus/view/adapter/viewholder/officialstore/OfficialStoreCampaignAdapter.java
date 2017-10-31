@@ -74,7 +74,10 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
                             officialStoreCampaignViewModel.getPage(),
                             officialStoreCampaignViewModel.getRowNumber(),
                             String.valueOf(list.get(getAdapterPosition())
-                                    .getProductId()));
+                                    .getProductId()),
+                            list.get(getAdapterPosition()).getImageSourceSingle(),
+                            list.get(getAdapterPosition()).getName(),
+                            list.get(getAdapterPosition()).getPrice());
                 }
             });
 
@@ -85,7 +88,7 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
                             officialStoreCampaignViewModel.getPage(),
                             officialStoreCampaignViewModel.getRowNumber(),
                             String.valueOf(list.get(getAdapterPosition())
-                                    .getProductId()));
+                                    .getProductId()), list.get(getAdapterPosition()).getImageSourceSingle(), list.get(getAdapterPosition()).getName(), list.get(getAdapterPosition()).getPrice());
                 }
             });
             shopAva.setOnClickListener(new View.OnClickListener() {

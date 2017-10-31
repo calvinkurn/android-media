@@ -62,7 +62,7 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
             public void onClick(View v) {
                 viewListener.onGoToProductDetail(promotedProductViewModel.getRowNumber(),
                         list.get(position).getPage(),
-                        String.valueOf(list.get(position).getProductId()));
+                        String.valueOf(list.get(position).getProductId()), list.get(position).getImageSourceSingle(), list.get(position).getName(), String.valueOf(list.get(position).getProductId()));
 
             }
         });
@@ -72,7 +72,7 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
             public void onClick(View v) {
                 viewListener.onGoToProductDetail(promotedProductViewModel.getRowNumber(),
                         list.get(position).getPage(),
-                        String.valueOf(list.get(position).getProductId()));
+                        String.valueOf(list.get(position).getProductId()), list.get(position).getImageSourceSingle(), list.get(position).getName(), String.valueOf(list.get(position).getProductId()));
 
             }
         });

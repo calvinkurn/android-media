@@ -111,7 +111,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             public void onClick(View v) {
                 viewListener.onGoToProductPageFromKol(element.getPage(),
                         getAdapterPosition(),
-                        element.getProductId());
+                        element.getProductId(), element.getProductImage());
             }
         };
     }
@@ -190,7 +190,8 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             @Override
             public void onClick(View v) {
                 viewListener.onGoToProductPageFromKol(element.getPage(), getAdapterPosition(),
-                        element.getId());
+                        element.getId(),
+                        element.getProductImage());
             }
         });
 

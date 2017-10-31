@@ -120,7 +120,10 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                     viewListener.onGoToProductDetail(
                             activityCardViewModel.getRowNumber(),
                             list.get(position).getPage(),
-                            String.valueOf(list.get(position).getProductId()));
+                            String.valueOf(list.get(position).getProductId()),
+                            list.get(position).getImageSourceSingle(),
+                            list.get(position).getName(),
+                            list.get(position).getPrice());
                 }
             });
 
@@ -130,7 +133,10 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                     viewListener.onGoToProductDetail(
                             activityCardViewModel.getRowNumber(),
                             list.get(position).getPage(),
-                            String.valueOf(list.get(position).getProductId()));
+                            String.valueOf(list.get(position).getProductId()),
+                            list.get(position).getImageSourceSingle(),
+                            list.get(position).getName(),
+                            list.get(position).getPrice());
                 }
             });
         }
