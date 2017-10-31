@@ -237,8 +237,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             listFeedView.add(inspirationViewModel);
                         break;
                     case TYPE_TOPADS:
-                        FeedTopAdsViewModel topAdsViewModel = convertToTopadsViewModel(page);
-                        listFeedView.add(topAdsViewModel);
+//                        FeedTopAdsViewModel topAdsViewModel = convertToTopadsViewModel(page);
+//                        listFeedView.add(topAdsViewModel);
                         break;
                     default:
                         break;
