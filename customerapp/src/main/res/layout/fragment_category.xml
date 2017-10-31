@@ -35,6 +35,8 @@
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
+
+
         <com.tokopedia.tkpd.home.customview.DigitalWidgetView
             android:id="@+id/digital_widget"
             android:layout_width="match_parent"

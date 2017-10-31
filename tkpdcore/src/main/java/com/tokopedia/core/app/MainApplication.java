@@ -16,7 +16,6 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
-import com.localytics.android.Localytics;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -34,6 +33,7 @@ import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
@@ -277,8 +277,6 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
 
         initDbFlow();
 
-        Localytics.autoIntegrate(this);
-
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .netModule(new NetModule());
@@ -340,7 +338,6 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
     protected void initializeAnalytics() {
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.LOCALYTICS);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
         TrackingUtils.setMoEngageExistingUser();
         TrackingUtils.enableDebugging(isDebug());
@@ -399,8 +396,8 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
 
     private void initBranch() {
         Branch.getAutoInstance(this);
-        //Set userId to Branch.io sdk, userId, 127 chars or less
-        if(SessionHandler.isV4Login(this))
-            Branch.getInstance().setIdentity(SessionHandler.getLoginID(this));
+        if (SessionHandler.isV4Login(this)) {
+            BranchSdkUtils.sendLoginEvent(SessionHandler.getLoginID(this));
+        }
     }
 }

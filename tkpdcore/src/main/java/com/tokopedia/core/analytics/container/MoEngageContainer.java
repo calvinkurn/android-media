@@ -87,6 +87,9 @@ public class MoEngageContainer implements IMoengageContainer {
         executor(isExistingUser, new SingleSubscriber<CustomerWrapper>() {
             @Override
             public void onSuccess(CustomerWrapper value) {
+
+                CommonUtils.dumper("MoEngage check user "+value.getCustomerId());
+
                 MoEHelper helper = MoEHelper.getInstance(context);
                 helper.setFullName(value.getFullName());
                 helper.setUniqueId(value.getCustomerId());
@@ -107,7 +110,6 @@ public class MoEngageContainer implements IMoengageContainer {
         executor(isExistingUser, new SingleSubscriber<JSONObject>() {
             @Override
             public void onSuccess(JSONObject value) {
-                CommonUtils.dumper("MoEngage send event "+value.toString());
                 MoEHelper.getInstance(context).trackEvent(eventName, value);
             }
 
@@ -132,6 +134,7 @@ public class MoEngageContainer implements IMoengageContainer {
 
     @Override
     public void sendRegisterEvent(String fullName, String mobileNo) {
+        CommonUtils.dumper("MoEngage check user "+fullName);
         sendEvent(
                 new PayloadBuilder()
                     .putAttrString(AppEventTracking.MOENGAGE.NAME, fullName)
@@ -162,6 +165,22 @@ public class MoEngageContainer implements IMoengageContainer {
                 helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_SELLER, String.valueOf(value.isSeller()));
                 helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_ID, value.getShopId());
                 helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_NAME, value.getShopName());
+
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM, value.getTotalItemSold());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.REG_DATE, value.getRegDate());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.DATE_SHOP_CREATED, value.getDateShopCreated());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_LOCATION, value.getShopLocation());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.TOKOCASH_AMT, value.getTokocashAmt());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.SALDO_AMT, value.getSaldoAmt());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_AMT, value.getTopAdsAmt());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_USER, value.isTopadsUser());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_TICKET, value.isHasPurchasedTiket());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE, value.isHasPurchasedMarketplace());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_DIGITAL, value.isHasPurchasedDigital());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE, value.getLastTransactionDate());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_ACTIVE_PRODUCT, value.getTotalActiveProduct());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_SCORE, value.getShopScore());
+
             }
 
             @Override

@@ -39,6 +39,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
@@ -159,8 +160,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToProductDetail(Context context, String productUrl) {
-        Intent intent = ProductInfoActivity.createInstance(context, productUrl);
-        context.startActivity(intent);
+        DeepLinkChecker.openProduct(productUrl, context);
     }
 
     @Override
@@ -412,6 +412,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void actionApplink(Activity activity, String linkUrl, String extra) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.putExtra("extra", extra);
+        intent.setData(Uri.parse(linkUrl));
+        deepLinkDelegate.dispatchFrom(activity, intent);
+    }
+
+    @Override
     public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
         activity.startActivity(BannerWebView.getCallingIntent(activity, mobileUrl));
     }
@@ -575,6 +584,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public String getFlavor() {
+        return BuildConfig.FLAVOR;
+    }
+
     public Observable<GMFeaturedProductDomainModel> getFeaturedProduct() {
         GMFeaturedProductDomainModel gmFeaturedProductDomainModel = new GMFeaturedProductDomainModel();
         gmFeaturedProductDomainModel.setData(new ArrayList<GMFeaturedProductDomainModel.Datum>());
@@ -607,5 +620,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         if(activity != null) {
             ProductAddActivity.start(activity);
         }
+    }
+
+    @Override
+    public boolean isInMyShop(Context context, String shopId) {
+        return context != null && new SessionHandler(context).getShopID().trim().equalsIgnoreCase(shopId.trim());
     }
 }

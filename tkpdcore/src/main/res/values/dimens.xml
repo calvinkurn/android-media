@@ -31,6 +31,8 @@
     <dimen name="padding_vvvs">2dp</dimen>
     <dimen name="padding_ms">8dp</dimen>
     <dimen name="padding_small">10dp</dimen>
+
+    <dimen name="padding_small_sm">12dp</dimen>
     <dimen name="padding_detail">15dp</dimen>
     <dimen name="med_dp">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
@@ -187,6 +189,7 @@
 
     <dimen name="padding_left_schedule_shop_close">5dp</dimen>
     <dimen name="bottom_navigation_elevation">20dp</dimen>
+    <dimen name="bottom_navigation_height_elevation">21dp</dimen>
     <dimen name="margin_top_ticker">25dp</dimen>
     <dimen name="viewpager_margin">-42dp</dimen>
     <dimen name="slider_margin">22dp</dimen>

@@ -28,7 +28,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.deposit.adapter.BankAdapter;
@@ -151,9 +150,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        
-        String screenName = getString(R.string.withdraw_page);
-        ScreenTracking.screenLoca(screenName);
 
         getActivity().invalidateOptionsMenu();
     }
@@ -219,7 +215,7 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.save_btn, menu);
+        inflater.inflate(R.menu.save_btn_black, menu);
     }
 
     @Override

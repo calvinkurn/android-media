@@ -40,7 +40,6 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
     TextView seeAllText;
 
     private OfficialStoreCampaignAdapter adapter;
-    private OfficialStoreCampaignViewModel officialStoreViewModel;
 
     public OfficialStoreCampaignViewHolder(View itemView, final FeedPlus.View viewListener) {
         super(itemView);
@@ -88,9 +87,8 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
 
     @Override
     public void bind(final OfficialStoreCampaignViewModel officialStoreViewModel) {
-        this.officialStoreViewModel = officialStoreViewModel;
-        this.officialStoreViewModel.setRowNumber(getAdapterPosition());
-        adapter.setData(this.officialStoreViewModel);
+        officialStoreViewModel.setRowNumber(getAdapterPosition());
+        adapter.setData(officialStoreViewModel);
         ImageHandler.LoadImage(imageView, officialStoreViewModel.getOfficialStoreHeaderImageUrl());
         title.setText(MethodChecker.fromHtml(officialStoreViewModel.getTitle()));
         mainView.setBackgroundColor(Color.parseColor(officialStoreViewModel.getHexColor()));

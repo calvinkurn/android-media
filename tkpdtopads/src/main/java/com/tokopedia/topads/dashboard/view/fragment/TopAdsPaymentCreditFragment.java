@@ -11,8 +11,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.topads.R;
@@ -59,7 +59,6 @@ public class TopAdsPaymentCreditFragment extends TkpdBaseV4Fragment {
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setDisplayZoomControls(true);
-        webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
@@ -73,6 +72,12 @@ public class TopAdsPaymentCreditFragment extends TkpdBaseV4Fragment {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (getActivity() != null && ((TkpdCoreRouter) getActivity().getApplication())
+                        .isSupportedDelegateDeepLink(url)) {
+                    ((TkpdCoreRouter) getActivity().getApplication())
+                            .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+                    return true;
+                }
                 return false;
             }
         });

@@ -102,10 +102,11 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
 
-    public static ProductShareFragment newInstance(@NonNull ShareData shareData) {
+    public static ProductShareFragment newInstance(@NonNull ShareData shareData,boolean isAddingProduct) {
         ProductShareFragment fragment = new ProductShareFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARGS_SHARE_DATA, shareData);
+        args.putBoolean(IS_ADDING_PRODUCT, isAddingProduct);
         fragment.setArguments(args);
         return fragment;
     }
@@ -183,6 +184,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         loadingAddProduct.setVisibility(View.GONE);
         if (this.shareData != null) {
             if (shareData.getType() != null) {
+                subtitle.setText(R.string.product_share_subtitle);
                 switch (shareData.getType()) {
                     case ShareData.CATALOG_TYPE:
                         tvTitle.setText(R.string.product_share_catalog);
@@ -201,6 +203,10 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                         break;
                     case ShareData.RIDE_TYPE:
                         tvTitle.setText(R.string.product_share_ride_trip);
+                        break;
+                    case ShareData.APP_SHARE_TYPE:
+                        tvTitle.setText(R.string.product_share_app);
+                        subtitle.setText(R.string.product_share_app_subtitle);
                         break;
                 }
             }

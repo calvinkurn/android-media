@@ -48,54 +48,11 @@ public class UserAuthenticationAnalytics {
         switch (mDiskAnalyticsDataStore.getActiveAuthenticationState()) {
             case AppEventTracking.GTMCacheValue.LOGIN:
                 UnifyTracking.eventLoginSuccess(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
-
-                Map<String, String> loginAttr = new HashMap<String, String>();
-                UnifyTracking.eventLoginLoca(new CustomerWrapper.Builder()
-                        .setCustomerId(
-                                bundle.getString(AppEventTracking.USER_ID_KEY,
-                                        AppEventTracking.DEFAULT_CHANNEL)
-                        )
-                        .setFirstName(
-                                bundle.getString(AppEventTracking.FULLNAME_KEY,
-                                        AppEventTracking.DEFAULT_CHANNEL)
-                        )
-                        .setEmailAddress(
-                                bundle.getString(AppEventTracking.EMAIL_KEY,
-                                        AppEventTracking.DEFAULT_CHANNEL)
-                        )
-                        .setMethod(
-                                mDiskAnalyticsDataStore.getActiveAuthenticationMedium()
-                        )
-                        .setAttr(loginAttr)
-                        .build()
-                );
                 CommonUtils.dumper(bundle.toString());
                 CommonUtils.dumper(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
                 break;
             case AppEventTracking.GTMCacheValue.REGISTER:
                 UnifyTracking.eventRegisterSuccess(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
-
-                Map<String, String> registerAttr = new HashMap<String, String>();
-                UnifyTracking.eventRegisterLoca(
-                        new CustomerWrapper.Builder()
-                                .setCustomerId(
-                                        bundle.getString(AppEventTracking.USER_ID_KEY,
-                                                AppEventTracking.DEFAULT_CHANNEL)
-                                )
-                                .setFirstName(
-                                        bundle.getString(AppEventTracking.FULLNAME_KEY,
-                                                AppEventTracking.DEFAULT_CHANNEL)
-                                )
-                                .setEmailAddress(
-                                        bundle.getString(AppEventTracking.EMAIL_KEY,
-                                                AppEventTracking.DEFAULT_CHANNEL)
-                                )
-                                .setMethod(
-                                        mDiskAnalyticsDataStore.getActiveAuthenticationMedium()
-                                )
-                                .setAttr(registerAttr)
-                                .build()
-                );
                 CommonUtils.dumper(bundle.toString());
                 CommonUtils.dumper(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
                 break;
