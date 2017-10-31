@@ -14,8 +14,8 @@ export const BASE_API_URL_PCIDSS = {
 }
 
 export const BASE_API_URL_ORDER = {
-    STAGING: 'https://api-staging.tokopedia.com',
-    PRODUCTION: 'https://api.tokopedia.com'
+    STAGING: 'http://o2o-staging.tokopedia.com/o2o/v1/order/get_history',
+    PRODUCTION: 'https://o2o.tokopedia.com/o2o/v1/order/get_history'
 }
 
 // export const BASE_API_URL_PAYMENT = {
