@@ -69,13 +69,22 @@ public abstract class DataListSource<T,U> {
                 if (isCacheExpired) {
                     return getRefreshedData(params);
                 } else {
-                    return dataListDBManager.isDataAvailable().flatMap(new Func1<Boolean, Observable<List<U>>>() {
+                    return dataListDBManager.getData(params).flatMap(new Func1<List<U>, Observable<List<U>>>() {
                         @Override
-                        public Observable<List<U>> call(Boolean isDataAvailable) {
-                            if (!isDataAvailable) {
-                                return getRefreshedData(params);
+                        public Observable<List<U>> call(List<U> cacheList) {
+                            if (cacheList == null || cacheList.size() == 0) {
+                                return dataListDBManager.isDataAvailable().flatMap(new Func1<Boolean, Observable<List<U>>>() {
+                                    @Override
+                                    public Observable<List<U>> call(Boolean isDataAvalable) {
+                                        if (isDataAvalable) {
+                                            return Observable.just((List<U>)new ArrayList<U>());
+                                        } else {
+                                            return getRefreshedData(params);
+                                        }
+                                    }
+                                });
                             } else {
-                                return dataListDBManager.getData(params);
+                                return Observable.just(cacheList);
                             }
                         }
                     });

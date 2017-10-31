@@ -29,7 +29,7 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
     }
 
     public Observable<List<FlightAirlineDB>> getAirlineList(final String idToSearch) {
-        final HashMap<String, Object> map = FlightAirlineParamUtil.generateMap(idToSearch);
+        final HashMap<String, Object> map =generateGetParam(idToSearch);
         return getDataList(map);
     }
 
