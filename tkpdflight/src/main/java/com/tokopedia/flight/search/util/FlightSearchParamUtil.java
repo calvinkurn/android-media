@@ -1,4 +1,4 @@
-package com.tokopedia.flight.search.constant;
+package com.tokopedia.flight.search.util;
 
 import com.tokopedia.usecase.RequestParams;
 

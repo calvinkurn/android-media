@@ -1,7 +1,7 @@
 package com.tokopedia.flight.search.domain;
 
 import com.tokopedia.flight.common.domain.FlightRepository;
-import com.tokopedia.flight.search.constant.FlightSearchParamUtil;
+import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
