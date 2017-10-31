@@ -30,7 +30,9 @@ class PaymentBank extends Component {
         text: "Tanpa Cicilan",
         available: false
       }]),
-      dsEmi: dsEmi
+      dsEmi: dsEmi,
+      installmentCalc: 0,
+      noInstallmentCalc: 0,
     };
   }
 
@@ -196,9 +198,58 @@ class PaymentBank extends Component {
   }
 
   _onPressEmiRow(rowID, rowData) {
-   this.setState({
-    selectedEmiId: rowData.term
-   });
+    const checkout_data = JSON.parse(this.props.screenProps.checkout_data)
+    const payment_amount = checkout_data.data.data.payment_amount
+
+    const { paymentRate_CreditCardInterestRate,
+      paymentRate_CreditCardFee,
+      paymentRate_CreditCardFlag,
+      paymentRate_InstallmentInterestRate,
+      paymentRate_InstallmentFee,
+      paymentRate_InstallmentFlag,
+      paymentRate_errorMessage,
+      paymentRate_isFetching } = this.props
+    console.log(rowID, rowData)
+    console.log(this.props)
+    console.log(payment_amount)
+    console.log(paymentRate_CreditCardInterestRate)
+
+    this.setState({ selectedEmiId: rowData.term })
+
+    console.log(rowData.term)
+
+    
+    if (!rowData.term){       // Without cicilan
+      if (paymentRate_CreditCardFlag === 1){
+        console.log(payment_amount + ( paymentRate_CreditCardInterestRate / 100 * payment_amount ))
+        this.setState({
+          noInstallmentCalc: payment_amount + ( paymentRate_CreditCardInterestRate / 100 * payment_amount )
+        })    
+      }
+      if (paymentRate_CreditCardFlag === 2){
+        console.log(( payment_amount + paymentRate_CreditCardFee ) * payment_amount)
+        this.setState({
+          noInstallmentCalc: ( payment_amount + paymentRate_CreditCardFee ) * payment_amount
+        })    
+      }
+    } else {    // With Cicilan
+      if (paymentRate_CreditCardFlag === 1){
+        const cicilan_amount = ( payment_amount + paymentRate_InstallmentInterestRate / 100 ) / rowData.term //.toLocaleString('id')
+        // console.log(( payment_amount + paymentRate_InstallmentInterestRate / 100 ) / rowData.term)
+        this.setState({
+          installmentCalc: Math.ceil(cicilan_amount)
+        })
+      }
+      if (paymentRate_CreditCardFlag === 2){
+        // console.log(( payment_amount / rowData.term ) + paymentRate_InstallmentFee)
+        this.setState({
+          installmentCalc: ( payment_amount / rowData.term ) + paymentRate_InstallmentFee
+        })
+      }
+    }
+    
+    console.log(this.state.noInstallmentCalc)
+    console.log(this.state.installmentCalc)
   }
 
 
@@ -243,24 +294,16 @@ class PaymentBank extends Component {
             <ScrollView>
             <View style={styles.containers} >
               <View style={[styles.row, styles.row1]} >
-                <Text style={[styles.font16, styles.fontColor70]}>
-                  Total Pembayaran
-                  </Text>
-                <Text style={[styles.font16, styles.fontColor70]}>
-                  Rp {(payment_amount_curr)}
-                  </Text>
+                <Text style={[styles.font16, styles.fontColor70]}>Total Pembayaran</Text>
+                <Text style={[styles.font16, styles.fontColor70]}>Rp {(payment_amount_curr)}</Text>
               </View>
 
               <View style={[styles.row, styles.row2]} >
-                <Text style={[styles.font13, styles.fontColor70]}>
-                  Minimum Purchase Rp 500.000
-                  </Text>
+                <Text style={[styles.font13, styles.fontColor70]}>Minimum Purchase Rp 500.000</Text>
               </View>
 
               <View style={[styles.row, styles.row3]} >
-                <Text style={[styles.font14, styles.fontColor70]}>
-                  Pilih Bank
-                  </Text>
+                <Text style={[styles.font14, styles.fontColor70]}>Pilih Bank</Text>
               </View>
 
               <ListView
@@ -296,7 +339,7 @@ class PaymentBank extends Component {
               <View style={[styles.row, styles.row3]} >
                 <Text style={[styles.font14, styles.fontColor70]}>
                   Cicilan Kartu Kredit Bunga 0%
-                  </Text>
+                </Text>
               </View>
 
               <ListView
@@ -306,34 +349,32 @@ class PaymentBank extends Component {
                 renderRow={this._renderEmiRow.bind(this)} />
 
               <View style={{ paddingTop: 10, backgroundColor: 'white', borderBottomWidth: 1, borderColor: '#F0F0F0' }}>
-                <Text style={[styles.font14, styles.fontColor70, { marginLeft: 15 }]}>
-                  Pilih Metode Pembayaran
-                  </Text>
+                <Text style={[styles.font14, styles.fontColor70, { marginLeft: 15 }]}>Pilih Metode Pembayaran</Text>
                 <View style={{ paddingVertical: 20, flexDirection: 'row', marginLeft: 15 }}>
                   <TouchableWithoutFeedback onPress={this._choosePaymentMethod.bind(this, 'SCAN')}>
                     <View style={[styles.paymentMethod, { marginRight: 10 }, (this.state.paymentMethod === 'SCAN') ? styles.paymentSelected : {}]}>
-                      <Text style={[styles.emiText, {fontSize: 14}]}>
-                        Scan Kartu Kredit
-                        </Text>
+                      <Text style={[styles.emiText, {fontSize: 14}]}>Scan Kartu Kredit</Text>
                     </View>
                   </TouchableWithoutFeedback>
 
                   <TouchableWithoutFeedback onPress={this._choosePaymentMethod.bind(this, 'ONLINE')}>
                     <View style={[styles.paymentMethod, (this.state.paymentMethod === 'ONLINE') ? styles.paymentSelected : {}]}>
-                      <Text style={[styles.emiText, {fontSize: 14}]}>
-                        Pembayaran Online
-                        </Text>
+                      <Text style={[styles.emiText, {fontSize: 14}]}>Pembayaran Online</Text>
                     </View>
                   </TouchableWithoutFeedback>
                 </View>
               </View>
 
-              {payment_amount && this.state.selectedEmiId && 
+              
               <View style={[styles.row, styles.row1]}>
                 <Text style={[styles.font20, styles.fontColor70]}>Nominal</Text>
-                <Text style={[styles.font20, styles.fontColor70]}>
-                  Rp {(Math.ceil(payment_amount / this.state.selectedEmiId)).toLocaleString('id')}/ bulan</Text>
-              </View>}
+                {payment_amount && this.state.selectedEmiId ?  
+                  (<Text style={[styles.font20, styles.fontColor70]}>
+                    Rp {this.state.installmentCalc.toLocaleString('id')}/ bulan</Text>): (
+                      <Text style={[styles.font20, styles.fontColor70]}>
+                        Rp {this.state.noInstallmentCalc.toLocaleString('id')}</Text>)
+                }
+              </View>
               {/*<View style={[styles.row, styles.row3]} >
                   <Text style={styles.row1Text}>
                     Pilih Metode Pembayaran
@@ -574,10 +615,19 @@ const ds = new ListView.DataSource({
 const mapStateToProps = state => {
   const bankList = ds.cloneWithRows(state.payment.items);
   //state.payment.emiList
+  console.log(state)
 
   return {
-          ...state.payment,
-        bankList
+    ...state.payment,
+    bankList,
+    paymentRate_CreditCardInterestRate: state.paymentRate.CreditCardInterestRate,
+    paymentRate_CreditCardFee: state.paymentRate.CreditCardFee,
+    paymentRate_CreditCardFlag: state.paymentRate.CreditCardFlag,
+    paymentRate_InstallmentInterestRate: state.paymentRate.InstallmentInterestRate,
+    paymentRate_InstallmentFee: state.paymentRate.InstallmentFee,
+    paymentRate_InstallmentFlag: state.paymentRate.InstallmentFlag,
+    paymentRate_errorMessage: state.paymentRate.errorMessage,
+    paymentRate_isFetching: state.paymentRate.isFetching
   }
 }
 

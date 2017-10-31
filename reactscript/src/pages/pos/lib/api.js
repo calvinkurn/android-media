@@ -13,6 +13,11 @@ export const BASE_API_URL_PCIDSS = {
     PRODUCTION: ''
 }
 
+export const BASE_API_URL = {
+    STAGING: 'http://o2o-staging.tokopedia.com/',
+    PRODUCTION: ''
+}
+
 export const BASE_API_URL_ORDER = {
     STAGING: 'http://o2o-staging.tokopedia.com/o2o/v1/order/get_history',
     PRODUCTION: 'https://o2o.tokopedia.com/o2o/v1/order/get_history'

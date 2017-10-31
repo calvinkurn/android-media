@@ -2,7 +2,8 @@ import { NetworkModule, PosCacheModule, SessionModule } from 'NativeModules'
 import { 
   BASE_API_URL_PAYMENT,
   BASE_API_URL_SCROOGE,
-  BASE_API_URL_PCIDSS
+  BASE_API_URL_PCIDSS, 
+  BASE_API_URL,
 } from '../lib/api.js'
 import { 
   getUserId, 
@@ -11,6 +12,38 @@ import {
   getEnv,
 } from '../lib/utility'
 
+
+
+// ===================== Retrieve Payment Rate =================== //
+export const GET_PAYMENT_RATE = 'GET_PAYMENT_RATE'
+export const GetPaymentRate = () => {
+  return {
+    type: GET_PAYMENT_RATE,
+    payload: get_PaymentRate()
+  }
+}
+
+const get_PaymentRate = async () => {
+  const env = await getEnv()
+  const api_url = await getBaseAPI(env)
+  const payment_rate = await PaymentRate(api_url)
+  console.log(payment_rate)
+  return payment_rate
+}
+
+const PaymentRate = async (api_url) => {
+  const url= `${api_url.base_api_url}o2o/v1/payment/get_payment_interest`
+  return NetworkModule.getResponse(`${url}`, `GET`, '', true)
+    .then(res => {
+      const jsonResponse = JSON.parse(res)
+      if (jsonResponse.status === '200 Ok' && jsonResponse.error_message.length === 0){
+        return jsonResponse
+      }
+    })
+    .catch(err => {
+      console.log(res)
+    })
+}
 
 
 // ===================== Make Payment ===================== //
@@ -77,7 +110,8 @@ const getBaseAPI = (env) => {
     const data_api = {
       api_url_payment: `${BASE_API_URL_PAYMENT.PRODUCTION}`,
       api_url_scrooge: `${BASE_API_URL_SCROOGE.PRODUCTION}`,
-      api_url_pcidss: `${BASE_API_URL_PCIDSS.PRODUCTION}`
+      api_url_pcidss: `${BASE_API_URL_PCIDSS.PRODUCTION}`,
+      base_api_url: `${BASE_API_URL.PRODUCTION}`
     }
     return data_api
 
@@ -85,7 +119,8 @@ const getBaseAPI = (env) => {
     const data_api = {
       api_url_payment: `${BASE_API_URL_PAYMENT.STAGING}`,
       api_url_scrooge: `${BASE_API_URL_SCROOGE.STAGING}`,
-      api_url_pcidss: `${BASE_API_URL_PCIDSS.STAGING}`
+      api_url_pcidss: `${BASE_API_URL_PCIDSS.STAGING}`,
+      base_api_url: `${BASE_API_URL.STAGING}`
     }
     return data_api
   }
