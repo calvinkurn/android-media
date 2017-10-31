@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_med"
+    tools:showIn="@layout/item_flight_detail">
+
+    <ImageView
+        android:id="@+id/airline_icon"
+        android:layout_width="@dimen/image_width_l"
+        android:layout_height="@dimen/image_width_l"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/margin_sm"
+        tools:src="@drawable/ic_badge_diamond" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toLeftOf="@+id/container_refundable_info"
+        android:layout_toRightOf="@+id/airline_icon">
+
+        <TextView
+            android:id="@+id/airline_name"
+            style="@style/TextView.Body1.BlackPrimary"
+            tools:text="Cathay Pacific" />
+
+        <TextView
+            android:id="@+id/airline_code"
+            style="@style/TextView.Body1.BlackPrimary"
+            android:layout_alignLeft="@+id/airline_name"
+            android:layout_below="@id/airline_name"
+            tools:text="CP - 321" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/container_refundable_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/airline_refundable_info"
+            style="@style/TextView.Caption"
+            android:layout_marginRight="@dimen/margin_vvs"
+            android:background="@drawable/bg_rect_stroke_flight_grey"
+            android:padding="@dimen/padding_vs"
+            android:visibility="gone"
+            tools:text="Refundable"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:layout_width="@dimen/image_width_xs"
+            android:layout_height="@dimen/image_width_xs"
+            android:src="@drawable/ic_info_flight"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </LinearLayout>
+</RelativeLayout>

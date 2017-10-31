@@ -1,19 +1,25 @@
 package com.tokopedia.flight.search.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.utils.CommonUtils;
+import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.FlightModuleRouter;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
+import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 import javax.inject.Inject;
 
@@ -21,7 +27,7 @@ import javax.inject.Inject;
  * Created by hendry on 10/26/2017.
  */
 
-public class FlightSearchFragment extends BaseListFragment<FlightSearchSingleRouteDB> implements FlightSearchView {
+public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel> implements FlightSearchView {
 
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
@@ -33,13 +39,14 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchSingleRou
         return fragment;
     }
 
+    @CallSuper
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    protected void initInjector() {
+    protected final void initInjector() {
         DaggerFlightSearchComponent.builder()
                 .flightComponent(((FlightModuleRouter)getActivity().getApplication()).getFlightComponent() )
                 .build()
@@ -48,47 +55,26 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchSingleRou
     }
 
     @Override
-    protected BaseListAdapter getNewAdapter() {
+    protected final BaseListAdapter<FlightSearchViewModel> getNewAdapter() {
         return new FlightSearchAdapter();
     }
 
     @Override
     protected void searchForPage(int page) {
-
+        flightSearchPresenter.searchDepartureFlight();
     }
 
+    @CallSuper
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-
-//        String jsonString = loadJSONFromAsset();
-//        Type flightSearchType = new TypeToken<DataResponse<List<FlightSearchData>>>() {}.getType();
-//        DataResponse<FlightSearchData> data = new Gson().fromJson(jsonString, flightSearchType);
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-//    public String loadJSONFromAsset() {
-//        String json = null;
-//        try {
-//            InputStream is = getContext().getAssets().open("flight_search_dummy.json");
-//            int size = is.available();
-//            byte[] buffer = new byte[size];
-//            is.read(buffer);
-//            is.close();
-//            json = new String(buffer, "UTF-8");
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//            return null;
-//        }
-//        return json;
-//    }
-
-
+    @CallSuper
     @Override
     public void onResume() {
         super.onResume();
-        flightSearchPresenter.searchFlight();
     }
 
     @Override
@@ -98,7 +84,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchSingleRou
     }
 
     protected int getFragmentLayout() {
-        return com.tokopedia.abstraction.R.layout.fragment_base_list;
+        return R.layout.fragment_search_flight;
     }
 
     @Override
@@ -106,8 +92,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchSingleRou
         return null;
     }
 
-    @Override
-    public void onItemClicked(FlightSearchSingleRouteDB flightSearchSingleRouteDB) {
 
+    @Override
+    public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
+        Toast.makeText(getActivity(), flightSearchViewModel.getId(), Toast.LENGTH_LONG).show();
     }
 }

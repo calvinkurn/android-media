@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_ms"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground">
+    <TextView
+        android:id="@+id/tv_airline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Garuda"/>
+    <TextView
+        android:id="@+id/tv_departure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="CGK"/>
+    <TextView
+        android:id="@+id/tv_arrival"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="DPS"/>
+</LinearLayout>

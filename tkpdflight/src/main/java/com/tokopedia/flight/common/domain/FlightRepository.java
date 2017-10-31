@@ -3,6 +3,7 @@ package com.tokopedia.flight.common.domain;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 

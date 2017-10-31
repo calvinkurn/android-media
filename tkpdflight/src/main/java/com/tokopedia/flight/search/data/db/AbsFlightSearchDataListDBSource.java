@@ -5,6 +5,7 @@ import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.abstraction.base.data.source.database.DataListDBSource;
 import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
+import com.tokopedia.flight.search.data.db.model.FlightSearchReturnRouteDB;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 
 import java.util.HashMap;
@@ -49,12 +50,7 @@ public abstract class AbsFlightSearchDataListDBSource implements DataListDBSourc
                 .flatMap(new Func1<FlightSearchData, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(FlightSearchData flightSearchData) {
-                        FlightSearchSingleRouteDB flightSearchSingleRouteDB = new FlightSearchSingleRouteDB();
-                        //TODO add column
-                        flightSearchSingleRouteDB.setId(flightSearchData.getId());
-                        flightSearchSingleRouteDB.setDepartureAirport(flightSearchData.getAttributes().getDepartureAirport());
-                        flightSearchSingleRouteDB.setArrivalAirport(flightSearchData.getAttributes().getArrivalAirport());
-                        flightSearchSingleRouteDB.insert();
+                        insertSingleFlightData(flightSearchData);
                         return Observable.just(true);
                     }
                 })
@@ -67,6 +63,8 @@ public abstract class AbsFlightSearchDataListDBSource implements DataListDBSourc
                 });
 
     }
+
+    protected abstract void insertSingleFlightData(FlightSearchData flightSearchData);
 
     @Override
     public Observable<List<FlightSearchSingleRouteDB>> getData(HashMap<String, Object> params) {

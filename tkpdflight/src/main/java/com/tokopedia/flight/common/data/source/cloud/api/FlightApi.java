@@ -2,6 +2,7 @@ package com.tokopedia.flight.common.data.source.cloud.api;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -30,4 +31,7 @@ public interface FlightApi {
 
     @GET(FlightUrl.FLIGHT_AIRPORT_PATH)
     Observable<Response<DataResponse<List<FlightAirportCountry>>>> getFlightAirportList(@QueryMap Map<String, String> keyword);
+
+    @GET(FlightUrl.FLIGHT_AIRLINE_PATH)
+    Observable<Response<DataResponse<List<AirlineData>>>> getFlightAirlineList();
 }
