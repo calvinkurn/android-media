@@ -1,6 +1,10 @@
 package com.tokopedia.flight.search.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.flight.airline.domain.FlightAirlineUseCase;
+import com.tokopedia.flight.search.data.cloud.model.Route;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.view.FlightSearchView;
@@ -43,8 +47,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         flightSearchUseCase.unsubscribe();
     }
 
-    private Subscriber<List<FlightSearchSingleRouteDB>> getSubscriberSearchFlight() {
-        return new Subscriber<List<FlightSearchSingleRouteDB>>() {
+    private Subscriber<List<FlightSearchViewModel>> getSubscriberSearchFlight() {
+        return new Subscriber<List<FlightSearchViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -56,12 +60,9 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
             }
 
             @Override
-            public void onNext(List<FlightSearchSingleRouteDB> flightSearchSingleRouteDBs) {
-                List<FlightSearchViewModel> flightSearchViewModelList = new ArrayList<>();
-                for (int i = 0, sizei = flightSearchSingleRouteDBs.size(); i<sizei; i++) {
-                    flightSearchViewModelList.add(new FlightSearchViewModel(flightSearchSingleRouteDBs.get(i)));
-                }
-                getView().onSearchLoaded(flightSearchViewModelList,flightSearchSingleRouteDBs.size());
+            public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
+
+                getView().onSearchLoaded(flightSearchViewModels, flightSearchViewModels.size());
             }
         };
     }

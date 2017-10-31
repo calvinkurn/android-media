@@ -47,4 +47,14 @@ public abstract class DataListCacheSource {
             }
         });
     }
+
+    public Observable<Boolean> setExpired() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                sharedPrefs.edit().putLong(getPrefKeyName(), 0).apply();
+                subscriber.onNext(true);
+            }
+        });
+    }
 }

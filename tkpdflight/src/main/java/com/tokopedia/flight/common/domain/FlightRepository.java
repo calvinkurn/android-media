@@ -19,6 +19,7 @@ public interface FlightRepository {
 
     Observable<List<FlightClassEntity>> getFlightClasses();
 
+    Observable<Boolean> makeAirlineExpired();
     Observable<List<FlightAirlineDB>> getAirlineList();
     Observable<List<FlightAirlineDB>> getAirlineList(String airlineId);
 

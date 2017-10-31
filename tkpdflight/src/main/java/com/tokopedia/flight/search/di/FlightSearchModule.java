@@ -23,22 +23,4 @@ import retrofit2.Retrofit;
 @Module
 public class FlightSearchModule {
 
-    @FlightSearchScope
-    @Provides
-    public DataListCacheSource dataListCacheSource(@ApplicationContext Context context){
-        return new FlightSearchSingleDataListCacheSource(context);
-    }
-
-    @FlightSearchScope
-    @Provides
-    public DataListCloudSource<FlightSearchData> dataListCloudSource(FlightApi flightApi){
-        return new FlightSearchDataListCloudSource(flightApi);
-    }
-
-    @FlightSearchScope
-    @Provides
-    public FlightApi provideFlightApi(@FlightQualifier Retrofit retrofit){
-        return retrofit.create(FlightApi.class);
-    }
-
 }
