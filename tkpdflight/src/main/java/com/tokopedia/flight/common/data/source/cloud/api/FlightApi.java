@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.flight.common.data.source.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
 
 import java.util.List;

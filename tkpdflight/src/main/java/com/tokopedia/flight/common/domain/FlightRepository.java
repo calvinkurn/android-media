@@ -2,6 +2,7 @@ package com.tokopedia.flight.common.domain;
 
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.usecase.RequestParams;
 
@@ -15,6 +16,8 @@ import rx.Observable;
 
 public interface FlightRepository {
     Observable<List<FlightAirportDB>> getAirportList(String query);
+
+    Observable<List<FlightClassEntity>> getFlightClasses();
 
     Observable<List<FlightAirlineDB>> getAirlineList();
     Observable<List<FlightAirlineDB>> getAirlineList(String airlineId);

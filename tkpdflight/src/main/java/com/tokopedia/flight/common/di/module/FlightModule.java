@@ -8,6 +8,7 @@ import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataListSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataListSource;
 
@@ -43,7 +44,7 @@ public class FlightModule {
     @Provides
     @FlightQualifier
     public Retrofit provideFlightRetrofit(OkHttpClient okHttpClient,
-                                        Retrofit.Builder retrofitBuilder) {
+                                          Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(FlightUrl.BASE_URL).client(okHttpClient).build();
     }
 
@@ -52,14 +53,15 @@ public class FlightModule {
     public FlightRepository provideFlightRepository(FlightAirportDataListSource flightAirportDataListSource,
                                                     FlightAirlineDataListSource flightAirlineDataListSource,
                                                     FlightSearchSingleDataListSource flightSearchSingleDataListSource,
-                                                    FlightSearchReturnDataListSource flightSearchReturnDataListSource){
-        return new FlightRepositoryImpl(flightAirportDataListSource, flightAirlineDataListSource,
-                flightSearchSingleDataListSource, flightSearchReturnDataListSource);
+                                                    FlightSearchReturnDataListSource flightSearchReturnDataListSource,
+                                                    FlightClassesDataSource getFlightClassesUseCase) {
+        return new FlightRepositoryImpl(flightAirportDataListSource,flightAirlineDataListSource,
+                flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase);
     }
 
     @FlightScope
     @Provides
-    public FlightApi provideFlightAirportApi(@FlightQualifier Retrofit retrofit){
+    public FlightApi provideFlightAirportApi(@FlightQualifier Retrofit retrofit) {
         return retrofit.create(FlightApi.class);
     }
 }
