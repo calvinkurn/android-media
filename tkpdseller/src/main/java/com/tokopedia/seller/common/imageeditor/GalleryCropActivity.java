@@ -53,7 +53,7 @@ public class GalleryCropActivity extends GalleryActivity {
                                        boolean forceOpenCamera,
                                        int maxImageSelection,
                                        boolean compressToTkpd) {
-        Intent imageGallery = new Intent(context, GalleryCropActivity.class);
+        Intent imageGallery = new Intent(context, GalleryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(ADD_PRODUCT_IMAGE_LOCATION, position);
         bundle.putString(FRAGMENT_TO_SHOW, ImageGalleryAlbumFragment.FRAGMENT_TAG);
