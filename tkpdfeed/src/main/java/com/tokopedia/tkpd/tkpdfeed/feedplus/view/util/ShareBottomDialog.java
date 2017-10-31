@@ -137,6 +137,8 @@ public class ShareBottomDialog {
 
     private String getTrackingLabel(String method) {
         if (fragmentV4 != null && fragmentV4 instanceof FeedPlusFragment) {
+            //shareModel.getId() has the exacly same value with shareModel.getPageRowNumber()
+            //It is not the id it is PageRowNumber
             return shareModel.getId()
                     + " "
                     + FeedTrackingEventLabel.Click.SHARE
@@ -165,7 +167,7 @@ public class ShareBottomDialog {
                     public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                         Intent sendIntent = new Intent();
                         sendIntent.setAction(Intent.ACTION_SEND);
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, shareUri);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, shareContents);
                         sendIntent.setType("text/plain");
                         activity.startActivity(sendIntent);
 
