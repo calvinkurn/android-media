@@ -22,4 +22,15 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+    
+    <style name="FlightCalendarPicker" parent="android:Widget.CalendarView">
+        <item name="android:focusedMonthDateColor">@color/colorPrimary</item>
+        <item name="android:weekNumberColor">@color/red_500</item>
+        <item name="android:weekDayTextAppearance">@style/FlightCalendarPickerViewWeekDayView</item>
+    </style>
+
+    <style name="FlightCalendarPickerViewWeekDayView">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/font_black_primary_70</item>
+    </style>
 </resources>
