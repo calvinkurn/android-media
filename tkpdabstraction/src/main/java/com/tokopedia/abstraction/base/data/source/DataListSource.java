@@ -15,13 +15,13 @@ import rx.functions.Func1;
  * Created by nathan on 10/23/17.
  */
 
-public abstract class DataListSource<T,U> {
+public abstract class DataListSource<T, U> {
 
     private DataListCacheSource dataListCacheManager;
-    private DataListDBSource<T,U> dataListDBManager;
+    private DataListDBSource<T, U> dataListDBManager;
     private DataListCloudSource<T> dataListCloudManager;
 
-    public DataListSource(DataListCacheSource dataListCacheManager, DataListDBSource<T,U> dataListDBManager, DataListCloudSource<T> dataListCloudManager) {
+    public DataListSource(DataListCacheSource dataListCacheManager, DataListDBSource<T, U> dataListDBManager, DataListCloudSource<T> dataListCloudManager) {
         this.dataListCacheManager = dataListCacheManager;
         this.dataListDBManager = dataListDBManager;
         this.dataListCloudManager = dataListCloudManager;
@@ -35,19 +35,19 @@ public abstract class DataListSource<T,U> {
                     @Override
                     public Observable<List<U>> call(List<T> ts) {
                         if (ts == null || ts.size() == 0) {
-                            return Observable.just((List<U>)new ArrayList<U>());
+                            return Observable.just((List<U>) new ArrayList<U>());
                         }
                         return dataListDBManager.insertAll(ts).flatMap(new Func1<Boolean, Observable<List<U>>>() {
                             @Override
                             public Observable<List<U>> call(Boolean isSuccessInsertData) {
                                 if (!isSuccessInsertData) {
-                                    return Observable.just((List<U>)new ArrayList<U>());
+                                    return Observable.just((List<U>) new ArrayList<U>());
                                 } else {
                                     return dataListCacheManager.updateExpiredTime().flatMap(new Func1<Boolean, Observable<List<U>>>() {
                                         @Override
                                         public Observable<List<U>> call(Boolean isSuccessUpdateExpiredTime) {
                                             if (!isSuccessUpdateExpiredTime) {
-                                                return Observable.just((List<U>)new ArrayList<U>());
+                                                return Observable.just((List<U>) new ArrayList<U>());
                                             } else {
                                                 return dataListDBManager.getData(params);
                                             }
@@ -62,7 +62,7 @@ public abstract class DataListSource<T,U> {
         });
     }
 
-    protected Observable<List<U>> getDataList(final HashMap<String, Object> params){
+    protected Observable<List<U>> getDataList(final HashMap<String, Object> params) {
         return dataListCacheManager.isExpired().flatMap(new Func1<Boolean, Observable<List<U>>>() {
             @Override
             public Observable<List<U>> call(Boolean isCacheExpired) {
@@ -77,7 +77,7 @@ public abstract class DataListSource<T,U> {
                                     @Override
                                     public Observable<List<U>> call(Boolean isDataAvalable) {
                                         if (isDataAvalable) {
-                                            return Observable.just((List<U>)new ArrayList<U>());
+                                            return Observable.just((List<U>) new ArrayList<U>());
                                         } else {
                                             return getRefreshedData(params);
                                         }
@@ -92,4 +92,9 @@ public abstract class DataListSource<T,U> {
             }
         });
     }
+
+    public Observable<Boolean> setCacheExpired() {
+        return dataListCacheManager.setExpired();
+    }
+
 }

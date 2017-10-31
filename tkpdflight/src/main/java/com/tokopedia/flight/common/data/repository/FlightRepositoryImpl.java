@@ -53,6 +53,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
+    public Observable<Boolean> makeAirlineExpired() {
+        return flightAirlineDataListSource.setCacheExpired();
+    }
+
+    @Override
     public Observable<List<FlightAirlineDB>> getAirlineList(String airlineId) {
         return flightAirlineDataListSource.getAirlineList(airlineId);
     }

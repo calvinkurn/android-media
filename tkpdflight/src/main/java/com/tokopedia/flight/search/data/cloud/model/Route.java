@@ -46,6 +46,9 @@ public class Route implements ItemType {
     @Expose
     private List<Amenity> amenities = null;
 
+    private String airlineName;
+    private String airlineLogo;
+
     public String getAirline() {
         return airline;
     }
@@ -88,6 +91,22 @@ public class Route implements ItemType {
 
     public List<Amenity> getAmenities() {
         return amenities;
+    }
+
+    public String getAirlineName() {
+        return airlineName;
+    }
+
+    public void setAirlineName(String airlineName) {
+        this.airlineName = airlineName;
+    }
+
+    public String getAirlineLogo() {
+        return airlineLogo;
+    }
+
+    public void setAirlineLogo(String airlineLogo) {
+        this.airlineLogo = airlineLogo;
     }
 
     @Override
