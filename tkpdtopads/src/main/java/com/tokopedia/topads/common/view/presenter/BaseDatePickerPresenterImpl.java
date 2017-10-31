@@ -30,10 +30,15 @@ public class BaseDatePickerPresenterImpl implements BaseDatePickerPresenter {
     private TopAdsDatePickerInteractor topAdsDatePickerInteractor;
 
     private Context context;
+    private boolean isToolbarWhite;
 
     public BaseDatePickerPresenterImpl(Context context) {
         this.context = context;
         this.topAdsDatePickerInteractor = new TopAdsDatePickerInteractorImpl(context);
+    }
+
+    public void setToolbarWhite(boolean toolbarWhite) {
+        isToolbarWhite = toolbarWhite;
     }
 
     @Override
@@ -127,6 +132,7 @@ public class BaseDatePickerPresenterImpl implements BaseDatePickerPresenter {
         intent.putExtra(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, getPeriodRangeList());
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, topAdsDatePickerInteractor.getLastSelectionDatePickerIndex());
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, topAdsDatePickerInteractor.getLastSelectionDatePickerType());
+        intent.putExtra(DatePickerConstant.EXTRA_TOOLBAR_WHITE, isToolbarWhite);
 
         intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, activity.getString(R.string.title_date_picker));
         return intent;
