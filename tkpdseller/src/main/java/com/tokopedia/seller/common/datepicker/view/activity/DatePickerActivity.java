@@ -108,4 +108,13 @@ public class DatePickerActivity extends BaseTabActivity {
     public String getScreenName() {
         return null;
     }
+
+    @Override
+    protected int getLayoutRes() {
+        if(isToolbarWhite){
+            return R.layout.activity_white_base_tab;
+        }else {
+            return super.getLayoutRes();
+        }
+    }
 }
