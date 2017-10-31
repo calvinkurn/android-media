@@ -40,38 +40,59 @@ class PaymentBank extends Component {
   }
 
   _handleButtonPress = () => {
-    const selected_installment = !this.state.selectedEmiId ? 0 : (this.state.selectedEmiId)
-    const selectedBankData = !this.state.selectedBankData ? {} : this.state.selectedBankData
-    const checkout_data = JSON.parse(this.props.screenProps.checkout_data)
-    const payment_amount = checkout_data.data.data.payment_amount
+    if(this._isInputValid()) {
+      const selected_installment = !this.state.selectedEmiId ? 0 : (this.state.selectedEmiId)
+      const selectedBankData = !this.state.selectedBankData ? {} : this.state.selectedBankData
+      const checkout_data = JSON.parse(this.props.screenProps.checkout_data)
+      const payment_amount = checkout_data.data.data.payment_amount
 
-    if (this.state.paymentMethod === 'SCAN'){
-      const data_scan_params = {
-        checkout_data: this.props.screenProps.checkout_data,
-        selectBank: this.state.selectedBank,
-        selectIdBank: this.state.selectIdBank,
-        selectedEmiId: selected_installment,
-        selectedBankData: selectedBankData,
-        total_payment: this.props.screenProps.total_payment
+      if (this.state.paymentMethod === 'SCAN'){
+        const data_scan_params = {
+          checkout_data: this.props.screenProps.checkout_data,
+          selectBank: this.state.selectedBank,
+          selectIdBank: this.state.selectIdBank,
+          selectedEmiId: selected_installment,
+          selectedBankData: selectedBankData,
+          total_payment: this.props.screenProps.total_payment
+        }
+        console.log(data_scan_params)
+        console.log(this.props.screenProps)
+        // NavigationModule.navigate("posapp://payment/scan", JSON.stringify(data_scan_params))
+
+      } else {
+        // console.log(this.state.selectedBank, this.state.selectIdBank, this.state.selectedEmiId)
+        this.props.navigation.navigate('Payment', {
+          checkout_data: this.props.screenProps.checkout_data,
+          selectBank: this.state.selectedBank,
+          selectIdBank: this.state.selectIdBank,
+          selectedEmiId: selected_installment,
+          selectedBankData: selectedBankData,
+          total_payment: payment_amount,
+
+        })
       }
-      console.log(data_scan_params)
-      console.log(this.props.screenProps)
-      // NavigationModule.navigate("posapp://payment/scan", JSON.stringify(data_scan_params))
-
-    } else {
-      // console.log(this.state.selectedBank, this.state.selectIdBank, this.state.selectedEmiId)
-      this.props.navigation.navigate('Payment', {
-        checkout_data: this.props.screenProps.checkout_data,
-        selectBank: this.state.selectedBank,
-        selectIdBank: this.state.selectIdBank,
-        selectedEmiId: selected_installment,
-        selectedBankData: selectedBankData,
-        total_payment: payment_amount,
-        
-      })
     }
   };
 
+  _isInputValid(selectedBankData) {
+      if(!this.state.selectedBankData) {
+        console.log("bank not selected")
+        return false
+      }
+
+      console.log(this.state.selectedEmiId)
+      if(this.state.selectedEmiId === null) {
+        console.log("emi not selected")
+        return false
+      }
+
+      if(!this.state.paymentMethod) {
+        console.log("payment method not selected")
+        return false
+      }
+
+      return true
+  }
 
   _renderPopRow(rowData, sectionID, rowID) {
     if (rowID > 10) {
@@ -103,7 +124,7 @@ class PaymentBank extends Component {
         </TouchableWithoutFeedback>
       );
     }
-    
+
     return (
       <TouchableWithoutFeedback onPress={this._onPressEmiRow.bind(this, rowID, rowData)}>
         <View style={[styles.emiBox, { marginRight: 10, height: 80 }, this.state.selectedEmiId === rowData.term ? styles.selectedBorder : {}]}>
@@ -126,7 +147,7 @@ class PaymentBank extends Component {
       );
     } else if (rowID <= 11) {
       return (
-        <TouchableOpacity style={[styles.logoBox, { marginTop: 10, height: 80 }]} 
+        <TouchableOpacity style={[styles.logoBox, { marginTop: 10, height: 80 }]}
           onPress={() => { this.popupDialog.show() }} >
           <View>
             <Text style={{ textAlign:'center', fontSize: 13, color: '#0000008a' }}>Bank{"\n"}Lainnya</Text>
@@ -174,14 +195,14 @@ class PaymentBank extends Component {
         text: "Tanpa Cicilan",
         available: false
       }]);
-      
+
       if (rowData.allow_installment) {
          emiList = this.state.dsEmi.cloneWithRows([...[{
               text: "Tanpa Cicilan",
               available: false
             }], ...rowData.installment_list]);
       }
-      
+
       this.props.dispatch(selectBank(rowData.bank_id));
 
       this.setState({
@@ -328,7 +349,7 @@ class PaymentBank extends Component {
                 </View>
               </View>
 
-              {payment_amount && this.state.selectedEmiId && 
+              {payment_amount && this.state.selectedEmiId &&
               <View style={[styles.row, styles.row1]}>
                 <Text style={[styles.font20, styles.fontColor70]}>Nominal</Text>
                 <Text style={[styles.font20, styles.fontColor70]}>
