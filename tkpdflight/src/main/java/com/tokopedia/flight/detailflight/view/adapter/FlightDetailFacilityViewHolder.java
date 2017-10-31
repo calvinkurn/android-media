@@ -6,7 +6,6 @@ import android.widget.GridView;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.search.data.cloud.model.Route;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 /**
  * Created by zulfikarrahman on 10/30/17.

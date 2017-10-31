@@ -5,20 +5,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.adapter.FlightSearchAdapter;
-import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
-import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
-import com.tokopedia.flight.search.view.FlightSearchView;
-import com.tokopedia.flight.search.view.activity.FlightSearchActivity;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
-
-import javax.inject.Inject;
 
 /**
  * Created by hendry on 10/26/2017.

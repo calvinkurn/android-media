@@ -1,6 +1,5 @@
 package com.tokopedia.flight.search.adapter;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -8,8 +7,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.view.adapter.FlightAirportViewHolder;
-import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 /**

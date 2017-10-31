@@ -1,16 +1,11 @@
 package com.tokopedia.flight.airline.data.db.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.database.TkpdFlightDatabase;
 
 /**

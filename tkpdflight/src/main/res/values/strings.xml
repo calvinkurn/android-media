@@ -46,4 +46,5 @@
     <string name="flight_search_filter_airplane">Maskapai Penerbangan</string>
     <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
+    <string name="flight_classes_toolbar_title">Pilih Kelas Penerbangan</string>
 </resources>
