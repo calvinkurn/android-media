@@ -1,7 +1,6 @@
 package com.tokopedia.seller.common.datepicker.view.activity;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.text.TextUtils;
@@ -35,7 +34,6 @@ public class DatePickerActivity extends BaseTabActivity {
     protected int maxDateRange;
 
     protected ArrayList<PeriodRangeModel> periodRangeModelList;
-    private boolean isToolbarWhite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,26 +93,16 @@ public class DatePickerActivity extends BaseTabActivity {
             maxStartDate = extras.getLong(DatePickerConstant.EXTRA_MAX_END_DATE, -1);
             maxDateRange = extras.getInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, -1);
             periodRangeModelList = extras.getParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST);
-            isToolbarWhite = extras.getBoolean(DatePickerConstant.EXTRA_TOOLBAR_WHITE);
         }
     }
 
     @Override
     public boolean isToolbarWhite() {
-        return isToolbarWhite;
+        return true;
     }
 
     @Override
     public String getScreenName() {
         return null;
-    }
-
-    @Override
-    protected int getLayoutRes() {
-        if(isToolbarWhite){
-            return R.layout.activity_white_base_tab;
-        }else {
-            return super.getLayoutRes();
-        }
     }
 }

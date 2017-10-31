@@ -64,7 +64,7 @@ public class TopAdsKeywordListActivity extends BaseToolbarActivity implements
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_white_base_tab;
+        return R.layout.activity_base_tab_white;
     }
 
     @Override

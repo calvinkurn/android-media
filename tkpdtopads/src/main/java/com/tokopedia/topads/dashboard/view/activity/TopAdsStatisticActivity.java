@@ -64,7 +64,6 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     @Override
     protected BaseDatePickerPresenter getDatePickerPresenter() {
         BaseDatePickerPresenterImpl baseDatePickerPresenter = new BaseDatePickerPresenterImpl(this);
-        baseDatePickerPresenter.setToolbarWhite(true);
         return baseDatePickerPresenter;
     }
 

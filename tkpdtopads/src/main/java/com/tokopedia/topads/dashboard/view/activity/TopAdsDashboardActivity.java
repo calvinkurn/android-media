@@ -92,7 +92,6 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     @Override
     protected void initialPresenter() {
         datePickerPresenter = new BaseDatePickerPresenterImpl(this);
-        datePickerPresenter.setToolbarWhite(true);
     }
 
     @Override

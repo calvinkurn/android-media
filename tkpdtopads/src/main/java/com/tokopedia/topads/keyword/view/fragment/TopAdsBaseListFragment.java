@@ -30,7 +30,6 @@ public abstract class TopAdsBaseListFragment<T, U extends ItemType> extends Base
 
     protected BaseDatePickerPresenter getDatePickerPresenter() {
         BaseDatePickerPresenterImpl baseDatePickerPresenter = new BaseDatePickerPresenterImpl(getActivity());
-        baseDatePickerPresenter.setToolbarWhite(true);
         return baseDatePickerPresenter;
     }
 
