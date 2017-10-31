@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.detailflight.view.adapter.FlightDetailAdapter;
 import com.tokopedia.flight.search.data.cloud.model.Route;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 /**
  * Created by zulfikarrahman on 10/30/17.

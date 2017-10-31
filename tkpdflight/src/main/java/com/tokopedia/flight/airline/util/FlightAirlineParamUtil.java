@@ -1,7 +1,5 @@
 package com.tokopedia.flight.airline.util;
 
-import com.tokopedia.flight.airport.data.source.cloud.FlightAirportDataListCloudSource;
-
 import java.util.HashMap;
 
 /**

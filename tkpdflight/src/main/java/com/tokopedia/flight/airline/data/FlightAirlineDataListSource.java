@@ -7,11 +7,6 @@ import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airline.data.db.FlightAirlineDataListDBSource;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airline.util.FlightAirlineParamUtil;
-import com.tokopedia.flight.airport.data.source.cache.FlightAirportDataListCacheSource;
-import com.tokopedia.flight.airport.data.source.cloud.FlightAirportDataListCloudSource;
-import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
-import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,7 +1,6 @@
 package com.tokopedia.flight.search.view;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
-import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 /**

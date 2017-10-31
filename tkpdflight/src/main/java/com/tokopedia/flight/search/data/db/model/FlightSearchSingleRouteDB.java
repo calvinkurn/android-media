@@ -3,7 +3,6 @@ package com.tokopedia.flight.search.data.db.model;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -15,9 +14,6 @@ import com.tokopedia.flight.search.data.cloud.model.Attributes;
 import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
 import com.tokopedia.flight.search.data.cloud.model.Route;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Type;
 import java.util.List;
 
 /**
