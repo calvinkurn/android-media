@@ -3,15 +3,13 @@ package com.tokopedia.posapp.di.module;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.di.qualifier.PosGatewayNoAuth;
-import com.tokopedia.core.network.di.qualifier.ScroogeNoAuth;
+import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
 import com.tokopedia.posapp.data.factory.PaymentFactory;
 import com.tokopedia.posapp.data.mapper.CreateOrderMapper;
 import com.tokopedia.posapp.data.mapper.PaymentStatusMapper;
 import com.tokopedia.posapp.data.repository.PaymentRepository;
 import com.tokopedia.posapp.data.repository.PaymentRepositoryImpl;
 import com.tokopedia.posapp.data.source.cloud.api.GatewayPaymentApi;
-import com.tokopedia.posapp.data.source.cloud.api.ScroogeApi;
 import com.tokopedia.posapp.di.scope.PaymentScope;
 import com.tokopedia.posapp.domain.usecase.CheckPaymentStatusUseCase;
 import com.tokopedia.posapp.domain.usecase.CreateOrderUseCase;
@@ -27,7 +25,7 @@ import retrofit2.Retrofit;
 @Module(includes = CartModule.class)
 public class PaymentModule {
     @Provides
-    GatewayPaymentApi provideGatewayPaymentApi(@PosGatewayNoAuth Retrofit retrofit) {
+    GatewayPaymentApi provideGatewayPaymentApi(@PosGatewayAuth Retrofit retrofit) {
         return retrofit.create(GatewayPaymentApi.class);
     }
 

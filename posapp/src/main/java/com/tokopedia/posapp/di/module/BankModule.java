@@ -3,7 +3,7 @@ package com.tokopedia.posapp.di.module;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.di.qualifier.PosGatewayNoAuth;
+import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
 import com.tokopedia.posapp.data.factory.BankFactory;
 import com.tokopedia.posapp.data.mapper.GetBankInstallmentMapper;
 import com.tokopedia.posapp.data.repository.BankRepository;
@@ -31,7 +31,7 @@ public class BankModule {
     }
 
     @Provides
-    GatewayBankApi provideGatewayBankApi(@PosGatewayNoAuth Retrofit retrofit) {
+    GatewayBankApi provideGatewayBankApi(@PosGatewayAuth Retrofit retrofit) {
         return retrofit.create(GatewayBankApi.class);
     }
 

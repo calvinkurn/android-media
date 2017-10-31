@@ -134,7 +134,7 @@ const fetchTransactionHistory = async (page) => {
 const apiGetTransactionHistory = (url, data) => {
   console.log(url)
   console.log(data)
-  return NetworkModule.getResponseJson(url, `POST`, JSON.stringify(data), false)
+  return NetworkModule.getResponseJson(url, `POST`, JSON.stringify(data), true)
     .then(res => {
         const jsonResponse = JSON.parse(res)
         console.log(jsonResponse)

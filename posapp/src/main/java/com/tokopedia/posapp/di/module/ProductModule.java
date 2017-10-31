@@ -6,7 +6,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.di.qualifier.AceAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
-import com.tokopedia.core.network.di.qualifier.PosGatewayNoAuth;
+import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.posapp.data.factory.ProductFactory;
 import com.tokopedia.posapp.data.mapper.GetGatewayProductListMapper;
@@ -15,8 +15,8 @@ import com.tokopedia.posapp.data.mapper.GetProductMapper;
 import com.tokopedia.posapp.data.repository.ProductRepository;
 import com.tokopedia.posapp.data.repository.ProductRepositoryImpl;
 import com.tokopedia.posapp.data.source.cloud.api.AceApi;
-import com.tokopedia.posapp.data.source.cloud.api.ProductApi;
 import com.tokopedia.posapp.data.source.cloud.api.GatewayProductApi;
+import com.tokopedia.posapp.data.source.cloud.api.ProductApi;
 import com.tokopedia.posapp.di.scope.ProductScope;
 import com.tokopedia.posapp.domain.usecase.GetProductCampaignUseCase;
 import com.tokopedia.posapp.domain.usecase.GetProductListUseCase;
@@ -34,7 +34,7 @@ import retrofit2.Retrofit;
 @Module
 public class ProductModule {
     @Provides
-    GatewayProductApi provideGatewayProductApi(@PosGatewayNoAuth Retrofit retrofit) {
+    GatewayProductApi provideGatewayProductApi(@PosGatewayAuth Retrofit retrofit) {
         return retrofit.create(GatewayProductApi.class);
     }
 

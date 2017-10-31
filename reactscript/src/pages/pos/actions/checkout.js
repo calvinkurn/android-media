@@ -163,7 +163,7 @@ const makePaymentToNativeStepTwo = (paymentToNative_getParams, data_payment, loc
   }
   const payloadString = JSON.stringify(payloads)
   
-  return NetworkModule.getResponseJson(`${data_payment.base_api_url_scrooge}`, `POST`, payloadString, false)
+  return NetworkModule.getResponseJson(`${data_payment.base_api_url_scrooge}`, `POST`, payloadString, true)
     .then(res => {
       const jsonResponse = JSON.parse(res)
       if (jsonResponse.status === '200 Ok'){
