@@ -485,8 +485,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
             showPhoneVerification(false);
         }
         if (imageLocation != null) {
-            ImageHandler.LoadImage(shopAvatar, imageLocation);
-            imageText.setVisibility(View.GONE);
+            setShopAvatar(imageLocation);
         }
     }
 
