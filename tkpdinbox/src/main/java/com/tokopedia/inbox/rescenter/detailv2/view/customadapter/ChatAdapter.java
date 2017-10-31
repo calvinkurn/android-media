@@ -18,10 +18,6 @@ import java.util.List;
  */
 
 public class ChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
-    public static final int ACTION_BY_USER = 1;
-    public static final int ACTION_BY_SELLER = 2;
-    public static final int ACTION_BY_ADMIN = 3;
-    public static final int ACTION_BY_SYSTEM = 4;
 
     private List<Visitable> list;
     private DetailChatTypeFactory typeFactory;

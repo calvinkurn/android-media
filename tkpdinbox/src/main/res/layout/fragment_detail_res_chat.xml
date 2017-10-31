@@ -126,9 +126,14 @@
         android:layout_height="wrap_content"
         android:background="@color/trans_black_40"
         android:orientation="horizontal"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:visibility="gone"/>
 
+    <include layout="@layout/layout_button_action"
+        android:id="@+id/layout_action"
+        android:visibility="visible"
+        android:layout_height="60dp"
+        android:layout_width="match_parent"
+        android:layout_above="@id/ff_chat" />
 
     <ProgressBar
         android:id="@+id/progress_bar"

@@ -41,6 +41,10 @@ public interface DetailResChatFragmentListener {
         void addAttachmentFile(AttachmentViewModel attachmentViewModel);
 
         List<AttachmentViewModel> getAttachmentListFromAdapter();
+
+        void successAcceptSolution();
+
+        void errorAcceptSolution(String error);
     }
 
     interface Presenter extends CustomerPresenter<DetailResChatFragmentListener.View> {
@@ -54,5 +58,7 @@ public interface DetailResChatFragmentListener {
         void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data);
 
         void handleNewGalleryResult(int resultCode, Intent data);
+
+        void btnAcceptSolutionClicked();
     }
 }

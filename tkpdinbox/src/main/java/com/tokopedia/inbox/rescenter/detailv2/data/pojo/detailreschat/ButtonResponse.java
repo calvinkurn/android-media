@@ -11,11 +11,17 @@ public class ButtonResponse {
     @SerializedName("report")
     private int report;
 
+    @SerializedName("reportLabel")
+    private String reportLabel;
+
     @SerializedName("reportText")
     private String reportText;
 
     @SerializedName("cancelComplaint")
     private int cancel;
+
+    @SerializedName("cancelComplaintLabel")
+    private String cancelLabel;
 
     @SerializedName("cancelComplaintText")
     private String cancelText;
@@ -23,11 +29,17 @@ public class ButtonResponse {
     @SerializedName("editSolution")
     private int edit;
 
+    @SerializedName("editSolutionLabel")
+    private String editLabel;
+
     @SerializedName("editSolutionText")
     private String editText;
 
     @SerializedName("inputAddress")
     private int inputAddress;
+
+    @SerializedName("inputAddressLabel")
+    private String inputAddressLabel;
 
     @SerializedName("inputAddressText")
     private String inputAddressText;
@@ -35,11 +47,17 @@ public class ButtonResponse {
     @SerializedName("appealSolution")
     private int appeal;
 
+    @SerializedName("appealSolutionLabel")
+    private String appealLabel;
+
     @SerializedName("appealSolutionText")
     private String appealText;
 
     @SerializedName("inputAWB")
     private int inputAWB;
+
+    @SerializedName("inputAWBLabel")
+    private String inputAWBLabel;
 
     @SerializedName("inputAWBText")
     private String inputAWBText;
@@ -47,11 +65,17 @@ public class ButtonResponse {
     @SerializedName("acceptSolution")
     private int accept;
 
+    @SerializedName("acceptSolutionLabel")
+    private String acceptLabel;
+
     @SerializedName("acceptSolutionText")
     private String acceptText;
 
     @SerializedName("AcceptSolutionRetur")
     private int acceptReturn;
+
+    @SerializedName("AcceptSolutionReturLabel")
+    private String acceptReturnLabel;
 
     @SerializedName("AcceptSolutionReturText")
     private String acceptReturnText;
@@ -59,11 +83,17 @@ public class ButtonResponse {
     @SerializedName("finishComplaint")
     private int finish;
 
+    @SerializedName("finishComplaintLabel")
+    private String finishLabel;
+
     @SerializedName("finishComplaintText")
     private String finishText;
 
     @SerializedName("acceptSolutionAdmin")
     private int acceptByAdmin;
+
+    @SerializedName("acceptSolutionAdminLabel")
+    private String acceptByAdminLabel;
 
     @SerializedName("acceptSolutionAdminText")
     private String acceptByAdminText;
@@ -71,11 +101,17 @@ public class ButtonResponse {
     @SerializedName("acceptSolutionAdminRetur")
     private int acceptByAdminReturn;
 
+    @SerializedName("acceptSolutionAdminReturLabel")
+    private String acceptByAdminReturnLabel;
+
     @SerializedName("acceptSolutionAdminReturText")
     private String acceptByAdminReturnText;
 
     @SerializedName("recomplaint")
     private int recomplaint;
+
+    @SerializedName("recomplaintLabel")
+    private String recomplaintLabel;
 
     @SerializedName("recomplaintText")
     private String recomplaintText;
@@ -86,6 +122,14 @@ public class ButtonResponse {
 
     public void setReport(int report) {
         this.report = report;
+    }
+
+    public String getReportLabel() {
+        return reportLabel;
+    }
+
+    public void setReportLabel(String reportLabel) {
+        this.reportLabel = reportLabel;
     }
 
     public String getReportText() {
@@ -104,6 +148,14 @@ public class ButtonResponse {
         this.cancel = cancel;
     }
 
+    public String getCancelLabel() {
+        return cancelLabel;
+    }
+
+    public void setCancelLabel(String cancelLabel) {
+        this.cancelLabel = cancelLabel;
+    }
+
     public String getCancelText() {
         return cancelText;
     }
@@ -118,6 +170,14 @@ public class ButtonResponse {
 
     public void setEdit(int edit) {
         this.edit = edit;
+    }
+
+    public String getEditLabel() {
+        return editLabel;
+    }
+
+    public void setEditLabel(String editLabel) {
+        this.editLabel = editLabel;
     }
 
     public String getEditText() {
@@ -136,6 +196,14 @@ public class ButtonResponse {
         this.inputAddress = inputAddress;
     }
 
+    public String getInputAddressLabel() {
+        return inputAddressLabel;
+    }
+
+    public void setInputAddressLabel(String inputAddressLabel) {
+        this.inputAddressLabel = inputAddressLabel;
+    }
+
     public String getInputAddressText() {
         return inputAddressText;
     }
@@ -150,6 +218,14 @@ public class ButtonResponse {
 
     public void setAppeal(int appeal) {
         this.appeal = appeal;
+    }
+
+    public String getAppealLabel() {
+        return appealLabel;
+    }
+
+    public void setAppealLabel(String appealLabel) {
+        this.appealLabel = appealLabel;
     }
 
     public String getAppealText() {
@@ -168,6 +244,14 @@ public class ButtonResponse {
         this.inputAWB = inputAWB;
     }
 
+    public String getInputAWBLabel() {
+        return inputAWBLabel;
+    }
+
+    public void setInputAWBLabel(String inputAWBLabel) {
+        this.inputAWBLabel = inputAWBLabel;
+    }
+
     public String getInputAWBText() {
         return inputAWBText;
     }
@@ -182,6 +266,14 @@ public class ButtonResponse {
 
     public void setAccept(int accept) {
         this.accept = accept;
+    }
+
+    public String getAcceptLabel() {
+        return acceptLabel;
+    }
+
+    public void setAcceptLabel(String acceptLabel) {
+        this.acceptLabel = acceptLabel;
     }
 
     public String getAcceptText() {
@@ -200,6 +292,14 @@ public class ButtonResponse {
         this.acceptReturn = acceptReturn;
     }
 
+    public String getAcceptReturnLabel() {
+        return acceptReturnLabel;
+    }
+
+    public void setAcceptReturnLabel(String acceptReturnLabel) {
+        this.acceptReturnLabel = acceptReturnLabel;
+    }
+
     public String getAcceptReturnText() {
         return acceptReturnText;
     }
@@ -214,6 +314,14 @@ public class ButtonResponse {
 
     public void setFinish(int finish) {
         this.finish = finish;
+    }
+
+    public String getFinishLabel() {
+        return finishLabel;
+    }
+
+    public void setFinishLabel(String finishLabel) {
+        this.finishLabel = finishLabel;
     }
 
     public String getFinishText() {
@@ -232,6 +340,14 @@ public class ButtonResponse {
         this.acceptByAdmin = acceptByAdmin;
     }
 
+    public String getAcceptByAdminLabel() {
+        return acceptByAdminLabel;
+    }
+
+    public void setAcceptByAdminLabel(String acceptByAdminLabel) {
+        this.acceptByAdminLabel = acceptByAdminLabel;
+    }
+
     public String getAcceptByAdminText() {
         return acceptByAdminText;
     }
@@ -248,6 +364,14 @@ public class ButtonResponse {
         this.acceptByAdminReturn = acceptByAdminReturn;
     }
 
+    public String getAcceptByAdminReturnLabel() {
+        return acceptByAdminReturnLabel;
+    }
+
+    public void setAcceptByAdminReturnLabel(String acceptByAdminReturnLabel) {
+        this.acceptByAdminReturnLabel = acceptByAdminReturnLabel;
+    }
+
     public String getAcceptByAdminReturnText() {
         return acceptByAdminReturnText;
     }
@@ -262,6 +386,14 @@ public class ButtonResponse {
 
     public void setRecomplaint(int recomplaint) {
         this.recomplaint = recomplaint;
+    }
+
+    public String getRecomplaintLabel() {
+        return recomplaintLabel;
+    }
+
+    public void setRecomplaintLabel(String recomplaintLabel) {
+        this.recomplaintLabel = recomplaintLabel;
     }
 
     public String getRecomplaintText() {

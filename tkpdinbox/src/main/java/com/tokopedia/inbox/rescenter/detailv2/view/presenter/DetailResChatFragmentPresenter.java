@@ -13,10 +13,14 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptSolutionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResChatUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.SendDiscussionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.SendDiscussionV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.AcceptSolutionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetDetailResChatSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ReplyDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
@@ -48,6 +52,9 @@ public class DetailResChatFragmentPresenter
     GetResChatUseCase getResChatUseCase;
     SendDiscussionUseCase sendDiscussionUseCase;
     SendDiscussionV2UseCase sendDiscussionV2UseCase;
+    AcceptSolutionUseCase acceptSolutionUseCase;
+    AskHelpResolutionUseCase askHelpResolutionUseCase;
+    CancelResolutionUseCase cancelResolutionUseCase;
     ImageUploadHandler uploadImageDialog;
 
     String resolutionId;
@@ -56,10 +63,16 @@ public class DetailResChatFragmentPresenter
     @Inject
     public DetailResChatFragmentPresenter(GetResChatUseCase getResChatUseCase,
                                           SendDiscussionUseCase sendDiscussionUseCase,
-                                          SendDiscussionV2UseCase sendDiscussionV2UseCase) {
+                                          SendDiscussionV2UseCase sendDiscussionV2UseCase,
+                                          AcceptSolutionUseCase acceptSolutionUseCase,
+                                          AskHelpResolutionUseCase askHelpResolutionUseCase,
+                                          CancelResolutionUseCase cancelResolutionUseCase) {
         this.getResChatUseCase = getResChatUseCase;
+        this.acceptSolutionUseCase = acceptSolutionUseCase;
         this.sendDiscussionUseCase = sendDiscussionUseCase;
         this.sendDiscussionV2UseCase = sendDiscussionV2UseCase;
+        this.askHelpResolutionUseCase = askHelpResolutionUseCase;
+        this.cancelResolutionUseCase = cancelResolutionUseCase;
     }
 
     @Override
@@ -80,6 +93,9 @@ public class DetailResChatFragmentPresenter
         getResChatUseCase.unsubscribe();
         sendDiscussionUseCase.unsubscribe();
         sendDiscussionV2UseCase.unsubscribe();
+        acceptSolutionUseCase.unsubscribe();
+        askHelpResolutionUseCase.unsubscribe();
+        cancelResolutionUseCase.unsubscribe();
     }
 
     @Override
@@ -95,6 +111,11 @@ public class DetailResChatFragmentPresenter
                 new GetDetailResChatSubscriber(mainView));
     }
 
+    @Override
+    public void btnAcceptSolutionClicked() {
+        mainView.showProgressBar();
+        acceptSolutionUseCase.execute(AcceptSolutionUseCase.getParams(resolutionId), new AcceptSolutionSubscriber(mainView));
+    }
 
     @Override
     public void sendIconPressed(String message, List<AttachmentViewModel> attachmentList) {

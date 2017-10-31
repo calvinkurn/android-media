@@ -6,10 +6,14 @@ import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatCreateLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatLeftViewHolder;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatNotSupportedLeftViewHolder;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatNotSupportedRightViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatRightViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedLeftViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
 
 /**
@@ -39,6 +43,16 @@ public class DetailChatTypeFactoryImpl extends BaseAdapterTypeFactory  implement
     }
 
     @Override
+    public int type(ChatNotSupportedLeftViewModel viewModel) {
+        return ChatNotSupportedLeftViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(ChatNotSupportedRightViewModel viewModel) {
+        return ChatNotSupportedRightViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
         if (type == ChatLeftViewHolder.LAYOUT) {
@@ -47,7 +61,11 @@ public class DetailChatTypeFactoryImpl extends BaseAdapterTypeFactory  implement
             viewHolder = new ChatRightViewHolder(view, mainView);
         } else if (type == ChatCreateLeftViewHolder.LAYOUT) {
             viewHolder = new ChatCreateLeftViewHolder(view, mainView);
-        } else {
+        } else if (type == ChatNotSupportedRightViewHolder.LAYOUT) {
+            viewHolder = new ChatNotSupportedRightViewHolder(view, mainView);
+        } else if (type == ChatNotSupportedLeftViewHolder.LAYOUT) {
+            viewHolder = new ChatNotSupportedLeftViewHolder(view, mainView);
+        }else {
             viewHolder = super.createViewHolder(view, type);
         }
         return viewHolder;

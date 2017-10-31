@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,6 +27,7 @@ import com.tokopedia.core.gallery.GalleryActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
@@ -38,7 +40,10 @@ import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatFragme
 import com.tokopedia.inbox.rescenter.detailv2.view.typefactory.DetailChatTypeFactoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedLeftViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ButtonDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
@@ -75,7 +80,25 @@ public class DetailResChatFragment
     public static final int NEXT_STATUS_CURRENT = 1;
     private static final int COUNT_MAX_ATTACHMENT = 5;
 
-    public static final String ACTION_CREATE = "create";
+    public static final String CREATE = "create";
+    public static final String EDIT_SOLUTION = "edit_solution";
+    public static final String REPLY_CONVERSATION = "reply_conversation";
+    public static final String ACCEPT_ADMIN_SOLUTION = "accept_admin_resolution";
+    public static final String ACTION_EARLY = "action_early";
+    public static final String ACTION_FINAL = "action_final";
+    public static final String APPEAL_RESOLUTION = "appeal_resolution";
+    public static final String CANCEL = "cancel";
+    public static final String EDIT_ADDRESS = "edit_address";
+    public static final String EDIT_RESI = "edit_resi";
+    public static final String FINISH = "finish";
+    public static final String HANDLE_RESOLUTION = "handle_resolution";
+    public static final String INPUT_ADDRESS = "input_address";
+    public static final String INPUT_RESI = "input_resi";
+    public static final String REJECT_ADMIN_RESOLUTION = "reject_admin_resolution";
+    public static final String REPORT_RESOLUTION = "report_resolution";
+    public static final String ENTER_RETUR_SESSION_RESOLUTION = "enter_retur_session_resolution";
+    public static final String ACTION_RESET = "action_reset";
+
 
     private TextView tvNextStep;
     private RecyclerView rvChat, rvAttachment;
@@ -86,7 +109,8 @@ public class DetailResChatFragment
     private AttachmentAdapter attachmentAdapter;
     private EditText etChat;
     private ImageView ivSend, ivAttachment;
-    ImageUploadHandler uploadImageDialog;
+    private View actionButtonLayout;
+    private ImageUploadHandler uploadImageDialog;
 
     private String resolutionId;
     private DetailResChatDomain detailResChatDomain;
@@ -251,6 +275,9 @@ public class DetailResChatFragment
         ivSend = (ImageView) view.findViewById(R.id.iv_send);
         ivAttachment = (ImageView) view.findViewById(R.id.iv_attachment);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        actionButtonLayout = view.findViewById(R.id.layout_action);
+
+        actionButtonLayout.setVisibility(View.GONE);
         mainView.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
 
@@ -429,8 +456,7 @@ public class DetailResChatFragment
     public void populateView(DetailResChatDomain detailResChatDomain) {
         this.detailResChatDomain = detailResChatDomain;
         mainView.setVisibility(View.VISIBLE);
-        initNextStep(detailResChatDomain.getNextAction());
-        initChatData(detailResChatDomain);
+        initAllData(detailResChatDomain);
     }
 
     @Override
@@ -442,8 +468,7 @@ public class DetailResChatFragment
     public void successGetConversation(DetailResChatDomain detailResChatDomain) {
         this.detailResChatDomain = detailResChatDomain;
         mainView.setVisibility(View.VISIBLE);
-        initNextStep(detailResChatDomain.getNextAction());
-        initChatData(detailResChatDomain);
+        initAllData(detailResChatDomain);
     }
 
     @Override
@@ -456,6 +481,12 @@ public class DetailResChatFragment
         });
     }
 
+    private void initAllData(DetailResChatDomain detailResChatDomain) {
+        initNextStep(detailResChatDomain.getNextAction());
+        initActionButton(detailResChatDomain.getButton());
+        initChatData(detailResChatDomain);
+    }
+
     private void initNextStep(NextActionDomain nextActionDomain) {
         for (NextActionDetailStepDomain nextStep : nextActionDomain.getDetail().getStep()) {
             if (nextStep.getStatus() == NEXT_STATUS_CURRENT) {
@@ -464,15 +495,133 @@ public class DetailResChatFragment
         }
     }
 
+    private void initActionButton(final ButtonDomain buttonDomain) {
+        actionButtonLayout.setVisibility(View.GONE);
+        if (buttonDomain.getReport() == 1
+                || buttonDomain.getCancel() == 1
+                || buttonDomain.getEdit() == 1
+                || buttonDomain.getInputAddress() == 1
+                || buttonDomain.getAppeal() == 1
+                || buttonDomain.getInputAWB() == 1
+                || buttonDomain.getAccept() == 1
+                || buttonDomain.getAcceptReturn() == 1
+                || buttonDomain.getAcceptByAdmin() == 1
+                || buttonDomain.getAcceptByAdminReturn() == 1
+                || buttonDomain.getFinish() == 1
+                || buttonDomain.getRecomplaint() == 1) {
+            actionButtonLayout.setVisibility(View.VISIBLE);
+            LinearLayout llActionButton = (LinearLayout) actionButtonLayout.findViewById(R.id.ll_action_button);
+            llActionButton.addView(addButtonSeparator());
+
+            if (buttonDomain.getReport() == 1) {
+                Button button = getChatActionButton(buttonDomain.getReportLabel());
+                llActionButton.addView(button);
+                llActionButton.addView(addButtonSeparator());
+            }
+
+            if (buttonDomain.getCancel() == 1) {
+                Button button = getChatActionButton(buttonDomain.getCancelLabel());
+                llActionButton.addView(button);
+                llActionButton.addView(addButtonSeparator());
+            }
+
+            if (buttonDomain.getEdit() == 1) {
+                Button button = getChatActionButton(buttonDomain.getEditLabel());
+                llActionButton.addView(button);
+                llActionButton.addView(addButtonSeparator());
+            }
+
+            if (buttonDomain.getInputAddress() == 1) {
+                Button button = getChatActionButton(buttonDomain.getInputAddressLabel());
+                llActionButton.addView(button);
+                llActionButton.addView(addButtonSeparator());
+            }
+
+            if (buttonDomain.getAppeal() == 1) {
+                Button button = getChatActionButton(buttonDomain.getAppealLabel());
+                llActionButton.addView(button);
+                llActionButton.addView(addButtonSeparator());
+            }
+
+            if (buttonDomain.getInputAWB() == 1) {
+                Button button = getChatActionButton(buttonDomain.getInputAWBLabel());
+                llActionButton.addView(button);
+                llActionButton.addView(addButtonSeparator());
+            }
+
+            if (buttonDomain.getAccept() == 1) {
+                Button button = getChatActionButton(buttonDomain.getAcceptLabel());
+                llActionButton.addView(button);
+                llActionButton.addView(addButtonSeparator());
+
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showAcceptSolutionDialog(buttonDomain.getAcceptText());
+                    }
+                });
+            }
+
+            if (buttonDomain.getAcceptReturn() == 1) {
+                Button button = getChatActionButton(buttonDomain.getAcceptReturnLabel());
+                llActionButton.addView(button);
+                llActionButton.addView(addButtonSeparator());
+            }
+
+            if (buttonDomain.getAcceptByAdmin() == 1) {
+                Button button = getChatActionButton(buttonDomain.getAcceptByAdminLabel());
+                llActionButton.addView(button);
+                llActionButton.addView(addButtonSeparator());
+            }
+
+            if (buttonDomain.getAcceptByAdminReturn() == 1) {
+                Button button = getChatActionButton(buttonDomain.getAcceptByAdminReturnLabel());
+                llActionButton.addView(button);
+                llActionButton.addView(addButtonSeparator());
+            }
+
+            if (buttonDomain.getFinish() == 1) {
+                Button button = getChatActionButton(buttonDomain.getFinishLabel());
+                llActionButton.addView(button);
+                llActionButton.addView(addButtonSeparator());
+            }
+
+            if (buttonDomain.getRecomplaint() == 1) {
+                Button button = getChatActionButton(buttonDomain.getRecomplainLabel());
+                llActionButton.addView(button);
+                llActionButton.addView(addButtonSeparator());
+            }
+        }
+    }
+
+    private Button getChatActionButton(String name) {
+        Button button = new Button(getActivity());
+        button.setBackground(getActivity().getResources().getDrawable(R.drawable.bg_chat_button_action));
+        button.setTextColor(getActivity().getResources().getColor(R.color.tkpd_main_green));
+        button.setLayoutParams(new LinearLayout.LayoutParams((int)getActivity().getResources().getDimension(R.dimen.dimens_chat_action_button_width),
+                (int)getActivity().getResources().getDimension(R.dimen.dimens_chat_action_button_height)));
+        button.setText(name);
+        button.setAllCaps(false);
+        return button;
+    }
+
+    private View addButtonSeparator() {
+        View spaceView = new View(getActivity());
+        spaceView.setLayoutParams(new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.margin_vvs),
+                LinearLayout.LayoutParams.MATCH_PARENT));
+        return spaceView;
+    }
+
     private void initChatData(DetailResChatDomain detailResChatDomain) {
         int lastAction = 0;
         for (ConversationDomain conversationDomain : detailResChatDomain.getConversation()) {
-            if (conversationDomain.getAction().getType().equals(ACTION_CREATE)) {
+            String actionType = conversationDomain.getAction().getType();
+            if (actionType.equals(CREATE)) {
                 chatAdapter.addItem(new ChatCreateLeftViewModel
                         (detailResChatDomain.getShop(),
                                 detailResChatDomain.getLast(),
                                 conversationDomain));
-            } else {
+            } else if (actionType.equals(REPLY_CONVERSATION)) {
                 boolean isShowTitle;
                 if (lastAction == conversationDomain.getAction().getBy()) {
                     isShowTitle = false;
@@ -492,10 +641,45 @@ public class DetailResChatFragment
                             conversationDomain,
                             isShowTitle));
                 }
+            } else {
+                if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
+                    chatAdapter.addItem(new ChatNotSupportedRightViewModel(
+                            conversationDomain));
+                } else {
+                    chatAdapter.addItem(new ChatNotSupportedLeftViewModel(
+                            conversationDomain));
+                }
             }
 
         }
         chatAdapter.notifyDataSetChanged();
+    }
+
+    private void showAcceptSolutionDialog(String acceptText) {
+        final Dialog dialog = new Dialog(getActivity());
+        TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
+        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
+        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
+        Button btnAccept = (Button) dialog.findViewById(R.id.btn_accept_solution);
+        tvSolution.setText(MethodChecker.fromHtml(acceptText));
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override
@@ -530,6 +714,18 @@ public class DetailResChatFragment
         NetworkErrorHelper.showSnackbar(getActivity(), error);
         chatAdapter.deleteLastItem();
         etChat.requestFocus();
+    }
+
+    @Override
+    public void successAcceptSolution() {
+        dismissProgressBar();
+        presenter.initView(resolutionId);
+    }
+
+    @Override
+    public void errorAcceptSolution(String error) {
+        dismissProgressBar();
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
     @Override

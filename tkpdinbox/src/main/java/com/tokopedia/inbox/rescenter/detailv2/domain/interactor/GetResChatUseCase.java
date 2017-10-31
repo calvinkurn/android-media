@@ -31,7 +31,7 @@ public class GetResChatUseCase extends UseCase<DetailResChatDomain> {
         return resCenterRepository.getConversation(requestParams);
     }
 
-    public RequestParams getResChatUseCaseParam(String resolutionId) {
+    public static RequestParams getResChatUseCaseParam(String resolutionId) {
         RequestParams params = RequestParams.create();
         params.putString(RESO_ID, resolutionId);
         return params;
