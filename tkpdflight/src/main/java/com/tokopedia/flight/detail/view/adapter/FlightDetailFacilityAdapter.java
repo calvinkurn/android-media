@@ -1,4 +1,4 @@
-package com.tokopedia.flight.detailflight.view.adapter;
+package com.tokopedia.flight.detail.view.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;

@@ -11,6 +11,7 @@ import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportDetail;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB_Table;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,6 +59,9 @@ public class FlightAirportDataListDBSource implements DataListDBSource<FlightAir
                     @Override
                     public Observable<Boolean> call(FlightAirportCountry flightAirportCountry) {
                         for (FlightAirportCity flightAirportCity: flightAirportCountry.getAttributes().getCities()) {
+                            if(flightAirportCity.getFlightAirportDetails() != null && flightAirportCity.getFlightAirportDetails().size() > 1){
+                                insertFlight(flightAirportCountry, flightAirportCity, new FlightAirportDetail("", "", new ArrayList<String>()));
+                            }
                             for (FlightAirportDetail flightAirportDetail : flightAirportCity.getFlightAirportDetails()) {
                                 insertFlight(flightAirportCountry, flightAirportCity, flightAirportDetail);
                             }

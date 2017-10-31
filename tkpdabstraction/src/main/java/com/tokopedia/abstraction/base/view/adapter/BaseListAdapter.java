@@ -108,7 +108,7 @@ public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecy
         }
     }
 
-    private boolean isLastItemPosition(int position) {
+    protected boolean isLastItemPosition(int position) {
         return position == data.size();
     }
 

@@ -54,6 +54,7 @@
             tools:visibility="visible" />
 
         <ImageView
+            android:id="@+id/airline_image_refundable_info"
             android:layout_width="@dimen/image_width_xs"
             android:layout_height="@dimen/image_width_xs"
             android:src="@drawable/ic_info_flight"

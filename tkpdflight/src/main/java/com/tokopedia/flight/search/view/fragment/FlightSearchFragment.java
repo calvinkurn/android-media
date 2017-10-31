@@ -6,12 +6,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.search.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
@@ -92,6 +92,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
-        Toast.makeText(getActivity(), flightSearchViewModel.getId(), Toast.LENGTH_LONG).show();
+        getActivity().startActivity(FlightDetailActivity.createIntent(getActivity(), flightSearchViewModel));
     }
 }

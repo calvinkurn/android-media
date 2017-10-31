@@ -1,5 +1,6 @@
-package com.tokopedia.flight.detailflight.view.adapter;
+package com.tokopedia.flight.detail.view.adapter;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,5 +18,14 @@ public class FlightDetailAdapter extends BaseListAdapter<Route> {
     public BaseViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
         View view = getLayoutView(parent, R.layout.item_flight_detail);
         return new FlightDetailViewHolder(view);
+    }
+
+    @Override
+    protected void bindData(int position, RecyclerView.ViewHolder viewHolder) {
+        super.bindData(position, viewHolder);
+        if(viewHolder instanceof FlightDetailViewHolder){
+            ((FlightDetailViewHolder)viewHolder).bindLastPosition(isLastItemPosition(position));
+            ((FlightDetailViewHolder)viewHolder).bindTransitInfo(data.size() > 1);
+        }
     }
 }
