@@ -1,5 +1,6 @@
 package com.tokopedia.flight.common.di.module;
 
+import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
@@ -49,9 +50,11 @@ public class FlightModule {
     @FlightScope
     @Provides
     public FlightRepository provideFlightRepository(FlightAirportDataListSource flightAirportDataListSource,
+                                                    FlightAirlineDataListSource flightAirlineDataListSource,
                                                     FlightSearchSingleDataListSource flightSearchSingleDataListSource,
                                                     FlightSearchReturnDataListSource flightSearchReturnDataListSource){
-        return new FlightRepositoryImpl(flightAirportDataListSource, flightSearchSingleDataListSource, flightSearchReturnDataListSource);
+        return new FlightRepositoryImpl(flightAirportDataListSource, flightAirlineDataListSource,
+                flightSearchSingleDataListSource, flightSearchReturnDataListSource);
     }
 
     @FlightScope
