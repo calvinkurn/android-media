@@ -27,7 +27,7 @@ public class FlightAirlineUseCase extends UseCase<List<FlightAirlineDB>> {
 
     @Override
     public Observable<List<FlightAirlineDB>> createObservable(RequestParams requestParams) {
-        return flightRepository.getAirlineList(requestParams.getString(AIRLINE_ID, null));
+        return flightRepository.getAirlineList(requestParams==null?null: requestParams.getString(AIRLINE_ID, null));
     }
 
     public static RequestParams createRequestParams(String airlineID) {

@@ -40,6 +40,9 @@ public class FlightSearchViewModel implements ItemType {
 
     private List<Route> routeList;
 
+    private String airlineName;
+    private String airlineLogo;
+
     public FlightSearchViewModel(FlightSearchSingleRouteDB flightSearchSingleRouteDB){
         this.id = flightSearchSingleRouteDB.getId();
         this.type = flightSearchSingleRouteDB.getFlightType();
@@ -66,6 +69,22 @@ public class FlightSearchViewModel implements ItemType {
         String routesJsonString = flightSearchSingleRouteDB.getRoutes();
         Type flightRoutesType = new TypeToken<List<Route>> () {}.getType();
         this.routeList = new Gson().fromJson(routesJsonString, flightRoutesType);
+    }
+
+    public String getAirlineName() {
+        return airlineName;
+    }
+
+    public void setAirlineName(String airlineName) {
+        this.airlineName = airlineName;
+    }
+
+    public String getAirlineLogo() {
+        return airlineLogo;
+    }
+
+    public void setAirlineLogo(String airlineLogo) {
+        this.airlineLogo = airlineLogo;
     }
 
     @Override
