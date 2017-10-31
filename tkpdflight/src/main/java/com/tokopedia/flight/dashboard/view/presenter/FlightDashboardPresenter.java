@@ -159,7 +159,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         now.set(Calendar.DATE, dayOfMonth);
         Date newReturnDate = now.getTime();
         String newReturnDateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_FORMAT);
-        viewModel.setDepartureDate(newReturnDateStr);
+        viewModel.setReturnDate(newReturnDateStr);
         String newReturnDateFmtStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
         viewModel.setReturnDateFmt(newReturnDateFmtStr);
         getView().setDashBoardViewModel(viewModel);
