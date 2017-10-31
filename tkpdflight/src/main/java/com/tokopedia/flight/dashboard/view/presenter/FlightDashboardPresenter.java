@@ -1,0 +1,257 @@
+package com.tokopedia.flight.dashboard.view.presenter;
+
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.flight.R;
+import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightSelectPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+
+import javax.inject.Inject;
+
+/**
+ * Created by alvarisi on 10/30/17.
+ */
+
+public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboardContract.View> implements FlightDashboardContract.Presenter {
+
+    private FlightDashboardValidator validator;
+
+    @Inject
+    public FlightDashboardPresenter(FlightDashboardValidator validator) {
+        this.validator = validator;
+    }
+
+    @Override
+    public void onSingleTripChecked() {
+        getView().getCurrentDashboardViewModel().setOneWay(true);
+        getView().renderSingleTripView();
+    }
+
+    @Override
+    public void onRoundTripChecked() {
+        getView().getCurrentDashboardViewModel().setOneWay(false);
+        getView().renderRoundTripView();
+    }
+
+    @Override
+    public void initialize() {
+        setupViewModel();
+        getView().renderSingleTripView();
+    }
+
+    private void setupViewModel() {
+        Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+        Date currentDate = FlightDateUtil.addDate(now.getTime(), 1);
+        Date returnDate = FlightDateUtil.addDate(currentDate, 1);
+        String departureDateString = FlightDateUtil.dateToString(currentDate, FlightDateUtil.DEFAULT_FORMAT);
+        String departureDateFmtString = FlightDateUtil.dateToString(currentDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+        String returnDateString = FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_FORMAT);
+        String returnDateFmtString = FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+        FlightSelectPassengerViewModel passData = new FlightSelectPassengerViewModel.Builder()
+                .setAdult(1)
+                .build();
+        String passengerFmt = buildPassengerTextFormatted(passData);
+        FlightDashboardViewModel viewModel = new FlightDashboardViewModel.Builder()
+                .setFlightPassengerViewModel(passData)
+                .setIsOneWay(true)
+                .setDepartureDate(departureDateString)
+                .setReturnDate(returnDateString)
+                .setDepartureDateFmt(departureDateFmtString)
+                .setReturnDateFmt(returnDateFmtString)
+                .setFlightPassengerFmt(passengerFmt)
+                .setOriginFmt("")
+                .setDestinationFmt("")
+                .build();
+
+        getView().setDashBoardViewModel(viewModel);
+    }
+
+    @NonNull
+    private String buildPassengerTextFormatted(FlightSelectPassengerViewModel passData) {
+        String passengerFmt = "";
+        if (passData.getAdult() > 0) {
+            passengerFmt = passData.getAdult() + " " + getView().getString(R.string.flight_dashboard_adult_passenger);
+            if (passData.getChildren() > 0) {
+                passengerFmt += ", " + passData.getChildren() + " " + getView().getString(R.string.flight_dashboard_adult_children);
+            }
+            if (passData.getInfant() > 0) {
+                passengerFmt += ", " + passData.getInfant() + " " + getView().getString(R.string.flight_dashboard_adult_infant);
+            }
+        }
+        return passengerFmt;
+    }
+
+    @Override
+    public void onReverseAirportButtonClicked() {
+        FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
+        FlightAirportDB flightAirportDB = viewModel.getDestination();
+        String destinationFmt = viewModel.getDestinationFmt();
+        viewModel.setDestination(viewModel.getOrigin());
+        viewModel.setDestinationFmt(viewModel.getOriginFmt());
+        viewModel.setOrigin(flightAirportDB);
+        viewModel.setOriginFmt(destinationFmt);
+        getView().setDashBoardViewModel(viewModel);
+        renderUi();
+    }
+
+    @Override
+    public void onDepartureDateButtonClicked() {
+        Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+        Date minDate = now.getTime();
+        Date selectedDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
+        getView().showDepartureDatePickerDialog(selectedDate, minDate);
+    }
+
+    @Override
+    public void onDepartureDateChange(int year, int month, int dayOfMonth) {
+        FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
+        Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+        now.set(Calendar.YEAR, year);
+        now.set(Calendar.MONTH, month);
+        now.set(Calendar.DATE, dayOfMonth);
+        Date newDepartureDate = now.getTime();
+        String newDepartureDateStr = FlightDateUtil.dateToString(newDepartureDate, FlightDateUtil.DEFAULT_FORMAT);
+        viewModel.setDepartureDate(newDepartureDateStr);
+        String newDepartureDateFmtStr = FlightDateUtil.dateToString(newDepartureDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+        viewModel.setDepartureDateFmt(newDepartureDateFmtStr);
+        if (!viewModel.isOneWay()) {
+            Date currentReturnDate = FlightDateUtil.stringToDate(viewModel.getReturnDate());
+            if (currentReturnDate.compareTo(newDepartureDate) < 0) {
+                viewModel.setReturnDate(newDepartureDateStr);
+                viewModel.setReturnDateFmt(newDepartureDateFmtStr);
+            }
+            getView().setDashBoardViewModel(viewModel);
+            getView().renderRoundTripView();
+        } else {
+            Date reAssignReturnDate = FlightDateUtil.addDate(newDepartureDate, 1);
+            viewModel.setReturnDate(FlightDateUtil.dateToString(reAssignReturnDate, FlightDateUtil.DEFAULT_FORMAT));
+            viewModel.setReturnDateFmt(FlightDateUtil.dateToString(reAssignReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
+            getView().setDashBoardViewModel(viewModel);
+            getView().renderSingleTripView();
+        }
+    }
+
+    @Override
+    public void onReturnDateButtonClicked() {
+        Date selectedDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getReturnDate());
+        Date minDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
+
+        getView().showReturnDatePickerDialog(selectedDate, minDate);
+    }
+
+    @Override
+    public void onReturnDateChange(int year, int month, int dayOfMonth) {
+        FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
+        Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+        now.set(Calendar.YEAR, year);
+        now.set(Calendar.MONTH, month);
+        now.set(Calendar.DATE, dayOfMonth);
+        Date newReturnDate = now.getTime();
+        String newReturnDateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_FORMAT);
+        viewModel.setDepartureDate(newReturnDateStr);
+        String newReturnDateFmtStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+        viewModel.setReturnDateFmt(newReturnDateFmtStr);
+        getView().setDashBoardViewModel(viewModel);
+        renderUi();
+    }
+
+    private void renderUi() {
+        if (!getView().getCurrentDashboardViewModel().isOneWay()) {
+            getView().renderRoundTripView();
+        } else {
+            getView().renderSingleTripView();
+        }
+    }
+
+    @Override
+    public void onFlightClassesChange(FlightClassViewModel viewModel) {
+        FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
+        flightDashboardViewModel.setFlightClass(viewModel);
+        getView().setDashBoardViewModel(flightDashboardViewModel);
+        renderUi();
+    }
+
+    @Override
+    public void onFlightPassengerChange(FlightSelectPassengerViewModel passengerViewModel) {
+        FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
+        flightDashboardViewModel.setFlightPassengerViewModel(passengerViewModel);
+        flightDashboardViewModel.setFlightPassengerFmt(buildPassengerTextFormatted(passengerViewModel));
+        getView().setDashBoardViewModel(flightDashboardViewModel);
+        renderUi();
+    }
+
+    @Override
+    public void onDepartureAirportChange(FlightAirportDB departureAirport) {
+        FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
+        flightDashboardViewModel.setOrigin(departureAirport);
+        flightDashboardViewModel.setOriginFmt(departureAirport.getCityName() + "(" + departureAirport.getAirportId() + ")");
+        getView().setDashBoardViewModel(flightDashboardViewModel);
+        renderUi();
+    }
+
+    @Override
+    public void onArrivalAirportChange(FlightAirportDB arrivalAirport) {
+        FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
+        flightDashboardViewModel.setDestination(arrivalAirport);
+        flightDashboardViewModel.setDestinationFmt(arrivalAirport.getCityName() + "(" + arrivalAirport.getAirportId() + ")");
+        getView().setDashBoardViewModel(flightDashboardViewModel);
+        renderUi();
+    }
+
+    @Override
+    public void onSearchTicketButtonClicked() {
+        if (validateSearchParam(getView().getCurrentDashboardViewModel())){
+            getView().navigateToSearchPage(getView().getCurrentDashboardViewModel());
+        }
+    }
+
+    private boolean validateSearchParam(FlightDashboardViewModel currentDashboardViewModel) {
+        boolean isValid = true;
+        if (!validator.validateDepartureNotEmtpty(currentDashboardViewModel)){
+            isValid = false;
+            getView().showDepartureEmptyErrorMessage(R.string.flight_dashboard_departure_empty_error);
+        } else if (!validator.validateArrivalNotEmpty(currentDashboardViewModel)) {
+            isValid = false;
+            getView().showArrivalEmptyErrorMessage(R.string.flight_dashboard_arrival_empty_error);
+        } else if (!validator.validateArrivalAndDestinationNotSame(currentDashboardViewModel)){
+            isValid = false;
+            getView().showArrivalAndDestinationAreSameError(R.string.flight_dashboard_arrival_departure_same_error);
+        } else if (!validator.validateDepartureDateAtLeastToday(currentDashboardViewModel)){
+            isValid = false;
+            getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
+        } else if (!validator.validateArrivalDateShouldGreaterOrEqualDeparture(currentDashboardViewModel)){
+            isValid = false;
+            getView().showArrivalDateShouldGreaterOrEqual(R.string.flight_dashboard_arrival_should_greater_equal_error);
+        } else if (!validator.validatePassengerAtLeastOneAdult(currentDashboardViewModel)){
+            isValid = false;
+            getView().showPassengerAtLeastOneAdult(R.string.flight_dashboard_at_least_one_adult_error);
+        } else if (!validator.validateFlightClassNotEmpty(currentDashboardViewModel)){
+            isValid = false;
+            getView().showFlightClassPassengerIsEmpty(R.string.flight_dashboard_fligh_class_is_empty);
+        }
+        return isValid;
+    }
+
+    @Nullable
+    private FlightDashboardViewModel cloneViewModel(FlightDashboardViewModel currentDashboardViewModel) {
+        FlightDashboardViewModel viewModel = null;
+        try {
+            viewModel = (FlightDashboardViewModel) currentDashboardViewModel.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to Clone FlightDashboardViewModel");
+        }
+        return viewModel;
+    }
+}

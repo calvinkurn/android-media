@@ -47,4 +47,14 @@
     <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
     <string name="flight_classes_toolbar_title">Pilih Kelas Penerbangan</string>
+    <string name="flight_dashboard_adult_passenger">Dewasa</string>
+    <string name="flight_dashboard_adult_children">Anak</string>
+    <string name="flight_dashboard_adult_infant">Bayi</string>
+    <string name="flight_dashboard_departure_empty_error">Anda belum memilih airport pemberangkatan</string>
+    <string name="flight_dashboard_arrival_empty_error">Anda belum memilih airport kedatangan</string>
+    <string name="flight_dashboard_arrival_departure_same_error">Airport kedatangan dan keberangkatan tidak boleh sama</string>
+    <string name="flight_dashboard_departure_should_atleast_today_error">Tanggal keberangkatan harus lebih besar sama dengan hari ini</string>
+    <string name="flight_dashboard_arrival_should_greater_equal_error">Tanggal kedatangan harus lebih besar sama dengan tanggal keberangkatan</string>
+    <string name="flight_dashboard_at_least_one_adult_error">Harus ada penumpang dewasa</string>
+    <string name="flight_dashboard_fligh_class_is_empty">Jenis Kelas penerbangan tidak boleh kosong</string>
 </resources>

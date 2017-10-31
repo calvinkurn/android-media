@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB> implements FlightAirportPickerView{
 
-    private static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
+    public static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
 
     private static final long DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(0);
 

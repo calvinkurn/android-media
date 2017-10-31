@@ -7,13 +7,13 @@
     android:padding="@dimen/margin_sm">
 
     <RadioGroup
-        android:id="@+id/radioSex"
+        android:id="@+id/radio_travel_tyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <RadioButton
-            android:id="@+id/radioMale"
+            android:id="@+id/radio_one_way"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
@@ -21,7 +21,7 @@
             style="@style/RadioButton"/>
 
         <RadioButton
-            android:id="@+id/radioFemale"
+            android:id="@+id/radio_round_trip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/flight_search_return"
@@ -59,7 +59,8 @@
                 app:tiv_hint_text="@string/flight_search_airport_arrival_title"/>
         </LinearLayout>
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image_reverse_airport"
             android:layout_width="@dimen/image_width_m"
             android:layout_height="@dimen/image_width_m"
             android:src="@drawable/ic_flight_reverse" />
@@ -74,7 +75,7 @@
         app:tiv_title_text="@string/flight_search_date_departure_title" />
 
     <com.tokopedia.flight.dashboard.view.widget.TextInputView
-        android:id="@+id/text_input_view_date_arrival"
+        android:id="@+id/text_input_view_date_return"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_ms"
