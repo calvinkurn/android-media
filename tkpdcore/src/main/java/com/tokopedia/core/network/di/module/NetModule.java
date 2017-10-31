@@ -9,6 +9,7 @@ import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.PaymentNoAuth;
+import com.tokopedia.core.network.di.qualifier.PosGatewayAuth;
 import com.tokopedia.core.network.di.qualifier.PosGatewayNoAuth;
 import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardOkHttp;
 import com.tokopedia.core.network.di.qualifier.ScroogeCreditCardRetrofit;
@@ -210,6 +211,18 @@ public class NetModule {
     @Provides
     public Retrofit providePosNoAuthRetrofit(@NoAuth OkHttpClient okHttpClient,
                                              Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder
+                .baseUrl(TkpdBaseURL.POS_DOMAIN)
+                .client(okHttpClient)
+                .build();
+    }
+
+
+    @PosGatewayAuth
+    @ApplicationScope
+    @Provides
+    public Retrofit providePosAuthRetrofit(@BearerAuthTypeJsonUt OkHttpClient okHttpClient,
+                                           Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder
                 .baseUrl(TkpdBaseURL.POS_DOMAIN)
                 .client(okHttpClient)
