@@ -2,6 +2,7 @@ package com.tokopedia.flight.dashboard.view.presenter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
@@ -195,7 +196,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public void onDepartureAirportChange(FlightAirportDB departureAirport) {
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setOrigin(departureAirport);
-        flightDashboardViewModel.setOriginFmt(departureAirport.getCityName() + "(" + departureAirport.getAirportId() + ")");
+        String code = departureAirport.getAirportId();
+        if (TextUtils.isEmpty(code)){
+            code = departureAirport.getCityCode();
+        }
+        flightDashboardViewModel.setOriginFmt(departureAirport.getCityName() + "(" + code + ")");
         getView().setDashBoardViewModel(flightDashboardViewModel);
         renderUi();
     }
@@ -204,7 +209,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public void onArrivalAirportChange(FlightAirportDB arrivalAirport) {
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setDestination(arrivalAirport);
-        flightDashboardViewModel.setDestinationFmt(arrivalAirport.getCityName() + "(" + arrivalAirport.getAirportId() + ")");
+        String code = arrivalAirport.getAirportId();
+        if (TextUtils.isEmpty(code)){
+            code = arrivalAirport.getCityCode();
+        }
+        flightDashboardViewModel.setDestinationFmt(arrivalAirport.getCityName() + "(" + code + ")");
         getView().setDashBoardViewModel(flightDashboardViewModel);
         renderUi();
     }
