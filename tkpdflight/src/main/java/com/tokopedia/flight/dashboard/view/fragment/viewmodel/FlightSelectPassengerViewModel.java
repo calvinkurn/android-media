@@ -111,4 +111,9 @@ public class FlightSelectPassengerViewModel implements Parcelable, Cloneable  {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
