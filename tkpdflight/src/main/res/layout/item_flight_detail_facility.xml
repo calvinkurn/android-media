@@ -13,10 +13,12 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view_info"
+            android:padding="@dimen/padding_med"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <GridView
+        <android.support.v7.widget.RecyclerView
+            android:padding="@dimen/padding_med"
             android:id="@+id/recycler_view_amenity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

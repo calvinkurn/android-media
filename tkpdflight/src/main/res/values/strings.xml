@@ -47,6 +47,7 @@
     <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
     <string name="flight_classes_toolbar_title">Pilih Kelas Penerbangan</string>
+    <string name="flight_labe_all_airport">Semua Bandara</string>
     <string name="flight_dashboard_adult_passenger">Dewasa</string>
     <string name="flight_dashboard_adult_children">Anak</string>
     <string name="flight_dashboard_adult_infant">Bayi</string>

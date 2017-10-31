@@ -1,6 +1,7 @@
-package com.tokopedia.flight.detailflight.view.fragment;
+package com.tokopedia.flight.detail.view.fragment;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 /**
  * Created by zulfikarrahman on 10/30/17.
@@ -17,7 +18,7 @@ public class FlightDetailPriceFragment extends BaseDaggerFragment {
 
     }
 
-    public static FlightDetailPriceFragment createInstance() {
+    public static FlightDetailPriceFragment createInstance(FlightSearchViewModel flightSearchViewModel) {
         return new FlightDetailPriceFragment();
     }
 }
