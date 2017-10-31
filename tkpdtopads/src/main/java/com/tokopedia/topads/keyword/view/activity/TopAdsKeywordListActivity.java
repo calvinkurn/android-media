@@ -2,10 +2,8 @@ package com.tokopedia.topads.keyword.view.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -16,22 +14,21 @@ import android.view.View;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.base.view.activity.BaseToolbarActivity;
-import com.tokopedia.topads.R;
+import com.tokopedia.seller.base.view.activity.BaseTabActivity;
 import com.tokopedia.seller.common.datepicker.view.listener.DatePickerTabListener;
-import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.keyword.view.adapter.TopAdsPagerAdapter;
-import com.tokopedia.topads.keyword.view.fragment.TopAdsBaseListFragment;
-import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordListFragment;
-import com.tokopedia.topads.keyword.view.listener.AdListMenuListener;
-import com.tokopedia.topads.keyword.view.listener.KeywordListListener;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
-import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
-import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
+import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
+import com.tokopedia.topads.keyword.view.adapter.TopAdsPagerAdapter;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordListFragment;
+import com.tokopedia.topads.keyword.view.listener.AdListMenuListener;
+import com.tokopedia.topads.keyword.view.listener.KeywordListListener;
 
 import java.util.ArrayList;
 
@@ -39,11 +36,9 @@ import java.util.ArrayList;
  * Created by nathan on 5/15/17.
  */
 
-public class TopAdsKeywordListActivity extends BaseToolbarActivity implements
-        HasComponent<AppComponent>, SearchView.OnQueryTextListener,
-        KeywordListListener.Listener,
-        TopAdsAdListFragment.OnAdListFragmentListener,
-        TopAdsKeywordListFragment.GroupTopAdsListener {
+public class TopAdsKeywordListActivity extends BaseTabActivity implements
+        HasComponent<AppComponent>, SearchView.OnQueryTextListener, KeywordListListener.Listener,
+        TopAdsAdListFragment.OnAdListFragmentListener, TopAdsKeywordListFragment.GroupTopAdsListener {
 
     private static final String TAG = TopAdsKeywordListActivity.class.getName();
     private static final int DELAY_SHOW_CASE_THREAD = 300;//ms
@@ -51,51 +46,41 @@ public class TopAdsKeywordListActivity extends BaseToolbarActivity implements
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
     boolean isShowingShowCase = false;
     private ShowCaseDialog showCaseDialog;
-    private ViewPager viewPager;
-    private TopAdsPagerAdapter pagerAdapter;
     private SearchView searchView;
-    private KeywordListListener keywordListTablayout;
+    private KeywordListListener keywordListListener;
     private MenuItem searchItem;
     private int totalGroupAd;
     private MenuItem filter;
 
     @Override
-    protected void setupFragment(Bundle savedInstanceState) { /* remain empty */ }
-
-    @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_base_tab_white;
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         totalGroupAd = getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_TOTAL_GROUP_ADS, 0);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.indicator);
-        keywordListTablayout = new KeywordListListener(tabLayout, this);
-        viewPager = (ViewPager) findViewById(R.id.pager);
+    }
 
-        pagerAdapter = getViewPagerAdapter();
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
-        viewPager.addOnPageChangeListener(keywordListTablayout);
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        keywordListListener = new KeywordListListener(tabLayout, this);
+        viewPager.addOnPageChangeListener(keywordListListener);
         DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
-        tabLayout.addOnTabSelectedListener(tabListener);
+        tabLayout.setOnTabSelectedListener(tabListener);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_keyword_title));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_keyword_title_negative));
     }
 
-    private TopAdsPagerAdapter getViewPagerAdapter() {
+    @Override
+    protected TopAdsPagerAdapter getViewPagerAdapter() {
         String[] titles = {
                 getString(R.string.top_ads_keyword_title),
                 getString(R.string.top_ads_keyword_title_negative)
         };
         return new TopAdsPagerAdapter(getSupportFragmentManager(), titles);
+    }
+
+    @Override
+    protected int getPageLimit() {
+        return OFFSCREEN_PAGE_LIMIT;
     }
 
     @Override
@@ -112,26 +97,24 @@ public class TopAdsKeywordListActivity extends BaseToolbarActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
         getMenuInflater().inflate(R.menu.menu_keyword_top_ads_list, menu);
-
         filter = menu.findItem(R.id.menu_filter);
         searchItem = menu.findItem(R.id.menu_search);
-
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                keywordListTablayout.add(viewPager.getCurrentItem());
+                keywordListListener.add(viewPager.getCurrentItem());
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                keywordListTablayout.remove(viewPager.getCurrentItem());
+                keywordListListener.remove(viewPager.getCurrentItem());
                 return true;
             }
         });
         searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(this);
-        keywordListTablayout.attachSearchView(searchView);
+        keywordListListener.attachSearchView(searchView);
 
         validateMenuItem();
 
@@ -139,7 +122,7 @@ public class TopAdsKeywordListActivity extends BaseToolbarActivity implements
     }
 
     public void validateMenuItem() {
-        TopAdsKeywordListFragment currentFragment = getCurrentFragment();
+        TopAdsKeywordListFragment currentFragment = (TopAdsKeywordListFragment) getCurrentFragment();
         if (currentFragment != null && currentFragment.hasDataFromServer()) {
             filter.setVisible(true);
             searchItem.setVisible(true);
@@ -165,14 +148,6 @@ public class TopAdsKeywordListActivity extends BaseToolbarActivity implements
             if (registeredFragment instanceof AdListMenuListener) {
                 return ((AdListMenuListener) registeredFragment);
             }
-        }
-        return null;
-    }
-
-    private TopAdsKeywordListFragment getCurrentFragment() {
-        Fragment registeredFragment = pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem());
-        if (registeredFragment != null && registeredFragment instanceof TopAdsBaseListFragment) {
-            return (TopAdsKeywordListFragment) registeredFragment;
         }
         return null;
     }
@@ -243,7 +218,7 @@ public class TopAdsKeywordListActivity extends BaseToolbarActivity implements
     }
 
     private void displayShowCase() {
-        final TopAdsKeywordListFragment topAdsKeywordListFragment = getCurrentFragment();
+        final TopAdsKeywordListFragment topAdsKeywordListFragment = (TopAdsKeywordListFragment) getCurrentFragment();
         if (topAdsKeywordListFragment == null || topAdsKeywordListFragment.getView() == null) {
             return;
         }
@@ -337,5 +312,10 @@ public class TopAdsKeywordListActivity extends BaseToolbarActivity implements
     @Override
     public void setGroupTopAdsSize(int size) {
         totalGroupAd = size;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 }

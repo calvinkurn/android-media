@@ -10,11 +10,11 @@ import butterknife.ButterKnife;
 
 /**
  * Created by normansyahputa on 10/29/17.
- *
+ * <p>
  * this is just for layering {@link BasePresenterActivity}
  */
 
-public abstract class BaseTopAdsDatePickerActivity<P> extends BaseToolbarActivity{
+public abstract class BaseTopAdsDatePickerActivity<P> extends BaseToolbarActivity {
     @Override
     protected void setupFragment(Bundle savedInstanceState) { /* leave empty */}
 
@@ -88,44 +88,53 @@ public abstract class BaseTopAdsDatePickerActivity<P> extends BaseToolbarActivit
      *
      * @param data uri data dari bundle intent
      */
-    protected void setupURIPass(Uri data){}
+    protected void setupURIPass(Uri data) {
+    }
 
     /**
      * Kalalu memang ada bundle data dari intent, mau diapain?
      *
      * @param extras bundle extras dari intent
      */
-    protected void setupBundlePass(Bundle extras){}
+    protected void setupBundlePass(Bundle extras) {
+    }
 
     /**
      * Initial presenter, sesuai dengan Type param class
      */
-    protected void initialPresenter(){}
+    protected void initialPresenter() {
+    }
 
     /**
      * Layout id untuk si activity
      *
      * @return Res layout id
      */
-    protected int getLayoutId(){ return 0; }
+    protected int getLayoutId() {
+        return 0;
+    }
 
     /**
      * initial wiew atau widget
      */
-    protected void initView(){}
+    protected void initView() {
+    }
 
     /**
      * view / widgetnya mau diapain?
      */
-    protected void setViewListener(){}
+    protected void setViewListener() {
+    }
 
     /**
      * initail variabel di activity
      */
-    protected void initVar(){}
+    protected void initVar() {
+    }
 
     /**
      * variable nya mau diapain?
      */
-    protected void setActionVar(){}
+    protected void setActionVar() {
+    }
 }
