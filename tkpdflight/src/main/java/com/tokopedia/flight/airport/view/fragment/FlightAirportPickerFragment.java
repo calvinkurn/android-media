@@ -14,6 +14,8 @@ import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenter;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerView;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 /**
@@ -23,6 +25,8 @@ import javax.inject.Inject;
 public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB> implements FlightAirportPickerView{
 
     private static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
+
+    private static final long DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(0);
 
     @Inject
     FlightAirportPickerPresenter flightAirportPickerPresenter;
@@ -74,6 +78,11 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     public void onDestroy() {
         super.onDestroy();
         flightAirportPickerPresenter.detachView();
+    }
+
+    @Override
+    protected long getDelayTextChanged() {
+        return DELAY_TEXT_CHANGED;
     }
 
     @Override
