@@ -28,7 +28,6 @@ import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.keyword.view.adapter.TopAdsPagerAdapter;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordListFragment;
 import com.tokopedia.topads.keyword.view.listener.AdListMenuListener;
-import com.tokopedia.topads.keyword.view.listener.KeywordListListener;
 
 import java.util.ArrayList;
 
@@ -37,7 +36,7 @@ import java.util.ArrayList;
  */
 
 public class TopAdsKeywordListActivity extends BaseTabActivity implements
-        HasComponent<AppComponent>, SearchView.OnQueryTextListener, KeywordListListener.Listener,
+        HasComponent<AppComponent>,
         TopAdsAdListFragment.OnAdListFragmentListener, TopAdsKeywordListFragment.GroupTopAdsListener {
 
     private static final String TAG = TopAdsKeywordListActivity.class.getName();
@@ -47,7 +46,6 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
     boolean isShowingShowCase = false;
     private ShowCaseDialog showCaseDialog;
     private SearchView searchView;
-    private KeywordListListener keywordListListener;
     private MenuItem searchItem;
     private int totalGroupAd;
     private MenuItem filter;
@@ -61,10 +59,7 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
-        keywordListListener = new KeywordListListener(tabLayout, this);
-        viewPager.addOnPageChangeListener(keywordListListener);
-        DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
-        tabLayout.setOnTabSelectedListener(tabListener);
+        tabLayout.addOnTabSelectedListener(new DatePickerTabListener(viewPager));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_keyword_title));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_keyword_title_negative));
     }
@@ -96,49 +91,7 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
-        getMenuInflater().inflate(R.menu.menu_keyword_top_ads_list, menu);
-        filter = menu.findItem(R.id.menu_filter);
-        searchItem = menu.findItem(R.id.menu_search);
-        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                keywordListListener.add(viewPager.getCurrentItem());
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                keywordListListener.remove(viewPager.getCurrentItem());
-                return true;
-            }
-        });
-        searchView = (SearchView) searchItem.getActionView();
-        searchView.setOnQueryTextListener(this);
-        keywordListListener.attachSearchView(searchView);
-
-        validateMenuItem();
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    public void validateMenuItem() {
-        TopAdsKeywordListFragment currentFragment = (TopAdsKeywordListFragment) getCurrentFragment();
-        if (currentFragment != null && currentFragment.hasDataFromServer()) {
-            filter.setVisible(true);
-            searchItem.setVisible(true);
-            searchView.setVisibility(View.VISIBLE);
-        } else {
-            filter.setVisible(false);
-            searchItem.setVisible(false);
-            searchView.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        if (getTopAdsBaseKeywordListFragment() != null) {
-            getTopAdsBaseKeywordListFragment().onSearch(query);
-        }
+        getMenuInflater().inflate(R.menu.menu_top_ads_list, menu);
         return true;
     }
 
@@ -153,46 +106,17 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
-        if (getTopAdsBaseKeywordListFragment() != null) {
-            if (TextUtils.isEmpty(newText)) {
-                onQueryTextSubmit(null);
-            }
-        }
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if (item.getItemId() == R.id.menu_filter) {
+        } else if (item.getItemId() == R.id.menu_add) {
             if (getTopAdsBaseKeywordListFragment() != null) {
-                getTopAdsBaseKeywordListFragment().goToFilter();
+                getTopAdsBaseKeywordListFragment().onCreateAd();
             }
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void removeListener() {
-        searchView.setOnQueryTextListener(null);
-        searchView.setQuery("", false);
-        searchView.clearFocus();
-        searchView.setIconified(true);
-        searchItem.collapseActionView();
-    }
-
-    @Override
-    public void addListener() {
-        searchView.setOnQueryTextListener(this);
-    }
-
-    @Override
-    public void expand() {
-        searchItem.expandActionView();
     }
 
     @Override

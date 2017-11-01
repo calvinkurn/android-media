@@ -22,8 +22,6 @@ import android.view.View;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
-import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.ItemType;
@@ -68,7 +66,7 @@ public abstract class TopAdsAdListFragment<P extends
         void startShowCase();
     }
 
-    private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
+    protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
     protected static final String EXTRA_STATUS = "EXTRA_STATUS";
     protected static final String EXTRA_KEYWORD = "EXTRA_KEYWORD";
 
@@ -78,7 +76,7 @@ public abstract class TopAdsAdListFragment<P extends
 
     private AppBarLayout appBarLayout;
     private DateLabelView dateLabelView;
-    private SearchInputView searchInputView;
+    protected SearchInputView searchInputView;
     private BottomActionView buttonActionView;
     private MenuItem menuAdd;
 
@@ -157,12 +155,6 @@ public abstract class TopAdsAdListFragment<P extends
         searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         searchInputView.setListener(this);
         buttonActionView = (BottomActionView) view.findViewById(R.id.bottom_action_view);
-        buttonActionView.setButton1OnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToFilter();
-            }
-        });
         appBarBehaviour = new AppBarLayout.Behavior();
     }
 
@@ -235,7 +227,8 @@ public abstract class TopAdsAdListFragment<P extends
     }
 
     private void showOption(boolean show) {
-        buttonActionView.setVisibility(show ? View.VISIBLE : View.GONE);
+        if(buttonActionView != null)
+            buttonActionView.setVisibility(show ? View.VISIBLE : View.GONE);
         showSearchView(show);
         if(menuAdd != null){
             menuAdd.setVisible(show);
@@ -265,20 +258,11 @@ public abstract class TopAdsAdListFragment<P extends
     }
 
 
-    public boolean onQueryTextChange(String newText) {
-        if (TextUtils.isEmpty(newText)) {
-            onQueryTextSubmit(newText);
-        }
-        return true;
-    }
-
-
     public boolean onQueryTextSubmit(String query) {
         onSearch(query);
         return true;
     }
 
-    @Override
     public void onSearch(String keyword) {
         this.keyword = keyword;
         resetPageAndSearch();
@@ -369,9 +353,8 @@ public abstract class TopAdsAdListFragment<P extends
     }
 
     public View getFab() {
-        if(menuAdd != null){
-            return menuAdd.getActionView();
-        }
+        if(menuAdd != null)
+            menuAdd.getActionView();
         return null;
     }
 

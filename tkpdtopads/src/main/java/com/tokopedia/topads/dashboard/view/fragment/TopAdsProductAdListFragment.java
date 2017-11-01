@@ -76,7 +76,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
         }
     }
 
-    @Override
+
     public void goToFilter() {
         Intent intent = new Intent(getActivity(), TopAdsFilterProductActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
