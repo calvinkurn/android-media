@@ -44,12 +44,12 @@ public class FlightSearchActivity extends BaseSimpleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         passDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
-        String departureCode = passDataViewModel.getDepartureAirport().getCityCode();
+        String departureCode = passDataViewModel.getDepartureAirport().getAirportId();
         if (TextUtils.isEmpty(departureCode)) {
             departureCode = passDataViewModel.getDepartureAirport().getCityCode();
         }
         departureLocation = passDataViewModel.getDepartureAirport().getCityName() + " (" + departureCode + ")";
-        String arrivalCode = passDataViewModel.getArrivalAirport().getCityCode();
+        String arrivalCode = passDataViewModel.getArrivalAirport().getAirportId();
         if (TextUtils.isEmpty(arrivalCode)) {
             arrivalCode = passDataViewModel.getArrivalAirport().getCityCode();
         }

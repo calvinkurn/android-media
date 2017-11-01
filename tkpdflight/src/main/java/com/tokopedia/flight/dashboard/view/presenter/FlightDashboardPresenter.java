@@ -200,7 +200,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         if (TextUtils.isEmpty(code)){
             code = departureAirport.getCityCode();
         }
-        flightDashboardViewModel.setDepartureAirportFmt(departureAirport.getCityName() + "(" + code + ")");
+        flightDashboardViewModel.setDepartureAirportFmt(departureAirport.getCityName() + " (" + code + ")");
         getView().setDashBoardViewModel(flightDashboardViewModel);
         renderUi();
     }
@@ -213,7 +213,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         if (TextUtils.isEmpty(code)){
             code = arrivalAirport.getCityCode();
         }
-        flightDashboardViewModel.setArrivalAirportFmt(arrivalAirport.getCityName() + "(" + code + ")");
+        flightDashboardViewModel.setArrivalAirportFmt(arrivalAirport.getCityName() + " (" + code + ")");
         getView().setDashBoardViewModel(flightDashboardViewModel);
         renderUi();
     }
