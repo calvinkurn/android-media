@@ -1,7 +1,6 @@
 package com.tokopedia.core.drawer2.view.databinder;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +18,9 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
 import butterknife.BindView;
@@ -42,11 +41,11 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
         void onGoToTopPoints(String topPointsUrl);
 
-        void onGoToTopCash(String topCashUrl);
-
-        void onGoToTopCashWithOtp(String topCashUrl);
-
         void onGoToProfileCompletion();
+
+        void onWalletBalanceClicked(String redirectUrlBalance, String appLinkBalance);
+
+        void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -194,11 +193,11 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
         holder.name.setText(data.getDrawerProfile().getUserName());
         holder.percentText.setText(String.format("%s%%", String.valueOf(data.getProfileCompletion())));
-        if(data.getProfileCompletion() == 100) {
+        if (data.getProfileCompletion() == 100) {
             holder.layoutProgress.setVisibility(View.GONE);
             holder.verifiedIcon.setVisibility(View.VISIBLE);
             holder.verifiedText.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.progressBar.setProgress(data.getProfileCompletion());
             holder.layoutProgress.setVisibility(View.VISIBLE);
             holder.verifiedIcon.setVisibility(View.GONE);
@@ -231,13 +230,20 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.tokoCashLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (data.getDrawerTokoCash() != null
-                        && data.getDrawerTokoCash().getRedirectUrl() != null
-                        && !data.getDrawerTokoCash().getRedirectUrl().equals("")) {
-                    if (isRegistered(data.getDrawerTokoCash()))
-                        listener.onGoToTopCashWithOtp(data.getDrawerTokoCash().getRedirectUrl());
-                    else
-                        listener.onGoToTopCash(data.getDrawerTokoCash().getDrawerTokoCashAction().getRedirectUrl());
+                if (data.getDrawerTokoCash() != null) {
+                    if (isRegistered(data.getDrawerTokoCash())) {
+                        // listener.onGoToTopCashWithOtp(data.getDrawerTokoCash().getRedirectUrl());
+                        listener.onWalletBalanceClicked(
+                                data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance(),
+                                data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkBalance()
+                        );
+                    } else {
+                        listener.onWalletActionButtonClicked(
+                                data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlActionButton(),
+                                data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkActionButton()
+                        );
+                        // listener.onGoToTopCash(data.getDrawerTokoCash().getDrawerTokoCashAction().getRedirectUrl());
+                    }
                 }
 
             }
@@ -268,14 +274,15 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         if (isTokoCashDisabled(data.getDrawerTokoCash())) {
             holder.loadingTokoCash.setVisibility(View.VISIBLE);
         } else {
-            if (isRegistered(data.getDrawerTokoCash())) {
+            if (data.getDrawerTokoCash().getDrawerWalletAction().getTypeAction()
+                    == DrawerWalletAction.TYPE_ACTION_BALANCE) {
                 showTokoCashBalanceView(holder);
-                holder.tokoCash.setText(data.getDrawerTokoCash().getBalance());
-                holder.tokoCashLabel.setText(data.getDrawerTokoCash().getText());
+                holder.tokoCash.setText(data.getDrawerTokoCash().getDrawerWalletAction().getBalance());
+                holder.tokoCashLabel.setText(data.getDrawerTokoCash().getDrawerWalletAction().getLabelTitle());
             } else {
                 showTokoCashActivateView(holder);
                 holder.tokoCashActivationButton.setText(data.getDrawerTokoCash()
-                        .getDrawerTokoCashAction().getText());
+                        .getDrawerWalletAction().getLabelActionButton());
             }
             holder.loadingTokoCash.setVisibility(View.GONE);
         }
@@ -294,12 +301,14 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     }
 
     private boolean isRegistered(DrawerTokoCash drawerTokoCash) {
-        return drawerTokoCash.getLink() == 1;
+        return drawerTokoCash.getDrawerWalletAction().getTypeAction()
+                == DrawerWalletAction.TYPE_ACTION_BALANCE;
     }
 
     private boolean isTokoCashDisabled(DrawerTokoCash drawerTokoCash) {
-        return (drawerTokoCash == null) ||
-                (drawerTokoCash.getText() == null || drawerTokoCash.getText().equals(""));
+        return drawerTokoCash == null || drawerTokoCash.getDrawerWalletAction() == null
+                || drawerTokoCash.getDrawerWalletAction().getLabelTitle() == null
+                || drawerTokoCash.getDrawerWalletAction().getLabelTitle().equals("");
     }
 
     private void setTopPoints(ViewHolder holder) {

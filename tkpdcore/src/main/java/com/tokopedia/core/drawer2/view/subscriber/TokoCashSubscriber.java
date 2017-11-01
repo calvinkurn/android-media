@@ -1,17 +1,15 @@
 package com.tokopedia.core.drawer2.view.subscriber;
 
-import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
+import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
-
-import java.net.UnknownHostException;
 
 import rx.Subscriber;
 
@@ -38,7 +36,7 @@ public class TokoCashSubscriber extends Subscriber<TokoCashModel> {
 
     @Override
     public void onNext(TokoCashModel tokoCashModel) {
-        if(tokoCashModel.isSuccess())
+        if (tokoCashModel.isSuccess())
             viewListener.onGetTokoCash(
                     convertToViewModel(
                             tokoCashModel.getTokoCashData()));
@@ -49,12 +47,46 @@ public class TokoCashSubscriber extends Subscriber<TokoCashModel> {
 
     private DrawerTokoCash convertToViewModel(TokoCashData tokoCashData) {
         DrawerTokoCash drawerTokoCash = new DrawerTokoCash();
-        drawerTokoCash.setBalance(tokoCashData.getBalance());
-        drawerTokoCash.setLink(tokoCashData.getLink());
-        drawerTokoCash.setRedirectUrl(tokoCashData.getRedirectUrl());
-        drawerTokoCash.setText(tokoCashData.getText());
         drawerTokoCash.setDrawerTokoCashAction(convertToActionViewModel(tokoCashData.getAction()));
+        drawerTokoCash.setHomeHeaderWalletAction(convertToActionHomeHeader(tokoCashData));
+        drawerTokoCash.setDrawerWalletAction(convertToActionDrawer(tokoCashData));
         return drawerTokoCash;
+    }
+
+    private HomeHeaderWalletAction convertToActionHomeHeader(TokoCashData tokoCashData) {
+        HomeHeaderWalletAction data = new HomeHeaderWalletAction();
+        data.setLabelTitle(tokoCashData.getText());
+        data.setAppLinkBalance(tokoCashData.getmAppLinks() == null ? "" : tokoCashData.getmAppLinks());
+        data.setRedirectUrlBalance(tokoCashData.getRedirectUrl() == null ? "" : tokoCashData.getRedirectUrl());
+        data.setBalance(tokoCashData.getBalance());
+        data.setLabelActionButton(tokoCashData.getAction().getmText());
+        data.setVisibleActionButton(tokoCashData.getAction().getmVisibility() != null
+                && tokoCashData.getAction().getmVisibility().equals("1"));
+        data.setTypeAction(tokoCashData.getLink() == 1 ? HomeHeaderWalletAction.TYPE_ACTION_TOP_UP
+                : HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION);
+        data.setAppLinkActionButton(tokoCashData.getAction().getmAppLinks() == null ? ""
+                : tokoCashData.getAction().getmAppLinks());
+        data.setRedirectUrlActionButton(tokoCashData.getAction().getRedirectUrl() == null ? ""
+                : tokoCashData.getAction().getRedirectUrl());
+        return data;
+    }
+
+    private DrawerWalletAction convertToActionDrawer(TokoCashData tokoCashData) {
+        DrawerWalletAction data = new DrawerWalletAction();
+        data.setLabelTitle(tokoCashData.getText());
+        data.setAppLinkBalance(tokoCashData.getmAppLinks() == null ? "" : tokoCashData.getmAppLinks());
+        data.setRedirectUrlBalance(tokoCashData.getRedirectUrl() == null ? "" : tokoCashData.getRedirectUrl());
+        data.setBalance(tokoCashData.getBalance());
+        data.setLabelActionButton(tokoCashData.getAction().getmText());
+        data.setVisibleActionButton(tokoCashData.getAction().getmVisibility() != null
+                && tokoCashData.getAction().getmVisibility().equals("1"));
+        data.setTypeAction(tokoCashData.getLink() == 1 ? DrawerWalletAction.TYPE_ACTION_BALANCE
+                : DrawerWalletAction.TYPE_ACTION_ACTIVATION);
+        data.setAppLinkActionButton(tokoCashData.getAction().getmAppLinks() == null ? ""
+                : tokoCashData.getAction().getmAppLinks());
+        data.setRedirectUrlActionButton(tokoCashData.getAction().getRedirectUrl() == null ? ""
+                : tokoCashData.getAction().getRedirectUrl());
+        return data;
     }
 
     private DrawerTokoCashAction convertToActionViewModel(Action action) {

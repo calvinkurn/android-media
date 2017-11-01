@@ -41,6 +41,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.DateLabelUtils;
@@ -73,6 +74,9 @@ import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.datepicker.DatePickerUtil;
@@ -107,9 +111,9 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
  */
 
 public abstract class ConsumerRouterApplication extends MainApplication implements
-        TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
+        TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
-        TokoCashRouter {
+        TokoCashRouter, IWalletRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -582,6 +586,64 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
         activity.startActivity(intent);
     }
+
+    @Override
+    public void navigateAppLinkWallet(Context context,
+                                      String appLinkScheme,
+                                      String alternateRedirectUrl,
+                                      Bundle bundlePass) {
+        context.startActivity(getIntentAppLinkWallet(context, appLinkScheme, alternateRedirectUrl));
+    }
+
+
+    @Override
+    public void navigateAppLinkWallet(Activity activity,
+                                      int requestCode,
+                                      String appLinkScheme,
+                                      String alternateRedirectUrl,
+                                      Bundle bundlePass) {
+        activity.startActivityForResult(
+                getIntentAppLinkWallet(activity, appLinkScheme, alternateRedirectUrl), requestCode
+        );
+    }
+
+    @Override
+    public void navigateAppLinkWallet(android.app.Fragment fragment,
+                                      int requestCode,
+                                      String appLinkScheme,
+                                      String alternateRedirectUrl,
+                                      Bundle bundlePass) {
+        fragment.startActivityForResult(
+                getIntentAppLinkWallet(
+                        fragment.getActivity(), appLinkScheme, alternateRedirectUrl
+                ), requestCode
+        );
+    }
+
+    @Override
+    public void navigateAppLinkWallet(Fragment fragmentSupport,
+                                      int requestCode,
+                                      String appLinkScheme,
+                                      String alternateRedirectUrl,
+                                      Bundle bundlePass) {
+        fragmentSupport.startActivityForResult(
+                getIntentAppLinkWallet(fragmentSupport.getActivity(),
+                        appLinkScheme, alternateRedirectUrl
+                ), requestCode
+        );
+    }
+
+    private Intent getIntentAppLinkWallet(Context context, String appLinkScheme,
+                                          String alternateRedirectUrl) {
+
+        return appLinkScheme == null || appLinkScheme.isEmpty() ?
+                DigitalWebActivity.newInstance(context, alternateRedirectUrl)
+                : isSupportedDelegateDeepLink(appLinkScheme)
+                ? new Intent(context, DeeplinkHandlerActivity.class).setData(Uri.parse(appLinkScheme))
+                : DigitalWebActivity.newInstance(context, appLinkScheme);
+    }
+
+}
 
     @Override
     public Observable<GMFeaturedProductDomainModel> getFeaturedProduct() {

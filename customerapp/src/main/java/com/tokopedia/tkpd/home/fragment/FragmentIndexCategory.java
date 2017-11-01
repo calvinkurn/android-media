@@ -45,6 +45,7 @@ import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
@@ -64,6 +65,8 @@ import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
@@ -207,6 +210,18 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onShowTokoCashBottomSheet() {
         bottomSheetDialogTokoCash.show();
+    }
+
+    @Override
+    public void actionAppLinkWalletHeader(String redirectUrl, String appLinkScheme) {
+        WalletRouterUtil.navigateWallet(
+                getActivity().getApplication(),
+                this,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkScheme,
+                redirectUrl,
+                new Bundle()
+        );
     }
 
     private class ViewHolder {
@@ -588,12 +603,16 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         UnifyTracking.eventClickCategoriesIcon(itemModel.getName());
 
         if (itemModel.getCategoryId().equalsIgnoreCase("103") && tokoCashData != null
-                && tokoCashData.getLink() != 1) {
-            String urlActivation = getTokoCashActionRedirectUrl(tokoCashData
-                    .getDrawerTokoCashAction());
-            String seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(urlActivation)),
-                    getContext());
-            openActivationTokoCashWebView(seamlessUrl);
+                && tokoCashData.getDrawerWalletAction().getTypeAction()
+                != DrawerWalletAction.TYPE_ACTION_BALANCE) {
+            WalletRouterUtil.navigateWallet(
+                    getActivity().getApplication(),
+                    this,
+                    IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                    tokoCashData.getDrawerWalletAction().getAppLinkActionButton(),
+                    tokoCashData.getDrawerWalletAction().getRedirectUrlActionButton(),
+                    new Bundle()
+            );
         } else {
             DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
             if (deepLinkDelegate.supportsUri(itemModel.getAppLinks())) {
@@ -789,7 +808,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     .setBody(String.format(getString(R.string.toko_cash_pending_body),
                             cashBackData.getAmountText()))
                     .setImg(R.drawable.group_2)
-                    .setUrlButton(tokoCashData.getRedirectUrl(),
+                    .setUrlButton(tokoCashData.getDrawerWalletAction().getRedirectUrlActionButton(),
                             getString(R.string.toko_cash_pending_proceed_button))
                     .build());
             holder.tokoCashHeaderView.showPendingTokoCash(cashBackData.getAmountText());

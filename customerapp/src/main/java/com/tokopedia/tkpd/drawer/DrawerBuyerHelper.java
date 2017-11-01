@@ -31,11 +31,12 @@ import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.Drawer;
 import com.tokopedia.core.util.GlobalConfig;
@@ -564,6 +565,30 @@ public class DrawerBuyerHelper extends DrawerHelper
     public void onGoToProfileCompletion() {
         Intent intent = new Intent(context, ProfileCompletionActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onWalletBalanceClicked(String redirectUrlBalance, String appLinkBalance) {
+        WalletRouterUtil.navigateWallet(
+                context.getApplication(),
+                context,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkBalance,
+                redirectUrlBalance,
+                new Bundle()
+        );
+    }
+
+    @Override
+    public void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton) {
+        WalletRouterUtil.navigateWallet(
+                context.getApplication(),
+                context,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkActionButton,
+                redirectUrlActionButton,
+                new Bundle()
+        );
     }
 
     private void onGoToCreateShop() {
