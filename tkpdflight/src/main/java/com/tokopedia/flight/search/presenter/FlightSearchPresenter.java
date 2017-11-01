@@ -67,6 +67,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     }
 
     public void onSortItemSelected(final int itemId) {
+        if (!isViewAttached()) return;
         getView().showSortRouteLoading();
         RequestParams requestParams = getView().getSearchFlightRequestParam();
         requestParams.putAll(flightSearchWithSortUseCase.createRequestParam(itemId).getParameters());
