@@ -31,10 +31,12 @@ import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.DistrictRecommendationActivity;
 import com.tokopedia.core.manage.people.address.fragment.adapter.ProvinceAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.SubDistrictAdapter;
 import com.tokopedia.core.manage.people.address.listener.AddAddressFragmentView;
+import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenter;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenterImpl;
@@ -72,6 +74,12 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @BindView(R2.id.address)
     EditText addressEditText;
+
+    @BindView(R2.id.district_layout)
+    TextInputLayout districtLayout;
+
+    @BindView(R2.id.district)
+    EditText districtEditText;
 
     @BindView(R2.id.post_code_layout)
     TextInputLayout postCodeLayout;
@@ -189,13 +197,13 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             this.mProvinces = savedState.getParcelableArrayList(ARG_STATE_PROVINCE);
             this.mCities = savedState.getParcelableArrayList(ARG_STATE_CITY);
             this.mDistricts = savedState.getParcelableArrayList(ARG_STATE_DISTRICT);
-            if (this.mProvinces != null && this.mProvinces.size() > 0){
+            if (this.mProvinces != null && this.mProvinces.size() > 0) {
                 setProvince(this.mProvinces);
             }
-            if (this.mCities != null && this.mCities.size() > 0){
+            if (this.mCities != null && this.mCities.size() > 0) {
                 setCity(this.mCities);
             }
-            if (this.mDistricts != null && this.mDistricts.size() > 0){
+            if (this.mDistricts != null && this.mDistricts.size() > 0) {
                 setDistrict(this.mDistricts);
             }
         }
@@ -285,6 +293,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
         locationEditText.setOnClickListener(onChooseLocation());
 
+        districtEditText.setOnClickListener(onSearchAddress());
+
         spinnerProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
@@ -346,6 +356,16 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         };
     }
 
+    private View.OnClickListener onSearchAddress() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(DistrictRecommendationActivity.createInstance(getActivity()),
+                        ManageAddressConstant.REQUEST_CODE_SEARCH_ADDRESS);
+            }
+        };
+    }
+
     private void openGeoLocation() {
         GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
 
@@ -371,21 +391,43 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
-            removeError();
-            Bundle bundle = data.getExtras();
-            LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
-            String generatedAddress = locationEditText.getText().toString();
-            if (locationPass != null) {
-                presenter.setLatLng(locationPass.getLatitude(), locationPass.getLongitude());
-                if (locationPass.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
-                    generatedAddress = presenter.getLatLng().latitude + ", " + presenter.getLatLng().longitude;
-                } else {
-                    generatedAddress = locationPass.getGeneratedAddress();
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE) {
+                removeError();
+                Bundle bundle = data.getExtras();
+                LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+                String generatedAddress = locationEditText.getText().toString();
+                if (locationPass != null) {
+                    presenter.setLatLng(locationPass.getLatitude(), locationPass.getLongitude());
+                    if (locationPass.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
+                        generatedAddress = presenter.getLatLng().latitude + ", " + presenter.getLatLng().longitude;
+                    } else {
+                        generatedAddress = locationPass.getGeneratedAddress();
+                    }
                 }
+                locationEditText.setText(generatedAddress);
+            } else if (requestCode == REQUEST_CODE_SEARCH_ADDRESS) {
+                handleAddressIntentData(data);
+                handleZipCodesIntentData(data);
             }
-            locationEditText.setText(generatedAddress);
         }
+    }
+
+    private void handleZipCodesIntentData(Intent data) {
+        ArrayList<String> zipCodes = data.getStringArrayListExtra(
+                DistrictRecomendationFragmentView.Constant.INTENT_DATA_ZIP_CODES);
+        presenter.setZipCodesOption(zipCodes);
+    }
+
+    private void handleAddressIntentData(Intent data) {
+        String province = data.getStringExtra(
+                DistrictRecomendationFragmentView.Constant.INTENT_DATA_PROVINCE);
+        String city = data.getStringExtra(
+                DistrictRecomendationFragmentView.Constant.INTENT_DATA_CITY);
+        String district = data.getStringExtra(
+                DistrictRecomendationFragmentView.Constant.INTENT_DATA_DICTRICT);
+
+        districtEditText.setText(province + ", " + city + ", " + district);
     }
 
     @Override

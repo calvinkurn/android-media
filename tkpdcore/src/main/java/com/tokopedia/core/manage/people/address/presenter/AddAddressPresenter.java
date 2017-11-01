@@ -4,6 +4,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.Province;
 
+import java.util.ArrayList;
+
 /**
  * Created by nisie on 9/6/16.
  */
@@ -25,4 +27,8 @@ public interface AddAddressPresenter {
     void getListDistrict(City city);
 
     void onDestroyView();
+
+    ArrayList<String> getZipCodesOption();
+
+    void setZipCodesOption(ArrayList<String> zipCodes);
 }
