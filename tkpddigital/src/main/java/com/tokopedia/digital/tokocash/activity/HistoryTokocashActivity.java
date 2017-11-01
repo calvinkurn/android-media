@@ -59,12 +59,13 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
 
     private static final int SELECTION_TYPE_PERIOD_DATE = 0;
     private static final int EXTRA_INTENT_DATE_PICKER = 50;
-    private static final String FORMAT_DATE = "dd+MMMM+yyyy";
+    private static final String FORMAT_DATE = "dd+MMM+yyyy";
     private static final String ALL_TRANSACTION_TYPE = "all";
     private static final String EXTRA_START_DATE = "EXTRA_START_DATE";
     private static final String EXTRA_END_DATE = "EXTRA_END_DATE";
     private static final String EXTRA_SELECTION_PERIOD = "EXTRA_SELECTION_PERIOD";
     private static final String EXTRA_SELECTION_TYPE = "EXTRA_SELECTION_TYPE";
+    private static final Locale LOCALE = new Locale("in", "ID");
 
     @BindView(R2.id.date_label_view)
     LinearLayout layoutDate;
@@ -301,8 +302,8 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
                                         startDate, endDate);
                 tvDate.setText(getFormattedDatePicker);
 
-                startDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(startDate);
-                endDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(endDate);
+                startDateFormatted = new SimpleDateFormat(FORMAT_DATE, LOCALE).format(startDate);
+                endDateFormatted = new SimpleDateFormat(FORMAT_DATE, LOCALE).format(endDate);
                 presenter.getInitHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
                 endlessRecyclerviewListener.resetState();
             }
