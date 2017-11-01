@@ -131,7 +131,7 @@ public class FlightSearchStatisticModel implements Parcelable {
                 }
             }
 
-            // populate total transit and minprice per each transit
+            // populate distinct refundable
             boolean refundable = flightSearchViewModel.isRefundable();
             RefundableEnum refundableTypeDef = refundable? RefundableEnum.REFUNDABLE : RefundableEnum.NOT_REFUNDABLE;
 
