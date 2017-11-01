@@ -1,16 +1,12 @@
 package com.tokopedia.flight.search.presenter;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.flight.airline.domain.FlightAirlineUseCase;
-import com.tokopedia.flight.search.data.cloud.model.Route;
-import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
+import com.tokopedia.flight.search.domain.FlightSearchWithSortUseCase;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+import com.tokopedia.usecase.RequestParams;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,10 +20,13 @@ import rx.Subscriber;
 public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView> {
 
     private final FlightSearchUseCase flightSearchUseCase;
+    private FlightSearchWithSortUseCase flightSearchWithSortUseCase;
 
     @Inject
-    public FlightSearchPresenter(FlightSearchUseCase flightSearchUseCase) {
+    public FlightSearchPresenter(FlightSearchUseCase flightSearchUseCase,
+                                 FlightSearchWithSortUseCase flightSearchWithSortUseCase) {
         this.flightSearchUseCase = flightSearchUseCase;
+        this.flightSearchWithSortUseCase = flightSearchWithSortUseCase;
     }
 
     //TODO params
@@ -65,5 +64,35 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                 getView().onSearchLoaded(flightSearchViewModels, flightSearchViewModels.size());
             }
         };
+    }
+
+    public void onSortItemSelected(final int itemId) {
+        getView().showSortRouteLoading();
+        RequestParams requestParams = getView().getSearchFlightRequestParam();
+        requestParams.putAll(flightSearchWithSortUseCase.createRequestParam(itemId).getParameters());
+        flightSearchWithSortUseCase.execute(requestParams, new Subscriber<List<FlightSearchViewModel>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (isViewAttached()) {
+                    getView().onLoadSearchError(e);
+                    getView().hideSortRouteLoading();
+                }
+            }
+
+            @Override
+            public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
+                if (isViewAttached()) {
+                    getView().hideSortRouteLoading();
+                    getView().onSearchLoaded(flightSearchViewModels, flightSearchViewModels.size());
+                    getView().setSelectedSortItem(itemId);
+                }
+            }
+        });
     }
 }

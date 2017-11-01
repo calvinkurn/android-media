@@ -1,22 +1,34 @@
 package com.tokopedia.flight.search.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
+import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
+import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
+import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.search.adapter.FlightSearchAdapter;
+import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
+import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
+import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -25,6 +37,13 @@ import javax.inject.Inject;
  */
 
 public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel> implements FlightSearchView {
+
+    private static final int REQUEST_CODE_SEARCH_FILTER = 1;
+
+    BottomActionView filterAndSortBottomAction;
+
+    //TODO changeSelected with some Param
+    int selected = FlightSortOption.CHEAPEST;
 
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
@@ -45,7 +64,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     protected final void initInjector() {
         DaggerFlightSearchComponent.builder()
-                .flightComponent(((FlightModuleRouter)getActivity().getApplication()).getFlightComponent() )
+                .flightComponent(((FlightModuleRouter) getActivity().getApplication()).getFlightComponent())
                 .build()
                 .inject(this);
         flightSearchPresenter.attachView(this);
@@ -93,5 +112,76 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
         getActivity().startActivity(FlightDetailActivity.createIntent(getActivity(), flightSearchViewModel));
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        filterAndSortBottomAction = (BottomActionView) view.findViewById(R.id.bottom_action_filter_sort);
+        filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
+                        .setMode(BottomSheetBuilder.MODE_LIST)
+                        .addTitleItem(getString(R.string.flight_search_sort_title));
+
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), null, selected == FlightSortOption.EARLIEST_ARRIVAL);
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), null, selected == FlightSortOption.LATEST_DEPARTURE);
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration), null, selected == FlightSortOption.SHORTEST_DURATION);
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration), null, selected == FlightSortOption.LONGEST_DURATION);
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival), null, selected == FlightSortOption.EARLIEST_ARRIVAL);
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), null, selected == FlightSortOption.LATEST_ARRIVAL);
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), null, selected == FlightSortOption.CHEAPEST);
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), null, selected == FlightSortOption.MOST_EXPENSIVE);
+
+                BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
+                        .setItemClickListener(new BottomSheetItemClickListener() {
+                            @Override
+                            public void onBottomSheetItemClick(MenuItem item) {
+                                flightSearchPresenter.onSortItemSelected(item.getItemId());
+                            }
+                        })
+                        .createDialog();
+                bottomSheetDialog.show();
+            }
+        });
+
+        filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity()), REQUEST_CODE_SEARCH_FILTER);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_SEARCH_FILTER:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public RequestParams getSearchFlightRequestParam() {
+        return FlightSearchUseCase.generateRequestParams(false);
+    }
+
+    @Override
+    public void setSelectedSortItem(int itemId) {
+        selected = itemId;
+    }
+
+    @Override
+    public void showSortRouteLoading() {
+        showLoading();
+    }
+
+    @Override
+    public void hideSortRouteLoading() {
+        hideLoading();
     }
 }
