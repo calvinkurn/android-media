@@ -41,4 +41,5 @@ public interface ProductReviewView {
 
     void showNetworkErrorSnackbar();
 
+    String getShopId();
 }

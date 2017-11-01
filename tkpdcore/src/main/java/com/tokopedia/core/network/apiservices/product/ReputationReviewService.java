@@ -17,7 +17,7 @@ public class ReputationReviewService extends BaseService<ReputationReviewApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL;
+        return TkpdBaseURL.BASE_DOMAIN;
     }
 
     @Override

@@ -42,7 +42,6 @@ import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewM
 import com.tokopedia.core.product.model.productdetail.mosthelpful.MostHelpfulReviewResponse;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
-import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoWidgetResponse;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -880,9 +879,10 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     @Override
     public void getMostHelpfulReview(@NonNull Context context,
                                      @NonNull String productId,
+                                     @NonNull String shopId,
                                      final @NonNull MostHelpfulListener listener) {
         Observable<Response<MostHelpfulReviewResponse>> observable = reputationReviewService
-                .getApi().getMostHelpfulReview(productId);
+                .getApi().getMostHelpfulReview(productId, shopId);
 
         Subscriber<List<Review>> subscriber = new Subscriber<List<Review>>() {
             @Override
