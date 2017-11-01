@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
 import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
 import com.tokopedia.flight.search.data.db.AbsFlightSearchDataListDBSource;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
+import com.tokopedia.flight.search.util.FlightSearchParamUtil;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -23,11 +25,15 @@ public class AbsFlightSearchDataListSource extends DataListSource<FlightSearchDa
         super(dataListCacheManager, absFlightSearchDataListDBSource, dataListCloudManager);
     }
 
-    public Observable<List<FlightSearchSingleRouteDB>> getDataList() {
+    public Observable<List<FlightSearchSingleRouteDB>> getDataList(RequestParams requestParams) {
 //        final HashMap<String, Object> map = generateGetParam(queryText);
 //        return getDataList(map);
         //TODO set query
-        return getDataList(null);
+        if (FlightSearchParamUtil.isFromCache(requestParams)) {
+            return super.getDataList(null);
+        } else {
+            return super.getCacheDataList(null);
+        }
     }
 
     //TODO set query

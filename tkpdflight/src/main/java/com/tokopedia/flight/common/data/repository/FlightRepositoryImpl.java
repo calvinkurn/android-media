@@ -71,9 +71,9 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(RequestParams requestParams) {
         if (FlightSearchParamUtil.isReturning(requestParams)) {
-            return flightSearchReturnDataListSource.getDataList();
+            return flightSearchReturnDataListSource.getDataList(requestParams);
         } else {
-            return flightSearchSingleDataListSource.getDataList();
+            return flightSearchSingleDataListSource.getDataList(requestParams);
         }
     }
 }

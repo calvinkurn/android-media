@@ -58,4 +58,14 @@
     <string name="flight_dashboard_arrival_should_greater_equal_error">Tanggal kedatangan harus lebih besar sama dengan tanggal keberangkatan</string>
     <string name="flight_dashboard_at_least_one_adult_error">Harus ada penumpang dewasa</string>
     <string name="flight_dashboard_fligh_class_is_empty">Jenis Kelas penerbangan tidak boleh kosong</string>
+    <string name="departure_0000_to_0559">00:00 – 05:59</string>
+    <string name="departure_0600_to_1159">06:00 – 11:59</string>
+    <string name="departure_1200_to_1759">12:00 – 17:59</string>
+    <string name="departure_1800_to_2359">18:00 – 23:59</string>
+    <string name="direct">Langsung</string>
+    <string name="one_trasit">1 Transit</string>
+    <string name="two_transit">2 Transit</string>
+    <string name="more_than_2_transit">Lebih dari 2 transit</string>
+    <string name="refundable">Refundable</string>
+    <string name="non_refundable">Non-Refundable</string>
 </resources>

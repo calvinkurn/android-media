@@ -119,18 +119,7 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            interactionListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException("Activity must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onAttach(Activity context) {
-        super.onAttach(context);
+    protected void onAttachActivity(Context context) {
         if (context instanceof OnFragmentInteractionListener) {
             interactionListener = (OnFragmentInteractionListener) context;
         } else {

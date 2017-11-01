@@ -69,25 +69,29 @@ public abstract class DataListSource<T, U> {
                 if (isCacheExpired) {
                     return getRefreshedData(params);
                 } else {
-                    return dataListDBManager.getData(params).flatMap(new Func1<List<U>, Observable<List<U>>>() {
+                    return getCacheDataList(params);
+                }
+            }
+        });
+    }
+
+    public Observable<List<U>> getCacheDataList(final HashMap<String, Object> params) {
+        return dataListDBManager.getData(params).flatMap(new Func1<List<U>, Observable<List<U>>>() {
+            @Override
+            public Observable<List<U>> call(List<U> cacheList) {
+                if (cacheList == null || cacheList.size() == 0) {
+                    return dataListDBManager.isDataAvailable().flatMap(new Func1<Boolean, Observable<List<U>>>() {
                         @Override
-                        public Observable<List<U>> call(List<U> cacheList) {
-                            if (cacheList == null || cacheList.size() == 0) {
-                                return dataListDBManager.isDataAvailable().flatMap(new Func1<Boolean, Observable<List<U>>>() {
-                                    @Override
-                                    public Observable<List<U>> call(Boolean isDataAvalable) {
-                                        if (isDataAvalable) {
-                                            return Observable.just((List<U>) new ArrayList<U>());
-                                        } else {
-                                            return getRefreshedData(params);
-                                        }
-                                    }
-                                });
+                        public Observable<List<U>> call(Boolean isDataAvalable) {
+                            if (isDataAvalable) {
+                                return Observable.just((List<U>) new ArrayList<U>());
                             } else {
-                                return Observable.just(cacheList);
+                                return getRefreshedData(params);
                             }
                         }
                     });
+                } else {
+                    return Observable.just(cacheList);
                 }
             }
         });

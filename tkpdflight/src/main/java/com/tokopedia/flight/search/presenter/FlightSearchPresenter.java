@@ -31,13 +31,13 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     }
 
     //TODO params
-    public void searchDepartureFlight() {
-        flightSearchUseCase.execute(FlightSearchUseCase.generateRequestParams(false),
+    public void searchDepartureFlight(boolean isFromCache) {
+        flightSearchUseCase.execute(FlightSearchUseCase.generateRequestParams(false, isFromCache),
                 getSubscriberSearchFlight());
     }
 
-    public void searchReturningFlight() {
-        flightSearchUseCase.execute(FlightSearchUseCase.generateRequestParams(true),
+    public void searchReturningFlight(boolean isFromCache) {
+        flightSearchUseCase.execute(FlightSearchUseCase.generateRequestParams(true, isFromCache),
                 getSubscriberSearchFlight());
     }
 

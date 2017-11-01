@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
+import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
+import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.search.data.cloud.model.Route;
 import com.tokopedia.flight.search.data.db.model.FlightSearchReturnRouteDB;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
@@ -37,15 +39,12 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
     private int totalNumeric;
     private String beforeTotal;
 
-    private String airline;
     private boolean isRefundable;
 
     private boolean isReturning;
 
     private List<Route> routeList;
-
-    private String airlineName;
-    private String airlineLogo;
+    private List<FlightAirlineDB> airlineDataList;
 
     public FlightSearchViewModel(FlightSearchSingleRouteDB flightSearchSingleRouteDB){
         this.id = flightSearchSingleRouteDB.getId();
@@ -66,29 +65,12 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         this.totalNumeric = flightSearchSingleRouteDB.getTotalNumeric();
         this.beforeTotal = flightSearchSingleRouteDB.getBeforeTotal();
 
-        this.airline = flightSearchSingleRouteDB.getAirline();
         this.isRefundable = flightSearchSingleRouteDB.isRefundable();
         this.isReturning = flightSearchSingleRouteDB instanceof FlightSearchReturnRouteDB;
 
         String routesJsonString = flightSearchSingleRouteDB.getRoutes();
         Type flightRoutesType = new TypeToken<List<Route>> () {}.getType();
         this.routeList = new Gson().fromJson(routesJsonString, flightRoutesType);
-    }
-
-    public String getAirlineName() {
-        return airlineName;
-    }
-
-    public void setAirlineName(String airlineName) {
-        this.airlineName = airlineName;
-    }
-
-    public String getAirlineLogo() {
-        return airlineLogo;
-    }
-
-    public void setAirlineLogo(String airlineLogo) {
-        this.airlineLogo = airlineLogo;
     }
 
     @Override
@@ -160,8 +142,12 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         return beforeTotal;
     }
 
-    public String getAirline() {
-        return airline;
+    public List<FlightAirlineDB> getAirlineList(){
+        return airlineDataList;
+    }
+
+    public void setAirlineDataList(List<FlightAirlineDB> airlineDataList) {
+        this.airlineDataList = airlineDataList;
     }
 
     public boolean isRefundable() {
@@ -199,10 +185,10 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         dest.writeString(this.total);
         dest.writeInt(this.totalNumeric);
         dest.writeString(this.beforeTotal);
-        dest.writeString(this.airline);
         dest.writeByte(this.isRefundable ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isReturning ? (byte) 1 : (byte) 0);
-        dest.writeList(this.routeList);
+        dest.writeTypedList(this.routeList);
+        dest.writeTypedList(this.airlineDataList);
     }
 
     protected FlightSearchViewModel(Parcel in) {
@@ -222,14 +208,13 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         this.total = in.readString();
         this.totalNumeric = in.readInt();
         this.beforeTotal = in.readString();
-        this.airline = in.readString();
         this.isRefundable = in.readByte() != 0;
         this.isReturning = in.readByte() != 0;
-        this.routeList = new ArrayList<Route>();
-        in.readList(this.routeList, Route.class.getClassLoader());
+        this.routeList = in.createTypedArrayList(Route.CREATOR);
+        this.airlineDataList = in.createTypedArrayList(FlightAirlineDB.CREATOR);
     }
 
-    public static final Creator<FlightSearchViewModel> CREATOR = new Creator<FlightSearchViewModel>() {
+    public static final Parcelable.Creator<FlightSearchViewModel> CREATOR = new Parcelable.Creator<FlightSearchViewModel>() {
         @Override
         public FlightSearchViewModel createFromParcel(Parcel source) {
             return new FlightSearchViewModel(source);

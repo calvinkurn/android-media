@@ -1,5 +1,6 @@
 package com.tokopedia.flight.search.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import com.tokopedia.design.label.selection.text.SelectionTextLabelView;
 import com.tokopedia.design.price.PriceRangeInputView;
 import com.tokopedia.design.text.DecimalRangeInputView;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.search.view.model.FlightFilterModel;
+import com.tokopedia.flight.search.view.model.statistic.FlightSearchStatisticModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,36 +27,68 @@ import java.util.List;
 
 public class FlightSearchFilterFragment extends BaseDaggerFragment {
 
-    public static FlightSearchFilterFragment getInstance() {
-        return new FlightSearchFilterFragment();
+    public static FlightSearchFilterFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        FlightSearchFilterFragment fragment = new FlightSearchFilterFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
-    private PriceRangeInputView priceRangeInputView;
-    private DecimalRangeInputView durationDecimalRangeInputView;
-    private SelectionTextLabelView transitSelectionTextLabelView;
-    private SelectionTextLabelView airplaneSelectionTextLabelView;
-    private SelectionTextLabelView departureTimeSelectionTextLabelView;
-    private SelectionTextLabelView refundPolicySelectionTextLabelView;
+    private OnFlightSearchFilterFragmentListener onFilterFragmentListener;
+    public interface OnFlightSearchFilterFragmentListener{
+        void onTransitLabelClicked();
+        void onAirlineLabelClicked();
+        void onRefundLabelClicked();
+        void onDepartureLabelClicked();
+        FlightSearchStatisticModel getFlightSearchStatisticModel();
+        FlightFilterModel getFlightFilterModel();
+        void onFilterModelChanged(FlightFilterModel flightFilterModel);
+    }
 
     @Override
     protected void initInjector() {
 
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_search, container, false);
-        priceRangeInputView = (PriceRangeInputView) view.findViewById(R.id.price_range_input_view);
-        durationDecimalRangeInputView = (DecimalRangeInputView) view.findViewById(R.id.duration_range_input_view);
-        transitSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_transit);
-        airplaneSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_airplane);
-        departureTimeSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_departure_time);
-        refundPolicySelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_refund_policy);
+        View view = inflater.inflate(R.layout.fragment_flight_search_filter, container, false);
+        FlightFilterModel filterModel = onFilterFragmentListener.getFlightFilterModel();
+        FlightSearchStatisticModel statModel = onFilterFragmentListener.getFlightSearchStatisticModel();
+
+        PriceRangeInputView priceRangeInputView = (PriceRangeInputView) view.findViewById(R.id.price_range_input_view);
+        int statMinPrice = statModel.getMinPrice();
+        int statMaxPrice = statModel.getMaxPrice();
+        int filterMinPrice = filterModel.getPriceMin();
+        int filterMaxPrice = filterModel.getPriceMax();
+        if (filterMinPrice < statMinPrice) {
+            filterMinPrice = statMinPrice;
+            filterModel.setPriceMin(statMinPrice);
+        }
+        if (filterMaxPrice > statMaxPrice) {
+            filterMaxPrice = statMaxPrice;
+            filterModel.setPriceMax(filterMaxPrice);
+        }
+        priceRangeInputView.setPower(1);
+        priceRangeInputView.setData(statMinPrice, statMaxPrice, filterMinPrice, filterMaxPrice);
+
+        DecimalRangeInputView durationDecimalRangeInputView = (DecimalRangeInputView) view.findViewById(R.id.duration_range_input_view);
+        SelectionTextLabelView transitSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_transit);
+        SelectionTextLabelView airlineSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_airline);
+        SelectionTextLabelView departureTimeSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_departure_time);
+        SelectionTextLabelView refundPolicySelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_refund_policy);
         transitSelectionTextLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                onFilterFragmentListener.onTransitLabelClicked();
             }
         });
         List<SelectionItem<String>> selectionItemList = new ArrayList<>();
@@ -64,7 +99,21 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
             selectionItemList.add(selectionItem);
         }
 
-        durationDecimalRangeInputView.setData(0, 10000, 100, 5000);
+        int statMinDur = statModel.getMinDuration();
+        int statMaxDur = statModel.getMaxDuration();
+        int filterMinDur = filterModel.getDurationMin();
+        int filterMaxDur = filterModel.getDurationMax();
+        if (filterMinDur < statMinDur) {
+            filterMinDur = statMinDur;
+            filterModel.setDurationMin(statMinDur);
+        }
+        if (filterMaxDur > statMaxDur) {
+            filterMaxDur = statMaxDur;
+            filterModel.setDurationMax(statMaxDur);
+        }
+        durationDecimalRangeInputView.setPower(1);
+        durationDecimalRangeInputView.setData(statMinDur, statMaxDur, filterMinDur, filterMaxDur);
+
         transitSelectionTextLabelView.setItemList(selectionItemList);
         transitSelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
             @Override
@@ -72,13 +121,13 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
                 CommonUtils.dumper(selectionItem.getKey() + " - " + selectionItem.getValue());
             }
         });
-        airplaneSelectionTextLabelView.setOnClickListener(new View.OnClickListener() {
+        airlineSelectionTextLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                onFilterFragmentListener.onAirlineLabelClicked();
             }
         });
-        airplaneSelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
+        airlineSelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
             @Override
             public void onDelete(SelectionItem<String> selectionItem) {
 
@@ -87,7 +136,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         departureTimeSelectionTextLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                onFilterFragmentListener.onDepartureLabelClicked();
             }
         });
         departureTimeSelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
@@ -99,7 +148,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         refundPolicySelectionTextLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                onFilterFragmentListener.onRefundLabelClicked();
             }
         });
         refundPolicySelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
@@ -114,5 +163,10 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        onFilterFragmentListener = (OnFlightSearchFilterFragmentListener) context;
     }
 }

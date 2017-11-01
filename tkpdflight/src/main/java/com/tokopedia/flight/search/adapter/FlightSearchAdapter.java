@@ -31,7 +31,7 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel> 
         public void bindObject(FlightSearchViewModel flightSearchViewModel) {
             tvDeparture.setText(flightSearchViewModel.getDepartureAirport());
             tvArrival.setText(flightSearchViewModel.getArrivalAirport());
-            tvAirline.setText(flightSearchViewModel.getAirline());
+            //tvAirline.setText(flightSearchViewModel.getAirline());
         }
     }
 
