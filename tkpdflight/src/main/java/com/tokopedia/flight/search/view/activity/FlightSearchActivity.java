@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
@@ -26,13 +29,13 @@ public class FlightSearchActivity extends BaseSimpleActivity {
 
     private FlightSearchPassDataViewModel passDataViewModel;
 
-    public static void start(Context context){
+    public static void start(Context context) {
         Intent intent = new Intent(context, FlightSearchActivity.class);
         context.startActivity(intent);
     }
 
-    public static Intent getCallingIntent(Activity activity, FlightSearchPassDataViewModel passDataViewModel){
-        Intent intent = new Intent(activity, FlightSearchActivity.class);;
+    public static Intent getCallingIntent(Activity activity, FlightSearchPassDataViewModel passDataViewModel) {
+        Intent intent = new Intent(activity, FlightSearchActivity.class);
         intent.putExtra(EXTRA_PASS_DATA, passDataViewModel);
         return intent;
     }
@@ -41,11 +44,23 @@ public class FlightSearchActivity extends BaseSimpleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         passDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
-        departureLocation = "Jakarta (CGK)";
-        arrivalLocation = "London (LHR)";
-        dateString = "19 Agustus 2017";
-        passengerString = "1 Dewasa, 1 Anak";
-        classString = "Ekonomi";
+        String departureCode = passDataViewModel.getDepartureAirport().getCityCode();
+        if (TextUtils.isEmpty(departureCode)) {
+            departureCode = passDataViewModel.getDepartureAirport().getCityCode();
+        }
+        departureLocation = passDataViewModel.getDepartureAirport().getCityName() + " (" + departureCode + ")";
+        String arrivalCode = passDataViewModel.getArrivalAirport().getCityCode();
+        if (TextUtils.isEmpty(arrivalCode)) {
+            arrivalCode = passDataViewModel.getArrivalAirport().getCityCode();
+        }
+        arrivalLocation = passDataViewModel.getArrivalAirport().getCityName() + " (" + arrivalCode + ")";
+        dateString = FlightDateUtil.formatDate(
+                FlightDateUtil.DEFAULT_FORMAT,
+                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                passDataViewModel.getDepartureDate()
+        );
+        passengerString = buildPassengerTextFormatted(passDataViewModel.getFlightPassengerViewModel());
+        classString = passDataViewModel.getFlightClass().getTitle();
 
         setupFlightToolbar();
     }
@@ -54,7 +69,7 @@ public class FlightSearchActivity extends BaseSimpleActivity {
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.tkpd_dark_gray));
         String title = departureLocation + " ➝ " + arrivalLocation;
-        String subtitle = dateString +" | " + passengerString + " | " + classString;
+        String subtitle = dateString + " | " + passengerString + " | " + classString;
         updateTitle(title, subtitle);
     }
 
@@ -65,6 +80,20 @@ public class FlightSearchActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightSearchFragment.newInstance();
+        return FlightSearchFragment.newInstance(passDataViewModel);
+    }
+
+    private String buildPassengerTextFormatted(FlightPassengerViewModel passData) {
+        String passengerFmt = "";
+        if (passData.getAdult() > 0) {
+            passengerFmt = passData.getAdult() + " " + getString(R.string.flight_dashboard_adult_passenger);
+            if (passData.getChildren() > 0) {
+                passengerFmt += ", " + passData.getChildren() + " " + getString(R.string.flight_dashboard_adult_children);
+            }
+            if (passData.getInfant() > 0) {
+                passengerFmt += ", " + passData.getInfant() + " " + getString(R.string.flight_dashboard_adult_infant);
+            }
+        }
+        return passengerFmt;
     }
 }

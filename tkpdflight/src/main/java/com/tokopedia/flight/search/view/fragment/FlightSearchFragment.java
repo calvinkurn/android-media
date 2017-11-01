@@ -27,6 +27,7 @@ import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -37,19 +38,20 @@ import javax.inject.Inject;
  */
 
 public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel> implements FlightSearchView {
-
+    private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
 
     BottomActionView filterAndSortBottomAction;
 
     //TODO changeSelected with some Param
-    int selected = FlightSortOption.CHEAPEST;
+    int selected = 0;
 
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
 
-    public static FlightSearchFragment newInstance() {
+    public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle args = new Bundle();
+        args.putParcelable(EXTRA_PASS_DATA, passDataViewModel);
         FlightSearchFragment fragment = new FlightSearchFragment();
         fragment.setArguments(args);
         return fragment;
@@ -118,7 +120,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         filterAndSortBottomAction = (BottomActionView) view.findViewById(R.id.bottom_action_filter_sort);
-        filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
+        filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
@@ -146,7 +148,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             }
         });
 
-        filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
+        filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity()), REQUEST_CODE_SEARCH_FILTER);
@@ -183,5 +185,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void hideSortRouteLoading() {
         hideLoading();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        flightSearchPresenter.detachView();
     }
 }
