@@ -6,6 +6,7 @@ import { ccFormat, getCardType } from '../../../lib/utility'
 import { NavigationModule } from 'NativeModules'
 import { Text } from '../../../common/TKPText'
 import { icons } from '../../../lib/config'
+import numeral from 'numeral'
 
 
 
@@ -135,10 +136,11 @@ class payment extends Component {
 
 
   render() {
-    const { dataPaymentBank } = this.props
+    const { dataPaymentBank, total_payment_with_rates_or_fees } = this.props
     
     const checkout_data = JSON.parse(dataPaymentBank.checkout_data)
     const total_payment = (dataPaymentBank.total_payment).toLocaleString("id")
+    const total_payment_with_rates_or_fees_with_currency = numeral(total_payment_with_rates_or_fees).format('0,0') || total_payment
     
     let years = this.state.years().map((i) => {
       return <Picker.Item key={i} value={i} label={i.toString()} />
@@ -157,7 +159,7 @@ class payment extends Component {
 
             <View style={[styles.row, styles.row1]} >
               <Text style={styles.row1Text}>Total Pembayaran</Text>
-              <Text style={styles.row1Text}>Rp {total_payment}</Text>
+              <Text style={styles.row1Text}>Rp {total_payment_with_rates_or_fees_with_currency}</Text>
             </View>
 
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', paddingBottom: 0, paddingHorizontal: 20 }} >
@@ -464,7 +466,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(ownProps)
+  // console.log(ownProps)
   return {
     ...state.payment,
     selectedBankData: ownProps.navigation.state.params.selectedBankData,
@@ -473,6 +475,7 @@ const mapStateToProps = (state, ownProps) => {
     selectedEmiId: ownProps.navigation.state.params.selectedEmiId,
     checkout_data: ownProps.navigation.state.params.checkout_data,
     dataPaymentBank: ownProps.navigation.state.params,
+    total_payment_with_rates_or_fees: ownProps.navigation.state.params.total_payment_with_rates_or_fees,
   }
 }
 
