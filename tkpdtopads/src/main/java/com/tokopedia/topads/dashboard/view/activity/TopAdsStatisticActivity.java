@@ -1,10 +1,10 @@
 package com.tokopedia.topads.dashboard.view.activity;
 
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -135,7 +135,6 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     protected void loadData() {
         presenter.getStatisticFromNet(startDate, endDate, getTypeStatistic(), SessionHandler.getShopID(this));
-        getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
     }
 
     @Override
@@ -144,7 +143,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     }
 
     public PagerAdapter getViewPagerAdapter() {
-        return new TopAdsStatisticPagerAdapter(getFragmentManager(), getFragmentList());
+        return new TopAdsStatisticPagerAdapter(getSupportFragmentManager(), getFragmentList());
     }
 
     public List<Fragment> getFragmentList() {
@@ -206,7 +205,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_top_ads_statistic, menu);
-        return true;
+        return false;
     }
 
     @Override
