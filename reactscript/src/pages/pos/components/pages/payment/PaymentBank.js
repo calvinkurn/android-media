@@ -9,6 +9,7 @@ import { StackNavigator } from 'react-navigation';
 import { getBankList, selectBank, getEmiList, selectEmi, makePayment, reloadState } from '../../../actions/index';
 import { Text } from '../../../common/TKPText'
 import { NavigationModule } from 'NativeModules'
+import numeral from 'numeral'
 
 
 
@@ -62,7 +63,6 @@ class PaymentBank extends Component {
         // NavigationModule.navigate("posapp://payment/scan", JSON.stringify(data_scan_params))
 
       } else {
-        // console.log(this.state.selectedBank, this.state.selectIdBank, this.state.selectedEmiId)
         this.props.navigation.navigate('Payment', {
           checkout_data: this.props.screenProps.checkout_data,
           selectBank: this.state.selectedBank,
@@ -70,7 +70,6 @@ class PaymentBank extends Component {
           selectedEmiId: selected_installment,
           selectedBankData: selectedBankData,
           total_payment: payment_amount,
-
         })
       }
     }
@@ -95,6 +94,8 @@ class PaymentBank extends Component {
 
       return true
   }
+
+
 
   _renderPopRow(rowData, sectionID, rowID) {
     if (rowID > 10) {
@@ -230,47 +231,40 @@ class PaymentBank extends Component {
       paymentRate_InstallmentFlag,
       paymentRate_errorMessage,
       paymentRate_isFetching } = this.props
-    console.log(rowID, rowData)
-    console.log(this.props)
-    console.log(payment_amount)
-    console.log(paymentRate_CreditCardInterestRate)
+    // console.log(rowID, rowData)
+    // console.log(this.props)
+    // console.log(payment_amount)
+    // console.log(paymentRate_CreditCardInterestRate)
 
     this.setState({ selectedEmiId: rowData.term })
 
-    console.log(rowData.term)
+    // console.log(rowData.term)
 
     
     if (!rowData.term){       // Without cicilan
       if (paymentRate_CreditCardFlag === 1){
-        console.log(payment_amount + ( paymentRate_CreditCardInterestRate / 100 * payment_amount ))
         this.setState({
           noInstallmentCalc: payment_amount + ( paymentRate_CreditCardInterestRate / 100 * payment_amount )
         })    
       }
       if (paymentRate_CreditCardFlag === 2){
-        console.log(( payment_amount + paymentRate_CreditCardFee ) * payment_amount)
         this.setState({
           noInstallmentCalc: ( payment_amount + paymentRate_CreditCardFee ) * payment_amount
         })    
       }
     } else {    // With Cicilan
       if (paymentRate_CreditCardFlag === 1){
-        const cicilan_amount = ( payment_amount + paymentRate_InstallmentInterestRate / 100 ) / rowData.term //.toLocaleString('id')
-        // console.log(( payment_amount + paymentRate_InstallmentInterestRate / 100 ) / rowData.term)
+        const cicilan_amount = ( payment_amount + paymentRate_InstallmentInterestRate / 100 ) / rowData.term 
         this.setState({
           installmentCalc: Math.ceil(cicilan_amount)
         })
       }
       if (paymentRate_CreditCardFlag === 2){
-        // console.log(( payment_amount / rowData.term ) + paymentRate_InstallmentFee)
         this.setState({
           installmentCalc: ( payment_amount / rowData.term ) + paymentRate_InstallmentFee
         })
       }
     }
-    
-    console.log(this.state.noInstallmentCalc)
-    console.log(this.state.installmentCalc)
   }
 
 
@@ -298,8 +292,13 @@ class PaymentBank extends Component {
   render() {
     const checkout_data = JSON.parse(this.props.screenProps.checkout_data)
     const payment_amount = checkout_data.data.data.payment_amount
-    const payment_amount_curr = (checkout_data.data.data.payment_amount).toLocaleString("id") || ''
-    console.log(checkout_data)
+    // const payment_amount_curr = (checkout_data.data.data.payment_amount).toLocaleString("id") || ''
+    const totalPriceWithCurrency = numeral(payment_amount).format('0,0') || ''
+    const { installmentCalc, noInstallmentCalc } = this.state
+    const installmentCalcWithCurrency = numeral(installmentCalc).format('0,0') || 0
+    const noInstallmentCalcWithCurrency = numeral(noInstallmentCalc).format('0,0') || 0
+
+
 
     return (
       <View style={styles.mainContainers} >
@@ -316,7 +315,7 @@ class PaymentBank extends Component {
             <View style={styles.containers} >
               <View style={[styles.row, styles.row1]} >
                 <Text style={[styles.font16, styles.fontColor70]}>Total Pembayaran</Text>
-                <Text style={[styles.font16, styles.fontColor70]}>Rp {(payment_amount_curr)}</Text>
+                <Text style={[styles.font16, styles.fontColor70]}>Rp {(totalPriceWithCurrency)}</Text>
               </View>
 
               <View style={[styles.row, styles.row2]} >
@@ -372,7 +371,9 @@ class PaymentBank extends Component {
               <View style={{ paddingTop: 10, backgroundColor: 'white', borderBottomWidth: 1, borderColor: '#F0F0F0' }}>
                 <Text style={[styles.font14, styles.fontColor70, { marginLeft: 15 }]}>Pilih Metode Pembayaran</Text>
                 <View style={{ paddingVertical: 20, flexDirection: 'row', marginLeft: 15 }}>
-                  <TouchableWithoutFeedback onPress={this._choosePaymentMethod.bind(this, 'SCAN')}>
+                  <TouchableWithoutFeedback 
+                    disabled={true}
+                    onPress={this._choosePaymentMethod.bind(this, 'SCAN')}>
                     <View style={[styles.paymentMethod, { marginRight: 10 }, (this.state.paymentMethod === 'SCAN') ? styles.paymentSelected : {}]}>
                       <Text style={[styles.emiText, {fontSize: 14}]}>Scan Kartu Kredit</Text>
                     </View>
@@ -391,9 +392,9 @@ class PaymentBank extends Component {
                 <Text style={[styles.font20, styles.fontColor70]}>Nominal</Text>
                 {payment_amount && this.state.selectedEmiId ?  
                   (<Text style={[styles.font20, styles.fontColor70]}>
-                    Rp {this.state.installmentCalc.toLocaleString('id')}/ bulan</Text>): (
+                    Rp {installmentCalcWithCurrency}/ bulan</Text>): (
                       <Text style={[styles.font20, styles.fontColor70]}>
-                        Rp {this.state.noInstallmentCalc.toLocaleString('id')}</Text>)
+                        Rp {noInstallmentCalcWithCurrency}</Text>)
                 }
               </View>
               {/*<View style={[styles.row, styles.row3]} >
