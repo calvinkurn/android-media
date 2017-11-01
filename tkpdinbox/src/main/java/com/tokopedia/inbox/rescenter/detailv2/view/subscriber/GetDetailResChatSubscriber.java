@@ -13,9 +13,11 @@ import rx.Subscriber;
 
 public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> {
     private final DetailResChatFragmentListener.View mainView;
+    private boolean isFirstInit;
 
-    public GetDetailResChatSubscriber(DetailResChatFragmentListener.View mainView) {
+    public GetDetailResChatSubscriber(DetailResChatFragmentListener.View mainView, boolean isFirstInit) {
         this.mainView = mainView;
+        this.isFirstInit = isFirstInit;
     }
 
     @Override
@@ -27,12 +29,12 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
     public void onError(Throwable e) {
         mainView.dismissProgressBar();
         e.printStackTrace();
-        mainView.errorGetConversation(ErrorHandler.getErrorMessage(e));
+        mainView.errorGetConversation(ErrorHandler.getErrorMessage(e), isFirstInit);
     }
 
     @Override
     public void onNext(DetailResChatDomain detailResChatDomain) {
         mainView.dismissProgressBar();
-        mainView.successGetConversation(detailResChatDomain);
+        mainView.successGetConversation(detailResChatDomain, isFirstInit);
     }
 }

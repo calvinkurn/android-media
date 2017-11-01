@@ -69,7 +69,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textAllCaps="false"
-                android:text="@string/string_accept_solution_title_yes"
+                android:text="@string/yes"
                 android:background="@drawable/bg_button_enable"
                 android:textColor="@color/white"/>
 

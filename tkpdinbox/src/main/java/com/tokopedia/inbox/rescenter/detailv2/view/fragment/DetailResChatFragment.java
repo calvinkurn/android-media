@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +34,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.NextActionActivity;
@@ -79,6 +83,13 @@ public class DetailResChatFragment
 
     public static final int NEXT_STATUS_CURRENT = 1;
     private static final int COUNT_MAX_ATTACHMENT = 5;
+    private static final int REQUEST_EDIT_SOLUTION = 123;
+    private static final int REQUEST_APPEAL_SOLUTION = 234;
+
+    public static final int ACTION_BY_USER = 1;
+    public static final int ACTION_BY_SELLER = 2;
+    public static final int ACTION_BY_ADMIN = 3;
+    public static final int ACTION_BY_SYSTEM = 4;
 
     public static final String CREATE = "create";
     public static final String EDIT_SOLUTION = "edit_solution";
@@ -281,7 +292,6 @@ public class DetailResChatFragment
         mainView.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
 
-        presenter.initView(resolutionId);
         presenter.initUploadImageHandler(getActivity(), uploadImageDialog);
         rvChat.setLayoutManager(new LinearLayoutManager(getActivity()));
         chatAdapter = new ChatAdapter(new DetailChatTypeFactoryImpl(this));
@@ -290,6 +300,7 @@ public class DetailResChatFragment
         attachmentAdapter = AttachmentAdapter.createAdapter(getActivity(), true);
         attachmentAdapter.setListener(getAttachmentAdapterListener());
         rvAttachment.setAdapter(attachmentAdapter);
+        initView(true);
     }
 
     private AttachmentAdapter.ProductImageListener getAttachmentAdapterListener() {
@@ -314,6 +325,12 @@ public class DetailResChatFragment
             }
         };
     }
+
+    private void initView(boolean isFirstInit) {
+        chatAdapter.clearData();
+        presenter.initView(resolutionId, isFirstInit);
+    }
+
     @Override
     protected void setViewListener() {
         cvNextStep.setOnClickListener(new View.OnClickListener() {
@@ -380,6 +397,10 @@ public class DetailResChatFragment
                 break;
             case ImageUploadHandler.REQUEST_CODE_GALLERY:
                 presenter.handleNewGalleryResult(resultCode, data);
+                break;
+            case REQUEST_EDIT_SOLUTION:
+                if (resultCode == Activity.RESULT_OK)
+                    initView(false);
                 break;
             default:
                 break;
@@ -453,38 +474,31 @@ public class DetailResChatFragment
     }
 
     @Override
-    public void populateView(DetailResChatDomain detailResChatDomain) {
-        this.detailResChatDomain = detailResChatDomain;
-        mainView.setVisibility(View.VISIBLE);
-        initAllData(detailResChatDomain);
-    }
-
-    @Override
     public void errorInputMessage(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
     @Override
-    public void successGetConversation(DetailResChatDomain detailResChatDomain) {
+    public void successGetConversation(DetailResChatDomain detailResChatDomain, boolean isFirstInit) {
         this.detailResChatDomain = detailResChatDomain;
         mainView.setVisibility(View.VISIBLE);
-        initAllData(detailResChatDomain);
+        initAllData(detailResChatDomain, isFirstInit);
     }
 
     @Override
-    public void errorGetConversation(String error) {
+    public void errorGetConversation(String error, final boolean isFirstInit) {
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.loadConversation(resolutionId);
+                presenter.loadConversation(resolutionId, isFirstInit);
             }
         });
     }
 
-    private void initAllData(DetailResChatDomain detailResChatDomain) {
+    private void initAllData(DetailResChatDomain detailResChatDomain, boolean isFirstInit) {
         initNextStep(detailResChatDomain.getNextAction());
         initActionButton(detailResChatDomain.getButton());
-        initChatData(detailResChatDomain);
+        initChatData(detailResChatDomain, isFirstInit);
     }
 
     private void initNextStep(NextActionDomain nextActionDomain) {
@@ -511,6 +525,7 @@ public class DetailResChatFragment
                 || buttonDomain.getRecomplaint() == 1) {
             actionButtonLayout.setVisibility(View.VISIBLE);
             LinearLayout llActionButton = (LinearLayout) actionButtonLayout.findViewById(R.id.ll_action_button);
+            llActionButton.removeAllViews();
             llActionButton.addView(addButtonSeparator());
 
             if (buttonDomain.getReport() == 1) {
@@ -529,6 +544,12 @@ public class DetailResChatFragment
                 Button button = getChatActionButton(buttonDomain.getEditLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivityForResult(getIntentEditResCenter(), REQUEST_EDIT_SOLUTION);
+                    }
+                });
             }
 
             if (buttonDomain.getInputAddress() == 1) {
@@ -600,6 +621,7 @@ public class DetailResChatFragment
         button.setTextColor(getActivity().getResources().getColor(R.color.tkpd_main_green));
         button.setLayoutParams(new LinearLayout.LayoutParams((int)getActivity().getResources().getDimension(R.dimen.dimens_chat_action_button_width),
                 (int)getActivity().getResources().getDimension(R.dimen.dimens_chat_action_button_height)));
+        button.setGravity(Gravity.CENTER);
         button.setText(name);
         button.setAllCaps(false);
         return button;
@@ -607,12 +629,12 @@ public class DetailResChatFragment
 
     private View addButtonSeparator() {
         View spaceView = new View(getActivity());
-        spaceView.setLayoutParams(new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.margin_vvs),
+        spaceView.setLayoutParams(new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.margin_vs),
                 LinearLayout.LayoutParams.MATCH_PARENT));
         return spaceView;
     }
 
-    private void initChatData(DetailResChatDomain detailResChatDomain) {
+    private void initChatData(DetailResChatDomain detailResChatDomain, boolean isFirstInit) {
         int lastAction = 0;
         for (ConversationDomain conversationDomain : detailResChatDomain.getConversation()) {
             String actionType = conversationDomain.getAction().getType();
@@ -653,10 +675,13 @@ public class DetailResChatFragment
 
         }
         chatAdapter.notifyDataSetChanged();
+        if (!isFirstInit)
+            rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
     }
 
     private void showAcceptSolutionDialog(String acceptText) {
         final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.layout_dialog_accept_solution);
         TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
         ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
         Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
@@ -680,6 +705,21 @@ public class DetailResChatFragment
 
             }
         });
+        dialog.show();
+    }
+
+    private Intent getIntentEditResCenter() {
+        if (isSeller()) {
+            return SolutionListActivity.newSellerEditInstance(getActivity(),
+                    resolutionId);
+        } else {
+            return SolutionListActivity.newBuyerEditInstance(getActivity(),
+                    resolutionId);
+        }
+    }
+
+    private boolean isSeller() {
+        return detailResChatDomain.getActionBy() == ACTION_BY_SELLER;
     }
 
     @Override
@@ -719,7 +759,7 @@ public class DetailResChatFragment
     @Override
     public void successAcceptSolution() {
         dismissProgressBar();
-        presenter.initView(resolutionId);
+        initView(false);
     }
 
     @Override

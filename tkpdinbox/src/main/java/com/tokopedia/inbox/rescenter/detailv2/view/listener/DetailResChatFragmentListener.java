@@ -20,15 +20,13 @@ public interface DetailResChatFragmentListener {
 
     interface View extends CustomerView {
 
-        void populateView(DetailResChatDomain detailResChatDomain);
-
-        void successGetConversation(DetailResChatDomain detailResChatDomain);
+        void successGetConversation(DetailResChatDomain detailResChatDomain, boolean isFirstInit);
 
         void showProgressBar();
 
         void dismissProgressBar();
 
-        void errorGetConversation(String error);
+        void errorGetConversation(String error, boolean isFirstInit);
 
         void errorInputMessage(String error);
 
@@ -49,7 +47,7 @@ public interface DetailResChatFragmentListener {
 
     interface Presenter extends CustomerPresenter<DetailResChatFragmentListener.View> {
 
-        void initView(String resolutionId);
+        void initView(String resolutionId, boolean isFirstInit);
 
         void initUploadImageHandler(Context context, ImageUploadHandler imageUploadHandler);
 

@@ -99,16 +99,16 @@ public class DetailResChatFragmentPresenter
     }
 
     @Override
-    public void initView(String resolutionId) {
+    public void initView(String resolutionId, boolean isFirstInit) {
         this.resolutionId = resolutionId;
-        loadConversation(resolutionId);
+        loadConversation(resolutionId, isFirstInit);
     }
 
-    public void loadConversation(String resolutionId) {
+    public void loadConversation(String resolutionId, boolean isFirstInit) {
         mainView.showProgressBar();
         getResChatUseCase.execute(
                 getResChatUseCase.getResChatUseCaseParam(String.valueOf(resolutionId)),
-                new GetDetailResChatSubscriber(mainView));
+                new GetDetailResChatSubscriber(mainView, isFirstInit));
     }
 
     @Override

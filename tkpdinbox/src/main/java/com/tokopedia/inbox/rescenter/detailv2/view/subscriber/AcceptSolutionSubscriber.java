@@ -11,7 +11,7 @@ import java.io.IOException;
 import rx.Subscriber;
 
 /**
- * Created by hangnadi on 3/22/17.
+ * Created by yoasfs on 10/30/17.
  */
 
 public class AcceptSolutionSubscriber extends Subscriber<ResolutionActionDomainData> {
@@ -34,6 +34,10 @@ public class AcceptSolutionSubscriber extends Subscriber<ResolutionActionDomainD
 
     @Override
     public void onNext(ResolutionActionDomainData data) {
-        mainView.successAcceptSolution();
+        if (data.isSuccess()) {
+            mainView.successAcceptSolution();
+        } else {
+            mainView.errorAcceptSolution(data.getMessageError());
+        }
     }
 }
