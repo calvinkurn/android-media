@@ -42,6 +42,7 @@ class PaymentBank extends Component {
     this.props.navigation.setParams({ dispatch: this.props.dispatch });
   }
 
+
   _handleButtonPress = () => {
     if(this._isInputValid()) {
       const selected_installment = !this.state.selectedEmiId ? 0 : (this.state.selectedEmiId)
@@ -49,11 +50,20 @@ class PaymentBank extends Component {
       const checkout_data = JSON.parse(this.props.screenProps.checkout_data)
       const payment_amount = checkout_data.data.data.payment_amount
 
+      const { 
+        noInstallmentCalc, 
+        installmentCalc, 
+        selectedEmiId,
+        selectedBank,
+        selectIdBank,
+      } = this.state
+
+
       if (this.state.paymentMethod === 'SCAN'){
         const data_scan_params = {
           checkout_data: this.props.screenProps.checkout_data,
-          selectBank: this.state.selectedBank,
-          selectIdBank: this.state.selectIdBank,
+          selectBank: selectedBank,
+          selectIdBank: selectIdBank,
           selectedEmiId: selected_installment,
           selectedBankData: selectedBankData,
           total_payment: this.props.screenProps.total_payment
@@ -63,13 +73,16 @@ class PaymentBank extends Component {
         // NavigationModule.navigate("posapp://payment/scan", JSON.stringify(data_scan_params))
 
       } else {
+        // console.log(selectedEmiId)
+        // console.log(selectEmi)
         this.props.navigation.navigate('Payment', {
           checkout_data: this.props.screenProps.checkout_data,
-          selectBank: this.state.selectedBank,
-          selectIdBank: this.state.selectIdBank,
+          selectBank: selectedBank,
+          selectIdBank: selectIdBank,
           selectedEmiId: selected_installment,
           selectedBankData: selectedBankData,
           total_payment: payment_amount,
+          total_payment_with_rates_or_fees: selectedEmiId ? installmentCalc : noInstallmentCalc,
         })
       }
     }
@@ -77,18 +90,18 @@ class PaymentBank extends Component {
 
   _isInputValid(selectedBankData) {
       if(!this.state.selectedBankData) {
-        console.log("bank not selected")
+        // console.log("bank not selected")
         return false
       }
 
-      console.log(this.state.selectedEmiId)
+      // console.log(this.state.selectedEmiId)
       if(this.state.selectedEmiId === null) {
-        console.log("emi not selected")
+        // console.log("emi not selected")
         return false
       }
 
       if(!this.state.paymentMethod) {
-        console.log("payment method not selected")
+        // console.log("payment method not selected")
         return false
       }
 
