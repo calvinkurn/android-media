@@ -27,6 +27,7 @@ import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.topads.dashboard.view.widget.PrefixEditText;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.topads.keyword.utils.EmptyCurrencyIdrTextWatcher;
 
 /**
  * Created by zulfikarrahman on 8/7/17.
@@ -35,6 +36,7 @@ import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends TopAdsDetailAdViewModel> extends BasePresenterFragment {
 
     private static final String TAG = "TopAdsNewCostFragment";
+    public static final int DEFAULT_KELIPATAN = 50;
 
     protected T stepperModel;
     protected StepperListener stepperListener;
@@ -145,7 +147,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     @Override
     protected void setViewListener() {
         super.setViewListener();
-        maxPriceEditText.addTextChangedListener(new CurrencyIdrTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
+        EmptyCurrencyIdrTextWatcher emptyCurrencyIdrTextWatcher = new EmptyCurrencyIdrTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
             public void onNumberChanged(double number) {
@@ -160,18 +162,20 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
                 }
 
                 String suggestionBidRaw = getSuggestionBidRaw();
-                if(suggestionBidRaw == null)
+                if (suggestionBidRaw == null)
                     return;
 
-                if(number >= Double.valueOf(suggestionBidRaw)){
+                if (number >= Double.valueOf(suggestionBidRaw)) {
                     titleSuggestionBid.setText(R.string.top_ads_label_price_desc);
                     titleSuggestionBidUse.setVisibility(View.GONE);
-                }else{
+                } else {
                     setSuggestionBidText(suggestionBidText);
                     titleSuggestionBidUse.setVisibility(View.VISIBLE);
                 }
             }
-        });
+        };
+        emptyCurrencyIdrTextWatcher.setAvoidMessageErrorValue(DEFAULT_KELIPATAN);
+        maxPriceEditText.addTextChangedListener(emptyCurrencyIdrTextWatcher);
         budgetPerDayEditText.addTextChangedListener(new CurrencyIdrTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
@@ -239,7 +243,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     protected void populateDataFromFields() {
         String priceBid = maxPriceEditText.getTextWithoutPrefix();
         if (TextUtils.isEmpty(priceBid)) {
-            detailAd.setPriceBid(0);
+            detailAd.setPriceBid(Float.valueOf(getSuggestionBidRaw()));
         } else {
             detailAd.setPriceBid(Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(priceBid)));
         }
