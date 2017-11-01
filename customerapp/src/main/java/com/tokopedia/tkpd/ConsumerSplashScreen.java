@@ -31,7 +31,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             taskStackBuilder.startActivities();
         }
         fetchRemoteConfig();
-        finish();
+
     }
 
     /**
@@ -42,11 +42,12 @@ public class ConsumerSplashScreen extends SplashScreen {
         remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
             @Override
             public void onComplete(FirebaseRemoteConfig firebaseRemoteConfig) {
-
+                finish();
             }
 
             @Override
             public void onError(Exception e) {
+                finish();
                 e.printStackTrace();
             }
         });
