@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
-    <item name="group_pos" type="id"/>
-    <item name="child_pos" type="id"/>
+    <item name="group_pos" type="id" />
+    <item name="child_pos" type="id" />
 
     <!--<string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>-->
     <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
@@ -595,7 +595,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
         <item>Bekas</item>
     </string-array>
     <string-array name="filter_browse_catalog_value">
-        <item/>
+        <item />
         <item>1</item>
         <item>2</item>
     </string-array>
@@ -632,10 +632,12 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_province">Provinsi</string>
     <string name="title_regency">Kabupaten</string>
     <string name="title_sub_district">Kecamatan</string>
+    <string name="title_city_or_district">Kota atau Kecamatan</string>
     <string name="msg_choose">Pilih</string>
     <string name="error_province">Provinsi harus dipilih</string>
     <string name="error_regency">Kabupaten harus dipilih</string>
     <string name="error_sub_district">Kecamatan harus dipilih</string>
+    <string name="hint_district_recommendation_search">Tulis min 3 karakter</string>
 
     <!-- Strings related to inbox -->
     <string name="title_my_product_seller">ULASAN PEMBELI</string>
@@ -813,6 +815,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_activity_browse_category">Direktori</string>
     <string name="title_activity_manage_product">Daftar Produk</string>
     <string name="title_activity_choose_address">Alamat</string>
+    <string name="title_activity_search_address">Tulis Kota/Kecamatan</string>
     <string name="title_activity_cart">Keranjang</string>
     <string name="title_activity_shop_editor">Ubah Informasi Toko</string>
     <string name="title_activity_share">Bagikan</string>
