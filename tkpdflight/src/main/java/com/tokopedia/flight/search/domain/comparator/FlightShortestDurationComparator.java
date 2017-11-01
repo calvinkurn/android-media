@@ -1,4 +1,4 @@
-package com.tokopedia.flight.search.domain.validator;
+package com.tokopedia.flight.search.domain.comparator;
 
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
@@ -8,9 +8,9 @@ import java.util.Comparator;
  * Created by alvarisi on 11/1/17.
  */
 
-public class FlightLatestDepartureComparator implements Comparator<FlightSearchViewModel> {
+public class FlightShortestDurationComparator implements Comparator<FlightSearchViewModel> {
     @Override
     public int compare(FlightSearchViewModel first, FlightSearchViewModel second) {
-        return second.getDepartureTimeInt() - first.getDepartureTimeInt();
+        return first.getDurationMinute() - second.getDurationMinute();
     }
 }
