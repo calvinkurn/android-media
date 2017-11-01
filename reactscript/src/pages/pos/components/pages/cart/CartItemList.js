@@ -9,6 +9,8 @@ import { NavigationModule } from 'NativeModules'
 import { connect } from 'react-redux'
 import { PaymentCheckoutToNative } from '../../../actions/index'
 import { icons } from '../../../lib/config'
+import numeral from 'numeral'
+
 
 
 class CartItemList extends Component {
@@ -47,6 +49,8 @@ class CartItemList extends Component {
     const visible = this.props.visible
     const onBackPress = this.props.onBackPress
     const totalPrice = this.props.totalPrice
+    // let totalPriceWithCurrency = totalPrice.toLocaleString('id-ID')
+    const totalPriceWithCurrency = numeral(totalPrice).format('0,0');
     const onIncrQty = this.props.onIncrQty
     const onDecrQty = this.props.onDecrQty
     const onRemoveFromCart = this.props.onRemoveFromCart
@@ -113,7 +117,7 @@ class CartItemList extends Component {
                   </View>
                   <View style={styles.paymentContainer}>
                     <Text style={styles.paymentText}>Total Pembayaran</Text>
-                    <Text style={styles.paymentText}>Rp {totalPrice.toLocaleString("id")}</Text>
+                    <Text style={styles.paymentText}>Rp {totalPriceWithCurrency}</Text>
                   </View>
                   <View style={{ marginTop: 20, marginLeft: 20, marginRight: 20 }}>
                     <Button
