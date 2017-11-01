@@ -89,7 +89,7 @@ public class TrackingUtils extends TrackingConfig {
     public static void setMoEUserAttributes(UserAttribute.Data profileData){
         if(profileData!=null) {
             CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
-                    .setTotalItemSold(profileData.shopInfoMoengage()!=null ? profileData.shopInfoMoengage().stats().shop_item_sold() : "0")
+                    .setTotalItemSold(profileData.shopInfoMoengage().stats()!=null ? profileData.shopInfoMoengage().stats().shop_item_sold() : "0")
                     .setRegDate(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(profileData.profile().register_date(),"T")))
                     .setDateShopCreated(profileData.shopInfoMoengage().info()!=null ? profileData.shopInfoMoengage().info().date_shop_created(): "")
                     .setShopLocation(profileData.shopInfoMoengage().info()!=null ? profileData.shopInfoMoengage().info().shop_location() :"")
