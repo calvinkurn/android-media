@@ -15,10 +15,10 @@ public class FlightFilterModel implements Parcelable {
     private int priceMax = Integer.MAX_VALUE;
     private int durationMin = Integer.MIN_VALUE;
     private int durationMax = Integer.MAX_VALUE;
-    private List<Integer> transitTypeList;
+    private List<TransitEnum> transitTypeList;
     private List<String> airlineList;
-    private List<Integer> departureTimeList;
-    private List<Integer> refundableTypeList;
+    private List<DepartureTimeEnum> departureTimeList;
+    private List<RefundableEnum> refundableTypeList;
 
     public int getPriceMin() {
         return priceMin;
@@ -52,20 +52,20 @@ public class FlightFilterModel implements Parcelable {
         return durationMax;
     }
 
-    public List<Integer> getRefundableTypeList() {
-        return refundableTypeList;
-    }
-
-    public List<Integer> getTransitTypeList() {
-        return transitTypeList;
-    }
-
     public List<String> getAirlineList() {
         return airlineList;
     }
 
-    public List<Integer> getDepartureTimeList() {
+    public List<TransitEnum> getTransitTypeList() {
+        return transitTypeList;
+    }
+
+    public List<DepartureTimeEnum> getDepartureTimeList() {
         return departureTimeList;
+    }
+
+    public List<RefundableEnum> getRefundableTypeList() {
+        return refundableTypeList;
     }
 
     @Override
@@ -93,13 +93,13 @@ public class FlightFilterModel implements Parcelable {
         this.priceMax = in.readInt();
         this.durationMin = in.readInt();
         this.durationMax = in.readInt();
-        this.transitTypeList = new ArrayList<Integer>();
-        in.readList(this.transitTypeList, Integer.class.getClassLoader());
+        this.transitTypeList = new ArrayList<TransitEnum>();
+        in.readList(this.transitTypeList, TransitEnum.class.getClassLoader());
         this.airlineList = in.createStringArrayList();
-        this.departureTimeList = new ArrayList<Integer>();
-        in.readList(this.departureTimeList, Integer.class.getClassLoader());
-        this.refundableTypeList = new ArrayList<Integer>();
-        in.readList(this.refundableTypeList, Integer.class.getClassLoader());
+        this.departureTimeList = new ArrayList<DepartureTimeEnum>();
+        in.readList(this.departureTimeList, DepartureTimeEnum.class.getClassLoader());
+        this.refundableTypeList = new ArrayList<RefundableEnum>();
+        in.readList(this.refundableTypeList, RefundableEnum.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<FlightFilterModel> CREATOR = new Parcelable.Creator<FlightFilterModel>() {

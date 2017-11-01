@@ -1,31 +1,42 @@
 package com.tokopedia.flight.search.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
+import com.tokopedia.flight.search.presenter.FlightFilterCountPresenter;
+import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
+import com.tokopedia.flight.search.view.FlightFilterCountView;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFilterFragment;
 import com.tokopedia.flight.search.view.model.FlightFilterModel;
-import com.tokopedia.flight.search.view.model.statistic.FlightSearchStatisticModel;
+import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
+
+import javax.inject.Inject;
 
 /**
  * Created by nathan on 10/27/17.
  */
 
 public class FlightSearchFilterActivity extends BaseSimpleActivity
-        implements FlightSearchFilterFragment.OnFlightSearchFilterFragmentListener {
+        implements FlightSearchFilterFragment.OnFlightSearchFilterFragmentListener, FlightFilterCountView {
 
 
     public static final String EXTRA_IS_RETURNING = "is_return";
     public static final String EXTRA_STAT_MODEL = "stat_model";
     public static final String EXTRA_FILTER_MODEL = "filter_model";
 
-    View buttonFilter;
+    @Inject
+    FlightFilterCountPresenter flightFilterCountPresenter;
+
+    private Button buttonFilter;
 
     private boolean isReturning;
     private FlightSearchStatisticModel flightSearchStatisticModel;
@@ -64,13 +75,20 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
             flightFilterModel = savedInstanceState.getParcelable(EXTRA_FILTER_MODEL);
         }
 
-        buttonFilter = findViewById(R.id.button_filter);
+        buttonFilter = (Button) findViewById(R.id.button_filter);
         buttonFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onButtonFilterClicked();
             }
         });
+
+        DaggerFlightSearchComponent.builder()
+                .flightComponent(((FlightModuleRouter)getApplication()).getFlightComponent() )
+                .build()
+                .inject(this);
+        flightFilterCountPresenter.attachView(this);
+        flightFilterCountPresenter.getFlightCount(isReturning,true);
     }
 
     private void onButtonFilterClicked() {
@@ -137,5 +155,16 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     public void onFilterModelChanged(FlightFilterModel flightFilterModel) {
         this.flightFilterModel = flightFilterModel;
         //TODO rerun query
+    }
+
+    @Override
+    public void onErrorGetCount(Throwable throwable) {
+        //TODO
+    }
+
+    @Override
+    public void onSuccessGetCount(int count) {
+        //TODO
+        buttonFilter.setText(String.valueOf(count) + " penerbangan");
     }
 }

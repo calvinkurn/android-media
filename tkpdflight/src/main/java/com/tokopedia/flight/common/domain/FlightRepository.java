@@ -24,4 +24,5 @@ public interface FlightRepository {
     Observable<List<FlightAirlineDB>> getAirlineList(String airlineId);
 
     Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(RequestParams requestParams);
+    Observable<Integer> getFlightSearchCount(RequestParams requestParams);
 }

@@ -67,6 +67,7 @@ public abstract class AbsFlightSearchDataListDBSource implements DataListDBSourc
 
     @Override
     public Observable<List<FlightSearchSingleRouteDB>> getData(HashMap<String, Object> params) {
+        // TODO use param to filter
         return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightSearchSingleRouteDB>>() {
             @Override
             public void call(Subscriber<? super List<FlightSearchSingleRouteDB>> subscriber) {
@@ -75,4 +76,17 @@ public abstract class AbsFlightSearchDataListDBSource implements DataListDBSourc
             }
         });
     }
+
+    @Override
+    public Observable<Integer> getDataCount(HashMap<String, Object> params) {
+        // TODO use param to filter
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                long count = new Select(Method.count()).from(getDBClass()).count();
+                subscriber.onNext((int) count);
+            }
+        });
+    }
+
 }

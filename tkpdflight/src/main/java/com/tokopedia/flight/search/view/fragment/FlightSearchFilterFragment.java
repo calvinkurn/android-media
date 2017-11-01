@@ -16,7 +16,7 @@ import com.tokopedia.design.price.PriceRangeInputView;
 import com.tokopedia.design.text.DecimalRangeInputView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.model.FlightFilterModel;
-import com.tokopedia.flight.search.view.model.statistic.FlightSearchStatisticModel;
+import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
 import java.util.ArrayList;
 import java.util.List;

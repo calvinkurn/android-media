@@ -76,4 +76,14 @@ public class FlightRepositoryImpl implements FlightRepository {
             return flightSearchSingleDataListSource.getDataList(requestParams);
         }
     }
+
+    //TODO define query
+    @Override
+    public Observable<Integer> getFlightSearchCount(RequestParams requestParams) {
+        if (FlightSearchParamUtil.isReturning(requestParams)) {
+            return flightSearchReturnDataListSource.getCacheDataListCount(null);
+        } else {
+            return flightSearchSingleDataListSource.getCacheDataListCount(null);
+        }
+    }
 }

@@ -19,4 +19,5 @@ public interface DataListDBSource<T,U> {
     Observable<Boolean> insertAll(List<T> list);
 
     Observable<List<U>> getData(HashMap<String, Object> params);
+    Observable<Integer> getDataCount(HashMap<String, Object> params);
 }

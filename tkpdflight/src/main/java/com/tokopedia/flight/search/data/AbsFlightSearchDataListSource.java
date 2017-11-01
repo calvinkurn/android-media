@@ -36,6 +36,17 @@ public class AbsFlightSearchDataListSource extends DataListSource<FlightSearchDa
         }
     }
 
+    public Observable<List<FlightSearchSingleRouteDB>> getDataListCount(RequestParams requestParams) {
+//        final HashMap<String, Object> map = generateGetParam(queryText);
+//        return getDataList(map);
+        //TODO set query
+        if (FlightSearchParamUtil.isFromCache(requestParams)) {
+            return super.getDataList(null);
+        } else {
+            return super.getCacheDataList(null);
+        }
+    }
+
     //TODO set query
 //    public static HashMap<String, Object> generateGetParam(String query){
 //        HashMap<String, Object> map = new HashMap<>();

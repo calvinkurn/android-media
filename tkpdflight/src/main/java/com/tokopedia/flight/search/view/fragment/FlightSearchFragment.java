@@ -1,6 +1,5 @@
 package com.tokopedia.flight.search.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
@@ -19,11 +18,10 @@ import com.tokopedia.flight.search.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
-import com.tokopedia.flight.search.view.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 import com.tokopedia.flight.search.view.model.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
-import com.tokopedia.flight.search.view.model.statistic.FlightSearchStatisticModel;
+import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
 import javax.inject.Inject;
 

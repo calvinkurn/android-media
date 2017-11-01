@@ -1,4 +1,4 @@
-package com.tokopedia.flight.search.view.model.statistic;
+package com.tokopedia.flight.search.view.model.resultstatistics;
 
 import android.os.Parcel;
 import android.os.Parcelable;
