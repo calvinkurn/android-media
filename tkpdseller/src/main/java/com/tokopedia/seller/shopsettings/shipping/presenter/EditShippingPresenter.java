@@ -7,11 +7,12 @@ import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ProvinceCit
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Kris on 2/23/2016.
- TOKOPEDIA
+ * TOKOPEDIA
  */
 public interface EditShippingPresenter {
 
@@ -90,4 +91,8 @@ public interface EditShippingPresenter {
     void savePostalCode(String s);
 
     void saveAddressArea(String s);
+
+    void setZipCodesOption(ArrayList<String> zipCodes);
+
+    ArrayList<String> getZipCodeOptions();
 }

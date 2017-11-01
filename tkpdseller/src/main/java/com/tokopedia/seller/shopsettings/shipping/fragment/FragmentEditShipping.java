@@ -27,6 +27,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.manage.people.address.activity.DistrictRecommendationActivity;
+import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
@@ -39,11 +41,15 @@ import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenSho
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
 
+import java.util.ArrayList;
+
 /**
  * Created by Kris on 2/19/2016.
  TOKOPEDIA
  */
 public class FragmentEditShipping extends Fragment implements EditShippingViewListener{
+
+    private static final int GET_DISTRICT_RECCOMENDATION_REQUEST_CODE = 100;
 
     LinearLayout fragmentShipingMainLayout;
 
@@ -171,7 +177,6 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     private void getShippingDataCreateShop(){
         editShippingPresenter.fetchDataOpenShop();
         fragmentShippingHeader.setVisibility(View.GONE);
-        fragmentShippingHeader.setEditShippingLocationButtonTitle(getActivity().getString(R.string.title_select_shop_location));
         mainProgressDialog.showDialog();
     }
 
@@ -336,12 +341,8 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     @Override
     public void editAddressSpinner() {
-        FragmentManager fm = getActivity().getFragmentManager();
-        shippingLocationDialog = ShippingLocationDialog
-                .createDialog(editShippingPresenter.getProvinceCityDistrictList(),
-                        editShippingPresenter.getShopInformation());
-        shippingLocationDialog.setTargetFragment(FragmentEditShipping.this, LOCATION_FRAGMENT_REQUEST_CODE);
-        shippingLocationDialog.show(fm, "location_dialog");
+        startActivityForResult(DistrictRecommendationActivity.createInstance(getActivity()),
+                GET_DISTRICT_RECCOMENDATION_REQUEST_CODE);
     }
 
     public boolean editShippingValid() {
@@ -357,6 +358,10 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK){
             switch (requestCode){
+                case GET_DISTRICT_RECCOMENDATION_REQUEST_CODE:
+                    handleAddressIntentData(data);
+                    handleZipCodesIntentData(data);
+                    break;
                 case LOCATION_FRAGMENT_REQUEST_CODE:
                     changeLocationRequest(data);
                     break;
@@ -369,6 +374,22 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
                             .getWindowToken(), 0);
             }
         }
+    }
+
+    private void handleZipCodesIntentData(Intent data) {
+        ArrayList<String> zipCodes = data.getStringArrayListExtra(
+                DistrictRecomendationFragmentView.Constant.INTENT_DATA_ZIP_CODES);
+        editShippingPresenter.setZipCodesOption(zipCodes);
+    }
+
+    private void handleAddressIntentData(Intent data) {
+        String province = data.getStringExtra(
+                DistrictRecomendationFragmentView.Constant.INTENT_DATA_PROVINCE);
+        String city = data.getStringExtra(
+                DistrictRecomendationFragmentView.Constant.INTENT_DATA_CITY);
+        String district = data.getStringExtra(
+                DistrictRecomendationFragmentView.Constant.INTENT_DATA_DICTRICT);
+        fragmentShippingHeader.updateLocationData(province, city, district);
     }
 
     private void changeLocationRequest(Intent data) {

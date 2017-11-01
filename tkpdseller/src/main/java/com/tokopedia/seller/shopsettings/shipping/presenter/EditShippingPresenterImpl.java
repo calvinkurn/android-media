@@ -62,6 +62,8 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private OpenShopData openShopModel;
 
+    private ArrayList<String> zipCodes;
+
     public EditShippingPresenterImpl(EditShippingViewListener view) {
         this.view = view;
         editShippingRetrofitInteractor = new EditShippingInteractorImpl();
@@ -271,10 +273,6 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
         }
     }
 
-    private void setShopInformation(ShopShipping shopInformation) {
-        this.shopInformation = shopInformation;
-    }
-
     private void setCourierModel(List<Courier> courierList) {
         this.courierList = courierList;
     }
@@ -398,6 +396,10 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public ShopShipping getShopInformation() {
         return shopInformation;
+    }
+
+    private void setShopInformation(ShopShipping shopInformation) {
+        this.shopInformation = shopInformation;
     }
 
     @Override
@@ -559,6 +561,16 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     public void saveAddressArea(String s) {
         if (openShopModel != null) openShopModel.getShopShipping().addrStreet = s;
         else if (model != null) model.shopShipping.addrStreet = s;
+    }
+
+    @Override
+    public void setZipCodesOption(ArrayList<String> zipCodes) {
+        this.zipCodes = zipCodes;
+    }
+
+    @Override
+    public ArrayList<String> getZipCodeOptions() {
+        return zipCodes;
     }
 
     private void sortCourier(EditShippingCouriers editShippingCouriers) {
