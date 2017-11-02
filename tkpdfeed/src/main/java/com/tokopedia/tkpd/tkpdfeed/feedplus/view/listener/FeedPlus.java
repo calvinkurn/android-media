@@ -27,13 +27,13 @@ public interface FeedPlus{
 
             void onGoToProductPageFromKol(int page, int rowNumber, String productId, String productImage);
 
-            void onFollowKolClicked(int page, int rowNumber, String id);
+            void onFollowKolClicked(int page, int rowNumber, int id);
 
-            void onUnfollowKolClicked(int page, int rowNumber, String id);
+            void onUnfollowKolClicked(int page, int rowNumber, int id);
 
-            void onUnlikeKol(int page, int rowNumber, String id);
+            void onUnlikeKol(int page, int rowNumber, int id);
 
-            void onLikeKol(int page, int rowNumber, String id);
+            void onLikeKol(int page, int rowNumber, int id);
 
             void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel);
 
@@ -166,12 +166,12 @@ public interface FeedPlus{
 
         void checkNewFeed(String cursor);
 
-        void followKol(String id);
+        void followKol(int id);
 
-        void unfollowKol(String id);
+        void unfollowKol(int id);
 
-        void likeKol(String id);
+        void likeKol(int id);
 
-        void unlikeKol(String id);
+        void unlikeKol(int id);
     }
 }

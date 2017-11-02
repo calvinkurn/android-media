@@ -183,6 +183,8 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
         adapter.setList(list);
         adapter.notifyDataSetChanged();
+
+        listComment.getLayoutManager().scrollToPosition(adapter.getItemCount() - 1);
     }
 
     private void setFooter(KolCommentProductViewModel footer) {

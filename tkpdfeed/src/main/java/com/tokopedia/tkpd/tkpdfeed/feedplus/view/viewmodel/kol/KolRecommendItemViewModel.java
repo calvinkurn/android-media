@@ -10,9 +10,9 @@ public class KolRecommendItemViewModel {
     private String imageUrl;
     private String url;
     private String label;
-    private String id;
+    private int id;
 
-    public KolRecommendItemViewModel(String id, String name, String imageUrl, String url, String
+    public KolRecommendItemViewModel(int id, String name, String imageUrl, String url, String
             label) {
         this.id = id;
         this.name = name;
@@ -37,11 +37,11 @@ public class KolRecommendItemViewModel {
         return label;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 }

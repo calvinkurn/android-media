@@ -165,22 +165,22 @@ public class FeedPlusPresenter
     }
 
     @Override
-    public void followKol(String id) {
+    public void followKol(int id) {
 
     }
 
     @Override
-    public void unfollowKol(String id) {
+    public void unfollowKol(int id) {
 
     }
 
     @Override
-    public void likeKol(String id) {
+    public void likeKol(int id) {
 
     }
 
     @Override
-    public void unlikeKol(String id) {
+    public void unlikeKol(int id) {
 
     }
 

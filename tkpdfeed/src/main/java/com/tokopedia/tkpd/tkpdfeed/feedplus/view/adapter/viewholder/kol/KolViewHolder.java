@@ -94,13 +94,13 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
 
         if (element.isLiked()) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_icon_repsis_like_active);
-            likeText.setText(element.getTotalLike());
+            likeText.setText(String.valueOf(element.getTotalLike()));
         } else {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_icon_repsis_like);
             likeText.setText(R.string.action_like);
         }
 
-        commentText.setText(element.getTotalComment());
+        commentText.setText(String.valueOf(element.getTotalComment()));
 
         setListener(element);
     }
@@ -188,7 +188,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             @Override
             public void onClick(View v) {
                 viewListener.onGoToProductPageFromKol(element.getPage(), getAdapterPosition(),
-                        element.getId(),
+                        String.valueOf(element.getId()),
                         element.getProductImage());
             }
         });
@@ -201,6 +201,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         } else {
             viewListener.onLikeKol(element.getPage(), getAdapterPosition(), element.getId());
         }
+
     }
 
     private Spanned getKolText(KolViewModel element) {

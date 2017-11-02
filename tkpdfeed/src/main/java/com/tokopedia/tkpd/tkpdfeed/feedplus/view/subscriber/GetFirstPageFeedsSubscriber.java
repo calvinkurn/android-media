@@ -7,6 +7,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.TopPicksDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.BadgeDomain;
@@ -59,6 +60,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_TOPPICKS = "toppick";
     private static final String TYPE_INSPIRATION = "inspirasi";
     private static final String TYPE_TOPADS = "topads";
+    private static final String TYPE_KOL = "kolpost";
+    private static final String TYPE_KOL_RECOMMENDATION = "kol_recommendation";
+
 
     private final int page;
     private int currentTotalFeedSize;
@@ -240,13 +244,19 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 //                        FeedTopAdsViewModel topAdsViewModel = convertToTopadsViewModel(page);
 //                        listFeedView.add(topAdsViewModel);
                         break;
+                    case TYPE_KOL:
+                        KolViewModel kolViewModel = convertToKolViewModel(domain);
+                        listFeedView.add(kolViewModel);
+                        break;
+                    case TYPE_KOL_RECOMMENDATION:
+                        KolRecommendationViewModel kolRecommendationViewModel =
+                                convertToKolRecommendationViewModel(domain);
+                        listFeedView.add(kolRecommendationViewModel);
+                        break;
                     default:
                         break;
                 }
             }
-
-        listFeedView.add(convertToKolViewModel());
-        listFeedView.add(convertToKolRecommendationViewModel());
 
     }
 
@@ -254,7 +264,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return new FeedTopAdsViewModel(page);
     }
 
-    private KolRecommendationViewModel convertToKolRecommendationViewModel() {
+    private KolRecommendationViewModel convertToKolRecommendationViewModel(DataFeedDomain domain) {
         return new KolRecommendationViewModel(
                 "http://tokopedia.com/",
                 "Explore Posting dari Celgram favoritmu!",
@@ -265,14 +275,14 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private ArrayList<KolRecommendItemViewModel> convertToListKolRecommend() {
         ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
         list.add(new KolRecommendItemViewModel(
-                "1",
+                1,
                 "Young Lex",
                 "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/7/27/20211570/20211570_19682ea4-4153-4845-bab5-de2c66712ac0_2048_0.jpg",
                 "https://www.tokopedia.com/feirin08",
                 "artis jadijadian"
         ));
         list.add(new KolRecommendItemViewModel(
-                "1",
+                1,
                 "Young Lex2",
                 "https://imagerouter.tokopedia" +
                         ".com/img/500-square/product-1/2017/10/29/1859776/1859776_ea45f195-eede-4bf7-9224-39bb15c54405_460_325.jpg",
@@ -280,7 +290,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 "artis jadijadian"
         ));
         list.add(new KolRecommendItemViewModel(
-                "1",
+                1,
                 "Young Lex3",
                 "https://imagerouter.tokopedia" +
                         ".com/img/500-square/product-1/2017/10/29/1859776/1859776_ea45f195-eede-4bf7-9224-39bb15c54405_460_325.jpg",
@@ -288,7 +298,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 "artis jadijadian"
         ));
         list.add(new KolRecommendItemViewModel(
-                "1",
+                1,
                 "Young Lex4",
                 "https://imagerouter.tokopedia" +
                         ".com/img/500-square/product-1/2017/10/29/1859776/1859776_ea45f195-eede-4bf7-9224-39bb15c54405_460_325.jpg",
@@ -296,7 +306,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 "artis jadijadian"
         ));
         list.add(new KolRecommendItemViewModel(
-                "1",
+                1,
                 "Young Lex5",
                 "https://imagerouter.tokopedia" +
                         ".com/img/500-square/product-1/2017/10/29/1859776/1859776_ea45f195-eede-4bf7-9224-39bb15c54405_460_325.jpg",
@@ -306,31 +316,27 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return list;
     }
 
-    private KolViewModel convertToKolViewModel() {
+    private KolViewModel convertToKolViewModel(DataFeedDomain domain) {
+        KolPostDomain kolPostDomain = domain.getContent().getKolPostDomain();
         return new KolViewModel(
                 "Rekomendasi untuk Anda",
-                "Young Lex",
-                "https://imagerouter.tokopedia" +
-                        ".com/img/500-square/product-1/2017/10/25/0/0_58b4e859-5079-4493-9de4-c8b2b521584a_720_720.jpg",
-                "Artis",
-                false,
-                "https://imagerouter.tokopedia" +
-                        ".com/img/500-square/product-1/2017/10/25/113005/113005_b772b000-d42d-4c7f-9033-8629e5839f66",
-                "Rp 25000 - Lihat semua Produk",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt vitae eros nec sodales. Cras a blandit ligula. Donec nec massa at est facilisis blandit. Integer auctor pellentesque tellus a elementum. Morbi sed mattis velit. Mauris hendrerit urna tempor lectus suscipit tincidunt. Nulla ex sem, accumsan non leo ac, vestibulum pretium justo. Cras lacus elit, malesuada quis enim eget, consequat efficitur eros. Curabitur nec metus eget lacus fringilla dictum. Curabitur at euismod nisi. Phasellus quis enim ut nisl commodo pharetra. Quisque blandit nisl sit amet magna viverra, quis dignissim lorem porttitor. Maecenas posuere tincidunt velit ac pellentesque. Etiam non fermentum dui, a dignissim erat. In ac lorem id dui placerat bibendum.\n" +
-                        "\n" +
-                        "Nulla mi velit, gravida in euismod vel, ullamcorper auctor lorem. Vestibulum congue nulla quis elit aliquet, a fringilla ipsum tincidunt. Aenean vel sem fermentum, malesuada magna et, dictum enim. Cras neque elit, gravida et sagittis vel, rhoncus vitae nisi. Nunc et aliquet arcu. Donec consequat nec mauris vel euismod. Suspendisse volutpat, leo eu pretium congue, velit lorem ornare magna, in ullamcorper ligula mi eget turpis. Mauris eu leo justo. Donec blandit scelerisque turpis rutrum pharetra. Quisque id lorem dapibus, congue mauris ut, laoreet sem.\n" +
-                        "\n",
-                false,
-                "200",
-                "222",
+                kolPostDomain.getUserName(),
+                kolPostDomain.getUserPhoto(),
+                kolPostDomain.getTagsType(),
+                kolPostDomain.isFollowed(),
+                kolPostDomain.getImageUrl(),
+                kolPostDomain.getProductPrice() + " - Lihat semua Produk",
+                kolPostDomain.getDescription(),
+                kolPostDomain.isLiked(),
+                kolPostDomain.getLikeCount(),
+                kolPostDomain.getCommentCount(),
                 page,
-                "https://www.tokopedia.com/sorachan-shoppu",
+                kolPostDomain.getImageUrl(),
                 "221417982",
-                "111111",
-                "10 jam yang lalu",
+                kolPostDomain.getId(),
+                kolPostDomain.getCreateTime(),
                 "Produk apapun",
-                "Rp 25000",
+                kolPostDomain.getProductPrice(),
                 false
         );
     }

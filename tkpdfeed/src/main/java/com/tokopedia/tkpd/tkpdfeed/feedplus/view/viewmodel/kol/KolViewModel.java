@@ -17,13 +17,13 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
     private String productTooltip;
     private String review;
     private boolean liked;
-    private String totalLike;
-    private String totalComment;
+    private int totalLike;
+    private int totalComment;
     private int page;
     private String kolProfileUrl;
     private boolean temporarilyFollowed;
     private String productId;
-    private String id;
+    private int id;
     private boolean reviewExpanded;
     private String time;
     private String productName;
@@ -32,8 +32,8 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public KolViewModel(String title, String name, String avatar, String label,
                         boolean followed, String productImage, String productTooltip,
-                        String review, boolean liked, String totalLike, String totalComment,
-                        int page, String kolProfileUrl, String productId, String id, String time,
+                        String review, boolean liked, int totalLike, int totalComment,
+                        int page, String kolProfileUrl, String productId, int id, String time,
                         String productName, String productPrice, boolean wishlisted) {
         this.title = title;
         this.name = name;
@@ -92,11 +92,11 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
         return liked;
     }
 
-    public String getTotalLike() {
+    public int getTotalLike() {
         return totalLike;
     }
 
-    public String getTotalComment() {
+    public int getTotalComment() {
         return totalComment;
     }
 
@@ -125,11 +125,11 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
     }
 
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -7,6 +7,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ContentFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.InspirationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ShopFeedDomain;
@@ -111,7 +112,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                             List<PromotionFeedDomain> promotionFeedDomains,
                             List<OfficialStoreDomain> officialStoreDomains,
                             List<TopPicksDomain> topPicksDomains,
-                            List<InspirationDomain> inspirationDomains) {
+                            List<InspirationDomain> inspirationDomains,
+                            KolPostDomain kolPostDomain) {
         if (content == null) return null;
         return new ContentFeedDomain(content.type(),
                 content.total_product() != null ? content.total_product() : 0,
@@ -120,6 +122,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 officialStoreDomains,
                 topPicksDomains,
                 inspirationDomains,
+                kolPostDomain,
                 content.status_activity());
     }
 
@@ -243,13 +246,15 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 List<InspirationDomain> inspirationDomains = convertToInspirationDomain(datum
                         .content().inspirasi());
                 ShopFeedDomain shopFeedDomain = createShopFeedDomain(datum.source().shop());
+                KolPostDomain kolPostDomain = createKolPostDomain(datum.content().kolpost());
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.content(),
                         productFeedDomains,
                         promotionFeedDomains,
                         officialStoreDomains,
                         topPicksDomains,
-                        inspirationDomains
+                        inspirationDomains,
+                        kolPostDomain
                 );
                 SourceFeedDomain sourceFeedDomain =
                         createSourceFeedDomain(datum.source(), shopFeedDomain);
@@ -259,6 +264,27 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
             }
         }
         return dataFeedDomains;
+    }
+
+    private KolPostDomain createKolPostDomain(FeedQuery.Data.Kolpost kolpost) {
+        return new KolPostDomain(
+                kolpost.id(),
+                kolpost.imageUrl(),
+                kolpost.description(),
+                kolpost.commentCount(),
+                kolpost.likeCount(),
+                kolpost.isLiked(),
+                kolpost.isFollowed(),
+                kolpost.createTime(),
+                kolpost.productPrice(),
+                kolpost.productLink(),
+                kolpost.productUrl(),
+                kolpost.shopUrl(),
+                kolpost.shopLink(),
+                kolpost.userName(),
+                kolpost.userPhoto(),
+                kolpost.tagsType()
+        );
     }
 
     private List<InspirationDomain> convertToInspirationDomain(List<FeedQuery.Data.Inspirasi> inspirasi) {

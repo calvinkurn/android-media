@@ -918,7 +918,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onFollowKolClicked(int page, int rowNumber, String id) {
+    public void onFollowKolClicked(int page, int rowNumber, int id) {
         if (adapter.getlist().get(rowNumber - 1) instanceof KolViewModel) {
             ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setFollowed(true);
             ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setTemporarilyFollowed(true);
@@ -928,7 +928,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onUnfollowKolClicked(int page, int rowNumber, String id) {
+    public void onUnfollowKolClicked(int page, int rowNumber, int id) {
         if (adapter.getlist().get(rowNumber - 1) instanceof KolViewModel) {
             ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setFollowed(false);
             ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setTemporarilyFollowed(false);
@@ -939,7 +939,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onUnlikeKol(int page, int rowNumber, String id) {
+    public void onUnlikeKol(int page, int rowNumber, int id) {
         if (adapter.getlist().get(rowNumber - 1) instanceof KolViewModel) {
             ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setLiked(false);
             adapter.notifyItemChanged(rowNumber - 1);
@@ -949,7 +949,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeKol(int page, int rowNumber, String id) {
+    public void onLikeKol(int page, int rowNumber, int id) {
         if (adapter.getlist().get(rowNumber - 1) instanceof KolViewModel) {
             ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setLiked(true);
             adapter.notifyItemChanged(rowNumber - 1);
