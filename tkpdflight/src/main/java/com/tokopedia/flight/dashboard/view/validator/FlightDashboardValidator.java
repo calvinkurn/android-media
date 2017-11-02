@@ -21,15 +21,15 @@ public class FlightDashboardValidator {
     }
 
     public boolean validateDepartureNotEmtpty(FlightDashboardViewModel currentDashboardViewModel) {
-        return currentDashboardViewModel.getOrigin() != null;
+        return currentDashboardViewModel.getDepartureAirport() != null;
     }
 
     public boolean validateArrivalNotEmpty(FlightDashboardViewModel currentDashboardViewModel) {
-        return currentDashboardViewModel.getDestination() != null;
+        return currentDashboardViewModel.getArrivalAirport() != null;
     }
 
     public boolean validateArrivalAndDestinationNotSame(FlightDashboardViewModel currentDashboardViewModel) {
-        return !currentDashboardViewModel.getOrigin().getAirportId().equalsIgnoreCase(currentDashboardViewModel.getDestination().getAirportId());
+        return !currentDashboardViewModel.getDepartureAirport().getAirportId().equalsIgnoreCase(currentDashboardViewModel.getArrivalAirport().getAirportId());
     }
 
     public boolean validateDepartureDateAtLeastToday(FlightDashboardViewModel currentDashboardViewModel) {

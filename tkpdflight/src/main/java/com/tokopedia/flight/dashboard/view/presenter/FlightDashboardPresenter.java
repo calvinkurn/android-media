@@ -10,7 +10,7 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightSelectPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
 
 import java.util.Calendar;
@@ -59,7 +59,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         String departureDateFmtString = FlightDateUtil.dateToString(currentDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
         String returnDateString = FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_FORMAT);
         String returnDateFmtString = FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
-        FlightSelectPassengerViewModel passData = new FlightSelectPassengerViewModel.Builder()
+        FlightPassengerViewModel passData = new FlightPassengerViewModel.Builder()
                 .setAdult(1)
                 .build();
         String passengerFmt = buildPassengerTextFormatted(passData);
@@ -71,15 +71,15 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 .setDepartureDateFmt(departureDateFmtString)
                 .setReturnDateFmt(returnDateFmtString)
                 .setFlightPassengerFmt(passengerFmt)
-                .setOriginFmt("")
-                .setDestinationFmt("")
+                .setDepartureAirportFmt("")
+                .setArrivalAirportFmt("")
                 .build();
 
         getView().setDashBoardViewModel(viewModel);
     }
 
     @NonNull
-    private String buildPassengerTextFormatted(FlightSelectPassengerViewModel passData) {
+    private String buildPassengerTextFormatted(FlightPassengerViewModel passData) {
         String passengerFmt = "";
         if (passData.getAdult() > 0) {
             passengerFmt = passData.getAdult() + " " + getView().getString(R.string.flight_dashboard_adult_passenger);
@@ -96,12 +96,12 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onReverseAirportButtonClicked() {
         FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
-        FlightAirportDB flightAirportDB = viewModel.getDestination();
-        String destinationFmt = viewModel.getDestinationFmt();
-        viewModel.setDestination(viewModel.getOrigin());
-        viewModel.setDestinationFmt(viewModel.getOriginFmt());
-        viewModel.setOrigin(flightAirportDB);
-        viewModel.setOriginFmt(destinationFmt);
+        FlightAirportDB flightAirportDB = viewModel.getArrivalAirport();
+        String destinationFmt = viewModel.getArrivalAirportFmt();
+        viewModel.setArrivalAirport(viewModel.getDepartureAirport());
+        viewModel.setArrivalAirportFmt(viewModel.getDepartureAirportFmt());
+        viewModel.setDepartureAirport(flightAirportDB);
+        viewModel.setDepartureAirportFmt(destinationFmt);
         getView().setDashBoardViewModel(viewModel);
         renderUi();
     }
@@ -184,7 +184,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     @Override
-    public void onFlightPassengerChange(FlightSelectPassengerViewModel passengerViewModel) {
+    public void onFlightPassengerChange(FlightPassengerViewModel passengerViewModel) {
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setFlightPassengerViewModel(passengerViewModel);
         flightDashboardViewModel.setFlightPassengerFmt(buildPassengerTextFormatted(passengerViewModel));
@@ -195,12 +195,12 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onDepartureAirportChange(FlightAirportDB departureAirport) {
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
-        flightDashboardViewModel.setOrigin(departureAirport);
+        flightDashboardViewModel.setDepartureAirport(departureAirport);
         String code = departureAirport.getAirportId();
         if (TextUtils.isEmpty(code)){
             code = departureAirport.getCityCode();
         }
-        flightDashboardViewModel.setOriginFmt(departureAirport.getCityName() + "(" + code + ")");
+        flightDashboardViewModel.setDepartureAirportFmt(departureAirport.getCityName() + " (" + code + ")");
         getView().setDashBoardViewModel(flightDashboardViewModel);
         renderUi();
     }
@@ -208,12 +208,12 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onArrivalAirportChange(FlightAirportDB arrivalAirport) {
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
-        flightDashboardViewModel.setDestination(arrivalAirport);
+        flightDashboardViewModel.setArrivalAirport(arrivalAirport);
         String code = arrivalAirport.getAirportId();
         if (TextUtils.isEmpty(code)){
             code = arrivalAirport.getCityCode();
         }
-        flightDashboardViewModel.setDestinationFmt(arrivalAirport.getCityName() + "(" + code + ")");
+        flightDashboardViewModel.setArrivalAirportFmt(arrivalAirport.getCityName() + " (" + code + ")");
         getView().setDashBoardViewModel(flightDashboardViewModel);
         renderUi();
     }

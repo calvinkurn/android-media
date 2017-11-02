@@ -34,10 +34,12 @@ import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightSelectPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
+import com.tokopedia.flight.search.view.activity.FlightSearchActivity;
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 import java.util.Date;
 
@@ -203,14 +205,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 });
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         passengerTextInputView.setText(viewModel.getPassengerFmt());
-        if (viewModel.getOrigin() != null) {
-            airportDepartureTextInputView.setText(viewModel.getOriginFmt());
+        if (viewModel.getDepartureAirport() != null) {
+            airportDepartureTextInputView.setText(viewModel.getDepartureAirportFmt());
         } else {
             airportDepartureTextInputView.setText(null);
         }
 
-        if (viewModel.getDestination() != null) {
-            airportArrivalTextInputView.setText(viewModel.getDestinationFmt());
+        if (viewModel.getArrivalAirport() != null) {
+            airportArrivalTextInputView.setText(viewModel.getArrivalAirportFmt());
         } else {
             airportArrivalTextInputView.setText(null);
         }
@@ -237,13 +239,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         returnDateTextInputView.setText(viewModel.getReturnDateFmt());
         passengerTextInputView.setText(viewModel.getPassengerFmt());
-        if (viewModel.getOrigin() != null) {
-            airportDepartureTextInputView.setText(viewModel.getOriginFmt());
+        if (viewModel.getDepartureAirport() != null) {
+            airportDepartureTextInputView.setText(viewModel.getDepartureAirportFmt());
         } else {
             airportDepartureTextInputView.setText(null);
         }
-        if (viewModel.getDestination() != null) {
-            airportArrivalTextInputView.setText(viewModel.getDestinationFmt());
+        if (viewModel.getArrivalAirport() != null) {
+            airportArrivalTextInputView.setText(viewModel.getArrivalAirportFmt());
         } else {
             airportArrivalTextInputView.setText(null);
         }
@@ -322,7 +324,16 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel) {
-
+        FlightSearchPassDataViewModel passDataViewModel = new FlightSearchPassDataViewModel.Builder()
+                .setFlightPassengerViewModel(currentDashboardViewModel.getFlightPassengerViewModel())
+                .setDepartureDate(currentDashboardViewModel.getDepartureDate())
+                .setDepartureAirport(currentDashboardViewModel.getDepartureAirport())
+                .setArrivalAirport(currentDashboardViewModel.getArrivalAirport())
+                .setFlightClass(currentDashboardViewModel.getFlightClass())
+                .setIsOneWay(currentDashboardViewModel.isOneWay())
+                .setReturnDate(currentDashboardViewModel.getReturnDate())
+                .build();
+        startActivity(FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel));
     }
 
     @Override
@@ -340,7 +351,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     presenter.onFlightClassesChange(viewModel);
                     break;
                 case REQUEST_CODE_AIRPORT_PASSENGER:
-                    FlightSelectPassengerViewModel passengerViewModel = data.getParcelableExtra(FlightSelectPassengerActivity.EXTRA_PASS_DATA);
+                    FlightPassengerViewModel passengerViewModel = data.getParcelableExtra(FlightSelectPassengerActivity.EXTRA_PASS_DATA);
                     presenter.onFlightPassengerChange(passengerViewModel);
                     break;
                 case REQUEST_CODE_AIRPORT_DEPARTURE:
