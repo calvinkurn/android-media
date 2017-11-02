@@ -68,4 +68,15 @@
     <string name="more_than_2_transit">Lebih dari 2 transit</string>
     <string name="refundable">Refundable</string>
     <string name="non_refundable">Non-Refundable</string>
+    <string name="flight_search_filter_label">Filter</string>
+    <string name="flight_search_sort_label">Sort</string>
+    <string name="flight_search_sort_title">Urutkan</string>
+    <string name="flight_search_sort_item_earliest_departure">Waktu Keberangkatan Terpagi</string>
+    <string name="flight_search_sort_item_latest_departure">Waktu Keberangkatan Termalam</string>
+    <string name="flight_search_sort_item_earliest_arrival">Waktu Tiba Terpagi</string>
+    <string name="flight_search_sort_item_latest_arrival">Waktu Tiba Termalam</string>
+    <string name="flight_search_sort_item_shortest_duration">Durasi Terpendek</string>
+    <string name="flight_search_sort_item_longest_duration">Durasi Terlama</string>
+    <string name="flight_search_sort_item_cheapest_price">Harga Termurah</string>
+    <string name="flight_search_sort_item_most_expensive_price">Harga Termahal</string>
 </resources>

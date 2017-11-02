@@ -25,18 +25,18 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
     private String type;
     private String aid;
     private String departureAirport;
-    private String departureTime;
+    private String departureTime; //ini waktu berangkat 2018-01-01T14:45:00Z
     private int departureTimeInt;
-    private String arrivalAirport;
+    private String arrivalAirport; //
     private String arrivalTime;
     private int arrivalTimeInt;
     private int totalTransit;
     private int addDayArrival;
 
-    private String duration;
+    private String duration; // 1 jam 50 menit
     private int durationMinute;
-    private String total;
-    private int totalNumeric;
+    private String total; // 693000
+    private int totalNumeric; // Fare "Rp 693.000"
     private String beforeTotal;
 
     private boolean isRefundable;
