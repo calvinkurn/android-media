@@ -186,10 +186,10 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private void enableView() {
-            tvProductDescription.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.grey_800));
             tvProductPrice.setTextColor(hostFragment.getResources()
                     .getColor(R.color.grey_800));
+            tvProductDescription.setTextColor(hostFragment.getResources()
+                    .getColor(R.color.grey_600));
             tvProductTotalPrice.setTextColor(hostFragment.getResources()
                     .getColor(R.color.grey_800));
         }
@@ -262,7 +262,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             tvProductPromoTitle.setTextColor(hostFragment.getResources()
                     .getColor(R.color.grey_800));
             tvProductPromoDescription.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.grey_800));
+                    .getColor(R.color.grey_600));
             tvProductPromoOldPrice.setTextColor(hostFragment.getResources()
                     .getColor(R.color.grey_800));
             tvPromoProductPrice.setTextColor(hostFragment.getResources()
@@ -288,7 +288,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     private void disableTextView(TextView textViewToDisable) {
-        textViewToDisable.setTextColor(hostFragment.getResources().getColor(R.color.grey));
+        textViewToDisable.setTextColor(hostFragment.getResources().getColor(R.color.grey_400));
     }
 
 }

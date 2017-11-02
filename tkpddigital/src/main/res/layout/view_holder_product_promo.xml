@@ -11,6 +11,8 @@
         android:id="@+id/product_promo_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
+        tools:text="Promo title"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms"/>
 
@@ -19,6 +21,7 @@
         android:textColor="@color/red_600"
         android:layout_marginStart="@dimen/margin_ms"
         android:layout_marginLeft="@dimen/margin_ms"
+        tools:text="Promo tag"
         android:layout_toEndOf="@+id/product_promo_title"
         android:layout_toRightOf="@+id/product_promo_title"
         android:layout_width="wrap_content"
@@ -29,6 +32,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/product_promo_title"
+        tools:text="Promo description"
+        android:textColor="@color/grey_600"
         android:layout_marginBottom="@dimen/padding_vs"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms"
@@ -45,19 +50,21 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/product_promo_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/orange_900"
-            android:textSize="@dimen/font_medium"
-            android:textStyle="bold"/>
-
-        <TextView
             android:id="@+id/product_promo_old_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            tools:text="Rp. 22.500"/>
+
+        <TextView
+            android:id="@+id/product_promo_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_ms"
-            android:layout_marginStart="@dimen/margin_ms"/>
+            android:layout_marginStart="@dimen/margin_ms"
+            tools:text="Rp. 20.000"
+            android:textColor="@color/orange_900"
+            android:textSize="@dimen/font_medium"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 
@@ -74,6 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/separator"
+        android:layout_alignBaseline="@+id/product_promo_title"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginEnd="@dimen/margin_small"
@@ -88,6 +96,6 @@
         android:text="@string/title_empty_stock"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
 </RelativeLayout>
