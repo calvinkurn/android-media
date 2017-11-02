@@ -14,7 +14,7 @@ import VisibleProductList from '../../../containers/VisibleProductList'
 import Ticker from '../product/Ticker'
 import CartContainer from '../../../containers/CartContainer'
 import SearchContainer from '../../../containers/SearchContainer'
-import { reloadState, GetPaymentRate } from '../../../actions/index'
+import { reloadState } from '../../../actions/index'
 // import PasswordPopup from './PasswordPopup'
 import { connect } from 'react-redux'
 
