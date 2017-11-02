@@ -119,12 +119,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy <= 0) {
-                    if (!filterButton.isShown()) {
-                        filterButton.show();
+                    if (!filterAndSortBottomAction.isShown()) {
+                        filterAndSortBottomAction.show();
                     }
                 } else {
-                    if (filterButton.isShown()) {
-                        filterButton.hide();
+                    if (filterAndSortBottomAction.isShown()) {
+                        filterAndSortBottomAction.hide();
                     }
                 }
             }
@@ -198,7 +198,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity()), REQUEST_CODE_SEARCH_FILTER);
+                if (adapter.getData() == null || adapter.getData().size() == 0) {
+                    return;
+                }
+                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),isReturning(),
+                        new FlightSearchStatisticModel(adapter.getData()),new FlightFilterModel()),
+                        REQUEST_CODE_SEARCH_FILTER);
             }
         });
     }
@@ -216,7 +221,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public RequestParams getSearchFlightRequestParam() {
-        return FlightSearchUseCase.generateRequestParams(false);
+        return FlightSearchUseCase.generateRequestParams(false,true);
     }
 
     @Override
