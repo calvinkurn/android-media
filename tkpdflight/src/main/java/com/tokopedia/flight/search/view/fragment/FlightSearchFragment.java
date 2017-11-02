@@ -95,20 +95,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-
-        //TODO this fab just for testing only
-        filterButton = (FloatingActionButton) view.findViewById(R.id.fab);
-        filterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (adapter.getData() == null || adapter.getData().size() == 0) {
-                    return;
-                }
-                FlightSearchFilterActivity.start(getContext(), isReturning(),
-                        new FlightSearchStatisticModel(adapter.getData()),new FlightFilterModel());
-            }
-        });
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

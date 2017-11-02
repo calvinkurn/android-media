@@ -157,6 +157,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
 
             }
         });
+        view.requestFocus();
         return view;
     }
 
