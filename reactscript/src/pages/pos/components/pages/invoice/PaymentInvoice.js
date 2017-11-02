@@ -35,6 +35,7 @@ class PaymentInvoice extends Component {
     if (!emailValidation(this.state.email)) {
       emailErrorMessage = "Mohon masukan alamat email Anda dengan format contoh@email.com";
     } else {
+      dispatch(sendEmail(""))
       this.popupDialog.show()
     }
     this.setState({
