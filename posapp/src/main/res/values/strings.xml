@@ -47,4 +47,8 @@
     <string name="pdp_pay_label">Bayar</string>
 
     <string name="tx_history_page_title">Riwayat Transaksi</string>
+
+    <string name="transaction_error_title">Transaksi Anda Gagal</string>
+    <string name="transaction_error_void_message">Dana terpakai telah berhasil dikembalikan ke Limit Kartu Kredit Anda</string>
+    <string name="transaction_error_message">Dana Anda tidak terpotong</string>
 </resources>

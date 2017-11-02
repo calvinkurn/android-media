@@ -162,7 +162,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
     public void onPaymentError(Throwable e) {
         tkpdProgressDialog.dismiss();
         e.printStackTrace();
-        goToErrorPage("Transaction Failed", e.getMessage());
+        goToErrorPage(getString(R.string.transaction_error_title), getString(R.string.transaction_error_void_message));
     }
 
     @Override

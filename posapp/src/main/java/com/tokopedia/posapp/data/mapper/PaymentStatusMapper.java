@@ -36,9 +36,6 @@ public class PaymentStatusMapper implements Func1<Response<TkpdResponse>, Paymen
             Log.d("o2o", response.body().getStringData());
             PaymentStatusResponse data = gson.fromJson(response.body().getStringData(), PaymentStatusResponse.class);
             if (data != null && data.getData() != null && data.getData().size() != 0) {
-                if(data.getData().get(0).getState() != 3) {
-                    throw new RuntimeException("Payment Failed");
-                }
                 PaymentStatusDomain domain = new PaymentStatusDomain();
                 domain.setMerchantCode(data.getData().get(0).getMerchantCode());
                 domain.setProfileCode(data.getData().get(0).getProfileCode());
