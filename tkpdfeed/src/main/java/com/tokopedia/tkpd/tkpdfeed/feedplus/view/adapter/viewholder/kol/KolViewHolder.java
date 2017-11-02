@@ -173,16 +173,14 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         commentIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToKolComment(element.getPage(), getAdapterPosition(), element
-                        .getId());
+                viewListener.onGoToKolComment(element.getPage(), getAdapterPosition(), element);
             }
         });
 
         commentText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToKolComment(element.getPage(), getAdapterPosition(), element
-                        .getId());
+                viewListener.onGoToKolComment(element.getPage(), getAdapterPosition(), element);
             }
         });
 

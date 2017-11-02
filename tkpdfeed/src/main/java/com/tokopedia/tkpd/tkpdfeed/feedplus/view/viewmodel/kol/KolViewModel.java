@@ -25,11 +25,16 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
     private String productId;
     private String id;
     private boolean reviewExpanded;
+    private String time;
+    private String productName;
+    private String productPrice;
+    private boolean wishlisted;
 
     public KolViewModel(String title, String name, String avatar, String label,
                         boolean followed, String productImage, String productTooltip,
                         String review, boolean liked, String totalLike, String totalComment,
-                        int page, String kolProfileUrl, String productId, String id) {
+                        int page, String kolProfileUrl, String productId, String id, String time,
+                        String productName, String productPrice, boolean wishlisted) {
         this.title = title;
         this.name = name;
         this.avatar = avatar;
@@ -45,6 +50,10 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
         this.kolProfileUrl = kolProfileUrl;
         this.productId = productId;
         this.id = id;
+        this.time = time;
+        this.productName = productName;
+        this.productPrice = productPrice;
+        this.wishlisted = wishlisted;
     }
 
     public String getTitle() {
@@ -147,5 +156,38 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public void setReviewExpanded(boolean reviewExpanded) {
         this.reviewExpanded = reviewExpanded;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(String productPrice) {
+        this.productPrice = productPrice;
+    }
+
+
+    public boolean isWishlisted() {
+        return wishlisted;
+    }
+
+    public void setWishlisted(boolean wishlisted) {
+        this.wishlisted = wishlisted;
     }
 }

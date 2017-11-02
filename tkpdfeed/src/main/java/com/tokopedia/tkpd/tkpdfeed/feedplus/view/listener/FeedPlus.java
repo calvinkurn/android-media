@@ -7,6 +7,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
@@ -34,7 +35,7 @@ public interface FeedPlus{
 
             void onLikeKol(int page, int rowNumber, String id);
 
-            void onGoToKolComment(int page, int rowNumber, String id);
+            void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel);
 
             void onGoToListKolRecommendation(int page, int rowNumber, String url);
         }

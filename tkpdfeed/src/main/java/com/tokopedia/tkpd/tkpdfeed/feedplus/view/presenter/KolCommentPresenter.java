@@ -43,4 +43,10 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
         getView().onSuccessGetComments(new KolComments(new ArrayList<KolCommentViewModel>()));
 
     }
+
+    @Override
+    public void changeWishlist() {
+        getView().onSuccessChangeWishlist();
+
+    }
 }

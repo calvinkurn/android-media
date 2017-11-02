@@ -7,13 +7,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolCommentActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolProfileWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.KolCommentAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.kol.KolTypeFactory;
@@ -38,6 +44,16 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     RecyclerView listComment;
     KolCommentAdapter adapter;
+
+    EditText kolComment;
+    ImageView sendButton;
+    TextView productName;
+    TextView productPrice;
+    ImageView productAvatar;
+    ImageView wishlist;
+
+    KolCommentHeaderViewModel header;
+    KolCommentProductViewModel footer;
 
     @Inject
     KolCommentPresenter presenter;
@@ -66,6 +82,27 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            header = getArguments().getParcelable(KolCommentActivity.ARGS_HEADER);
+            footer = getArguments().getParcelable(KolCommentActivity.ARGS_FOOTER);
+        } else if (savedInstanceState != null) {
+            header = savedInstanceState.getParcelable(KolCommentActivity.ARGS_HEADER);
+            footer = savedInstanceState.getParcelable(KolCommentActivity.ARGS_FOOTER);
+        } else {
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(KolCommentActivity.ARGS_HEADER, header);
+        outState.putParcelable(KolCommentActivity.ARGS_FOOTER, footer);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -73,6 +110,12 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
                              @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_kol_comment, container, false);
         listComment = (RecyclerView) parentView.findViewById(R.id.comment_list);
+        kolComment = (EditText) parentView.findViewById(R.id.new_comment);
+        sendButton = (ImageView) parentView.findViewById(R.id.send_button);
+        productName = (TextView) parentView.findViewById(R.id.product_name);
+        productPrice = (TextView) parentView.findViewById(R.id.price);
+        productAvatar = (ImageView) parentView.findViewById(R.id.avatar);
+        wishlist = (ImageView) parentView.findViewById(R.id.wishlist);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -81,7 +124,13 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHeader(header);
+        setFooter(footer);
         presenter.getCommentFirstTime();
+    }
+
+    private void setHeader(KolCommentHeaderViewModel header) {
+        adapter.addHeader(header);
     }
 
     private void prepareView() {
@@ -115,10 +164,10 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     @Override
     public void onSuccessGetCommentsFirstTime(KolComments kolComments) {
+        if (adapter.getHeader() != null)
+            adapter.getHeader().setCanLoadMore(true);
+
         ArrayList<Visitable> list = new ArrayList<>();
-        list.add(new KolCommentHeaderViewModel("https://imagerouter.tokopedia" +
-                ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
-                "Nisie", "Komen komen aja", "10 hari yang lalu", true));
         list.add(new KolCommentViewModel("https://imagerouter.tokopedia" +
                 ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
                 "Nisie2", "Komen komen aja", "10 hari yang lalu"));
@@ -131,11 +180,25 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         list.add(new KolCommentViewModel("https://imagerouter.tokopedia" +
                 ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
                 "Nisie5", "Komen komen aja", "10 hari yang lalu"));
-        list.add(new KolCommentProductViewModel("https://imagerouter.tokopedia" +
-                ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
-                "Topi si Nisie", "Rp 250.000", false));
+
         adapter.setList(list);
         adapter.notifyDataSetChanged();
+    }
+
+    private void setFooter(KolCommentProductViewModel footer) {
+
+        productName.setText(MethodChecker.fromHtml(footer.getName()));
+        ImageHandler.LoadImage(productAvatar, footer.getImageUrl());
+        productPrice.setText(footer.getPrice());
+
+        setWishlist(footer.isWishlisted());
+
+        wishlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.changeWishlist();
+            }
+        });
     }
 
     @Override
@@ -175,5 +238,17 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
                 ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
                 "Nisie10", "Komen komen aja", "10 hari yang lalu"));
         adapter.addList(list);
+    }
+
+    @Override
+    public void onSuccessChangeWishlist() {
+        setWishlist(true);
+    }
+
+    private void setWishlist(boolean wishlisted) {
+        if (wishlisted)
+            ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, R.drawable.ic_wishlist_red);
+        else
+            ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, R.drawable.ic_wishlist);
     }
 }

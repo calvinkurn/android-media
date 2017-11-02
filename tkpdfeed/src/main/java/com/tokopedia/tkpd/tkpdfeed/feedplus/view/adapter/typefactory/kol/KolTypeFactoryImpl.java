@@ -5,11 +5,9 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.KolCommentHeaderViewHolder;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.KolCommentProductViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.KolCommentViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolComment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentViewModel;
 
 /**
@@ -36,11 +34,6 @@ public class KolTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(KolCommentProductViewModel viewModel) {
-        return KolCommentProductViewHolder.LAYOUT;
-    }
-
-    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -49,8 +42,6 @@ public class KolTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new KolCommentViewHolder(view, viewListener);
         else if (type == KolCommentHeaderViewHolder.LAYOUT)
             viewHolder = new KolCommentHeaderViewHolder(view, viewListener);
-        else if (type == KolCommentProductViewHolder.LAYOUT)
-            viewHolder = new KolCommentProductViewHolder(view, viewListener);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;

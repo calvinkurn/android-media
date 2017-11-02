@@ -327,7 +327,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 page,
                 "https://www.tokopedia.com/sorachan-shoppu",
                 "221417982",
-                "111111"
+                "111111",
+                "10 jam yang lalu",
+                "Produk apapun",
+                "Rp 25000",
+                false
         );
     }
 

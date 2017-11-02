@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.kol.KolTypeFactory;
 
@@ -7,7 +10,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.kol.KolType
  * @author by nisie on 10/31/17.
  */
 
-public class KolCommentViewModel implements Visitable<KolTypeFactory>{
+public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelable{
     protected String avatarUrl;
     protected String name;
     protected String review;
@@ -21,6 +24,27 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>{
         this.review = review;
         this.time = time;
     }
+
+    protected KolCommentViewModel(Parcel in) {
+        avatarUrl = in.readString();
+        name = in.readString();
+        review = in.readString();
+        time = in.readString();
+        url = in.readString();
+        isOfficial = in.readByte() != 0;
+    }
+
+    public static final Creator<KolCommentViewModel> CREATOR = new Creator<KolCommentViewModel>() {
+        @Override
+        public KolCommentViewModel createFromParcel(Parcel in) {
+            return new KolCommentViewModel(in);
+        }
+
+        @Override
+        public KolCommentViewModel[] newArray(int size) {
+            return new KolCommentViewModel[size];
+        }
+    };
 
     public String getAvatarUrl() {
         return avatarUrl;
@@ -73,5 +97,20 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>{
 
     public void setOfficial(boolean official) {
         this.isOfficial = official;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(avatarUrl);
+        dest.writeString(name);
+        dest.writeString(review);
+        dest.writeString(time);
+        dest.writeString(url);
+        dest.writeByte((byte) (isOfficial ? 1 : 0));
     }
 }

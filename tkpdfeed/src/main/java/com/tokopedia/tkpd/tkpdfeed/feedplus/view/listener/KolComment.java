@@ -25,11 +25,15 @@ public interface KolComment {
         void loadMoreComments();
 
         void onSuccessGetComments(KolComments kolComments);
+
+        void onSuccessChangeWishlist();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getCommentFirstTime();
 
         void loadMoreComments();
+
+        void changeWishlist();
     }
 }

@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.kol.KolTypeFactory;
 
@@ -8,17 +11,33 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.kol.KolType
  */
 
 public class KolCommentHeaderViewModel extends KolCommentViewModel implements
-        Visitable<KolTypeFactory> {
+        Visitable<KolTypeFactory>, Parcelable {
     boolean canLoadMore;
     boolean isLoading;
 
-
-    public KolCommentHeaderViewModel(String avatarUrl, String name, String review, String time,
-                                     boolean canLoadMore) {
+    public KolCommentHeaderViewModel(String avatarUrl, String name, String review, String time) {
         super(avatarUrl, name, review, time);
-        this.canLoadMore = canLoadMore;
+        this.canLoadMore = false;
         this.isLoading = false;
     }
+
+    protected KolCommentHeaderViewModel(Parcel in) {
+        super(in);
+        canLoadMore = in.readByte() != 0;
+        isLoading = in.readByte() != 0;
+    }
+
+    public static final Creator<KolCommentHeaderViewModel> CREATOR = new Creator<KolCommentHeaderViewModel>() {
+        @Override
+        public KolCommentHeaderViewModel createFromParcel(Parcel in) {
+            return new KolCommentHeaderViewModel(in);
+        }
+
+        @Override
+        public KolCommentHeaderViewModel[] newArray(int size) {
+            return new KolCommentHeaderViewModel[size];
+        }
+    };
 
     @Override
     public int type(KolTypeFactory typeFactory) {
@@ -39,5 +58,17 @@ public class KolCommentHeaderViewModel extends KolCommentViewModel implements
 
     public void setLoading(boolean loading) {
         isLoading = loading;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeByte((byte) (canLoadMore ? 1 : 0));
+        dest.writeByte((byte) (isLoading ? 1 : 0));
     }
 }

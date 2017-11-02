@@ -11,6 +11,7 @@ import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.kol.KolTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,5 +79,17 @@ public class KolCommentAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
     public void addList(ArrayList<Visitable> list) {
         this.list.addAll(1, list);
         notifyItemRangeInserted(1, list.size());
+    }
+
+    public KolCommentProductViewModel getFooter() {
+        if (list.get(list.size() - 1) instanceof KolCommentHeaderViewModel)
+            return (KolCommentProductViewModel) list.get(list.size() - 1);
+        else
+            return null;
+    }
+
+    public void addHeader(KolCommentHeaderViewModel header) {
+        this.list.add(header);
+        notifyItemInserted(0);
     }
 }

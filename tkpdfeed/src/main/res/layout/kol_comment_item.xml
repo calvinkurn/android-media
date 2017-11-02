@@ -8,7 +8,7 @@
                 android:padding="@dimen/padding_small">
 
 
-    <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
+    <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"

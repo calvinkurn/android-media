@@ -17,9 +17,6 @@ public interface KolTypeFactory {
 
     int type(KolCommentHeaderViewModel viewModel);
 
-    int type(KolCommentProductViewModel viewModel);
-
-
     AbstractViewHolder createViewHolder(View view, int viewType);
 
 }

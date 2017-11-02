@@ -70,6 +70,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
@@ -957,8 +959,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, String id) {
-        startActivity(KolCommentActivity.getCallingIntent(getActivity(), id));
+    public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {
+        startActivity(KolCommentActivity.getCallingIntent(getActivity(),
+                new KolCommentHeaderViewModel(model.getAvatar(), model.getName(), model.getReview
+                        (), model.getTime()),
+                new KolCommentProductViewModel(model.getProductImage(), model.getProductName(),
+                        model.getProductPrice(), model.isWishlisted())
+        ));
     }
 
     @Override
