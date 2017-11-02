@@ -35,7 +35,7 @@ class POS extends Component {
 
     // this.props.dispatch(GetPaymentRate())
     // console.log(this.props)
-    // this.props.dispatch(reloadState('POS'))
+    this.props.dispatch(reloadState('POS'))
   }
 
 
