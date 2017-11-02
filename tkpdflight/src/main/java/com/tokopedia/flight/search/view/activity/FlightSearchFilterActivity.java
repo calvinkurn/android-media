@@ -1,9 +1,11 @@
 package com.tokopedia.flight.search.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,10 @@ import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightFilterCountPresenter;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightFilterCountView;
+import com.tokopedia.flight.search.view.fragment.FlightFilterAirlineFragment;
+import com.tokopedia.flight.search.view.fragment.FlightFilterDepartureFragment;
+import com.tokopedia.flight.search.view.fragment.FlightFilterRefundableFragment;
+import com.tokopedia.flight.search.view.fragment.FlightFilterTransitFragment;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFilterFragment;
 import com.tokopedia.flight.search.view.model.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
@@ -28,7 +34,6 @@ import javax.inject.Inject;
 public class FlightSearchFilterActivity extends BaseSimpleActivity
         implements FlightSearchFilterFragment.OnFlightSearchFilterFragmentListener, FlightFilterCountView {
 
-
     public static final String EXTRA_IS_RETURNING = "is_return";
     public static final String EXTRA_STAT_MODEL = "stat_model";
     public static final String EXTRA_FILTER_MODEL = "filter_model";
@@ -41,14 +46,6 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     private boolean isReturning;
     private FlightSearchStatisticModel flightSearchStatisticModel;
     private FlightFilterModel flightFilterModel;
-
-    public static void start (Context context,
-                              boolean isReturning,
-                              FlightSearchStatisticModel flightSearchStatisticModel,
-                              FlightFilterModel flightFilterModel){
-        Intent intent = createInstance(context, isReturning, flightSearchStatisticModel, flightFilterModel);
-        context.startActivity(intent);
-    }
 
     public static Intent createInstance(Context context,
                                         boolean isReturning,
@@ -88,7 +85,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
                 .build()
                 .inject(this);
         flightFilterCountPresenter.attachView(this);
-        flightFilterCountPresenter.getFlightCount(isReturning,true);
+        flightFilterCountPresenter.getFlightCount(isReturning,true, flightFilterModel);
     }
 
     private void onButtonFilterClicked() {
@@ -97,7 +94,38 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+            int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+            if (backStackCount == 1) {
+                setUpTitleByTag(null); // set default
+            } else { //2 or more
+                setUpTitleByTag(getSupportFragmentManager()
+                        .getBackStackEntryAt(backStackCount-2)
+                        .getName());
+            }
+            getSupportFragmentManager().popBackStack();
+        }
+        else {
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_FILTER_MODEL, flightFilterModel);
+            setResult(Activity.RESULT_OK, intent);
+            super.onBackPressed();
+        }
+    }
+
+    public void replaceFragment(Fragment fragment, String tag) {
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
+                .replace(R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
+        setUpTitleByTag (tag);
+    }
+
+    public void setUpTitleByTag(String tag) {
+        if (TextUtils.isEmpty(tag) || getTagFragment().equals(tag)) {
+            updateTitle(getTitle().toString());
+        } else{
+            updateTitle(String.valueOf(tag));
+        }
     }
 
     @Override
@@ -123,22 +151,22 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     @Override
     public void onTransitLabelClicked() {
-
+        replaceFragment(FlightFilterTransitFragment.newInstance(), FlightFilterTransitFragment.TAG);
     }
 
     @Override
     public void onAirlineLabelClicked() {
-
+        replaceFragment(FlightFilterAirlineFragment.newInstance(), FlightFilterAirlineFragment.TAG);
     }
 
     @Override
     public void onRefundLabelClicked() {
-
+        replaceFragment(FlightFilterRefundableFragment.newInstance(), FlightFilterRefundableFragment.TAG);
     }
 
     @Override
     public void onDepartureLabelClicked() {
-
+        replaceFragment(FlightFilterDepartureFragment.newInstance(), FlightFilterDepartureFragment.TAG);
     }
 
     @Override
@@ -154,6 +182,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     @Override
     public void onFilterModelChanged(FlightFilterModel flightFilterModel) {
         this.flightFilterModel = flightFilterModel;
+        flightFilterCountPresenter.getFlightCount(isReturning,true, flightFilterModel);
         //TODO rerun query
     }
 

@@ -12,6 +12,7 @@ import com.tokopedia.usecase.RequestParams;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * @author normansyahputa on 5/18/17.
@@ -25,14 +26,19 @@ public class AbsFlightSearchDataListSource extends DataListSource<FlightSearchDa
         super(dataListCacheManager, absFlightSearchDataListDBSource, dataListCloudManager);
     }
 
-    public Observable<List<FlightSearchSingleRouteDB>> getDataList(RequestParams requestParams) {
+    public Observable<List<FlightSearchSingleRouteDB>> getDataList(final RequestParams requestParams) {
 //        final HashMap<String, Object> map = generateGetParam(queryText);
 //        return getDataList(map);
         //TODO set query
         if (FlightSearchParamUtil.isFromCache(requestParams)) {
-            return super.getDataList(null);
+            return super.getCacheDataList(FlightSearchParamUtil.toHashMap(requestParams));
         } else {
-            return super.getCacheDataList(null);
+            return super.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightSearchSingleRouteDB>>>() {
+                @Override
+                public Observable<List<FlightSearchSingleRouteDB>> call(Boolean aBoolean) {
+                    return AbsFlightSearchDataListSource.super.getDataList(FlightSearchParamUtil.toHashMap(requestParams));
+                }
+            });
         }
     }
 
@@ -41,9 +47,9 @@ public class AbsFlightSearchDataListSource extends DataListSource<FlightSearchDa
 //        return getDataList(map);
         //TODO set query
         if (FlightSearchParamUtil.isFromCache(requestParams)) {
-            return super.getDataList(null);
+            return super.getCacheDataList(FlightSearchParamUtil.toHashMap(requestParams));
         } else {
-            return super.getCacheDataList(null);
+            return super.getDataList(FlightSearchParamUtil.toHashMap(requestParams));
         }
     }
 

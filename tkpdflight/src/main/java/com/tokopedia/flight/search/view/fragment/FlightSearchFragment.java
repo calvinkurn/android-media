@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -30,11 +30,12 @@ import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 import com.tokopedia.flight.search.view.model.FlightFilterModel;
-import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -46,14 +47,20 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
 
+    private static final String SAVED_FILTER_MODEL = "svd_filter_model";
+    private static final String SAVED_STAT_MODEL = "svd_stat_model";
+
     BottomActionView filterAndSortBottomAction;
+
+    private FlightFilterModel flightFilterModel;
+    private FlightSearchStatisticModel flightSearchStatisticModel;
 
     //TODO changeSelected with some Param
     int selected = 0;
 
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
-    private FloatingActionButton filterButton;
+    private boolean filterHasChanged;
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle args = new Bundle();
@@ -67,6 +74,13 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            flightFilterModel = new FlightFilterModel();
+            flightSearchStatisticModel = null;
+        } else {
+            flightFilterModel = savedInstanceState.getParcelable(SAVED_FILTER_MODEL);
+            flightSearchStatisticModel = savedInstanceState.getParcelable(SAVED_STAT_MODEL);
+        }
     }
 
     @Override
@@ -85,7 +99,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     protected void searchForPage(int page) {
-        flightSearchPresenter.searchDepartureFlight(false);
+        flightSearchPresenter.searchFlight(isReturning(), false, flightFilterModel);
     }
 
     @CallSuper
@@ -118,7 +132,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         return view;
     }
 
-    protected boolean isReturning(){
+    protected boolean isReturning() {
         return false;
     }
 
@@ -126,6 +140,15 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Override
     public void onResume() {
         super.onResume();
+        flightSearchPresenter.attachView(this);
+        if (filterHasChanged) {
+            currentPage = getStartPage();
+            adapter.clearData();
+            adapter.showRetryFull(false);
+            adapter.showLoadingFull(true);
+            flightSearchPresenter.searchFlight(isReturning(), true, flightFilterModel);
+            filterHasChanged = false;
+        }
     }
 
     @Override
@@ -187,8 +210,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 if (adapter.getData() == null || adapter.getData().size() == 0) {
                     return;
                 }
-                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),isReturning(),
-                        new FlightSearchStatisticModel(adapter.getData()),new FlightFilterModel()),
+                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
+                        isReturning(),
+                        flightSearchStatisticModel,
+                        flightFilterModel),
                         REQUEST_CODE_SEARCH_FILTER);
             }
         });
@@ -200,14 +225,27 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_SEARCH_FILTER:
+                    if (data != null && data.hasExtra(FlightSearchFilterActivity.EXTRA_FILTER_MODEL)) {
+                        flightFilterModel = (FlightFilterModel) data.getExtras().get(FlightSearchFilterActivity.EXTRA_FILTER_MODEL);
+                        filterHasChanged = true;
+                    }
                     break;
             }
         }
     }
 
     @Override
+    public void onSearchLoaded(@NonNull List<FlightSearchViewModel> list, int totalItem) {
+        super.onSearchLoaded(list, totalItem);
+        // TODO, will not work if api has paging, will be converted to usecase later
+        if (totalItem > 0 && flightSearchStatisticModel == null) {
+            flightSearchStatisticModel = new FlightSearchStatisticModel(list);
+        }
+    }
+
+    @Override
     public RequestParams getSearchFlightRequestParam() {
-        return FlightSearchUseCase.generateRequestParams(false,true);
+        return FlightSearchUseCase.generateRequestParams(false, true, flightFilterModel);
     }
 
     @Override
@@ -225,9 +263,17 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         hideLoading();
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         flightSearchPresenter.detachView();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVED_FILTER_MODEL, flightFilterModel);
+        outState.putParcelable(SAVED_STAT_MODEL, flightSearchStatisticModel);
     }
 }
