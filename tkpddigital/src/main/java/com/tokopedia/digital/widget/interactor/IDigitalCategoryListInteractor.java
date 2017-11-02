@@ -1,6 +1,6 @@
 package com.tokopedia.digital.widget.interactor;
 
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 
 import java.util.List;

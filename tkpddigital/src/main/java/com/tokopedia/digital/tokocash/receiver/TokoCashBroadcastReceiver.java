@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.digital.tokocash.listener.TokoCashReceivedListener;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 
 /**
  * Created by kris on 7/17/17. Tokopedia

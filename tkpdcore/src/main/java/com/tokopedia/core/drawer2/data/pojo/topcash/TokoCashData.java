@@ -35,6 +35,18 @@ public class TokoCashData implements Parcelable {
     private int link;
 
 
+    public static final Creator<TokoCashData> CREATOR = new Creator<TokoCashData>() {
+        @Override
+        public TokoCashData createFromParcel(Parcel in) {
+            return new TokoCashData(in);
+        }
+
+        @Override
+        public TokoCashData[] newArray(int size) {
+            return new TokoCashData[size];
+        }
+    };
+
     public Action getAction() {
         return mAction;
     }

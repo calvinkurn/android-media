@@ -827,7 +827,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 String seamlessUrl;
                 seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(url)),
                         getContext());
-                if (getActivity() instanceof Activity) {
+                if (getActivity() != null) {
                     if ((getActivity()).getApplication() instanceof TkpdCoreRouter) {
                         ((TkpdCoreRouter) (getActivity()).getApplication())
                                 .goToWallet(getActivity(), seamlessUrl);

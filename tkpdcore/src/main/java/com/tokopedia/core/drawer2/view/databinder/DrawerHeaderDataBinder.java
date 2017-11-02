@@ -41,6 +41,10 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
         void onGoToTopPoints(String topPointsUrl);
 
+        void onGoToTopCash(String topCashUrl);
+
+        void onGoToTopCashWithOtp(String topCashUrl);
+
         void onGoToProfileCompletion();
 
         void onWalletBalanceClicked(String redirectUrlBalance, String appLinkBalance);

@@ -3,11 +3,11 @@ package com.tokopedia.digital.widget.presenter;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 import com.tokopedia.digital.tokocash.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.digital.widget.interactor.IDigitalCategoryListInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalCategoryListView;

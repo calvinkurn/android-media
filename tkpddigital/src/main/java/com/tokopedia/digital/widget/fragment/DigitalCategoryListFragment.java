@@ -19,6 +19,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
@@ -37,7 +38,6 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.listener.TokoCashReceivedListener;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 import com.tokopedia.digital.tokocash.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.digital.widget.adapter.DigitalCategoryListAdapter;
@@ -422,7 +422,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     public void onReceivedTokoCashData(TokoCashData tokoCashData) {
-        this.tokoCashData = tokoCashData;
+
     }
 
     @Override

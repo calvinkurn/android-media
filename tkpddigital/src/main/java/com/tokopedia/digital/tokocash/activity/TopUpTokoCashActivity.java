@@ -15,10 +15,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -68,6 +70,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPresenter>
         implements TopUpTokoCashListener {
+    public static final String EXTRA_TOP_UP_AVAILABLE = "EXTRA_TOP_UP_AVAILABLE";
 
     @BindView(R2.id.balance_tokocash_layout)
     LinearLayout balanceTokoCashViewLayout;
@@ -86,8 +89,20 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     private ReceivedTokoCashView receivedTokoCashView;
     private BottomSheetView bottomSheetTokoCashView;
 
-    public static Intent newInstance(Context context) {
-        return new Intent(context, TopUpTokoCashActivity.class);
+    private boolean topUpAvailable; //TODO ini untuk atur ada topup atau tidak
+
+    @SuppressWarnings("unused")
+    @DeepLink(Constants.Applinks.WALLET_HOME)
+    public static Intent getcallingIntent(Context context, Bundle extras) {
+        boolean topUpVisible = extras.getBoolean(
+                Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY, true
+        );
+        return TopUpTokoCashActivity.newInstance(context, topUpVisible);
+    }
+
+    private static Intent newInstance(Context context, boolean topUpAvailable) {
+        return new Intent(context, TopUpTokoCashActivity.class)
+                .putExtra(EXTRA_TOP_UP_AVAILABLE, topUpAvailable);
     }
 
     @Override
@@ -102,7 +117,7 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-
+        this.topUpAvailable = extras.getBoolean(EXTRA_TOP_UP_AVAILABLE, true);
     }
 
     @Override
@@ -244,7 +259,7 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
         }
         topUpTokoCashView.renderDataTopUp(categoryData, operatorSelected);
         topUpTokoCashView.setListener(getActionListenerTopUpView());
-        topupTokoCashViewLayout.addView(topUpTokoCashView);
+        if (topUpAvailable) topupTokoCashViewLayout.addView(topUpTokoCashView);
     }
 
     private TopUpTokoCashView.ActionListener getActionListenerTopUpView() {

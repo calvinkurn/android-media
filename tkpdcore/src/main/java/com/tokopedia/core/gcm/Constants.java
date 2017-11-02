@@ -106,6 +106,7 @@ public interface Constants {
         String OFFICIAL_STORES = "tokopedia://official-stores";
         String RESCENTER = "tokopedia://resolution/{resolution_id}";
         String REFERRAL = "tokopedia://referral";
+        String WALLET_HOME = "tokopedia://wallet";
         String WALLET_ACTIVATION = "tokopedia://wallet/activation";
         String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
         String BROWSER = "tokopedia://browser";
@@ -141,5 +142,9 @@ public interface Constants {
         String NOTIFICATION_SALES = "notification_sales";
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
+    }
+
+    interface AppLinkQueryParameter {
+        String WALLET_TOP_UP_VISIBILITY = "top_up_visible";
     }
 }

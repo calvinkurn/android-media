@@ -1,6 +1,7 @@
 package com.tokopedia.digital.tokocash.listener;
 
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 
 /**
  * Created by kris on 7/17/17. Tokopedia

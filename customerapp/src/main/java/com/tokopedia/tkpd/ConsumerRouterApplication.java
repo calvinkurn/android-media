@@ -49,7 +49,6 @@ import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
-import com.tokopedia.digital.tokocash.activity.TopUpTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
@@ -74,9 +73,6 @@ import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.datepicker.DatePickerUtil;
@@ -111,7 +107,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
  */
 
 public abstract class ConsumerRouterApplication extends MainApplication implements
-        TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter,
+        TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter {
 
@@ -141,7 +137,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                 .appComponent(getApplicationComponent())
-        .reactNativeModule(new ReactNativeModule(this));
+                .reactNativeModule(new ReactNativeModule(this));
     }
 
     @Override
@@ -249,7 +245,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent instanceIntentTokoCashTopUp() {
-        return TopUpTokoCashActivity.newInstance(this);
+        return null;
     }
 
     @Override
@@ -578,7 +574,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,customSubject, source);
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
     }
 
     @Override
@@ -643,7 +639,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 : DigitalWebActivity.newInstance(context, appLinkScheme);
     }
 
-}
 
     @Override
     public Observable<GMFeaturedProductDomainModel> getFeaturedProduct() {
@@ -674,8 +669,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return Observable.just(dataCashbackModels);
     }
 
-    public void goToAddProduct(Activity activity){
-        if(activity != null) {
+    public void goToAddProduct(Activity activity) {
+        if (activity != null) {
             ProductAddActivity.start(activity);
         }
     }

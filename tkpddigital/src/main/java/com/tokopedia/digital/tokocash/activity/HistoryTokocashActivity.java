@@ -17,10 +17,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
@@ -101,6 +103,12 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     private HistoryTokoCashAdapter adapterHistory;
     private EndlessRecyclerviewListener endlessRecyclerviewListener;
     private CompositeSubscription compositeSubscription;
+
+    @SuppressWarnings("unused")
+    @DeepLink(Constants.Applinks.WALLET_TRANSACTION_HISTORY)
+    public static Intent getcallingIntent(Context context, Bundle extras) {
+        return HistoryTokocashActivity.newInstance(context);
+    }
 
     public static Intent newInstance(Context context) {
         return new Intent(context, HistoryTokocashActivity.class);
