@@ -69,25 +69,60 @@ public abstract class DataListSource<T, U> {
                 if (isCacheExpired) {
                     return getRefreshedData(params);
                 } else {
-                    return dataListDBManager.getData(params).flatMap(new Func1<List<U>, Observable<List<U>>>() {
+                    return getCacheDataList(params);
+                }
+            }
+        });
+    }
+
+    public Observable<List<U>> getCacheDataList(final HashMap<String, Object> params) {
+        return dataListDBManager.getData(params).flatMap(new Func1<List<U>, Observable<List<U>>>() {
+            @Override
+            public Observable<List<U>> call(List<U> cacheList) {
+                if (cacheList == null || cacheList.size() == 0) {
+                    return dataListDBManager.isDataAvailable().flatMap(new Func1<Boolean, Observable<List<U>>>() {
                         @Override
-                        public Observable<List<U>> call(List<U> cacheList) {
-                            if (cacheList == null || cacheList.size() == 0) {
-                                return dataListDBManager.isDataAvailable().flatMap(new Func1<Boolean, Observable<List<U>>>() {
-                                    @Override
-                                    public Observable<List<U>> call(Boolean isDataAvalable) {
-                                        if (isDataAvalable) {
-                                            return Observable.just((List<U>) new ArrayList<U>());
-                                        } else {
-                                            return getRefreshedData(params);
-                                        }
-                                    }
-                                });
+                        public Observable<List<U>> call(Boolean isDataAvalable) {
+                            if (isDataAvalable) {
+                                return Observable.just((List<U>) new ArrayList<U>());
                             } else {
-                                return Observable.just(cacheList);
+                                return getRefreshedData(params);
                             }
                         }
                     });
+                } else {
+                    return Observable.just(cacheList);
+                }
+            }
+        });
+    }
+
+    protected Observable<Integer> getDataListCount(final HashMap<String, Object> params) {
+        return dataListCacheManager.isExpired().flatMap(new Func1<Boolean, Observable<Integer>>() {
+            @Override
+            public Observable<Integer> call(Boolean isCacheExpired) {
+                if (isCacheExpired) {
+                    return getRefreshedData(params).flatMap(new Func1<List<U>, Observable<Integer>>() {
+                        @Override
+                        public Observable<Integer> call(List<U> us) {
+                            return Observable.just(us == null? 0: us.size());
+                        }
+                    });
+                } else {
+                    return getCacheDataListCount(params);
+                }
+            }
+        });
+    }
+
+    public Observable<Integer> getCacheDataListCount(final HashMap<String, Object> params) {
+        return dataListDBManager.getData(params).flatMap(new Func1<List<U>, Observable<Integer>>() {
+            @Override
+            public Observable<Integer> call(List<U> cacheList) {
+                if (cacheList == null || cacheList.size() == 0) {
+                    return Observable.just(0);
+                } else {
+                    return Observable.just(cacheList.size());
                 }
             }
         });

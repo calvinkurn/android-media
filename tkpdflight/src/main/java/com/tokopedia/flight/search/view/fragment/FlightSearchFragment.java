@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,8 +29,11 @@ import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
+import com.tokopedia.flight.search.view.model.FlightFilterModel;
+import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -48,6 +53,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
+    private FloatingActionButton filterButton;
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle args = new Bundle();
@@ -79,14 +85,41 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     protected void searchForPage(int page) {
-        flightSearchPresenter.searchDepartureFlight();
+        flightSearchPresenter.searchDepartureFlight(false);
     }
 
     @CallSuper
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy <= 0) {
+                    if (!filterAndSortBottomAction.isShown()) {
+                        filterAndSortBottomAction.show();
+                    }
+                } else {
+                    if (filterAndSortBottomAction.isShown()) {
+                        filterAndSortBottomAction.hide();
+                    }
+                }
+            }
+        });
+        return view;
+    }
+
+    protected boolean isReturning(){
+        return false;
     }
 
     @CallSuper
@@ -151,7 +184,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity()), REQUEST_CODE_SEARCH_FILTER);
+                if (adapter.getData() == null || adapter.getData().size() == 0) {
+                    return;
+                }
+                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),isReturning(),
+                        new FlightSearchStatisticModel(adapter.getData()),new FlightFilterModel()),
+                        REQUEST_CODE_SEARCH_FILTER);
             }
         });
     }
@@ -169,7 +207,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public RequestParams getSearchFlightRequestParam() {
-        return FlightSearchUseCase.generateRequestParams(false);
+        return FlightSearchUseCase.generateRequestParams(false,true);
     }
 
     @Override

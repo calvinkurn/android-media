@@ -148,7 +148,7 @@ public class DecimalRangeInputView extends BaseCustomView {
         maxLabelTextView.setText(maxText);
     }
 
-    private void setPower(double power) {
+    public void setPower(double power) {
         if (power > 0) {
             this.power = power;
         } else {
