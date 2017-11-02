@@ -44,6 +44,7 @@ class PaymentInvoice extends Component {
   }
 
   _sendInvoice = () => {
+    console.log(this.props)
     const data = Object.assign(
       {}, 
       JSON.parse(this.props.screenProps.data.data), 
@@ -324,15 +325,14 @@ const ds = new ListView.DataSource({
 const mapStateToProps = (state, ownProps) => {
   const objData = JSON.parse(ownProps.screenProps.data.data)
   const itemList = ds.cloneWithRows(state.paymentInvoice.items);
-  const payment_param = state.checkout.data.payment_param
-  console.log(payment_param)
+  console.log(state)
   return {
     ...state.paymentInvoice,
     itemList,
     bankLogo: objData.bankLogo, 
     bankName: objData.bankName,
     invoiceNo: objData.invoiceRef,
-    payment_param
+    payment_param: state.checkout.data.payment_param,
   }
 }
 

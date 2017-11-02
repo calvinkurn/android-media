@@ -139,7 +139,6 @@ const makePaymentToNativeStepOne = (data_payment) => {
 
   return NetworkModule.getResponseJson(`${data_payment.base_api_url_payment}`, `POST`, JSON.stringify(data), true)
     .then(response => {
-      console.log(response)
       const jsonResponse = JSON.parse(response)
       console.log(jsonResponse)
       if (jsonResponse.data.status !== 'ERROR'){
@@ -201,9 +200,7 @@ const makePaymentToNativeStepTwo = (paymentToNative_getParams, data_payment, loc
   
   return NetworkModule.getResponseJson(`${data_payment.base_api_url_scrooge}`, `POST`, payloadString, true)
     .then(res => {
-      console.log(res)
       const jsonResponse = Object.assign({}, JSON.parse(res), {payment_param: payloads})
-      console.log(jsonResponse)
       if (jsonResponse.status === '200 Ok'){
         if (jsonResponse.data.code === 200 && jsonResponse.data.message === 'Success'){
           return jsonResponse
