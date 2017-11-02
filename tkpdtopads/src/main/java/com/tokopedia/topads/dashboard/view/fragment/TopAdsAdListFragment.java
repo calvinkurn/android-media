@@ -34,6 +34,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.topads.dashboard.view.listener.TopAdsFilterViewListener;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.keyword.view.listener.AdListMenuListener;
@@ -47,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class TopAdsAdListFragment<P extends
         TopAdsAdListPresenter, T extends ItemType> extends TopAdsBaseListFragment<P, T> implements
-        AdListMenuListener, BaseListViewListener<T>,
+        AdListMenuListener, BaseListViewListener<T>, TopAdsFilterViewListener,
         BaseListAdapter.Callback<T>,SearchInputView.Listener {
 
     @Override
@@ -384,5 +385,10 @@ public abstract class TopAdsAdListFragment<P extends
         if (searchInputView != null) {
             searchInputView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
+    }
+
+    @Override
+    public View getFilterVIew() {
+        return buttonActionView;
     }
 }
