@@ -90,4 +90,15 @@ public class FlightAirlineDataListDBSource implements DataListDBSource<AirlineDa
             }
         });
     }
+
+    @Override
+    public Observable<Integer> getDataCount(HashMap<String, Object> params) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                long count = new Select(Method.count()).from(FlightAirlineDB.class).count();
+                subscriber.onNext((int) count);
+            }
+        });
+    }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.flight.search.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +37,15 @@ public class FlightSearchReturnFragment extends FlightSearchFragment {
 
     @Override
     protected final void searchForPage(int page) {
-        flightSearchPresenter.searchReturningFlight();
+        flightSearchPresenter.searchReturningFlight(false);
     }
 
     protected int getFragmentLayout() {
         return R.layout.fragment_search_return;
+    }
+
+    protected boolean isReturning(){
+        return true;
     }
 
     @Override

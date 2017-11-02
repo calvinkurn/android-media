@@ -139,8 +139,7 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
             for (int i = 0, sizei = flightSearchViewModelList.size(); i<sizei; i++) {
                 FlightSearchViewModel flightSearchViewModel = flightSearchViewModelList.get(i);
                 List<Route> routeList = flightSearchViewModel.getRouteList();
-                String airLineNameString = "";
-                String airLineLogoString = "";
+                List<FlightAirlineDB> airlineDBArrayList = new ArrayList<>();
                 for (int j = 0, sizej = routeList.size(); j < sizej; j++) {
                     Route route = routeList.get(j);
                     String airlineID = route.getAirline();
@@ -149,18 +148,9 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
                     route.setAirlineName(airlineNameFromMap);
                     route.setAirlineLogo(airlineLogoFromMap);
 
-                    if (!TextUtils.isEmpty(airLineNameString)) {
-                        airLineNameString+="-";
-                    }
-                    airLineNameString+=airlineNameFromMap;
-
-                    if (!TextUtils.isEmpty(airLineLogoString)) {
-                        airLineLogoString+="-";
-                    }
-                    airLineLogoString+=airlineLogoFromMap;
+                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, airlineNameFromMap, airlineLogoFromMap));
                 }
-                flightSearchViewModel.setAirlineName(airLineNameString);
-                flightSearchViewModel.setAirlineLogo(airLineLogoString);
+                flightSearchViewModel.setAirlineDataList(airlineDBArrayList);
             }
             FlightSearchMerge flightSearchMerge = new FlightSearchMerge(flightSearchViewModelList, true);
             return Observable.just(flightSearchMerge);
@@ -169,8 +159,8 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
         }
     }
 
-    public static RequestParams generateRequestParams(boolean isReturning) {
-        return FlightSearchParamUtil.generateRequestParams(isReturning);
+    public static RequestParams generateRequestParams(boolean isReturning, boolean fromCache) {
+        return FlightSearchParamUtil.generateRequestParams(isReturning, fromCache);
     }
 
 }

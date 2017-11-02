@@ -117,4 +117,16 @@ public class FlightAirportDataListDBSource implements DataListDBSource<FlightAir
             }
         });
     }
+
+    @Override
+    public Observable<Integer> getDataCount(HashMap<String, Object> params) {
+        return getDataCount(params).flatMap(new Func1<Integer, Observable<Integer>>() {
+            @Override
+            public Observable<Integer> call(Integer integer) {
+                long count = new Select(Method.count()).from(FlightAirportDB.class).count();
+                return Observable.just((int)count);
+            }
+        });
+    }
+
 }

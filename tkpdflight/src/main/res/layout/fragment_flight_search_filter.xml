@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_apps"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -32,18 +34,16 @@
                 style="@style/LabelLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_ms"
-                app:driv_label_max="@string/flight_search_filter_duration_max_label"
-                app:driv_label_min="@string/flight_search_filter_duration_min_label" />
+                app:driv_label_max="@string/flight_search_filter_duration_min_label"
+                app:driv_label_min="@string/flight_search_filter_duration_max_label" />
 
             <com.tokopedia.design.label.selection.text.SelectionTextLabelView
                 android:id="@+id/selection_text_label_layout_transit"
                 style="@style/LabelLayout"
-                android:layout_marginTop="@dimen/margin_ms"
                 app:slv_title="@string/flight_search_filter_transit" />
 
             <com.tokopedia.design.label.selection.text.SelectionTextLabelView
-                android:id="@+id/selection_text_label_layout_airplane"
+                android:id="@+id/selection_text_label_layout_airline"
                 style="@style/LabelLayout"
                 app:slv_title="@string/flight_search_filter_airplane" />
 
@@ -60,8 +60,4 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <Button
-        android:id="@+id/button_submit"
-        style="@style/Button.Submit.Green"
-        android:text="@string/flight_search_search_ticket" />
 </LinearLayout>
