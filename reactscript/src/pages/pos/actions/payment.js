@@ -3,7 +3,8 @@ import {
   BASE_API_URL_PAYMENT,
   BASE_API_URL_SCROOGE,
   BASE_API_URL_PCIDSS,
-  BASE_API_URL_ORDER
+  BASE_API_URL_ORDER,
+  BASE_API_URL,
 } from '../lib/api.js'
 import { 
   getUserId, 
@@ -44,7 +45,8 @@ const getBaseAPI = (env) => {
       api_url_payment: `${BASE_API_URL_PAYMENT.PRODUCTION}`,
       api_url_scrooge: `${BASE_API_URL_SCROOGE.PRODUCTION}`,
       api_url_pcidss: `${BASE_API_URL_PCIDSS.PRODUCTION}`,
-      api_url_order: `${BASE_API_URL_ORDER.PRODUCTION}`
+      api_url_order: `${BASE_API_URL_ORDER.PRODUCTION}`,
+      base_api_url: `${BASE_API_URL.PRODUCTION}`
     }
     return data_api
 
@@ -53,7 +55,8 @@ const getBaseAPI = (env) => {
       api_url_payment: `${BASE_API_URL_PAYMENT.STAGING}`,
       api_url_scrooge: `${BASE_API_URL_SCROOGE.STAGING}`,
       api_url_pcidss: `${BASE_API_URL_PCIDSS.STAGING}`,
-      api_url_order: `${BASE_API_URL_ORDER.STAGING}`
+      api_url_order: `${BASE_API_URL_ORDER.STAGING}`,
+      base_api_url: `${BASE_API_URL.STAGING}`
     }
     return data_api
   }
@@ -123,13 +126,13 @@ const fetchTransactionHistory = async (page) => {
   const user_id = await getUserId()
   const addr_id = await getAddrId()
   const data = {
-    user_id,
-    addr_id,
+    user_id: parseInt(user_id),
+    addr_id: parseInt(addr_id),
     per_page: 10,
     page: page,
     os_type: '1'
   }
-  const txHistory = await apiGetTransactionHistory(`${api_url.api_url_order}/api/order/i/v1/o2o/get_order_list_details`, data)
+  const txHistory = await apiGetTransactionHistory(`${api_url.base_api_url}/o2o/v1/order/get_history`, data)
   return txHistory
 }
 

@@ -306,11 +306,13 @@ public class OTPPresenter implements OTP.Presenter {
                         new Func2<PaymentStatusDomain, CreateOrderDomain, PaymentStatusDomain>() {
                             @Override
                             public PaymentStatusDomain call(PaymentStatusDomain paymentStatusDomain, CreateOrderDomain createOrderDomain) {
-                                if (createOrderDomain.isStatus()) {
+                                if (paymentStatusDomain.getState() == 3 && createOrderDomain.isStatus()) {
                                     paymentStatusDomain.setOrderId(createOrderDomain.getOrderId());
                                     paymentStatusDomain.setInvoiceRef(createOrderDomain.getInvoiceRef());
+                                    return paymentStatusDomain;
+                                } else {
+                                    throw new RuntimeException("Payment Failed");
                                 }
-                                return paymentStatusDomain;
                             }
                         }
                 );
@@ -328,8 +330,6 @@ public class OTPPresenter implements OTP.Presenter {
             createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.CREDITCARD + "");
         } else if (paymentStatusDomain.getGatewayCode().equals(INSTALLMENT)) {
             createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.INSTALLMENT + "");
-        } else {
-            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.PAYMENTGLOBAL + "");
         }
         createOrderParameter.setUserDefinedString(paymentStatusDomain.getUserDefinedValue());
         createOrderParameter.setIpAddress("");

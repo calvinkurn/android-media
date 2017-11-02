@@ -7,7 +7,7 @@ import { Text } from '../../../common/TKPText'
 import Processing from '../../Processing'
 import { NavigationModule } from 'NativeModules'
 import { connect } from 'react-redux'
-import { PaymentCheckoutToNative } from '../../../actions/index'
+import { PaymentCheckoutToNative, GetPaymentRate } from '../../../actions/index'
 import { icons } from '../../../lib/config'
 import numeral from 'numeral'
 
@@ -23,6 +23,7 @@ class CartItemList extends Component {
 
   componentWillMount() {
     this.props.fetchCartList()
+    this.props.dispatch(GetPaymentRate())
   }
 
   toggleScreen = (visible) => {
