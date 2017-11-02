@@ -74,11 +74,11 @@ class PaymentBank extends Component {
 
       } else {
         // console.log(selectedEmiId)
-        // console.log(selectEmi)
+        // // console.log(selectEmi)
         // console.log(installmentCalc)
         // console.log(noInstallmentCalc)
         // console.log(payment_amount)
-        const payment_with_rates = selectedEmiId ? (payment_amount + ( this.props.paymentRate_CreditCardInterestRate / 100 * payment_amount )) : ( noInstallmentCalc )
+        const payment_with_rates = selectedEmiId ? payment_amount : noInstallmentCalc 
         // console.log(payment_with_rates)
 
         this.props.navigation.navigate('Payment', {
