@@ -127,7 +127,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                         .setMode(BottomSheetBuilder.MODE_LIST)
                         .addTitleItem(getString(R.string.flight_search_sort_title));
 
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), null, selected == FlightSortOption.EARLIEST_ARRIVAL);
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), null, selected == FlightSortOption.EARLIEST_DEPARTURE);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), null, selected == FlightSortOption.LATEST_DEPARTURE);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration), null, selected == FlightSortOption.SHORTEST_DURATION);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration), null, selected == FlightSortOption.LONGEST_DURATION);
