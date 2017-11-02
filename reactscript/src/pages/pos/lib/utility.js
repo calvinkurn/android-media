@@ -14,6 +14,12 @@ export const getAddrId = () => {
       .catch(err => console.log(err))
 }
 
+export const getAddrName = () => {
+    return SessionModule.getAddressName()
+        .then(res => { return res })
+        .catch(err => console.log(err))
+}
+
 export const getShopId = () => {
     return SessionModule.getShopId()
       .then(res => { return res })

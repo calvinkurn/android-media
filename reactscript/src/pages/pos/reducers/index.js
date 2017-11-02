@@ -26,6 +26,7 @@ import {
   MAKE_PAYMENT_V2,
   RELOAD_STATE,
   GET_PAYMENT_RATE,
+  SEND_EMAIL,
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
 // import { icons } from '../components/icon/index'
@@ -276,6 +277,7 @@ const checkout = (state = {
         status_msg: 'PROCESSING'
       }
     case `${PAYMENT_CHECKOUT_TO_NATIVE}_${FULFILLED}`:
+      console.log(action.payload)
       return {
         ...state,
         isFetchingParamsCheckout: false,
@@ -613,6 +615,36 @@ const transactionHistory = (state = {
   return state;
 }
 
+const sendEmailResponse = (state = {
+  isSuccess: false,
+  isSending: false,
+  message: []
+}, action) => {
+  switch (action.type) {
+    case `${SEND_EMAIL}_${PENDING}`:
+      return {
+        ...state,
+        isSending: true,
+        isSuccess: false
+      }
+    case `${SEND_EMAIL}_${FULFILLED}`:
+      return {
+        ...state,
+        isSending: false,
+        isSuccess: true
+      }
+    case `${SEND_EMAIL}_${REJECTED}`:
+      return {
+        ...state,
+        isSending: false,
+        isSuccess: false
+      }
+    
+    default:
+      return state
+  }
+}
+
 
 const appReducer = combineReducers({
   products,
@@ -626,6 +658,7 @@ const appReducer = combineReducers({
   transactionHistory,
   shop,
   paymentRate,
+  sendEmailResponse
 })
 
 const rootReducer = (state, action) => {

@@ -8,7 +8,7 @@ import Dash from 'react-native-dash';
 
 import PopUp from '../../../common/TKPPopupModal'
 import { Text } from '../../../common/TKPText'
-import { reloadState, clearCart } from '../../../actions/index'
+import { reloadState, clearCart, sendEmail } from '../../../actions/index'
 import { icons } from '../../../lib/config'
 
 
@@ -35,12 +35,21 @@ class PaymentInvoice extends Component {
     if (!emailValidation(this.state.email)) {
       emailErrorMessage = "Mohon masukan alamat email Anda dengan format contoh@email.com";
     } else {
-      dispatch(sendEmail(""))
+      this._sendInvoice()
       this.popupDialog.show()
     }
     this.setState({
       emailErrorMessage
     })
+  }
+
+  _sendInvoice = () => {
+    const data = Object.assign(
+      {}, 
+      JSON.parse(this.props.screenProps.data.data), 
+      { email_address: this.state.email, transaction_date: this.props.payment_param.transaction_date}
+    )
+    this.props.dispatch(sendEmail(this.state.email, data))
   }
 
   _renderProductList = ({item}) => {
@@ -314,14 +323,16 @@ const ds = new ListView.DataSource({
 
 const mapStateToProps = (state, ownProps) => {
   const objData = JSON.parse(ownProps.screenProps.data.data)
-  // console.log(objData)
   const itemList = ds.cloneWithRows(state.paymentInvoice.items);
+  const payment_param = state.checkout.data.payment_param
+  console.log(payment_param)
   return {
     ...state.paymentInvoice,
     itemList,
     bankLogo: objData.bankLogo, 
     bankName: objData.bankName,
     invoiceNo: objData.invoiceRef,
+    payment_param
   }
 }
 
