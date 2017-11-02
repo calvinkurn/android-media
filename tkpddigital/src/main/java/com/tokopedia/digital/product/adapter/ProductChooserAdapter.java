@@ -97,12 +97,23 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @BindView(R2.id.empty_stock_notification)
         TextView emptyStockNotification;
 
+        private Product product;
+
         ItemDescAndPriceHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
+                        actionListener.onProductItemSelected(product);
+                    }
+                }
+            });
         }
 
         public void bind(Product product) {
+            this.product = product;
             setViewPriceDescription(product);
             setProductAvailability(product);
         }
@@ -120,12 +131,6 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         .getResources().getColor(R.color.white));
             } else {
                 enableView();
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        actionListener.onProductItemSelected(product);
-                    }
-                });
                 emptyStockNotification.setVisibility(View.GONE);
             }
         }
@@ -146,12 +151,23 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @BindView(R2.id.empty_stock_notification)
         TextView emptyStockNotification;
 
+        private Product product;
+
         ItemPriceAdmin(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
+                        actionListener.onProductItemSelected(product);
+                    }
+                }
+            });
         }
 
         public void bind(Product product) {
+            this.product = product;
             setViewPriceAdditionalFee(product);
             setProductAvailability(product);
         }
@@ -175,12 +191,6 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         .getResources().getColor(R.color.white));
             } else {
                 enableView();
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        actionListener.onProductItemSelected(product);
-                    }
-                });
                 emptyStockNotification.setVisibility(View.GONE);
             }
         }
@@ -209,12 +219,23 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @BindView(R2.id.empty_stock_notification)
         TextView emptyStockNotification;
 
+        private Product product;
+
         ItemHolderPromoProduct(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
+                        actionListener.onProductItemSelected(product);
+                    }
+                }
+            });
         }
 
         void bind(Product product) {
+            this.product = product;
             setViewPromo(product);
             setProductAvailability(product);
         }
@@ -248,12 +269,6 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         .getResources().getColor(R.color.white));
             } else {
                 enableView();
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        actionListener.onProductItemSelected(product);
-                    }
-                });
                 emptyStockNotification.setVisibility(View.GONE);
             }
         }

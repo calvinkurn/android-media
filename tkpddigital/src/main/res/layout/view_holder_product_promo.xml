@@ -18,12 +18,12 @@
 
     <TextView
         android:id="@+id/product_promo_tag"
-        android:textColor="@color/red_600"
+        android:textColor="@color/orange_900"
         android:layout_marginStart="@dimen/margin_ms"
         android:layout_marginLeft="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/padding_vs"
         tools:text="Promo tag"
-        android:layout_toEndOf="@+id/product_promo_title"
-        android:layout_toRightOf="@+id/product_promo_title"
+        android:layout_below="@+id/product_promo_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -31,7 +31,7 @@
         android:id="@+id/product_promo_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/product_promo_title"
+        android:layout_below="@id/product_promo_tag"
         tools:text="Promo description"
         android:textColor="@color/grey_600"
         android:layout_marginBottom="@dimen/padding_vs"
