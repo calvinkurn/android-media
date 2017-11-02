@@ -10,11 +10,14 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.kol.KolType
 public class KolCommentHeaderViewModel extends KolCommentViewModel implements
         Visitable<KolTypeFactory> {
     boolean canLoadMore;
+    boolean isLoading;
+
 
     public KolCommentHeaderViewModel(String avatarUrl, String name, String review, String time,
                                      boolean canLoadMore) {
         super(avatarUrl, name, review, time);
         this.canLoadMore = canLoadMore;
+        this.isLoading = false;
     }
 
     @Override
@@ -28,5 +31,13 @@ public class KolCommentHeaderViewModel extends KolCommentViewModel implements
 
     public void setCanLoadMore(boolean canLoadMore) {
         this.canLoadMore = canLoadMore;
+    }
+
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
     }
 }

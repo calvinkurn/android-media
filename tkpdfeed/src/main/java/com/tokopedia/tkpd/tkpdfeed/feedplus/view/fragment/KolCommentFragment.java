@@ -133,7 +133,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
                 "Nisie5", "Komen komen aja", "10 hari yang lalu"));
         list.add(new KolCommentProductViewModel("https://imagerouter.tokopedia" +
                 ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
-                "Topi si Nisie", "Rp 250.000",false));
+                "Topi si Nisie", "Rp 250.000", false));
         adapter.setList(list);
         adapter.notifyDataSetChanged();
     }
@@ -145,14 +145,19 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     @Override
     public void loadMoreComments() {
+        if (adapter.getHeader() != null) {
+            adapter.getHeader().setLoading(true);
+            adapter.notifyItemChanged(0);
+        }
         presenter.loadMoreComments();
     }
 
     @Override
     public void onSuccessGetComments(KolComments kolComments) {
 
-        if(adapter.getHeader() != null){
+        if (adapter.getHeader() != null) {
             adapter.getHeader().setCanLoadMore(true);
+            adapter.getHeader().setLoading(false);
             adapter.notifyItemChanged(0);
         }
 

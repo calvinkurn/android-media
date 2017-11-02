@@ -70,10 +70,16 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
         else
             loadMore.setVisibility(View.GONE);
 
+        if(element.isLoading())
+            progressBar.setVisibility(View.VISIBLE);
+        else
+            progressBar.setVisibility(View.GONE);
+
         loadMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 element.setCanLoadMore(false);
+                element.setLoading(true);
                 progressBar.setVisibility(View.VISIBLE);
                 loadMore.setVisibility(View.GONE);
                 viewListener.loadMoreComments();
