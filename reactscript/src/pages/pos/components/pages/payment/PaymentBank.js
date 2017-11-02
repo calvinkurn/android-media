@@ -73,8 +73,10 @@ class PaymentBank extends Component {
         // NavigationModule.navigate("posapp://payment/scan", JSON.stringify(data_scan_params))
 
       } else {
-        // console.log(selectedEmiId)
-        // console.log(selectEmi)
+        console.log(selectedEmiId)
+        console.log(selectEmi)
+        console.log(installmentCalc)
+        console.log(noInstallmentCalc)
         this.props.navigation.navigate('Payment', {
           checkout_data: this.props.screenProps.checkout_data,
           selectBank: selectedBank,
@@ -82,7 +84,7 @@ class PaymentBank extends Component {
           selectedEmiId: selected_installment,
           selectedBankData: selectedBankData,
           total_payment: payment_amount,
-          total_payment_with_rates_or_fees: selectedEmiId ? installmentCalc : noInstallmentCalc,
+          total_payment_with_rates_or_fees: noInstallmentCalc,
         })
       }
     }
