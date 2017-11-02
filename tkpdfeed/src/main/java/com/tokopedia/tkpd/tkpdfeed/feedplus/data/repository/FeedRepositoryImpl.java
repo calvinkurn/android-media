@@ -2,10 +2,12 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FeedFactory;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.KolCommentSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.CheckFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolComments;
 
 import java.util.List;
 
@@ -18,9 +20,12 @@ import rx.Observable;
 public class FeedRepositoryImpl implements FeedRepository {
 
     private FeedFactory feedFactory;
+    private KolCommentSource kolCommentSource;
 
-    public FeedRepositoryImpl(FeedFactory feedFactory) {
+    public FeedRepositoryImpl(FeedFactory feedFactory,
+                              KolCommentSource kolCommentSource) {
         this.feedFactory = feedFactory;
+        this.kolCommentSource = kolCommentSource;
     }
 
     @Override
@@ -51,5 +56,10 @@ public class FeedRepositoryImpl implements FeedRepository {
     @Override
     public Observable<CheckFeedDomain> checkNewFeed(RequestParams parameters) {
         return feedFactory.createCloudCheckNewFeedDataSource().checkNewFeed(parameters);
+    }
+
+    @Override
+    public Observable<KolComments> getKolComments(RequestParams requestParams) {
+        return kolCommentSource.getComments(requestParams);
     }
 }

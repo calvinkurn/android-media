@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
 
@@ -13,7 +15,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
  * @author by nisie on 10/27/17.
  */
 
-public class KolCommentActivity extends TActivity {
+public class KolCommentActivity extends TActivity implements HasComponent {
 
     private static final String ARGS_ID = "id";
 
@@ -48,5 +50,10 @@ public class KolCommentActivity extends TActivity {
         Intent intent = new Intent(context, KolCommentActivity.class);
         intent.putExtra(ARGS_ID, id);
         return intent;
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }
