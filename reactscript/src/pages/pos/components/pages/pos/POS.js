@@ -28,11 +28,15 @@ class POS extends Component {
     }
   }
 
-  // componentDidMount(){
+
+  componentDidMount(){
+    // Todo List:
+    // 1. When user checkout, send event emitter to clear state but Keep the carts
+
     // this.props.dispatch(GetPaymentRate())
-  //   console.log(this.props)
-  //   this.props.dispatch(reloadState('POS'))
-  // }
+    // console.log(this.props)
+    // this.props.dispatch(reloadState('POS'))
+  }
 
 
 
