@@ -21,6 +21,8 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.SendDiscussionUs
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.SendDiscussionV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.AcceptSolutionSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.AskHelpSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.CancelComplaintSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetDetailResChatSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ReplyDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
@@ -107,14 +109,32 @@ public class DetailResChatFragmentPresenter
     public void loadConversation(String resolutionId, boolean isFirstInit) {
         mainView.showProgressBar();
         getResChatUseCase.execute(
-                getResChatUseCase.getResChatUseCaseParam(String.valueOf(resolutionId)),
+                GetResChatUseCase.getResChatUseCaseParam(String.valueOf(resolutionId)),
                 new GetDetailResChatSubscriber(mainView, isFirstInit));
     }
 
     @Override
-    public void btnAcceptSolutionClicked() {
+    public void actionAcceptSolution() {
         mainView.showProgressBar();
-        acceptSolutionUseCase.execute(AcceptSolutionUseCase.getParams(resolutionId), new AcceptSolutionSubscriber(mainView));
+        acceptSolutionUseCase.execute(
+                AcceptSolutionUseCase.getParams(resolutionId),
+                new AcceptSolutionSubscriber(mainView));
+    }
+
+    @Override
+    public void actionCancelComplaint() {
+        mainView.showProgressBar();
+        cancelResolutionUseCase.execute(
+                CancelResolutionUseCase.getParams(resolutionId),
+                new CancelComplaintSubscriber(mainView));
+    }
+
+    @Override
+    public void actionAskHelp() {
+        mainView.showProgressBar();
+        askHelpResolutionUseCase.execute(
+                AskHelpResolutionUseCase.getParams(resolutionId),
+                new AskHelpSubscriber(mainView));
     }
 
     @Override
@@ -122,7 +142,7 @@ public class DetailResChatFragmentPresenter
         if (message.length() >= PARAM_MIN_REPLY_CHAR_COUNT && message.length() <= PARAM_MAX_REPLY_CHAR_COUNT) {
             postReply(message, attachmentList);
         } else {
-            mainView.errorInputMessage("Minimal 7 karakter dan maksimal 5000 karakter");
+            mainView.errorInputMessage(context.getResources().getString(R.string.string_error_min_max_words));
         }
     }
 
@@ -134,7 +154,11 @@ public class DetailResChatFragmentPresenter
                             .getSendReplyParams(resolutionId, message, attachmentList),
                     new ReplyDiscussionSubscriber(mainView));
         } else {
-            sendDiscussionUseCase.execute(SendDiscussionUseCase.getSendReplyParams(resolutionId, message, attachmentList),
+            sendDiscussionUseCase.execute(
+                    SendDiscussionUseCase.getSendReplyParams(
+                            resolutionId,
+                            message,
+                            attachmentList),
                     new ReplyDiscussionSubscriber(mainView));
         }
     }

@@ -10,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +46,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.C
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemLeftViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ButtonDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationAttachmentDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
@@ -402,6 +403,9 @@ public class DetailResChatFragment
                 if (resultCode == Activity.RESULT_OK)
                     initView(false);
                 break;
+            case REQUEST_APPEAL_SOLUTION:
+                if (resultCode == Activity.RESULT_OK)
+                    initView(false);
             default:
                 break;
         }
@@ -532,12 +536,24 @@ public class DetailResChatFragment
                 Button button = getChatActionButton(buttonDomain.getReportLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showAskHelpDialog(buttonDomain.getReportText());
+                    }
+                });
             }
 
             if (buttonDomain.getCancel() == 1) {
                 Button button = getChatActionButton(buttonDomain.getCancelLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showCancelComplaintDialog(buttonDomain.getCancelText());
+                    }
+                });
             }
 
             if (buttonDomain.getEdit() == 1) {
@@ -562,6 +578,12 @@ public class DetailResChatFragment
                 Button button = getChatActionButton(buttonDomain.getAppealLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivityForResult(getAppealResCenter(), REQUEST_APPEAL_SOLUTION);
+                    }
+                });
             }
 
             if (buttonDomain.getInputAWB() == 1) {
@@ -587,18 +609,36 @@ public class DetailResChatFragment
                 Button button = getChatActionButton(buttonDomain.getAcceptReturnLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showAcceptSolutionDialog(buttonDomain.getAcceptReturnText());
+                    }
+                });
             }
 
             if (buttonDomain.getAcceptByAdmin() == 1) {
                 Button button = getChatActionButton(buttonDomain.getAcceptByAdminLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showAcceptSolutionDialog(buttonDomain.getAcceptByAdminText());
+                    }
+                });
             }
 
             if (buttonDomain.getAcceptByAdminReturn() == 1) {
                 Button button = getChatActionButton(buttonDomain.getAcceptByAdminReturnLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showAcceptSolutionDialog(buttonDomain.getAcceptByAdminReturnText());
+                    }
+                });
             }
 
             if (buttonDomain.getFinish() == 1) {
@@ -663,6 +703,26 @@ public class DetailResChatFragment
                             conversationDomain,
                             isShowTitle));
                 }
+            } else if (actionType.equals(EDIT_SOLUTION)) {
+                boolean isShowTitle;
+                if (lastAction == conversationDomain.getAction().getBy()) {
+                    isShowTitle = false;
+                } else {
+                    lastAction = conversationDomain.getAction().getBy();
+                    isShowTitle = true;
+                }
+                if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
+                    chatAdapter.addItem(new ChatSystemRightViewModel(
+                            detailResChatDomain.getShop(),
+                            detailResChatDomain.getCustomer(),
+                            conversationDomain));
+                } else {
+                    chatAdapter.addItem(new ChatSystemLeftViewModel(
+                            detailResChatDomain.getShop(),
+                            detailResChatDomain.getCustomer(),
+                            conversationDomain,
+                            isShowTitle));
+                }
             } else {
                 if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
                     chatAdapter.addItem(new ChatNotSupportedRightViewModel(
@@ -702,7 +762,68 @@ public class DetailResChatFragment
         btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                presenter.actionAcceptSolution();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 
+    private void showAskHelpDialog(String askHelpText) {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.layout_dialog_ask_help);
+        TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
+        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
+        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
+        Button btnAccept = (Button) dialog.findViewById(R.id.btn_yes);
+        tvSolution.setText(MethodChecker.fromHtml(askHelpText));
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.actionAskHelp();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    private void showCancelComplaintDialog(String cancelText) {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.layout_dialog_cancel_complain);
+        TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
+        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
+        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
+        Button btnAccept = (Button) dialog.findViewById(R.id.btn_cancel_solution);
+        tvSolution.setText(MethodChecker.fromHtml(cancelText));
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.actionCancelComplaint();
+                dialog.dismiss();
             }
         });
         dialog.show();
@@ -716,6 +837,10 @@ public class DetailResChatFragment
             return SolutionListActivity.newBuyerEditInstance(getActivity(),
                     resolutionId);
         }
+    }
+
+    private Intent getAppealResCenter() {
+        return SolutionListActivity.newAppealInstance(getActivity(), resolutionId);
     }
 
     private boolean isSeller() {
@@ -764,6 +889,30 @@ public class DetailResChatFragment
 
     @Override
     public void errorAcceptSolution(String error) {
+        dismissProgressBar();
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
+    }
+
+    @Override
+    public void successCancelComplaint() {
+        dismissProgressBar();
+        initView(false);
+    }
+
+    @Override
+    public void errorCancelComplaint(String error) {
+        dismissProgressBar();
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
+    }
+
+    @Override
+    public void successAskHelp() {
+        dismissProgressBar();
+        initView(false);
+    }
+
+    @Override
+    public void errorAskHelp(String error) {
         dismissProgressBar();
         NetworkErrorHelper.showSnackbar(getActivity(), error);
     }

@@ -43,6 +43,14 @@ public interface DetailResChatFragmentListener {
         void successAcceptSolution();
 
         void errorAcceptSolution(String error);
+
+        void successCancelComplaint();
+
+        void errorCancelComplaint(String error);
+
+        void successAskHelp();
+
+        void errorAskHelp(String error);
     }
 
     interface Presenter extends CustomerPresenter<DetailResChatFragmentListener.View> {
@@ -57,6 +65,10 @@ public interface DetailResChatFragmentListener {
 
         void handleNewGalleryResult(int resultCode, Intent data);
 
-        void btnAcceptSolutionClicked();
+        void actionAcceptSolution();
+
+        void actionCancelComplaint();
+
+        void actionAskHelp();
     }
 }
