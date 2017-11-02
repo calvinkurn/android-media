@@ -29,6 +29,8 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.deposit.adapter.BankAdapter;
 import com.tokopedia.core.deposit.adapter.BankDialogAdapter;
@@ -114,6 +116,9 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @BindView(R2.id.loading_layout)
     View loadingLayout;
+
+    @BindView(R2.id.forgot_pass)
+    TextView forgotPassText;
 
     TkpdProgressDialog progressDialog;
     BankAdapter bankAdapter;
@@ -209,7 +214,18 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
         bankListView.setOnItemSelectedListener(onBankListSelected());
         sendOTP.setOnClickListener(onSendOTPClicked());
         bankNameView.setOnClickListener(onBankNameClicked());
+        forgotPassText.setOnClickListener(onGoToForgotPass());
+    }
 
+    private View.OnClickListener onGoToForgotPass() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MainApplication.getAppContext() instanceof TkpdCoreRouter)
+                    ((TkpdCoreRouter) getActivity().getApplication())
+                            .getForgotPasswordIntent(getActivity(), "");
+            }
+        };
     }
 
     @Override
@@ -402,9 +418,9 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     @Override
     public void setError(String error) {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        if(error.equals("")){
+        if (error.equals("")) {
             NetworkErrorHelper.showSnackbar(getActivity());
-        }else{
+        } else {
             snackBar = SnackbarManager.make(getActivity(), error, Snackbar.LENGTH_INDEFINITE)
                     .setAction(getString(R.string.title_close), new View.OnClickListener() {
                                 @Override

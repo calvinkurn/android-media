@@ -70,6 +70,7 @@ import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
+import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
@@ -625,5 +626,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isInMyShop(Context context, String shopId) {
         return context != null && new SessionHandler(context).getShopID().trim().equalsIgnoreCase(shopId.trim());
+    }
+
+    @Override
+    public Intent getForgotPasswordIntent(Context context, String email) {
+        return ForgotPasswordActivity.getCallingIntent(context,email);
     }
 }
