@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.di.DrawerInjector;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -30,6 +31,16 @@ public class OutletActivity extends DrawerPresenterActivity implements HasCompon
         Intent intent = new Intent(context, OutletActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
+    }
+
+    @Override
+    public void onGetNotificationDrawer(DrawerNotification notification) {
+
+    }
+
+    @Override
+    public void onGetNotif() {
+
     }
 
     @Override
