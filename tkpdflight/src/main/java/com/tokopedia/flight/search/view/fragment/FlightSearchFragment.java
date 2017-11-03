@@ -109,26 +109,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy <= 0) {
-                    if (!filterAndSortBottomAction.isShown()) {
-                        filterAndSortBottomAction.show();
-                    }
-                } else {
-                    if (filterAndSortBottomAction.isShown()) {
-                        filterAndSortBottomAction.hide();
-                    }
-                }
-            }
-        });
         return view;
     }
 
