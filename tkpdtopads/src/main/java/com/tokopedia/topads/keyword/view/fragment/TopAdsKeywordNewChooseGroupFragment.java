@@ -50,6 +50,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
 
     public static final String TAG = TopAdsKeywordNewChooseGroupFragment.class.getSimpleName();
 
+    private static final String EXTRA_CHOOSEN_GROUP = "EXTRA_CHOOSEN_GROUP";
     private static final String EXTRA_IS_POSITIVE = "is_pos";
 
     private static final String SAVED_GROUP_ID = "grp_id";
@@ -80,11 +81,13 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     private TextView textKeywordExample;
 
     private @KeywordTypeDef int keywordType = -1;
+    private String groupId;
 
-    public static Fragment newInstance(boolean isPositiveKeyword) {
+    public static Fragment newInstance(boolean isPositiveKeyword, String groupId) {
         Fragment fragment = new TopAdsKeywordNewChooseGroupFragment();
         Bundle args = new Bundle();
         args.putBoolean(EXTRA_IS_POSITIVE, isPositiveKeyword);
+        args.putString(EXTRA_CHOOSEN_GROUP, groupId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -95,6 +98,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
         Bundle bundle = getArguments();
         if (bundle != null) {
             isPositive = bundle.getBoolean(EXTRA_IS_POSITIVE, true);
+            groupId = bundle.getString(EXTRA_CHOOSEN_GROUP);
         }
         adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_autocomplete_text);
     }
@@ -197,6 +201,12 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
                 }
             }
         });
+
+        if(groupId != null){
+            autoCompleteChooseGroup.setText(groupId);
+            autoCompleteChooseGroup.lockView();
+            topAdsKeywordNewChooseGroupPresenter.searchGroupName("");
+        }
 
         adapterChooseGroup.setListenerGetData(new TopAdsAutoCompleteAdapter.ListenerGetData() {
             @Override
@@ -316,6 +326,12 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
         this.groupAds.addAll(groupAds);
         groupNames.clear();
         for (GroupAd groupAd : groupAds) {
+            if(groupId != null) {
+                if (groupAd.getName().equals(groupId)) {
+                    chosenId = groupAd.getId();
+                }
+                groupId = null; // this is just for the first time only
+            }
             groupNames.add(groupAd.getName());
         }
         autoCompleteChooseGroup.showDropDownFilter();
