@@ -15,33 +15,35 @@ import { icons } from '../../../lib/config'
 
 class PaymentInvoice extends Component {
   constructor(props) {
-    super(props);
-
+    super(props)
+    
     this.state = {
       email: "",
       emailErrorMessage: ""
-    };
+    }
   }
-
+  
+  
   componentDidMount(){
     const { dispatch } = this.props
     
-    dispatch(reloadState('invoice'))
-    dispatch(clearCart())
+    // dispatch(reloadState('invoice'))
+    // dispatch(clearCart())
   }
-
+  
+  
   _handleButtonPress = () => {
-    let emailErrorMessage = "";
+    let emailErrorMessage = ""
     if (!emailValidation(this.state.email)) {
-      emailErrorMessage = "Mohon masukan alamat email Anda dengan format contoh@email.com";
+      emailErrorMessage = "Mohon masukan alamat email Anda dengan format contoh@email.com"
     } else {
       this._sendInvoice()
       this.popupDialog.show()
     }
-    this.setState({
-      emailErrorMessage
-    })
+    
+    this.setState({ emailErrorMessage })
   }
+
 
   _sendInvoice = () => {
     console.log(this.props)
@@ -51,7 +53,10 @@ class PaymentInvoice extends Component {
       { email_address: this.state.email, transaction_date: this.props.payment_param.transaction_date}
     )
     this.props.dispatch(sendEmail(this.state.email, data))
+    this.props.dispatch(reloadState('invoice'))
+    this.props.dispatch(clearCart())
   }
+
 
   _renderProductList = ({item}) => {
     return (
@@ -65,12 +70,14 @@ class PaymentInvoice extends Component {
         </View>
         <Text style={[styles.font14, styles.fontcolor71]}>Rp {(item.price).toLocaleString("id")}</Text>
       </View>
-    );
+    )
   }
+
 
   toggleScreen = (visible) => {
     this.setState({ showPopUp: visible })
   }
+
 
   render() {
     console.log(this.props)
@@ -324,11 +331,11 @@ const ds = new ListView.DataSource({
 
 const mapStateToProps = (state, ownProps) => {
   const objData = JSON.parse(ownProps.screenProps.data.data)
-  const itemList = ds.cloneWithRows(state.paymentInvoice.items);
+  // const itemList = ds.cloneWithRows(state.paymentInvoice.items);
   console.log(state)
   return {
     ...state.paymentInvoice,
-    itemList,
+    // itemList,
     bankLogo: objData.bankLogo, 
     bankName: objData.bankName,
     invoiceNo: objData.invoiceRef,
