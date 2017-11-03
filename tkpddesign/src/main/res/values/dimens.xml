@@ -62,6 +62,8 @@
     <dimen name="padding_med">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
 
+    <dimen name="small_icon_size">24dp</dimen>
+
     <dimen name="text_input_margin_offset">-4dp</dimen>
     <dimen name="spinner_decimal_spinner_width">80dp</dimen>
 
