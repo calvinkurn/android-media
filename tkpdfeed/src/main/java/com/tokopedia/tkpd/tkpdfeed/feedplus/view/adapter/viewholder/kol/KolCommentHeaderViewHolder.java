@@ -57,13 +57,8 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
             }
         });
 
-        if (element.isOfficial()) {
-            badge.setVisibility(View.VISIBLE);
-            comment.setText(MethodChecker.fromHtml(SPACE + getCommentText(element)));
-        } else {
-            badge.setVisibility(View.GONE);
-            comment.setText(MethodChecker.fromHtml(getCommentText(element)));
-        }
+        badge.setVisibility(View.VISIBLE);
+        comment.setText(MethodChecker.fromHtml(SPACE + getCommentText(element)));
 
         if (element.isCanLoadMore())
             loadMore.setVisibility(View.VISIBLE);

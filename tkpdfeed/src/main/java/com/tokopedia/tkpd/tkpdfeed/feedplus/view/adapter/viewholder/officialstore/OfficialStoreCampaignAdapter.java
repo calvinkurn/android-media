@@ -87,7 +87,7 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
                             officialStoreCampaignViewModel.getRowNumber(),
                             String.valueOf(officialStoreCampaignViewModel.getListProduct().get(getAdapterPosition())
                                     .getProductId()),
-                    officialStoreCampaignViewModel.getListProduct().get(getAdapterPosition()).getImageSourceSingle(),
+                            officialStoreCampaignViewModel.getListProduct().get(getAdapterPosition()).getImageSourceSingle(),
                             officialStoreCampaignViewModel.getListProduct().get(getAdapterPosition()).getName(),
                             officialStoreCampaignViewModel.getListProduct().get(getAdapterPosition()).getPrice());
                 }
@@ -169,6 +169,7 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
     @Override
     public int getItemCount() {
         return officialStoreCampaignViewModel.getListProduct().size();
+
     }
 
     public void setData(OfficialStoreCampaignViewModel officialStoreCampaignViewModel) {

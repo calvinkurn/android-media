@@ -16,36 +16,42 @@
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_margin="@dimen/margin_vs"
+        android:layout_marginLeft="@dimen/margin_vs"
         tools:src="@drawable/ic_top_ads"/>
 
-    <TextView
-        android:id="@+id/product_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_toEndOf="@id/avatar"
         android:layout_toRightOf="@id/avatar"
-        android:fontFamily="sans-serif-medium"
-        android:lineSpacingExtra="6sp"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/text_size_small"
-        android:textStyle="normal"
-        tools:text="TOPI SNAPBACK AIR JORDAN 01"/>
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/product_name"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_toRightOf="@id/avatar"
-        android:fontFamily="sans-serif"
-        android:lineSpacingExtra="6sp"
-        android:textColor="@color/price_pdp"
-        android:textSize="@dimen/text_size_small"
-        android:textStyle="normal"
-        tools:text="Rp 250.000"
-        />
+        <TextView
+            android:id="@+id/product_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="6sp"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/text_size_small"
+            android:textStyle="normal"
+            tools:text="TOPI SNAPBACK AIR JORDAN 01"/>
+
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/product_name"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="6sp"
+            android:textColor="@color/price_pdp"
+            android:textSize="@dimen/text_size_small"
+            android:textStyle="normal"
+            tools:text="Rp 250.000"
+            />
+
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/wishlist"

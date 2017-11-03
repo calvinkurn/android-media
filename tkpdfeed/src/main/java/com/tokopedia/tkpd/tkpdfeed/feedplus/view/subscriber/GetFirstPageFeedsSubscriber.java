@@ -8,6 +8,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolPostDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.BadgeDomain;
@@ -17,6 +18,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialS
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
@@ -61,12 +63,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private static final String TYPE_INSPIRATION = "inspirasi";
     private static final String TYPE_TOPADS = "topads";
     private static final String TYPE_KOL = "kolpost";
-    private static final String TYPE_KOL_RECOMMENDATION = "kol_recommendation";
+    private static final String TYPE_KOL_FOLLOWED = "followedkolpost";
+    private static final String TYPE_KOL_RECOMMENDATION = "kolrecommendation";
 
 
     private final int page;
-    private int currentTotalFeedSize;
-
 
     public GetFirstPageFeedsSubscriber(FeedPlus.View viewListener, int page) {
         this.viewListener = viewListener;
@@ -244,6 +245,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 //                        FeedTopAdsViewModel topAdsViewModel = convertToTopadsViewModel(page);
 //                        listFeedView.add(topAdsViewModel);
                         break;
+                    case TYPE_KOL_FOLLOWED:
                     case TYPE_KOL:
                         KolViewModel kolViewModel = convertToKolViewModel(domain);
                         listFeedView.add(kolViewModel);
@@ -268,51 +270,22 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return new KolRecommendationViewModel(
                 "http://tokopedia.com/",
                 "Explore Posting dari Celgram favoritmu!",
-                convertToListKolRecommend()
+                convertToListKolRecommend(domain.getContent().getKolRecommendations())
         );
     }
 
-    private ArrayList<KolRecommendItemViewModel> convertToListKolRecommend() {
+    private ArrayList<KolRecommendItemViewModel> convertToListKolRecommend(List<KolRecommendationDomain> kolRecommendations) {
         ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
-        list.add(new KolRecommendItemViewModel(
-                1,
-                "Young Lex",
-                "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/7/27/20211570/20211570_19682ea4-4153-4845-bab5-de2c66712ac0_2048_0.jpg",
-                "https://www.tokopedia.com/feirin08",
-                "artis jadijadian"
-        ));
-        list.add(new KolRecommendItemViewModel(
-                1,
-                "Young Lex2",
-                "https://imagerouter.tokopedia" +
-                        ".com/img/500-square/product-1/2017/10/29/1859776/1859776_ea45f195-eede-4bf7-9224-39bb15c54405_460_325.jpg",
-                "https://www.tokopedia.com/feirin08",
-                "artis jadijadian"
-        ));
-        list.add(new KolRecommendItemViewModel(
-                1,
-                "Young Lex3",
-                "https://imagerouter.tokopedia" +
-                        ".com/img/500-square/product-1/2017/10/29/1859776/1859776_ea45f195-eede-4bf7-9224-39bb15c54405_460_325.jpg",
-                "https://www.tokopedia.com/feirin08",
-                "artis jadijadian"
-        ));
-        list.add(new KolRecommendItemViewModel(
-                1,
-                "Young Lex4",
-                "https://imagerouter.tokopedia" +
-                        ".com/img/500-square/product-1/2017/10/29/1859776/1859776_ea45f195-eede-4bf7-9224-39bb15c54405_460_325.jpg",
-                "https://www.tokopedia.com/feirin08",
-                "artis jadijadian"
-        ));
-        list.add(new KolRecommendItemViewModel(
-                1,
-                "Young Lex5",
-                "https://imagerouter.tokopedia" +
-                        ".com/img/500-square/product-1/2017/10/29/1859776/1859776_ea45f195-eede-4bf7-9224-39bb15c54405_460_325.jpg",
-                "https://www.tokopedia.com/feirin08",
-                "artis jadijadian"
-        ));
+        for(KolRecommendationDomain recommendationDomain : kolRecommendations){
+            list.add(new KolRecommendItemViewModel(
+                    recommendationDomain.getUserId(),
+                    recommendationDomain.getUserName(),
+                    recommendationDomain.getUserPhoto(),
+                    "https://www.tokopedia.com/feirin08",
+                    recommendationDomain.getInfo(),
+                    recommendationDomain.isFollowed()
+            ));
+        }
         return list;
     }
 
@@ -334,10 +307,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 kolPostDomain.getImageUrl(),
                 "221417982",
                 kolPostDomain.getId(),
-                kolPostDomain.getCreateTime(),
+                TimeConverter.generateTime(kolPostDomain.getCreateTime()),
                 "Produk apapun",
                 kolPostDomain.getProductPrice(),
-                false
+                false,
+                kolPostDomain.getTagsType()
         );
     }
 

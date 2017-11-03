@@ -8,6 +8,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.InspirationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolPostDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ShopFeedDomain;
@@ -113,7 +114,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                             List<OfficialStoreDomain> officialStoreDomains,
                             List<TopPicksDomain> topPicksDomains,
                             List<InspirationDomain> inspirationDomains,
-                            KolPostDomain kolPostDomain) {
+                            KolPostDomain kolPostDomain,
+                            List<KolRecommendationDomain> kolRecommendations) {
         if (content == null) return null;
         return new ContentFeedDomain(content.type(),
                 content.total_product() != null ? content.total_product() : 0,
@@ -123,6 +125,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 topPicksDomains,
                 inspirationDomains,
                 kolPostDomain,
+                kolRecommendations,
                 content.status_activity());
     }
 
@@ -141,7 +144,9 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
     private List<OfficialStoreDomain> convertToOfficialStoresFeedDomain(
             List<FeedQuery.Data.Official_store> official_stores) {
         List<OfficialStoreDomain> listStores = new ArrayList<>();
-        if (official_stores != null) {
+        if (official_stores != null
+                && official_stores.size() == 1
+                && official_stores.get(0).products().size() == 4) {
             for (FeedQuery.Data.Official_store officialStore : official_stores) {
                 listStores.add(new OfficialStoreDomain(
                         officialStore.shop_id() != null ? officialStore.shop_id() : 0,
@@ -246,7 +251,9 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 List<InspirationDomain> inspirationDomains = convertToInspirationDomain(datum
                         .content().inspirasi());
                 ShopFeedDomain shopFeedDomain = createShopFeedDomain(datum.source().shop());
-                KolPostDomain kolPostDomain = createKolPostDomain(datum.content().kolpost());
+                KolPostDomain kolPostDomain = createKolPostDomain(datum);
+                List<KolRecommendationDomain> kolRecommendations
+                        = convertToKolRecommendationDomain(datum.content().kolrecommendation());
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.content(),
                         productFeedDomains,
@@ -254,7 +261,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                         officialStoreDomains,
                         topPicksDomains,
                         inspirationDomains,
-                        kolPostDomain
+                        kolPostDomain,
+                        kolRecommendations
                 );
                 SourceFeedDomain sourceFeedDomain =
                         createSourceFeedDomain(datum.source(), shopFeedDomain);
@@ -266,25 +274,66 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
         return dataFeedDomains;
     }
 
-    private KolPostDomain createKolPostDomain(FeedQuery.Data.Kolpost kolpost) {
-        return new KolPostDomain(
-                kolpost.id(),
-                kolpost.imageUrl(),
-                kolpost.description(),
-                kolpost.commentCount(),
-                kolpost.likeCount(),
-                kolpost.isLiked(),
-                kolpost.isFollowed(),
-                kolpost.createTime(),
-                kolpost.productPrice(),
-                kolpost.productLink(),
-                kolpost.productUrl(),
-                kolpost.shopUrl(),
-                kolpost.shopLink(),
-                kolpost.userName(),
-                kolpost.userPhoto(),
-                kolpost.tagsType()
-        );
+    private List<KolRecommendationDomain> convertToKolRecommendationDomain(List<FeedQuery.Data.Kolrecommendation> kolrecommendation) {
+        List<KolRecommendationDomain> list = new ArrayList<>();
+        if (kolrecommendation != null) {
+            for (FeedQuery.Data.Kolrecommendation recommendation : kolrecommendation) {
+                list.add(new KolRecommendationDomain(
+                        recommendation.userName() == null ? "" : recommendation.userName(),
+                        recommendation.userId() == null ? 0 : recommendation.userId(),
+                        recommendation.userPhoto() == null ? "" : recommendation.userPhoto(),
+                        recommendation.isFollowed() == null ? false : recommendation.isFollowed(),
+                        recommendation.info() == null ? "" : recommendation.info()
+                ));
+            }
+        }
+        return list;
+    }
+
+    private KolPostDomain createKolPostDomain(FeedQuery.Data.Datum datum) {
+        if (datum.content().kolpost() != null) {
+            FeedQuery.Data.Kolpost kolpost = datum.content()
+                    .kolpost();
+            return new KolPostDomain(
+                    kolpost.id() == null ? 0 : kolpost.id(),
+                    kolpost.imageUrl() == null ? "" : kolpost.imageUrl(),
+                    kolpost.description() == null ? "" : kolpost.description(),
+                    kolpost.commentCount() == null ? 0 : kolpost.commentCount(),
+                    kolpost.likeCount() == null ? 0 : kolpost.likeCount(),
+                    kolpost.isLiked() == null ? false : kolpost.isLiked(),
+                    kolpost.isFollowed() == null ? false : kolpost.isFollowed(),
+                    kolpost.createTime() == null ? "" : kolpost.createTime(),
+                    kolpost.productPrice() == null ? "" : kolpost.productPrice(),
+                    kolpost.productLink() == null ? "" : kolpost.productLink(),
+                    kolpost.productUrl() == null ? "" : kolpost.productUrl(),
+                    kolpost.shopUrl() == null ? "" : kolpost.shopUrl(),
+                    kolpost.shopLink() == null ? "" : kolpost.shopLink(),
+                    kolpost.userName() == null ? "" : kolpost.userName(),
+                    kolpost.userPhoto() == null ? "" : kolpost.userPhoto(),
+                    kolpost.tagsType() == null ? "" : kolpost.tagsType());
+        } else if (datum.content().followedkolpost() != null) {
+            FeedQuery.Data.Followedkolpost kolpost = datum.content()
+                    .followedkolpost();
+            return new KolPostDomain(
+                    kolpost.id() == null ? 0 : kolpost.id(),
+                    kolpost.imageUrl() == null ? "" : kolpost.imageUrl(),
+                    kolpost.description() == null ? "" : kolpost.description(),
+                    kolpost.commentCount() == null ? 0 : kolpost.commentCount(),
+                    kolpost.likeCount() == null ? 0 : kolpost.likeCount(),
+                    kolpost.isLiked() == null ? false : kolpost.isLiked(),
+                    kolpost.isFollowed() == null ? false : kolpost.isFollowed(),
+                    kolpost.createTime() == null ? "" : kolpost.createTime(),
+                    kolpost.productPrice() == null ? "" : kolpost.productPrice(),
+                    kolpost.productLink() == null ? "" : kolpost.productLink(),
+                    kolpost.productUrl() == null ? "" : kolpost.productUrl(),
+                    kolpost.shopUrl() == null ? "" : kolpost.shopUrl(),
+                    kolpost.shopLink() == null ? "" : kolpost.shopLink(),
+                    kolpost.userName() == null ? "" : kolpost.userName(),
+                    kolpost.userPhoto() == null ? "" : kolpost.userPhoto(),
+                    kolpost.tagsType() == null ? "" : kolpost.tagsType());
+        } else {
+            return null;
+        }
     }
 
     private List<InspirationDomain> convertToInspirationDomain(List<FeedQuery.Data.Inspirasi> inspirasi) {

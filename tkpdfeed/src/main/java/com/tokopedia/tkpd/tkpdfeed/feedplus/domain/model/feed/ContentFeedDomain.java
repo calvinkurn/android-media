@@ -45,6 +45,9 @@ public class ContentFeedDomain {
     @Nullable
     private final KolPostDomain kolPostDomain;
 
+    @Nullable
+    private final List<KolRecommendationDomain> kolRecommendations;
+
     public ContentFeedDomain(@Nullable String type, @Nullable int total_product,
                              @Nullable List<ProductFeedDomain> products,
                              @Nullable List<PromotionFeedDomain> promotions,
@@ -52,6 +55,7 @@ public class ContentFeedDomain {
                              @Nullable List<TopPicksDomain> topPicksDomains,
                              @Nullable List<InspirationDomain> inspirationDomains,
                              @Nullable KolPostDomain kolPostDomain,
+                             @Nullable List<KolRecommendationDomain> kolRecommendations,
                              @Nullable String status_activity) {
         this.type = type;
         this.totalProduct = total_product;
@@ -62,6 +66,7 @@ public class ContentFeedDomain {
         this.officialStores = officialStores;
         this.inspirationDomains = inspirationDomains;
         this.kolPostDomain = kolPostDomain;
+        this.kolRecommendations = kolRecommendations;
     }
 
     @Nullable
@@ -107,5 +112,10 @@ public class ContentFeedDomain {
     @Nullable
     public KolPostDomain getKolPostDomain() {
         return kolPostDomain;
+    }
+
+    @Nullable
+    public List<KolRecommendationDomain> getKolRecommendations() {
+        return kolRecommendations;
     }
 }

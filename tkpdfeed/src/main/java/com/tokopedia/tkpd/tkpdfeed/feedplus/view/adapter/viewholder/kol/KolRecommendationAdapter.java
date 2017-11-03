@@ -27,6 +27,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
     private TextView name;
     private TextView label;
     private TextView followButton;
+    private View mainView;
 
     public KolRecommendationAdapter(FeedPlus.View.Kol kolViewListener) {
         this.kolViewListener = kolViewListener;
@@ -39,6 +40,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
             name = (TextView) itemView.findViewById(R.id.name);
             label = (TextView) itemView.findViewById(R.id.label);
             followButton = (TextView) itemView.findViewById(R.id.follow_button);
+            mainView = itemView.findViewById(R.id.main_view);
 
             followButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -66,6 +68,15 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                 }
             });
 
+            mainView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    kolViewListener.onGoToKolProfile(data.getPage(),
+                            data.getRowNumber(),
+                            data.getListRecommend().get(getAdapterPosition()).getUrl());
+                }
+            });
+
         }
     }
 
@@ -80,7 +91,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
     public void onBindViewHolder(ViewHolder holder, int position) {
         ImageHandler.LoadImage(avatar, data.getListRecommend().get(position).getImageUrl());
         name.setText(MethodChecker.fromHtml(data.getListRecommend().get(position).getName()));
-        label.setText(data.getListRecommend().get(position).getName());
+        label.setText(data.getListRecommend().get(position).getLabel());
     }
 
     @Override

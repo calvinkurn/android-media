@@ -40,6 +40,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     private TextView likeText;
     private ImageView commentIcon;
     private TextView commentText;
+    View topSeparator;
 
     public KolViewHolder(View itemView, FeedPlus.View.Kol viewListener) {
         super(itemView);
@@ -59,6 +60,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         likeText = (TextView) itemView.findViewById(R.id.like_text);
         commentIcon = (ImageView) itemView.findViewById(R.id.comment_icon);
         commentText = (TextView) itemView.findViewById(R.id.comment_text);
+        topSeparator = itemView.findViewById(R.id.separator);
     }
 
     @Override
@@ -70,22 +72,25 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
 
         if (element.isFollowed() && !element.isTemporarilyFollowed()) {
             followButton.setVisibility(View.GONE);
+            title.setVisibility(View.GONE);
+            topSeparator.setVisibility(View.GONE);
         } else if (element.isFollowed() && element.isTemporarilyFollowed()) {
             followButton.setVisibility(View.VISIBLE);
             followText.setText(R.string.following);
             followText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(),
                     R.color.black_54));
             ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_tick);
+            title.setVisibility(View.VISIBLE);
+            topSeparator.setVisibility(View.VISIBLE);
         } else {
             followButton.setVisibility(View.VISIBLE);
             ImageHandler.loadImageWithIdWithoutPlaceholder(followIcon, R.drawable.ic_plus_green);
             followText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(),
                     R.color.green_500));
             followText.setText(R.string.action_follow_english);
+            title.setVisibility(View.VISIBLE);
+            topSeparator.setVisibility(View.VISIBLE);
         }
-
-//        tooltipImageView.setImageTooltip(element.getProductImage(), element.getProductTooltip(),
-//                onTooltipClicked(element));
 
         ImageHandler.LoadImage(reviewImage, element.getProductImage());
         tooltip.setText(element.getProductTooltip());

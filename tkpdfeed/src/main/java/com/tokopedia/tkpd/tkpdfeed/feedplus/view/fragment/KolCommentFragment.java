@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -191,7 +192,12 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
         productName.setText(MethodChecker.fromHtml(footer.getName()));
         ImageHandler.LoadImage(productAvatar, footer.getImageUrl());
-        productPrice.setText(footer.getPrice());
+        if (TextUtils.isEmpty(footer.getPrice())) {
+            productPrice.setVisibility(View.GONE);
+        } else {
+            productPrice.setVisibility(View.VISIBLE);
+            productPrice.setText(footer.getPrice());
+        }
 
         setWishlist(footer.isWishlisted());
 

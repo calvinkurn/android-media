@@ -970,7 +970,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {g
+    public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {
         startActivity(KolCommentActivity.getCallingIntent(getActivity(),
                 new KolCommentHeaderViewModel(model.getAvatar(), model.getName(), model.getReview
                         (), model.getTime()),

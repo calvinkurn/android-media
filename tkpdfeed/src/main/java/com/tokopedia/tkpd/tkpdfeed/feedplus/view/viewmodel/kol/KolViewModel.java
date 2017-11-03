@@ -8,6 +8,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPl
  */
 
 public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
+    private final String tagsType;
     private String title;
     private String name;
     private String avatar;
@@ -34,7 +35,7 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
                         boolean followed, String productImage, String productTooltip,
                         String review, boolean liked, int totalLike, int totalComment,
                         int page, String kolProfileUrl, String productId, int id, String time,
-                        String productName, String productPrice, boolean wishlisted) {
+                        String productName, String productPrice, boolean wishlisted, String tagsType) {
         this.title = title;
         this.name = name;
         this.avatar = avatar;
@@ -54,6 +55,7 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
         this.productName = productName;
         this.productPrice = productPrice;
         this.wishlisted = wishlisted;
+        this.tagsType = tagsType;
     }
 
     public String getTitle() {
@@ -189,5 +191,9 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public void setWishlisted(boolean wishlisted) {
         this.wishlisted = wishlisted;
+    }
+
+    public String getTagsType() {
+        return tagsType;
     }
 }
