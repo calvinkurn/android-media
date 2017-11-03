@@ -15,6 +15,12 @@ import rx.Observable;
 
 public class GetKolCommentsUseCase extends UseCase<KolComments> {
 
+    public static final String PARAM_ID = "id";
+    public static final String PARAM_CURSOR = "cursor";
+    public static final String PARAM_LIMIT = "limit";
+
+    public static final int DEFAULT_LIMIT = 10;
+    private static final String FIRST_CURSOR = "";
     private FeedRepository feedRepository;
 
     public GetKolCommentsUseCase(ThreadExecutor threadExecutor,
@@ -29,15 +35,19 @@ public class GetKolCommentsUseCase extends UseCase<KolComments> {
         return feedRepository.getKolComments(requestParams);
     }
 
-    public static RequestParams getParam() {
+    public static RequestParams getFirstTimeParam(int id) {
         RequestParams params = RequestParams.create();
-
+        params.putInt(PARAM_ID, id);
+        params.putString(PARAM_CURSOR, FIRST_CURSOR);
+        params.putInt(PARAM_LIMIT, DEFAULT_LIMIT);
         return params;
     }
 
-    public static RequestParams getFirstTimeParam() {
+    public static RequestParams getParam(int id, String cursor) {
         RequestParams params = RequestParams.create();
-
+        params.putInt(PARAM_ID, id);
+        params.putString(PARAM_CURSOR, cursor);
+        params.putInt(PARAM_LIMIT, DEFAULT_LIMIT);
         return params;
     }
 }

@@ -27,13 +27,19 @@ public interface KolComment {
         void onSuccessGetComments(KolComments kolComments);
 
         void onSuccessChangeWishlist();
+
+        void updateCursor(String lastcursor);
+
+        void onErrorLoadMoreComment(String errorMessage);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void getCommentFirstTime();
+        void getCommentFirstTime(int id);
 
-        void loadMoreComments();
+        void loadMoreComments(int id);
 
-        void changeWishlist();
+        void updateCursor(String lastcursor);
+
     }
 }

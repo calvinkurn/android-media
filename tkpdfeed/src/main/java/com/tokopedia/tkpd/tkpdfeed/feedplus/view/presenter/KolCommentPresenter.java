@@ -3,10 +3,8 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolCommentsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolComment;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolComments;
-
-import java.util.ArrayList;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetKolCommentFirstTimeSubscriber;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetKolCommentSubscriber;
 
 import javax.inject.Inject;
 
@@ -18,6 +16,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
         implements KolComment.Presenter {
 
     private final GetKolCommentsUseCase getKolCommentsUseCase;
+    private String cursor;
 
     @Override
     public void detachView() {
@@ -31,22 +30,21 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     }
 
     @Override
-    public void getCommentFirstTime() {
-//        getView().showLoading();
-//        getKolCommentsUseCase.execute(GetKolCommentsUseCase.getFirstTimeParam(), new
-//                GetKolCommentFirstTimeSubscriber(getView()));
-        getView().onSuccessGetCommentsFirstTime(new KolComments(new ArrayList<KolCommentViewModel>()));
+    public void getCommentFirstTime(int id) {
+        getView().showLoading();
+        getKolCommentsUseCase.execute(GetKolCommentsUseCase.getFirstTimeParam(id), new
+                GetKolCommentFirstTimeSubscriber(getView()));
     }
 
     @Override
-    public void loadMoreComments() {
-        getView().onSuccessGetComments(new KolComments(new ArrayList<KolCommentViewModel>()));
-
+    public void loadMoreComments(int id) {
+        getKolCommentsUseCase.execute(GetKolCommentsUseCase.getParam(id, cursor), new
+                GetKolCommentSubscriber(getView()));
     }
 
     @Override
-    public void changeWishlist() {
-        getView().onSuccessChangeWishlist();
-
+    public void updateCursor(String lastcursor) {
+        this.cursor = lastcursor;
     }
+
 }

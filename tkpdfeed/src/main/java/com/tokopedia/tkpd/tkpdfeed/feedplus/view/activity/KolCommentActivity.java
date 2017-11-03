@@ -9,7 +9,6 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.KolCommentHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
@@ -22,6 +21,7 @@ public class KolCommentActivity extends TActivity implements HasComponent {
 
     public static final String ARGS_HEADER = "ARGS_HEADER";
     public static final String ARGS_FOOTER = "ARGS_FOOTER";
+    public static final String ARGS_ID = "ARGS_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +51,13 @@ public class KolCommentActivity extends TActivity implements HasComponent {
     }
 
     public static Intent getCallingIntent(Context context, KolCommentHeaderViewModel header,
-                                          KolCommentProductViewModel productViewModel) {
+                                          KolCommentProductViewModel productViewModel,
+                                          int id) {
         Intent intent = new Intent(context, KolCommentActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_HEADER, header);
         bundle.putParcelable(ARGS_FOOTER, productViewModel);
+        bundle.putInt(ARGS_ID, id);
         intent.putExtras(bundle);
         return intent;
     }

@@ -975,7 +975,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 new KolCommentHeaderViewModel(model.getAvatar(), model.getName(), model.getReview
                         (), model.getTime()),
                 new KolCommentProductViewModel(model.getProductImage(), model.getProductName(),
-                        model.getProductPrice(), model.isWishlisted())
+                        model.getProductPrice(), model.isWishlisted()),
+                model.getId()
         ));
     }
 

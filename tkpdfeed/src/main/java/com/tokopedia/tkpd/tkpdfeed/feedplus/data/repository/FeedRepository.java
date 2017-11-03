@@ -29,6 +29,5 @@ public interface FeedRepository {
 
     Observable<CheckFeedDomain> checkNewFeed(RequestParams parameters);
 
-
     Observable<KolComments> getKolComments(RequestParams requestParams);
 }

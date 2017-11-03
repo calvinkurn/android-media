@@ -105,7 +105,11 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             likeText.setText(R.string.action_like);
         }
 
-        commentText.setText(String.valueOf(element.getTotalComment()));
+        if(element.getTotalComment() == 0){
+            commentText.setText(R.string.comment);
+        }else{
+            commentText.setText(String.valueOf(element.getTotalComment()));
+        }
 
         setListener(element);
     }

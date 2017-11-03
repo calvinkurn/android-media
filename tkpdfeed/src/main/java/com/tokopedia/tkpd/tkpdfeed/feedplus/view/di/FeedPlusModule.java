@@ -328,8 +328,9 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    KolCommentSource provideKolCommentSource(KolCommentMapper kolCommentMapper) {
-        return new KolCommentSource(kolCommentMapper);
+    KolCommentSource provideKolCommentSource(ApolloClient apolloClient, KolCommentMapper
+            kolCommentMapper) {
+        return new KolCommentSource(apolloClient, kolCommentMapper);
     }
 
     @FeedPlusScope

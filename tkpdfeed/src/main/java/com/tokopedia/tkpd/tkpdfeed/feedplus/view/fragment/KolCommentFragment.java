@@ -126,8 +126,8 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHeader(header);
-        setFooter(footer);
-        presenter.getCommentFirstTime();
+//        setFooter(footer);
+        presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID));
     }
 
     private void setHeader(KolCommentHeaderViewModel header) {
@@ -158,7 +158,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
                 .RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.getCommentFirstTime();
+                presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID));
             }
         });
     }
@@ -169,18 +169,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
             adapter.getHeader().setCanLoadMore(true);
 
         ArrayList<Visitable> list = new ArrayList<>();
-        list.add(new KolCommentViewModel("https://imagerouter.tokopedia" +
-                ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
-                "Nisie2", "Komen komen aja", "10 hari yang lalu"));
-        list.add(new KolCommentViewModel("https://imagerouter.tokopedia" +
-                ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
-                "Nisie3", "Komen komen aja", "10 hari yang lalu"));
-        list.add(new KolCommentViewModel("https://imagerouter.tokopedia" +
-                ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
-                "Nisie4", "Komen komen aja", "10 hari yang lalu"));
-        list.add(new KolCommentViewModel("https://imagerouter.tokopedia" +
-                ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
-                "Nisie5", "Komen komen aja", "10 hari yang lalu"));
+        list.addAll(kolComments.getListComments());
 
         adapter.setList(list);
         adapter.notifyDataSetChanged();
@@ -204,7 +193,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         wishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.changeWishlist();
+//                presenter.changeWishlist();
             }
         });
     }
@@ -220,7 +209,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
             adapter.getHeader().setLoading(true);
             adapter.notifyItemChanged(0);
         }
-        presenter.loadMoreComments();
+        presenter.loadMoreComments(getArguments().getInt(KolCommentActivity.ARGS_ID));
     }
 
     @Override
@@ -233,24 +222,30 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         }
 
         ArrayList<Visitable> list = new ArrayList<>();
-        list.add(new KolCommentViewModel("https://imagerouter.tokopedia" +
-                ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
-                "Nisie7", "Komen komen aja", "10 hari yang lalu"));
-        list.add(new KolCommentViewModel("https://imagerouter.tokopedia" +
-                ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
-                "Nisie8", "Komen komen aja", "10 hari yang lalu"));
-        list.add(new KolCommentViewModel("https://imagerouter.tokopedia" +
-                ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
-                "Nisie9", "Komen komen aja", "10 hari yang lalu"));
-        list.add(new KolCommentViewModel("https://imagerouter.tokopedia" +
-                ".com/img/500-square/product-1/2017/11/1/5623332/5623332_e4959646-b9d0-4447-84a4-e4337693d304_500_550.jpeg",
-                "Nisie10", "Komen komen aja", "10 hari yang lalu"));
+        list.addAll(kolComments.getListComments());
+
         adapter.addList(list);
     }
 
     @Override
     public void onSuccessChangeWishlist() {
         setWishlist(true);
+    }
+
+    @Override
+    public void updateCursor(String lastcursor) {
+        presenter.updateCursor(lastcursor);
+    }
+
+    @Override
+    public void onErrorLoadMoreComment(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+
+        if (adapter.getHeader() != null) {
+            adapter.getHeader().setLoading(false);
+            adapter.getHeader().setCanLoadMore(true);
+            adapter.notifyItemChanged(0);
+        }
     }
 
     private void setWishlist(boolean wishlisted) {
