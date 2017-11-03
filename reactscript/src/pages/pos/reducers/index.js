@@ -551,68 +551,43 @@ const paymentInvoice = (state = {
   return state;
 }
 
-const transactionHistory = (state = {
-  items: []
-}, action) => {
 
+
+
+const historyTransaction = (state = {
+  items: [],
+  isFetching: false,
+  isSuccess: false
+}, action) => {
   switch (action.type) {
-    case 'FETCH_TRANSACTION_HISTORY':
-      const data = [{
-        orderName: "OkeShop Carrefour Kasablanca",
-        orderId: "IVR/20170609/XVII/VI/13461162",
-        time: '13 Jul 2017, 12:12 WIB',
-        totalPrice: "Rp 34.697.000",
-        status: "Berhasil",
-        isCompleted: false,
-        products: [
-          {
-            id: 160551106,
-            price: "Rp 20.998.000",
-            name: 'Oh Man! Baby Pomade Nutri Green 45gr',
-            qty: 2,
-            imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/8/10/193938857/193938857_022ba5db-40b1-4ca2-b460-aed833272f5b_1000_1000.jpg',
-          },
-          {
-            id: 160533448,
-            price: "Rp 13.699.000",
-            name: 'Happy Urang Aring 55ml',
-            qty: 1,
-            imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/4/28/160533448/160533448_8ee45562-709b-4da1-8505-355282ac5459_1000_1000.jpg',
-          }
-        ]
-      },
-      {
-        orderName: "OkeShop Carrefour Kasablanca",
-        orderId: "IVR/20170609/XVII/VI/13461163",
-        time: '13 Jul 2017, 12:12 WIB',
-        totalPrice: "Rp 34.697.000",
-        status: "Berhasil",
-        isCompleted: true,
-        products: [
-          {
-            id: 160551106,
-            price: "Rp 20.998.000",
-            name: 'Oh Man! Baby Pomade Nutri Green 45grsss  ',
-            qty: 2,
-            imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/8/10/193938857/193938857_022ba5db-40b1-4ca2-b460-aed833272f5b_1000_1000.jpg',
-          },
-          {
-            id: 160533448,
-            price: "Rp 13.699.000",
-            name: 'Happy Urang Aring 55ml',
-            qty: 1,
-            imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/4/28/160533448/160533448_8ee45562-709b-4da1-8505-355282ac5459_1000_1000.jpg',
-          }
-        ]
-      }];
+    case `FETCH_TRANSACTION_HISTORY_${PENDING}`:
       return {
         ...state,
-        items: data
+        isFetching: true,
+        isSuccess: false
       }
-      break;
-  }
+    
+    case `FETCH_TRANSACTION_HISTORY_${FULFILLED}`:
+      // console.log(action.payload)
+      // console.log(action.payload.data.data.list)
+      return {
+        ...state,
+        items: action.payload.data.data.list,
+        isFetching: false,
+        isSuccess: true
+      }
+    
+    case `FETCH_TRANSACTION_HISTORY_${REJECTED}`:
+      return {
+        ...state,
+        isFetching: false,
+        isSuccess: false
+      }
 
-  return state;
+
+    default:
+      return state
+  } 
 }
 
 const sendEmailResponse = (state = {
@@ -646,6 +621,8 @@ const sendEmailResponse = (state = {
 }
 
 
+
+
 const appReducer = combineReducers({
   products,
   etalase,
@@ -655,7 +632,7 @@ const appReducer = combineReducers({
   paymentV2,
   search,
   paymentInvoice,
-  transactionHistory,
+  historyTransaction,
   shop,
   paymentRate,
   sendEmailResponse

@@ -132,7 +132,7 @@ const fetchTransactionHistory = async (page) => {
     page: page,
     os_type: '1'
   }
-  const txHistory = await apiGetTransactionHistory(`${api_url.base_api_url}/o2o/v1/order/get_history`, data)
+  const txHistory = await apiGetTransactionHistory(`${api_url.base_api_url}o2o/v1/order/get_history`, data)
   return txHistory
 }
 
