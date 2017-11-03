@@ -22,6 +22,14 @@
                 app:content_color="@color/tkpd_main_green"
                 app:content="@string/top_ads_keyword_add" />
 
+            <com.tokopedia.seller.common.widget.LabelView
+                android:id="@+id/total_keyword_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:label_show_arrow="true"
+                app:content_color="@color/tkpd_main_green"
+                app:title="@string/top_ads_keyword_add" />
+
             <include layout="@layout/partial_separator_horizontal"/>
 
             <com.tokopedia.seller.common.widget.LabelView

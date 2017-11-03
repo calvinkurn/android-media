@@ -101,6 +101,16 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable {
     @Expose
     private int negativeCount;
 
+    private String keywordTotal;
+
+    public String getKeywordTotal() {
+        return keywordTotal;
+    }
+
+    public void setKeywordTotal(String keywordTotal) {
+        this.keywordTotal = keywordTotal;
+    }
+
     private GetSuggestionResponse.Datum datum;
 
     public GroupAd() {
@@ -324,6 +334,7 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable {
         dest.writeInt(this.totalItem);
         dest.writeInt(this.positiveCount);
         dest.writeInt(this.negativeCount);
+        dest.writeString(this.keywordTotal);
         dest.writeParcelable(this.datum, flags);
     }
 
@@ -356,6 +367,7 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable {
         this.totalItem = in.readInt();
         this.positiveCount = in.readInt();
         this.negativeCount = in.readInt();
+        this.keywordTotal = in.readString();
         this.datum = in.readParcelable(GetSuggestionResponse.Datum.class.getClassLoader());
     }
 

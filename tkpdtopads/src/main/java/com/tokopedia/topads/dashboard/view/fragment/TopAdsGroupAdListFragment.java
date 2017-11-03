@@ -73,7 +73,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     public void onItemClicked(Ad ad) {
         if (ad instanceof GroupAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD, ad);
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getId());
             startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
         }
     }

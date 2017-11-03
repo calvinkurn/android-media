@@ -19,4 +19,6 @@ public interface TopAdsDetailViewListener<V extends Ad> extends TopAdsDetailList
     void onDeleteAdSuccess();
 
     void onDeleteAdError();
+
+
 }

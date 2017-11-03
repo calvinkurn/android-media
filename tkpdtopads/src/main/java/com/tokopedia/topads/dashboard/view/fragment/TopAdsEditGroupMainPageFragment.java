@@ -16,6 +16,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsEditCostExistingGroupA
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupNameActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenterImpl;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 
 /**
  * Created by zulfikarrahman on 8/8/17.
@@ -25,6 +26,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
 
     private LabelView productAdd;
     private LabelView name;
+    private LabelView keywordTotalAdd;
 
     public static Fragment createInstance(GroupAd ad, String adId) {
         Fragment fragment = new TopAdsEditGroupMainPageFragment();
@@ -51,6 +53,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
         super.initView(view);
         productAdd = (LabelView) view.findViewById(R.id.product_add);
         name = (LabelView) view.findViewById(R.id.name);
+        keywordTotalAdd = (LabelView) view.findViewById(R.id.total_keyword_add);
     }
 
     @Override
@@ -68,6 +71,27 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
                 startActivityForResult(TopAdsCreatePromoExistingGroupEditActivity.createIntent(getActivity(), String.valueOf(ad.getId()), null), REQUEST_CODE_AD_EDIT);
             }
         });
+        keywordTotalAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TopAdsKeywordNewChooseGroupActivity.start(TopAdsEditGroupMainPageFragment.this, getActivity(), TopAdsAdListFragment.REQUEST_CODE_AD_ADD, true);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (intent != null && (requestCode == TopAdsAdListFragment.REQUEST_CODE_AD_ADD || requestCode == TopAdsAdListFragment.REQUEST_CODE_AD_CHANGE)) {
+            boolean adChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+            boolean adDeleted = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, false);
+            if (adChanged || adDeleted) {
+                int i = Integer.valueOf(ad.getKeywordTotal()) + 1;
+                ad.setKeywordTotal(Integer.toString(i));
+
+                updateMainView(ad);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, intent);
     }
 
     @Override
@@ -106,5 +130,6 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
         super.updateMainView(ad);
         name.setContent(ad.getName());
         productAdd.setTitle(getString(R.string.top_ads_label_count_product_group, ad.getTotalItem()));
+        keywordTotalAdd.setTitle(getString(R.string.top_ads_label_count_keyword, ad.getKeywordTotal()));
     }
 }

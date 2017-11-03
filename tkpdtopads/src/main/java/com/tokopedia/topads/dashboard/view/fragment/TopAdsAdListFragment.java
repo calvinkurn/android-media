@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.text.SearchInputView;
@@ -163,6 +164,7 @@ public abstract class TopAdsAdListFragment<P extends
             }
         });
         appBarBehaviour = new AppBarLayout.Behavior();
+        KeyboardHandler.DropKeyboard(view.getContext(), searchInputView.getSearchTextView());
     }
 
     @Override
