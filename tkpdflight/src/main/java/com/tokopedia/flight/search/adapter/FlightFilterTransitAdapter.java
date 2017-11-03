@@ -9,18 +9,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.binder.LoadingDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.binder.NoResultDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.binder.RetryDataBinder;
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
-
-import java.util.List;
 
 /**
  * Created by User on 10/26/2017.
@@ -35,10 +30,10 @@ public class FlightFilterTransitAdapter extends BaseListCheckableV2Adapter<Trans
     @Override
     public CheckableBaseViewHolder<TransitStat> onCreateItemViewHolder(ViewGroup parent, int viewType) {
         View view = getLayoutView(parent, R.layout.item_flight_transit_filter);
-        return new FlightSearchViewHolder(view);
+        return new FlightSearchViewHolder(view, this);
     }
 
-    public class FlightSearchViewHolder extends CheckableBaseViewHolder<TransitStat> implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+    public static class FlightSearchViewHolder extends CheckableBaseViewHolder<TransitStat> implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
         TextView tvDeparture;
         TextView tvArrival;
@@ -47,8 +42,8 @@ public class FlightFilterTransitAdapter extends BaseListCheckableV2Adapter<Trans
         AppCompatTextView tvDuration;
         AppCompatCheckBox checkBox;
 
-        public FlightSearchViewHolder(View itemView) {
-            super(itemView);
+        public FlightSearchViewHolder(View itemView, BaseListCheckableV2Adapter<TransitStat> baseListCheckableV2Adapter) {
+            super(itemView, baseListCheckableV2Adapter);
             tvDeparture = (TextView) itemView.findViewById(R.id.tv_departure);
             tvArrival = (TextView) itemView.findViewById(R.id.tv_arrival);
             tvAirline = (TextView) itemView.findViewById(R.id.tv_airline);

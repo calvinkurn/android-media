@@ -1,14 +1,10 @@
 package com.tokopedia.abstraction.base.view.adapter;
 
-import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 
 import java.util.HashSet;
@@ -44,7 +40,7 @@ public abstract class BaseListCheckableV2Adapter<T extends ItemType> extends Bas
     }
 
     @Override
-    public abstract CheckableBaseViewHolder<T > onCreateItemViewHolder(ViewGroup parent, int viewType);
+    public abstract CheckableBaseViewHolder<T> onCreateItemViewHolder(ViewGroup parent, int viewType);
 
     protected void bindItemData(final int position, RecyclerView.ViewHolder viewHolder) {
         final T t = getData().get(position);
@@ -73,63 +69,19 @@ public abstract class BaseListCheckableV2Adapter<T extends ItemType> extends Bas
         return checkedPositionList.size();
     }
 
-    public abstract class CheckableBaseViewHolder<U extends T> extends BaseViewHolder<U> implements CompoundButton.OnCheckedChangeListener {
-
-        public CheckableBaseViewHolder(View itemView) {
-            super(itemView);
+    public void updateListByCheck(boolean isItemChecked, int position){
+        if (isItemChecked) {
+            checkedPositionList.add(position);
+        } else {
+            checkedPositionList.remove(position);
         }
-
-        public final void bindObject(U u) {
-            bindObject(u, false);
-        }
-
-        public abstract CheckBox getCheckBox();
-
-        @CallSuper
-        public void bindObject(U u, boolean isChecked) {
-            CheckBox checkBox = getCheckBox();
-            if (checkBox!= null) {
-                checkBox.setOnCheckedChangeListener (null);
-                checkBox.setChecked(isChecked);
-                checkBox.setOnCheckedChangeListener(this);
-            }
-        }
-
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            setChecked(isChecked);
-        }
-
-        public void toggle(){
-            boolean becomeChecked = !isChecked();
-            setChecked(becomeChecked);
-        }
-
-        private void updateListByCheck(boolean isItemChecked){
-            int position = getAdapterPosition();
-            if (isItemChecked) {
-                checkedPositionList.add(position);
-            } else {
-                checkedPositionList.remove(position);
-            }
-            if (onCheckableAdapterListener!= null) {
-                onCheckableAdapterListener.onItemChecked(getData().get(position), isItemChecked);
-            }
-        }
-
-        public boolean isChecked(){
-            return checkedPositionList.contains(getAdapterPosition());
-        }
-
-        public void setChecked(boolean checked){
-            if (checked != isChecked()) {
-                updateListByCheck(checked);
-                if (getCheckBox()!=null) {
-                    getCheckBox().setChecked(checked);
-                }
-            }
+        if (onCheckableAdapterListener!= null) {
+            onCheckableAdapterListener.onItemChecked(getData().get(position), isItemChecked);
         }
     }
 
+    public boolean isChecked(int position) {
+        return checkedPositionList.contains(position);
+    }
 
 }
