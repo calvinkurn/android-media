@@ -176,6 +176,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 ShareData shareData = ShareData.Builder.aShareData()
                         .setName(title)
+                        .setId(detailId)
                         .setDescription(description)
                         .setImgUri(imageUrl)
                         .setUri(url)
@@ -439,8 +440,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     private void onProductShareClicked(@NonNull ShareData data) {
-        Intent intent = new Intent(getActivity(), ShareActivity.class);
-        intent.putExtra(ShareData.TAG, data);
-        startActivity(intent);
+        startActivity(ShareActivity.createIntent(getActivity(),data));
     }
 }

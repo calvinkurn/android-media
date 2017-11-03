@@ -65,6 +65,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
 
     private static final String PULSA_CATEGORY_ID = "1";
     private static final String PAKET_DATA_CATEGORY_ID = "2";
+    private static final String ROAMING_CATEGORY_ID = "20";
 
     private IProductDigitalView view;
     private IProductDigitalInteractor productDigitalInteractor;
@@ -326,7 +327,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                                 new OrderClientNumber.Builder()
                                         .clientNumber(lastTypedClientNumber)
                                         .build());
-                    } else if (isPulsaOrPaketData(categoryData.getCategoryId()) &
+                    } else if (isPulsaOrPaketDataOrRoaming(categoryData.getCategoryId()) &
                             !TextUtils.isEmpty(verifiedNumber)) {
                         historyClientNumber.setLastOrderClientNumber(
                                 new OrderClientNumber.Builder()
@@ -341,8 +342,9 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
         };
     }
 
-    private boolean isPulsaOrPaketData(String categoryId) {
-        return categoryId.equals(PULSA_CATEGORY_ID) || categoryId.equals(PAKET_DATA_CATEGORY_ID);
+    private boolean isPulsaOrPaketDataOrRoaming(String categoryId) {
+        return categoryId.equals(PULSA_CATEGORY_ID) || categoryId.equals(PAKET_DATA_CATEGORY_ID) ||
+                categoryId.equals(ROAMING_CATEGORY_ID);
     }
 
     private void renderCategoryDataAndBannerToView(CategoryData categoryData,

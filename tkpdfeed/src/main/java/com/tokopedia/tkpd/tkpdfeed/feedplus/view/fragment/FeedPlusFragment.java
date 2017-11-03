@@ -34,6 +34,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
@@ -67,6 +68,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabe
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
@@ -97,6 +99,8 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import retrofit2.http.HEAD;
+
 /**
  * @author by nisie on 5/15/17.
  */
@@ -115,6 +119,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     RelativeLayout mainContent;
     View newFeed;
     Trace trace;
+    private ShareBottomDialog shareBottomDialog;
+
 
     @Inject
     FeedPlusPresenter presenter;
@@ -359,7 +365,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 .setUri(shareUrl)
                 .setType(ShareData.FEED_TYPE)
                 .build();
-        onProductShareClicked(shareData);
+
+        if (shareBottomDialog == null) {
+            shareBottomDialog = new ShareBottomDialog(
+                    FeedPlusFragment.this,
+                    callbackManager);
+        }
+        shareBottomDialog.setShareModel(shareData);
+
+        shareBottomDialog.show();
 
     }
 
@@ -502,8 +516,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void goToAllPromo() {
-        Intent intent = BlogWebViewActivity.getIntent(getActivity(), TkpdBaseURL.URL_PROMO +
-                TkpdBaseURL.FLAG_APP);
+        Intent intent = new Intent(getContext(), BannerWebView.class);
+        intent.putExtra(BannerWebView.EXTRA_TITLE, getContext().getString(R.string.title_activity_promo));
+        intent.putExtra(BannerWebView.EXTRA_URL,
+                TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
+        );
         startActivity(intent);
     }
 
@@ -901,12 +918,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         FeedTrackingEventLabel.Click.TOPPICKS_SEE_ALL);
     }
 
-    private void onProductShareClicked(@NonNull ShareData data) {
-        Intent intent = new Intent(getActivity(), ShareActivity.class);
-        intent.putExtra(ShareData.TAG, data);
-        startActivity(intent);
-    }
-
     @Override
     public void onGoToKolProfile(int page, int rowNumber, String url) {
         startActivity(KolProfileWebViewActivity.getCallingIntent(getActivity(), url));
@@ -959,7 +970,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {
+    public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {g
         startActivity(KolCommentActivity.getCallingIntent(getActivity(),
                 new KolCommentHeaderViewModel(model.getAvatar(), model.getName(), model.getReview
                         (), model.getTime()),

@@ -350,7 +350,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
         for (int i = bannerDataList.size() - 1; i >= 0; i--) {
-            if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) && TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
+            if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) &&
+                    TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
                 bannerDataList.remove(bannerDataList.get(i));
             }
         }
@@ -645,7 +646,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void closeView() {
-        getActivity().finish();
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -1003,6 +1006,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
+        if (orderClientNumber != null) {
+            UnifyTracking.eventSelectNumberOnUserProfileNative(categoryDataState.getName());
+        }
+
         if (categoryDataState.isSupportedStyle()) {
             switch (categoryDataState.getOperatorStyle()) {
                 case CategoryData.STYLE_PRODUCT_CATEGORY_1 :

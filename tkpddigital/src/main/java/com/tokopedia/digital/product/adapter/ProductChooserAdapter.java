@@ -3,11 +3,7 @@ package com.tokopedia.digital.product.adapter;
 import android.app.Fragment;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -167,7 +163,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 tvProductDescription.setVisibility(View.GONE);
             } else {
                 tvProductDescription.setVisibility(View.VISIBLE);
-                tvProductDescription.setText(product.getDetail());
+                tvProductDescription.setText(MethodChecker.fromHtml(product.getDetail()));
             }
         }
 
@@ -229,7 +225,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 tvProductPromoDescription.setVisibility(View.GONE);
             } else {
                 tvProductPromoDescription.setVisibility(View.VISIBLE);
-                tvProductPromoDescription.setText(product.getDetail());
+                tvProductPromoDescription.setText(MethodChecker.fromHtml(product.getDetail()));
             }
             if (TextUtils.isEmpty(product.getPromo().getTag())) {
                 tvProductPromoTag.setVisibility(View.GONE);
