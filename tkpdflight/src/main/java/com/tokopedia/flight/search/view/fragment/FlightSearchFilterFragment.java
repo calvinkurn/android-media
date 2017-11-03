@@ -15,6 +15,7 @@ import com.tokopedia.design.label.selection.text.SelectionTextLabelView;
 import com.tokopedia.design.price.PriceRangeInputView;
 import com.tokopedia.design.text.DecimalRangeInputView;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
 import com.tokopedia.flight.search.view.model.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
@@ -37,14 +38,11 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
     }
 
     private OnFlightSearchFilterFragmentListener onFilterFragmentListener;
-    public interface OnFlightSearchFilterFragmentListener{
+    public interface OnFlightSearchFilterFragmentListener extends OnFlightFilterListener {
         void onTransitLabelClicked();
         void onAirlineLabelClicked();
         void onRefundLabelClicked();
         void onDepartureLabelClicked();
-        FlightSearchStatisticModel getFlightSearchStatisticModel();
-        FlightFilterModel getFlightFilterModel();
-        void onFilterModelChanged(FlightFilterModel flightFilterModel);
     }
 
     @Override
@@ -79,6 +77,15 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         }
         priceRangeInputView.setPower(1);
         priceRangeInputView.setData(statMinPrice, statMaxPrice, filterMinPrice, filterMaxPrice);
+        priceRangeInputView.setOnValueChangedListener(new DecimalRangeInputView.OnValueChangedListener() {
+            @Override
+            public void onValueChanged(int minValue, int maxValue) {
+                FlightFilterModel flightFilterModel = onFilterFragmentListener.getFlightFilterModel();
+                flightFilterModel.setPriceMin(minValue);
+                flightFilterModel.setPriceMax(maxValue);
+                onFilterFragmentListener.onFilterModelChanged(flightFilterModel);
+            }
+        });
 
         DecimalRangeInputView durationDecimalRangeInputView = (DecimalRangeInputView) view.findViewById(R.id.duration_range_input_view);
         SelectionTextLabelView transitSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_transit);
@@ -113,6 +120,15 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         }
         durationDecimalRangeInputView.setPower(1);
         durationDecimalRangeInputView.setData(statMinDur, statMaxDur, filterMinDur, filterMaxDur);
+        durationDecimalRangeInputView.setOnValueChangedListener(new DecimalRangeInputView.OnValueChangedListener() {
+            @Override
+            public void onValueChanged(int minValue, int maxValue) {
+                FlightFilterModel flightFilterModel = onFilterFragmentListener.getFlightFilterModel();
+                flightFilterModel.setDurationMin(minValue);
+                flightFilterModel.setDurationMax(maxValue);
+                onFilterFragmentListener.onFilterModelChanged(flightFilterModel);
+            }
+        });
 
         transitSelectionTextLabelView.setItemList(selectionItemList);
         transitSelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {

@@ -1,11 +1,18 @@
 package com.tokopedia.flight.search.data.db;
 
+import com.raizlabs.android.dbflow.sql.language.BaseCondition;
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
+import com.raizlabs.android.dbflow.sql.language.SQLCondition;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.property.IntProperty;
 import com.tokopedia.abstraction.base.data.source.database.DataListDBSource;
+import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
+import com.tokopedia.flight.search.util.FlightSearchParamUtil;
+import com.tokopedia.flight.search.view.model.FlightFilterModel;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,30 +25,11 @@ import rx.functions.Func1;
  * Created by normansyahputa on 5/18/17.
  */
 
-public abstract class AbsFlightSearchDataListDBSource implements DataListDBSource<FlightSearchData,FlightSearchSingleRouteDB> {
+public abstract class AbsFlightSearchDataListDBSource extends BaseDataListDBSource<FlightSearchData,FlightSearchSingleRouteDB> {
 
-    @Override
-    public Observable<Boolean> isDataAvailable() {
-        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                subscriber.onNext(new Select(Method.count()).from(getDBClass()).hasData());
-            }
-        });
-    }
+    private com.raizlabs.android.dbflow.sql.language.SQLCondition SQLCondition;
 
     protected abstract Class<? extends  FlightSearchSingleRouteDB> getDBClass();
-
-    @Override
-    public Observable<Boolean> deleteAll() {
-        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                new Delete().from(getDBClass()).execute();
-                subscriber.onNext(true);
-            }
-        });
-    }
 
     @Override
     public Observable<Boolean> insertAll(final List<FlightSearchData> flightSearchDataList) {
@@ -67,26 +55,45 @@ public abstract class AbsFlightSearchDataListDBSource implements DataListDBSourc
 
     @Override
     public Observable<List<FlightSearchSingleRouteDB>> getData(HashMap<String, Object> params) {
-        // TODO use param to filter
+        final FlightFilterModel flightFilterModel = FlightSearchParamUtil.getFilterModel(params);
         return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightSearchSingleRouteDB>>() {
             @Override
             public void call(Subscriber<? super List<FlightSearchSingleRouteDB>> subscriber) {
-                List<? extends FlightSearchSingleRouteDB> flightSearchSingleRouteDBList = new Select().from(getDBClass()).queryList();
+                List<? extends FlightSearchSingleRouteDB> flightSearchSingleRouteDBList = new Select().from(getDBClass())
+                        .where(getSQLCondition(flightFilterModel))
+                        .queryList();
                 subscriber.onNext((List<FlightSearchSingleRouteDB>) flightSearchSingleRouteDBList);
             }
         });
     }
 
     @Override
-    public Observable<Integer> getDataCount(HashMap<String, Object> params) {
+    public Observable<Integer> getDataCount(final HashMap<String, Object> params) {
         // TODO use param to filter
+        final FlightFilterModel flightFilterModel = FlightSearchParamUtil.getFilterModel(params);
         return Observable.unsafeCreate(new Observable.OnSubscribe<Integer>() {
             @Override
             public void call(Subscriber<? super Integer> subscriber) {
-                long count = new Select(Method.count()).from(getDBClass()).count();
+                long count = new Select(Method.count()).from(getDBClass())
+                        .where(getSQLCondition(flightFilterModel))
+                        .count();
                 subscriber.onNext((int) count);
             }
         });
     }
 
+    protected ConditionGroup getSQLCondition(FlightFilterModel flightFilterModel) {
+        ConditionGroup conditionGroup = ConditionGroup.clause()
+                .and(getTotalNumericColumn().between(flightFilterModel.getPriceMin()).and(flightFilterModel.getPriceMax()))
+                .and(getDurationColumn().between(flightFilterModel.getDurationMin()).and(flightFilterModel.getDurationMax()));
+        return conditionGroup;
+    }
+
+    protected IntProperty getTotalNumericColumn(){
+        return new IntProperty(getDBClass(), FlightSearchSingleRouteDB.TOTAL_NUMERIC);
+    }
+
+    protected IntProperty getDurationColumn(){
+        return new IntProperty(getDBClass(), FlightSearchSingleRouteDB.DURATION_MINUTE);
+    }
 }

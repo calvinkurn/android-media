@@ -43,15 +43,6 @@ public class BottomActionView extends BaseCustomView {
     @DrawableRes
     private int icon2Res;
 
-    int mAnimState = ANIM_STATE_NONE;
-
-    static final int ANIM_STATE_NONE = 0;
-    static final int ANIM_STATE_HIDING = 1;
-    static final int ANIM_STATE_SHOWING = 2;
-
-    private static final Interpolator FAST_OUT_LINEAR_IN_INTERPOLATOR = new FastOutLinearInInterpolator();
-    private static final Interpolator LINEAR_OUT_SLOW_IN_INTERPOLATOR = new LinearOutSlowInInterpolator();
-
     public BottomActionView(Context context) {
         super(context);
         init();
@@ -121,87 +112,4 @@ public class BottomActionView extends BaseCustomView {
         linearLayoutButton2.setOnClickListener(onClickListener);
     }
 
-    public void hide(){
-        if (isOrWillBeHidden()) {
-            // We either are or will soon be hidden, skip the call
-            return;
-        }
-
-        mAnimState = ANIM_STATE_HIDING;
-
-        Animation anim = android.view.animation.AnimationUtils.loadAnimation(
-                getContext(), R.anim.design_fab_out);
-        anim.setInterpolator(FAST_OUT_LINEAR_IN_INTERPOLATOR);
-        anim.setDuration(200);
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mAnimState = ANIM_STATE_NONE;
-                BottomActionView.this.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        this.startAnimation(anim);
-    }
-
-    public void show(){
-        if (isOrWillBeShown()) {
-            // We either are or will soon be visible, skip the call
-            return;
-        }
-
-        mAnimState = ANIM_STATE_SHOWING;
-
-        this.setVisibility(View.VISIBLE);
-        Animation anim = android.view.animation.AnimationUtils.loadAnimation(
-                getContext(), R.anim.design_fab_in);
-        anim.setDuration(200);
-        anim.setInterpolator(LINEAR_OUT_SLOW_IN_INTERPOLATOR);
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mAnimState = ANIM_STATE_NONE;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        this.startAnimation(anim);
-    }
-
-    boolean isOrWillBeHidden() {
-        if (this.getVisibility() == View.VISIBLE) {
-            // If we currently visible, return true if we're animating to be hidden
-            return mAnimState == ANIM_STATE_HIDING;
-        } else {
-            // Otherwise if we're not visible, return true if we're not animating to be shown
-            return mAnimState != ANIM_STATE_SHOWING;
-        }
-    }
-
-    boolean isOrWillBeShown() {
-        if (this.getVisibility() != View.VISIBLE) {
-            // If we not currently visible, return true if we're animating to be shown
-            return mAnimState == ANIM_STATE_SHOWING;
-        } else {
-            // Otherwise if we're visible, return true if we're not animating to be hidden
-            return mAnimState != ANIM_STATE_HIDING;
-        }
-    }
 }

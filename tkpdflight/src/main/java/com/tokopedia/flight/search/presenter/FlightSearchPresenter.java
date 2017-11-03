@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchWithSortUseCase;
 import com.tokopedia.flight.search.view.FlightSearchView;
+import com.tokopedia.flight.search.view.model.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -30,13 +31,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     }
 
     //TODO params
-    public void searchDepartureFlight(boolean isFromCache) {
-        flightSearchUseCase.execute(FlightSearchUseCase.generateRequestParams(false, isFromCache),
-                getSubscriberSearchFlight());
-    }
-
-    public void searchReturningFlight(boolean isFromCache) {
-        flightSearchUseCase.execute(FlightSearchUseCase.generateRequestParams(true, isFromCache),
+    public void searchFlight(boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel) {
+        flightSearchUseCase.execute(FlightSearchUseCase.generateRequestParams(isReturning, isFromCache, flightFilterModel),
                 getSubscriberSearchFlight());
     }
 
@@ -60,7 +56,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
             @Override
             public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
-
                 getView().onSearchLoaded(flightSearchViewModels, flightSearchViewModels.size());
             }
         };
