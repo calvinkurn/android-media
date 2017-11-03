@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, TouchableOpacity, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, FlatList } from 'react-native';
 import { emailValidation } from '../lib/utility'
 import PopupDialog, { DialogTitle } from 'react-native-popup-dialog';
-import { getTransactionHistory } from '../actions/index';
+import { getTransactionHistory, reloadState } from '../actions/index';
 import { Text } from '../common/TKPText'
 import { icons } from '../lib/config'
 import PopUp from '../common/TKPPopupModal'
@@ -20,7 +20,8 @@ class TransactionHistory extends Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(getTransactionHistory());
+    this.props.dispatch(reloadState())
+    this.props.dispatch(getTransactionHistory())
   }
 
     
