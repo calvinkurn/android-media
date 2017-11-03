@@ -2,6 +2,7 @@ package com.tokopedia.core.deposit.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -221,9 +222,11 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MainApplication.getAppContext() instanceof TkpdCoreRouter)
-                    ((TkpdCoreRouter) getActivity().getApplication())
+                if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+                    Intent intent = ((TkpdCoreRouter) getActivity().getApplication())
                             .getForgotPasswordIntent(getActivity(), "");
+                    startActivity(intent);
+                }
             }
         };
     }
