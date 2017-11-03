@@ -71,13 +71,13 @@ public class ButtonResponse {
     @SerializedName("acceptSolutionText")
     private String acceptText;
 
-    @SerializedName("AcceptSolutionRetur")
+    @SerializedName("acceptSolutionRetur")
     private int acceptReturn;
 
-    @SerializedName("AcceptSolutionReturLabel")
+    @SerializedName("acceptSolutionReturLabel")
     private String acceptReturnLabel;
 
-    @SerializedName("AcceptSolutionReturText")
+    @SerializedName("acceptSolutionReturText")
     private String acceptReturnText;
 
     @SerializedName("finishComplaint")

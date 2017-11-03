@@ -95,7 +95,7 @@ public class ResCenterDataSourceFactory {
     }
 
     public CloudActionResCenterDataStore createCloudActionResCenterDataStore() {
-        return new CloudActionResCenterDataStore(context, resCenterActApi);
+        return new CloudActionResCenterDataStore(context, resCenterActApi, resolutionApi);
     }
 
     public ResChatCloudSource createResChatCloudSource() {

@@ -35,4 +35,21 @@ public class InputAddressUseCase extends UseCase<ResolutionActionDomainData> {
     public Observable<ResolutionActionDomainData> createObservable(RequestParams requestParams) {
         return repository.inputAddress(requestParams.getParameters());
     }
+
+    public static RequestParams getInputAddressParam(String addressId, String resolutionId, int paramByPass) {
+        RequestParams params = RequestParams.create();
+        params.putString(InputAddressUseCase.PARAM_ADDRESS_ID, addressId);
+        params.putInt(InputAddressUseCase.PARAM_BYPASS, paramByPass);
+        params.putString(InputAddressUseCase.PARAM_RESOLUTION_ID, resolutionId);
+        params.putInt(InputAddressUseCase.PARAM_NEW_ADDRESS, 1);
+        return params;
+    }
+
+    public static RequestParams getInputAddressMigrateVersionParam(String addressId, String resolutionId) {
+        RequestParams params = RequestParams.create();
+        params.putString(InputAddressUseCase.PARAM_ADDRESS_ID, addressId);
+        params.putString(InputAddressUseCase.PARAM_RESOLUTION_ID, resolutionId);
+        params.putInt(InputAddressUseCase.PARAM_NEW_ADDRESS, 1);
+        return params;
+    }
 }

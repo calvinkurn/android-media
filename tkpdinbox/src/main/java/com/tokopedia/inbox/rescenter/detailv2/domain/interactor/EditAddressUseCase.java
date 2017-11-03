@@ -35,4 +35,11 @@ public class EditAddressUseCase extends UseCase<ResolutionActionDomainData> {
         return repository.editAddress(requestParams.getParameters());
     }
 
+    public static RequestParams getEditAddressParam(String addressId, String oldAddressId, String conversationId, String resolutionId) {
+        RequestParams params = RequestParams.create();
+        params.putString(EditAddressUseCase.PARAM_ADDRESS_ID, addressId);
+        params.putString(EditAddressUseCase.PARAM_RESOLUTION_ID, resolutionId);
+        params.putString(EditAddressUseCase.PARAM_OLD_DATA, oldAddressId + "-" + conversationId );
+        return params;
+    }
 }

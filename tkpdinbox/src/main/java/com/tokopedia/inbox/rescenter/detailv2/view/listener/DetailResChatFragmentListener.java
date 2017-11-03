@@ -51,6 +51,19 @@ public interface DetailResChatFragmentListener {
         void successAskHelp();
 
         void errorAskHelp(String error);
+
+        void successInputAddress();
+
+        void errorInputAddress(String error);
+
+        void successEditAddress();
+
+        void errorEditAddress(String error);
+
+        void successFinishResolution();
+
+        void errorFinishResolution(String error);
+
     }
 
     interface Presenter extends CustomerPresenter<DetailResChatFragmentListener.View> {
@@ -70,5 +83,15 @@ public interface DetailResChatFragmentListener {
         void actionCancelComplaint();
 
         void actionAskHelp();
+
+        void actionFinish();
+
+        void inputAddressAcceptSolution(String addressId);
+
+        void inputAddressMigrateVersion(String addressId);
+
+        void inputAddressAcceptAdminSolution(String addressId);
+
+        void actionEditAddress(String addressId, String oldAddressId, String conversationId);
     }
 }

@@ -26,6 +26,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutio
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CreatePictureUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GenerateHostV2UseCase;
@@ -564,6 +565,17 @@ public class ResolutionDetailModule {
                 postExecutionThread,
                 uploadImageRepository
         );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    FinishResolutionUseCase provideFinishResolutionUseCase(ThreadExecutor threadExecutor,
+                                                           PostExecutionThread postExecutionThread,
+                                                           ResCenterRepository resCenterRepository) {
+        return new FinishResolutionUseCase(
+                threadExecutor,
+                postExecutionThread,
+                resCenterRepository);
     }
 
     @ResolutionDetailScope

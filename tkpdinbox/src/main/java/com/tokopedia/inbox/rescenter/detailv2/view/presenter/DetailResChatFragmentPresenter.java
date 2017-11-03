@@ -3,7 +3,6 @@ package com.tokopedia.inbox.rescenter.detailv2.view.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
@@ -16,19 +15,27 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolutionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResChatUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.SendDiscussionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.SendDiscussionV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.AcceptSolutionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.AskHelpSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.CancelComplaintSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.EditAddressSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.FinishResolutionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetDetailResChatSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.InputAddressAcceptAdminSolutionSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.InputAddressAcceptSolutionSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.InputAddressMigrateVersionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ReplyDiscussionSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ResolutionActionSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -57,6 +64,9 @@ public class DetailResChatFragmentPresenter
     AcceptSolutionUseCase acceptSolutionUseCase;
     AskHelpResolutionUseCase askHelpResolutionUseCase;
     CancelResolutionUseCase cancelResolutionUseCase;
+    InputAddressUseCase inputAddressUseCase;
+    EditAddressUseCase editAddressUseCase;
+    FinishResolutionUseCase finishResolutionUseCase;
     ImageUploadHandler uploadImageDialog;
 
     String resolutionId;
@@ -68,13 +78,19 @@ public class DetailResChatFragmentPresenter
                                           SendDiscussionV2UseCase sendDiscussionV2UseCase,
                                           AcceptSolutionUseCase acceptSolutionUseCase,
                                           AskHelpResolutionUseCase askHelpResolutionUseCase,
-                                          CancelResolutionUseCase cancelResolutionUseCase) {
+                                          CancelResolutionUseCase cancelResolutionUseCase,
+                                          InputAddressUseCase inputAddressUseCase,
+                                          EditAddressUseCase editAddressUseCase,
+                                          FinishResolutionUseCase finishResolutionUseCase) {
         this.getResChatUseCase = getResChatUseCase;
         this.acceptSolutionUseCase = acceptSolutionUseCase;
         this.sendDiscussionUseCase = sendDiscussionUseCase;
         this.sendDiscussionV2UseCase = sendDiscussionV2UseCase;
         this.askHelpResolutionUseCase = askHelpResolutionUseCase;
         this.cancelResolutionUseCase = cancelResolutionUseCase;
+        this.inputAddressUseCase = inputAddressUseCase;
+        this.editAddressUseCase = editAddressUseCase;
+        this.finishResolutionUseCase = finishResolutionUseCase;
     }
 
     @Override
@@ -135,6 +151,60 @@ public class DetailResChatFragmentPresenter
         askHelpResolutionUseCase.execute(
                 AskHelpResolutionUseCase.getParams(resolutionId),
                 new AskHelpSubscriber(mainView));
+    }
+
+    @Override
+    public void actionFinish() {
+        mainView.showProgressBar();
+        finishResolutionUseCase.execute(
+                FinishResolutionUseCase.getParams(resolutionId),
+                new FinishResolutionSubscriber(mainView));
+
+    }
+
+    @Override
+    public void inputAddressAcceptSolution(String addressId) {
+        mainView.showProgressBar();
+        inputAddressUseCase.execute(
+                InputAddressUseCase.getInputAddressParam(
+                        addressId,
+                        resolutionId,
+                        InputAddressUseCase.DEFAULT_BY_PASS),
+                new InputAddressAcceptSolutionSubscriber(mainView));
+    }
+
+    @Override
+    public void inputAddressMigrateVersion(String addressId) {
+        mainView.showProgressBar();
+        inputAddressUseCase.execute(
+                InputAddressUseCase.getInputAddressMigrateVersionParam(
+                        addressId,
+                        resolutionId),
+                new InputAddressMigrateVersionSubscriber(mainView));
+
+    }
+
+    @Override
+    public void inputAddressAcceptAdminSolution(String addressId) {
+        mainView.showProgressBar();
+        inputAddressUseCase.execute(
+                InputAddressUseCase.getInputAddressParam(
+                        addressId,
+                        resolutionId,
+                        InputAddressUseCase.ADMIN_BY_PASS),
+                new InputAddressAcceptAdminSolutionSubscriber(mainView));
+    }
+
+    @Override
+    public void actionEditAddress(String addressId, String oldAddressId, String conversationId) {
+        mainView.showProgressBar();
+        editAddressUseCase.execute(
+                EditAddressUseCase.getEditAddressParam(
+                        addressId,
+                        oldAddressId,
+                        conversationId,
+                        resolutionId),
+                new EditAddressSubscriber(mainView));
     }
 
     @Override

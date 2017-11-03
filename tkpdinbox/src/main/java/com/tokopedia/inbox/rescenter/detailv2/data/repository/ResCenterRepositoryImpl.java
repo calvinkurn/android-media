@@ -175,4 +175,18 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
                 .createResChatCloudSource()
                 .getDetailResChatCloud(requestParams);
     }
+
+    @Override
+    public Observable<ResolutionActionDomainData> finishResolution(RequestParams params) {
+        return resCenterDataSourceFactory
+                .createCloudActionResCenterDataStore()
+                .finishResolution(params);
+    }
+
+    @Override
+    public Observable<ResolutionActionDomainData> askHelpResolutionV2(RequestParams requestParams) {
+        return resCenterDataSourceFactory
+                .createCloudActionResCenterDataStore()
+                .askHelpResolutionV2(requestParams);
+    }
 }

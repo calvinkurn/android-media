@@ -7,14 +7,14 @@ import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmen
 import rx.Subscriber;
 
 /**
- * Created by yoasfs on 10/30/17.
+ * Created by yoasfs on 11/3/17.
  */
 
-public class AskHelpSubscriber extends Subscriber<ResolutionActionDomainData> {
+public class InputAddressAcceptAdminSolutionSubscriber extends Subscriber<ResolutionActionDomainData> {
 
     private final DetailResChatFragmentListener.View mainView;
 
-    public AskHelpSubscriber(DetailResChatFragmentListener.View mainView) {
+    public InputAddressAcceptAdminSolutionSubscriber(DetailResChatFragmentListener.View mainView) {
         this.mainView = mainView;
     }
 
@@ -25,15 +25,15 @@ public class AskHelpSubscriber extends Subscriber<ResolutionActionDomainData> {
 
     @Override
     public void onError(Throwable e) {
-        mainView.errorAskHelp(ErrorHandler.getErrorMessage(e));
+        mainView.errorInputAddress(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(ResolutionActionDomainData data) {
         if (data.isSuccess()) {
-            mainView.successAskHelp();
+            mainView.successInputAddress();
         } else {
-            mainView.errorAskHelp(data.getMessageError());
+            mainView.errorInputAddress(data.getMessageError());
         }
     }
 }

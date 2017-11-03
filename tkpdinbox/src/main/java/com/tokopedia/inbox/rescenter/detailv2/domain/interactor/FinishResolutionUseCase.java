@@ -10,31 +10,29 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomai
 import rx.Observable;
 
 /**
- * Created by hangnadi on 3/22/17.
+ * Created by yoasfs on 11/3/17.
  */
 
-public class AskHelpResolutionUseCase extends UseCase<ResolutionActionDomainData> {
+public class FinishResolutionUseCase extends UseCase<ResolutionActionDomainData> {
 
-
-    public static final String PARAM_RESOLUTION_ID = "resolution_id";
+    public static final String RESO_ID = "resolution_id";
 
     private final ResCenterRepository repository;
 
-    public AskHelpResolutionUseCase(ThreadExecutor threadExecutor,
-                                    PostExecutionThread postExecutionThread,
-                                    ResCenterRepository resCenterRepository) {
+    public FinishResolutionUseCase(ThreadExecutor threadExecutor,
+                                   PostExecutionThread postExecutionThread,
+                                   ResCenterRepository resCenterRepository) {
         super(threadExecutor, postExecutionThread);
         this.repository = resCenterRepository;
     }
 
     @Override
     public Observable<ResolutionActionDomainData> createObservable(RequestParams requestParams) {
-        return repository.askHelpResolutionV2(requestParams);
+        return repository.finishResolution(requestParams);
     }
-
     public static RequestParams getParams(String resolutionId) {
         RequestParams params = RequestParams.create();
-        params.putString(PARAM_RESOLUTION_ID, resolutionId);
+        params.putString(RESO_ID, resolutionId);
         return params;
     }
 }

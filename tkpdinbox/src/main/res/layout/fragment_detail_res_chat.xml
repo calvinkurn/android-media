@@ -49,11 +49,19 @@
         </LinearLayout>
     </FrameLayout>
 
+
+    <include layout="@layout/layout_button_action"
+        android:id="@+id/layout_action"
+        android:visibility="visible"
+        android:layout_height="60dp"
+        android:layout_width="match_parent"
+        android:layout_above="@id/ff_chat" />
+
     <LinearLayout
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/ff_chat"
+        android:layout_above="@id/layout_action"
         android:orientation="vertical">
 
         <android.support.v7.widget.CardView
@@ -111,7 +119,10 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.RecyclerView
-            android:layout_margin="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
             android:id="@+id/rv_chat"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -127,13 +138,6 @@
         android:background="@color/trans_black_40"
         android:orientation="horizontal"
         android:visibility="gone"/>
-
-    <include layout="@layout/layout_button_action"
-        android:id="@+id/layout_action"
-        android:visibility="visible"
-        android:layout_height="60dp"
-        android:layout_width="match_parent"
-        android:layout_above="@id/ff_chat" />
 
     <ProgressBar
         android:id="@+id/progress_bar"

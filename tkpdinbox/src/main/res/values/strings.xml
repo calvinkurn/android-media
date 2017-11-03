@@ -142,6 +142,7 @@
     <string name="string_accept_solution_title_yes">Terima</string>
     <string name="string_cancel_complaint_title">Batalkan Komplain?</string>
     <string name="string_cancel_ask_help_title">Minta Bantuan?</string>
+    <string name="string_cancel_finish_title">Selesaikan Komplain?</string>
     <string name="string_error_min_max_words">Minimal 7 karakter dan maksimal 5000 karakter</string>
 
     <!--chat bubble-->

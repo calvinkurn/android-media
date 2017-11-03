@@ -130,6 +130,16 @@ public interface ResolutionApi {
     Observable<Response<TkpdResponse>> replyResolutionSubmit(@Path("resolution_id") String resolutionID,
                                                              @FieldMap TKPDMapParam<String, Object> params);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenterV2.ACTION_FINISH_RESOLUTION)
+    Observable<Response<TkpdResponse>> finishResolution(@Path("resolution_id") String resolutionID,
+                                                             @FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenterV2.ACTION_ASK_HELP_RESOLUTION)
+    Observable<Response<TkpdResponse>> askHelpResolution(@Path("resolution_id") String resolutionID,
+                                                        @FieldMap TKPDMapParam<String, Object> params);
+
     @Multipart
     @POST("")
     Observable<Response<TkpdResponse>> uploadVideo(@Url String url,

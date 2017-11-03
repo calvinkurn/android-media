@@ -26,6 +26,9 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.ImageUploadHandler;
@@ -58,6 +61,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextA
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,6 +90,12 @@ public class DetailResChatFragment
     private static final int COUNT_MAX_ATTACHMENT = 5;
     private static final int REQUEST_EDIT_SOLUTION = 123;
     private static final int REQUEST_APPEAL_SOLUTION = 234;
+    private static final int REQUEST_INPUT_SHIPPING = 345;
+    private static final int REQUEST_EDIT_SHIPPING = 456;
+    private static final int REQUEST_CHOOSE_ADDRESS = 678;
+    private static final int REQUEST_CHOOSE_ADDRESS_MIGRATE_VERSION = 789;
+    private static final int REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 890;
+    private static final int REQUEST_EDIT_ADDRESS = 901;
 
     public static final int ACTION_BY_USER = 1;
     public static final int ACTION_BY_SELLER = 2;
@@ -319,6 +329,7 @@ public class DetailResChatFragment
                         attachmentAdapter.getList().remove(position);
                         if (attachmentAdapter.getList().size() == 0) {
                             rvAttachment.setVisibility(View.GONE);
+                            initActionButton(detailResChatDomain.getButton());
                         }
                         attachmentAdapter.notifyDataSetChanged();
                     }
@@ -388,27 +399,6 @@ public class DetailResChatFragment
             }
         });
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case ImageUploadHandler.REQUEST_CODE:
-                presenter.handleDefaultOldUploadImageHandlerResult(resultCode, data);
-                break;
-            case ImageUploadHandler.REQUEST_CODE_GALLERY:
-                presenter.handleNewGalleryResult(resultCode, data);
-                break;
-            case REQUEST_EDIT_SOLUTION:
-                if (resultCode == Activity.RESULT_OK)
-                    initView(false);
-                break;
-            case REQUEST_APPEAL_SOLUTION:
-                if (resultCode == Activity.RESULT_OK)
-                    initView(false);
-            default:
-                break;
-        }
     }
 
     private ConversationDomain getTempConversationDomain(String message) {
@@ -572,6 +562,13 @@ public class DetailResChatFragment
                 Button button = getChatActionButton(buttonDomain.getInputAddressLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
+
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        doInputAddress();
+                    }
+                });
             }
 
             if (buttonDomain.getAppeal() == 1) {
@@ -590,6 +587,12 @@ public class DetailResChatFragment
                 Button button = getChatActionButton(buttonDomain.getInputAWBLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        doInputAWB();
+                    }
+                });
             }
 
             if (buttonDomain.getAccept() == 1) {
@@ -642,9 +645,15 @@ public class DetailResChatFragment
             }
 
             if (buttonDomain.getFinish() == 1) {
-                Button button = getChatActionButton(buttonDomain.getFinishLabel());
+                final Button button = getChatActionButton(buttonDomain.getFinishLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showFinishDialog(buttonDomain.getFinishText());
+                    }
+                });
             }
 
             if (buttonDomain.getRecomplaint() == 1) {
@@ -829,6 +838,56 @@ public class DetailResChatFragment
         dialog.show();
     }
 
+    private void showFinishDialog(String finishText) {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.layout_dialog_finish);
+        TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
+        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
+        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
+        Button btnAccept = (Button) dialog.findViewById(R.id.btn_yes);
+        tvSolution.setText(MethodChecker.fromHtml(finishText));
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.actionFinish();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+
+    private void doInputAWB() {
+        startActivityForResult(
+                InputShippingActivity.createNewPageIntent(getActivity(), resolutionId),
+                REQUEST_INPUT_SHIPPING
+        );
+    }
+
+    private void doInputAddress() {
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        intent.putExtra("resolution_center", true);
+        startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS);
+    }
+
+    private void doEditAddress() {
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        intent.putExtra("resolution_center", true);
+        startActivityForResult(intent, REQUEST_EDIT_ADDRESS);
+    }
+
     private Intent getIntentEditResCenter() {
         if (isSeller()) {
             return SolutionListActivity.newSellerEditInstance(getActivity(),
@@ -857,6 +916,7 @@ public class DetailResChatFragment
         attachmentAdapter.addImage(attachment);
         if (attachmentAdapter.getList().size() != 0) {
             rvAttachment.setVisibility(View.VISIBLE);
+            actionButtonLayout.setVisibility(View.GONE);
         }
         attachmentAdapter.notifyDataSetChanged();
     }
@@ -871,6 +931,7 @@ public class DetailResChatFragment
         attachmentAdapter.getList().clear();
         attachmentAdapter.notifyDataSetChanged();
         rvAttachment.setVisibility(View.GONE);
+        initActionButton(detailResChatDomain.getButton());
         etChat.setText("");
     }
 
@@ -915,6 +976,100 @@ public class DetailResChatFragment
     public void errorAskHelp(String error) {
         dismissProgressBar();
         NetworkErrorHelper.showSnackbar(getActivity(), error);
+    }
+
+    @Override
+    public void successInputAddress() {
+        dismissProgressBar();
+        initView(false);
+    }
+
+    @Override
+    public void errorInputAddress(String error) {
+        dismissProgressBar();
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
+    }
+
+    @Override
+    public void successEditAddress() {
+        dismissProgressBar();
+        initView(false);
+    }
+
+    @Override
+    public void errorEditAddress(String error) {
+        dismissProgressBar();
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
+    }
+
+    @Override
+    public void successFinishResolution() {
+        dismissProgressBar();
+        initView(false);
+    }
+
+    @Override
+    public void errorFinishResolution(String error) {
+        dismissProgressBar();
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ImageUploadHandler.REQUEST_CODE:
+                presenter.handleDefaultOldUploadImageHandlerResult(resultCode, data);
+                break;
+            case ImageUploadHandler.REQUEST_CODE_GALLERY:
+                presenter.handleNewGalleryResult(resultCode, data);
+                break;
+            case REQUEST_EDIT_SOLUTION:
+                if (resultCode == Activity.RESULT_OK)
+                    initView(false);
+                break;
+            case REQUEST_APPEAL_SOLUTION:
+                if (resultCode == Activity.RESULT_OK)
+                    initView(false);
+                break;
+            case REQUEST_INPUT_SHIPPING:
+                if (resultCode == Activity.RESULT_OK)
+                    initView(false);
+                break;
+            case REQUEST_EDIT_SHIPPING:
+                if (resultCode == Activity.RESULT_OK) {
+                    initView(false);
+                }
+                break;
+            case REQUEST_CHOOSE_ADDRESS:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+                    presenter.inputAddressAcceptSolution(destination != null ? destination.getAddressId() : null);
+                }
+                break;
+            case REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+                    presenter.inputAddressAcceptAdminSolution(destination != null ? destination.getAddressId() : null);
+                }
+                break;
+            case REQUEST_CHOOSE_ADDRESS_MIGRATE_VERSION:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+                    presenter.inputAddressMigrateVersion(destination != null ? destination.getAddressId() : null);
+                }
+                break;
+//            case REQUEST_EDIT_ADDRESS:
+//                if (resultCode == Activity.RESULT_OK) {
+//                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+//                    presenter.actionEditAddress(
+//                            destination != null ? destination.getAddressId() : null,
+//                            viewData.getAddressReturData().getAddressID(),
+//                            viewData.getAddressReturData().getConversationID()
+//                    );
+//                }
+            default:
+                break;
+        }
     }
 
     @Override
