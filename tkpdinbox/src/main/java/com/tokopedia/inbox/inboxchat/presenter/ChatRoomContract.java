@@ -10,6 +10,7 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
+import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 
 /**
  * Created by stevenfredian on 9/14/17.
@@ -64,9 +65,17 @@ public class ChatRoomContract {
         void addTimeMachine();
 
         void addUrlToReply(String url);
+
+        String getKeyword();
+
+        void setResult(ChatRoomViewModel model);
+
+        void notifyConnectionWebSocket();
     }
 
     interface Presenter extends CustomerPresenter<View>{
         void getAttachProductDialog(String shopId, String senderRole);
+
+        void resetAttempt();
     }
 }

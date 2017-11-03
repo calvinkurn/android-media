@@ -33,7 +33,6 @@ public class DummyAdapter extends RecyclerView.Adapter<DummyAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Integer c = list.get(position);
-        holder.pos.setText("posisi "+ c);
     }
 
     @Override
@@ -50,11 +49,9 @@ public class DummyAdapter extends RecyclerView.Adapter<DummyAdapter.ViewHolder>{
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private final TextView pos;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            pos = (TextView) itemView.findViewById(R.id.pos);
         }
     }
 

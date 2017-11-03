@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
@@ -51,7 +52,11 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                     temp.setMsgId(item.getMsgId());
                     temp.setRole(item.getRole());
                     temp.setSenderName(item.getSenderName());
-
+                    temp.setHighlight(item.isHighlight());
+                    temp.setReadStatus(item.isMessageIsRead());
+                    if(item.isHighlight()){
+                        temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
+                    }
                     list.add(temp);
                 } else {
 
@@ -67,7 +72,10 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                     temp.setMsgId(item.getMsgId());
                     temp.setRole(item.getRole());
                     temp.setSenderName(item.getSenderName());
-
+                    temp.setHighlight(item.isHighlight());
+                    if(item.isHighlight()){
+                        temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
+                    }
                     list.add(temp);
                 }
             }

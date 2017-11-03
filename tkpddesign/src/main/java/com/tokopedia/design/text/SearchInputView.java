@@ -32,6 +32,10 @@ public class SearchInputView extends BaseCustomView {
 
     }
 
+    public interface ResetListener {
+        void onSearchReset();
+    }
+
     private ImageView searchImageView;
     private EditText searchTextView;
     private ImageButton closeImageButton;
@@ -41,6 +45,7 @@ public class SearchInputView extends BaseCustomView {
     private String searchHint;
 
     private Listener listener;
+    private ResetListener reset;
 
     public EditText getSearchTextView() {
         return searchTextView;
@@ -48,6 +53,10 @@ public class SearchInputView extends BaseCustomView {
 
     public void setListener(Listener listener) {
         this.listener = listener;
+    }
+
+    public void setResetListener(ResetListener listener) {
+        this.reset = listener;
     }
 
     public SearchInputView(Context context) {
@@ -130,6 +139,9 @@ public class SearchInputView extends BaseCustomView {
         closeImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(reset!=null){
+                    reset.onSearchReset();
+                }
                 searchTextView.setText("");
             }
         });

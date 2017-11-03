@@ -2,12 +2,16 @@ package com.tokopedia.inbox.inboxchat.presenter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase;
+import com.tokopedia.inbox.inboxchat.presenter.subscriber.DeleteMessageSubscriber;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetMessageSubscriber;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.SearchMessageSubscriber;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
@@ -28,18 +32,24 @@ import javax.inject.Inject;
 public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.View>
         implements InboxChatContract.Presenter, InboxMessageConstant {
 
-    private final GetMessageListUseCase getMessageListUseCase;
-    private final SearchMessageUseCase searchMessageUseCase;
+    private GetMessageListUseCase getMessageListUseCase;
+    private SearchMessageUseCase searchMessageUseCase;
+    private DeleteMessageListUseCase deleteMessageListUseCase;
     InboxMessagePass inboxMessagePass;
     PagingHandler pagingHandler;
     private boolean isRequesting;
     private InboxChatViewModel viewModel;
+    private int contactSize;
+    private int chatSize;
+    private List<Visitable> listFetchCache;
 
     @Inject
     InboxChatPresenter(GetMessageListUseCase getMessageListUseCase,
-                       SearchMessageUseCase searchMessageUseCase) {
+                       SearchMessageUseCase searchMessageUseCase,
+                       DeleteMessageListUseCase deleteMessageListUseCase) {
         this.getMessageListUseCase = getMessageListUseCase;
         this.searchMessageUseCase = searchMessageUseCase;
+        this.deleteMessageListUseCase = deleteMessageListUseCase;
     }
 
     @Override
@@ -53,9 +63,12 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         this.inboxMessagePass.setNav(getView().getNav());
         this.pagingHandler = new PagingHandler();
         isRequesting = false;
+        contactSize = 0;
+        chatSize = 0;
     }
 
     public void getMessage() {
+        if(viewModel!=null)  viewModel.setKeyword("");
         showLoading();
         getView().disableActions();
         getView().removeError();
@@ -75,24 +88,102 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void setResult(InboxChatViewModel result) {
+
+    }
+
+    private InboxChatViewModel modifyViewModel(InboxChatViewModel result) {
+        String temp="";
+        if(viewModel!=null) {
+            temp = viewModel.getKeyword();
+        }
         viewModel = result;
+        viewModel.setKeyword(temp);
+        return viewModel;
+    }
+
+
+    public void setResultFetch(InboxChatViewModel result) {
+        viewModel = modifyViewModel(result);
 
         if (pagingHandler.getPage() == 1) {
-            getView().getAdapter().setList(result.getList());
+            contactSize = 0;
+            chatSize = 0;
+            getView().getAdapter().setList(result.getListReplies());
+            chatSize += result.getChatSize();
+//            getView().getAdapter().addList(contactSize, result.getListContact());
+//            contactSize += result.getContactSize();
         } else {
-            getView().getAdapter().addList(result.getList());
+            getView().getAdapter().addList(result.getListReplies());
+            chatSize += result.getChatSize();
+//            getView().getAdapter().addList(contactSize, result.getListContact());
+//            contactSize += result.getContactSize();
         }
 
+        getView().getAdapter().showEmptyFull(false);
+        getView().getAdapter().showEmptySearch(false);
+
         if (getView().getAdapter().getList().size() == 0) {
-            getView().getAdapter().showEmptyFull(true);
+            if(result.getMode() == InboxChatViewModel.SEARCH_CHAT_MODE){
+                getView().getAdapter().showEmptySearch(true);
+            }else if(result.getMode() == InboxChatViewModel.GET_CHAT_MODE) {
+                getView().getAdapter().showEmptyFull(true);
+            }
+        }
+
+        if (!pagingHandler.CheckNextPage() && result.isHasTimeMachine()) {
+            getView().addTimeMachine();
+        }
+
+        setCache(getView().getAdapter().getList());
+    }
+
+    private void setCache(List<Visitable> list) {
+        this.listFetchCache = new ArrayList<>();
+        this.listFetchCache.addAll(list);
+    }
+
+    public void resetSearch() {
+        viewModel.setKeyword("");
+        getView().getAdapter().setList(listFetchCache);
+        chatSize = listFetchCache.size();
+        contactSize = 0;
+    }
+
+    public void setResultSearch(InboxChatViewModel result) {
+        viewModel = modifyViewModel(result);
+
+        if (pagingHandler.getPage() == 1) {
+            contactSize = 0;
+            chatSize = 0;
+            getView().getAdapter().setList(result.getListReplies());
+            chatSize += result.getChatSize();
+            getView().getAdapter().addList(contactSize, result.getListContact());
+            contactSize += result.getContactSize();
         } else {
-            getView().getAdapter().showEmptyFull(false);
+            getView().getAdapter().addList(result.getListReplies());
+            chatSize += result.getChatSize();
+            getView().getAdapter().addList(contactSize, result.getListContact());
+            contactSize += result.getContactSize();
+        }
+
+
+
+        getView().getAdapter().showEmptyFull(false);
+        getView().getAdapter().showEmptySearch(false);
+
+        if (getView().getAdapter().getList().size() == 0) {
+            if(result.getMode() == InboxChatViewModel.SEARCH_CHAT_MODE){
+                getView().getAdapter().showEmptySearch(true);
+            }else if(result.getMode() == InboxChatViewModel.GET_CHAT_MODE) {
+                getView().getAdapter().showEmptyFull(true);
+            }
         }
 
         if (!pagingHandler.CheckNextPage() && result.isHasTimeMachine()) {
             getView().addTimeMachine();
         }
     }
+
 
     @Override
     public void detachView() {
@@ -117,6 +208,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void goToDetailMessage(int position, ChatListViewModel listMessage) {
+        getView().getAdapter().notifyItemChanged(position);
         Intent intent = InboxMessageDetailActivity.getCallingIntent(getView().getActivity(),
                 getView().getArguments().getString(PARAM_NAV),
                 String.valueOf(listMessage.getId()),
@@ -125,7 +217,8 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                 listMessage.getLabel(),
                 listMessage.getSenderId(),
                 listMessage.getRole(),
-                viewModel.getMode());
+                viewModel.getMode(),
+                viewModel.getKeyword());
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         getView().startActivityForResult(intent, OPEN_DETAIL_MESSAGE);
         getView().overridePendingTransition(0, 0);
@@ -184,12 +277,25 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     public void initSearch(String keyword) {
         pagingHandler.resetPage();
-        search(keyword);
+        searchAll(keyword);
     }
 
-    public void search(String keyword) {
-        if (!isRequesting) {
-            searchMessageUseCase.execute(SearchMessageUseCase.generateParam(keyword, pagingHandler.getPage()), new SearchMessageSubscriber(getView(), this));
+    private void searchAll(String keyword) {
+        if(!isRequesting) {
+            if(viewModel!=null) viewModel.setKeyword(keyword);
+            searchMessageUseCase.execute(SearchMessageUseCase.generateParam(keyword), new SearchMessageSubscriber(getView(), this));
+            isRequesting = true;
+        }
+    }
+
+    private void searchReplies(String keyword) {
+        search(keyword, "reply");
+    }
+
+    public void search(String keyword, String by) {
+        if(!isRequesting) {
+            if(viewModel!=null) viewModel.setKeyword(keyword);
+            searchMessageUseCase.execute(SearchMessageUseCase.generateParam(keyword, pagingHandler.getPage(),by), new SearchMessageSubscriber(getView(), this));
             isRequesting = true;
         }
     }
@@ -215,7 +321,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             if (viewModel.getMode() == InboxChatViewModel.GET_CHAT_MODE) {
                 getMessage();
             } else if (viewModel.getMode() == InboxChatViewModel.SEARCH_CHAT_MODE) {
-                search(getView().getKeyword());
+                searchReplies(getView().getKeyword());
             }
         } else {
             getView().finishLoading();
@@ -224,5 +330,10 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     public String getKeyword() {
         return getView().getKeyword();
+    }
+
+    public void deleteMessage() {
+        List<Pair> temp = getView().getAdapter().getListMove();
+        deleteMessageListUseCase.execute(DeleteMessageListUseCase.generateParam(temp), new DeleteMessageSubscriber(getView(), this));
     }
 }

@@ -4,9 +4,12 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
+import com.tokopedia.inbox.inboxchat.viewmodel.EmptyChatModel;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
+import com.tokopedia.inbox.inboxchat.viewholder.EmptyChatListViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineListViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
@@ -36,6 +39,8 @@ public class InboxChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
             viewHolder = new ListChatViewHolder(view, viewListener, presenter);
         else if (type == TimeMachineListViewHolder.LAYOUT)
             viewHolder = new TimeMachineListViewHolder(view, viewListener);
+        else if (type == EmptyChatListViewHolder.LAYOUT)
+            viewHolder = new EmptyChatListViewHolder(view);
         else
             return super.createViewHolder(view, type);
 
@@ -50,5 +55,10 @@ public class InboxChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
     @Override
     public int type(TimeMachineListViewModel timeMachineListViewModel) {
         return TimeMachineListViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(EmptyChatModel emptyChatModel) {
+        return EmptyChatListViewHolder.LAYOUT;
     }
 }

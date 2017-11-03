@@ -63,5 +63,10 @@
     <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
         Pesan</string>
 
+    <string name="no_existing_chat"> Tidak Ada Chat</string>
+    <string name="please_try_chat"> Silakan mengirim chat untuk\nmemulai percakapan</string>
+
+
+
 
 </resources>

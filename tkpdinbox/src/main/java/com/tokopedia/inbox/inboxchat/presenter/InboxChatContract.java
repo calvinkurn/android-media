@@ -5,6 +5,8 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.inboxchat.adapter.InboxChatAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.NewInboxChatAdapter;
+import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxmessage.adapter.InboxMessageAdapter;
 
 import android.content.Context;
@@ -19,6 +21,7 @@ import com.tokopedia.inbox.inboxchat.adapter.InboxChatAdapter;
 import com.tokopedia.inbox.inboxmessage.adapter.InboxMessageAdapter;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by stevenfredian on 9/14/17.
@@ -75,6 +78,12 @@ public class InboxChatContract {
         void addTimeMachine();
 
         void onGoToTimeMachine(String url);
+
+        void removeList(List<DeleteChatViewModel> list);
+
+        void setResultSearch(InboxChatViewModel inboxChatViewModel);
+
+        void setResultFetch(InboxChatViewModel messageData);
     }
 
     interface Presenter extends CustomerPresenter<View>{

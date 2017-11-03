@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxchat.data.mapper;
 
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.inboxchat.domain.model.search.Datum;
@@ -27,12 +28,24 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
             InboxChatViewModel inboxChatViewModel = new InboxChatViewModel();
             inboxChatViewModel.setMode(InboxChatViewModel.SEARCH_CHAT_MODE);
 
-            inboxChatViewModel.setHasNextContacts(data.getContacts().isHasNext());
-            inboxChatViewModel.setHasNextReplies(data.getReplies().isHasNext());
+            inboxChatViewModel = prepareContact(inboxChatViewModel, data);
+            inboxChatViewModel = prepareReplies(inboxChatViewModel, data);
 
-            ArrayList<ChatListViewModel> list = new ArrayList<>();
+            return inboxChatViewModel;
+        } else {
+            return new InboxChatViewModel();
+        }
+    }
 
+    private InboxChatViewModel prepareContact(InboxChatViewModel inboxChatViewModel, SearchedMessage data){
+        if(data.getContacts()!=null && data.getContacts().getData()!=null){
             int index = 0;
+
+            inboxChatViewModel.setHasNextContacts(data.getContacts().isHasNext());
+            inboxChatViewModel.setContactSize(data.getContacts().getData().size());
+
+            ArrayList<Visitable> listContact = new ArrayList<>();
+
             for (Datum item : data.getContacts().getData()) {
                 ChatListViewModel viewModel = new ChatListViewModel();
                 viewModel.setId(String.valueOf(item.getMsgId()));
@@ -45,14 +58,28 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
                 viewModel.setReadStatus(STATE_CHAT_READ);
                 viewModel.setLabel(getRole(item.getOppositeType()));
                 viewModel.setSpanMode(ChatListViewModel.SPANNED_CONTACT);
-                list.add(viewModel);
+                listContact.add(viewModel);
                 if (index == 0) {
                     viewModel.setSectionSize(data.getContacts().getData().size());
                 }
                 index++;
             }
 
-            index = 0;
+            inboxChatViewModel.setListContact(listContact);
+        }
+        return inboxChatViewModel;
+    }
+
+    private InboxChatViewModel prepareReplies(InboxChatViewModel inboxChatViewModel, SearchedMessage data){
+        if(data.getReplies()!=null && data.getReplies().getData()!=null){
+            int index = 0;
+
+            inboxChatViewModel.setHasNextReplies(data.getReplies().isHasNext());
+            inboxChatViewModel.setChatSize(data.getReplies().getData().size());
+
+
+            ArrayList<Visitable> listReplies = new ArrayList<>();
+
             for (Datum item : data.getReplies().getData()) {
                 ChatListViewModel viewModel = new ChatListViewModel();
                 viewModel.setId(String.valueOf(item.getMsgId()));
@@ -66,17 +93,15 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
                 viewModel.setLabel(getRole(item.getOppositeType()));
                 viewModel.setSpanMode(ChatListViewModel.SPANNED_MESSAGE);
                 viewModel.setRole("user");
-                list.add(viewModel);
+                listReplies.add(viewModel);
                 if (index == 0) {
                     viewModel.setSectionSize(data.getReplies().getData().size());
                 }
                 index++;
             }
-            inboxChatViewModel.setList(list);
-            return inboxChatViewModel;
-        } else {
-            return new InboxChatViewModel();
+            inboxChatViewModel.setListReplies(listReplies);
         }
+        return inboxChatViewModel;
     }
 
     private String getRole(int oppositeType) {

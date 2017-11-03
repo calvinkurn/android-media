@@ -10,4 +10,6 @@ public interface WebSocketInterface {
     void onIncomingEvent(WebSocketResponse response);
 
     void newWebSocket();
+
+    void onOpenWebSocket();
 }

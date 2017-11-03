@@ -14,6 +14,8 @@ public class MyChatViewModel extends ListReplyViewModel{
 
     boolean isDummy;
 
+    boolean readStatus;
+
     public MyChatViewModel() {
         super();
         this.isDummy = false;
@@ -30,5 +32,13 @@ public class MyChatViewModel extends ListReplyViewModel{
 
     public void setDummy(boolean dummy) {
         isDummy = dummy;
+    }
+
+    public boolean isReadStatus() {
+        return readStatus;
+    }
+
+    public void setReadStatus(boolean readStatus) {
+        this.readStatus = readStatus;
     }
 }

@@ -28,6 +28,7 @@ public class ChatWebSocketListenerImpl extends WebSocketListener{
 
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
+        listener.onOpenWebSocket();
     }
 
     @Override

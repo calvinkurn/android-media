@@ -20,7 +20,7 @@ public class WebSocketResponseData {
     private int toUid;
     @SerializedName("message")
     @Expose
-    private Object message;
+    private Message message;
     @SerializedName("start_time")
     @Expose
     private String startTime;
@@ -57,11 +57,11 @@ public class WebSocketResponseData {
         this.toUid = toUid;
     }
 
-    public Object getMessage() {
+    public Message getMessage() {
         return message;
     }
 
-    public void setMessage(Object message) {
+    public void setMessage(Message message) {
         this.message = message;
     }
 

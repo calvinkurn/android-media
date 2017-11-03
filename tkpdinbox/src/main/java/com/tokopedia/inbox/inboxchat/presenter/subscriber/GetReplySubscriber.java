@@ -50,6 +50,7 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
 //                        }
 //                    });
 //        }
+        view.showError("Gagal");
     }
 
     @Override
@@ -62,53 +63,8 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
 //                }
 //
         view.setTextAreaReply(model.getTextAreaReply() == 1);
-        presenter.setResult(model);
+        view.setResult(model);
         view.finishLoading();
         presenter.finishRequest();
     }
-
-//    private GetReplyViewModel convertToViewModel(ReplyData model) {
-//
-//        GetReplyViewModel domainData = new GetReplyViewModel();
-//        ArrayList<Visitable> list = new ArrayList<>();
-//        for (ListReply item : model.getList()) {
-//            if (item.getSenderId().equals(SessionHandler.getLoginID(view.getContext()))) {
-//                MyChatViewModel temp = new MyChatViewModel();
-//                temp.setReplyId(item.getReplyId());
-//                temp.setSenderId(item.getSenderId());
-//                temp.setMsg(item.getMsg());
-//                temp.setReplyTime(item.getReplyTime());
-//                temp.setFraudStatus(item.getFraudStatus());
-//                temp.setReadTime(item.getReadTime());
-//                temp.setAttachmentId(item.getAttachmentId());
-//                temp.setOldMsgId(item.getOldMsgId());
-//                temp.setMsgId(item.getMsgId());
-//                temp.setRole(item.getRole());
-//                temp.setSenderName(item.getSenderName());
-//
-//                list.add(temp);
-//            } else {
-//
-//                OppositeChatViewModel temp = new OppositeChatViewModel();
-//                temp.setReplyId(item.getReplyId());
-//                temp.setSenderId(item.getSenderId());
-//                temp.setMsg(item.getMsg());
-//                temp.setReplyTime(item.getReplyTime());
-//                temp.setFraudStatus(item.getFraudStatus());
-//                temp.setReadTime(item.getReadTime());
-//                temp.setAttachmentId(item.getAttachmentId());
-//                temp.setOldMsgId(item.getOldMsgId());
-//                temp.setMsgId(item.getMsgId());
-//                temp.setRole(item.getRole());
-//                temp.setSenderName(item.getSenderName());
-//
-//                list.add(temp);
-//            }
-//        }
-//
-//        domainData.setList(list);
-//        domainData.setTextAreaReply(model.getTextAreaReply());
-//        domainData.setHasNext(model.isHasNext());
-//        return domainData;
-//    }
 }

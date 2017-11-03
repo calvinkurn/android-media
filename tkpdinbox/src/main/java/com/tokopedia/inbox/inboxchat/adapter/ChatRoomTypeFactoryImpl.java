@@ -9,8 +9,10 @@ import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.OppositeChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewholder.TimeMachineChatViewHolder;
+import com.tokopedia.inbox.inboxchat.viewholder.TypingChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 /**
@@ -41,6 +43,12 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     }
 
     @Override
+    public int type(TypingChatModel typingChatModel) {
+        return TypingChatViewHolder.LAYOUT;
+    }
+
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -51,6 +59,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new MyChatViewHolder(view, viewListener);
         else if (type == TimeMachineChatViewHolder.LAYOUT)
             viewHolder = new TimeMachineChatViewHolder(view, viewListener);
+        else if (type == TypingChatViewHolder.LAYOUT)
+            viewHolder = new TypingChatViewHolder(view);
         else
             return super.createViewHolder(view, type);
 

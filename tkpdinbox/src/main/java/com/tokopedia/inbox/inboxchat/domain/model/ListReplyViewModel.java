@@ -1,6 +1,8 @@
 
 package com.tokopedia.inbox.inboxchat.domain.model;
 
+import android.text.Spanned;
+
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
@@ -16,6 +18,7 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
     private String senderName;
     private String role;
     private String msg;
+    private Spanned spanned;
     private String replyTime;
     private int fraudStatus;
     private String readTime;
@@ -24,6 +27,7 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
     private boolean showTime;
     private boolean messageIsRead;
     private boolean isOpposite;
+    private boolean isHighlight;
 
     public int getReplyId() {
         return replyId;
@@ -147,5 +151,21 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
 
     public void setOpposite(boolean opposite) {
         isOpposite = opposite;
+    }
+
+    public boolean isHighlight() {
+        return isHighlight;
+    }
+
+    public void setHighlight(boolean highlight) {
+        isHighlight = highlight;
+    }
+
+    public Spanned getSpanned() {
+        return spanned;
+    }
+
+    public void setSpanned(Spanned spanned) {
+        this.spanned = spanned;
     }
 }

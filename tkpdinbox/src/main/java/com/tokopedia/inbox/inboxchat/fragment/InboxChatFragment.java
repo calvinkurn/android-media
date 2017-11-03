@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
@@ -36,7 +37,11 @@ import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
+import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -44,7 +49,7 @@ import javax.inject.Inject;
  * Created by stevenfredian on 9/14/17.
  */
 
-public class InboxChatFragment extends BaseDaggerFragment implements InboxChatContract.View, InboxMessageConstant, SearchInputView.Listener{
+public class InboxChatFragment extends BaseDaggerFragment implements InboxChatContract.View, InboxMessageConstant, SearchInputView.Listener, SearchInputView.ResetListener{
 
     RecyclerView mainList;
 
@@ -102,16 +107,19 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     private void initView(View parentView) {
         searchLoading = parentView.findViewById(R.id.loading_search);
         mainList = (RecyclerView) parentView.findViewById(R.id.chat_list);
+        mainList.requestFocus();
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
 //        fab = (FloatingActionButton) parentView.findViewById(R.id.fab);
         refreshHandler = new RefreshHandler(getActivity(), parentView, new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
+                finishContextMode();
                 presenter.refreshData();
             }
         });
         searchInputView = (SearchInputView) parentView.findViewById(R.id.simpleSearchView);
         searchInputView.setListener(this);
+        searchInputView.setResetListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mainList.setHasFixedSize(true);
         presenter.attachView(this);
@@ -135,63 +143,23 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
             @Override
             public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
                 mode.setTitle(String.valueOf(presenter.getSelected()));
-//                switch (adapter.getChosenMessageStatus()) {
-//                    case STATE_CHAT_READ:
-//                        menu.findItem(R.id.action_mark_as_unread).setVisible(true);
-//                        menu.findItem(R.id.action_mark_as_read).setVisible(false);
-//                        break;
-//                    case STATE_CHAT_UNREAD:
-//                        menu.findItem(R.id.action_mark_as_read).setVisible(true);
-//                        menu.findItem(R.id.action_mark_as_unread).setVisible(false);
-//                        break;
-//                    case STATE_CHAT_BOTH:
-//                        menu.findItem(R.id.action_mark_as_unread).setVisible(true);
-//                        menu.findItem(R.id.action_mark_as_read).setVisible(true);
-//                        break;
-//                    default:
-//                        menu.findItem(R.id.action_mark_as_unread).setVisible(false);
-//                        menu.findItem(R.id.action_mark_as_read).setVisible(false);
-//                        break;
-//                }
                 return true;
             }
 
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-//                if (item.getItemId() == R.id.action_move_achieve) {
-//                    presenter.moveInbox(ARCHIVE_ALL);
-//                    mode.finish();
-//                    return true;
-//                } else if (item.getItemId() == R.id.action_move_trash) {
-//                    presenter.moveInbox(DELETE_ALL);
-//                    mode.finish();
-//                    return true;
-//                } else if (item.getItemId() == R.id.action_delete) {
-//                    presenter.moveInbox(DELETE_FOREVER);
-//                    mode.finish();
-//                    return true;
-//                } else if (item.getItemId() == R.id.action_move_inbox) {
-//                    presenter.moveInbox(MOVE_ALL);
-//                    mode.finish();
-//                    return true;
-//                } else if (item.getItemId() == R.id.action_mark_as_read) {
-//                    presenter.markAsRead();
-//                    mode.finish();
-//                    return true;
-//                } else if (item.getItemId() == R.id.action_mark_as_unread) {
-//                    presenter.markAsUnread();
-//                    mode.finish();
-//                    return true;
-//                } else {
-//                    return false;
-//                }
+
+                if (item.getItemId() == R.id.action_delete){
+                    presenter.deleteMessage();
+                    mode.finish();
+                    return true;
+                }
                 return false;
             }
 
             @Override
             public void onDestroyActionMode(ActionMode mode) {
-//                adapter.setSelected(0);
-//                adapter.clearSelection();
+                adapter.clearSelection();
                 isMultiActionEnabled = false;
                 enableActions();
             }
@@ -289,6 +257,31 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
         startActivity(TimeMachineActivity.getCallingIntent(getActivity(), url));
     }
 
+    @Override
+    public void removeList(List<DeleteChatViewModel> list) {
+        adapter.removeList(list);
+    }
+
+    @Override
+    public void setResultSearch(final InboxChatViewModel inboxChatViewModel) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                presenter.setResultSearch(inboxChatViewModel);
+            }
+        });
+    }
+
+    @Override
+    public void setResultFetch(final InboxChatViewModel inboxChatViewModel) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                presenter.setResultFetch(inboxChatViewModel);
+            }
+        });
+    }
+
 
     @Override
     public String getNav() {
@@ -320,7 +313,9 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
 
     @Override
     public void finishContextMode() {
-
+        if(contextMenu!=null){
+            contextMenu.finish();
+        }
     }
 
     @Override
@@ -349,8 +344,8 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     }
 
     @Override
-    public void showError(String localizedMessage) {
-
+    public void showError(String message) {
+        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -379,7 +374,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     public void finishLoading() {
         refreshHandler.finishRefresh();
         progressDialog.dismiss();
-        adapter.removeLoading();
+//        adapter.removeLoading();
         searchLoading.setVisibility(View.GONE);
     }
 
@@ -430,7 +425,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
             presenter.initSearch(text);
             searchLoading.setVisibility(View.VISIBLE);
         }else {
-            presenter.refreshData();
+            presenter.resetSearch();
         }
         KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
@@ -438,5 +433,10 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     @Override
     public void onSearchTextChanged(String text) {
 
+    }
+
+    @Override
+    public void onSearchReset() {
+        presenter.resetSearch();
     }
 }

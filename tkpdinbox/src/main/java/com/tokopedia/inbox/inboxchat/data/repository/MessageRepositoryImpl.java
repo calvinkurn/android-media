@@ -1,11 +1,14 @@
 package com.tokopedia.inbox.inboxchat.data.repository;
 
 
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
-import com.tokopedia.inbox.inboxchat.domain.model.message.MessageData;
+import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
+
+import org.json.JSONObject;
 
 import rx.Observable;
 
@@ -30,7 +33,7 @@ public class MessageRepositoryImpl implements MessageRepository{
     }
 
     @Override
-    public Observable<InboxChatViewModel> deleteMessage(TKPDMapParam<String, Object> parameters) {
+    public Observable<DeleteChatListViewModel> deleteMessage(JsonObject parameters) {
         return messageFactory.createCloudMessageDataSource().deleteMessage(parameters);
     }
 

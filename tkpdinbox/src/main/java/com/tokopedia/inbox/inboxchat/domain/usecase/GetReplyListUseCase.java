@@ -16,6 +16,8 @@ import rx.Observable;
 
 public class GetReplyListUseCase extends UseCase<ChatRoomViewModel> {
 
+    public static final String PARAM_GET_ALL = "GET_ALL";
+
     private final ReplyRepository replyRepository;
 
     public GetReplyListUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ReplyRepository replyRepository) {
@@ -35,6 +37,15 @@ public class GetReplyListUseCase extends UseCase<ChatRoomViewModel> {
         requestParams.putString("page", String.valueOf(page));
         requestParams.putString("platform","android");
         requestParams.putString("per_page","10");
+        return requestParams;
+    }
+
+    public static RequestParams generateParamSearch(String messageId)
+    {
+        RequestParams requestParams = RequestParams.EMPTY;
+        requestParams.putString("msg_id", messageId);
+        requestParams.putString("page", "0");
+        requestParams.putString("platform","android");
         return requestParams;
     }
 }

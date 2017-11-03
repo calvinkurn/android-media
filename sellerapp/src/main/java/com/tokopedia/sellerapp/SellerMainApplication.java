@@ -157,4 +157,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     protected List<CacheApiWhiteListDomain> getWhiteList() {
         return WhitelistUtils.getWhiteList();
     }
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatarUrl) {
+        return null;
+    }
 }

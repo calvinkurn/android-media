@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxchat.data.mapper;
 
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.inboxchat.domain.model.message.ListMessage;
 import com.tokopedia.inbox.inboxchat.domain.model.message.MessageData;
@@ -27,7 +28,7 @@ public class GetMessageMapper implements Func1<Response<TkpdResponse>, InboxChat
             InboxChatViewModel inboxChatViewModel = new InboxChatViewModel();
             inboxChatViewModel.setMode(InboxChatViewModel.GET_CHAT_MODE);
 
-            ArrayList<ChatListViewModel> list = new ArrayList<>();
+            ArrayList<Visitable> list = new ArrayList<>();
             for(ListMessage item : data.getList()){
                 ChatListViewModel viewModel = new ChatListViewModel();
                 viewModel.setId(String.valueOf(item.getMsgId()));
@@ -42,7 +43,7 @@ public class GetMessageMapper implements Func1<Response<TkpdResponse>, InboxChat
                 viewModel.setRole(item.getAttributes().getContact().getRole());
                 list.add(viewModel);
             }
-            inboxChatViewModel.setList(list);
+            inboxChatViewModel.setListReplies(list);
             inboxChatViewModel.setHasTimeMachine(data.getTimeMachineStatus() == 1);
             return inboxChatViewModel;
         }else {

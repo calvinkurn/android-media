@@ -1,12 +1,17 @@
 package com.tokopedia.core.network.apiservices.chat.api;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
+import org.json.JSONObject;
+
 import java.util.Map;
 
+import okhttp3.RequestBody;
 import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -46,6 +51,7 @@ public interface ChatApi {
     Observable<Response<TkpdResponse>> searchChat(@QueryMap Map<String, Object> requestParams);
 
 
+    @Headers("Content-Type: application/json")
     @POST(TkpdBaseURL.Chat.DELETE)
-    Observable<Response<TkpdResponse>> deleteMessage(@FieldMap Map<String, Object> parameters);
+    Observable<Response<TkpdResponse>> deleteMessage(@Body JsonObject parameters);
 }

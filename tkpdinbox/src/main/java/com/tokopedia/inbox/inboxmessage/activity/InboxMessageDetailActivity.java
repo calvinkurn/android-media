@@ -252,7 +252,7 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
 
     public static Intent getCallingIntent(Context context, String nav, String messageId,
                                           int position, String senderName, String senderTag,
-                                          String senderId, String role, int mode) {
+                                          String senderId, String role, int mode, String keyword) {
         Intent intent = new Intent(context, InboxMessageDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_NAV, nav);
@@ -264,6 +264,7 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
         bundle.putString(PARAM_SENDER_ID, senderId);
         bundle.putString(PARAM_SENDER_ROLE, role);
         bundle.putInt(PARAM_MODE, mode);
+        bundle.putString(PARAM_KEYWORD, keyword);
         intent.putExtras(bundle);
         return intent;
     }

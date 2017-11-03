@@ -14,6 +14,9 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private EmptyModel emptyModel;
     private LoadingModel loadingModel;
     private TimeMachineChatModel timeMachineChatModel;
+    private TypingChatModel typingModel;
 
     public ChatRoomAdapter(ChatRoomTypeFactory typeFactory) {
         this.list = new ArrayList<>();
@@ -39,6 +43,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.emptyModel = new EmptyModel();
         this.loadingModel = new LoadingModel();
         this.timeMachineChatModel = new TimeMachineChatModel("");
+        this.typingModel = new TypingChatModel();
     }
 
     @Override
@@ -102,13 +107,15 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void setList(List<Visitable> list) {
-        this.list = list;
+        this.list.clear();
+        this.list.addAll(list);
         notifyDataSetChanged();
     }
 
     public void addList(List<Visitable> list) {
         this.list.addAll(0, list);
         notifyItemRangeInserted(0, list.size());
+        notifyItemRangeChanged(0, list.size()+1);
     }
 
     public void showEmpty() {
@@ -151,6 +158,15 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyItemRemoved(0);
     }
 
+    public void showTyping() {
+        this.list.add(typingModel);
+        notifyItemInserted(list.size());
+    }
+
+    public void removeTyping(){
+        this.list.remove(typingModel);
+        notifyItemRemoved(list.size());
+    }
 
     public boolean checkLoadMore(int index) {
         if (index >= 0) {
@@ -158,6 +174,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
         return false;
     }
+
+
 
     public ReplyParcelableModel getLastItem() {
         ListReplyViewModel item = (ListReplyViewModel) list.get(list.size() - 1);
@@ -167,5 +185,18 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void showTimeMachine() {
         this.list.add(0, timeMachineChatModel);
         notifyItemInserted(0);
+    }
+
+    public void setReadStatus(WebSocketResponse response) {
+        for (int i = list.size()-1; i >=0; i--) {
+            if(list.get(i) instanceof MyChatViewModel){
+                if(((MyChatViewModel) list.get(i)).isMessageIsRead()){
+                    break;
+                }else {
+                    ((MyChatViewModel) list.get(i)).setMessageIsRead(true);
+                    notifyItemRangeChanged(i, 1);
+                }
+            }
+        }
     }
 }

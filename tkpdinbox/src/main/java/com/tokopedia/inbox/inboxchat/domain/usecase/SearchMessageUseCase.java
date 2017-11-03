@@ -29,11 +29,13 @@ public class SearchMessageUseCase extends UseCase<InboxChatViewModel> {
         return searchRepository.searchChat(requestParams.getParameters());
     }
 
-    public static RequestParams generateParam(String keyword, int page)
+    public static RequestParams generateParam(String keyword, int page, String by)
     {
         RequestParams requestParams = RequestParams.EMPTY;
         requestParams.putString("keyword", keyword);
         requestParams.putInt("page", page);
+        if(page==1) by = "";
+        requestParams.putString("by", by);
         return requestParams;
     }
 
@@ -41,6 +43,7 @@ public class SearchMessageUseCase extends UseCase<InboxChatViewModel> {
     {
         RequestParams requestParams = RequestParams.EMPTY;
         requestParams.putString("keyword", keyword);
+        requestParams.putString("by", "");
         return requestParams;
     }
 }

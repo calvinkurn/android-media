@@ -1,6 +1,9 @@
 
 package com.tokopedia.inbox.inboxchat.domain.model.reply;
 
+import android.text.Spanned;
+import android.text.SpannedString;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;

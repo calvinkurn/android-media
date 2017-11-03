@@ -23,6 +23,7 @@ import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.SearchRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.SearchRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.SendMessageSource;
+import com.tokopedia.inbox.inboxchat.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
@@ -147,6 +148,14 @@ public class InboxChatModule {
                                                    PostExecutionThread postExecutor,
                                                    SearchRepository searchRepository){
         return new SearchMessageUseCase(threadExecutor, postExecutor, searchRepository);
+    }
+
+    @InboxChatScope
+    @Provides
+    DeleteMessageListUseCase provideDeleteChatUseCase(ThreadExecutor threadExecutor,
+                                                      PostExecutionThread postExecutor,
+                                                      MessageRepository messageRepository){
+        return new DeleteMessageListUseCase(threadExecutor, postExecutor, messageRepository);
     }
 
     @InboxChatScope

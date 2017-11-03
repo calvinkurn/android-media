@@ -36,6 +36,8 @@ import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
 import com.tokopedia.inbox.inboxchat.util.Events;
+import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
@@ -84,6 +86,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private Toolbar toolbar;
     private Observable<String> replyWatcher;
     private Observable<Boolean> replyIsTyping;
+    private int mode;
+    private View notifier;
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -106,6 +110,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         sendButton = (ImageView) rootView.findViewById(R.id.send_but);
         replyColumn = (EditText) rootView.findViewById(R.id.new_comment);
         attachButton = (ImageView) rootView.findViewById(R.id.add_url);
+        notifier = rootView.findViewById(R.id.notifier);
 //        refreshHandler = new RefreshHandler(getActivity(), rootView, onRefresh());
         replyWatcher =  Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
@@ -191,10 +196,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.getReply();
         progressBar.setVisibility(View.VISIBLE);
         adapter = new ChatRoomAdapter(typeFactory);
         adapter.setNav(getArguments().getString(PARAM_NAV, ""));
+        mode = getArguments().getInt(PARAM_MODE, InboxChatViewModel.GET_CHAT_MODE);
+
+        presenter.getReply(mode);
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -311,6 +318,41 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
+    public String getKeyword() {
+        return getArguments().getString(PARAM_KEYWORD);
+    }
+
+    @Override
+    public void setResult(final ChatRoomViewModel model) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                presenter.setResult(model);
+            }
+        });
+    }
+
+    @Override
+    public void notifyConnectionWebSocket() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifier.setVisibility(View.VISIBLE);
+                TextView title = (TextView) notifier.findViewById(R.id.title);
+                View action = notifier.findViewById(R.id.action);
+                title.setText("Terjadi gangguan pada koneksi");
+                action.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        presenter.resetAttempt();
+                        presenter.recreateWebSocket();
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     public void scrollTo(int i) {
         layoutManager.scrollToPosition(i);
     }
@@ -355,14 +397,34 @@ public class ChatRoomFragment extends BaseDaggerFragment
         scrollToBottom();
     }
 
+    public void onSuccessSendReply(final WebSocketResponse response) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.removeLast();
+                setViewEnabled(true);
+                MyChatViewModel item = new MyChatViewModel();
+                item.setReplyId(response.getData().getMsgId());
+                item.setSenderId(String.valueOf(response.getData().getFromUid()));
+                item.setMsg(response.getData().getMessage().getCensoredReply());
+                item.setReplyTime(response.getData().getMessage().getTimestamp());
+
+                adapter.addReply(item);
+                finishLoading();
+                replyColumn.setText("");
+                scrollToBottom();
+            }
+        });
+    }
+
     @Override
     public void setViewEnabled(boolean isEnabled) {
 //        replyColumn.setEnabled(isEnabled);
-//        attachmentButton.setEnabled(isEnabled);
+//        attachButton.setEnabled(isEnabled);
 //        sendButton.setEnabled(isEnabled);
 //        recyclerView.setEnabled(isEnabled);
 //        if (isEnabled) {
-//            header.setVisibility(View.VISIBLE);
+////            header.setVisibility(View.VISIBLE);
 //            replyView.setVisibility(View.VISIBLE);
 //        }
 
@@ -374,12 +436,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setMsg(getReplyMessage());
         item.setReplyTime(MyChatViewModel.SENDING_TEXT);
         item.setDummy(true);
+        item.setSenderId(getArguments().getString("sender_id"));
         adapter.addReply(item);
         scrollToBottom();
         setResult();
     }
 
     public void addDummyMessage(OppositeChatViewModel item) {
+        item.setSenderId(getArguments().getString("sender_id"));
         adapter.addReply(item);
         scrollToBottom();
         setResult();
@@ -436,10 +500,25 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void onIncomingEvent(WebSocketResponse response) {
         switch (response.getCode()) {
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
-                setOnlineDesc("sedang mengetik");
+                if(String.valueOf(response.getData().getFromUid()).equals(getArguments().getString("sender_id")))  {
+                    setOnlineDesc("sedang mengetik");
+                    adapter.showTyping();
+                    if(layoutManager.findLastCompletelyVisibleItemPosition()==adapter.getList().size()-2){
+                        layoutManager.scrollToPosition(adapter.getList().size()-1);
+                    }
+                }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
-                setOnlineDesc("baru saja");
+                if(String.valueOf(response.getData().getFromUid()).equals(getArguments().getString("sender_id"))) {
+                    setOnlineDesc("baru saja");
+                    adapter.removeTyping();
+                }
+                break;
+            case ChatWebSocketConstant.EVENT_TOPCHAT_READ_MESSAGE:
+                adapter.setReadStatus(response);
+                break;
+            case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
+                onSuccessSendReply(response);
                 break;
             default:
                 break;
@@ -451,5 +530,16 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void newWebSocket() {
         if (getActivity() != null)
             presenter.recreateWebSocket();
+    }
+
+    @Override
+    public void onOpenWebSocket() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifier.setVisibility(View.GONE);
+            }
+        });
+        presenter.resetAttempt();
     }
 }

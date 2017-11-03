@@ -63,7 +63,6 @@
         android:textColor="@color/time_color"
         android:textSize="@dimen/fontvvs"
         tools:text="10:13 pm"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/main"
-        android:layout_alignEnd="@+id/main"/>
+        android:layout_below="@id/main"
+        android:layout_alignEnd="@id/main"/>
 </RelativeLayout>

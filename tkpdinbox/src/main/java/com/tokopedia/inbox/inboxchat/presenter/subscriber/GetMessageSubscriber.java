@@ -33,6 +33,7 @@ public class GetMessageSubscriber extends Subscriber<InboxChatViewModel>{
     @Override
     public void onError(Throwable e) {
         presenter.setRequesting(false);
+        view.showError("Pencarian Gagal");
     }
 
     @Override
@@ -42,13 +43,13 @@ public class GetMessageSubscriber extends Subscriber<InboxChatViewModel>{
 //                if (pagingHandler.getPage() == 1 && !isFilterUsed()) {
 //                    cacheInteractor.setInboxMessageCache(viewListener.getArguments().getString(PARAM_NAV), result);
 //                }
-        if (view.getRefreshHandler().isRefreshing()) {
-            view.getAdapter().getList().clear();
-            view.getAdapter().clearSelection();
-        }
+//        if (view.getRefreshHandler().isRefreshing()) {
+//            view.getAdapter().getList().clear();
+//            view.getAdapter().clearSelection();
+//        }
         view.finishLoading();
 
-        presenter.setResult(messageData);
+        view.setResultFetch(messageData);
         presenter.prepareNextPage(messageData.isHasNext());
 
         view.setMustRefresh(false);

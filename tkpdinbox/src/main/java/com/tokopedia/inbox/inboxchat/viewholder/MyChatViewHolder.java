@@ -1,8 +1,13 @@
 package com.tokopedia.inbox.inboxchat.viewholder;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.format.DateFormat;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +34,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
     TextView hour;
     TextView date;
     ImageView chatStatus;
+    ChatRoomContract.View viewListener;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.message_item_mine;
@@ -40,11 +46,21 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         hour = (TextView) itemView.findViewById(R.id.hour);
         date = (TextView) itemView.findViewById(R.id.date);
         chatStatus = (ImageView) itemView.findViewById(R.id.chat_status);
+        this.viewListener = viewListener;
     }
 
     @Override
     public void bind(MyChatViewModel element) {
-        message.setText(element.getMsg());
+
+        if(!element.isHighlight()) {
+            message.setText(element.getMsg());
+        }else {
+            if(element.getSpanned()!= null && viewListener.getKeyword()!=null) {
+                message.setText(highlight(itemView.getContext(), element.getSpanned(), viewListener.getKeyword()));
+            }else {
+                message.setText(element.getMsg());
+            }
+        }
         message.setMovementMethod(new SelectableSpannedMovementMethod());
 
         date.setVisibility(View.VISIBLE);
@@ -89,5 +105,23 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
 
         element.getSenderId();
 
+    }
+
+    private SpannableString highlight(Context context, Spanned span, String keyword) {
+        //Get the text from text view and create a spannable string
+        SpannableString spannableString = new SpannableString(span);
+
+        //Search for all occurrences of the keyword in the string
+        int indexOfKeyword = spannableString.toString().toLowerCase().indexOf(keyword);
+
+        while (indexOfKeyword < span.length() && indexOfKeyword >= 0) {
+            //Create a background color span on the keyword
+            spannableString.setSpan(new BackgroundColorSpan(MethodChecker.getColor(context,R.color.orange_300)), indexOfKeyword, indexOfKeyword + keyword.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            //Get the next index of the keyword
+            indexOfKeyword = spannableString.toString().indexOf(keyword, indexOfKeyword + keyword.length());
+        }
+
+        return spannableString;
     }
 }

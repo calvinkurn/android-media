@@ -30,19 +30,22 @@ public class SearchMessageSubscriber extends Subscriber<InboxChatViewModel>{
 
     @Override
     public void onCompleted() {
-        presenter.setRequesting(false);
-        view.finishSearch();
     }
 
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
+        presenter.setRequesting(false);
+        view.finishSearch();
+        view.showError("Pencarian Gagal");
     }
 
     @Override
     public void onNext(InboxChatViewModel inboxChatViewModel) {
-        presenter.setResult(inboxChatViewModel);
+        view.setResultSearch(inboxChatViewModel);
         presenter.prepareNextPage(inboxChatViewModel.isHasNextReplies());
+        presenter.setRequesting(false);
+        view.finishSearch();
     }
 
 }

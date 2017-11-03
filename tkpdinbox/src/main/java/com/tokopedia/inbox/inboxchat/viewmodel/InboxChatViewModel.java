@@ -1,6 +1,9 @@
 package com.tokopedia.inbox.inboxchat.viewmodel;
 
+import com.tokopedia.core.base.adapter.Visitable;
+
 import java.util.ArrayList;
+
 
 /**
  * Created by stevenfredian on 10/23/17.
@@ -24,7 +27,15 @@ public class InboxChatViewModel {
 
     boolean hasNextReplies;
 
-    ArrayList<ChatListViewModel> list;
+    int contactSize;
+
+    int chatSize;
+
+    String keyword;
+
+    ArrayList<Visitable> listContact;
+
+    ArrayList<Visitable> listReplies;
 
     public int getMode() {
         return mode;
@@ -34,12 +45,20 @@ public class InboxChatViewModel {
         this.mode = mode;
     }
 
-    public ArrayList<ChatListViewModel> getList() {
-        return list;
+    public ArrayList<Visitable> getListContact() {
+        return listContact;
     }
 
-    public void setList(ArrayList<ChatListViewModel> list) {
-        this.list = list;
+    public void setListContact(ArrayList<Visitable> listContact) {
+        this.listContact = listContact;
+    }
+
+    public ArrayList<Visitable> getListReplies() {
+        return listReplies;
+    }
+
+    public void setListReplies(ArrayList<Visitable> listReplies) {
+        this.listReplies = listReplies;
     }
 
     public boolean isHasNext() {
@@ -72,5 +91,29 @@ public class InboxChatViewModel {
 
     public boolean isHasTimeMachine() {
         return hasTimeMachine;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public int getContactSize() {
+        return contactSize;
+    }
+
+    public void setContactSize(int contactSize) {
+        this.contactSize = contactSize;
+    }
+
+    public int getChatSize() {
+        return chatSize;
+    }
+
+    public void setChatSize(int chatSize) {
+        this.chatSize = chatSize;
     }
 }
