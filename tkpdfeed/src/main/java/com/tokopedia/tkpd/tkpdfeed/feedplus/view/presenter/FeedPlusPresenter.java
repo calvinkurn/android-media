@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 
+import com.tkpdfeed.feeds.LikeKolPost;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -9,12 +10,15 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.CheckNewFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import javax.inject.Inject;
@@ -31,6 +35,7 @@ public class FeedPlusPresenter
 
     private final SessionHandler sessionHandler;
     private final CheckNewFeedUseCase checkNewFeedUseCase;
+    private final LikeKolPostUseCase likeKolPostUseCase;
     private GetFeedsUseCase getFeedsUseCase;
     private GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private FavoriteShopUseCase doFavoriteShopUseCase;
@@ -38,7 +43,6 @@ public class FeedPlusPresenter
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
-    private int currentTotalFeedSize;
 
     @Inject
     FeedPlusPresenter(SessionHandler sessionHandler,
@@ -46,15 +50,17 @@ public class FeedPlusPresenter
                       GetFirstPageFeedsUseCase getFirstPageFeedsUseCase,
                       FavoriteShopUseCase favoriteShopUseCase,
                       GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase,
-                      CheckNewFeedUseCase checkNewFeedUseCase) {
+                      CheckNewFeedUseCase checkNewFeedUseCase,
+                      LikeKolPostUseCase likeKolPostUseCase,
+                      FollowKolPostUseCase followKolPostUseCase) {
         this.sessionHandler = sessionHandler;
+        this.pagingHandler = new PagingHandler();
         this.getFeedsUseCase = getFeedsUseCase;
         this.getFirstPageFeedsCloudUseCase = getFirstPageFeedsCloudUseCase;
         this.doFavoriteShopUseCase = favoriteShopUseCase;
         this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
         this.checkNewFeedUseCase = checkNewFeedUseCase;
-        this.pagingHandler = new PagingHandler();
-        this.currentTotalFeedSize = 0;
+        this.likeKolPostUseCase = likeKolPostUseCase;
     }
 
     @Override
@@ -70,6 +76,7 @@ public class FeedPlusPresenter
         getFirstPageFeedsUseCase.unsubscribe();
         doFavoriteShopUseCase.unsubscribe();
         getFirstPageFeedsCloudUseCase.unsubscribe();
+        likeKolPostUseCase.unsubscribe();
     }
 
 
@@ -78,7 +85,6 @@ public class FeedPlusPresenter
         pagingHandler.resetPage();
         viewListener.showRefresh();
         currentCursor = "";
-        currentTotalFeedSize = 0;
         getFirstPageFeedsUseCase.execute(
                 getFirstPageFeedsUseCase.getRefreshParam(sessionHandler),
                 new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
@@ -151,7 +157,6 @@ public class FeedPlusPresenter
         pagingHandler.resetPage();
         viewListener.showRefresh();
         currentCursor = "";
-        currentTotalFeedSize = 0;
         getFirstPageFeedsCloudUseCase.execute(
                 getFirstPageFeedsCloudUseCase.getRefreshParam(sessionHandler),
                 new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
@@ -176,12 +181,14 @@ public class FeedPlusPresenter
 
     @Override
     public void likeKol(int id) {
-
+        getView().showLoadingProgress();
+        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id), new LikeKolPostSubscriber(getView()));
     }
 
     @Override
     public void unlikeKol(int id) {
-
+        getView().showLoadingProgress();
+        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id), new LikeKolPostSubscriber(getView()));
     }
 
 

@@ -32,6 +32,13 @@ public interface KolComment {
 
         void onErrorLoadMoreComment(String errorMessage);
 
+        void onErrorSendComment(String errorMessage);
+
+        void onSuccessSendComment();
+
+        void dismissProgressDialog();
+
+        void showProgressDialog();
     }
 
     interface Presenter extends CustomerPresenter<View> {

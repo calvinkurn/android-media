@@ -2,9 +2,11 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolCommentsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.SendKolCommentUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolComment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetKolCommentFirstTimeSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetKolCommentSubscriber;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.SendKolCommentSubscriber;
 
 import javax.inject.Inject;
 
@@ -16,6 +18,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
         implements KolComment.Presenter {
 
     private final GetKolCommentsUseCase getKolCommentsUseCase;
+    private final SendKolCommentUseCase sendKolCommentUseCase;
     private String cursor;
 
     @Override
@@ -25,8 +28,10 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     }
 
     @Inject
-    public KolCommentPresenter(GetKolCommentsUseCase getKolCommentsUseCase) {
+    public KolCommentPresenter(GetKolCommentsUseCase getKolCommentsUseCase,
+                               SendKolCommentUseCase sendKolCommentUseCase) {
         this.getKolCommentsUseCase = getKolCommentsUseCase;
+        this.sendKolCommentUseCase = sendKolCommentUseCase;
     }
 
     @Override
@@ -47,4 +52,15 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
         this.cursor = lastcursor;
     }
 
+    public void sendComment(String comment) {
+        if (isValid(comment)) {
+            getView().showProgressDialog();
+            sendKolCommentUseCase.execute(SendKolCommentUseCase.getParam(comment), new
+                    SendKolCommentSubscriber(getView()));
+        }
+    }
+
+    private boolean isValid(String comment) {
+        return comment.trim().length() > 0;
+    }
 }

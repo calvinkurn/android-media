@@ -16,6 +16,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProduct
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.string.no;
+
 /**
  * @author by nisie on 10/31/17.
  */
@@ -91,5 +93,10 @@ public class KolCommentAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
     public void addHeader(KolCommentHeaderViewModel header) {
         this.list.add(header);
         notifyItemInserted(0);
+    }
+
+    public void addItem(Visitable visitable) {
+        this.list.add(visitable);
+        notifyItemInserted(this.list.size() - 1);
     }
 }

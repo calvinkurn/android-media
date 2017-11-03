@@ -23,7 +23,10 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FavoriteShopMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FollowKolMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolCommentMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolSendCommentMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.LikeKolMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RecentProductMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RemoveWishlistMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FavoriteShopRepository;
@@ -33,18 +36,22 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepositoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepositoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.KolCommentSource;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.KolSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.AddWishlistUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.CheckNewFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolCommentsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentViewUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RefreshFeedUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.SendKolCommentUseCase;
 
 import javax.inject.Named;
 
@@ -92,8 +99,10 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    FeedRepository provideFeedRepository(FeedFactory feedFactory, KolCommentSource kolCommentSource) {
-        return new FeedRepositoryImpl(feedFactory, kolCommentSource);
+    FeedRepository provideFeedRepository(FeedFactory feedFactory,
+                                         KolCommentSource kolCommentSource,
+                                         KolSource kolSource) {
+        return new FeedRepositoryImpl(feedFactory, kolCommentSource, kolSource);
     }
 
     @FeedPlusScope
@@ -329,8 +338,8 @@ public class FeedPlusModule {
     @FeedPlusScope
     @Provides
     KolCommentSource provideKolCommentSource(ApolloClient apolloClient, KolCommentMapper
-            kolCommentMapper) {
-        return new KolCommentSource(apolloClient, kolCommentMapper);
+            kolCommentMapper, KolSendCommentMapper kolSendCommentMapper) {
+        return new KolCommentSource(apolloClient, kolCommentMapper, kolSendCommentMapper);
     }
 
     @FeedPlusScope
@@ -339,5 +348,61 @@ public class FeedPlusModule {
         return new KolCommentMapper();
     }
 
+    @FeedPlusScope
+    @Provides
+    SendKolCommentUseCase provideSendKolCommentUseCase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutionThread,
+                                                       FeedRepository feedRepository) {
+        return new SendKolCommentUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    KolSendCommentMapper provideKolSendCommentMapper() {
+        return new KolSendCommentMapper();
+    }
+
+
+    @FeedPlusScope
+    @Provides
+    KolSource provideKolSource(ApolloClient apolloClient, LikeKolMapper likeKolMapper,
+                               FollowKolMapper followKolMapper) {
+        return new KolSource(apolloClient, likeKolMapper, followKolMapper);
+    }
+
+    @FeedPlusScope
+    @Provides
+    LikeKolPostUseCase provideLikeKolPostUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 FeedRepository feedRepository) {
+        return new LikeKolPostUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    LikeKolMapper provideLikeKolMapper() {
+        return new LikeKolMapper();
+    }
+
+    @FeedPlusScope
+    @Provides
+    FollowKolMapper provideFollowKolMapper() {
+        return new FollowKolMapper();
+    }
+
+
+    @FeedPlusScope
+    @Provides
+    FollowKolPostUseCase provideFollowKolPostUseCase(ThreadExecutor threadExecutor,
+                                                     PostExecutionThread postExecutionThread,
+                                                     FeedRepository feedRepository) {
+        return new FollowKolPostUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
 
 }

@@ -10,6 +10,8 @@ import com.tkpdfeed.feeds.GetKolComments;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolCommentMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolSendCommentMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.SendKolCommentDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolCommentsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolComments;
@@ -24,10 +26,13 @@ public class KolCommentSource {
 
     private ApolloClient apolloClient;
     private KolCommentMapper kolCommentMapper;
+    private final KolSendCommentMapper kolSendCommentMapper;
 
-    public KolCommentSource(ApolloClient apolloClient, KolCommentMapper kolCommentMapper) {
+    public KolCommentSource(ApolloClient apolloClient, KolCommentMapper kolCommentMapper,
+                            KolSendCommentMapper kolSendCommentMapper) {
         this.apolloClient = apolloClient;
         this.kolCommentMapper = kolCommentMapper;
+        this.kolSendCommentMapper = kolSendCommentMapper;
     }
 
     public Observable<KolComments> getComments(RequestParams requestParams) {
@@ -40,5 +45,9 @@ public class KolCommentSource {
                         .build()).watcher();
 
         return RxApollo.from(apolloWatcher).map(kolCommentMapper);
+    }
+
+    public Observable<SendKolCommentDomain> sendComment(RequestParams requestParams) {
+        return null;
     }
 }

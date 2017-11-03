@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -47,7 +46,6 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -98,8 +96,6 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import retrofit2.http.HEAD;
 
 /**
  * @author by nisie on 5/15/17.
@@ -344,6 +340,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         if (layoutManager != null)
             layoutManager = null;
+    }
+
+    @Override
+    public void showLoadingProgress() {
+
+    }
+
+    @Override
+    public void finishLoadingProgress() {
+
     }
 
     @Override

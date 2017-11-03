@@ -1,6 +1,11 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper;
 
+import android.text.TextUtils;
+
 import com.tkpdfeed.feeds.GetKolComments;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolComments;
 
@@ -17,12 +22,25 @@ public class KolCommentMapper implements Func1<GetKolComments.Data, KolComments>
 
     @Override
     public KolComments call(GetKolComments.Data data) {
-        return convertToDomain(data.get_kol_list_comment().data());
+        if (data != null
+                && data.get_kol_list_comment() != null
+                && data.get_kol_list_comment().data() != null
+                && (data.get_kol_list_comment().error() == null
+                || TextUtils.isEmpty(data.get_kol_list_comment().error()))) {
+            return convertToDomain(data.get_kol_list_comment().data());
+        } else if (data != null
+                && data.get_kol_list_comment() != null
+                && (data.get_kol_list_comment().error() != null
+                && !TextUtils.isEmpty(data.get_kol_list_comment().error()))) {
+            throw new ErrorMessageException(data.get_kol_list_comment().error());
+        } else {
+            throw new ErrorMessageException(MainApplication.getAppContext().getString(R.string
+                    .default_request_error_unknown));
+        }
     }
 
     private KolComments convertToDomain(GetKolComments.Data.Data1 data) {
-        if (data != null) return null;
-        return new KolComments(data.lastcursor(),
+        return new KolComments(data.lastcursor() == null ? "" : data.lastcursor(),
                 convertToList(data.comment()));
     }
 

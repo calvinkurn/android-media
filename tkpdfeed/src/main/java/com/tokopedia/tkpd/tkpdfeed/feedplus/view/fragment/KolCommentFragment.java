@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -19,6 +20,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolCommentActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolProfileWebViewActivity;
@@ -56,8 +58,13 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     KolCommentHeaderViewModel header;
     KolCommentProductViewModel footer;
 
+    TkpdProgressDialog progressDialog;
+
     @Inject
     KolCommentPresenter presenter;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     public static KolCommentFragment createInstance(Bundle bundle) {
         KolCommentFragment fragment = new KolCommentFragment();
@@ -140,6 +147,12 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         listComment.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
         listComment.setAdapter(adapter);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.sendComment(kolComment.getText().toString());
+            }
+        });
     }
 
     @Override
@@ -246,6 +259,39 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
             adapter.getHeader().setCanLoadMore(true);
             adapter.notifyItemChanged(0);
         }
+    }
+
+    @Override
+    public void onErrorSendComment(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessSendComment() {
+        adapter.addItem(new KolCommentViewModel(
+                "",
+                sessionHandler.getLoginName(),
+                kolComment.getText().toString(),
+                "Baru saja"
+        ));
+
+        kolComment.setText("");
+
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+    }
+
+    @Override
+    public void showProgressDialog() {
+        if (progressDialog == null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
+                    .NORMAL_PROGRESS);
+
+        progressDialog.showDialog();
     }
 
     private void setWishlist(boolean wishlisted) {
