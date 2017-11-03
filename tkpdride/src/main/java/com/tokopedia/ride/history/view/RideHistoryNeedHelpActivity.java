@@ -13,6 +13,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.webview.fragment.BaseWebViewClient;
@@ -137,5 +138,10 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
     @Override
     public void onWebTitlePageCompleted(String title) {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_HISTORY_NEED_HELP;
     }
 }
