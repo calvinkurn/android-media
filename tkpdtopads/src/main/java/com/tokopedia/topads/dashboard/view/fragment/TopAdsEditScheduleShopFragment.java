@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
@@ -58,7 +59,12 @@ public class TopAdsEditScheduleShopFragment extends TopAdsNewScheduleFragment<St
 
     @Override
     public void onSuggestionSuccess(GetSuggestionResponse s) {
-        // TODO this things
+        /* just deal with abstraction */
+    }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        /* just deal with abstraction */
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
@@ -92,6 +93,11 @@ public abstract class TopAdsEditCostFragment<T extends TopAdsDetailEditPresenter
     public void onSaveAdError(String errorMessage) {
         hideLoading();
         showSnackBarError(errorMessage);
+    }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        setDefaultSuggestionBidText();
     }
 
     @Override

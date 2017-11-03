@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -101,6 +102,11 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
     @Override
     public void onSuggestionSuccess(GetSuggestionResponse s) {
         setSuggestionBidText(s);
+    }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        setDefaultSuggestionBidText();
     }
 
     @Override

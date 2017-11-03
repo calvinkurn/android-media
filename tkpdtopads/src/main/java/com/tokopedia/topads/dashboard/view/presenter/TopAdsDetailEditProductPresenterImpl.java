@@ -109,7 +109,7 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
 
             @Override
             public void onError(Throwable e) {
-
+                getView().onSuggestionError(e);
             }
 
             @Override

@@ -98,6 +98,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
                 maxPriceEditText.setText(getSuggestionBidRaw());
             }
         });
+        setDefaultSuggestionBidText();
         prefixSuggestion = getString(R.string.title_currency_rp_space);
     }
 
@@ -132,6 +133,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
         CommonUtils.dumper(TAG+" >> "+ data);
         titleSuggestionBid.setText(MethodChecker.fromHtml(getRecSuggestionBid(data)));
+        titleSuggestionBidUse.setVisibility(View.VISIBLE);
     }
 
     protected String getRecSuggestionBid(String data){
@@ -166,8 +168,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
                     return;
 
                 if (number >= Double.valueOf(suggestionBidRaw)) {
-                    titleSuggestionBid.setText(R.string.top_ads_label_price_desc);
-                    titleSuggestionBidUse.setVisibility(View.GONE);
+                    setDefaultSuggestionBidText();
                 } else {
                     setSuggestionBidText(suggestionBidText);
                     titleSuggestionBidUse.setVisibility(View.VISIBLE);
@@ -220,6 +221,11 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         });
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+    }
+
+    protected void setDefaultSuggestionBidText() {
+        titleSuggestionBid.setText(R.string.top_ads_label_price_desc);
+        titleSuggestionBidUse.setVisibility(View.GONE);
     }
 
     private void showBudgetPerDay(boolean show) {

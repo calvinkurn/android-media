@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -79,6 +80,11 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
 
     @Override
     public void onSuggestionSuccess(GetSuggestionResponse s) { /* this class not do anything about this */ }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        /* just deal with abstraction */
+    }
 
     @Override
     public void goToGroupDetail(String groupId) {
