@@ -1,20 +1,15 @@
 package com.tokopedia.topads.dashboard.view.activity;
 
 import android.graphics.Color;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupAdListFragment;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductAdListFragment;
 import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -60,16 +55,15 @@ public class TopAdsGroupAdListActivity extends BaseSimpleActivity
 
             showCaseList.add(
                     new ShowCaseObject(
-                            findViewById(android.R.id.content),
+                            topAdsGroupAdListFragment.getFilterView(),
                             getString(R.string.topads_showcase_group_list_title_1),
                             getString(R.string.topads_showcase_group_list_desc_1),
                             ShowCaseContentPosition.UNDEFINED,
-                            Color.WHITE)
-                            .withCustomTarget(new int[]{width - (int)(height * 0.9), 0,width, height}));
+                            Color.WHITE));
 
             showCaseList.add(
                     new ShowCaseObject(
-                            topAdsGroupAdListFragment.getFilterVIew(),
+                            topAdsGroupAdListFragment.getFilterView(),
                             getString(R.string.topads_showcase_group_list_title_2),
                             getString(R.string.topads_showcase_group_list_desc_2),
                             ShowCaseContentPosition.UNDEFINED,

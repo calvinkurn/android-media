@@ -9,5 +9,8 @@ import android.view.View;
  */
 public interface TopAdsFilterViewListener {
     @Nullable
-    View getFilterVIew();
+    View getFilterView();
+
+    @Nullable
+    View getSearchView();
 }

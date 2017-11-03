@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -390,7 +391,13 @@ public abstract class TopAdsAdListFragment<P extends
     }
 
     @Override
-    public View getFilterVIew() {
+    public View getFilterView() {
         return buttonActionView;
+    }
+
+    @Nullable
+    @Override
+    public View getSearchView() {
+        return searchInputView;
     }
 }
