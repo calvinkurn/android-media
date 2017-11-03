@@ -55,7 +55,7 @@ public class TopAdsGroupAdListActivity extends BaseSimpleActivity
 
             showCaseList.add(
                     new ShowCaseObject(
-                            topAdsGroupAdListFragment.getFilterView(),
+                            topAdsGroupAdListFragment.getSearchView(),
                             getString(R.string.topads_showcase_group_list_title_1),
                             getString(R.string.topads_showcase_group_list_desc_1),
                             ShowCaseContentPosition.UNDEFINED,

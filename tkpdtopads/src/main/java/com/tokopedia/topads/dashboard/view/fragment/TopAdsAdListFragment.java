@@ -165,7 +165,7 @@ public abstract class TopAdsAdListFragment<P extends
             }
         });
         appBarBehaviour = new AppBarLayout.Behavior();
-        KeyboardHandler.DropKeyboard(view.getContext(), searchInputView.getSearchTextView());
+        searchInputView.clearFocus();
     }
 
     @Override
