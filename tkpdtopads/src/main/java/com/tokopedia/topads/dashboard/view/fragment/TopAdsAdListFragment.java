@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.design.button.BottomActionView;
@@ -55,11 +56,13 @@ public abstract class TopAdsAdListFragment<P extends
 
     @Override
     public void onSearchSubmitted(String newText) {
+        CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
         onSearch(newText);
     }
 
     @Override
     public void onSearchTextChanged(String query) {
+        CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
         if (TextUtils.isEmpty(query)) {
             onQueryTextSubmit(query);
         }
@@ -165,7 +168,6 @@ public abstract class TopAdsAdListFragment<P extends
             }
         });
         appBarBehaviour = new AppBarLayout.Behavior();
-        searchInputView.clearFocus();
     }
 
     @Override
