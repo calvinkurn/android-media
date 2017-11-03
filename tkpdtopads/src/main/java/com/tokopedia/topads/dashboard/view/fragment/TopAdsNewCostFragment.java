@@ -95,7 +95,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         titleSuggestionBidUse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                maxPriceEditText.setText(suggestionBidText.replaceAll(prefixSuggestion, "").trim());
+                maxPriceEditText.setText(getSuggestionBidRaw());
             }
         });
         prefixSuggestion = getString(R.string.title_currency_rp_space);
