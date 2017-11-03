@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 
-import com.tkpdfeed.feeds.LikeKolPost;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -16,6 +15,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsClou
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.FollowKolSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.LikeKolPostSubscriber;
@@ -36,6 +36,7 @@ public class FeedPlusPresenter
     private final SessionHandler sessionHandler;
     private final CheckNewFeedUseCase checkNewFeedUseCase;
     private final LikeKolPostUseCase likeKolPostUseCase;
+    private final FollowKolPostUseCase followKolPostUseCase;
     private GetFeedsUseCase getFeedsUseCase;
     private GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private FavoriteShopUseCase doFavoriteShopUseCase;
@@ -61,6 +62,7 @@ public class FeedPlusPresenter
         this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
         this.checkNewFeedUseCase = checkNewFeedUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
+        this.followKolPostUseCase = followKolPostUseCase;
     }
 
     @Override
@@ -77,6 +79,7 @@ public class FeedPlusPresenter
         doFavoriteShopUseCase.unsubscribe();
         getFirstPageFeedsCloudUseCase.unsubscribe();
         likeKolPostUseCase.unsubscribe();
+        followKolPostUseCase.unsubscribe();
     }
 
 
@@ -171,12 +174,16 @@ public class FeedPlusPresenter
 
     @Override
     public void followKol(int id) {
-
+        getView().showLoadingProgress();
+        followKolPostUseCase.execute(FollowKolPostUseCase.getParam(0, 0), new FollowKolSubscriber
+                (getView()));
     }
 
     @Override
     public void unfollowKol(int id) {
-
+        getView().showLoadingProgress();
+        followKolPostUseCase.execute(FollowKolPostUseCase.getParam(0, 0), new FollowKolSubscriber
+                (getView()));
     }
 
     @Override

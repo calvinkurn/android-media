@@ -32,4 +32,11 @@ public class FollowKolPostUseCase extends UseCase<FollowKolDomain> {
     public Observable<FollowKolDomain> createObservable(RequestParams requestParams) {
         return feedRepository.followKol(requestParams);
     }
+
+    public static RequestParams getParam(int userId, int status) {
+        RequestParams params = RequestParams.create();
+        params.putInt(PARAM_USER_ID, userId);
+        params.putInt(PARAM_STATUS, status);
+        return params;
+    }
 }
