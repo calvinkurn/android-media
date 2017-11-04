@@ -357,6 +357,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     public void renderDataOperator(Operator operatorModel) {
         if (!TextUtils.isEmpty(widgetClientNumberView.getText())) {
             selectedOperator = operatorModel;
+            UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
+                    selectedOperator.getAttributes().getName());
             selectedOperatorId = String.valueOf(operatorModel.getId());
             minLengthDefaultOperator = operatorModel.getAttributes().getMinimumLength();
             widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
@@ -428,6 +430,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     @Override
     public void renderOperator(Operator operatorModel) {
         selectedOperator = operatorModel;
+        UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
+                selectedOperator.getAttributes().getName());
         selectedOperatorId = String.valueOf(selectedOperator.getId());
         widgetClientNumberView.setText(lastClientNumberTyped);
     }

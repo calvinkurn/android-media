@@ -401,6 +401,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     @Override
     public void renderOperator(Operator rechargeOperatorModel) {
         selectedOperator = rechargeOperatorModel;
+        UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
+                selectedOperator.getAttributes().getName());
         selectedOperatorId = String.valueOf(selectedOperator.getId());
         widgetClientNumberView.setText(lastClientNumberTyped);
     }
