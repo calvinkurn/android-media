@@ -58,14 +58,14 @@ public class BranchSdkUtils {
                 public void onLinkCreate(String url, BranchError error) {
 
                     if (error == null) {
-                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContentForBranch(url), extraDescription + url);
+                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContentForBranch(url), extraDescription + url,url);
                     } else {
-                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri());
+                        ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri(),url);
                     }
                 }
             });
         } else {
-            ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri());
+            ShareContentsCreateListener.onCreateShareContents(extraDescription + data.getTextContent(activity), extraDescription + data.renderShareUri(),data.renderShareUri());
 
         }
     }
@@ -183,6 +183,6 @@ public class BranchSdkUtils {
     }
 
     public interface GenerateShareContents {
-        void onCreateShareContents(String shareContents, String shareUri);
+        void onCreateShareContents(String shareContents, String shareUri,String branchUrl);
     }
 }
