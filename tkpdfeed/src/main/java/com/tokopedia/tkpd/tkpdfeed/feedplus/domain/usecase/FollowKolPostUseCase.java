@@ -18,6 +18,9 @@ public class FollowKolPostUseCase extends UseCase<FollowKolDomain> {
 
     public static final String PARAM_USER_ID = "PARAM_USER_ID";
     public static final String PARAM_STATUS = "PARAM_STATUS";
+    public static final int PARAM_FOLLOW = 1;
+    public static final int PARAM_UNFOLLOW = 0;
+
 
     FeedRepository feedRepository;
 

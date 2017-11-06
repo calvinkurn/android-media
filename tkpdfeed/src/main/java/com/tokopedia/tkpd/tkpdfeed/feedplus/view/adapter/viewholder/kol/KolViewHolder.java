@@ -205,12 +205,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     }
 
     private void onLikeClicked(KolViewModel element) {
-        if (element.isLiked()) {
-            viewListener.onUnlikeKol(element.getPage(), getAdapterPosition(), element.getId());
-        } else {
-            viewListener.onLikeKol(element.getPage(), getAdapterPosition(), element.getId());
-        }
-
+            viewListener.onLikeUnlikeKol(element.getPage(), getAdapterPosition(), element.getId());
     }
 
     private Spanned getKolText(KolViewModel element) {

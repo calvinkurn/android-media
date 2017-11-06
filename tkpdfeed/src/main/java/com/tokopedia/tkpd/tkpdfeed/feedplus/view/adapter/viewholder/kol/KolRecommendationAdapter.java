@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
@@ -42,14 +43,6 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
             followButton = (TextView) itemView.findViewById(R.id.follow_button);
             mainView = itemView.findViewById(R.id.main_view);
 
-            followButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    kolViewListener.onFollowKolClicked(data.getPage(),
-                            data.getRowNumber(),
-                            data.getListRecommend().get(getAdapterPosition()).getId());
-                }
-            });
             avatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -88,10 +81,38 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         ImageHandler.LoadImage(avatar, data.getListRecommend().get(position).getImageUrl());
         name.setText(MethodChecker.fromHtml(data.getListRecommend().get(position).getName()));
         label.setText(data.getListRecommend().get(position).getLabel());
+
+        if (data.getListRecommend().get(position).isFollowed()) {
+            followButton.setText(MainApplication.getAppContext().getString(R.string.following));
+            MethodChecker.setBackground(followButton, MethodChecker.getDrawable(MainApplication
+                    .getAppContext(), R.drawable.btn_share_transaparent));
+        } else {
+            followButton.setText(MainApplication.getAppContext().getString(R.string.action_follow_english));
+            MethodChecker.setBackground(followButton, MethodChecker.getDrawable(MainApplication
+                    .getAppContext(), R.drawable.green_button_rounded_unify));
+        }
+
+        followButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (followButton.getText().equals(MainApplication.getAppContext().getString(R.string
+                        .action_follow_english))) {
+                    kolViewListener.onFollowKolFromRecommendationClicked(data.getPage(),
+                            data.getRowNumber(),
+                            data.getListRecommend().get(position).getId(),
+                            position);
+                } else {
+                    kolViewListener.onUnfollowKolFromRecommendationClicked(data.getPage(),
+                            data.getRowNumber(),
+                            data.getListRecommend().get(position).getId(),
+                            position);
+                }
+            }
+        });
     }
 
     @Override

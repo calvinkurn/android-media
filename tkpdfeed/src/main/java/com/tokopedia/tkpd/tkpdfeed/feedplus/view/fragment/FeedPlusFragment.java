@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.google.firebase.perf.metrics.Trace;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -72,6 +73,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductMod
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
@@ -116,7 +118,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     View newFeed;
     Trace trace;
     private ShareBottomDialog shareBottomDialog;
-
+    private TkpdProgressDialog progressDialog;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -344,12 +346,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
-
+        if (progressDialog == null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
+                    .NORMAL_PROGRESS);
+        progressDialog.showDialog();
     }
 
     @Override
     public void finishLoadingProgress() {
-
+        if (progressDialog != null && getActivity() != null)
+            progressDialog.dismiss();
     }
 
     @Override
@@ -936,42 +942,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onFollowKolClicked(int page, int rowNumber, int id) {
-        if (adapter.getlist().get(rowNumber - 1) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setFollowed(true);
-            ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setTemporarilyFollowed(true);
-            adapter.notifyItemChanged(rowNumber - 1);
-        }
-        presenter.followKol(id);
+        presenter.followKol(id, rowNumber, this);
     }
 
     @Override
     public void onUnfollowKolClicked(int page, int rowNumber, int id) {
-        if (adapter.getlist().get(rowNumber - 1) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setFollowed(false);
-            ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setTemporarilyFollowed(false);
-            adapter.notifyItemChanged(rowNumber - 1);
-        }
-        presenter.unfollowKol(id);
+        presenter.unfollowKol(id, rowNumber, this);
 
     }
 
     @Override
-    public void onUnlikeKol(int page, int rowNumber, int id) {
-        if (adapter.getlist().get(rowNumber - 1) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setLiked(false);
-            adapter.notifyItemChanged(rowNumber - 1);
-        }
-        presenter.unlikeKol(id);
-
-    }
-
-    @Override
-    public void onLikeKol(int page, int rowNumber, int id) {
-        if (adapter.getlist().get(rowNumber - 1) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber - 1)).setLiked(true);
-            adapter.notifyItemChanged(rowNumber - 1);
-        }
-        presenter.likeKol(id);
+    public void onLikeUnlikeKol(int page, int rowNumber, int id) {
+        presenter.likeUnlikeKol(id, rowNumber, this);
 
     }
 
@@ -989,5 +971,63 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
         startActivity(KolProfileWebViewActivity.getCallingIntent(getActivity(), url));
+    }
+
+    @Override
+    public void onErrorFollowKol(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessFollowUnfollowKol(int rowNumber) {
+        if (rowNumber <= adapter.getItemCount()
+                && adapter.getlist().get(rowNumber) != null
+                && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
+            ((KolViewModel) adapter.getlist().get(rowNumber)).setFollowed(!((KolViewModel) adapter
+                    .getlist().get(rowNumber)).isFollowed());
+            ((KolViewModel) adapter.getlist().get(rowNumber)).setTemporarilyFollowed(!((KolViewModel) adapter
+                    .getlist().get(rowNumber)).isTemporarilyFollowed());
+            adapter.notifyItemChanged(rowNumber);
+        }
+    }
+
+    @Override
+    public void onErrorLikeDislikeKolPost(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+
+    }
+
+    @Override
+    public void onSuccessLikeDislikeKolPost(int rowNumber) {
+        if (rowNumber <= adapter.getItemCount()
+                && adapter.getlist().get(rowNumber) != null
+                && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
+            ((KolViewModel) adapter.getlist().get(rowNumber)).setLiked(!((KolViewModel) adapter
+                    .getlist().get(rowNumber)).isLiked());
+            adapter.notifyItemChanged(rowNumber);
+        }
+    }
+
+    @Override
+    public void onFollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position) {
+        presenter.followKolFromRecommendation(id, rowNumber, position, this);
+    }
+
+    @Override
+    public void onUnfollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position) {
+        presenter.unfollowKolFromRecommendation(id, rowNumber, position, this);
+
+    }
+
+    @Override
+    public void onSuccessFollowUnfollowKolFromRecommendation(int rowNumber, int position) {
+        if (rowNumber <= adapter.getItemCount()
+                && adapter.getlist().get(rowNumber) != null
+                && adapter.getlist().get(rowNumber) instanceof KolRecommendationViewModel) {
+            ((KolRecommendationViewModel) adapter.getlist().get(rowNumber)).getListRecommend()
+                    .get(position).setFollowed(!((KolRecommendationViewModel) adapter.getlist()
+                    .get(rowNumber)).getListRecommend().get(position).isFollowed());
+            adapter.notifyItemChanged(rowNumber);
+        }
     }
 }

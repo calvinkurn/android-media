@@ -11,11 +11,11 @@ public class KolRecommendItemViewModel {
     private String imageUrl;
     private String url;
     private String label;
-    private int id;
+    private int userId;
 
-    public KolRecommendItemViewModel(int id, String name, String imageUrl, String url, String
+    public KolRecommendItemViewModel(int userId, String name, String imageUrl, String url, String
             label, boolean followed) {
-        this.id = id;
+        this.userId = userId;
         this.name = name;
         this.imageUrl = imageUrl;
         this.url = url;
@@ -40,11 +40,11 @@ public class KolRecommendItemViewModel {
     }
 
     public int getId() {
-        return id;
+        return userId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int userId) {
+        this.userId = userId;
     }
 
     public boolean isFollowed() {
@@ -54,4 +54,5 @@ public class KolRecommendItemViewModel {
     public void setFollowed(boolean followed) {
         this.followed = followed;
     }
+
 }

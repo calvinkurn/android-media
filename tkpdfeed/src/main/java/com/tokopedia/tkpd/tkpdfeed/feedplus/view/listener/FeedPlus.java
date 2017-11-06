@@ -6,19 +6,18 @@ import android.content.res.Resources;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author by nisie on 5/15/17.
  */
 
-public interface FeedPlus{
+public interface FeedPlus {
 
     interface View extends CustomerView {
 
@@ -35,13 +34,25 @@ public interface FeedPlus{
 
             void onUnfollowKolClicked(int page, int rowNumber, int id);
 
-            void onUnlikeKol(int page, int rowNumber, int id);
-
-            void onLikeKol(int page, int rowNumber, int id);
+            void onLikeUnlikeKol(int page, int rowNumber, int id);
 
             void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel);
 
             void onGoToListKolRecommendation(int page, int rowNumber, String url);
+
+            void onErrorFollowKol(String errorMessage);
+
+            void onSuccessFollowUnfollowKol(int rowNumber);
+
+            void onErrorLikeDislikeKolPost(String errorMessage);
+
+            void onSuccessLikeDislikeKolPost(int rowNumber);
+
+            void onFollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position);
+
+            void onUnfollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position);
+
+            void onSuccessFollowUnfollowKolFromRecommendation(int rowNumber, int position);
         }
 
         void setFirstCursor(String firstCursor);
@@ -160,7 +171,7 @@ public interface FeedPlus{
         void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl);
     }
 
-    interface Presenter extends CustomerPresenter<View>{
+    interface Presenter extends CustomerPresenter<View> {
 
         void fetchFirstPage();
 
@@ -170,12 +181,16 @@ public interface FeedPlus{
 
         void checkNewFeed(String cursor);
 
-        void followKol(int id);
+        void followKol(int id, int rowNumber, View.Kol kolListener);
 
-        void unfollowKol(int id);
+        void unfollowKol(int id, int rowNumber, View.Kol kolListener);
 
-        void likeKol(int id);
+        void likeUnlikeKol(int id, int rowNumber, View.Kol kolListener);
 
-        void unlikeKol(int id);
+        void followKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol
+                kolListener);
+
+        void unfollowKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol
+                kolListener);
     }
 }
