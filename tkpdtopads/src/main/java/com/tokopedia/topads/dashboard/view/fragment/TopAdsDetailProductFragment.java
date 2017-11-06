@@ -189,6 +189,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
         if (isHasGroupAd()) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getGroupId());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, true);
             startActivity(intent);
         }
     }
