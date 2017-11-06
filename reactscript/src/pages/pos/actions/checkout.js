@@ -203,6 +203,7 @@ const makePaymentToNativeStepTwo = (paymentToNative_getParams, data_payment, loc
       const jsonResponse = Object.assign({}, JSON.parse(res), {payment_param: payloads})
       if (jsonResponse.status === '200 Ok'){
         if (jsonResponse.data.code === 200 && jsonResponse.data.message === 'Success'){
+          // insertPaymentParams(dataParams)
           return jsonResponse
         }
       }
@@ -213,3 +214,23 @@ const makePaymentToNativeStepTwo = (paymentToNative_getParams, data_payment, loc
     })
 }
 // ===================== Make Payment 2 ===================== //
+
+
+// ========== Insert to Cache Payment Params ============ //
+const insertPaymentParams = (dataPaymentParams) => {
+  console.log(dataPaymentParams)
+
+  const data_params = {
+    key: `PAYMENTPARAMS_${dataParams.transaction_id}`,
+    data: dataPaymentParams
+  }
+
+  PosCacheModule.insert('GLOBAL', JSON.stringify(data_params))
+    .then(res => {
+      console.log(res)
+      return 
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
