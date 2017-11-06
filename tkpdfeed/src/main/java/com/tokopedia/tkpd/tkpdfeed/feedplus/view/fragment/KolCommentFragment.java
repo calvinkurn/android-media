@@ -119,7 +119,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         View parentView = inflater.inflate(R.layout.fragment_kol_comment, container, false);
         listComment = (RecyclerView) parentView.findViewById(R.id.comment_list);
         kolComment = (EditText) parentView.findViewById(R.id.new_comment);
-        sendButton = (ImageView) parentView.findViewById(R.id.send_button);
+        sendButton = (ImageView) parentView.findViewById(R.id.send_but);
         productName = (TextView) parentView.findViewById(R.id.product_name);
         productPrice = (TextView) parentView.findViewById(R.id.price);
         productAvatar = (ImageView) parentView.findViewById(R.id.avatar);
