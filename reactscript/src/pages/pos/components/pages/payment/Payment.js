@@ -140,7 +140,10 @@ class payment extends Component {
     
     const checkout_data = JSON.parse(dataPaymentBank.checkout_data)
     const total_payment = (dataPaymentBank.total_payment).toLocaleString("id")
-    const total_payment_with_rates_or_fees_with_currency = numeral(total_payment_with_rates_or_fees).format('0,0') || total_payment
+    // console.log(total_payment, typeof total_payment)
+    const total_payment_with_rates_or_fees_with_currency = total_payment_with_rates_or_fees == 0 ? total_payment : numeral(total_payment_with_rates_or_fees).format('0,0') 
+
+
     
     let years = this.state.years().map((i) => {
       return <Picker.Item key={i} value={i} label={i.toString()} />
