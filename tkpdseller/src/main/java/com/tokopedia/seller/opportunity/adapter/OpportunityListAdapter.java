@@ -135,6 +135,8 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter {
 
             MethodChecker.setBackground(holder.reputationPoint, background);
             holder.reputationPoint.setText(opportunityItemViewModel.getReplacementMultiplierText());
+            holder.reputationPoint.setTextColor(Color.parseColor(opportunityItemViewModel
+                    .getReplacementMultiplierColor()));
 
         } else {
             holder.reputationPoint.setVisibility(View.GONE);
