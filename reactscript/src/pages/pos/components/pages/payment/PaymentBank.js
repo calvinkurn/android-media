@@ -316,7 +316,7 @@ class PaymentBank extends Component {
     // const payment_amount_curr = (checkout_data.data.data.payment_amount).toLocaleString("id") || ''
     const totalPriceWithCurrency = numeral(payment_amount).format('0,0') || ''
     const { installmentCalc, noInstallmentCalc } = this.state
-    console.log(installmentCalc, typeof installmentCalc, noInstallmentCalc, typeof noInstallmentCalc)
+    // console.log(installmentCalc, typeof installmentCalc, noInstallmentCalc, typeof noInstallmentCalc)
     const installmentCalcWithCurrency = installmentCalc === 0 ? numeral(payment_amount).format('0,0') : numeral(installmentCalc).format('0,0')
     const noInstallmentCalcWithCurrency = noInstallmentCalc === 0 ? numeral(payment_amount).format('0,0') : numeral(noInstallmentCalc).format('0,0')
     

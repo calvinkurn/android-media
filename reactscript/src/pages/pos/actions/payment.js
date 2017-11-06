@@ -1,15 +1,9 @@
 import { NetworkModule, SessionModule } from 'NativeModules'
 import { 
-  BASE_API_URL_PAYMENT,
-  BASE_API_URL_SCROOGE,
-  BASE_API_URL_PCIDSS,
-  BASE_API_URL_ORDER,
-  BASE_API_URL,
-} from '../lib/api.js'
-import { 
   getUserId, 
   getAddrId,
   getShopId,
+  getBaseAPI,
   getEnv,
 } from '../lib/utility'
 
@@ -36,31 +30,6 @@ const postDataToNative = async (data) => {
   return otp
 }
 
-
-const getBaseAPI = (env) => {
-  let data_api = {}
-
-  if (env === 'production'){
-    const data_api = {
-      api_url_payment: `${BASE_API_URL_PAYMENT.PRODUCTION}`,
-      api_url_scrooge: `${BASE_API_URL_SCROOGE.PRODUCTION}`,
-      api_url_pcidss: `${BASE_API_URL_PCIDSS.PRODUCTION}`,
-      api_url_order: `${BASE_API_URL_ORDER.PRODUCTION}`,
-      base_api_url: `${BASE_API_URL.PRODUCTION}`
-    }
-    return data_api
-
-  } else {
-    const data_api = {
-      api_url_payment: `${BASE_API_URL_PAYMENT.STAGING}`,
-      api_url_scrooge: `${BASE_API_URL_SCROOGE.STAGING}`,
-      api_url_pcidss: `${BASE_API_URL_PCIDSS.STAGING}`,
-      api_url_order: `${BASE_API_URL_ORDER.STAGING}`,
-      base_api_url: `${BASE_API_URL.STAGING}`
-    }
-    return data_api
-  }
-}
 
 const getGatewayCode = (data) => {
   let gtwCode = ''
