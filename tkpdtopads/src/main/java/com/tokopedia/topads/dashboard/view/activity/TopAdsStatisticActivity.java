@@ -47,6 +47,7 @@ import java.util.List;
 
 public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<TopAdsStatisticActivityPresenter> implements TopAdsStatisticActivityViewListener {
 
+    public static final int OFFSCREEN_PAGE_LIMIT = 12;
     ViewPager viewPager;
     TabLayout tabLayout;
     SwipeToRefresh swipeToRefresh;
@@ -91,6 +92,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
         tabLayout = (TabLayout) findViewById(R.id.tab);
         swipeToRefresh = (SwipeToRefresh) findViewById(R.id.swipe_refresh_layout);
         viewPager.setAdapter(getViewPagerAdapter());
+        viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(currentPositonPager);
         progressDialog = new ProgressDialog(this);
