@@ -30,7 +30,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             taskStackBuilder.addNextIntent(RideHomeActivity.getCallingIntent(this));
             taskStackBuilder.startActivities();
         }
-        fetchRemoteConfig();
+//        fetchRemoteConfig();
         finish();
     }
 
@@ -39,16 +39,6 @@ public class ConsumerSplashScreen extends SplashScreen {
      */
     private void fetchRemoteConfig() {
         RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(this);
-        remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
-            @Override
-            public void onComplete(FirebaseRemoteConfig firebaseRemoteConfig) {
-
-            }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-        });
+        remoteConfigFetcher.fetch(null);
     }
 }
