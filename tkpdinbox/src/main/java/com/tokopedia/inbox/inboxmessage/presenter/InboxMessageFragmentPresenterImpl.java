@@ -7,21 +7,18 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.data.mapper.DeleteMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepository;
-import com.tokopedia.inbox.inboxchat.data.repository.MessageRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.domain.model.message.ListMessage;
 import com.tokopedia.inbox.inboxchat.domain.model.message.MessageData;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ListenWebSocketUseCase;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity;
+import com.tokopedia.inbox.inboxmessage.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.inbox.inboxmessage.interactor.InboxMessageCacheInteractor;
 import com.tokopedia.inbox.inboxmessage.interactor.InboxMessageCacheInteractorImpl;
@@ -439,7 +436,7 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
     @Override
     public void goToDetailMessage(int position, ListMessage message) {
 
-        Intent intent = InboxMessageDetailActivity.getCallingIntent(viewListener.getActivity(),
+        Intent intent = ChatRoomActivity.getCallingIntent(viewListener.getActivity(),
                 viewListener.getArguments().getString(PARAM_NAV),
                 String.valueOf(message.getMsgId()),
                 position,

@@ -17,6 +17,8 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     public static final int SPANNED_CONTACT = 1;
     public static final int SPANNED_MESSAGE = 2;
 
+    public static final String IS_TYPING = "sedang mengetik ...";
+
     String name;
     String message;
     String image;
@@ -30,6 +32,7 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     int spanMode;
     int sectionSize;
     private String role;
+    boolean isTyping;
     Contact contact;
 
     public ChatListViewModel() {
@@ -157,6 +160,15 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public boolean isTyping() {
+        return isTyping;
+    }
+
+    public void setTyping(boolean typing) {
+        isTyping = typing;
+    }
+
     @Override
     public int type(InboxChatTypeFactory typeFactory) {
         return typeFactory.type(this);

@@ -32,7 +32,7 @@ import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ListenWebSocketUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity;
+import com.tokopedia.inbox.inboxmessage.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageDetailFragment;
 import com.tokopedia.inbox.inboxmessage.interactor.InboxMessageActRetrofitInteractor;
 import com.tokopedia.inbox.inboxmessage.interactor.InboxMessageActRetrofitInteractorImpl;
@@ -90,7 +90,7 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
         this.actNetworkinteractor = new InboxMessageActRetrofitInteractorImpl();
         this.cacheInteractor = new InboxMessageCacheInteractorImpl();
         this.pagingHandler = new PagingHandler();
-        this.listener = (InboxMessageDetailActivity) viewListener.getActivity();
+        this.listener = (ChatRoomActivity) viewListener.getActivity();
 
         chatService = new ChatService();
         replyFactory = new ReplyFactory(chatService, new GetReplyMapper(), new ReplyMessageMapper());

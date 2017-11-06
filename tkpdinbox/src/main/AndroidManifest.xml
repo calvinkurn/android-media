@@ -67,9 +67,9 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
-            android:name=".inboxmessage.activity.InboxMessageDetailActivity"
+            android:name=".inboxmessage.activity.ChatRoomActivity"
             android:label="@string/title_inbox_message"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".inboxtalk.activity.InboxTalkActivity"
             android:label="@string/title_activity_inbox_talk"

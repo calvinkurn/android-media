@@ -254,4 +254,29 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
             }
         }
     }
+
+
+    public void showTyping(int msgId) {
+        for (int i = 0; i < list.size(); i++) {
+            ChatListViewModel tempModel = ((ChatListViewModel) list.get(i));
+            String temp = tempModel.getId();
+            if(msgId == Integer.valueOf(temp)){
+                tempModel.setTyping(true);
+                notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
+    public void removeTyping(int msgId) {
+        for (int i = 0; i < list.size(); i++) {
+            ChatListViewModel tempModel = ((ChatListViewModel) list.get(i));
+            String temp = tempModel.getId();
+            if(msgId == Integer.valueOf(temp)){
+                tempModel.setTyping(false);
+                notifyItemChanged(i);
+                break;
+            }
+        }
+    }
 }

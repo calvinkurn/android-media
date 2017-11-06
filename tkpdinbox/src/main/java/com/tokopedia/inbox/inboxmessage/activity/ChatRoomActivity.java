@@ -27,19 +27,17 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageDetailFragment;
 import com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageIntentService;
 import com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageResultReceiver;
 
-import static com.tokopedia.core.inboxreputation.InboxReputationConstant.PARAM_POSITION;
-import static com.tokopedia.core.otp.domain.interactor.RequestOtpUseCase.PARAM_MODE;
-
 /**
  * Created by Nisie on 5/19/16.
  */
-public class InboxMessageDetailActivity extends BasePresenterActivity
+public class ChatRoomActivity extends BasePresenterActivity
         implements InboxMessageDetailFragment.DoActionInboxMessageListener,
         InboxMessageConstant, InboxMessageResultReceiver.Receiver, NotificationReceivedListener {
 
@@ -102,8 +100,8 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
         } else {
             homeIntent = HomeRouter.getHomeActivity(context);
         }
-        Intent detailsIntent = new Intent(context, InboxMessageDetailActivity.class).putExtras(extras);
-        Intent parentIntent = new Intent(context, InboxMessageActivity.class);
+        Intent detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
+        Intent parentIntent = new Intent(context, InboxChatActivity.class);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(parentIntent);
@@ -253,7 +251,7 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
     public static Intent getCallingIntent(Context context, String nav, String messageId,
                                           int position, String senderName, String senderTag,
                                           String senderId, String role, int mode, String keyword) {
-        Intent intent = new Intent(context, InboxMessageDetailActivity.class);
+        Intent intent = new Intent(context, ChatRoomActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_NAV, nav);
         bundle.putParcelable(PARAM_MESSAGE, null);

@@ -1,16 +1,20 @@
 package com.tokopedia.inbox.inboxchat.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -41,7 +45,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity;
+import com.tokopedia.inbox.inboxmessage.activity.ChatRoomActivity;
 
 import org.json.JSONException;
 
@@ -149,7 +153,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void call(Boolean aBoolean) {
                 Log.i("call: ", "isTyping");
                 try {
-                    presenter.setIsTyping(getArguments().getString(InboxMessageDetailActivity
+                    presenter.setIsTyping(getArguments().getString(ChatRoomActivity
                             .PARAM_MESSAGE_ID));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -163,7 +167,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     public void call(Boolean aBoolean) {
                         Log.i("call: ", "stopTyping");
                         try {
-                            presenter.stopTyping(getArguments().getString(InboxMessageDetailActivity
+                            presenter.stopTyping(getArguments().getString(ChatRoomActivity
                                     .PARAM_MESSAGE_ID));
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -175,9 +179,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 presenter.getAttachProductDialog(
-                        getArguments().getString(InboxMessageDetailActivity
+                        getArguments().getString(ChatRoomActivity
                                 .PARAM_SENDER_ID, ""),
-                        getArguments().getString(InboxMessageDetailActivity.PARAM_SENDER_ROLE, "")
+                        getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE, "")
                 );
             }
         });
@@ -216,26 +220,24 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 }
             }
         });
-        recyclerView.addOnLayoutChangeListener(onKeyboardShows());
-    }
 
-
-    private View.OnLayoutChangeListener onKeyboardShows() {
-        return new View.OnLayoutChangeListener() {
+        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (bottom < oldBottom) {
-                    recyclerView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                        }
-                    }, 100);
+            public void onGlobalLayout() {
+                int heightDiff = recyclerView.getRootView().getHeight() - recyclerView.getHeight();
+                if (heightDiff > dpToPx(getActivity(), 200)) { // if more than 200 dp, it's probably a keyboard...
+//                    recyclerView.smoothScrollToPosition(0);
                 }
             }
-        };
+        });
     }
+
+    public static float dpToPx(Context context, float valueInDp) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
+    }
+
+
 
     @Override
     protected String getScreenName() {
@@ -480,6 +482,19 @@ public class ChatRoomFragment extends BaseDaggerFragment
             item.setSenderName(data.getString("full_name"));
             item.setReplyTime(data.getString("create_time"));
             addDummyMessage(item);
+        }
+
+        if (toolbar != null) {
+            mainHeader.setVisibility(View.VISIBLE);
+            avatar = (ImageView) toolbar.findViewById(R.id.user_avatar);
+            user = (TextView) toolbar.findViewById(R.id.title);
+            onlineDesc = (TextView) toolbar.findViewById(R.id.subtitle);
+            label = (TextView) toolbar.findViewById(R.id.label);
+            onlineStatus = (ImageView) toolbar.findViewById(R.id.online_status);
+            ImageHandler.loadImageCircle2(getActivity(), avatar, null, R.drawable.ic_image_avatar_boy);
+            user.setText(getArguments().getString(PARAM_SENDER_NAME));
+            label.setText(getArguments().getString(PARAM_SENDER_TAG));
+            setOnlineDesc("baru saja");
         }
     }
 

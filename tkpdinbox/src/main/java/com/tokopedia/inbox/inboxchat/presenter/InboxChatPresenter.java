@@ -1,13 +1,15 @@
 package com.tokopedia.inbox.inboxchat.presenter;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Pair;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase;
@@ -17,13 +19,17 @@ import com.tokopedia.inbox.inboxchat.presenter.subscriber.SearchMessageSubscribe
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity;
+import com.tokopedia.inbox.inboxmessage.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxmessage.model.InboxMessagePass;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.WebSocket;
 
 /**
  * Created by stevenfredian on 9/14/17.
@@ -42,6 +48,11 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     private int contactSize;
     private int chatSize;
     private List<Visitable> listFetchCache;
+    private OkHttpClient client;
+    private String magicString;
+    private ChatWebSocketListenerImpl listener;
+    private WebSocket ws;
+    private int attempt;
 
     @Inject
     InboxChatPresenter(GetMessageListUseCase getMessageListUseCase,
@@ -65,6 +76,15 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         isRequesting = false;
         contactSize = 0;
         chatSize = 0;
+        attempt = 0;
+
+        client = new OkHttpClient();
+        magicString = "wss://chat-staging.tokopedia.com/connect?" +
+                "os_type=1" +
+                "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
+                "&user_id=" + SessionHandler.getLoginID(getView().getContext());
+        listener = new ChatWebSocketListenerImpl(getView().getInterface());
+        recreateWebSocket();
     }
 
     public void getMessage() {
@@ -209,7 +229,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     public void goToDetailMessage(int position, ChatListViewModel listMessage) {
         getView().getAdapter().notifyItemChanged(position);
-        Intent intent = InboxMessageDetailActivity.getCallingIntent(getView().getActivity(),
+        Intent intent = ChatRoomActivity.getCallingIntent(getView().getActivity(),
                 getView().getArguments().getString(PARAM_NAV),
                 String.valueOf(listMessage.getId()),
                 position,
@@ -335,5 +355,24 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     public void deleteMessage() {
         List<Pair> temp = getView().getAdapter().getListMove();
         deleteMessageListUseCase.execute(DeleteMessageListUseCase.generateParam(temp), new DeleteMessageSubscriber(getView(), this));
+    }
+
+
+    @Override
+    public void recreateWebSocket() {
+        if(attempt > 5) {
+            getView().notifyConnectionWebSocket();
+        }else {
+            Request request = new Request.Builder().url(magicString)
+                    .header("Origin", "https://staging.tokopedia.com")
+                    .build();
+            ws = client.newWebSocket(request, listener);
+            attempt++;
+        }
+    }
+
+    @Override
+    public void resetAttempt() {
+        attempt = 0;
     }
 }

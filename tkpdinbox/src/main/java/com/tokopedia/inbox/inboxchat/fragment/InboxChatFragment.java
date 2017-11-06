@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
@@ -28,6 +29,8 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
+import com.tokopedia.inbox.inboxchat.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactory;
@@ -35,6 +38,7 @@ import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.adapter.NewInboxChatAdapter;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
 import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
@@ -49,7 +53,10 @@ import javax.inject.Inject;
  * Created by stevenfredian on 9/14/17.
  */
 
-public class InboxChatFragment extends BaseDaggerFragment implements InboxChatContract.View, InboxMessageConstant, SearchInputView.Listener, SearchInputView.ResetListener{
+public class InboxChatFragment extends BaseDaggerFragment
+        implements InboxChatContract.View, InboxMessageConstant
+        , SearchInputView.Listener, SearchInputView.ResetListener
+        , WebSocketInterface{
 
     RecyclerView mainList;
 
@@ -78,6 +85,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     boolean isMultiActionEnabled = false;
     ActionMode.Callback callbackContext;
     ActionMode contextMenu;
+    private View notifier;
 
     @Override
     protected String getScreenName() {
@@ -125,6 +133,7 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
         presenter.attachView(this);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         callbackContext = initCallbackActionMode();
+        notifier = parentView.findViewById(R.id.notifier);
         ((InboxChatActivity) getActivity()).showTabLayout(false);
 
         typeFactory = new InboxChatTypeFactoryImpl(this, presenter);
@@ -282,6 +291,10 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
         });
     }
 
+    @Override
+    public WebSocketInterface getInterface() {
+        return this;
+    }
 
     @Override
     public String getNav() {
@@ -438,5 +451,57 @@ public class InboxChatFragment extends BaseDaggerFragment implements InboxChatCo
     @Override
     public void onSearchReset() {
         presenter.resetSearch();
+    }
+
+    @Override
+    public void onIncomingEvent(WebSocketResponse response) {
+        switch (response.getCode()) {
+            case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
+                adapter.showTyping(response.getData().getMsgId());
+                break;
+            case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
+                adapter.removeTyping(response.getData().getMsgId());
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void newWebSocket() {
+        if (getActivity() != null)
+            presenter.recreateWebSocket();
+    }
+
+    @Override
+    public void onOpenWebSocket() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifier.setVisibility(View.GONE);
+            }
+        });
+        presenter.resetAttempt();
+    }
+
+
+    @Override
+    public void notifyConnectionWebSocket() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifier.setVisibility(View.VISIBLE);
+                TextView title = (TextView) notifier.findViewById(R.id.title);
+                View action = notifier.findViewById(R.id.action);
+                title.setText("Terjadi gangguan pada koneksi");
+                action.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        presenter.resetAttempt();
+                        presenter.recreateWebSocket();
+                    }
+                });
+            }
+        });
     }
 }

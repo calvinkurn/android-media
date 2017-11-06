@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
@@ -25,9 +24,7 @@ import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
-import com.tokopedia.inbox.inboxchat.fragment.ChatRoomFragment;
-import com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity;
-import com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity;
+import com.tokopedia.inbox.inboxmessage.activity.ChatRoomActivity;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -197,8 +194,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
                     listener.onGetNotif(data);
                 }else if ((mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof InboxMessageDetailActivity)
-                    || (MainApplication.currentActivity() instanceof InboxMessageDetailActivity)) {
+                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatRoomActivity)
+                    || (MainApplication.currentActivity() instanceof ChatRoomActivity)) {
                     NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
                     listener.onGetNotif(data);
                 }else {

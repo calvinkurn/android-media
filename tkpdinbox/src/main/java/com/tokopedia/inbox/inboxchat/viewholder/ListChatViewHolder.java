@@ -82,15 +82,24 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel>{
     @Override
     public void bind(ChatListViewModel element) {
 
-        if(element.getSpanMode() == ChatListViewModel.SPANNED_MESSAGE){
-            message.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
+        if(element.isTyping()){
             userName.setText(element.getName());
-        }else if(element.getSpanMode() == ChatListViewModel.SPANNED_CONTACT){
-            userName.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
-            message.setText(element.getMessage());
+            message.setText("sedang mengetik...");
+            message.setTypeface(null, Typeface.ITALIC);
+            message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.medium_green));
         }else {
-            message.setText(element.getMessage());
-            userName.setText(element.getName());
+            if (element.getSpanMode() == ChatListViewModel.SPANNED_MESSAGE) {
+                message.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
+                userName.setText(element.getName());
+            } else if (element.getSpanMode() == ChatListViewModel.SPANNED_CONTACT) {
+                userName.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
+                message.setText(element.getMessage());
+            } else {
+                message.setText(element.getMessage());
+                userName.setText(element.getName());
+            }
+            message.setTypeface(null, Typeface.NORMAL);
+            message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.black_54));
         }
 
         if(element.getSectionSize()>0){
