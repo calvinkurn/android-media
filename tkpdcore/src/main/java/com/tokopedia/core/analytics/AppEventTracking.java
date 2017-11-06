@@ -289,8 +289,6 @@ public interface AppEventTracking {
         String OPEN = "Open";
         String OTP_SUCCESS = "OTP Success";
         String RECEIVED = "received";
-        String SELECT_PRODUCT_FROM_WIDGET = "select Product - ";
-        String SELECT_OPERATOR_FROM_WIDGET = "Select Operator from Widget";
         String SELECT_PRODUCT = "Select Product";
         String SELECT_OPERATOR = "Select Operator";
         String CLICK_SEARCH_BAR = "Click Search Bar";
@@ -318,7 +316,7 @@ public interface AppEventTracking {
         String CLICK_FILTER_PRODUCT = "click filter product";
         String CLICK_OVERFLOW_MENU = "click overflow menu";
 
-        String CLICK_WIDGET_BAR = "click ";
+        String CLICK_WIDGET_BAR = "click widget";
         String CLICK_BELI = "Click Beli";
         String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
         String CHECK_INSTANT_SALDO_WIDGET = "Check Instant Saldo from Widget";
