@@ -133,6 +133,11 @@ public interface AppEventTracking {
         String TOP_ADS_SELLER_APP = "TopAdsSellerApp";
         String CLICK_DASHBOARD = "clickDashboard";
         String CLICK_CREATE_SHOP = "clickCreateShop";
+
+        String PRODUCT_PAGE = "ClickProductDetailPage";
+        String SEND_MESSAGE_PAGE = "ClickMessageRoom";
+        String SHOP_PAGE = "ClickShopPage";
+
     }
 
     interface Category {
@@ -219,6 +224,10 @@ public interface AppEventTracking {
         String GOLD_MERCHANT_ATC = "Gold Merchant ATC";
         String GOLD_MERCHANT_CHECKOUT = "Gold Merchant Checkout";
         String TOP_ADS_PRODUCT_SHOP = "TopAds - Product/Shop";
+
+        String PRODUCT_PAGE = "product page";
+        String SEND_MESSAGE_PAGE = "send message page";
+        String SHOP_PAGE = "shop page";
     }
 
     interface Action {
@@ -310,6 +319,10 @@ public interface AppEventTracking {
         String VOUCHER_SUCCESS = "Voucher Success - ";
         String VOUCHER_ERROR = "Voucher Error - ";
         String SUBMIT = "Submit";
+
+        String PRODUCT_PAGE = "click";
+        String SEND_MESSAGE_PAGE = "click on kirim";
+        String SHOP_PAGE = "click on kirim pesan";
     }
 
     interface EventLabel {
@@ -591,6 +604,8 @@ public interface AppEventTracking {
         String ADD_PROMO_PRODUCT = "Add Produk Promo";
         String ADD_PROMO_KEYWORD_POSITIF = "Add Positive Keyword";
         String ADD_PROMO_KEYWORD_NEGATIVE = "Add Negative Keyword";
+
+        String PRODUCT_PAGE =  "message shop";
     }
 
     interface SOCIAL_MEDIA {

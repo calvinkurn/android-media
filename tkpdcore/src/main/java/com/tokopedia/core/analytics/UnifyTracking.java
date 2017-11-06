@@ -2540,4 +2540,29 @@ public class UnifyTracking extends TrackingUtils {
         sendGTMEvent(new EventTracking(
                 event, category, action, "").getEvent());
     }
+
+    public static void eventPDPSendChat() {
+        sendGTMEvent(new EventTracking(AppEventTracking.Event.PRODUCT_PAGE
+                                    , AppEventTracking.Category.PRODUCT_PAGE
+                                    , AppEventTracking.Action.PRODUCT_PAGE
+                                    , AppEventTracking.EventLabel.PRODUCT_PAGE
+                                    ).getEvent());
+    }
+
+
+    public static void eventSendMessagePage() {
+        sendGTMEvent(new EventTracking(AppEventTracking.Event.SEND_MESSAGE_PAGE
+                , AppEventTracking.Category.SEND_MESSAGE_PAGE
+                , AppEventTracking.Action.SEND_MESSAGE_PAGE
+                , ""
+        ).getEvent());
+    }
+
+    public static void eventShopSendChat() {
+        sendGTMEvent(new EventTracking(AppEventTracking.Event.SHOP_PAGE
+                , AppEventTracking.Category.SHOP_PAGE
+                , AppEventTracking.Action.SHOP_PAGE
+                , ""
+        ).getEvent());
+    }
 }

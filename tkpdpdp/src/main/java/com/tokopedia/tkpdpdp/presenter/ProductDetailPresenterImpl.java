@@ -245,6 +245,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
         UnifyTracking.eventPDPSendMessage();
+        UnifyTracking.eventPDPSendChat();
     }
 
     @Override

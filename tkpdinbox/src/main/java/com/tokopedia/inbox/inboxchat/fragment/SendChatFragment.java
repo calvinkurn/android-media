@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -112,6 +114,7 @@ public class SendChatFragment extends BaseDaggerFragment
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventSendMessagePage();
                 presenter.sendMessage(replyColumn.getText().toString(),
                         getArguments().getString(SendMessageActivity.PARAM_SOURCE),
                         getArguments().getString(SendMessageActivity.PARAM_SHOP_ID),
