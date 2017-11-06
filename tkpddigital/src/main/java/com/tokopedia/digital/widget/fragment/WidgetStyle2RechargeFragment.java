@@ -317,6 +317,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
             public void onCheckChange(Operator rechargeOperatorModel) {
                 selectedProduct = null;
                 selectedOperator = rechargeOperatorModel;
+
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.getId());
                 minLengthDefaultOperator = rechargeOperatorModel.getAttributes().getMinimumLength();
                 widgetClientNumberView.setInputType(rechargeOperatorModel.getAttributes().getRule().isAllowAphanumericNumber());
@@ -337,7 +338,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void onTrackingOperator() {
-                UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
                         selectedOperator == null ? "" : selectedOperator.getAttributes().getName());
             }
         };

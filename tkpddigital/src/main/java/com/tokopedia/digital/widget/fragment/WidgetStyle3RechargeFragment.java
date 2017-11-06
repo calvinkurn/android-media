@@ -340,7 +340,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void onTrackingOperator() {
-                UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                UnifyTracking.eventSelectOperator(category.getAttributes().getName(),
                         selectedOperator == null ? "" : selectedOperator.getAttributes().getName());
             }
         };

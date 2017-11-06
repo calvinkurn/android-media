@@ -65,7 +65,6 @@ public class WidgetOperatorChooserView extends LinearLayout {
                 getContext(), android.R.layout.simple_spinner_item, operators);
         spinnerOperator.setAdapter(adapterOperator);
         spinnerOperator.setOnItemSelectedListener(getItemSelectedListener(operators));
-        spinnerOperator.setOnTouchListener(getOnTouchListener());
         initSetLastOrderSelectedOperator(operators, lastOrder, categoryId, lastOperatorSelected);
     }
 
@@ -73,6 +72,7 @@ public class WidgetOperatorChooserView extends LinearLayout {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                listener.onTrackingOperator();
                 listener.onResetOperator(resetClientNumber);
                 listener.onCheckChangeOperator(operators.get(i));
                 resetClientNumber = true;
@@ -81,18 +81,6 @@ public class WidgetOperatorChooserView extends LinearLayout {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
-            }
-        };
-    }
-
-    private OnTouchListener getOnTouchListener() {
-        return new OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    listener.onTrackingOperator();
-                }
-                return false;
             }
         };
     }
