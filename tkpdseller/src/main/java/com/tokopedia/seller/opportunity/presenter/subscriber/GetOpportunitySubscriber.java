@@ -111,8 +111,11 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
             opportunityItemViewModel.setOrderLast(getOrderLastViewModel(opportunityItem.getOrderLast()));
             opportunityItemViewModel.setOrderHistory(getOrderHistoryViewModel(opportunityItem.getOrderHistory()));
             opportunityItemViewModel.setOrderDestination(getOrderDestinationViewModel(opportunityItem.getOrderDestination()));
-            opportunityItemViewModel.setReplacementMultiplierColor(opportunityItem.getReplacementMultiplierColor());
-            opportunityItemViewModel.setReplacementMultiplierText(opportunityItem.getReplacementMultiplierValueStr());
+            opportunityItemViewModel.setReplacementMultiplierColor(opportunityItem
+                    .getReplacementMultiplierColor() == null ? "" : opportunityItem
+                    .getReplacementMultiplierColor());
+            opportunityItemViewModel.setReplacementMultiplierText(opportunityItem
+                    .getReplacementMultiplierValueStr() == null ? "" : opportunityItem.getReplacementMultiplierValueStr());
             opportunityItemViewModel.setReplacementMultiplierValue(opportunityItem.getReplacementMultiplierValue());
             list.add(opportunityItemViewModel);
         }
