@@ -276,7 +276,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private ArrayList<KolRecommendItemViewModel> convertToListKolRecommend(List<KolRecommendationDomain> kolRecommendations) {
         ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
-        for(KolRecommendationDomain recommendationDomain : kolRecommendations){
+        for (KolRecommendationDomain recommendationDomain : kolRecommendations) {
             list.add(new KolRecommendItemViewModel(
                     recommendationDomain.getUserId(),
                     recommendationDomain.getUserName(),
@@ -298,17 +298,17 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 kolPostDomain.getTagsType(),
                 kolPostDomain.isFollowed(),
                 kolPostDomain.getImageUrl(),
-                kolPostDomain.getProductPrice() + " - Lihat semua Produk",
+                kolPostDomain.getCaption(),
                 kolPostDomain.getDescription(),
                 kolPostDomain.isLiked(),
                 kolPostDomain.getLikeCount(),
                 kolPostDomain.getCommentCount(),
                 page,
                 kolPostDomain.getImageUrl(),
-                "221417982",
+                String.valueOf(kolPostDomain.getItemId()),
                 kolPostDomain.getId(),
                 TimeConverter.generateTime(kolPostDomain.getCreateTime()),
-                "Produk apapun",
+                "",
                 kolPostDomain.getProductPrice(),
                 false,
                 kolPostDomain.getTagsType()

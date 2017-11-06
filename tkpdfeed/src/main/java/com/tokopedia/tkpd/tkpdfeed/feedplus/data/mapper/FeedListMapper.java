@@ -294,43 +294,47 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
         if (datum.content().kolpost() != null) {
             FeedQuery.Data.Kolpost kolpost = datum.content()
                     .kolpost();
+            FeedQuery.Data.Content1 content = datum.content()
+                    .kolpost().content().get(0);
             return new KolPostDomain(
                     kolpost.id() == null ? 0 : kolpost.id(),
-                    kolpost.imageUrl() == null ? "" : kolpost.imageUrl(),
+                    content.imageurl() == null ? "" : content.imageurl(),
                     kolpost.description() == null ? "" : kolpost.description(),
                     kolpost.commentCount() == null ? 0 : kolpost.commentCount(),
                     kolpost.likeCount() == null ? 0 : kolpost.likeCount(),
                     kolpost.isLiked() == null ? false : kolpost.isLiked(),
                     kolpost.isFollowed() == null ? false : kolpost.isFollowed(),
                     kolpost.createTime() == null ? "" : kolpost.createTime(),
-                    kolpost.productPrice() == null ? "" : kolpost.productPrice(),
-                    kolpost.productLink() == null ? "" : kolpost.productLink(),
-                    kolpost.productUrl() == null ? "" : kolpost.productUrl(),
-                    kolpost.shopUrl() == null ? "" : kolpost.shopUrl(),
-                    kolpost.shopLink() == null ? "" : kolpost.shopLink(),
+                    content.tags().get(0).price() == null ? "" : content.tags().get(0).price(),
+                    content.tags().get(0).link() == null ? "" : content.tags().get(0).link(),
+                    content.tags().get(0).url() == null ? "" : content.tags().get(0).url(),
                     kolpost.userName() == null ? "" : kolpost.userName(),
                     kolpost.userPhoto() == null ? "" : kolpost.userPhoto(),
-                    kolpost.tagsType() == null ? "" : kolpost.tagsType());
+                    content.tags().get(0).type() == null ? "" : content.tags().get(0).type(),
+                    content.tags().get(0).caption() == null? "" : content.tags().get(0).caption(),
+                    content.tags().get(0).id() == null? 0 : content.tags().get(0).id());
         } else if (datum.content().followedkolpost() != null) {
             FeedQuery.Data.Followedkolpost kolpost = datum.content()
                     .followedkolpost();
+            FeedQuery.Data.Content2 content = datum.content()
+                    .followedkolpost().content().get(0);
             return new KolPostDomain(
                     kolpost.id() == null ? 0 : kolpost.id(),
-                    kolpost.imageUrl() == null ? "" : kolpost.imageUrl(),
+                    content.imageurl() == null ? "" : content.imageurl(),
                     kolpost.description() == null ? "" : kolpost.description(),
                     kolpost.commentCount() == null ? 0 : kolpost.commentCount(),
                     kolpost.likeCount() == null ? 0 : kolpost.likeCount(),
                     kolpost.isLiked() == null ? false : kolpost.isLiked(),
                     kolpost.isFollowed() == null ? false : kolpost.isFollowed(),
                     kolpost.createTime() == null ? "" : kolpost.createTime(),
-                    kolpost.productPrice() == null ? "" : kolpost.productPrice(),
-                    kolpost.productLink() == null ? "" : kolpost.productLink(),
-                    kolpost.productUrl() == null ? "" : kolpost.productUrl(),
-                    kolpost.shopUrl() == null ? "" : kolpost.shopUrl(),
-                    kolpost.shopLink() == null ? "" : kolpost.shopLink(),
+                    content.tags().get(0).price() == null ? "" : content.tags().get(0).price(),
+                    content.tags().get(0).link() == null ? "" : content.tags().get(0).link(),
+                    content.tags().get(0).url() == null ? "" : content.tags().get(0).url(),
                     kolpost.userName() == null ? "" : kolpost.userName(),
                     kolpost.userPhoto() == null ? "" : kolpost.userPhoto(),
-                    kolpost.tagsType() == null ? "" : kolpost.tagsType());
+                    content.tags().get(0).type() == null ? "" : content.tags().get(0).type(),
+                    content.tags().get(0).caption() == null? "" : content.tags().get(0).caption(),
+                    content.tags().get(0).id() == null? 0 : content.tags().get(0).id());
         } else {
             return null;
         }

@@ -144,41 +144,49 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                 }
               }
               kolpost {
-                id
-                imageUrl
-                description
-                commentCount
-                likeCount
-                isLiked
-                isFollowed
-                createTime
-                productPrice
-                productLink
-                productUrl
-                shopUrl
-                shopLink
-                userName
-                userPhoto
-                tagsType
-              }
-              followedkolpost {
-                id
-                imageUrl
-                description
-                commentCount
-                likeCount
-                isLiked
-                isFollowed
-                createTime
-                productPrice
-                productLink
-                productUrl
-                shopUrl
-                shopLink
-                userName
-                userPhoto
-                tagsType
-              }
+                         id
+                         description
+                         commentCount
+                         likeCount
+                         isLiked
+                         isFollowed
+                         createTime
+                         userName
+                         userPhoto
+                         content {
+                            imageurl
+                            tags {
+                              id
+                              type
+                              url
+                              link
+                              price
+                              caption
+                           }
+                         }
+                       }
+                followedkolpost {
+                          id
+                          description
+                          commentCount
+                          likeCount
+                          isLiked
+                          isFollowed
+                          createTime
+                          userName
+                          userPhoto
+                          content {
+                             imageurl
+                             tags {
+                               id
+                               type
+                               url
+                               link
+                               price
+                               caption
+                            }
+                          }
+                        }
               kolrecommendation {
                 userName
                 userId

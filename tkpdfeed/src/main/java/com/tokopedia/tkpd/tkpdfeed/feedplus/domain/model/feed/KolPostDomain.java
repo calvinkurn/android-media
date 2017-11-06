@@ -30,20 +30,21 @@ public class KolPostDomain {
 
     private final @Nullable String productUrl;
 
-    private final @Nullable String shopUrl;
-
-    private final @Nullable String shopLink;
-
     private final @Nullable String userName;
 
     private final @Nullable String userPhoto;
 
     private final @Nullable String tagsType;
 
+    private final @Nullable String caption;
+
+    private final @Nullable int itemId;
+
+
     public KolPostDomain(int id, String imageUrl, String description, int commentCount,
                          int likeCount, boolean isLiked, boolean isFollowed, String createTime,
-                         String productPrice, String productLink, String productUrl, String shopUrl,
-                         String shopLink, String userName, String userPhoto, String tagsType) {
+                         String productPrice, String productLink, String productUrl, String userName,
+                         String userPhoto, String tagsType, String caption, int itemId) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.description = description;
@@ -55,11 +56,11 @@ public class KolPostDomain {
         this.productPrice = productPrice;
         this.productLink = productLink;
         this.productUrl = productUrl;
-        this.shopUrl = shopUrl;
-        this.shopLink = shopLink;
         this.userName = userName;
         this.userPhoto = userPhoto;
         this.tagsType = tagsType;
+        this.caption = caption;
+        this.itemId = itemId;
     }
 
     @Nullable
@@ -118,16 +119,6 @@ public class KolPostDomain {
     }
 
     @Nullable
-    public String getShopUrl() {
-        return shopUrl;
-    }
-
-    @Nullable
-    public String getShopLink() {
-        return shopLink;
-    }
-
-    @Nullable
     public String getUserName() {
         return userName;
     }
@@ -140,5 +131,15 @@ public class KolPostDomain {
     @Nullable
     public String getTagsType() {
         return tagsType;
+    }
+
+    @Nullable
+    public String getCaption() {
+        return caption;
+    }
+
+    @Nullable
+    public int getItemId() {
+        return itemId;
     }
 }
