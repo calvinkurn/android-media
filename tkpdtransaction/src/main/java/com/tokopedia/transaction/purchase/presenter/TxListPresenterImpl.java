@@ -30,6 +30,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.opportunity.domain.interactor.CancelReplacementUseCase;
 import com.tokopedia.transaction.opportunity.view.subsriber.CancelReplacementSubscriber;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
+import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractorImpl;
 import com.tokopedia.transaction.purchase.listener.TxListViewListener;
@@ -223,7 +224,8 @@ public class TxListPresenterImpl implements TxListPresenter {
 
     @Override
     public void processToDetailOrder(Context context, OrderData data, int typeInstance) {
-        viewListener.navigateToActivity(TxDetailActivity.createInstance(context, data));
+        viewListener.navigateToActivity(OrderDetailActivity.createInstance(context));
+        //viewListener.navigateToActivity(TxDetailActivity.createInstance(context, data));
     }
 
     @Override

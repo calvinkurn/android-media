@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -94,7 +95,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:padding="@dimen/padding_small">
-        
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -117,9 +118,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small"
-        android:gravity="center_vertical">
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:padding="@dimen/padding_small">
 
         <TextView
             android:layout_width="wrap_content"
@@ -134,7 +135,7 @@
             android:gravity="end"
             android:textColor="@color/orange_red"
             android:textStyle="bold"
-            tools:text="Rp 1.000" />
+            tools:text="Rp 106.000" />
 
     </LinearLayout>
 

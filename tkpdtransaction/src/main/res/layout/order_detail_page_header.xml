@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <View
@@ -24,9 +25,9 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3"
             android:layout_marginLeft="@dimen/small_dp"
             android:layout_marginStart="@dimen/small_dp"
+            android:layout_weight="3"
             android:orientation="vertical">
 
             <TextView
@@ -52,7 +53,7 @@
             <ImageView
                 android:layout_width="12dp"
                 android:layout_height="12dp"
-                android:src="@drawable/chevron_thin_right"/>
+                android:src="@drawable/chevron_thin_right" />
 
         </LinearLayout>
 

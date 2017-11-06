@@ -1,71 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/main_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        layout="@layout/order_detail_page_header" />
-
-    <include
-        layout="@layout/order_detail_description" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_400" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/small_dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/invoice_number"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            tools:text="INV/20161025/XVI/X/55069657"/>
+        <include layout="@layout/order_detail_page_header" />
+
+        <include layout="@layout/order_detail_description" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_400" />
 
         <LinearLayout
-            android:id="@+id/invoice_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="end|center_vertical">
+            android:layout_height="50dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:padding="@dimen/small_dp">
 
             <TextView
+                android:id="@+id/invoice_number"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Lihat"
-                android:textColor="@color/green_500"
-                android:textStyle="bold"/>
+                android:layout_height="wrap_content"
+                android:textColor="@color/label_color"
+                tools:text="INV/20161025/XVI/X/55069657" />
 
-            <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@drawable/chevron_thin_right"/>
+            <LinearLayout
+                android:id="@+id/invoice_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="end|center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lihat"
+                    android:textColor="@color/green_500"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/chevron_thin_right" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_400" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/item_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/margin_vs"
+            tools:visibility="gone" />
+
+        <include layout="@layout/order_detail_price" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/button_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:visibility="gone" />
+
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_400" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/item_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:visibility="gone"/>
-
-    <include layout="@layout/order_detail_price"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/button_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:visibility="gone"/>
-
-</LinearLayout>
+</android.support.v4.widget.NestedScrollView>

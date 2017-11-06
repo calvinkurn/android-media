@@ -10,23 +10,23 @@ public class OrderDetailData {
 
     private String orderStatus;
 
-    private String descriptionDate;
+    private String purchaseDate;
 
-    private String descriptionResponseTime;
+    private String responseTimeLimit;
 
-    private String descriptionBuyerName;
+    private String buyerName;
 
-    private String descriptionCourierName;
+    private String courierName;
 
-    private String descriptionShippingAddress;
+    private String shippingAddress;
 
-    private String descriptionPartialOrderStatus;
+    private String partialOrderStatus;
 
     private String invoiceNumber;
 
     private List<OrderDetailItemData> itemList;
 
-    private String itemAmount;
+    private String totalItemQuantity;
 
     private String productPrice;
 
@@ -48,52 +48,52 @@ public class OrderDetailData {
         this.orderStatus = orderStatus;
     }
 
-    public String getDescriptionDate() {
-        return descriptionDate;
+    public String getPurchaseDate() {
+        return purchaseDate;
     }
 
-    public void setDescriptionDate(String descriptionDate) {
-        this.descriptionDate = descriptionDate;
+    public void setPurchaseDate(String purchaseDate) {
+        this.purchaseDate = purchaseDate;
     }
 
-    public String getDescriptionResponseTime() {
-        return descriptionResponseTime;
+    public String getResponseTimeLimit() {
+        return responseTimeLimit;
     }
 
-    public void setDescriptionResponseTime(String descriptionResponseTime) {
-        this.descriptionResponseTime = descriptionResponseTime;
+    public void setResponseTimeLimit(String responseTimeLimit) {
+        this.responseTimeLimit = responseTimeLimit;
     }
 
     public String getDescriptionBuyerName() {
-        return descriptionBuyerName;
+        return buyerName;
     }
 
-    public void setDescriptionBuyerName(String descriptionBuyerName) {
-        this.descriptionBuyerName = descriptionBuyerName;
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
     }
 
-    public String getDescriptionCourierName() {
-        return descriptionCourierName;
+    public String getCourierName() {
+        return courierName;
     }
 
-    public void setDescriptionCourierName(String descriptionCourierName) {
-        this.descriptionCourierName = descriptionCourierName;
+    public void setCourierName(String courierName) {
+        this.courierName = courierName;
     }
 
-    public String getDescriptionShippingAddress() {
-        return descriptionShippingAddress;
+    public String getShippingAddress() {
+        return shippingAddress;
     }
 
-    public void setDescriptionShippingAddress(String descriptionShippingAddress) {
-        this.descriptionShippingAddress = descriptionShippingAddress;
+    public void setShippingAddress(String ShippingAddress) {
+        this.shippingAddress = ShippingAddress;
     }
 
-    public String getDescriptionPartialOrderStatus() {
-        return descriptionPartialOrderStatus;
+    public String getPartialOrderStatus() {
+        return partialOrderStatus;
     }
 
-    public void setDescriptionPartialOrderStatus(String descriptionPartialOrderStatus) {
-        this.descriptionPartialOrderStatus = descriptionPartialOrderStatus;
+    public void setPartialOrderStatus(String PartialOrderStatus) {
+        this.partialOrderStatus = PartialOrderStatus;
     }
 
     public String getInvoiceNumber() {
@@ -112,12 +112,12 @@ public class OrderDetailData {
         this.itemList = itemList;
     }
 
-    public String getItemAmount() {
-        return itemAmount;
+    public String getTotalItemQuantity() {
+        return totalItemQuantity;
     }
 
-    public void setItemAmount(String itemAmount) {
-        this.itemAmount = itemAmount;
+    public void setTotalItemQuantity(String totalItemQuantity) {
+        this.totalItemQuantity = totalItemQuantity;
     }
 
     public String getProductPrice() {
