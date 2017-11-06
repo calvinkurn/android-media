@@ -72,9 +72,9 @@ public class WidgetOperatorChooserView extends LinearLayout {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                listener.onTrackingOperator();
                 listener.onResetOperator(resetClientNumber);
                 listener.onCheckChangeOperator(operators.get(i));
+                listener.onTrackingOperator();
                 resetClientNumber = true;
             }
 

@@ -151,7 +151,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     protected void setViewListener() {
-        setRechargeEditTextCallback(widgetClientNumberView);
         setRechargeEditTextTouchCallback(widgetClientNumberView);
 
         widgetClientNumberView.setButtonPickerListener(getButtonPickerListener());
@@ -305,7 +304,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
             public void trackingProduct() {
                 if (selectedProduct != null)
                     UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
-                            selectedProduct.getAttributes().getPrice());
+                            selectedProduct.getAttributes().getDesc());
             }
         };
     }
@@ -361,12 +360,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     }
 
     @Override
-    protected void trackingOnClientNumberFocusListener() {
-        UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
-                selectedOperator == null ? "" : selectedOperator.getAttributes().getName());
-    }
-
-    @Override
     public void renderDataProducts(List<Product> products) {
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetWrapperBuy);
@@ -402,8 +395,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     @Override
     public void renderOperator(Operator rechargeOperatorModel) {
         selectedOperator = rechargeOperatorModel;
-        UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
-                selectedOperator.getAttributes().getName());
         selectedOperatorId = String.valueOf(selectedOperator.getId());
         widgetClientNumberView.setText(lastClientNumberTyped);
     }
