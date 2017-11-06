@@ -31,7 +31,6 @@ import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
-import com.tokopedia.core.manage.people.address.activity.DistrictRecommendationActivity;
 import com.tokopedia.core.manage.people.address.fragment.adapter.ProvinceAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.SubDistrictAdapter;
@@ -52,9 +51,6 @@ import butterknife.BindView;
  */
 public class AddAddressFragment extends BasePresenterFragment<AddAddressPresenter>
         implements AddAddressFragmentView, ManageAddressConstant {
-
-    private static final int GET_DISTRICT_RECCOMENDATION_REQUEST_CODE = 100;
-
     private final String ARG_STATE_PROVINCE = "provincesData";
     private final String ARG_STATE_CITY = "citiesData";
     private final String ARG_STATE_DISTRICT = "districtsData";
@@ -76,12 +72,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @BindView(R2.id.address)
     EditText addressEditText;
-
-    @BindView(R2.id.district_layout)
-    TextInputLayout districtLayout;
-
-    @BindView(R2.id.district)
-    EditText districtEditText;
 
     @BindView(R2.id.post_code_layout)
     TextInputLayout postCodeLayout;
@@ -295,8 +285,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
         locationEditText.setOnClickListener(onChooseLocation());
 
-        districtEditText.setOnClickListener(onSearchAddress());
-
         spinnerProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
@@ -358,16 +346,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         };
     }
 
-    private View.OnClickListener onSearchAddress() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(DistrictRecommendationActivity.createInstance(getActivity()),
-                        GET_DISTRICT_RECCOMENDATION_REQUEST_CODE);
-            }
-        };
-    }
-
     private void openGeoLocation() {
         GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
 
@@ -393,24 +371,20 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE) {
-                removeError();
-                Bundle bundle = data.getExtras();
-                LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
-                String generatedAddress = locationEditText.getText().toString();
-                if (locationPass != null) {
-                    presenter.setLatLng(locationPass.getLatitude(), locationPass.getLongitude());
-                    if (locationPass.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
-                        generatedAddress = presenter.getLatLng().latitude + ", " + presenter.getLatLng().longitude;
-                    } else {
-                        generatedAddress = locationPass.getGeneratedAddress();
-                    }
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
+            removeError();
+            Bundle bundle = data.getExtras();
+            LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+            String generatedAddress = locationEditText.getText().toString();
+            if (locationPass != null) {
+                presenter.setLatLng(locationPass.getLatitude(), locationPass.getLongitude());
+                if (locationPass.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
+                    generatedAddress = presenter.getLatLng().latitude + ", " + presenter.getLatLng().longitude;
+                } else {
+                    generatedAddress = locationPass.getGeneratedAddress();
                 }
-                locationEditText.setText(generatedAddress);
-            } else if (requestCode == GET_DISTRICT_RECCOMENDATION_REQUEST_CODE) {
-
             }
+            locationEditText.setText(generatedAddress);
         }
     }
 

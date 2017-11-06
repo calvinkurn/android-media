@@ -29,13 +29,12 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
     private final AddAddressFragmentView viewListener;
     private final AddAddressRetrofitInteractor networkInteractor;
     private Destination address;
-    private ArrayList<String> zipCodes;
 
     public AddAddressPresenterImpl(AddAddressFragmentView viewListener) {
         this.viewListener = viewListener;
         this.networkInteractor = new AddAddressRetrofitInteractorImpl();
         this.address = new Destination();
-        this.zipCodes = new ArrayList<>();
+
     }
 
     @Override
@@ -243,15 +242,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
         networkInteractor.unsubscribe();
     }
 
-    @Override
-    public ArrayList<String> getZipCodesOption() {
-        return zipCodes;
-    }
-
-    @Override
-    public void setZipCodesOption(ArrayList<String> zipCodes) {
-        this.zipCodes = zipCodes;
-    }
 
     @Override
     public void getListCity(final Province province) {
