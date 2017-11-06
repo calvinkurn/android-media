@@ -14,11 +14,13 @@ public class ConversationProductDomain implements Parcelable {
     private List<ConversationAttachmentDomain> image;
     private String message;
     private int resId;
+    private String name;
 
-    public ConversationProductDomain(List<ConversationAttachmentDomain> image, String message, int resId) {
+    public ConversationProductDomain(List<ConversationAttachmentDomain> image, String message, int resId, String name) {
         this.image = image;
         this.message = message;
         this.resId = resId;
+        this.name = name;
     }
 
     public List<ConversationAttachmentDomain> getImage() {
@@ -45,6 +47,14 @@ public class ConversationProductDomain implements Parcelable {
         this.resId = resId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -55,12 +65,14 @@ public class ConversationProductDomain implements Parcelable {
         dest.writeTypedList(this.image);
         dest.writeString(this.message);
         dest.writeInt(this.resId);
+        dest.writeString(this.name);
     }
 
     protected ConversationProductDomain(Parcel in) {
         this.image = in.createTypedArrayList(ConversationAttachmentDomain.CREATOR);
         this.message = in.readString();
         this.resId = in.readInt();
+        this.name = in.readString();
     }
 
     public static final Creator<ConversationProductDomain> CREATOR = new Creator<ConversationProductDomain>() {

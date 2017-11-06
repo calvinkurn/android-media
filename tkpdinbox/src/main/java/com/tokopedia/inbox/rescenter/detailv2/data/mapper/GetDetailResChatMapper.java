@@ -300,7 +300,8 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
                             mappingConversationAttachmentDomainList(response.getImage()) :
                             null,
                     response.getMessage(),
-                    response.getResId()));
+                    response.getResId(),
+                    response.getName()));
         }
         return domainList;
     }

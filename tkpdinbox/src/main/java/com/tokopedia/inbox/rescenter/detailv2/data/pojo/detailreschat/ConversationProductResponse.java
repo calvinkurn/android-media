@@ -19,6 +19,9 @@ public class ConversationProductResponse {
     @SerializedName("message")
     private String message;
 
+    @SerializedName("name")
+    private String name;
+
     public List<ConversationAttachmentResponse> getImage() {
         return image;
     }
@@ -41,5 +44,13 @@ public class ConversationProductResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
