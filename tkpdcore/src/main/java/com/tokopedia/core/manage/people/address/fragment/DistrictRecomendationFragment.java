@@ -1,11 +1,13 @@
 package com.tokopedia.core.manage.people.address.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -19,7 +21,6 @@ import com.tokopedia.core.manage.people.address.presenter.DistrictRecomendationF
 import com.tokopedia.core.manage.people.address.presenter.DistrictRecomendationFragmentPresenterImpl;
 import com.tokopedia.design.text.SearchInputView;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -29,20 +30,24 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 public class DistrictRecomendationFragment extends BasePresenterFragment<DistrictRecomendationFragmentPresenter>
-        implements DistrictRecomendationFragmentView {
+        implements DistrictRecomendationFragmentView, DistrictRecommendationAdapter.Listener {
 
     private static final String TAG = DistrictRecomendationFragment.class.getSimpleName();
 
     @BindView(R2.id.search_input_view_address)
     SearchInputView searchInputViewAddress;
-
     @BindView(R2.id.recycler_view_suggestion)
     RecyclerView rvAddressSuggestion;
+    @BindView(R2.id.pb_loading)
+    ProgressBar pbLoading;
+    @BindView(R2.id.tv_advice)
+    TextView tvAdvice;
+    @BindView(R2.id.tv_no_result)
+    TextView tvNoResult;
 
+    private int maxItemPosition;
     private OnQueryListener queryListener;
-
     private DistrictRecommendationAdapter adapter;
-
     private CompositeSubscription compositeSubscription;
 
     public DistrictRecomendationFragment() {
@@ -104,17 +109,27 @@ public class DistrictRecomendationFragment extends BasePresenterFragment<Distric
         searchInputViewAddress.setListener(new SearchInputView.Listener() {
             @Override
             public void onSearchSubmitted(String text) {
+                submitQuery(text);
             }
 
             @Override
             public void onSearchTextChanged(String text) {
-                if (text.length() > 2) {
-                    if (queryListener != null) {
-                        queryListener.onQuerySubmit(text);
-                    }
+                if (text.length() == 0) {
+                    presenter.clearData();
+                } else {
+                    submitQuery(text);
                 }
             }
         });
+    }
+
+    private void submitQuery(String text) {
+        if (text.length() > 2) {
+            if (queryListener != null) {
+                maxItemPosition = 0;
+                queryListener.onQuerySubmit(text);
+            }
+        }
     }
 
     @Override
@@ -124,13 +139,33 @@ public class DistrictRecomendationFragment extends BasePresenterFragment<Distric
 
     @Override
     protected void initialVar() {
-        adapter = DistrictRecommendationAdapter.createInstance(presenter.getAddresses());
+        adapter = new DistrictRecommendationAdapter(presenter.getAddresses(), this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvAddressSuggestion.setLayoutManager(linearLayoutManager);
         rvAddressSuggestion.setAdapter(adapter);
 
-        compositeSubscription = new CompositeSubscription();
+        rvAddressSuggestion.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                RecyclerView.Adapter adapter = recyclerView.getAdapter();
+                int totalItemCount = adapter.getItemCount();
+                int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                        .findLastVisibleItemPosition();
 
+                if (maxItemPosition < lastVisibleItemPosition) {
+                    maxItemPosition = lastVisibleItemPosition;
+                }
+
+                if ((maxItemPosition + 1) == totalItemCount) {
+                    if (pbLoading.getVisibility() == View.GONE) {
+                        presenter.searchNextIfAvailable(searchInputViewAddress.getSearchText());
+                    }
+                }
+            }
+        });
+
+        compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
@@ -152,18 +187,35 @@ public class DistrictRecomendationFragment extends BasePresenterFragment<Distric
     }
 
     @Override
-    public void showRecommendation(ArrayList<Address> addresses) {
-
+    public void updateRecommendation() {
+        if (searchInputViewAddress.getSearchText().length() == 0) {
+            tvNoResult.setVisibility(View.GONE);
+            rvAddressSuggestion.setVisibility(View.GONE);
+            tvAdvice.setVisibility(View.VISIBLE);
+        } else {
+            adapter.notifyDataSetChanged();
+            if (adapter.getItemCount() == 0) {
+                rvAddressSuggestion.setVisibility(View.GONE);
+                tvAdvice.setVisibility(View.GONE);
+                tvNoResult.setVisibility(View.VISIBLE);
+            } else {
+                tvAdvice.setVisibility(View.GONE);
+                tvNoResult.setVisibility(View.GONE);
+                rvAddressSuggestion.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
     public void showLoading() {
-
+        tvNoResult.setVisibility(View.GONE);
+        tvAdvice.setVisibility(View.GONE);
+        pbLoading.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-
+        pbLoading.setVisibility(View.GONE);
     }
 
     private Subscriber<String> queryAutoCompleteSubscriber() {
@@ -180,10 +232,17 @@ public class DistrictRecomendationFragment extends BasePresenterFragment<Distric
 
             @Override
             public void onNext(String query) {
-                Log.d(TAG, "StartQueryWithKeyword:" + query);
                 presenter.searchAddress(query);
             }
         };
+    }
+
+    @Override
+    public void onItemClick(Address address) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(DistrictRecomendationFragmentView.Constant.INTENT_DATA_ADDRESS, address);
+        getActivity().setResult(Activity.RESULT_OK, resultIntent);
+        getActivity().finish();
     }
 
     private interface OnQueryListener {

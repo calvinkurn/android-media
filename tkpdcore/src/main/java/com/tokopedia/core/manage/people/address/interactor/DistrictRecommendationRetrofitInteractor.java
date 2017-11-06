@@ -1,6 +1,9 @@
 package com.tokopedia.core.manage.people.address.interactor;
 
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.AddressResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+
+import rx.Observable;
 
 /**
  * Created by Irfan Khoirul on 01/11/17.
@@ -8,9 +11,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 public interface DistrictRecommendationRetrofitInteractor {
 
-    void getDistrictRecommendation(TKPDMapParam<String, String> params);
-
-    void unSubscribe();
+    Observable<AddressResponse> getDistrictRecommendation(TKPDMapParam<String, String> params);
 
     interface Params {
         String TOKEN = "token";

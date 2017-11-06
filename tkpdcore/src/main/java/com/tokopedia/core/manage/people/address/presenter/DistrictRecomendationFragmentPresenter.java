@@ -12,5 +12,9 @@ public interface DistrictRecomendationFragmentPresenter {
 
     void searchAddress(String keyword);
 
+    void searchNextIfAvailable(String keyword);
+
     ArrayList<Address> getAddresses();
+
+    void clearData();
 }

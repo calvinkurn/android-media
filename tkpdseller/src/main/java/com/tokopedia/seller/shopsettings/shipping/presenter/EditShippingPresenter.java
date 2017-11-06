@@ -2,12 +2,12 @@ package com.tokopedia.seller.shopsettings.shipping.presenter;
 
 import android.os.Bundle;
 
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.EditShippingCouriers;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ProvinceCitiesDistrict;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -92,7 +92,7 @@ public interface EditShippingPresenter {
 
     void saveAddressArea(String s);
 
-    void setZipCodesOption(ArrayList<String> zipCodes);
+    void setSelectedAddress(Address address);
 
-    ArrayList<String> getZipCodeOptions();
+    Address getselectedAddress();
 }

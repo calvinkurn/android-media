@@ -1,11 +1,13 @@
 package com.tokopedia.seller.shopsettings.shipping.presenter;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.fragment.FragmentEditShipping;
@@ -62,7 +64,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private OpenShopData openShopModel;
 
-    private ArrayList<String> zipCodes;
+    private Address selectedAddress;
 
     public EditShippingPresenterImpl(EditShippingViewListener view) {
         this.view = view;
@@ -102,9 +104,12 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public void bindDataToView(EditShippingCouriers model) {
         this.model = model;
-        view.setLocationProvinceCityDistrict(shopInformation.provinceName
-                , shopInformation.cityName
-                , shopInformation.districtName);
+        Log.v("UpdateAddress", "bindDataToView");
+        if (selectedAddress == null) {
+            view.setLocationProvinceCityDistrict(shopInformation.provinceName
+                    , shopInformation.cityName
+                    , shopInformation.districtName);
+        }
         view.onShowViewAfterLoading();
         displayCourierList(model);
         setFragmentHeaderData();
@@ -337,14 +342,19 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     }
 
     private void putDataToHashMap(Map<String, String> shippingParams) {
-        shippingParams.put(COURIER_ORIGIN, shopInformation.districtId.toString());
         shippingParams.put(SHIPMENT_IDS, compiledShippingId());
         shippingParams.put(POSTAL, view.getZipCode());
         shippingParams.put(ADDR_STREET, view.getStreetAddress());
         shippingParams.put(SHOP_ID, SessionHandler.getShopID(view.getMainContext()));
         shippingParams.put(LONGITUDE, shopInformation.longitude);
         shippingParams.put(LATITUDE, shopInformation.latitude);
-        shippingParams.put(DISTRICT_ID, shopInformation.districtId.toString());
+        if (selectedAddress != null) {
+            shippingParams.put(DISTRICT_ID, String.valueOf(selectedAddress.getDistrictId()));
+            shippingParams.put(COURIER_ORIGIN, String.valueOf(selectedAddress.getDistrictId()));
+        } else {
+            shippingParams.put(COURIER_ORIGIN, shopInformation.districtId.toString());
+            shippingParams.put(DISTRICT_ID, shopInformation.districtId.toString());
+        }
         addAdditionalOptionsConfigurations(shippingParams);
     }
 
@@ -564,13 +574,13 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     }
 
     @Override
-    public void setZipCodesOption(ArrayList<String> zipCodes) {
-        this.zipCodes = zipCodes;
+    public void setSelectedAddress(Address address) {
+        selectedAddress = address;
     }
 
     @Override
-    public ArrayList<String> getZipCodeOptions() {
-        return zipCodes;
+    public Address getselectedAddress() {
+        return selectedAddress;
     }
 
     private void sortCourier(EditShippingCouriers editShippingCouriers) {
@@ -660,7 +670,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     private Map<String, String> splitQuery(URI uri) throws UnsupportedEncodingException {
         Map<String, String> queryPairs = new LinkedHashMap<>();
         String query = uri.getQuery();
-        if (query != null){
+        if (query != null) {
             String[] pairs = query.split("&");
             for (String pair : pairs) {
                 int idx = pair.indexOf("=");

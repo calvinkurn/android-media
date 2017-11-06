@@ -24,13 +24,11 @@ public class DistrictRecommendationAdapter extends BaseLinearRecyclerViewAdapter
 
     private static final int VIEW_ADDRESS = 100;
     private ArrayList<Address> addresses;
+    private Listener listener;
 
-    public DistrictRecommendationAdapter(ArrayList<Address> addresses) {
+    public DistrictRecommendationAdapter(ArrayList<Address> addresses, Listener listener) {
         this.addresses = addresses;
-    }
-
-    public static DistrictRecommendationAdapter createInstance(ArrayList<Address> addresses) {
-        return new DistrictRecommendationAdapter(addresses);
+        this.listener = listener;
     }
 
     @Override
@@ -89,6 +87,10 @@ public class DistrictRecommendationAdapter extends BaseLinearRecyclerViewAdapter
         return addresses.size() + super.getItemCount();
     }
 
+    public interface Listener {
+        void onItemClick(Address address);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R2.id.tvAddress)
@@ -102,7 +104,7 @@ public class DistrictRecommendationAdapter extends BaseLinearRecyclerViewAdapter
 
         @Override
         public void onClick(View view) {
-
+            listener.onItemClick(addresses.get(getAdapterPosition()));
         }
     }
 

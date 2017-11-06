@@ -6,13 +6,18 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
+
+import java.util.ArrayList;
 
 /**
  * Created by Kris on 6/9/2016.
@@ -26,9 +31,10 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
 
     EditShippingViewListener mainView;
 
-    EditText zipCode;
+    AutoCompleteTextView zipCode;
     EditText shopCity;
     TextInputLayout postalTextInputLayout;
+    ArrayAdapter<String> zipCodeAdapter;
 
     public ShippingHeaderLayout(Context context) {
         super(context);
@@ -44,7 +50,7 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
 
     @Override
     protected void bindView(View view) {
-        zipCode = (EditText) view.findViewById(R.id.postal_code);
+        zipCode = (AutoCompleteTextView) view.findViewById(R.id.postal_code);
         shopCity = (EditText) view.findViewById(R.id.text_edit_shipping_city);
         postalTextInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout_postal_code);
         zipCode.addTextChangedListener(new TextWatcher() {
@@ -66,11 +72,29 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
         OnClickListener editAddressSpinnerClickListener = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainView.editAddressSpinner();
+                mainView.editAddress();
             }
         };
         findViewById(R.id.fragment_shipping_header).setOnClickListener(editAddressSpinnerClickListener);
         shopCity.setOnClickListener(editAddressSpinnerClickListener);
+
+        zipCode.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (!zipCode.isPopupShowing()) {
+                    zipCode.showDropDown();
+                }
+                return false;
+            }
+        });
+    }
+
+    public void initializeZipCodesAdapter() {
+        ArrayList<String> zipCodes = presenter.getselectedAddress().getZipCodes();
+        zipCodes.add(0, getResources().getString(R.string.hint_type_postal_code));
+        zipCodeAdapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text,
+                presenter.getselectedAddress().getZipCodes());
+        zipCode.setAdapter(zipCodeAdapter);
     }
 
     @Override

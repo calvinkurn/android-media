@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/cards_ui_2"
     android:orientation="vertical"
     android:padding="@dimen/padding_vs">
@@ -22,6 +23,7 @@
         android:layout_alignLeft="@id/title_edit_shipping_location"
         android:layout_below="@id/title_edit_shipping_location"
         android:layout_marginTop="@dimen/padding_small">
+
         <EditText
             android:id="@id/text_edit_shipping_city"
             android:layout_width="match_parent"
@@ -40,12 +42,16 @@
         android:layout_alignLeft="@id/title_edit_shipping_location"
         android:layout_below="@id/city_text_input_layout"
         android:layout_marginTop="@dimen/padding_small">
-        <EditText
+
+        <AutoCompleteTextView
             android:id="@+id/postal_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="3"
             android:digits="1234567890"
             android:hint="@string/title_post_code"
-            android:inputType="phone"/>
+            android:inputType="phone" />
+
     </android.support.design.widget.TextInputLayout>
+
 </RelativeLayout>

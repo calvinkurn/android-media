@@ -18,6 +18,4 @@ public interface ManageAddressConstant {
     int GET_LIST_CITY = 3;
 
     String EXTRA_ADDRESS = "EXTRA_ADDRESS";
-
-    int REQUEST_CODE_SEARCH_ADDRESS = 100;
 }

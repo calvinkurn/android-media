@@ -85,7 +85,7 @@ public interface EditShippingViewListener {
 
     void setServiceCondition(boolean isChecked, int serviceIndex, int courierIndex);
 
-    void editAddressSpinner();
+    void editAddress();
 
     void showInfoBottomSheet(String information, String courierServiceName);
 

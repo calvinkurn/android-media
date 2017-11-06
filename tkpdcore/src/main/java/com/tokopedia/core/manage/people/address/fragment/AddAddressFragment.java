@@ -36,7 +36,6 @@ import com.tokopedia.core.manage.people.address.fragment.adapter.ProvinceAdapter
 import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
 import com.tokopedia.core.manage.people.address.fragment.adapter.SubDistrictAdapter;
 import com.tokopedia.core.manage.people.address.listener.AddAddressFragmentView;
-import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenter;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenterImpl;
@@ -53,6 +52,9 @@ import butterknife.BindView;
  */
 public class AddAddressFragment extends BasePresenterFragment<AddAddressPresenter>
         implements AddAddressFragmentView, ManageAddressConstant {
+
+    private static final int GET_DISTRICT_RECCOMENDATION_REQUEST_CODE = 100;
+
     private final String ARG_STATE_PROVINCE = "provincesData";
     private final String ARG_STATE_CITY = "citiesData";
     private final String ARG_STATE_DISTRICT = "districtsData";
@@ -361,7 +363,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             @Override
             public void onClick(View view) {
                 startActivityForResult(DistrictRecommendationActivity.createInstance(getActivity()),
-                        ManageAddressConstant.REQUEST_CODE_SEARCH_ADDRESS);
+                        GET_DISTRICT_RECCOMENDATION_REQUEST_CODE);
             }
         };
     }
@@ -406,28 +408,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                     }
                 }
                 locationEditText.setText(generatedAddress);
-            } else if (requestCode == REQUEST_CODE_SEARCH_ADDRESS) {
-                handleAddressIntentData(data);
-                handleZipCodesIntentData(data);
+            } else if (requestCode == GET_DISTRICT_RECCOMENDATION_REQUEST_CODE) {
+
             }
         }
-    }
-
-    private void handleZipCodesIntentData(Intent data) {
-        ArrayList<String> zipCodes = data.getStringArrayListExtra(
-                DistrictRecomendationFragmentView.Constant.INTENT_DATA_ZIP_CODES);
-        presenter.setZipCodesOption(zipCodes);
-    }
-
-    private void handleAddressIntentData(Intent data) {
-        String province = data.getStringExtra(
-                DistrictRecomendationFragmentView.Constant.INTENT_DATA_PROVINCE);
-        String city = data.getStringExtra(
-                DistrictRecomendationFragmentView.Constant.INTENT_DATA_CITY);
-        String district = data.getStringExtra(
-                DistrictRecomendationFragmentView.Constant.INTENT_DATA_DICTRICT);
-
-        districtEditText.setText(province + ", " + city + ", " + district);
     }
 
     @Override
