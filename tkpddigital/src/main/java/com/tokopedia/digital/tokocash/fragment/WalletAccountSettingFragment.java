@@ -7,6 +7,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -59,6 +60,8 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
     TextView phoneAccount;
     @BindView(R2.id.rv_account_list)
     RecyclerView rvConnectedUser;
+    @BindView(R2.id.root_view)
+    CoordinatorLayout rootView;
 
     private TkpdProgressDialog progressDialogNormal;
     private RefreshHandler refreshHandler;
@@ -137,6 +140,7 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
         accountListAdapter = new LinkedAccountAdapter(new ArrayList<AccountTokoCash>());
         accountListAdapter.setActionListener(getActionListener());
         rvConnectedUser.setLayoutManager(linearLayoutManager);
+        rvConnectedUser.setNestedScrollingEnabled(false);
         rvConnectedUser.setAdapter(accountListAdapter);
     }
 
@@ -270,8 +274,9 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
     }
 
     private void renderEmptyPage(String message) {
+        refreshHandler.finishRefresh();
         NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(), message, new NetworkErrorHelper.RetryClickedListener() {
+                getActivity(), rootView, message, new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
                         refreshHandler.startRefresh();

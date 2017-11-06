@@ -51,9 +51,9 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
                 view.hideLoading();
                 view.hideLoadingHistory();
                 if (e instanceof ResponseDataNullException) {
-                    view.renderErrorMessage("Empty data list");
+                    view.renderEmptyPage("Empty data list");
                 } else {
-                    errorNetworkHandler(e);
+                    errorFirstTimeNetworkHandler(e);
                 }
             }
 
@@ -121,6 +121,22 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
             ServerErrorHandlerUtil.handleError(e);
         } else {
             view.renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+    }
+
+    private void errorFirstTimeNetworkHandler(Throwable e) {
+        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+            view.renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+        } else if (e instanceof SocketTimeoutException) {
+            view.renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        } else if (e instanceof ResponseDataNullException) {
+            view.renderEmptyPage(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+            view.renderEmptyPage(e.getMessage());
+        } else if (e instanceof ServerErrorException) {
+            ServerErrorHandlerUtil.handleError(e);
+        } else {
+            view.renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         }
     }
 }
