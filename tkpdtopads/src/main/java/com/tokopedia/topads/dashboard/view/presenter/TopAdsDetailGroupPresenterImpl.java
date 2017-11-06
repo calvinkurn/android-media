@@ -25,11 +25,6 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
     protected final TopAdsGroupAdInteractor groupAdInteractor;
     private TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
 
-    public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailListener<GroupAd> topAdsDetailListener, TopAdsGroupAdInteractor groupAdInteractor) {
-        super(context, topAdsDetailListener);
-        this.groupAdInteractor = groupAdInteractor;
-    }
-
     public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailListener<GroupAd> topAdsDetailListener, TopAdsGroupAdInteractor groupAdInteractor, TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase) {
         super(context, topAdsDetailListener);
         this.groupAdInteractor = groupAdInteractor;
