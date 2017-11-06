@@ -114,20 +114,20 @@ public class DistrictRecomendationFragment extends BasePresenterFragment<Distric
 
             @Override
             public void onSearchTextChanged(String text) {
-                if (text.length() == 0) {
-                    presenter.clearData();
-                } else {
-                    submitQuery(text);
-                }
+                submitQuery(text);
             }
         });
     }
 
     private void submitQuery(String text) {
-        if (text.length() > 2) {
-            if (queryListener != null) {
-                maxItemPosition = 0;
-                queryListener.onQuerySubmit(text);
+        if (text.length() == 0) {
+            presenter.clearData();
+        } else {
+            if (text.length() > 2) {
+                if (queryListener != null) {
+                    maxItemPosition = 0;
+                    queryListener.onQuerySubmit(text);
+                }
             }
         }
     }
