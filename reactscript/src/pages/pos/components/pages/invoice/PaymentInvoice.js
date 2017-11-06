@@ -8,7 +8,7 @@ import Dash from 'react-native-dash';
 
 import PopUp from '../../../common/TKPPopupModal'
 import { Text } from '../../../common/TKPText'
-import { reloadState, clearCart, sendEmail } from '../../../actions/index'
+import { reloadState, clearCart, sendEmailReceipt } from '../../../actions/index'
 import { icons } from '../../../lib/config'
 
 
@@ -19,16 +19,9 @@ class PaymentInvoice extends Component {
     
     this.state = {
       email: "",
-      emailErrorMessage: ""
+      emailErrorMessage: "",
+      sendEmail: false
     }
-  }
-  
-  
-  componentDidMount(){
-    const { dispatch } = this.props
-    
-    // dispatch(reloadState('invoice'))
-    // dispatch(clearCart())
   }
   
   
@@ -38,24 +31,48 @@ class PaymentInvoice extends Component {
       emailErrorMessage = "Mohon masukan alamat email Anda dengan format contoh@email.com"
     } else {
       this._sendInvoice()
-      this.popupDialog.show()
     }
     
     this.setState({ emailErrorMessage })
   }
 
 
+  _skipButton = () => {
+    if (!this.state.email){
+      this.props.dispatch(reloadState('invoice'))
+      this.props.dispatch(clearCart())
+    }
+    NavigationModule.navigateAndFinish("posapp://product", "")
+  }
+
+
+
   _sendInvoice = () => {
-    console.log(this.props)
-    const data = Object.assign(
-      {}, 
-      JSON.parse(this.props.screenProps.data.data), 
-      { email_address: this.state.email, transaction_date: this.props.payment_param.transaction_date}
-    )
-    this.props.dispatch(sendEmail(this.state.email, data))
+    const {
+      bankName,
+      bankLogo,
+      payment_param,
+      screenProps,
+    } = this.props
+    const { email } = this.state
+    const payment_details = JSON.parse(screenProps.data.data)
+    const items = payment_param.items
+    const data = {
+      email_address: email,
+      bank_name: bankName,
+      bank_logo: bankLogo,
+      transaction_date: payment_param.transaction_date,
+      final_amount: payment_details.paymentDetails[0].amount,
+      invoice_ref_no: payment_details.invoiceRef
+    }
+
+    this.props.dispatch(sendEmailReceipt(email, data, items))
     this.props.dispatch(reloadState('invoice'))
     this.props.dispatch(clearCart())
+    this.setState({ sendEmail: true })
+    this.popupDialog.show()
   }
+
 
 
   _renderProductList = ({item}) => {
@@ -74,17 +91,15 @@ class PaymentInvoice extends Component {
   }
 
 
-  toggleScreen = (visible) => {
-    this.setState({ showPopUp: visible })
-  }
+  // toggleScreen = (visible) => {
+  //   this.setState({ showPopUp: visible })
+  // }
 
 
   render() {
-    console.log(this.props)
-    const data = JSON.parse(this.props.screenProps.data.data);
-    console.log(data)
-    const paymentDetails = data.paymentDetails;
-    console.log(paymentDetails)
+    const data = JSON.parse(this.props.screenProps.data.data)
+    const paymentDetails = data.paymentDetails
+
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
@@ -152,7 +167,7 @@ class PaymentInvoice extends Component {
               }
               <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-between', alignItems: 'center', marginTop: "5%" }} >
                 <TouchableNativeFeedback
-                  onPress={() => { NavigationModule.navigateAndFinish("posapp://product", "") }}>
+                  onPress={() => { this._skipButton() }}>
                   <View style={[styles.button, { backgroundColor: "#FFFFFF", borderColor: "#e0e0e0", marginLeft: "10%" }]}>
                     <Text style={[styles.buttonText, { color: "#0000008a" }]}> Lewati </Text>
                   </View>
@@ -167,41 +182,37 @@ class PaymentInvoice extends Component {
           </View>
         </ScrollView>
 
-        <PopupDialog
-          dialogTitle={
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', padding: 10 }}>
-            </View>
-          }
-          dialogStyle={{ borderRadius: 10 }}
-          width={504}
-          height={232}
-          ref={(popupDialog) => { this.popupDialog = popupDialog; }}>
-          <View style={{ padding: 30, paddingTop: 0, flex: 1, flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={{ fontSize: 20, color: '#000000b3' }}>
-              Bukti Pembayaran
-                </Text>
-            <Text style={{ fontSize: 14, color: '#000000b3' }}>
-              Bukti pembayaran sudah terkirim ke email Anda
-                </Text>
-            <TouchableNativeFeedback onPress={() => { this.popupDialog.dismiss() }}>
-              <View style={[styles.popupButton]}>
-                <Text style={styles.buttonText}> Ok </Text>
+        
+          <PopupDialog
+            dialogTitle={
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-end', padding: 10 }}>
               </View>
-            </TouchableNativeFeedback>
-          </View>
-        </PopupDialog>
+            }
+            dialogStyle={{ borderRadius: 10 }}
+            width={504}
+            height={232}
+            ref={(popupDialog) => { this.popupDialog = popupDialog; }}>
+            <View style={{ padding: 30, paddingTop: 0, flex: 1, flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text style={{ fontSize: 20, color: '#000000b3' }}>
+                Bukti Pembayaran
+                  </Text>
+              <Text style={{ fontSize: 14, color: '#000000b3' }}>
+                Bukti pembayaran sudah terkirim ke email Anda
+                  </Text>
+              <TouchableNativeFeedback onPress={() => { this.popupDialog.dismiss() }}>
+                <View style={[styles.popupButton]}>
+                  <Text style={styles.buttonText}> Ok </Text>
+                </View>
+              </TouchableNativeFeedback>
+            </View>
+          </PopupDialog>
+        
       </View>
     )
   }
 
   static navigationOptions = {
     header: null
-    // headerLeft: null,
-    // title: 'Payment Invoice',
-    // headerTintColor: '#FFF',
-    // headerStyle: {
-    //     backgroundColor: '#42B549'
-    // }
   };
 
 }
@@ -325,21 +336,17 @@ const styles = StyleSheet.create({
   },
 });
 
-const ds = new ListView.DataSource({
-  rowHasChanged: (r1, r2) => r1 !== r2
-});
 
 const mapStateToProps = (state, ownProps) => {
   const objData = JSON.parse(ownProps.screenProps.data.data)
-  // const itemList = ds.cloneWithRows(state.paymentInvoice.items);
-  console.log(state)
+  
   return {
-    ...state.paymentInvoice,
-    // itemList,
     bankLogo: objData.bankLogo, 
     bankName: objData.bankName,
     invoiceNo: objData.invoiceRef,
     payment_param: state.checkout.data.payment_param,
+    email_isSucceed: state.sendEmailResponse.isSuccees,
+    email_message: state.sendEmailResponse.message,
   }
 }
 

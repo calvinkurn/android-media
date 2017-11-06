@@ -99,6 +99,7 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
       console.log(jsonResponse)
       if (jsonResponse.status === '200 Ok'){
         if (jsonResponse.data.errors === null){
+          // insertPayment_v2(data, data_params.transaction_id)
           return jsonResponse
         }
       }
@@ -109,6 +110,33 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
     })
 }
 //  ==================== Make Payment V2 Native ===================== //
+
+
+
+// ========== Insert to Cache Payment V2 Params ============ //
+const insertPayment_v2 = (data, tansaction_id) => {
+  console.log(data)
+  const data_params = {
+    key: `PAYMENTV2_${tansaction_id}`,
+    data: data
+  }
+
+  PosCacheModule.insert('GLOBAL', JSON.stringify(data_params))
+    .then(res => {
+      console.log(res)
+      return 
+    })
+    .catch(err => {
+      console.log(err)
+      return
+    })
+}
+// ========== Insert to Cache Payment Params ============ //
+
+
+
+
+
 
 
 //  ==================== Transaction History ===================== //

@@ -532,26 +532,6 @@ const paymentRate = (state = {
 
 
 
-const paymentInvoice = (state = {
-  items: [{
-    id: 160551106,
-    price: "Rp 20.998.000",
-    name: 'Oh Man! Baby Pomade Nutri Green 45gr',
-    qty: 2,
-    imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/8/10/193938857/193938857_022ba5db-40b1-4ca2-b460-aed833272f5b_1000_1000.jpg',
-  }, {
-    id: 160533448,
-    price: "Rp 13.699.000",
-    name: 'Happy Urang Aring 55ml',
-    qty: 1,
-    imageUrl: 'https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/4/28/160533448/160533448_8ee45562-709b-4da1-8505-355282ac5459_1000_1000.jpg',
-  }],
-  totalPrice: "Rp 34.697.000"
-}, action) => {
-  return state;
-}
-
-
 
 
 const historyTransaction = (state = {
@@ -568,8 +548,6 @@ const historyTransaction = (state = {
       }
     
     case `FETCH_TRANSACTION_HISTORY_${FULFILLED}`:
-      // console.log(action.payload)
-      // console.log(action.payload.data.data.list)
       return {
         ...state,
         items: action.payload.data.data.list,
@@ -590,6 +568,8 @@ const historyTransaction = (state = {
   } 
 }
 
+
+
 const sendEmailResponse = (state = {
   isSuccess: false,
   isSending: false,
@@ -606,7 +586,8 @@ const sendEmailResponse = (state = {
       return {
         ...state,
         isSending: false,
-        isSuccess: true
+        isSuccess: true,
+        message: action.payload
       }
     case `${SEND_EMAIL}_${REJECTED}`:
       return {
@@ -631,7 +612,6 @@ const appReducer = combineReducers({
   checkout,
   paymentV2,
   search,
-  paymentInvoice,
   historyTransaction,
   shop,
   paymentRate,
