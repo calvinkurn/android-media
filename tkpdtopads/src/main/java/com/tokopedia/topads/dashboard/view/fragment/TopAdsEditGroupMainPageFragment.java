@@ -123,7 +123,11 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
 
     @Override
     protected GroupAd fillFromPrevious(GroupAd current, GroupAd previous) {
-        current.setDatum(previous.getDatum());
+        if(ad != null && ad.getDatum() != null){
+            current.setDatum(ad.getDatum());
+        }else if(previous != null && previous.getDatum() != null){
+            current.setDatum(previous.getDatum());
+        }
         return current;
     }
 
