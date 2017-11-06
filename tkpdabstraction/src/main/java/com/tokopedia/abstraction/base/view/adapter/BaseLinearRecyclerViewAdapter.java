@@ -87,11 +87,11 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
     private RetryDataBinder.OnRetryListener onRetryClicked() {
         return new RetryDataBinder.OnRetryListener() {
             @Override
-            public void onRetryCliked() {
+            public void onRetryClicked() {
                 showRetry(false);
                 showLoading(true);
                 notifyDataSetChanged();
-                listener.onRetryCliked();
+                listener.onRetryClicked();
             }
         };
     }

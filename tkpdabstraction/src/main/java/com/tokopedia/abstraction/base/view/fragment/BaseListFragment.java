@@ -150,7 +150,7 @@ public abstract class BaseListFragment<T extends ItemType> extends BaseDaggerFra
         RetryDataBinder retryDataBinder = getRetryViewDataBinder(adapter);
         retryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
-            public void onRetryCliked() {
+            public void onRetryClicked() {
                 hideLoading();
                 adapter.showRetryFull(false);
                 adapter.showLoadingFull(true);
