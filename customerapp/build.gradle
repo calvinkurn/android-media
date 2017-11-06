@@ -115,6 +115,7 @@ android {
         debug {
             minifyEnabled false
             zipAlignEnabled false
+            ext.enableCrashlytics = false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
