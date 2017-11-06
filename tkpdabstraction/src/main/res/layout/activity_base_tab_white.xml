@@ -2,10 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:fitsSystemWindows="true">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
@@ -24,18 +23,9 @@
             app:subtitleTextAppearance="@style/ToolbarSubtitleText"
             app:titleTextAppearance="@style/ToolbarText" />
 
-        <RelativeLayout
-            android:id="@+id/tab_indicator"
-            android:layout_below="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <include
-                layout="@layout/partial_base_tab_white_indicator" />
-        </RelativeLayout>
+        <include layout="@layout/partial_base_tab_white_indicator" />
 
         <RelativeLayout
-            android:layout_below="@+id/tab_indicator"
-            android:layout_above="@+id/button_submit"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -44,11 +34,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </RelativeLayout>
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/button_submit"
-            style="@style/Button.Submit.Orange"
-            android:layout_alignParentBottom="true"
-            android:text="@string/flight_label_choose_button" />
-    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

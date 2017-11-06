@@ -58,6 +58,8 @@
     <string name="flight_dashboard_arrival_should_greater_equal_error">Tanggal kedatangan harus lebih besar sama dengan tanggal keberangkatan</string>
     <string name="flight_dashboard_at_least_one_adult_error">Harus ada penumpang dewasa</string>
     <string name="flight_dashboard_fligh_class_is_empty">Jenis Kelas penerbangan tidak boleh kosong</string>
+    <string name="flight_label_refundable_info">Refundable</string>
+    <string name="flight_label_non_refundable_info">Non-Refundable</string>
     <string name="departure_0000_to_0559">00:00 – 05:59</string>
     <string name="departure_0600_to_1159">06:00 – 11:59</string>
     <string name="departure_1200_to_1759">12:00 – 17:59</string>
@@ -79,4 +81,6 @@
     <string name="flight_search_sort_item_longest_duration">Durasi Terlama</string>
     <string name="flight_search_sort_item_cheapest_price">Harga Termurah</string>
     <string name="flight_search_sort_item_most_expensive_price">Harga Termahal</string>
+    <string name="flight_label_choose_button">Pilih</string>
+    <string name="flight_label_price_total">Total Harga</string>
 </resources>

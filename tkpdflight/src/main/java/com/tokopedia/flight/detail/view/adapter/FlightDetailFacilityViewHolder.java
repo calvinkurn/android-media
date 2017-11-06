@@ -1,5 +1,6 @@
 package com.tokopedia.flight.detail.view.adapter;
 
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.detail.FlightAirlineIconUtil;
 import com.tokopedia.flight.search.data.cloud.model.Amenity;
 import com.tokopedia.flight.search.data.cloud.model.Info;
 import com.tokopedia.flight.search.data.cloud.model.Route;
@@ -24,7 +26,7 @@ import java.util.List;
 
 public class FlightDetailFacilityViewHolder extends BaseViewHolder<Route> {
 
-    public static final int NUMBER_OF_COLUMN_AMENITY = 2;
+    public static final int NUMBER_OF_COLUMN_AMENITY = 3;
     private final ListInfoAdapter adapterInfo;
     private final RecyclerView listInfo;
     private final RecyclerView gridAmenity;
@@ -32,12 +34,14 @@ public class FlightDetailFacilityViewHolder extends BaseViewHolder<Route> {
     private final ImageView imageAirline;
     private final TextView airlineName;
     private final TextView airlineCode;
+    private TextView refundableInfo;
 
     public FlightDetailFacilityViewHolder(View itemView) {
         super(itemView);
         listInfo = (RecyclerView) itemView.findViewById(R.id.recycler_view_info);
         gridAmenity = (RecyclerView) itemView.findViewById(R.id.recycler_view_amenity);
         imageAirline = (ImageView) itemView.findViewById(R.id.airline_icon);
+        refundableInfo = (TextView) itemView.findViewById(R.id.airline_refundable_info);
         airlineName = (TextView) itemView.findViewById(R.id.airline_name);
         airlineCode = (TextView) itemView.findViewById(R.id.airline_code);
 
@@ -45,6 +49,7 @@ public class FlightDetailFacilityViewHolder extends BaseViewHolder<Route> {
         adapterInfo = new ListInfoAdapter();
         listInfo.setAdapter(adapterInfo);
         gridAmenity.setLayoutManager(new GridLayoutManager(itemView.getContext(), NUMBER_OF_COLUMN_AMENITY));
+        gridAmenity.addItemDecoration(new ItemGridDecorationDivider(itemView.getContext(), ItemGridDecorationDivider.GRID));
         adapterAmenity = new AmenityAdapter();
         gridAmenity.setAdapter(adapterAmenity);
     }
@@ -53,8 +58,20 @@ public class FlightDetailFacilityViewHolder extends BaseViewHolder<Route> {
     public void bindObject(Route route) {
         adapterInfo.addData(route.getInfos());
         adapterAmenity.addData(route.getAmenities());
-        airlineName.setText(route.getAirline());
+        airlineName.setText(route.getAirlineName());
         airlineCode.setText(route.getFlightNumber());
+        imageAirline.setImageResource(FlightAirlineIconUtil.getImageResource(route.getAirline()));
+        setRefundableInfo(route);
+    }
+
+    private void setRefundableInfo(Route route) {
+        if(route.getRefundable()){
+            refundableInfo.setText(R.string.flight_label_refundable_info);
+            refundableInfo.setVisibility(View.VISIBLE);
+        }else{
+            refundableInfo.setText(R.string.flight_label_non_refundable_info);
+            refundableInfo.setVisibility(View.GONE);
+        }
     }
 
     private class ListInfoAdapter extends RecyclerView.Adapter<FlightDetailFacilityInfoViewHolder> {

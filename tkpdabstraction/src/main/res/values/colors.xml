@@ -51,6 +51,7 @@
     <color name="tkpd_bg_color_grery">#e7e7e7</color>
     <color name="orange_red">#ff5722</color>
     <color name="warm_grey">#999999</color>
+    <color name="tkpd_grey_text">#60000000</color>
 
     <color name="label_buyer">#2AB4C2</color>
     <color name="label_user">#5eba46</color>
