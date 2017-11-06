@@ -46,11 +46,12 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     @Inject
     TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
 
-    public static Fragment createInstance(GroupAd groupAd, String adIs) {
+    public static Fragment createInstance(GroupAd groupAd, String adId, boolean forceRefresh) {
         Fragment fragment = new TopAdsDetailGroupFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, groupAd);
-        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adIs);
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        bundle.putBoolean(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, false);
         fragment.setArguments(bundle);
         return fragment;
     }

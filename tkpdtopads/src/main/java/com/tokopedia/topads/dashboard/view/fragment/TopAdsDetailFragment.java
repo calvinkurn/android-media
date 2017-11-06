@@ -16,6 +16,7 @@ import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseDatePickerFragment;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailListener;
 import com.tokopedia.topads.dashboard.view.model.Ad;
@@ -37,6 +38,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
     protected V ad;
     protected String adId;
     protected V adFromIntent;
+    private boolean isForceRefresh;
 
     protected abstract void refreshAd();
 
@@ -69,6 +71,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
         super.setupArguments(bundle);
         adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
         adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+        isForceRefresh = bundle.getBoolean(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, false);
     }
 
     @Override
@@ -107,6 +110,12 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
             adFromIntent = null;
         } else {
             refreshAd();
+        }
+
+        if(isForceRefresh){
+            refreshAd();
+
+            isForceRefresh = false; // just for the first time
         }
     }
 

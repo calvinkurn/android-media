@@ -120,11 +120,13 @@ public class TopAdsDetailGroupActivity extends BaseSimpleActivity
         }else{
             GroupAd ad = null;
             String adId = null;
+            boolean forceRefresh = false;
             if (getIntent() != null && getIntent().getExtras() != null) {
                 ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
                 adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
+                forceRefresh = getIntent().getBooleanExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, false);
             }
-            fragment = TopAdsDetailGroupFragment.createInstance(ad, adId);
+            fragment = TopAdsDetailGroupFragment.createInstance(ad, adId, forceRefresh);
             return fragment;
         }
     }
