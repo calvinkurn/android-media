@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="wiget_number_picker_bg">#FFFFFF</color>
+    <color name="widget_card_with_action_bg">#42b549</color>
 </resources>
