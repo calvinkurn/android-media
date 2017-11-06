@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractor;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdAction;
@@ -30,8 +31,8 @@ public class TopAdsDetailGroupViewPresenterImpl extends TopAdsDetailGroupPresent
     public TopAdsDetailGroupViewPresenterImpl(Context context,
                                               TopAdsDetailViewListener<GroupAd> topAdsDetailViewListener,
                                               TopAdsGroupAdInteractor groupAdInteractor,
-                                              TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase) {
-        super(context, topAdsDetailViewListener, groupAdInteractor, topAdsGetDetailGroupUseCase);
+                                              TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase, TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase) {
+        super(context, topAdsDetailViewListener, groupAdInteractor, topAdsGetDetailGroupUseCase, topAdsGetSuggestionUseCase);
         this.topAdsDetailViewListener = topAdsDetailViewListener;
     }
 

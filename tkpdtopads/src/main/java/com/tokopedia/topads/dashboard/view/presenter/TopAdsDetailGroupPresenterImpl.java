@@ -2,15 +2,20 @@ package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractor;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailListener;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,11 +29,13 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
 
     protected final TopAdsGroupAdInteractor groupAdInteractor;
     private TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
+    private TopAdsGetSuggestionUseCase getSuggestionUseCase;
 
-    public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailListener<GroupAd> topAdsDetailListener, TopAdsGroupAdInteractor groupAdInteractor, TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase) {
+    public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailListener<GroupAd> topAdsDetailListener, TopAdsGroupAdInteractor groupAdInteractor, TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase, TopAdsGetSuggestionUseCase getSuggestionUseCase) {
         super(context, topAdsDetailListener);
         this.groupAdInteractor = groupAdInteractor;
         this.topAdsGetDetailGroupUseCase = topAdsGetDetailGroupUseCase;
+        this.getSuggestionUseCase = getSuggestionUseCase;
     }
 
     @Override
@@ -58,7 +65,7 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
         });
     }
 
-    public void getDetailGroup(String adId, final GroupAd groupAd){
+    public void getDetailGroup(final String adId, final GroupAd groupAd){
         topAdsGetDetailGroupUseCase.execute(TopAdsGetDetailGroupUseCase.createRequestParams(adId), new Subscriber<TopAdsDetailGroupDomainModel>() {
             @Override
             public void onCompleted() {
@@ -74,6 +81,34 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
             public void onNext(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel) {
                 // add keyword total
                 groupAd.setKeywordTotal(topAdsDetailGroupDomainModel.getKeywordTotal());
+                getSuggestion(adId, groupAd);
+            }
+        });
+    }
+
+    public void getSuggestion(String groupId, final GroupAd groupAd){
+        GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
+        getSuggestionBody.setRounding(true);
+        getSuggestionBody.setSource(TopAdsNetworkConstant.SOURCE_GROUP_AD_LIST);
+        getSuggestionBody.setDataType(TopAdsNetworkConstant.SUGGESTION_DATA_TYPE_DETAIL);
+        getSuggestionBody.setSuggestionType(TopAdsNetworkConstant.SUGGESTION_TYPE_GROUP_ID);
+        List<Long> group = new ArrayList<>();
+        group.add(Long.valueOf(groupId));
+        getSuggestionBody.setIds(group);
+
+        getSuggestionUseCase.execute(TopAdsGetSuggestionUseCase.createRequestParams(getSuggestionBody), new Subscriber<GetSuggestionResponse>() {
+            @Override
+            public void onCompleted() {}
+
+            @Override
+            public void onError(Throwable e) {
+                topAdsDetailListener.onLoadAdError();
+            }
+
+            @Override
+            public void onNext(GetSuggestionResponse getSuggestionResponse) {
+                // add keyword total
+                groupAd.setDatum(getSuggestionResponse.getData().get(0));
                 topAdsDetailListener.onAdLoaded(groupAd);
             }
         });

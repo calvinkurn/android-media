@@ -20,6 +20,7 @@ import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoCompon
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
@@ -45,6 +46,9 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     @Inject
     TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
+
+    @Inject
+    TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
 
     public static Fragment createInstance(GroupAd groupAd, String adId, boolean forceRefresh) {
         Fragment fragment = new TopAdsDetailGroupFragment();
@@ -87,7 +91,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsDetailGroupViewPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()), topAdsGetDetailGroupUseCase);
+        presenter = new TopAdsDetailGroupViewPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()), topAdsGetDetailGroupUseCase, topAdsGetSuggestionUseCase);
     }
 
     @Override
@@ -139,8 +143,10 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     @Override
     protected GroupAd fillFromPrevious(GroupAd current, GroupAd previous) {
-        current.setDatum(previous.getDatum());
-        return current;
+        if(previous != null && previous.getDatum() != null) {
+            current.setDatum(previous.getDatum());
+        }
+        return super.fillFromPrevious(current, previous);
     }
 
     @Override

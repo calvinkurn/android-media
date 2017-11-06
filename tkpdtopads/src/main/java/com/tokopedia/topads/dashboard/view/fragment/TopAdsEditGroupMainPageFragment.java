@@ -11,11 +11,10 @@ import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
-import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupEditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditCostExistingGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupNameActivity;
@@ -37,6 +36,9 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
 
     @Inject
     TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
+
+    @Inject
+    TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
 
     @Override
     protected void initInjector() {
@@ -60,7 +62,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsDetailGroupPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()), topAdsGetDetailGroupUseCase);
+        presenter = new TopAdsDetailGroupPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()), topAdsGetDetailGroupUseCase, topAdsGetSuggestionUseCase);
     }
 
     @Override
