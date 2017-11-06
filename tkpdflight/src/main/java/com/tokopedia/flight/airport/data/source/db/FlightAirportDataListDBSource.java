@@ -3,6 +3,7 @@ package com.tokopedia.flight.airport.data.source.db;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.structure.Model;
 import com.tokopedia.abstraction.base.data.source.database.DataListDBSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCity;
@@ -10,6 +11,7 @@ import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportDetail;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB_Table;
+import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,31 +27,15 @@ import rx.functions.Func1;
  * Created by normansyahputa on 5/18/17.
  */
 
-public class FlightAirportDataListDBSource implements DataListDBSource<FlightAirportCountry,FlightAirportDB> {
+public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAirportCountry,FlightAirportDB> {
 
     @Inject
     public FlightAirportDataListDBSource() {
     }
 
     @Override
-    public Observable<Boolean> isDataAvailable() {
-        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                subscriber.onNext(new Select(Method.count()).from(FlightAirportDB.class).hasData());
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> deleteAll() {
-        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                new Delete().from(FlightAirportDB.class).execute();
-                subscriber.onNext(true);
-            }
-        });
+    protected Class<? extends Model> getDBClass() {
+        return FlightAirportDB.class;
     }
 
     @Override
@@ -117,4 +103,17 @@ public class FlightAirportDataListDBSource implements DataListDBSource<FlightAir
             }
         });
     }
+
+    @Override
+    public Observable<Integer> getDataCount(HashMap<String, Object> params) {
+        // TODO use param to filter
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                long count = new Select(Method.count()).from(getDBClass()).count();
+                subscriber.onNext((int) count);
+            }
+        });
+    }
+
 }

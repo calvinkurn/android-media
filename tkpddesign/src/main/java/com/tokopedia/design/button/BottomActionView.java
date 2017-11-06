@@ -3,9 +3,13 @@ package com.tokopedia.design.button;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.DrawableRes;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -107,4 +111,5 @@ public class BottomActionView extends BaseCustomView {
     public void setButton2OnClickListener(OnClickListener onClickListener) {
         linearLayoutButton2.setOnClickListener(onClickListener);
     }
+
 }
