@@ -130,9 +130,14 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
             onLoadAdError();
             return;
         }
-        this.ad = ad;
+        this.ad = fillFromPrevious(ad, this.adFromIntent);
+
         hideLoading();
         loadAdDetail(ad);
+    }
+
+    protected V fillFromPrevious(V current, V previous){
+        return current;
     }
 
     protected void hideLoading() {

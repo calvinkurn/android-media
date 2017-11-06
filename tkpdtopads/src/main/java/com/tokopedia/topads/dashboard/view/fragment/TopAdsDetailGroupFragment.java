@@ -138,6 +138,12 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     }
 
     @Override
+    protected GroupAd fillFromPrevious(GroupAd current, GroupAd previous) {
+        current.setDatum(previous.getDatum());
+        return current;
+    }
+
+    @Override
     protected void updateMainView(GroupAd ad) {
         super.updateMainView(ad);
         items.setContent(getString(R.string.top_ads_label_count_product_group, ad.getTotalItem()));

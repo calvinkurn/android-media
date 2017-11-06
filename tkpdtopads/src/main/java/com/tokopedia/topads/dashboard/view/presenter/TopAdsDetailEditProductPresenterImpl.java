@@ -109,12 +109,16 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
 
             @Override
             public void onError(Throwable e) {
-                getView().onSuggestionError(e);
+                if(isViewAttached()) {
+                    getView().onSuggestionError(e);
+                }
             }
 
             @Override
             public void onNext(GetSuggestionResponse s) {
-                getView().onSuggestionSuccess(s);
+                if(isViewAttached()) {
+                    getView().onSuggestionSuccess(s);
+                }
             }
         });
     }
