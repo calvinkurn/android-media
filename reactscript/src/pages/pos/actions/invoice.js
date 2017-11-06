@@ -24,16 +24,12 @@ const processSendEmail = async (emailAddress, data, items) => {
   const detail_items = getDetailItems(items)
   const env = await getEnv()
   const api_url = await getBaseAPI(env)
-
   const data_params = {
     ...data,
     outlet_name,
     detail_items
   }
-  // console.log(data_params)
-
   const send_email = await proceedSendEmail(data_params, api_url)
-  // console.log(send_email)
   return send_email
 }
 
@@ -79,14 +75,9 @@ const getBaseAPI = (env) => {
 }
 
 
-
-
 const getDetailItems = (items) => {
-  // console.log(items)
   let itemsObj = []
   items.map(item => {
-    // console.log(item)
-    // console.log(item.Name)
     itemsObj.push({
       item_name: item.Name,
       item_qty: item.Quantity,
@@ -94,6 +85,6 @@ const getDetailItems = (items) => {
       total_price: item.Price * item.Quantity
     }) 
   })
-  // console.log(itemsObj)
+  
   return itemsObj
 }

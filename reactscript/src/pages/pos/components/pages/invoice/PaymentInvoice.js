@@ -25,15 +25,6 @@ class PaymentInvoice extends Component {
   }
   
   
-  componentDidMount(){
-    const { dispatch } = this.props
-    console.log(this.props)
-    
-    // dispatch(reloadState('invoice'))
-    // dispatch(clearCart())
-  }
-  
-  
   _handleButtonPress = () => {
     let emailErrorMessage = ""
     if (!emailValidation(this.state.email)) {
@@ -47,7 +38,6 @@ class PaymentInvoice extends Component {
 
 
   _skipButton = () => {
-    console.log('skipppp')
     if (!this.state.email){
       this.props.dispatch(reloadState('invoice'))
       this.props.dispatch(clearCart())
@@ -58,7 +48,6 @@ class PaymentInvoice extends Component {
 
 
   _sendInvoice = () => {
-    // console.log(this.props)
     const {
       bankName,
       bankLogo,
@@ -66,10 +55,8 @@ class PaymentInvoice extends Component {
       screenProps,
     } = this.props
     const { email } = this.state
-
     const payment_details = JSON.parse(screenProps.data.data)
-    // console.log(payment_details)
-
+    const items = payment_param.items
     const data = {
       email_address: email,
       bank_name: bankName,
@@ -79,9 +66,6 @@ class PaymentInvoice extends Component {
       invoice_ref_no: payment_details.invoiceRef
     }
 
-    const items = payment_param.items
-
-    // console.log(this.state.email, data, items)
     this.props.dispatch(sendEmailReceipt(email, data, items))
     this.props.dispatch(reloadState('invoice'))
     this.props.dispatch(clearCart())
@@ -113,7 +97,6 @@ class PaymentInvoice extends Component {
 
 
   render() {
-    // console.log(this.props)
     const data = JSON.parse(this.props.screenProps.data.data)
     const paymentDetails = data.paymentDetails
 
@@ -353,18 +336,11 @@ const styles = StyleSheet.create({
   },
 });
 
-// const ds = new ListView.DataSource({
-//   rowHasChanged: (r1, r2) => r1 !== r2
-// });
 
 const mapStateToProps = (state, ownProps) => {
   const objData = JSON.parse(ownProps.screenProps.data.data)
-  // const itemList = ds.cloneWithRows(state.paymentInvoice.items);
-  // console.log(state)
-  // console.log(ownProps)
+  
   return {
-    // ...state.paymentInvoice,
-    // itemList,
     bankLogo: objData.bankLogo, 
     bankName: objData.bankName,
     invoiceNo: objData.invoiceRef,
