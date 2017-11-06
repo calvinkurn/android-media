@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
@@ -20,6 +21,7 @@ public class StatusView extends BaseView<StatusData, DetailResCenterFragmentView
 
     private TextView lastStatus;
     private View actionDiscuss;
+    private RelativeLayout rlActionDiscuss;
 
     public StatusView(Context context) {
         super(context);
@@ -49,6 +51,7 @@ public class StatusView extends BaseView<StatusData, DetailResCenterFragmentView
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(getLayoutView(), this, true);
+        rlActionDiscuss = (RelativeLayout) view.findViewById(R.id.rv_action_discuss);
         lastStatus = (TextView) view.findViewById(R.id.textview_last_status);
         actionDiscuss = view.findViewById(R.id.action_discuss);
     }
@@ -62,6 +65,7 @@ public class StatusView extends BaseView<StatusData, DetailResCenterFragmentView
     public void renderData(@NonNull StatusData data) {
         setVisibility(VISIBLE);
         lastStatus.setText(data.getStatusText());
+        rlActionDiscuss.setVisibility(GONE);
         actionDiscuss.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {

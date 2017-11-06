@@ -24,12 +24,14 @@
         android:layout_marginBottom="@dimen/margin_small"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_marginLeft="@dimen/margin_small"
+        android:textColor="@color/black_70"
         android:text="Admin Tokopedia memberikan solusi awal.\nMenunggu respond penjual &amp; pembeli."
         android:textStyle="bold"
         android:textSize="@dimen/font_small"
         />
 
     <RelativeLayout
+        android:id="@+id/rv_action_discuss"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_vs"

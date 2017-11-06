@@ -119,7 +119,11 @@ public class DetailResChatActivity
         detailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(DetailResCenterActivity.newInstance(DetailResChatActivity.this, resolutionId));
+                if (isSeller) {
+                    startActivity(DetailResCenterActivity.newSellerInstance(DetailResChatActivity.this, resolutionId, userName));
+                } else {
+                    startActivity(DetailResCenterActivity.newBuyerInstance(DetailResChatActivity.this, resolutionId, shopName));
+                }
             }
         });
         detailButton.setGravity(Gravity.RIGHT | Gravity.CENTER);

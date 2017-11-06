@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailData;
@@ -79,6 +80,8 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
     @Override
     public void renderData(@NonNull final DetailData data) {
         setVisibility(VISIBLE);
+        boolean isSeller = SessionHandler.getLoginID(getContext())
+                .equals(data.getBuyerID());
         textAwbNumber.setText(data.getAwbNumber());
         textComplaintDate.setText(data.getComplaintDate());
         textCustomerName.setText(data.getBuyerName());
@@ -88,6 +91,8 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
                 data.isDeadlineVisibility() && data.getResponseDeadline() != null ?
                         VISIBLE : GONE
         );
+        viewShop.setVisibility(isSeller ? View.VISIBLE : View.GONE);
+        viewCustomer.setVisibility(!isSeller ? View.VISIBLE : GONE);
         textResponseDeadline.setText(data.getResponseDeadline());
         generateDeadlineBackgroundView(textResponseDeadline);
 
