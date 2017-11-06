@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -132,10 +133,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 mFCMCacheManager.resetCache(data);
             }
         } else {
-            if(data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL)) {
+            if (data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL)) {
                 prepareAndExecuteApplinkPromoNotification(data);
-            }
-            else {
+            } else {
                 prepareAndExecuteApplinkNotification(data);
             }
         }
@@ -226,8 +226,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private boolean isSupportedApplinkNotification(Bundle bundle) {
         String applink = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(applink);
+        return ((TkpdCoreRouter) mContext.getApplicationContext())
+                .isSupportedDelegateDeepLink(applink);
+
     }
 
     private void prepareAndExecutePromoNotification(Bundle data) {

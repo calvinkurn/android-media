@@ -75,7 +75,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             if (deepLinkDelegate.supportsUri(applink.toString())) {
                 deepLinkDelegate.dispatchFrom(this, intent);
             } else {
-                startActivity(HomeRouter.getHomeActivity(this));
+                startActivity(HomeRouter.getHomeActivityInterfaceRouter(this));
             }
 
             if (getIntent().getExtras() != null) {
