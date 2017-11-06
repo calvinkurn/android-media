@@ -62,7 +62,7 @@ public class FlightFilterTransitAdapter extends BaseListCheckableV2Adapter<Trans
         }
 
         @Override
-        public CheckBox getCheckBox() {
+        public CompoundButton getCheckable() {
             return checkBox;
         }
 

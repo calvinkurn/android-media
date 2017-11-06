@@ -2,7 +2,6 @@ package com.tokopedia.abstraction.base.view.adapter.holder;
 
 import android.support.annotation.CallSuper;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
@@ -24,15 +23,15 @@ public abstract class CheckableBaseViewHolder<T extends ItemType> extends BaseVi
         bindObject(u, false);
     }
 
-    public abstract CheckBox getCheckBox();
+    public abstract CompoundButton getCheckable();
 
     @CallSuper
     public void bindObject(T u, boolean isChecked) {
-        CheckBox checkBox = getCheckBox();
-        if (checkBox!= null) {
-            checkBox.setOnCheckedChangeListener (null);
-            checkBox.setChecked(isChecked);
-            checkBox.setOnCheckedChangeListener(this);
+        CompoundButton checkable = getCheckable();
+        if (checkable!= null) {
+            checkable.setOnCheckedChangeListener (null);
+            checkable.setChecked(isChecked);
+            checkable.setOnCheckedChangeListener(this);
         }
     }
 
@@ -53,8 +52,8 @@ public abstract class CheckableBaseViewHolder<T extends ItemType> extends BaseVi
     public void setChecked(boolean checked){
         if (checked != isChecked()) {
             baseListCheckableV2Adapter.updateListByCheck(checked, getAdapterPosition());
-            if (getCheckBox()!=null) {
-                getCheckBox().setChecked(checked);
+            if (getCheckable()!=null) {
+                getCheckable().setChecked(checked);
             }
         }
     }
