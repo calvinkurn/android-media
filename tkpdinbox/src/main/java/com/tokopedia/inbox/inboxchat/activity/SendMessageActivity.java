@@ -122,15 +122,6 @@ public class SendMessageActivity extends TActivity {
         return intent;
     }
 
-    public static Intent getAskSellerIntent(Context context, String toShopId, String shopName,
-                                            String customSubject, String source, String avatar) {
-        Intent intent = getAskSellerIntent(context, toShopId, shopName, source, avatar);
-        Bundle bundle = intent.getExtras();
-        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
     public static Intent getAskUserIntent(Context context, String userId,
                                           String userName, String source,
                                           String avatar) {

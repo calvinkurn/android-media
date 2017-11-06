@@ -1,6 +1,8 @@
 package com.tokopedia.inbox.inboxchat.subscriber;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.listener.SendChat;
 import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 
@@ -20,18 +22,25 @@ public class SendMessageSubscriber extends Subscriber<SendMessageViewModel> {
 
     @Override
     public void onCompleted() {
-        view.removeDummyMessage();
-        view.setActionsEnabled(true);
+
     }
 
     @Override
     public void onError(Throwable e) {
+        view.removeDummyMessage();
+        view.setActionsEnabled(true);
         view.onErrorSendMessage(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(SendMessageViewModel sendMessageViewModel) {
-        view.onSuccessSendMessage();
+        view.removeDummyMessage();
+        view.setActionsEnabled(true);
+        if (sendMessageViewModel.isSuccess())
+            view.onSuccessSendMessage();
+        else
+            view.onErrorSendMessage(MainApplication.getAppContext().getString(R.string
+                    .default_request_error_unknown));
 
 
     }

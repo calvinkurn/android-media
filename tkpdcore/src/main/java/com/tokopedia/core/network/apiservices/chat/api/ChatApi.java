@@ -54,4 +54,10 @@ public interface ChatApi {
     @Headers("Content-Type: application/json")
     @POST(TkpdBaseURL.Chat.DELETE)
     Observable<Response<TkpdResponse>> deleteMessage(@Body JsonObject parameters);
+
+    @FormUrlEncoded
+    @Headers("Cookie:_SID_TOKOPEDIA_")
+    @POST(TkpdBaseURL.Chat.SEND_MESSAGE)
+    Observable<Response<TkpdResponse>> sendMessage(@FieldMap Map<String, Object> requestParams);
+
 }

@@ -2,7 +2,6 @@ package com.tokopedia.inbox.inboxchat.presenter;
 
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
@@ -12,9 +11,6 @@ import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
 import com.tokopedia.inbox.inboxchat.listener.SendChat;
 import com.tokopedia.inbox.inboxchat.subscriber.SendMessageSubscriber;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessage.fragment.SendMessageFragment;
-import com.tokopedia.inbox.inboxmessage.interactor.SendMessageRetrofitInteractor;
-import com.tokopedia.inbox.inboxmessage.model.SendMessagePass;
 
 import javax.inject.Inject;
 
@@ -38,20 +34,18 @@ public class SendChatPresenter extends BaseDaggerPresenter<SendChat.View>
     @Override
     public void sendMessage(String message, String source, String toShopId, String toUserId) {
         getView().removeError();
-        getView().showDummyMessage(message);
-//
-//        if (isValidMessage(message)) {
-//            getView().showDummyMessage(message);
-//            getView().setActionsEnabled(false);
-//            sendMessageUseCase.execute(SendMessageUseCase.getParam(
-//                    message,
-//                    " ",
-//                    toShopId,
-//                    toUserId,
-//                    source
-//            ), new SendMessageSubscriber(getView()));
-//
-//        }
+
+        if (isValidMessage(message)) {
+            getView().showDummyMessage(message);
+            getView().setActionsEnabled(false);
+            sendMessageUseCase.execute(SendMessageUseCase.getParam(
+                    message,
+                    toShopId,
+                    toUserId,
+                    source
+            ), new SendMessageSubscriber(getView()));
+
+        }
     }
 
     private boolean isValidMessage(String message) {
