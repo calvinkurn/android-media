@@ -5,10 +5,10 @@ import android.os.Parcelable;
 import android.util.SparseIntArray;
 
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
-import com.tokopedia.flight.search.view.model.DepartureTimeEnum;
+import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
-import com.tokopedia.flight.search.view.model.RefundableEnum;
-import com.tokopedia.flight.search.view.model.TransitEnum;
+import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+import com.tokopedia.flight.search.view.model.filter.TransitEnum;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +47,7 @@ public class FlightSearchStatisticModel implements Parcelable {
         for (int i = 0, sizei = flightSearchViewModelList.size(); i < sizei; i++) {
             FlightSearchViewModel flightSearchViewModel = flightSearchViewModelList.get(i);
             int price = flightSearchViewModel.getTotalNumeric();
+            String priceString = flightSearchViewModel.getTotal();
             if (price < minPrice) {
                 minPrice = price;
             }
@@ -78,13 +79,14 @@ public class FlightSearchStatisticModel implements Parcelable {
                     break;
             }
             if (transitIDTrackArray.get(transitTypeDef.getId(), -1) == -1) {
-                transitTypeStatList.add(new TransitStat(transitTypeDef, price));
+                transitTypeStatList.add(new TransitStat(transitTypeDef, price, priceString));
                 transitIDTrackArray.put(transitTypeDef.getId(), transitTypeStatList.size() - 1);
             } else {
                 int index = transitIDTrackArray.get(transitTypeDef.getId());
                 TransitStat prevTransitStat = transitTypeStatList.get(index);
                 if (price < prevTransitStat.getMinPrice()) {
                     prevTransitStat.setMinPrice(price);
+                    prevTransitStat.setMinPriceString(priceString);
                 }
             }
 
@@ -96,13 +98,14 @@ public class FlightSearchStatisticModel implements Parcelable {
                     String airlineID = flightAirlineDB.getId();
 
                     if (!airlineIDTrackArray.containsKey(airlineID)) {
-                        airlineStatList.add(new AirlineStat(flightAirlineDB, price));
+                        airlineStatList.add(new AirlineStat(flightAirlineDB, price, priceString));
                         airlineIDTrackArray.put(airlineID, airlineStatList.size() - 1);
                     } else {
                         int index = airlineIDTrackArray.get(airlineID);
                         AirlineStat prevAirlineStat = airlineStatList.get(index);
                         if (price < prevAirlineStat.getMinPrice()) {
                             prevAirlineStat.setMinPrice(price);
+                            prevAirlineStat.setMinPriceString(priceString);
                         }
                     }
                 }
@@ -121,13 +124,14 @@ public class FlightSearchStatisticModel implements Parcelable {
                 departureTimeDef = DepartureTimeEnum._18;
             }
             if (departureIDTrackArray.get(departureTimeDef.getId(), -1) == -1) {
-                departureTimeStatList.add(new DepartureStat(departureTimeDef, price));
+                departureTimeStatList.add(new DepartureStat(departureTimeDef, price, priceString));
                 departureIDTrackArray.put(departureTimeDef.getId(), departureTimeStatList.size() - 1);
             } else {
                 int index = departureIDTrackArray.get(departureTimeDef.getId());
                 DepartureStat prevDepartureStat = departureTimeStatList.get(index);
                 if (price < prevDepartureStat.getMinPrice()) {
                     prevDepartureStat.setMinPrice(price);
+                    prevDepartureStat.setMinPriceString(priceString);
                 }
             }
 

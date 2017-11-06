@@ -23,8 +23,9 @@ import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
 
 public class FlightFilterTransitAdapter extends BaseListCheckableV2Adapter<TransitStat> {
 
-    public FlightFilterTransitAdapter(OnBaseListV2AdapterListener<TransitStat> onBaseListV2AdapterListener){
-        super(onBaseListV2AdapterListener);
+    public FlightFilterTransitAdapter(OnBaseListV2AdapterListener<TransitStat> onBaseListV2AdapterListener,
+                                      OnCheckableAdapterListener<TransitStat> onCheckableAdapterListener){
+        super(onBaseListV2AdapterListener, onCheckableAdapterListener);
     }
 
     @Override
@@ -35,30 +36,23 @@ public class FlightFilterTransitAdapter extends BaseListCheckableV2Adapter<Trans
 
     public static class FlightSearchViewHolder extends CheckableBaseViewHolder<TransitStat> implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-        TextView tvDeparture;
-        TextView tvArrival;
-        TextView tvAirline;
-        AppCompatTextView tvPrice;
-        AppCompatTextView tvDuration;
-        AppCompatCheckBox checkBox;
+        TextView tvTitle;
+        TextView tvDesc;
+        CheckBox checkBox;
 
         public FlightSearchViewHolder(View itemView, BaseListCheckableV2Adapter<TransitStat> baseListCheckableV2Adapter) {
             super(itemView, baseListCheckableV2Adapter);
-            tvDeparture = (TextView) itemView.findViewById(R.id.tv_departure);
-            tvArrival = (TextView) itemView.findViewById(R.id.tv_arrival);
-            tvAirline = (TextView) itemView.findViewById(R.id.tv_airline);
-            tvPrice = (AppCompatTextView) itemView.findViewById(R.id.tv_total_price);
-            tvDuration = (AppCompatTextView) itemView.findViewById(R.id.tv_duration);
+            tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
+            tvDesc = (TextView) itemView.findViewById(R.id.tv_desc);
             checkBox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
         }
 
         @Override
         public void bindObject(TransitStat transitStat, boolean isChecked) {
             super.bindObject(transitStat, isChecked);
-            tvDeparture.setText(String.valueOf(transitStat.getMinPrice()));
-            tvArrival.setText(transitStat.getMinPrice() + (isChecked? "Checked":"Not Checked"));
+            tvTitle.setText(transitStat.getTransitType().getValueRes());
+            tvDesc.setText(getString(R.string.start_from_x, transitStat.getMinPriceString()));
             itemView.setOnClickListener(this);
-            //tvAirline.setText(flightSearchViewModel.getAirline());
         }
 
         @Override

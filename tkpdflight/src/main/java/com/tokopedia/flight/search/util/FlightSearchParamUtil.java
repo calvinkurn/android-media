@@ -1,6 +1,6 @@
 package com.tokopedia.flight.search.util;
 
-import com.tokopedia.flight.search.view.model.FlightFilterModel;
+import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;

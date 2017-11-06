@@ -5,16 +5,23 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
 import com.tokopedia.abstraction.base.view.recyclerview.BaseListRecyclerView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.adapter.FlightFilterTransitAdapter;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
+import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
+import com.tokopedia.flight.search.view.model.filter.TransitEnum;
 import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,10 +30,11 @@ import java.util.List;
  */
 
 public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
-        implements BaseListV2Adapter.OnBaseListV2AdapterListener<TransitStat> {
-    public static final String TAG = FlightFilterRefundableFragment.class.getSimpleName();
+        implements BaseListV2Adapter.OnBaseListV2AdapterListener<TransitStat>,BaseListCheckableV2Adapter.OnCheckableAdapterListener<TransitStat> {
+    public static final String TAG = FlightFilterTransitFragment.class.getSimpleName();
 
     private OnFlightFilterListener listener;
+    private FlightFilterTransitAdapter flightFilterTransitAdapter;
 
     public static FlightFilterTransitFragment newInstance() {
 
@@ -35,6 +43,12 @@ public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
         FlightFilterTransitFragment fragment = new FlightFilterTransitFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -54,8 +68,15 @@ public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
     protected BaseListV2Adapter<TransitStat> getNewAdapter() {
-        return new FlightFilterTransitAdapter(this);
+        flightFilterTransitAdapter = new FlightFilterTransitAdapter(this, this);
+        return flightFilterTransitAdapter;
     }
 
     @Override
@@ -66,12 +87,26 @@ public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
     @Nullable
     @Override
     public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
-        return (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        return null;
     }
 
     @Override
     public void onItemClicked(TransitStat transitStat) {
         // no op
+    }
+
+    @Override
+    public void onItemChecked(TransitStat transitStat, boolean isChecked) {
+        List<TransitStat> transitStatList = flightFilterTransitAdapter.getCheckedDataList();
+        FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
+        List<TransitEnum> transitEnumList = new ArrayList<>();
+        if (transitStatList != null) {
+            for (int i = 0, sizei = transitStatList.size(); i<sizei; i++) {
+                transitEnumList.add(transitStatList.get(i).getTransitType());
+            }
+        }
+        flightFilterModel.setTransitTypeList(transitEnumList);
+        listener.onFilterModelChanged(flightFilterModel);
     }
 
     @Override
@@ -84,5 +119,6 @@ public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
     protected void onAttachActivity(Context context) {
         listener = (OnFlightFilterListener) context;
     }
+
 
 }

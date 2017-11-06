@@ -7,10 +7,13 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 /**
+ * adapter that store the check position for each data.
+ * limitation: only handle added data, if the data is removed, need to recalculate the position
  * Created by hendry on 11/24/16.
  */
 public abstract class BaseListCheckableV2Adapter<T extends ItemType> extends BaseListV2Adapter<T> {
@@ -53,7 +56,7 @@ public abstract class BaseListCheckableV2Adapter<T extends ItemType> extends Bas
             }
         });
         if (viewHolder instanceof CheckableBaseViewHolder) {
-            boolean isChecked = checkedPositionList.contains(position);
+            boolean isChecked = isChecked(position);
             ((CheckableBaseViewHolder<T>) viewHolder).bindObject(t, isChecked);
         }
     }
@@ -69,12 +72,27 @@ public abstract class BaseListCheckableV2Adapter<T extends ItemType> extends Bas
         return checkedPositionList.size();
     }
 
+    public List<T> getCheckedDataList(){
+        List<T> dataList = getData();
+        if (dataList == null || dataList.size() == 0) {
+            return new ArrayList<>();
+        }
+        List<T> checkedDataList = new ArrayList<>();
+        for (int i = 0, sizei = dataList.size(); i<sizei; i++) {
+            if (isChecked(i)) {
+                checkedDataList.add(dataList.get(i));
+            }
+        }
+        return checkedDataList;
+    }
+
     public void updateListByCheck(boolean isItemChecked, int position){
         if (isItemChecked) {
             checkedPositionList.add(position);
         } else {
             checkedPositionList.remove(position);
         }
+        notifyItemChanged(position);
         if (onCheckableAdapterListener!= null) {
             onCheckableAdapterListener.onItemChecked(getData().get(position), isItemChecked);
         }

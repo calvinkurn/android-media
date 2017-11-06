@@ -80,4 +80,9 @@
     <string name="flight_search_sort_item_cheapest_price">Harga Termurah</string>
     <string name="flight_search_sort_item_most_expensive_price">Harga Termahal</string>
     <string name="filter">Filter</string>
+    <string name="reset">Reset</string>
+    <string name="airline">Maskapai Penerbangan</string>
+    <string name="refundable_policy">Kebijakan Pengembalian</string>
+    <string name="transit">Transit</string>
+    <string name="start_from_x">Mulai dari %1$s</string>
 </resources>

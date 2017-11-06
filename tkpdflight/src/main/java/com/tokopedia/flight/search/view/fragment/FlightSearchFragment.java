@@ -29,7 +29,7 @@ import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
-import com.tokopedia.flight.search.view.model.FlightFilterModel;
+import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;

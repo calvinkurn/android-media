@@ -1,18 +1,14 @@
 package com.tokopedia.flight.search.data.db;
 
-import com.raizlabs.android.dbflow.sql.language.BaseCondition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
-import com.raizlabs.android.dbflow.sql.language.SQLCondition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.property.IntProperty;
-import com.tokopedia.abstraction.base.data.source.database.DataListDBSource;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
-import com.tokopedia.flight.search.view.model.FlightFilterModel;
+import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 
 import java.util.HashMap;
 import java.util.List;

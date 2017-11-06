@@ -1,7 +1,9 @@
-package com.tokopedia.flight.search.view.model;
+package com.tokopedia.flight.search.view.model.filter;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,7 @@ public class FlightFilterModel implements Parcelable {
     private int durationMin = Integer.MIN_VALUE;
     private int durationMax = Integer.MAX_VALUE;
     private List<TransitEnum> transitTypeList;
-    private List<String> airlineList;
+    private List<AirlineData> airlineList;
     private List<DepartureTimeEnum> departureTimeList;
     private List<RefundableEnum> refundableTypeList;
 
@@ -52,12 +54,16 @@ public class FlightFilterModel implements Parcelable {
         return durationMax;
     }
 
-    public List<String> getAirlineList() {
+    public List<AirlineData> getAirlineList() {
         return airlineList;
     }
 
     public List<TransitEnum> getTransitTypeList() {
         return transitTypeList;
+    }
+
+    public void setTransitTypeList(List<TransitEnum> transitTypeList) {
+        this.transitTypeList = transitTypeList;
     }
 
     public List<DepartureTimeEnum> getDepartureTimeList() {
@@ -80,7 +86,7 @@ public class FlightFilterModel implements Parcelable {
         dest.writeInt(this.durationMin);
         dest.writeInt(this.durationMax);
         dest.writeList(this.transitTypeList);
-        dest.writeStringList(this.airlineList);
+        dest.writeTypedList(this.airlineList);
         dest.writeList(this.departureTimeList);
         dest.writeList(this.refundableTypeList);
     }
@@ -95,7 +101,7 @@ public class FlightFilterModel implements Parcelable {
         this.durationMax = in.readInt();
         this.transitTypeList = new ArrayList<TransitEnum>();
         in.readList(this.transitTypeList, TransitEnum.class.getClassLoader());
-        this.airlineList = in.createStringArrayList();
+        this.airlineList = in.createTypedArrayList(AirlineData.CREATOR);
         this.departureTimeList = new ArrayList<DepartureTimeEnum>();
         in.readList(this.departureTimeList, DepartureTimeEnum.class.getClassLoader());
         this.refundableTypeList = new ArrayList<RefundableEnum>();

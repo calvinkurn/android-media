@@ -12,10 +12,20 @@ import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 public class AirlineStat implements Parcelable {
     private FlightAirlineDB airlineDB;
     private int minPrice;
+    private String minPriceString;
 
-    public AirlineStat(FlightAirlineDB airlineDB, int minPrice) {
+    public AirlineStat(FlightAirlineDB airlineDB, int minPrice, String minPriceString) {
         this.airlineDB = airlineDB;
         this.minPrice = minPrice;
+        this.minPriceString = minPriceString;
+    }
+
+    public void setMinPriceString(String minPriceString) {
+        this.minPriceString = minPriceString;
+    }
+
+    public String getMinPriceString() {
+        return minPriceString;
     }
 
     public FlightAirlineDB getAirlineDB() {
@@ -39,11 +49,13 @@ public class AirlineStat implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.airlineDB, flags);
         dest.writeInt(this.minPrice);
+        dest.writeString(this.minPriceString);
     }
 
     protected AirlineStat(Parcel in) {
         this.airlineDB = in.readParcelable(FlightAirlineDB.class.getClassLoader());
         this.minPrice = in.readInt();
+        this.minPriceString = in.readString();
     }
 
     public static final Parcelable.Creator<AirlineStat> CREATOR = new Parcelable.Creator<AirlineStat>() {
