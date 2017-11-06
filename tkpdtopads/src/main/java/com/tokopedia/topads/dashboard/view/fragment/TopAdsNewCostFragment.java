@@ -36,7 +36,6 @@ import com.tokopedia.topads.keyword.utils.EmptyCurrencyIdrTextWatcher;
 public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends TopAdsDetailAdViewModel> extends BasePresenterFragment {
 
     private static final String TAG = "TopAdsNewCostFragment";
-    public static final int DEFAULT_KELIPATAN = 50;
 
     protected T stepperModel;
     protected StepperListener stepperListener;
@@ -149,7 +148,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     @Override
     protected void setViewListener() {
         super.setViewListener();
-        EmptyCurrencyIdrTextWatcher emptyCurrencyIdrTextWatcher = new EmptyCurrencyIdrTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
+        maxPriceEditText.addTextChangedListener(new CurrencyIdrTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
             public void onNumberChanged(double number) {
@@ -174,9 +173,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
                     titleSuggestionBidUse.setVisibility(View.VISIBLE);
                 }
             }
-        };
-        emptyCurrencyIdrTextWatcher.setAvoidMessageErrorValue(DEFAULT_KELIPATAN);
-        maxPriceEditText.addTextChangedListener(emptyCurrencyIdrTextWatcher);
+        });
         budgetPerDayEditText.addTextChangedListener(new CurrencyIdrTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override

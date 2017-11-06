@@ -38,7 +38,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
     protected V ad;
     protected String adId;
     protected V adFromIntent;
-    private boolean isForceRefresh;
+    protected boolean isForceRefresh;
 
     protected abstract void refreshAd();
 
@@ -104,18 +104,17 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
     @Override
     protected void loadData() {
         showLoading();
+        if(isForceRefresh){
+            refreshAd();
+            isForceRefresh = false;
+            return;
+        }
         if (adFromIntent != null) {
             onAdLoaded(adFromIntent);
             adId = adFromIntent.getId();
             adFromIntent = null;
         } else {
             refreshAd();
-        }
-
-        if(isForceRefresh){
-            refreshAd();
-
-            isForceRefresh = false; // just for the first time
         }
     }
 

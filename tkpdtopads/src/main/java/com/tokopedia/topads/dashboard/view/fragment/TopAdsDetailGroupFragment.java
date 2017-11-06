@@ -51,7 +51,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, groupAd);
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
-        bundle.putBoolean(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, false);
+        bundle.putBoolean(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, forceRefresh);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -109,7 +109,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     @Override
     protected void refreshAd() {
-        if (ad != null) {
+        if (ad != null ) {
             presenter.refreshAd(startDate, endDate, ad.getId());
         } else {
             presenter.refreshAd(startDate, endDate, adId);
@@ -118,7 +118,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     @Override
     protected void editAd() {
-        Intent intent = TopAdsEditGroupMainPageActivity.createIntent(getActivity(), ad, ad.getId());
+        Intent intent = TopAdsEditGroupMainPageActivity.createIntent(getActivity(), ad, ad.getId(), isForceRefresh);
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
