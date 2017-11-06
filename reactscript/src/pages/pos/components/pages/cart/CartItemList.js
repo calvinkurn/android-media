@@ -63,7 +63,7 @@ class CartItemList extends Component {
     }
 
     if (this.props.checkout_status_msg === 'SUCCESS' && !this.props.showLoadingPage && !this.props.isFetchingParamsCheckout){
-      console.log(this.props)
+      // console.log(this.props)
       NavigationModule.navigateAndFinish(`posapp://payment/checkout?checkout_data=${JSON.stringify(this.props.checkout_data)}`, "")
     }
 
@@ -243,7 +243,7 @@ const styles = {
 
 
 const mapStateToProps = (state) => {
-    // console.log(state.checkout)
+    console.log(state)
     return {
       checkout_isFetchingParamsCheckout: state.checkout.isFetchingParamsCheckout,
       checkout_showLoadingPage: state.checkout.showLoadingPage,

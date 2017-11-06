@@ -80,6 +80,7 @@ class PaymentBank extends Component {
         // console.log(payment_amount)
         const payment_with_rates = selectedEmiId ? payment_amount : noInstallmentCalc 
         // console.log(payment_with_rates)
+        // console.log(payment_amount)
 
         this.props.navigation.navigate('Payment', {
           checkout_data: this.props.screenProps.checkout_data,
@@ -315,8 +316,14 @@ class PaymentBank extends Component {
     // const payment_amount_curr = (checkout_data.data.data.payment_amount).toLocaleString("id") || ''
     const totalPriceWithCurrency = numeral(payment_amount).format('0,0') || ''
     const { installmentCalc, noInstallmentCalc } = this.state
-    const installmentCalcWithCurrency = numeral(installmentCalc).format('0,0') || 0
-    const noInstallmentCalcWithCurrency = numeral(noInstallmentCalc).format('0,0') || 0
+    // console.log(installmentCalc, typeof installmentCalc, noInstallmentCalc, typeof noInstallmentCalc)
+    const installmentCalcWithCurrency = installmentCalc === 0 ? numeral(payment_amount).format('0,0') : numeral(installmentCalc).format('0,0')
+    const noInstallmentCalcWithCurrency = noInstallmentCalc === 0 ? numeral(payment_amount).format('0,0') : numeral(noInstallmentCalc).format('0,0')
+    
+    // console.log(payment_amount)
+    // console.log(checkout_data)
+    // console.log(installmentCalcWithCurrency)
+    // console.log(noInstallmentCalcWithCurrency)
 
 
 
@@ -657,7 +664,7 @@ const ds = new ListView.DataSource({
 const mapStateToProps = state => {
   const bankList = ds.cloneWithRows(state.payment.items);
   //state.payment.emiList
-  console.log(state)
+  // console.log(state)
 
   return {
     ...state.payment,
