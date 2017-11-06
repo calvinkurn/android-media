@@ -116,16 +116,7 @@ public abstract class DataListSource<T, U> {
     }
 
     public Observable<Integer> getCacheDataListCount(final HashMap<String, Object> params) {
-        return dataListDBManager.getData(params).flatMap(new Func1<List<U>, Observable<Integer>>() {
-            @Override
-            public Observable<Integer> call(List<U> cacheList) {
-                if (cacheList == null || cacheList.size() == 0) {
-                    return Observable.just(0);
-                } else {
-                    return Observable.just(cacheList.size());
-                }
-            }
-        });
+        return dataListDBManager.getDataCount(params);
     }
 
     public Observable<Boolean> setCacheExpired() {

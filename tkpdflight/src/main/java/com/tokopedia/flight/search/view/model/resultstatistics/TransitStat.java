@@ -3,13 +3,14 @@ package com.tokopedia.flight.search.view.model.resultstatistics;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.search.view.model.TransitEnum;
 
 /**
  * Created by User on 11/1/2017.
  */
 
-public class TransitStat implements Parcelable {
+public class TransitStat implements ItemType, Parcelable {
     private TransitEnum transitType;
     private int minPrice;
 
@@ -29,6 +30,12 @@ public class TransitStat implements Parcelable {
     public void setMinPrice(int minPrice) {
         this.minPrice = minPrice;
     }
+
+    @Override
+    public int getType() {
+        return 0;
+    }
+
 
     @Override
     public int describeContents() {

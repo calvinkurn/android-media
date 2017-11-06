@@ -7,6 +7,7 @@ import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.search.data.cloud.model.Route;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
+import com.tokopedia.flight.search.view.model.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -159,8 +160,8 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
         }
     }
 
-    public static RequestParams generateRequestParams(boolean isReturning, boolean fromCache) {
-        return FlightSearchParamUtil.generateRequestParams(isReturning, fromCache);
+    public static RequestParams generateRequestParams(boolean isReturning, boolean fromCache, FlightFilterModel flightFilterModel) {
+        return FlightSearchParamUtil.generateRequestParams(isReturning, fromCache, flightFilterModel);
     }
 
 }
