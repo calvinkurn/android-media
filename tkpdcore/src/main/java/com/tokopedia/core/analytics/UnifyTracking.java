@@ -2515,4 +2515,29 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent()
         );
     }
+
+    public static void eventTopChatSearch(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void eventInsertAttachment(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void eventSendAttachment (String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void sendChat(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+    public static void eventOpenTopChat(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
 }

@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
@@ -36,6 +38,7 @@ import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.adapter.NewInboxChatAdapter;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
@@ -437,6 +440,9 @@ public class InboxChatFragment extends BaseDaggerFragment
         if(text.length()>0) {
             presenter.initSearch(text);
             searchLoading.setVisibility(View.VISIBLE);
+            UnifyTracking.eventTopChatSearch(TopChatTrackingEventLabel.Category.INBOX_CHAT,
+                    TopChatTrackingEventLabel.Action.INBOX_CHAT_SEARCH,
+                    TopChatTrackingEventLabel.Name.INBOX_CHAT);
         }else {
             presenter.resetSearch();
         }

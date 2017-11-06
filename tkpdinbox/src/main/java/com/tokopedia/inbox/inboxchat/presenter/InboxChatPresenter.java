@@ -3,6 +3,7 @@ package com.tokopedia.inbox.inboxchat.presenter;
 import android.content.Intent;
 import android.util.Pair;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -10,6 +11,7 @@ import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
 import com.tokopedia.inbox.inboxchat.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase;
@@ -228,6 +230,11 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void goToDetailMessage(int position, ChatListViewModel listMessage) {
+
+        UnifyTracking.eventOpenTopChat(TopChatTrackingEventLabel.Category.INBOX_CHAT,
+                TopChatTrackingEventLabel.Action.INBOX_CHAT_CLICK,
+                TopChatTrackingEventLabel.Name.INBOX_CHAT);
+
         getView().getAdapter().notifyItemChanged(position);
         Intent intent = ChatRoomActivity.getCallingIntent(getView().getActivity(),
                 getView().getArguments().getString(PARAM_NAV),

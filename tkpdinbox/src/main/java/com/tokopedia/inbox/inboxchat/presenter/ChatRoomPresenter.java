@@ -194,6 +194,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 //                }
 //            });
             try {
+
                 sendReply(messageId, reply);
             } catch (JSONException e) {
                 e.printStackTrace();

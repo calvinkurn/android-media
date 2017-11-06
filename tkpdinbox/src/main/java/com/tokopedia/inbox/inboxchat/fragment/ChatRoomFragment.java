@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -34,6 +35,7 @@ import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactoryImpl;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
@@ -138,6 +140,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
             @Override
             public void onClick(View view) {
                 presenter.sendMessage();
+                UnifyTracking.sendChat(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
+                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_SEND,
+                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+
             }
         });
 
@@ -178,6 +184,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventInsertAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
+                                                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_INSERT,
+                                                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
                 presenter.getAttachProductDialog(
                         getArguments().getString(ChatRoomActivity
                                 .PARAM_SENDER_ID, ""),
@@ -189,6 +198,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void addUrlToReply(String url) {
+        UnifyTracking.eventSendAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
+                TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACHMENT,
+                TopChatTrackingEventLabel.Name.CHAT_DETAIL);
         replyColumn.setText(replyColumn.getText() + "\n" + url);
         replyColumn.setSelection(replyColumn.length());
     }
