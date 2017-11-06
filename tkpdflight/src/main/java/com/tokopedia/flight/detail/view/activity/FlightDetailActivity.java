@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
+import android.view.View;
+import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.flight.R;
@@ -23,11 +25,38 @@ public class FlightDetailActivity extends BaseTabActivity {
     public static final String EXTRA_FLIGHT_SEARCH_MODEL = "EXTRA_FLIGHT_SEARCH_MODEL";
 
     private FlightSearchViewModel flightSearchViewModel;
+    private Button buttonSubmit;
 
     public static Intent createIntent(Context context, FlightSearchViewModel flightSearchViewModel){
         Intent intent = new Intent(context, FlightDetailActivity.class);
         intent.putExtra(EXTRA_FLIGHT_SEARCH_MODEL, flightSearchViewModel);
         return intent;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_flight_detail;
+    }
+
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        buttonSubmit = (Button) findViewById(R.id.button_submit);
+
+        buttonSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResultAndFinish();
+            }
+        });
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void setResultAndFinish() {
+        Intent intent = new Intent();
+        intent.putExtra("EXTRA_FLIGHT_SELECTED", flightSearchViewModel.getId());
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override

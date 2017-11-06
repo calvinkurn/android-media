@@ -118,6 +118,9 @@ public class Route implements ItemType, Parcelable {
         return TYPE;
     }
 
+    public Route() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -132,13 +135,12 @@ public class Route implements ItemType, Parcelable {
         dest.writeString(this.arrivalTimestamp);
         dest.writeString(this.duration);
         dest.writeString(this.layover);
-        dest.writeList(this.infos);
+        dest.writeTypedList(this.infos);
         dest.writeString(this.flightNumber);
         dest.writeByte(this.isRefundable ? (byte) 1 : (byte) 0);
-        dest.writeList(this.amenities);
-    }
-
-    public Route() {
+        dest.writeTypedList(this.amenities);
+        dest.writeString(this.airlineName);
+        dest.writeString(this.airlineLogo);
     }
 
     protected Route(Parcel in) {
@@ -149,15 +151,15 @@ public class Route implements ItemType, Parcelable {
         this.arrivalTimestamp = in.readString();
         this.duration = in.readString();
         this.layover = in.readString();
-        this.infos = new ArrayList<Info>();
-        in.readList(this.infos, Info.class.getClassLoader());
+        this.infos = in.createTypedArrayList(Info.CREATOR);
         this.flightNumber = in.readString();
         this.isRefundable = in.readByte() != 0;
-        this.amenities = new ArrayList<Amenity>();
-        in.readList(this.amenities, Amenity.class.getClassLoader());
+        this.amenities = in.createTypedArrayList(Amenity.CREATOR);
+        this.airlineName = in.readString();
+        this.airlineLogo = in.readString();
     }
 
-    public static final Parcelable.Creator<Route> CREATOR = new Parcelable.Creator<Route>() {
+    public static final Creator<Route> CREATOR = new Creator<Route>() {
         @Override
         public Route createFromParcel(Parcel source) {
             return new Route(source);
