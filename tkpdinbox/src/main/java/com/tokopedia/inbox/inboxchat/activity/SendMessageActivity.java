@@ -51,7 +51,6 @@ public class SendMessageActivity extends TActivity {
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.header_chat, null);
-        ImageView avatar = (ImageView) mCustomView.findViewById(R.id.user_avatar);
         toolbar.addView(mCustomView);
         setSupportActionBar(toolbar);
 
