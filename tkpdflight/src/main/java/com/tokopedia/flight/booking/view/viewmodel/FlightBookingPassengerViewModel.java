@@ -9,13 +9,12 @@ import java.util.List;
  * Created by alvarisi on 11/7/17.
  */
 
-public class FlightBookingPassengerViewModel implements Parcelable {
+public class FlightBookingPassengerViewModel implements Parcelable{
     private boolean singleRoute;
     private int type;
     private String headerTitle;
     private String passengerName;
     private String passengerBirthdate;
-    private String passportNumber;
     private FlightBookingLuggageViewModel departureLugage;
     private FlightBookingLuggageViewModel returnLugage;
     private List<FlightBookingMealViewModel> departureMeals;
@@ -27,7 +26,6 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         headerTitle = in.readString();
         passengerName = in.readString();
         passengerBirthdate = in.readString();
-        passportNumber = in.readString();
         departureLugage = in.readParcelable(FlightBookingLuggageViewModel.class.getClassLoader());
         returnLugage = in.readParcelable(FlightBookingLuggageViewModel.class.getClassLoader());
         departureMeals = in.createTypedArrayList(FlightBookingMealViewModel.CREATOR);
@@ -76,14 +74,6 @@ public class FlightBookingPassengerViewModel implements Parcelable {
 
     public void setPassengerBirthdate(String passengerBirthdate) {
         this.passengerBirthdate = passengerBirthdate;
-    }
-
-    public String getPassportNumber() {
-        return passportNumber;
-    }
-
-    public void setPassportNumber(String passportNumber) {
-        this.passportNumber = passportNumber;
     }
 
     public boolean isSingleRoute() {
@@ -138,7 +128,6 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         dest.writeString(headerTitle);
         dest.writeString(passengerName);
         dest.writeString(passengerBirthdate);
-        dest.writeString(passportNumber);
         dest.writeParcelable(departureLugage, flags);
         dest.writeParcelable(returnLugage, flags);
         dest.writeTypedList(departureMeals);
