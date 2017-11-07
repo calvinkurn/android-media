@@ -39,8 +39,8 @@ public class OrderDetailActivity extends TActivity {
 
     private void initView(OrderDetailData data) {
         setMainScrollProperty();
-        setItemListView(data);
         setStatusView(data);
+        setItemListView(data);
         setInvoiceView(data);
         setDescriptionView(data);
         setPriceView(data);
@@ -51,6 +51,11 @@ public class OrderDetailActivity extends TActivity {
     private void setMainScrollProperty() {
         NestedScrollView mainScrollView = (NestedScrollView) findViewById(R.id.main_scroll_view);
         mainScrollView.setNestedScrollingEnabled(false);
+    }
+
+    private void setStatusView(OrderDetailData data) {
+        TextView statusTextView = (TextView) findViewById(R.id.text_view_status);
+        statusTextView.setText(data.getOrderStatus());
     }
 
     private void setPriceView(OrderDetailData data) {
@@ -78,11 +83,6 @@ public class OrderDetailActivity extends TActivity {
         RecyclerView itemListRecycleView = (RecyclerView) findViewById(R.id.item_list);
         itemListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         itemListRecycleView.setAdapter(new OrderItemAdapter(data.getItemList()));
-    }
-
-    private void setStatusView(OrderDetailData data) {
-        TextView statusTextView = (TextView) findViewById(R.id.text_view_status);
-        statusTextView.setText(data.getOrderStatus());
     }
 
     private void setInvoiceView(OrderDetailData data) {
