@@ -14,6 +14,7 @@ import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
 import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
 import com.tokopedia.posapp.domain.model.product.ProductListDomain;
 import com.tokopedia.posapp.domain.usecase.GetBankUseCase;
+import com.tokopedia.posapp.domain.usecase.GetEtalaseCacheUseCase;
 import com.tokopedia.posapp.domain.usecase.GetEtalaseUseCase;
 import com.tokopedia.posapp.domain.usecase.GetProductListUseCase;
 import com.tokopedia.posapp.domain.usecase.StoreBankUsecase;
@@ -56,6 +57,7 @@ public class CachePresenter implements Cache.Presenter {
     private StoreBankUsecase storeBankUsecase;
     private GetEtalaseUseCase getEtalaseUseCase;
     private StoreEtalaseCacheUseCase storeEtalaseCacheUseCase;
+    private GetEtalaseCacheUseCase getEtalaseCacheUseCase;
 
     private Cache.CallbackListener callbackListener;
 
@@ -72,7 +74,8 @@ public class CachePresenter implements Cache.Presenter {
                           GetBankUseCase getBankUseCase,
                           StoreBankUsecase storeBankUsecase,
                           GetEtalaseUseCase getEtalaseUseCase,
-                          StoreEtalaseCacheUseCase storeEtalaseCacheUseCase
+                          StoreEtalaseCacheUseCase storeEtalaseCacheUseCase,
+                          GetEtalaseCacheUseCase getEtalaseCacheUseCase
     ) {
         this.context = context;
         this.getProductListUseCase = getProductListUseCase;
@@ -81,6 +84,7 @@ public class CachePresenter implements Cache.Presenter {
         this.storeBankUsecase = storeBankUsecase;
         this.getEtalaseUseCase = getEtalaseUseCase;
         this.storeEtalaseCacheUseCase = storeEtalaseCacheUseCase;
+        this.getEtalaseCacheUseCase = getEtalaseCacheUseCase;
 
         initState();
     }
@@ -142,19 +146,27 @@ public class CachePresenter implements Cache.Presenter {
     }
 
     private void getProduct() {
-        Observable.defer(new Func0<Observable<ProductListDomain>>() {
-            @Override
-            public Observable<ProductListDomain> call() {
-                if(isRequestNextProduct) {
-                    return getProductListUseCase.createObservable(getGatewayProductParam(productPage));
-                }
-
-                return Observable.error(null);
-            }
-        })
-        .repeat()
-        .subscribeOn(Schedulers.newThread())
-        .subscribe(new ProductSubscriber());
+//        getEtalaseCacheUseCase.createObservable(RequestParams.EMPTY)
+//                .flatMap(new Func1<List<EtalaseDomain>, Observable<?>>() {
+//                    @Override
+//                    public Observable<> call(List<EtalaseDomain> etalaseDomains) {
+//                        return null;
+//                    }
+//                });
+//
+//        Observable.defer(new Func0<Observable<ProductListDomain>>() {
+//            @Override
+//            public Observable<ProductListDomain> call() {
+//                if(isRequestNextProduct) {
+//                    return getProductListUseCase.createObservable(getGatewayProductParam(productPage));
+//                }
+//
+//                return Observable.error(null);
+//            }
+//        })
+//        .repeat()
+//        .subscribeOn(Schedulers.newThread())
+//        .subscribe(new ProductSubscriber());
     }
 
     private RequestParams getGatewayProductParam(int page) {

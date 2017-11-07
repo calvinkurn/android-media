@@ -12,21 +12,20 @@ import java.util.List;
 import rx.Observable;
 
 /**
- * Created by okasurya on 9/18/17.
+ * Created by okasurya on 11/7/17.
  */
 
-public class GetEtalaseUseCase extends UseCase<List<EtalaseDomain>> {
+public class GetEtalaseCacheUseCase extends UseCase<List<EtalaseDomain>> {
     private EtalaseRepository etalaseRepository;
 
-    public GetEtalaseUseCase(ThreadExecutor threadExecutor,
-                             PostExecutionThread postExecutionThread,
-                             EtalaseRepository etalaseRepository) {
+    public GetEtalaseCacheUseCase(ThreadExecutor threadExecutor,
+                                  PostExecutionThread postExecutionThread,
+                                  EtalaseRepository etalaseRepository) {
         super(threadExecutor, postExecutionThread);
         this.etalaseRepository = etalaseRepository;
     }
-
     @Override
     public Observable<List<EtalaseDomain>> createObservable(RequestParams requestParams) {
-        return etalaseRepository.getEtalase(requestParams);
+        return etalaseRepository.getEtalaseCache();
     }
 }

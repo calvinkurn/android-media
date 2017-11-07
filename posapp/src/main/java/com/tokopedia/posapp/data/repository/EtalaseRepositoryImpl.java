@@ -27,6 +27,11 @@ public class EtalaseRepositoryImpl implements EtalaseRepository {
     }
 
     @Override
+    public Observable<List<EtalaseDomain>> getEtalaseCache() {
+        return etalaseFactory.local().getAllEtalase();
+    }
+
+    @Override
     public Observable<DataStatus> storeEtalaseToCache(ListDomain<EtalaseDomain> data) {
         return etalaseFactory.local().storeEtalase(data);
     }
