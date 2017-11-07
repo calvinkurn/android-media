@@ -68,4 +68,9 @@ public class FlightBookingMealViewModel implements Parcelable{
         dest.writeString(title);
         dest.writeString(price);
     }
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }
