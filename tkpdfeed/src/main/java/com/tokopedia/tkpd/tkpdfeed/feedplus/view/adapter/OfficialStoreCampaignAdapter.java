@@ -63,16 +63,13 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
             adapter = new LabelsAdapter();
             labels.setAdapter(adapter);
 
-            final ArrayList<OfficialStoreCampaignProductViewModel> list =
-                    officialStoreCampaignViewModel.getListProduct();
-
             productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     viewListener.onGoToProductDetailFromCampaign(
                             officialStoreCampaignViewModel.getPage(),
                             officialStoreCampaignViewModel.getRowNumber(),
-                            String.valueOf(list.get(getAdapterPosition())
+                            String.valueOf(officialStoreCampaignViewModel.getListProduct().get(getAdapterPosition())
                                     .getProductId()));
                 }
             });
@@ -83,7 +80,7 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
                     viewListener.onGoToProductDetailFromCampaign(
                             officialStoreCampaignViewModel.getPage(),
                             officialStoreCampaignViewModel.getRowNumber(),
-                            String.valueOf(list.get(getAdapterPosition())
+                            String.valueOf(officialStoreCampaignViewModel.getListProduct().get(getAdapterPosition())
                                     .getProductId()));
                 }
             });
@@ -93,7 +90,7 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
                     viewListener.onGoToShopDetailFromCampaign(
                             officialStoreCampaignViewModel.getPage(),
                             officialStoreCampaignViewModel.getRowNumber(),
-                            list.get(getAdapterPosition()).getShopUrl());
+                            officialStoreCampaignViewModel.getListProduct().get(getAdapterPosition()).getShopUrl());
                 }
             });
             shopName.setOnClickListener(new View.OnClickListener() {
@@ -102,7 +99,7 @@ public class OfficialStoreCampaignAdapter extends RecyclerView.Adapter<OfficialS
                     viewListener.onGoToShopDetailFromCampaign(
                             officialStoreCampaignViewModel.getPage(),
                             officialStoreCampaignViewModel.getRowNumber(),
-                            list.get(getAdapterPosition())
+                            officialStoreCampaignViewModel.getListProduct().get(getAdapterPosition())
                                     .getShopUrl());
                 }
             });

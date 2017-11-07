@@ -217,7 +217,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                 .first(new Func1<StatusEntity, Boolean>() {
                     @Override
                     public Boolean call(StatusEntity status) {
-                        return status != null;
+                        return status != null && status.getAttributes() != null;
                     }
                 })
                 .doOnNext(validateStatus(true));
