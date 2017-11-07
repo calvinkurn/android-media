@@ -980,14 +980,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessFollowUnfollowKol(int rowNumber) {
-        if (rowNumber <= adapter.getItemCount()
-                && adapter.getlist().get(rowNumber) != null
-                && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setFollowed(!((KolViewModel) adapter
-                    .getlist().get(rowNumber)).isFollowed());
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setTemporarilyFollowed(!((KolViewModel) adapter
-                    .getlist().get(rowNumber)).isTemporarilyFollowed());
-            adapter.notifyItemChanged(rowNumber);
+        int originalPos = topAdsRecyclerAdapter.getPlacer().getItem(rowNumber).originalPos();
+
+        if (originalPos > 0
+                && rowNumber <= topAdsRecyclerAdapter.getItemCount()
+                && adapter.getlist().get(originalPos) != null
+                && adapter.getlist().get(originalPos) instanceof KolViewModel) {
+            ((KolViewModel) adapter.getlist().get(originalPos)).setFollowed(!((KolViewModel) adapter
+                    .getlist().get(originalPos)).isFollowed());
+            ((KolViewModel) adapter.getlist().get(originalPos)).setTemporarilyFollowed(!((KolViewModel) adapter
+                    .getlist().get(originalPos)).isTemporarilyFollowed());
+            topAdsRecyclerAdapter.notifyItemChanged(rowNumber);
         }
     }
 
@@ -999,12 +1002,22 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLikeDislikeKolPost(int rowNumber) {
-        if (rowNumber <= adapter.getItemCount()
-                && adapter.getlist().get(rowNumber) != null
-                && adapter.getlist().get(rowNumber) instanceof KolViewModel) {
-            ((KolViewModel) adapter.getlist().get(rowNumber)).setLiked(!((KolViewModel) adapter
-                    .getlist().get(rowNumber)).isLiked());
-            adapter.notifyItemChanged(rowNumber);
+        int originalPos = topAdsRecyclerAdapter.getPlacer().getItem(rowNumber).originalPos();
+
+        if (originalPos > 0
+                && rowNumber <= topAdsRecyclerAdapter.getItemCount()
+                && adapter.getlist().get(originalPos) != null
+                && adapter.getlist().get(originalPos) instanceof KolViewModel) {
+            ((KolViewModel) adapter.getlist().get(originalPos)).setLiked(!((KolViewModel) adapter
+                    .getlist().get(originalPos)).isLiked());
+            if (((KolViewModel) adapter.getlist().get(originalPos)).isLiked()) {
+                ((KolViewModel) adapter.getlist().get(originalPos)).setTotalLike(((KolViewModel)
+                        adapter.getlist().get(originalPos)).getTotalLike() + 1);
+            } else {
+                ((KolViewModel) adapter.getlist().get(originalPos)).setTotalLike(((KolViewModel)
+                        adapter.getlist().get(originalPos)).getTotalLike() - 1);
+            }
+            topAdsRecyclerAdapter.notifyItemChanged(rowNumber);
         }
     }
 
@@ -1021,13 +1034,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessFollowUnfollowKolFromRecommendation(int rowNumber, int position) {
-        if (rowNumber <= adapter.getItemCount()
-                && adapter.getlist().get(rowNumber) != null
-                && adapter.getlist().get(rowNumber) instanceof KolRecommendationViewModel) {
-            ((KolRecommendationViewModel) adapter.getlist().get(rowNumber)).getListRecommend()
+        int originalPos = topAdsRecyclerAdapter.getPlacer().getItem(rowNumber).originalPos();
+        if (originalPos > 0
+                && rowNumber <= topAdsRecyclerAdapter.getItemCount()
+                && adapter.getlist().get(originalPos) != null
+                && adapter.getlist().get(originalPos) instanceof KolRecommendationViewModel) {
+            ((KolRecommendationViewModel) adapter.getlist().get(originalPos)).getListRecommend()
                     .get(position).setFollowed(!((KolRecommendationViewModel) adapter.getlist()
-                    .get(rowNumber)).getListRecommend().get(position).isFollowed());
-            adapter.notifyItemChanged(rowNumber);
+                    .get(originalPos)).getListRecommend().get(position).isFollowed());
+            topAdsRecyclerAdapter.notifyItemChanged(rowNumber);
+
         }
     }
 }

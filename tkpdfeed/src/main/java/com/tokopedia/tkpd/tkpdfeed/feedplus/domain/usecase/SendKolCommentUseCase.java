@@ -16,6 +16,9 @@ import rx.Observable;
 
 public class SendKolCommentUseCase extends UseCase<SendKolCommentDomain> {
 
+    private static final String PARAM_ID = "id";
+    private static final String PARAM_COMMENT = "comment";
+
     FeedRepository feedRepository;
 
     public SendKolCommentUseCase(ThreadExecutor threadExecutor,
@@ -30,8 +33,10 @@ public class SendKolCommentUseCase extends UseCase<SendKolCommentDomain> {
         return feedRepository.sendKolComment(requestParams);
     }
 
-    public static RequestParams getParam(String comment) {
+    public static RequestParams getParam(int id, String comment) {
         RequestParams params = RequestParams.create();
+        params.putInt(PARAM_ID, id);
+        params.putString(PARAM_COMMENT, comment);
         return params;
     }
 }

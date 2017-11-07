@@ -187,10 +187,10 @@ public interface FeedPlus {
 
         void likeUnlikeKol(int id, int rowNumber, View.Kol kolListener);
 
-        void followKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol
+        void followKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);
 
-        void unfollowKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol
+        void unfollowKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);
     }
 }

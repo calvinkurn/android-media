@@ -52,10 +52,10 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
         this.cursor = lastcursor;
     }
 
-    public void sendComment(String comment) {
+    public void sendComment(int id, String comment) {
         if (isValid(comment)) {
             getView().showProgressDialog();
-            sendKolCommentUseCase.execute(SendKolCommentUseCase.getParam(comment), new
+            sendKolCommentUseCase.execute(SendKolCommentUseCase.getParam(id, comment), new
                     SendKolCommentSubscriber(getView()));
         }
     }

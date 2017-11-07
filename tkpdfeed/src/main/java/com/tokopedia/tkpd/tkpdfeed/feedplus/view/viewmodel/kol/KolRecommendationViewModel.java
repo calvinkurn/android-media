@@ -57,4 +57,16 @@ public class KolRecommendationViewModel implements Visitable<FeedPlusTypeFactory
     public void setRowNumber(int rowNumber) {
         this.rowNumber = rowNumber;
     }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setListRecommend(ArrayList<KolRecommendItemViewModel> listRecommend) {
+        this.listRecommend = listRecommend;
+    }
 }

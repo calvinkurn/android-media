@@ -12,7 +12,10 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
+
+import java.util.ArrayList;
 
 /**
  * @author by nisie on 10/30/17.
@@ -32,6 +35,8 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
 
     public KolRecommendationAdapter(FeedPlus.View.Kol kolViewListener) {
         this.kolViewListener = kolViewListener;
+        ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
+        this.data = new KolRecommendationViewModel("", "", list);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -90,7 +95,11 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
             followButton.setText(MainApplication.getAppContext().getString(R.string.following));
             MethodChecker.setBackground(followButton, MethodChecker.getDrawable(MainApplication
                     .getAppContext(), R.drawable.btn_share_transaparent));
+            followButton.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R
+                    .color.tkpd_main_green));
         } else {
+            followButton.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R
+                    .color.white));
             followButton.setText(MainApplication.getAppContext().getString(R.string.action_follow_english));
             MethodChecker.setBackground(followButton, MethodChecker.getDrawable(MainApplication
                     .getAppContext(), R.drawable.green_button_rounded_unify));

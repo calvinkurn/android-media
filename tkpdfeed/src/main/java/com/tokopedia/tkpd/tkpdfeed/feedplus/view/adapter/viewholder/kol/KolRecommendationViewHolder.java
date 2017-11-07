@@ -37,14 +37,14 @@ public class KolRecommendationViewHolder extends AbstractViewHolder<KolRecommend
                 LinearLayoutManager.HORIZONTAL, false));
         adapter = new KolRecommendationAdapter(kolViewListener);
         listRecommendation.setAdapter(adapter);
+
     }
 
     @Override
     public void bind(final KolRecommendationViewModel element) {
         element.setRowNumber(getAdapterPosition());
-        adapter.setData(element);
-
         title.setText(MethodChecker.fromHtml(element.getTitle()));
+        adapter.setData(element);
         seeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

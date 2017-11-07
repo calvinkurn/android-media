@@ -150,7 +150,8 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.sendComment(kolComment.getText().toString());
+                presenter.sendComment(getArguments().getInt(KolCommentActivity.ARGS_ID),
+                        kolComment.getText().toString());
             }
         });
     }

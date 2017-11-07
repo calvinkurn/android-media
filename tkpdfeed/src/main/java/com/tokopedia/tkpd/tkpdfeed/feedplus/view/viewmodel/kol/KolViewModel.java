@@ -196,4 +196,12 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
     public String getTagsType() {
         return tagsType;
     }
+
+    public void setTotalLike(int totalLike) {
+        this.totalLike = totalLike;
+    }
+
+    public void setTotalComment(int totalComment) {
+        this.totalComment = totalComment;
+    }
 }
