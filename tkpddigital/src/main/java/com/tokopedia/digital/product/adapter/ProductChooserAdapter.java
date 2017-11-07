@@ -201,7 +201,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             tvProductDescription.setTextColor(hostFragment.getResources()
                     .getColor(R.color.grey_600));
             tvProductTotalPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.grey_800));
+                    .getColor(R.color.black));
         }
     }
 
@@ -276,10 +276,12 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         private void enableView() {
             tvProductPromoTitle.setTextColor(hostFragment.getResources()
                     .getColor(R.color.grey_800));
+            tvProductPromoTag.setTextColor(hostFragment.getResources()
+                    .getColor(R.color.orange_900));
             tvProductPromoDescription.setTextColor(hostFragment.getResources()
                     .getColor(R.color.grey_600));
             tvProductPromoOldPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.grey_800));
+                    .getColor(R.color.grey_500));
             tvPromoProductPrice.setTextColor(hostFragment.getResources()
                     .getColor(R.color.orange_900));
         }

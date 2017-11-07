@@ -11,6 +11,7 @@
         android:id="@+id/product_promo_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/grey_800"
         android:textStyle="bold"
         tools:text="Promo title"
         android:layout_marginLeft="@dimen/margin_ms"
@@ -22,6 +23,7 @@
         android:layout_marginStart="@dimen/margin_ms"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginTop="@dimen/padding_vs"
+        android:textStyle="bold"
         tools:text="Promo tag"
         android:layout_below="@+id/product_promo_title"
         android:layout_width="wrap_content"
@@ -53,6 +55,7 @@
             android:id="@+id/product_promo_old_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/grey_500"
             tools:text="Rp. 22.500"/>
 
         <TextView
