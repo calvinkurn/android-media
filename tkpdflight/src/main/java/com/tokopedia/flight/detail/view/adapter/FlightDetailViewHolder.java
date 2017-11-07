@@ -1,11 +1,14 @@
 package com.tokopedia.flight.detail.view.adapter;
 
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.abstraction.utils.DateFormatUtils;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
 import com.tokopedia.flight.search.data.cloud.model.Route;
 
 /**
@@ -14,11 +17,11 @@ import com.tokopedia.flight.search.data.cloud.model.Route;
 
 public class FlightDetailViewHolder extends BaseViewHolder<Route> {
 
+    public static final String FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     private ImageView imageAirline;
     private TextView airlineName;
     private TextView airlineCode;
     private TextView refundableInfo;
-    private ImageView infoRefundableImage;
     private TextView departureTime;
     private TextView departureDate;
     private ImageView departureCircleImage;
@@ -38,7 +41,6 @@ public class FlightDetailViewHolder extends BaseViewHolder<Route> {
         airlineName = (TextView) itemView.findViewById(R.id.airline_name);
         airlineCode = (TextView) itemView.findViewById(R.id.airline_code);
         refundableInfo = (TextView) itemView.findViewById(R.id.airline_refundable_info);
-        infoRefundableImage = (ImageView) itemView.findViewById(R.id.airline_image_refundable_info);
         departureTime = (TextView) itemView.findViewById(R.id.departure_time);
         departureDate = (TextView) itemView.findViewById(R.id.departure_date);
         departureCircleImage = (ImageView) itemView.findViewById(R.id.departure_time_circle);
@@ -55,21 +57,35 @@ public class FlightDetailViewHolder extends BaseViewHolder<Route> {
 
     @Override
     public void bindObject(Route route) {
-        airlineName.setText(route.getAirline());
+        airlineName.setText(route.getAirlineName());
         airlineCode.setText(route.getFlightNumber());
-        refundableInfo.setVisibility(route.getRefundable() ? View.VISIBLE : View.GONE);
-        infoRefundableImage.setVisibility(route.getRefundable() ? View.VISIBLE : View.GONE);
-        departureTime.setText(route.getDepartureTimestamp());
-        departureDate.setText(route.getDepartureTimestamp());
+        setRefundableInfo(route);
+        departureTime.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, "HH:mm", route.getDepartureTimestamp()));
+        departureDate.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, "EEEE, dd LLLL yyyy", route.getDepartureTimestamp()));
         setColorCircle(route);
         departureAirportName.setText(route.getDepartureAirport());
         departureAirportDesc.setText(route.getDepartureAirport());
         flightTime.setText(route.getDuration());
-        arrivalTime.setText(route.getArrivalTimestamp());
-        arrivalDate.setText(route.getArrivalTimestamp());
+        arrivalTime.setText(DateFormatUtils.formatDate("yyyy-MM-dd'T'HH:mm:ss'Z'", "HH:mm", route.getArrivalTimestamp()));
+        arrivalDate.setText(DateFormatUtils.formatDate("yyyy-MM-dd'T'HH:mm:ss'Z'", "EEEE, dd LLLL yyyy", route.getArrivalTimestamp()));
         arrivalAirportName.setText(route.getArrivalAirport());
         arrivalAirportDesc.setText(route.getArrivalAirport());
         transitInfo.setText(route.getLayover());
+        imageAirline.setImageResource(FlightAirlineIconUtil.getImageResource(route.getAirline()));
+    }
+
+    private void setRefundableInfo(Route route) {
+        if(route.getRefundable()){
+            refundableInfo.setText(R.string.flight_label_refundable_info);
+            refundableInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));
+            refundableInfo.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_rect_stroke_flight_green));
+            refundableInfo.setVisibility(View.VISIBLE);
+        }else{
+            refundableInfo.setText(R.string.flight_label_non_refundable_info);
+            refundableInfo.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.grey_200));
+            refundableInfo.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_rect_stroke_flight_grey));
+            refundableInfo.setVisibility(View.GONE);
+        }
     }
 
     //set color circle to green if position holder is on first index

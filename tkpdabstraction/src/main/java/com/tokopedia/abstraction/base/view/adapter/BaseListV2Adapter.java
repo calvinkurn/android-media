@@ -1,8 +1,10 @@
 package com.tokopedia.abstraction.base.view.adapter;
 
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,7 +20,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRecyclerViewAdapter implements RetryDataBinder.OnRetryListener {
+public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRecyclerViewAdapter {
 
     public static final int DEFAULT_ROW_PER_PAGE = 100;
 
@@ -26,12 +28,14 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
 
     private int rowPerPage;
     private List<T> data = new ArrayList<>();
-    private OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener;
+    protected OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener;
 
     private int totalItem;
     private String searchQueryString;
     private NoResultDataBinder emptyNoResultDataBinder;
     private LoadingDataBinder loadingDataBinder;
+
+    private int pageToLoad = 1;
 
     public interface OnBaseListV2AdapterListener<T> {
         void onItemClicked(T t);
@@ -62,31 +66,42 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
     }
 
     private void setUpBinder() {
-        loadingDataBinder = createLoadingDataBinder();
-        if (loadingDataBinder == null) {
-            loadingDataBinder = new LoadingDataBinder(this);
-        }
-        setLoadingView(loadingDataBinder);
+        setLoadingView(createLoadingDataBinder());
+        setEmptyView(createEmptyViewBinder());
+        setRetryView(createRetryDataBinder());
+    }
 
-        NoResultDataBinder noResultDataBinder = createEmptyViewBinder();
-        if (noResultDataBinder == null) {
-            noResultDataBinder = new NoResultDataBinder(this);
+    @Override
+    public void setLoadingView(LoadingDataBinder loadingView) {
+        if (loadingView == null) {
+            loadingView = new LoadingDataBinder(this);
         }
-        setEmptyView(noResultDataBinder);
+        this.loadingDataBinder = loadingView;
+        super.setLoadingView(loadingDataBinder);
+    }
 
-        RetryDataBinder retryDataBinder = createRetryDataBinder();
-        if (retryDataBinder == null) {
-            retryDataBinder = new RetryDataBinder(this);
+    @Override
+    public void setEmptyView(NoResultDataBinder emptyView) {
+        if (emptyView == null) {
+            emptyView = new NoResultDataBinder(this);
         }
-        retryDataBinder.setIsFullScreen(true);
-        retryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+        super.setEmptyView(emptyView);
+    }
+
+    @Override
+    public void setRetryView(RetryDataBinder retryView) {
+        if (retryView == null) {
+            retryView = new RetryDataBinder(this);
+        }
+        retryView.setIsFullScreen(true);
+        retryView.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
-            public void onRetryCliked() {
+            public void onRetryClicked() {
                 showLoading(true);
                 loadStartPage();
             }
         });
-        setRetryView(retryDataBinder);
+        super.setRetryView(retryView);
     }
 
     @Nullable
@@ -139,15 +154,21 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
     public void loadNextPage() {
         if (onBaseListV2AdapterListener != null) {
             int currentSize = getDataSize();
-            onBaseListV2AdapterListener.loadData((currentSize / rowPerPage) + 1,
+            pageToLoad = (currentSize / rowPerPage) + 1;
+            onBaseListV2AdapterListener.loadData(pageToLoad,
                     getDataSize(), rowPerPage);
         }
     }
 
     public void loadStartPage() {
         if (onBaseListV2AdapterListener != null) {
-            onBaseListV2AdapterListener.loadData(1, 0, rowPerPage);
+            pageToLoad = 1;
+            onBaseListV2AdapterListener.loadData(pageToLoad, 0, rowPerPage);
         }
+    }
+
+    public boolean isLoadInitialPage() {
+        return pageToLoad == 1;
     }
 
     @Override
@@ -238,6 +259,10 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
             default:
                 return onCreateItemViewHolder(parent, viewType);
         }
+    }
+
+    protected View getLayoutView(ViewGroup parent, @LayoutRes int layoutRes) {
+        return LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
     }
 
     public abstract BaseViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType);

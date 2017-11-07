@@ -3,9 +3,16 @@ package com.tokopedia.flight.detail.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.flight.R;
@@ -23,6 +30,13 @@ public class FlightDetailActivity extends BaseTabActivity {
     public static final String EXTRA_FLIGHT_SEARCH_MODEL = "EXTRA_FLIGHT_SEARCH_MODEL";
 
     private FlightSearchViewModel flightSearchViewModel;
+    private Button buttonSubmit;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private AppBarLayout appBarLayout;
+    private TextView departureAirportCode;
+    private TextView departureAirportName;
+    private TextView arrivalAirportCode;
+    private TextView arrivalAirportName;
 
     public static Intent createIntent(Context context, FlightSearchViewModel flightSearchViewModel){
         Intent intent = new Intent(context, FlightDetailActivity.class);
@@ -31,9 +45,39 @@ public class FlightDetailActivity extends BaseTabActivity {
     }
 
     @Override
-    protected void setupFragment(Bundle savedinstancestate) {
+    protected int getLayoutRes() {
+        return R.layout.activity_flight_detail;
+    }
+
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
         flightSearchViewModel = getIntent().getParcelableExtra(EXTRA_FLIGHT_SEARCH_MODEL);
-        super.setupFragment(savedinstancestate);
+        super.setupLayout(savedInstanceState);
+        buttonSubmit = (Button) findViewById(R.id.button_submit);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+        departureAirportCode = (TextView) findViewById(R.id.departure_airport_code);
+        departureAirportName = (TextView) findViewById(R.id.departure_airport_name);
+        arrivalAirportCode = (TextView) findViewById(R.id.arrival_airport_code);
+        arrivalAirportName = (TextView) findViewById(R.id.arrival_airport_name);
+
+        departureAirportCode.setText(flightSearchViewModel.getDepartureAirport());
+        arrivalAirportCode.setText(flightSearchViewModel.getArrivalAirport());
+        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
+        buttonSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResultAndFinish();
+            }
+        });
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void setResultAndFinish() {
+        Intent intent = new Intent();
+        intent.putExtra("EXTRA_FLIGHT_SELECTED", flightSearchViewModel.getId());
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override
@@ -75,9 +119,25 @@ public class FlightDetailActivity extends BaseTabActivity {
         };
     }
 
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
+    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
+        return new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbarLayout.setTitle(getString(R.string.flight_label_detail));
+                    isShow = true;
+                } else if (isShow) {
+                    collapsingToolbarLayout.setTitle("");
+                    isShow = false;
+                }
+            }
+        };
     }
 
     @Override

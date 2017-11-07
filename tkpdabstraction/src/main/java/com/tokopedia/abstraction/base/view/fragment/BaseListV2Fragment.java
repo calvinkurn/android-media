@@ -21,7 +21,6 @@ public abstract class BaseListV2Fragment<T extends ItemType> extends BaseDaggerF
         implements BaseListViewListener<T>{
 
     private BaseListV2Adapter<T> adapter;
-    private BaseListRecyclerView recyclerView;
     private SwipeRefreshLayout swipeToRefresh;
     private SnackbarRetry snackBarRetry;
 
@@ -34,10 +33,10 @@ public abstract class BaseListV2Fragment<T extends ItemType> extends BaseDaggerF
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recyclerView = getRecyclerView(view);
+        BaseListRecyclerView recyclerView = getRecyclerView(view);
         swipeToRefresh = getSwipeRefreshLayout(view);
         if (adapter!= null) {
-            if (recyclerView!= null) {
+            if (recyclerView != null) {
                 recyclerView.setAdapter(adapter);
             }
         }
@@ -52,6 +51,14 @@ public abstract class BaseListV2Fragment<T extends ItemType> extends BaseDaggerF
                 }
             });
         }
+        if (needLoadDataAtStart()) {
+            showLoading();
+            loadInitialData();
+        }
+    }
+
+    protected boolean needLoadDataAtStart(){
+        return true;
     }
 
     protected abstract BaseListV2Adapter<T> getNewAdapter();
@@ -60,14 +67,21 @@ public abstract class BaseListV2Fragment<T extends ItemType> extends BaseDaggerF
 
     public abstract @Nullable SwipeRefreshLayout getSwipeRefreshLayout(View view);
 
+    protected void showLoading(){
+        adapter.showLoading(true);
+        hideSnackBarRetry();
+    }
+
     public void loadInitialData(){
-        adapter.clearData();
         adapter.loadStartPage();
     }
 
     @Override
     public void onSearchLoaded(@NonNull List<T> list, int totalItem) {
         hideLoading();
+        if (adapter.isLoadInitialPage()) {
+            adapter.clearData();
+        }
         adapter.addData(list, totalItem);
     }
 
@@ -95,11 +109,6 @@ public abstract class BaseListV2Fragment<T extends ItemType> extends BaseDaggerF
                 adapter.loadNextPage();
             }
         });
-    }
-
-    protected void showLoading(){
-        adapter.showLoading(true);
-        hideSnackBarRetry();
     }
 
     protected void hideLoading() {

@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/title_info"
         style="@style/TextView.Body1.BlackPrimary"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         tools:text="Jarak antar kursi"/>
 
     <TextView

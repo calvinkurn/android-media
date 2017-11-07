@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.detail.util.FlightAmenityIconUtil;
 import com.tokopedia.flight.search.data.cloud.model.Amenity;
 
 /**
@@ -24,6 +25,7 @@ public class FlightDetailFacilityAmenityViewHolder extends RecyclerView.ViewHold
     }
 
     public void bindData(Amenity amenity) {
+        imageAmenity.setImageResource(FlightAmenityIconUtil.getImageResource(amenity.getIcon()));
         textAmenity.setText(amenity.getLabel());
     }
 }

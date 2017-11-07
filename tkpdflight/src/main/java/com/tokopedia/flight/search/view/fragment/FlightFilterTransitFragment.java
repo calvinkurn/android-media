@@ -2,39 +2,29 @@ package com.tokopedia.flight.search.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.utils.CommonUtils;
-import com.tokopedia.design.label.selection.SelectionItem;
-import com.tokopedia.design.label.selection.SelectionLabelView;
-import com.tokopedia.design.label.selection.text.SelectionTextLabelView;
-import com.tokopedia.design.price.PriceRangeInputView;
-import com.tokopedia.design.text.DecimalRangeInputView;
+import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
+import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
+import com.tokopedia.abstraction.base.view.recyclerview.BaseListRecyclerView;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.adapter.FlightSearchAdapter;
+import com.tokopedia.flight.search.adapter.FlightFilterTransitAdapter;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
-import com.tokopedia.flight.search.view.model.FlightFilterModel;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
-import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
-
-import java.util.ArrayList;
+import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
 import java.util.List;
+
 
 /**
  * Created by nathan on 10/27/17.
  */
 
-public class FlightFilterTransitFragment extends BaseListFragment<FlightSearchViewModel> {
-    public static final String TAG = FlightFilterTransitFragment.class.getSimpleName();
+public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
+        implements BaseListV2Adapter.OnBaseListV2AdapterListener<TransitStat> {
+    public static final String TAG = FlightFilterRefundableFragment.class.getSimpleName();
 
     private OnFlightFilterListener listener;
 
@@ -47,32 +37,10 @@ public class FlightFilterTransitFragment extends BaseListFragment<FlightSearchVi
         return fragment;
     }
 
-    private OnFilterTransitFragmentListener onFilterFragmentListener;
-    public interface OnFilterTransitFragmentListener{
-        FlightSearchStatisticModel getFlightSearchStatisticModel();
-        FlightFilterModel getFlightFilterModel();
-        void onFilterModelChanged(FlightFilterModel flightFilterModel);
-    }
-
-    @CallSuper
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-
-        FlightFilterModel flightFilterModel= listener.getFlightFilterModel();
-
-        return view;
-    }
-
-    @Override
-    public void onSearchLoaded(@NonNull List<FlightSearchViewModel> list, int totalItem) {
-        super.onSearchLoaded(list, totalItem);
-
-    }
-
-    protected int getFragmentLayout() {
-        return R.layout.fragment_flight_filter_transit;
+        return inflater.inflate(R.layout.fragment_flight_filter_transit, container, false);
     }
 
     @Override
@@ -82,22 +50,34 @@ public class FlightFilterTransitFragment extends BaseListFragment<FlightSearchVi
 
     @Override
     protected void initInjector() {
-
+        // no inject
     }
 
     @Override
-    protected BaseListAdapter<FlightSearchViewModel> getNewAdapter() {
-        return new FlightSearchAdapter();
+    protected BaseListV2Adapter<TransitStat> getNewAdapter() {
+        return new FlightFilterTransitAdapter(this);
     }
 
     @Override
-    protected void searchForPage(int page) {
+    public BaseListRecyclerView getRecyclerView(View view) {
+        return (BaseListRecyclerView) view.findViewById(R.id.recycler_view);
+    }
 
+    @Nullable
+    @Override
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
     }
 
     @Override
-    public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
+    public void onItemClicked(TransitStat transitStat) {
+        // no op
+    }
 
+    @Override
+    public void loadData(int page, int currentDataSize, int rowPerPage) {
+        List<TransitStat> transitStats = listener.getFlightSearchStatisticModel().getTransitTypeStatList();
+        onSearchLoaded(transitStats, transitStats.size());
     }
 
     @Override
