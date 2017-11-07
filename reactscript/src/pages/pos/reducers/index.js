@@ -29,6 +29,7 @@ import {
   SEND_EMAIL,
 } from '../actions/index'
 import { bankData, emiData } from '../components/bankData';
+import { differenceBy } from 'lodash'
 // import { icons } from '../components/icon/index'
 
 
@@ -71,7 +72,8 @@ const products = (state = {
       }
     case `${FETCH_PRODUCTS}_${FULFILLED}`:
       const products = action.payload.data.list || []
-      const items = [...state.items, ...products]
+      const newItems = differenceBy(products, state.items, 'id')
+      const items = [...state.items, ...newItems]
       const nextUrl = action.payload.data.paging.uri_next
       const pagination = {
         ...state.pagination,
@@ -207,12 +209,12 @@ const cart = (state = {
 
     case `${REMOVE_FROM_CART}_${FULFILLED}`:
       console.log(action.payload)
-    const ItemToBeRemoved = state.items.filter(i => i.product_id === action.payload.pid)
+      const ItemToBeRemoved = state.items.filter(i => i.product_id === action.payload.pid)
 
-    return {
-      items: state.items.filter(i => action.payload.pid !== i.product_id),
-      totalPrice: state.totalPrice - (ItemToBeRemoved[0].product.product_price_unformatted * ItemToBeRemoved[0].quantity)
-    }
+      return {
+        items: state.items.filter(i => action.payload.pid !== i.product_id),
+        totalPrice: state.totalPrice - (ItemToBeRemoved[0].product.product_price_unformatted * ItemToBeRemoved[0].quantity)
+      }
 
     case `${INCREMENT_QTY}_${FULFILLED}`:
       const itemQtyToBeIncr = state.items.filter(i => i.product_id === action.payload.pid)
@@ -231,23 +233,23 @@ const cart = (state = {
       }
 
     case `${DECREMENT_QTY}_${FULFILLED}`:
-    const itemQtyToBeDecr = state.items.filter(i => i.product_id === action.payload.pid)
-    if (itemQtyToBeDecr[0].quantity === 1) {
-      return state
-    }
+      const itemQtyToBeDecr = state.items.filter(i => i.product_id === action.payload.pid)
+      if (itemQtyToBeDecr[0].quantity === 1) {
+        return state
+      }
 
-    return {
-      items: state.items.map(b => {
-        if (action.payload.pid === b.product_id) {
-          return Object.assign({}, b, {
-            quantity: action.payload.quantity
-          })
-        } else {
-          return b
-        }
-      }),
-      totalPrice: state.totalPrice - itemQtyToBeDecr[0].product.product_price_unformatted
-    }
+      return {
+        items: state.items.map(b => {
+          if (action.payload.pid === b.product_id) {
+            return Object.assign({}, b, {
+              quantity: action.payload.quantity
+            })
+          } else {
+            return b
+          }
+        }),
+        totalPrice: state.totalPrice - itemQtyToBeDecr[0].product.product_price_unformatted
+      }
 
     case `${CLEAR_CART}_${FULFILLED}`:
       return {
@@ -293,7 +295,7 @@ const checkout = (state = {
         data: [],
         status_msg: 'FAILED'
       }
-    
+
     default:
       return state
   }
@@ -335,7 +337,7 @@ const paymentV2 = (state = {
         processing_data: [],
         processing_status_msg: 'FAILED'
       }
-    
+
     default:
       return state
   }
@@ -360,7 +362,7 @@ const payment = (state = {
       }
     case `${FETCH_BANK_FUlFILLED}_${REJECTED}`:
       return {
-        ...state, 
+        ...state,
         isFetching: false
       }
     case `${FETCH_BANK_FUlFILLED}_${FULFILLED}`:
@@ -376,11 +378,11 @@ const payment = (state = {
       }
     case `${FETCH_EMI_FUlFILLED}_${REJECTED}`:
       return {
-        ...state, 
+        ...state,
         isFetching: false
       }
     case `${FETCH_EMI_FUlFILLED}_${FULFILLED}`:
-     // const data =  action.payload.data.data.list;
+      // const data =  action.payload.data.data.list;
       return {
         ...state,
         emiList: action.payload.data.data.list
@@ -502,7 +504,7 @@ const paymentRate = (state = {
   InstallmentFlag: 0,
   InstallmentFee: 0
 }, action) => {
-  switch (action.type){
+  switch (action.type) {
     case `${GET_PAYMENT_RATE}_${FULFILLED}`:
       return {
         ...state,
@@ -513,12 +515,12 @@ const paymentRate = (state = {
         InstallmentFlag: action.payload.data.InstallmentFlag,
         InstallmentFee: action.payload.data.InstallmentFee
       }
-    
+
     case `${GET_PAYMENT_RATE}_${PENDING}`:
       return {
         ...state
       }
-    
+
     case `${GET_PAYMENT_RATE}_${REJECTED}`:
       return {
         ...state,
@@ -546,7 +548,7 @@ const historyTransaction = (state = {
         isFetching: true,
         isSuccess: false
       }
-    
+
     case `FETCH_TRANSACTION_HISTORY_${FULFILLED}`:
       return {
         ...state,
@@ -554,7 +556,7 @@ const historyTransaction = (state = {
         isFetching: false,
         isSuccess: true
       }
-    
+
     case `FETCH_TRANSACTION_HISTORY_${REJECTED}`:
       return {
         ...state,
@@ -565,7 +567,7 @@ const historyTransaction = (state = {
 
     default:
       return state
-  } 
+  }
 }
 
 
@@ -595,7 +597,7 @@ const sendEmailResponse = (state = {
         isSending: false,
         isSuccess: false
       }
-    
+
     default:
       return state
   }

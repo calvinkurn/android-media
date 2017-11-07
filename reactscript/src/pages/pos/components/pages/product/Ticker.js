@@ -4,6 +4,8 @@ import { NavigationModule } from 'NativeModules'
 import { Text } from '../../../common/TKPText'
 import { connect } from 'react-redux'
 import { fetchShopName } from '../../../actions/index'
+import { icons } from '../../../lib/config'
+
 
 class Ticker extends Component{
   componentDidMount(){
@@ -27,7 +29,7 @@ class Ticker extends Component{
       <View style={styles.container}>
         <View>
           <View style={styles.imageWrapper}>
-          <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/toped.png' }} style={styles.imageIcon} />
+          <Image source={{ uri: icons.toped }} style={styles.imageIcon} />
           </View>
         </View>
         <View style={styles.textContainer}>
