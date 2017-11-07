@@ -65,7 +65,31 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        if(list.get(position) instanceof ChatListViewModel){
+            showTitle(holder.itemView.getContext(), holder.getAdapterPosition());
+        }
         holder.bind(list.get(holder.getAdapterPosition()));
+    }
+
+    private void showTitle(Context context, int position) {
+        ChatListViewModel now = (ChatListViewModel) list.get(position);
+        if(position > 0){
+
+            ChatListViewModel prev = (ChatListViewModel) list.get(position-1);
+
+            if(now.getSectionSize()>0 && !compareType(now.getSpanMode(),prev.getSpanMode()) ){
+                now.setHaveTitle(true);
+            }
+
+        }else {
+            if(now.getSectionSize()>0){
+                now.setHaveTitle(true);
+            }
+        }
+    }
+
+    private boolean compareType(int recentMode, int prevMode) {
+        return recentMode == prevMode;
     }
 
     @Override

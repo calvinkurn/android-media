@@ -26,6 +26,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.R;
@@ -42,6 +43,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
 import com.tokopedia.inbox.inboxchat.util.Events;
+import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
@@ -311,7 +313,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                onlineDesc.setText(when);
+                if(onlineDesc!=null)
+                    onlineDesc.setText(when);
             }
         });
     }
@@ -358,7 +361,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 action.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        presenter.resetAttempt();
+                        presenter.onOpenWebSocket();
                         presenter.recreateWebSocket();
                     }
                 });
@@ -415,18 +418,29 @@ public class ChatRoomFragment extends BaseDaggerFragment
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                adapter.removeLast();
                 setViewEnabled(true);
-                MyChatViewModel item = new MyChatViewModel();
-                item.setReplyId(response.getData().getMsgId());
-                item.setSenderId(String.valueOf(response.getData().getFromUid()));
-                item.setMsg(response.getData().getMessage().getCensoredReply());
-                item.setReplyTime(response.getData().getMessage().getTimestamp());
+                if(getArguments().getString("sender_id").equals(String.valueOf(response.getData().getFromUid()))){
+                    OppositeChatViewModel item = new OppositeChatViewModel();
+                    item.setReplyId(response.getData().getMsgId());
+                    item.setSenderId(String.valueOf(response.getData().getFromUid()));
+                    item.setMsg(response.getData().getMessage().getCensoredReply());
+                    item.setReplyTime(response.getData().getMessage().getTimestamp());
+                    adapter.addReply(item);
+                    scrollToBottom();
 
-                adapter.addReply(item);
-                finishLoading();
-                replyColumn.setText("");
-                scrollToBottom();
+                }else {
+                    adapter.removeLast();
+                    MyChatViewModel item = new MyChatViewModel();
+                    item.setReplyId(response.getData().getMsgId());
+                    item.setSenderId(String.valueOf(response.getData().getFromUid()));
+                    item.setMsg(response.getData().getMessage().getCensoredReply());
+                    item.setReplyTime(response.getData().getMessage().getTimestamp());
+                    adapter.addReply(item);
+
+                    finishLoading();
+                    replyColumn.setText("");
+                    scrollToBottom();
+                }
             }
         });
     }
@@ -486,15 +500,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     public void restackList(Bundle data) {
-        String senderId = data.getString("sender_id");
-        if (senderId.equals(getArguments().get("sender_id"))) {
-            OppositeChatViewModel item = new OppositeChatViewModel();
-            item.setMsg(data.getString("summary"));
-            item.setSenderId(senderId);
-            item.setSenderName(data.getString("full_name"));
-            item.setReplyTime(data.getString("create_time"));
-            addDummyMessage(item);
-        }
+//        String senderId = data.getString("sender_id");
+//        if (senderId.equals(getArguments().get("sender_id"))) {
+//            OppositeChatViewModel item = new OppositeChatViewModel();
+//            item.setMsg(data.getString("summary"));
+//            item.setSenderId(senderId);
+//            item.setSenderName(data.getString("full_name"));
+//            item.setReplyTime(data.getString("create_time"));
+//            addDummyMessage(item);
+//        }
 
         if (toolbar != null) {
             mainHeader.setVisibility(View.VISIBLE);
@@ -567,6 +581,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 notifier.setVisibility(View.GONE);
             }
         });
-        presenter.resetAttempt();
+        presenter.onOpenWebSocket();
     }
 }

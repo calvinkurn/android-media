@@ -57,7 +57,8 @@ public class DeleteMessageListUseCase extends UseCase<DeleteChatListViewModel>{
         JsonObject object = new JsonObject();
         JsonArray array = new JsonArray();
         for(Pair item : listMove){
-            array.add((int)(item.second));
+            ChatListViewModel first = (ChatListViewModel) item.first;
+            array.add((first.getId()));
         }
         object.add("list_msg_id", array);
         requestParams.putObject("json", object);

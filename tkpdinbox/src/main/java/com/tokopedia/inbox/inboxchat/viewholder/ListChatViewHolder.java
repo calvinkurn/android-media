@@ -36,7 +36,7 @@ import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.STATE_CHAT_U
  * Created by stevenfredian on 10/25/17.
  */
 
-public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel>{
+public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
 
     TextView userName;
 
@@ -60,6 +60,8 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel>{
 
     InboxChatPresenter presenter;
 
+    String[] array;
+
     @LayoutRes
     public static final int LAYOUT = R.layout.message_item;
 
@@ -77,17 +79,19 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel>{
         checked = (ImageView) itemView.findViewById(R.id.checked);
         this.viewListener = viewListener;
         this.presenter = presenter;
+
+        array = new String[]{"pengguna", "chat"};
     }
 
     @Override
     public void bind(ChatListViewModel element) {
 
-        if(element.isTyping()){
+        if (element.isTyping()) {
             userName.setText(element.getName());
             message.setText("sedang mengetik...");
             message.setTypeface(null, Typeface.ITALIC);
             message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.medium_green));
-        }else {
+        } else {
             if (element.getSpanMode() == ChatListViewModel.SPANNED_MESSAGE) {
                 message.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
                 userName.setText(element.getName());
@@ -102,10 +106,11 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel>{
             message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.black_54));
         }
 
-        if(element.getSectionSize()>0){
-            section.setText(element.getSectionSize() + " ditemukan");
+        if (element.isHaveTitle()) {
+            String magicString = element.getSectionSize() + " " + array[element.getSpanMode()-1] + " ditemukan";
+            section.setText(magicString);
             section.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             section.setVisibility(View.GONE);
         }
 
@@ -126,11 +131,10 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel>{
 
 //        avatar.setOnClickListener(onGoToProfile(list.get(position)));
 //        userName.setOnClickListener(onGoToProfile(list.get(position)));
-        mainView.setOnClickListener(onMessageClicked(element, viewListener,getAdapterPosition()));
+        mainView.setOnClickListener(onMessageClicked(element, viewListener, getAdapterPosition()));
 
         mainView.setOnLongClickListener(onLongClickListener(element));
     }
-
 
 
     private SpannableString highlight(Context context, Spanned span, String keyword) {
@@ -142,7 +146,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel>{
 
         while (indexOfKeyword < span.length() && indexOfKeyword >= 0) {
             //Create a background color span on the keyword
-            spannableString.setSpan(new ForegroundColorSpan(MethodChecker.getColor(context,R.color.medium_green)), indexOfKeyword, indexOfKeyword + keyword.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new ForegroundColorSpan(MethodChecker.getColor(context, R.color.medium_green)), indexOfKeyword, indexOfKeyword + keyword.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             //Get the next index of the keyword
             indexOfKeyword = spannableString.toString().indexOf(keyword, indexOfKeyword + keyword.length());
@@ -168,10 +172,10 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel>{
     }
 
     private void setLabel(String labelS) {
-        if(label!=null && label.length()>0){
+        if (label != null && label.length() > 0) {
             label.setVisibility(View.VISIBLE);
             label.setText(labelS);
-        }else {
+        } else {
             label.setVisibility(View.GONE);
         }
     }
@@ -250,9 +254,9 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel>{
         counterUnread.setVisibility(View.VISIBLE);
         userName.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
 
-        if(counter > 0) {
+        if (counter > 0) {
             counterUnread.setText(String.valueOf(counter));
-        }else {
+        } else {
             counterUnread.setVisibility(View.GONE);
         }
     }

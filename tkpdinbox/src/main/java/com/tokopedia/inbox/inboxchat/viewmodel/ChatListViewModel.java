@@ -30,6 +30,7 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     int unreadCounter;
     Spanned span;
     int spanMode;
+    boolean haveTitle;
     int sectionSize;
     private String role;
     boolean isTyping;
@@ -37,6 +38,7 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
 
     public ChatListViewModel() {
         spanMode = NO_SPAN;
+        haveTitle = false;
     }
 
     private boolean isChecked;
@@ -167,6 +169,14 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
 
     public void setTyping(boolean typing) {
         isTyping = typing;
+    }
+
+    public boolean isHaveTitle() {
+        return haveTitle;
+    }
+
+    public void setHaveTitle(boolean haveTitle) {
+        this.haveTitle = haveTitle;
     }
 
     @Override

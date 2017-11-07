@@ -76,6 +76,6 @@ public class ChatRoomContract {
     interface Presenter extends CustomerPresenter<View>{
         void getAttachProductDialog(String shopId, String senderRole);
 
-        void resetAttempt();
+        void onOpenWebSocket();
     }
 }

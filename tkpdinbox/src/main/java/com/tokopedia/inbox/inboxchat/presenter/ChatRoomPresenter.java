@@ -48,7 +48,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     private final GetMessageListUseCase getMessageListUseCase;
     private final GetReplyListUseCase getReplyListUseCase;
     private final ReplyMessageUseCase replyMessageUseCase;
-    private final SessionHandler sessionHandler;
+    private SessionHandler sessionHandler;
     public PagingHandler pagingHandler;
     boolean isRequesting;
     private OkHttpClient client;
@@ -57,6 +57,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     private ChatWebSocketListenerImpl listener;
     private boolean flagTyping;
     private int attempt;
+    private boolean isFirstTime;
 
     @Inject
     ChatRoomPresenter(GetMessageListUseCase getMessageListUseCase,
@@ -82,6 +83,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
         listener = new ChatWebSocketListenerImpl(getView().getInterface());
+        isFirstTime = true;
         recreateWebSocket();
     }
 
@@ -225,6 +227,15 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         ws.send(json.toString());
     }
 
+    public void readMessage(String messageId) throws JSONException{
+        JSONObject json = new JSONObject();
+        json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_READ_MESSAGE);
+        JSONObject data = new JSONObject();
+        data.put("msg_id", Integer.valueOf(messageId));
+        json.put("data", data);
+        ws.send(json.toString());
+    }
+
     public void setIsTyping(String messageId) throws JSONException {
         if (!flagTyping) {
             JSONObject json = new JSONObject();
@@ -268,7 +279,16 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     @Override
-    public void resetAttempt() {
+    public void onOpenWebSocket() {
         attempt = 0;
+        if(isFirstTime){
+            isFirstTime = false;
+            String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
+            try {
+                readMessage(messageId);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
