@@ -37,4 +37,5 @@ public class ConsumerAppBaseUrl {
     public static final String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static final String CHAT_DOMAIN = "https://chat.tokopedia.com";
 
+    public static final String MAPS_DOMAIN = "https://gw.tokopedia.com/";
 }

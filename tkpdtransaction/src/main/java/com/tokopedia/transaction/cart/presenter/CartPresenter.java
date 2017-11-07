@@ -60,7 +60,7 @@ public class CartPresenter implements ICartPresenter {
     private static final int MUST_INSURANCE_MODE = 3;
     public static final int OPTIONAL_INSURANCE_MODE = 2;
     public static final String VOUCHER_CODE = "voucher_code";
-    public static final String IS_SUGGESTED = "is_suggested";
+    public static final String IS_SUGGESTED = "suggested";
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
 
@@ -545,29 +545,6 @@ public class CartPresenter implements ICartPresenter {
                 }
             }
         }
-
-
-        /*
-          Localytics Block
-
-         */
-        Map<String, String> values = new HashMap<>();
-        values.put(
-                view.getStringFromResource(com.tokopedia.core.R.string.event_payment_method),
-                thanksTopPayData.getParameter().getGatewayName());
-        values.put(
-                view.getStringFromResource(
-                        com.tokopedia.core.R.string.event_value_total_transaction
-                ), revenue
-        );
-        values.put(view.getStringFromResource(
-                com.tokopedia.core.R.string.value_total_quantity), qty + ""
-        );
-        values.put(view.getStringFromResource(
-                com.tokopedia.core.R.string.value_shipping_fee), totalShipping + ""
-        );
-
-        PaymentTracking.eventTransactionLoca(values, locaProducts);
 
         /*
           AppsFlyer Block

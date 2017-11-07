@@ -23,6 +23,7 @@ import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -125,6 +126,10 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
             case TkpdState.DrawerPosition.SETTINGS:
                 context.startActivity(new Intent(context, ManageGeneral.class));
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SETTING);
+                break;
+            case TkpdState.DrawerPosition.APPSHARE:
+                context.startActivity(new Intent(context, ReferralActivity.class));
+                sendGTMNavigationEvent(AppEventTracking.EventLabel.APPSHARE);
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
                 intent = InboxRouter.getContactUsActivityIntent(context);

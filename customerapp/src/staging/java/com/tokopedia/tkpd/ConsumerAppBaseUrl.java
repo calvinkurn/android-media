@@ -36,4 +36,5 @@ public class ConsumerAppBaseUrl {
     public static final String PAYMENT_DOMAIN = "https://payment-staging.tokopedia.com/";
     public static final String GALADRIEL = "https://galadriel-staging.tokopedia.com/";
     public static final String CHAT_DOMAIN = "https://chat-staging.tokopedia.com";
+    public static final String MAPS_DOMAIN = "https://api-staging.tokopedia.com/";
 }

@@ -12,6 +12,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
+import com.tokopedia.core.util.BranchShareLinkGenerator;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -43,8 +44,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             );
         }
         data.setSource(AppEventTracking.SOCIAL_MEDIA.BBM);
-        ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.BlackBerry,
-                TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
+        ShareSocmedHandler.ShareSpecific(data,activity, TkpdState.PackageName.BlackBerry,
+                TkpdState.PackageName.TYPE_TEXT, null, null);
     }
 
     @Override
@@ -64,7 +65,14 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             if(expired){
                 LoginManager.getInstance().logOut();
             }
-            fragment.showDialogShareFb();
+            BranchShareLinkGenerator.generateBranchLink(data, activity, new BranchShareLinkGenerator.GenerateShareContents() {
+                @Override
+                public void onCreateShareContents(String shareContents, String shareUri) {
+                    fragment.showDialogShareFb(shareUri);
+                }
+            });
+
+            //fragment.showDialogShareFb();
         } else {
             NetworkErrorHelper.showSnackbar(this.activity);
         }
@@ -82,13 +90,12 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         }
         data.setSource(AppEventTracking.SOCIAL_MEDIA.TWITTER);
        if (data.getImgUri()!=null){
-            ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Twitter,
-                    TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(),
-                    data.renderShareUri(), data.getImgUri(), TkpdState.PackageName
+            ShareSocmedHandler.ShareSpecificUri(data,activity, TkpdState.PackageName.Twitter,
+                    TkpdState.PackageName.TYPE_IMAGE, data.getImgUri(), TkpdState.PackageName
                             .TWITTER_DEFAULT + "url=" + data.getUri() + "&text=" + data.getName());
         } else {
-            ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Twitter,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
+            ShareSocmedHandler.ShareSpecific(data,activity, TkpdState.PackageName.Twitter,
+                    TkpdState.PackageName.TYPE_TEXT, null, null);
         }
 
     }
@@ -103,8 +110,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             );
         }
         data.setSource(AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
-        ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Whatsapp,
-                TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
+        ShareSocmedHandler.ShareSpecific(data,activity, TkpdState.PackageName.Whatsapp,
+                TkpdState.PackageName.TYPE_TEXT, null, null);
 
     }
 
@@ -118,8 +125,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             );
         }
         data.setSource(AppEventTracking.SOCIAL_MEDIA.LINE);
-        ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Line,
-                TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
+        ShareSocmedHandler.ShareSpecific(data,activity, TkpdState.PackageName.Line,
+                TkpdState.PackageName.TYPE_TEXT, null, null);
 
     }
 
@@ -134,12 +141,11 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         }
         data.setSource(AppEventTracking.SOCIAL_MEDIA.PINTEREST);
         if (data.getImgUri() != null){
-            ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Pinterest,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(),
-                    data.getImgUri(), null);
+            ShareSocmedHandler.ShareSpecificUri(data,activity, TkpdState.PackageName.Pinterest,
+                    TkpdState.PackageName.TYPE_TEXT, data.getImgUri(), null);
         } else {
-            ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Pinterest,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
+            ShareSocmedHandler.ShareSpecific(data,activity, TkpdState.PackageName.Pinterest,
+                    TkpdState.PackageName.TYPE_TEXT,   null, null);
         }
     }
 
@@ -154,10 +160,10 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         }
         data.setSource(AppEventTracking.SOCIAL_MEDIA.OTHER);
         if (data.getImgUri()!= null){
-            ShareSocmedHandler.ShareIntentImageUri(activity, null, data.getTextContent(), data.renderShareUri(),
+            ShareSocmedHandler.ShareIntentImageUri(data,activity, null,
                     data.getImgUri());
         } else {
-            ShareSocmedHandler.ShareIntentImageUri(activity, null, data.getTextContent(), data.renderShareUri(),
+            ShareSocmedHandler.ShareIntentImageUri(data,activity, null,
                     data.getImgUri());
         }
     }
@@ -173,12 +179,12 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         }
         data.setSource(AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
         if(data.getImgUri()!= null){
-            ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Instagram,
-                    TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(), data.renderShareUri(),
+            ShareSocmedHandler.ShareSpecificUri(data,activity, TkpdState.PackageName.Instagram,
+                    TkpdState.PackageName.TYPE_IMAGE,
                     data.getImgUri(), null);
         } else {
-            ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Instagram,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
+            ShareSocmedHandler.ShareSpecific(data,activity, TkpdState.PackageName.Instagram,
+                    TkpdState.PackageName.TYPE_TEXT, null, null);
         }
     }
 
@@ -192,15 +198,22 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
             );
         }
         data.setSource(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
-        ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Gplus,
-                TkpdState.PackageName.TYPE_IMAGE, data.getTextContent(), data.renderShareUri(),
+        ShareSocmedHandler.ShareSpecific(data,activity, TkpdState.PackageName.Gplus,
+                TkpdState.PackageName.TYPE_IMAGE,
                 null, null);
     }
 
     @Override
-    public void shareCopy(ShareData data) {
+    public void shareCopy(final ShareData data) {
+
         data.setSource("Copy");
-        ClipboardHandler.CopyToClipboard(activity, data.renderShareUri());
+        BranchShareLinkGenerator.generateBranchLink(data, activity, new BranchShareLinkGenerator.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri) {
+                ClipboardHandler.CopyToClipboard(activity, shareUri);
+            }
+        });
+
         Toast.makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT).show();
     }
 

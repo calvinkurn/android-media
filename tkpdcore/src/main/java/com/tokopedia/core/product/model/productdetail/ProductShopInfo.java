@@ -15,6 +15,8 @@ import java.util.ArrayList;
 public class ProductShopInfo implements Parcelable{
     private static final String TAG = ProductShopInfo.class.getSimpleName();
 
+    public static final int SHOP_OFFICIAL_VALUE = 1;
+
     @SerializedName("shop_is_closed_reason")
     @Expose
     private String shopIsClosedReason;

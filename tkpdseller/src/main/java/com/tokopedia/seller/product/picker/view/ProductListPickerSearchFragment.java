@@ -40,7 +40,6 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     private ProductListPickerMultipleItem<ProductListPickerViewModel> productListPickerMultipleItem;
 
     private List<ProductListPickerViewModel> productListPickerViewModels;
-    private String keywordFilter = "";
     private boolean hasNextPage;
 
     @Override
@@ -49,8 +48,12 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
         if (getActivity() instanceof ProductListPickerMultipleItem) {
             productListPickerMultipleItem = (ProductListPickerMultipleItem<ProductListPickerViewModel>) getActivity();
         }
-
         productListPickerViewModels = getActivity().getIntent().getParcelableArrayListExtra(ProductListPickerConstant.PRODUCT_LIST_PICKER_MODEL_EXTRA);
+    }
+
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_picker_product_list;
     }
 
     @Override
@@ -94,70 +97,26 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     }
 
     @Override
-    public void onSearchSubmitted(String text) {
-        this.keywordFilter = text;
-        resetPageAndSearch();
-    }
-
-    @Override
-    public void onSearchTextChanged(String text) {
-        this.keywordFilter = text;
-        resetPageAndSearch();
-    }
-
-    @Override
-    public void resetPageAndSearch() {
-        super.resetPageAndSearch();
-
-    }
-
-    @Override
     protected BaseListAdapter<ProductListPickerViewModel> getNewAdapter() {
         return new ProductListPickerSearchAdapter();
     }
 
     @Override
     protected void searchForPage(int page) {
-        productListPickerSearchPresenter.getProductList(page, keywordFilter);
+        productListPickerSearchPresenter.getProductList(page, searchInputView.getSearchText());
         hasNextPage = false;
     }
 
     @Override
-    public void onErrorGetProductList(Throwable e) {
-        onLoadSearchError(e);
-        productListPickerMultipleItem.validateFooterAndInfoView();
-    }
-
-    @Override
-    protected void showViewEmptyList() {
-        super.showViewEmptyList();
-        productListPickerMultipleItem.validateFooterAndInfoView();
-    }
-
-    @Override
-    protected void showViewSearchNoResult() {
-        super.showViewSearchNoResult();
+    public void onSearchLoaded(@NonNull List<ProductListPickerViewModel> list, int totalItem, boolean hasNext) {
+        onSearchLoaded(list, totalItem);
+        hasNextPage = hasNext;
         productListPickerMultipleItem.validateFooterAndInfoView();
     }
 
     @Override
     public void onLoadSearchError(Throwable t) {
         super.onLoadSearchError(t);
-        if (adapter.getDataSize() < 1) {
-            showSearchView(false);
-        }
-    }
-
-    @Override
-    public void onSuccessGetProductList(ProductListSellerModelView productListSellerModelView) {
-        onSearchLoaded(productListSellerModelView.getProductListPickerViewModels(), productListSellerModelView.getProductListPickerViewModels().size());
-        hasNextPage = productListSellerModelView.isHasNextPage();
-    }
-
-    @Override
-    protected void showViewList(@NonNull List<ProductListPickerViewModel> list) {
-        super.showViewList(list);
-        showSearchView(true);
         productListPickerMultipleItem.validateFooterAndInfoView();
     }
 

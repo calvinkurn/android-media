@@ -273,7 +273,13 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             viewHolder.productName.setText(Html.fromHtml(product.name));
             viewHolder.productPrice.setText(product.price);
             viewHolder.shopName.setText(Html.fromHtml(product.shop));
-            viewHolder.location.setText(product.getShopLocation());
+            if (product.getOfficial()) {
+                viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_authorize_grey, 0, 0, 0);
+                viewHolder.location.setText(context.getResources().getString(com.tokopedia.core.R.string.authorized));
+            } else {
+                viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_location_grey, 0, 0, 0);
+                viewHolder.location.setText(product.getShopLocation());
+            }
             setProductImage(viewHolder, product.getImgUri());
             setBadges(viewHolder, product);
             setLabels(viewHolder, product);
@@ -296,7 +302,13 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.productName.setText(Html.fromHtml(product.name));
         viewHolder.productPrice.setText(product.price);
         viewHolder.shopName.setText(Html.fromHtml(product.shop));
-        viewHolder.location.setText(product.getShopLocation());
+        if (product.getOfficial()) {
+            viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_authorize_grey, 0, 0, 0);
+            viewHolder.location.setText(context.getResources().getString(com.tokopedia.core.R.string.authorized));
+        } else {
+            viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_location_grey, 0, 0, 0);
+            viewHolder.location.setText(product.getShopLocation());
+        }
         setProductImage(viewHolder, product.getImgUri());
         setBadges(viewHolder, product);
         setLabels(viewHolder, product);

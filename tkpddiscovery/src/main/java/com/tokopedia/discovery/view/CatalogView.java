@@ -24,5 +24,6 @@ public interface CatalogView extends BaseView {
     BrowseCatalogModel getDataModel();
     void setLoading(boolean isLoading);
 
+    void displayEmptyResult();
     void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab);
 }

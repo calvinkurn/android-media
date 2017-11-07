@@ -151,9 +151,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        
-        String screenName = getString(R.string.withdraw_page);
-        ScreenTracking.screenLoca(screenName);
 
         getActivity().invalidateOptionsMenu();
     }
@@ -340,7 +337,9 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @Override
     public void showLoading() {
-        loadingLayout.setVisibility(View.VISIBLE);
+        if (loadingLayout != null) {
+            loadingLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -442,8 +441,15 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
 
     @Override
     public void finishLoading() {
-        progressDialog.dismiss();
-        loadingLayout.setVisibility(View.GONE);
+        if (!isAdded()) {
+            return;
+        }
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+        if (loadingLayout != null) {
+            loadingLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override

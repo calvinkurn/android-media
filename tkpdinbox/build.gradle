@@ -14,7 +14,7 @@ def getTkpdCore() {
 
 def getTkpdDesign() {
     return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
+            rootProject.ext.tkpdDependencies.core : project(':tkpddesign');
 }
 
 publishing {

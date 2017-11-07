@@ -226,6 +226,11 @@ public class ChatRoomActivity extends BasePresenterActivity
         }
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
 
     @Override
     public void onGetNotif() {
@@ -241,11 +246,6 @@ public class ChatRoomActivity extends BasePresenterActivity
     public void onGetNotif(Bundle data) {
         ChatRoomFragment something = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(TAG);
         something.restackList(data);
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
     }
 
     public static Intent getCallingIntent(Context context, String nav, String messageId,

@@ -1,11 +1,19 @@
 package com.tokopedia.digital.widget.presenter;
 
 import android.content.Context;
+import android.text.TextUtils;
 
-import com.tokopedia.core.database.model.RechargeOperatorModel;
-import com.tokopedia.core.database.recharge.product.Product;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.R;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetStyle2View;
+import com.tokopedia.digital.widget.model.lastorder.Attributes;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.operator.Operator;
+import com.tokopedia.digital.widget.model.product.Product;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.List;
 
@@ -13,45 +21,74 @@ import rx.Subscriber;
 
 /**
  * Created by nabillasabbaha on 7/21/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
         implements IDigitalWidgetStyle2Presenter {
 
     private final IDigitalWidgetInteractor widgetInteractor;
-
     private final IDigitalWidgetStyle2View view;
+    private Context context;
 
     public DigitalWidgetStyle2Presenter(Context context,
                                         IDigitalWidgetInteractor widgetInteractor,
                                         IDigitalWidgetStyle2View view) {
         super(context);
+        this.context = context;
         this.widgetInteractor = widgetInteractor;
         this.view = view;
     }
 
     @Override
-    public void fetchRecentNumber(int categoryId) {
-        widgetInteractor.getRecentData(getRecentListNumberSubscriber(), categoryId);
+    public void fetchNumberList(String categoryId, boolean showLastOrder) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("category_id", categoryId);
+        param.put("sort", "label");
+        widgetInteractor.getNumberList(getNumberListSubscriber(categoryId, showLastOrder),
+                AuthUtil.generateParamsNetwork(context, param));
     }
 
-    private Subscriber<List<String>> getRecentListNumberSubscriber() {
-        return new Subscriber<List<String>>() {
+    private Subscriber<DigitalNumberList> getNumberListSubscriber(final String categoryId,
+                                                                  final boolean showLastOrder) {
+        return new Subscriber<DigitalNumberList>() {
             @Override
             public void onCompleted() {
-
             }
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                view.renderDefaultError();
             }
 
             @Override
-            public void onNext(List<String> results) {
-                view.renderDataRecent(results);
+            public void onNext(DigitalNumberList digitalNumberList) {
+                view.renderNumberList(digitalNumberList.getOrderClientNumbers());
+                if (showLastOrder) {
+                    if (digitalNumberList.getLastOrder() != null) {
+                        LastOrder lastOrder = mapOrderClientNumberToLastOrder(digitalNumberList
+                                .getLastOrder());
+
+                        view.renderLastOrder(lastOrder);
+                    } else if (getLastClientNumberTyped(categoryId) != null) {
+                        view.renderLastTypedClientNumber();
+                    }
+                }
             }
         };
+    }
+
+    private LastOrder mapOrderClientNumberToLastOrder(OrderClientNumber orderClientNumber) {
+        LastOrder lastOrder = new LastOrder();
+        Attributes attributes = new Attributes();
+        attributes.setClientNumber(orderClientNumber.getClientNumber());
+        attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
+        attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
+        if (!TextUtils.isEmpty(orderClientNumber.getLastProduct())) {
+            attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+        }
+        lastOrder.setAttributes(attributes);
+        return lastOrder;
     }
 
     private Subscriber<List<Product>> getListProductSubscriber() {
@@ -64,7 +101,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.renderEmptyProduct("Product List is Empty");
+                view.renderEmptyProduct(context.getString(R.string.error_message_product));
             }
 
             @Override
@@ -72,7 +109,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
                 if (!products.isEmpty()) {
                     view.renderDataProducts(products);
                 } else {
-                    view.renderEmptyProduct("Product List is Empty");
+                    view.renderEmptyProduct(context.getString(R.string.error_message_product));
                 }
             }
         };
@@ -83,8 +120,8 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
         widgetInteractor.getOperatorById(getOperatorModelSubscriber(), operatorId);
     }
 
-    private Subscriber<RechargeOperatorModel> getOperatorModelSubscriber() {
-        return new Subscriber<RechargeOperatorModel>() {
+    private Subscriber<Operator> getOperatorModelSubscriber() {
+        return new Subscriber<Operator>() {
             @Override
             public void onCompleted() {
 
@@ -92,11 +129,11 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                view.renderDefaultError();
             }
 
             @Override
-            public void onNext(RechargeOperatorModel rechargeOperatorModel) {
+            public void onNext(Operator rechargeOperatorModel) {
                 view.renderOperator(rechargeOperatorModel);
             }
         };
@@ -121,7 +158,7 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                view.renderErrorMessage("Produk yang anda pilih saat ini tidak tersedia");
+                view.renderErrorProduct(context.getString(R.string.error_message_not_found_product));
             }
 
             @Override
@@ -132,12 +169,12 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
-    public void fetchOperatorByCategory(int categoryId) {
-        widgetInteractor.getOperatorsFromCategory(getOperatorByCategorySubscriber(), categoryId);
+    public void fetchOperatorByCategory(int categoryId, boolean showLastOrder) {
+        widgetInteractor.getOperatorsFromCategory(getOperatorByCategorySubscriber(showLastOrder), categoryId);
     }
 
-    private Subscriber<List<RechargeOperatorModel>> getOperatorByCategorySubscriber() {
-        return new Subscriber<List<RechargeOperatorModel>>() {
+    private Subscriber<List<Operator>> getOperatorByCategorySubscriber(final boolean showLastOrder) {
+        return new Subscriber<List<Operator>>() {
             @Override
             public void onCompleted() {
 
@@ -145,21 +182,17 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
 
             @Override
             public void onError(Throwable e) {
-                view.renderEmptyOperators(e.getMessage());
+                view.renderDefaultError();
             }
 
             @Override
-            public void onNext(List<RechargeOperatorModel> rechargeOperatorModels) {
-                if (rechargeOperatorModels.size() > 0)
-                    view.renderOperators(rechargeOperatorModels);
-                else
-                    view.renderEmptyOperators("Empty list");
+            public void onNext(List<Operator> rechargeOperatorModels) {
+                if (rechargeOperatorModels.size() > 0) {
+                    view.renderOperators(rechargeOperatorModels, showLastOrder);
+                } else {
+                    view.renderEmptyOperators(context.getString(R.string.error_message_operator));
+                }
             }
         };
-    }
-
-    @Override
-    public void onDestroy() {
-        widgetInteractor.onDestroy();
     }
 }

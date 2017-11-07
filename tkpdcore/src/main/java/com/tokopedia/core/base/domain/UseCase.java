@@ -28,37 +28,51 @@ public abstract class UseCase<T> implements Interactor<T> {
         this.postExecutionThread = postExecutionThread;
     }
 
-    public UseCase(){
-        this(null,null);
+    public UseCase() {
+        this(null, null);
     }
 
     public abstract Observable<T> createObservable(RequestParams requestParams);
 
-    public final Observable<T> createObservableSync(RequestParams requestParams) {
-        return Observable.just(createObservable(requestParams).defaultIfEmpty(null).toBlocking().first());
+    public final T getData(RequestParams requestParams) {
+        return createObservable(requestParams).defaultIfEmpty(null).toBlocking().first();
     }
 
     public final void execute(RequestParams requestParams, Subscriber<T> subscriber) {
-        if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
-            compositeSubscription = new CompositeSubscription();
-        }
-        subscription = createObservable(requestParams)
-                .subscribeOn(Schedulers.from(threadExecutor))
-                .observeOn(postExecutionThread.getScheduler())
-                .subscribe(subscriber);
-        compositeSubscription.add(subscription);
+        execute(requestParams, subscriber, false);
+    }
+
+    public final void executeSync(RequestParams requestParams) {
+        execute(requestParams, null, true);
     }
 
     public final void executeSync(RequestParams requestParams, Subscriber<T> subscriber) {
-        subscription = createObservableSync(requestParams)
-                .subscribeOn(Schedulers.from(threadExecutor))
-                .observeOn(postExecutionThread.getScheduler())
-                .subscribe(subscriber);
-        compositeSubscription.add(subscription);
+        execute(requestParams, subscriber, true);
     }
 
-    public final Observable<T> execute(RequestParams requestParams){
-        return createObservableSync(requestParams);
+    private void execute(RequestParams requestParams, Subscriber<T> subscriber, boolean sync) {
+        try {
+            if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+                compositeSubscription = new CompositeSubscription();
+            }
+            Observable<T> observable;
+            if (sync) {
+                observable = Observable.just(createObservable(requestParams)
+                        .defaultIfEmpty(null).toBlocking().first())
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler());
+            } else {
+                observable = createObservable(requestParams)
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler());
+            }
+            if (subscriber != null) {
+                subscription = observable.subscribe(subscriber);
+                compositeSubscription.add(subscription);
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     public void unsubscribe() {
@@ -70,5 +84,11 @@ public abstract class UseCase<T> implements Interactor<T> {
     @Override
     public Observable<T> getExecuteObservable(RequestParams requestParams) {
         return createObservable(requestParams);
+    }
+
+    public Observable<T> getExecuteObservableAsync(RequestParams requestParams){
+        return createObservable(requestParams)
+                .subscribeOn(Schedulers.from(this.threadExecutor))
+                .observeOn(this.postExecutionThread.getScheduler());
     }
 }

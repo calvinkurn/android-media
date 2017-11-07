@@ -16,7 +16,6 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
-import com.localytics.android.Localytics;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -35,12 +34,14 @@ import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 import rx.Subscriber;
 
@@ -275,8 +276,6 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
 
         initDbFlow();
 
-        Localytics.autoIntegrate(this);
-
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .netModule(new NetModule());
@@ -287,6 +286,8 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
         TooLargeTool.startLogging(this);
 
         addToWhiteList();
+        // initialize the Branch object
+        initBranch();
     }
 
 
@@ -295,7 +296,7 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
         List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getWhiteList();
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
-        cacheApiWhiteListUseCase.execute(requestParams, new Subscriber<Boolean>() {
+        cacheApiWhiteListUseCase.executeSync(requestParams, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -336,7 +337,6 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
     protected void initializeAnalytics() {
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.LOCALYTICS);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
         TrackingUtils.setMoEngageExistingUser();
         TrackingUtils.enableDebugging(isDebug());
@@ -391,5 +391,12 @@ public abstract class MainApplication extends TkpdMultiDexApplication{
 
     public void initStetho() {
         if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
+    }
+
+    private void initBranch() {
+        Branch.getAutoInstance(this);
+        //Set userId to Branch.io sdk, userId, 127 chars or less
+        if(SessionHandler.isV4Login(this))
+            Branch.getInstance().setIdentity(SessionHandler.getLoginID(this));
     }
 }

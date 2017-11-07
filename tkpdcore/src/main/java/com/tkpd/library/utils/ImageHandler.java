@@ -63,19 +63,20 @@ public class ImageHandler {
 	 * @return
 	 * @throws IOException
 	 */
-	public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
-		ExifInterface exif = new ExifInterface(file);
-		String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
-		int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
-		int rotationAngle = 0;
-		if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
-		if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
-		if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
-		Matrix matrix = new Matrix();
-		matrix.setRotate(rotationAngle, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
-		Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-        return rotatedBitmap;
+    public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
+        ExifInterface exif = new ExifInterface(file);
+        String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+        int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
+        int rotationAngle = 0;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
+        if (rotationAngle == 0) {
+            return bitmap;
+        }
+        Matrix matrix = new Matrix();
+        matrix.setRotate(rotationAngle, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     public static void loadImageWithId(ImageView imageview, int resId) {
@@ -173,6 +174,29 @@ public class ImageHandler {
                 .into(imageview);
     }
 
+    public static void loadImage(Context context, ImageView imageview, String url,int placeholder) {
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(placeholder)
+                .error(R.drawable.error_drawable)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imageview);
+    }
+
+    public static void loadImage(Context context, ImageView imageview, String url,int placeholder,int error_image) {
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(placeholder)
+                .error(error_image)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imageview);
+    }
+
+
     /**
      * this class is not good for performances. please use LoadImageCustom
      *
@@ -180,13 +204,16 @@ public class ImageHandler {
      * @param url
      */
     public static void LoadImage(ImageView imageview, String url) {
-        Glide.with(imageview.getContext())
-                .load(url)
-                .fitCenter()
-                .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
-                .into(imageview);
+
+        if (imageview.getContext() != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .fitCenter()
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .into(imageview);
+        }
     }
 
     public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {

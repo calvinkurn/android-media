@@ -6,13 +6,7 @@ package com.tokopedia.tkpd.home.recharge.presenter;
  */
 public interface RechargeCategoryPresenter {
 
-    void fecthDataRechargeCategory();
-
-    void fetchStatusDigitalProductData();
-
-    void fetchRecentNumberList();
-
-    void fetchLastOrder();
+    void fetchDataRechargeCategory();
 
     void onDestroy();
 }

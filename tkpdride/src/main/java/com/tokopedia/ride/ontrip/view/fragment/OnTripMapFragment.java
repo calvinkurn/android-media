@@ -51,6 +51,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -60,6 +61,7 @@ import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
@@ -322,9 +324,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         requestParams.putString(CreateRideRequestUseCase.PARAM_OS_TYPE, "1");
         requestParams.putString(CreateRideRequestUseCase.PARAM_PRODUCT_ID, confirmBookingViewModel.getProductId());
         requestParams.putString(CreateRideRequestUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_PRODUCT_NAME, confirmBookingViewModel.getProductDisplayName());
         if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
             requestParams.putString(CreateRideRequestUseCase.PARAM_PROMO_CODE, confirmBookingViewModel.getPromoCode());
-            requestParams.putString(CreateRideRequestUseCase.PARAM_PRODUCT_NAME, confirmBookingViewModel.getProductDisplayName());
             requestParams.putString(CreateRideRequestUseCase.PARAM_DEVICE_TYPE, presenter.getDeviceName());
         }
         return requestParams;
@@ -447,6 +449,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @OnClick(R2.id.cabs_processing_cancel_button)
     public void actionCancelButtonClicked() {
         showCancelPanel();
+        RideGATracking.eventClickCancelRequestRide(getScreenName());
         presenter.actionCancelButtonClicked();
     }
 
@@ -1048,6 +1051,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @OnClick({R2.id.crux_cabs_destination, R2.id.tv_destination_change})
     public void actionDestinationButtonClicked() {
+        RideGATracking.eventClickChangeDestinationOpenMap(AppScreen.SCREEN_RIDE_ONTRIP);
+
         Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity(), R.drawable.marker_red_old);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_SOURCE, source);

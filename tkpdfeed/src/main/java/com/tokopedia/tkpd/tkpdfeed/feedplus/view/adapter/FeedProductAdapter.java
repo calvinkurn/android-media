@@ -106,7 +106,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                 public void onClick(View v) {
                     viewListener.onGoToFeedDetail(
                             activityCardViewModel.getPage(),
-                            activityCardViewModel.getFeedId());
+                            activityCardViewModel.getRowNumber(), activityCardViewModel.getFeedId());
                 }
             });
 
@@ -118,6 +118,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                 @Override
                 public void onClick(View v) {
                     viewListener.onGoToProductDetail(
+                            activityCardViewModel.getRowNumber(),
                             list.get(position).getPage(),
                             String.valueOf(list.get(position).getProductId()));
                 }
@@ -127,6 +128,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                 @Override
                 public void onClick(View v) {
                     viewListener.onGoToProductDetail(
+                            activityCardViewModel.getRowNumber(),
                             list.get(position).getPage(),
                             String.valueOf(list.get(position).getProductId()));
                 }

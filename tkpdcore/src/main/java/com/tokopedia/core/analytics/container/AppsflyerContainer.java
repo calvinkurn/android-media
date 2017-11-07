@@ -9,11 +9,14 @@ import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.GlobalConfig;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import rx.Observable;
@@ -33,6 +36,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     private static final String TAG = AppsflyerContainer.class.getSimpleName();
     private Context context;
     public static final String APPSFLYER_KEY = "SdSopxGtYr9yK8QEjFVHXL";
+    private static final String KEY_INSTALL_SOURCE = "install_source";
 
     public interface AFAdsIDCallback {
         void onGetAFAdsID(String string);
@@ -53,7 +57,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         setCurrencyCode("IDR");
         setUserID(userID);
         setAndroidID();
-        setAFLog(true);
+        setAFLog(BuildConfig.DEBUG);
         setGCMId(Jordan.GCM_PROJECT_NUMBER);
         setAppsFlyerKey(key);
     }
@@ -68,16 +72,28 @@ public class AppsflyerContainer implements IAppsflyerContainer {
 
     @Override
     public void setUserID(String userID) {
+        HashMap<String, Object> addData = initAdditionalData();
+        addData.put(KEY_INSTALL_SOURCE, getInstallSource());
         AppsFlyerLib.getInstance().setCustomerUserId(userID);
+        AppsFlyerLib.getInstance().setAdditionalData(addData);
         CommonUtils.dumper(TAG + " appsflyer initiated with UID " + userID);
     }
 
     private void setAndroidID() {
         String androidID = GCMHandler.getRegistrationId(context);
         if (!TextUtils.isEmpty(androidID)) {
-            AppsFlyerLib.getInstance().setAndroidIdData(androidID);
-            CommonUtils.dumper(TAG + " appsflyer sent android ID " + androidID + " ids");
+
         }
+    }
+
+    private HashMap<String, Object> initAdditionalData(){
+        return new HashMap<>();
+    }
+
+    private String getInstallSource(){
+        String installer = context.getPackageManager().getInstallerPackageName(
+                context.getPackageName());
+        return installer;
     }
 
     private void setGCMId(String gcmID) {

@@ -51,6 +51,8 @@ public interface Constants {
     String ACTION_BC_RESET_APPLINK = "com.tokopedia.tkpd.APPLINK_ACTION";
     String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";
 
+    String WEB_PLAYSTORE_BUYER_APP_URL = "https://play.google.com/store/apps/details?id=com.tokopedia.tkpd";
+
     interface Applinks {
         String HOME = "tokopedia://home";
         String HOME_FEED = "tokopedia://home/feed";
@@ -106,6 +108,10 @@ public interface Constants {
         String RESCENTER = "tokopedia://resolution/{resolution_id}";
         String TOPCHAT = "tokopedia://topchat/{message_id}";
         String TOPCHAT_IDLESS = "tokopedia://topchat";
+        String REFERRAL = "tokopedia://referral";
+        String BROWSER = "tokopedia://browser";
+        String REGISTER = "tokopedia://registration";
+        String FAVORITE = "tokopedia://home/favorite";
 
         interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";
@@ -117,6 +123,7 @@ public interface Constants {
             String TOPADS_DASHBOARD = "sellerapp://topads";
             String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
             String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
+            String BROWSER = "sellerapp://browser";
         }
     }
 

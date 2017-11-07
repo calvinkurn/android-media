@@ -131,13 +131,15 @@ public interface AppEventTracking {
 
         String SELLER_WIDGET = "sellerWidget";
         String TOP_ADS_SELLER_APP = "TopAdsSellerApp";
-        String CLICK_DASHBOARD = "clickDashboard";
         String CLICK_CREATE_SHOP = "clickCreateShop";
 
         String PRODUCT_PAGE = "ClickProductDetailPage";
         String SEND_MESSAGE_PAGE = "ClickMessageRoom";
         String SHOP_PAGE = "ClickShopPage";
 
+        String CLICK_APP_SHARE_REFERRAL = "clickReferral";
+        String HOME_DASHBOARD_CLICK_SELLER = "homeDashboardClicked";
+        String EVENT_MANAGE_PRODUCT = "eventManageProduct";
     }
 
     interface Category {
@@ -228,6 +230,8 @@ public interface AppEventTracking {
         String PRODUCT_PAGE = "product page";
         String SEND_MESSAGE_PAGE = "send message page";
         String SHOP_PAGE = "shop page";
+        String REFERRAL="Referral";
+        String FEATURED_PRODUCT = "Featured Product";
     }
 
     interface Action {
@@ -323,6 +327,12 @@ public interface AppEventTracking {
         String PRODUCT_PAGE = "click";
         String SEND_MESSAGE_PAGE = "click on kirim";
         String SHOP_PAGE = "click on kirim pesan";
+        String CLICK_DASHBOARD_CARD = "Click - Dashboard Card";
+        String CLICK_TOP_NAV = "click top nav";
+        String CLICK_PRODUCT_LIST = "click product list";
+        String CLICK_SORT_PRODUCT = "click sort product";
+        String CLICK_FILTER_PRODUCT = "click filter product";
+        String CLICK_OVERFLOW_MENU = "click overflow menu";
     }
 
     interface EventLabel {
@@ -428,6 +438,7 @@ public interface AppEventTracking {
         String PROFILE = "Profile";
         String SHOP_EN = "Shop";
         String PRODUCT = "Product - ";
+        String APPSHARE = "App share";
 
         String REGISTER = "Register";
         String CTA = "CTA";
@@ -606,6 +617,37 @@ public interface AppEventTracking {
         String ADD_PROMO_KEYWORD_NEGATIVE = "Add Negative Keyword";
 
         String PRODUCT_PAGE =  "message shop";
+        String APP_SHARE_LABEL="Share";
+        String FEATURED_PRODUCT = "Featured Product";
+        String ADD_FEATURED_PRODUCT = "Add Featured Product";
+        String TICK_ERROR = "Tick Error";
+        String SAVE_FEATURED_PRODUCT_PICKER = "Simpan - ";
+        String SORT_FEATURED_PRODUCT_CHANGE = "Atur Urutan (Change)";
+        String SORT_FEATURED_PRODUCT_NO_CHANGE = "Atur Urutan (No Change)";
+        String DELETE_FEATURED_PRODUCT = "Delete";
+
+        String DASHBOARD_MAIN_SHOP_INFO = "Shop Info";
+        String DASHBOARD_MAIN_TRANSACTION = "Penjualan";
+        String DASHBOARD_MAIN_INBOX = "Kotak Masuk";
+
+        String DASHBOARD_ITEM_SETTINGS = "Settings";
+        String DASHBOARD_ITEM_PERFORMA_TOKO = "Performa Toko";
+        String DASHBOARD_ITEM_REPUTASI_TOKO = "Reputasi Toko";
+        String DASHBOARD_ITEM_TRANSAKSI_SUKSES = "Transaksi Sukses";
+
+        String DASHBOARD_ITEM_ORDER_BARU = "Order Baru";
+        String DASHBOARD_ITEM_KONFIRMASI_PENGIRIMAN = "Konfirmasi Pengiriman";
+        String DASHBOARD_ITEM_STATUS_PENGIRIMAN = "Transaksi Sukses";
+        String DASHBOARD_ITEM_PELUANG = "Peluang";
+        String DASHBOARD_ITEM_PESAN = "Pesan";
+        String DASHBOARD_ITEM_DISKUSI_PRODUK = "Diskusi Produk";
+        String DASHBOARD_ITEM_ULASAN = "Ulasan";
+
+        String SEARCH_PRODUCT = "search product";
+        String CLICK_PRODUCT_LIST = "click product list";
+        String CATEGORY = "category";
+        String CONDITION = "condition";
+        String PICTURE_STATUS = "picture status";
     }
 
     interface SOCIAL_MEDIA {
@@ -711,6 +753,23 @@ public interface AppEventTracking {
         String PURCHASE_SITE = "purchase_site";
         String TOTAL_PRICE = "purchase_site";
         String REVIEW_SCORE = "review_score";
+
+        String TOTAL_SOLD_ITEM = "total_sold_item";
+        String REG_DATE = "registration_date";
+        String DATE_SHOP_CREATED = "date_shop_created";
+        String SHOP_LOCATION     = "shop_location";
+
+        String TOKOCASH_AMT     = "tokocash_amt";
+        String SALDO_AMT     = "saldo_amt";
+        String TOPADS_AMT     = "topads_amt";
+        String TOPADS_USER     = "is_topads_user";
+        String HAS_PURCHASED_TICKET     = "has_purchased_ticket";
+        String HAS_PURCHASED_MARKETPLACE     = "has_purchased_marketplace";
+        String HAS_PURCHASED_DIGITAL     = "has_purchased_digital";
+        String LAST_TRANSACT_DATE     = "last_transaction_date";
+        String TOTAL_ACTIVE_PRODUCT     = "total_active_product";
+        String SHOP_SCORE     = "shop_score";
+
     }
 
     interface EventMoEngage {

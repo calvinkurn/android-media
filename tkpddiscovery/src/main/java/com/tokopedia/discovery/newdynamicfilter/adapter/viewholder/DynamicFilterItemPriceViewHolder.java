@@ -29,13 +29,6 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         wholesaleTitle = (TextView) itemView.findViewById(R.id.wholesale_title);
         wholesaleToggle = (SwitchCompat) itemView.findViewById(R.id.wholesale_toggle);
         priceRangeInputView = (PriceRangeInputView) itemView.findViewById(R.id.price_range_input_view);
-        priceRangeInputView.setOnValueChangedListener(new PriceRangeInputView.OnValueChangedListener() {
-            @Override
-            public void onValueChanged(int minValue, int maxValue) {
-                dynamicFilterView.saveTextInput(Option.KEY_PRICE_MIN, String.valueOf(minValue));
-                dynamicFilterView.saveTextInput(Option.KEY_PRICE_MAX, String.valueOf(maxValue));
-            }
-        });
     }
 
     @Override
@@ -47,8 +40,8 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
         for (Option option : filter.getOptions()) {
             if (Option.KEY_PRICE_MIN_MAX_RANGE.equals(option.getKey())) {
-                minBound = Integer.parseInt(option.getValMin());
-                maxBound = Integer.parseInt(option.getValMax());
+                minBound = TextUtils.isEmpty(option.getValMin()) ? 0 : Integer.parseInt(option.getValMin());
+                maxBound = TextUtils.isEmpty(option.getValMax()) ? 0 : Integer.parseInt(option.getValMax());
             }
 
             if (Option.KEY_PRICE_MIN.equals(option.getKey())) {
@@ -79,6 +72,14 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         } else {
             defaultMaxValue = Integer.parseInt(savedMaxValue);
         }
+
+        priceRangeInputView.setOnValueChangedListener(new PriceRangeInputView.OnValueChangedListener() {
+            @Override
+            public void onValueChanged(int minValue, int maxValue) {
+                dynamicFilterView.saveTextInput(Option.KEY_PRICE_MIN, String.valueOf(minValue));
+                dynamicFilterView.saveTextInput(Option.KEY_PRICE_MAX, String.valueOf(maxValue));
+            }
+        });
 
         priceRangeInputView.setData(minLabel, maxLabel, minBound, maxBound,
                 defaultMinValue, defaultMaxValue);

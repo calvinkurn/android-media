@@ -26,6 +26,15 @@ public class KeywordDetailDomain {
     private String statTotalConversion;
     private String labelPerClick;
     private int statusToogle;
+    private int groupBid;
+
+    public int getGroupBid() {
+        return groupBid;
+    }
+
+    public void setGroupBid(int groupBid) {
+        this.groupBid = groupBid;
+    }
 
     public int getStatusToogle() {
         return statusToogle;

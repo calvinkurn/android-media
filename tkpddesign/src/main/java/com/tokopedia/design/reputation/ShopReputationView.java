@@ -8,6 +8,7 @@ import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -70,12 +71,12 @@ public class ShopReputationView extends BaseCustomView {
         requestLayout();
     }
 
-    public void setValue(int medalType, int level, int point) {
+    public void setValue(int medalType, int level, String point) {
         reputationLayout.removeAllViews();
         int imageResource = getIconResource(medalType);
         if (medalType == MEDAL_TYPE_0) {
             level = 1;
-            point = 0;
+            point = "0";
         }
         updateMedalView(imageResource, level);
         if (showTooltip && medalType != MEDAL_TYPE_0) {
@@ -84,13 +85,19 @@ public class ShopReputationView extends BaseCustomView {
     }
 
     private void updateMedalView(@DrawableRes int imageResource, int levelMedal) {
+        int medalMargin = getContext().getResources().getDimensionPixelSize(R.dimen.margin_vvs);
         for (int i = 0; i < levelMedal; i++) {
             View medal = getGeneratedMedalImage(imageResource);
+            if (i < levelMedal ) {
+                LinearLayout.LayoutParams params= (LinearLayout.LayoutParams) medal.getLayoutParams();
+                params.rightMargin = medalMargin;
+                medal.setLayoutParams(params);
+            }
             reputationLayout.addView(medal);
         }
     }
 
-    private void setToolTip(final int point) {
+    private void setToolTip(final String point) {
         reputationLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,8 +122,9 @@ public class ShopReputationView extends BaseCustomView {
 
     private ImageView getGeneratedMedalImage(@DrawableRes int imageResource) {
         ImageView imageView = new ImageView(getContext());
+        imageView.setAdjustViewBounds(true);
         int size = getContext().getResources().getDimensionPixelSize(R.dimen.image_medal_size);
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(size, size);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, size);
         imageView.setLayoutParams(param);
         imageView.setImageResource(imageResource);
         return imageView;

@@ -83,6 +83,7 @@ import com.tokopedia.tkpdpdp.customview.ShopInfoViewV2;
 import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
 import com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout;
 import com.tokopedia.tkpdpdp.dialog.ReportProductDialogFragment;
+import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
@@ -123,6 +124,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
     public static final String STATE_PRODUCT_CAMPAIGN = "STATE_PRODUCT_CAMPAIGN";
+    public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
     private CoordinatorLayout coordinatorLayout;
@@ -155,6 +157,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private List<ProductOther> productOthers;
     private VideoData videoData;
     private ProductCampaign productCampaign;
+    private PromoAttributes promoAttributes;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
 
@@ -245,7 +248,21 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         toolbar.setTitle("");
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
+        appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                switch (state){
+                    case COLLAPSED:
+                        initStatusBarLight();
+                        initToolbarLight();
+                        break;
+                    case EXPANDED:
+                        initStatusBarDark();
+                        initToolbarTransparant();
+                        break;
+                }
+            }
+        });
         setHasOptionsMenu(true);
         initToolbarTransparant();
     }
@@ -454,7 +471,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.interactionListener.onProductDetailLoaded(successResult);
         this.presenter.sendAnalytics(successResult);
         this.presenter.sendAppsFlyerData(context, successResult, AFInAppEventType.CONTENT_VIEW);
-        this.presenter.sendLocalytics(context, successResult);
         this.presenter.startIndexingApp(appIndexHandler, successResult);
         this.refreshMenu();
         this.updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
@@ -588,7 +604,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity instanceof DeepLinkWebViewHandleListener){
+        if (activity instanceof DeepLinkWebViewHandleListener) {
             webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
         } else {
             throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
@@ -598,7 +614,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onAttach(Context activity) {
         super.onAttach(context);
-        if (activity instanceof DeepLinkWebViewHandleListener){
+        if (activity instanceof DeepLinkWebViewHandleListener) {
             webViewHandleListener = (DeepLinkWebViewHandleListener) activity;
         } else {
             throw new RuntimeException("Activity must implement DeepLinkWebViewHandleListener");
@@ -727,6 +743,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
         presenter.saveStateProductCampaign(outState, STATE_PRODUCT_CAMPAIGN, productCampaign);
+        presenter.saveStatePromoWidget(outState, STATE_PROMO_WIDGET, promoAttributes);
     }
 
     @Override
@@ -737,10 +754,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
             getActivity().onBackPressed();
             return true;
-        } else if (item.getItemId() == R.id.action_share) {
+        } else if (i == R.id.action_share) {
             if (productData != null) {
                 ShareData shareData = ShareData.Builder.aShareData()
                         .setName(productData.getInfo().getProductName())
@@ -749,11 +767,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         .setPrice(productData.getInfo().getProductPrice())
                         .setUri(productData.getInfo().getProductUrl())
                         .setType(ShareData.PRODUCT_TYPE)
+                        .setId(productData.getInfo().getProductId().toString())
                         .build();
                 onProductShareClicked(shareData);
             }
             return true;
-        } else if (item.getItemId() == R.id.action_cart) {
+        } else if (i == R.id.action_cart) {
             if (!SessionHandler.isV4Login(getActivity())) {
                 Intent intent = SessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
@@ -763,16 +782,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 startActivity(TransactionCartRouter.createInstanceCartActivity(getActivity()));
             }
             return true;
-        } else if (item.getItemId() == R.id.action_report) {
-            presenter.reportProduct(context);
+        } else if (i == R.id.action_report) {
+            onProductReportClicked();
             return true;
-        } else if (item.getItemId() == R.id.action_warehouse) {
+        } else if (i == R.id.action_warehouse) {
             presenter.requestMoveToWarehouse(context, productData.getInfo().getProductId());
             return true;
-        } else if (item.getItemId() == R.id.action_etalase) {
+        } else if (i == R.id.action_etalase) {
             presenter.requestMoveToEtalase(context, productData.getInfo().getProductId());
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -933,12 +954,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showPromoWidget(PromoAttributes promoAttributes) {
+        this.promoAttributes = promoAttributes;
         this.promoWidgetView.renderData(promoAttributes);
     }
 
     @Override
     public void onPromoWidgetCopied() {
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout,context.getString(R.string.title_copied),
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, context.getString(R.string.title_copied),
                 Snackbar.LENGTH_LONG);
         snackbar.setAction(context.getString(R.string.close), new View.OnClickListener() {
             @Override
@@ -1001,68 +1023,59 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
     }
 
-    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
-        return new AppBarLayout.OnOffsetChangedListener() {
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    initToolbarLight();
-                    fabWishlist.hide();
-                } else {
-                    initToolbarTransparant();
-                    if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
-                        fabWishlist.show();
-                    }
-                }
-            }
-        };
-    }
-
     private void initToolbarLight() {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
+        collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(context, R.color.grey_toolbar_icon));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
-        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
+        toolbar.setTitleTextColor(ContextCompat.getColor(context, R.color.grey_toolbar_icon));
+        toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
         if (menu != null && menu.size() > 2) {
-            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.icon_share));
+            menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share));
             LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart_notif));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_cart_notif));
             } else {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_cart));
             }
         }
-        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_more));
-
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(context, R.drawable.icon_more));
     }
 
     private void initToolbarTransparant() {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
+        collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(context, R.color.white));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setBackgroundColor(Color.TRANSPARENT);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
         if (menu != null && menu.size() > 1) {
-            menu.getItem(0).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white));
+            menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_share_white));
             LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.getItem(1).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(context, R.drawable.cart_active_white));
             } else {
-                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.icon_cart_white));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(context, R.drawable.icon_cart_white));
             }
-            toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_more_white));
+        }
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(context, R.drawable.icon_more_white));
+    }
+
+    private void initStatusBarDark() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation()) {
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
     }
 
     private boolean getWindowValidation() {
         return getActivity() != null && getActivity().getWindow() != null;
+    }
+
+    private void initStatusBarLight() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getWindowValidation()) {
+            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getActivity(), R.color.green_600));
+        }
     }
 
     private class EditClick implements View.OnClickListener {

@@ -14,6 +14,13 @@ public abstract class BaseResponseError {
     public abstract String getErrorKey();
 
     /**
+     * Check if this response error is valid
+     *
+     * @return
+     */
+    public abstract boolean isResponseErrorValid();
+
+    /**
      * @return if the error is filled, return true
      */
     public abstract boolean hasBody();

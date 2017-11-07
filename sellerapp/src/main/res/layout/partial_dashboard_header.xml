@@ -25,7 +25,7 @@
             <FrameLayout
                 android:layout_width="@dimen/dashboard_icon_shop_height"
                 android:layout_height="@dimen/dashboard_icon_shop_height"
-                android:background="@drawable/rect_gray_round">
+                android:background="@drawable/bg_rect_gray_round">
 
                 <ImageView
                     android:id="@+id/image_view_shop_icon"
@@ -38,7 +38,7 @@
                 <android.support.v7.widget.AppCompatImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/rect_stroke_light_gray" />
+                    android:background="@drawable/bg_rect_stroke_light_gray" />
 
             </FrameLayout>
 
@@ -131,14 +131,12 @@
                 android:id="@+id/shop_reputation_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small" />
+                android:layout_marginTop="@dimen/margin_small"/>
 
             <TextView
                 android:id="@+id/text_view_reputation_point"
                 style="@style/TextView.Caption.BlackDisabled"
                 android:layout_marginTop="@dimen/margin_vs"
-                android:layout_marginStart="@dimen/padding_vs"
-                android:layout_marginLeft="@dimen/padding_vs"
                 android:text="@string/label_empty_value"
                 tools:text="50.000 poin"/>
         </LinearLayout>
@@ -157,7 +155,7 @@
 
             <TextView
                 style="@style/TextView.Body1.Bold.BlackSecondary"
-                android:text="@string/gm_statistic_title_transaction_success" />
+                android:text="@string/transaction_success" />
 
             <TextView
                 android:id="@+id/text_view_transaction_success"

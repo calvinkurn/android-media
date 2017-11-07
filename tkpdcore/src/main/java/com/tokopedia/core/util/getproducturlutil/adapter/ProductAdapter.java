@@ -83,14 +83,16 @@ public class ProductAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindProduct(ViewHolder holder, final int position) {
-        holder.name.setText(list.get(position).getProductName());
-        ImageHandler.LoadImage(holder.image, list.get(position).getProductImage());
-        holder.main.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onGetUrl(list.get(position).getProductUrl());
-            }
-        });
+        if (position < list.size()) {
+            holder.name.setText(list.get(position).getProductName());
+            ImageHandler.LoadImage(holder.image, list.get(position).getProductImage());
+            holder.main.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onGetUrl(list.get(position).getProductUrl());
+                }
+            });
+        }
     }
 
     @Override

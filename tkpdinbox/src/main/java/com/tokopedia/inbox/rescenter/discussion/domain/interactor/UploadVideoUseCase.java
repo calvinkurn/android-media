@@ -54,7 +54,6 @@ public class UploadVideoUseCase extends UseCase<UploadImageModel> {
     @Override
     public Observable<UploadImageModel> createObservable(RequestParams requestParams) {
         String url =  "https://" + requestParams.getString(PARAM_URL, "") + TkpdBaseURL.Upload.PATH_UPLOAD_VIDEO;
-//        String url =  "http://172.16.16.81:7777" + TkpdBaseURL.Upload.PATH_UPLOAD_VIDEO; // Eric punya lokal pc golang
         return uploadImageRepository.uploadVideo(url, generateParams(requestParams), getVideoFile(requestParams));
     }
 

@@ -5,6 +5,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.base.view.adapter.ItemPickerType;
@@ -38,7 +39,7 @@ public abstract class BaseItemPickerCacheViewHolder<T extends ItemPickerType> ex
 
     @Override
     public void bindObject(final T t) {
-        titleTextView.setText(t.getTitle());
+        titleTextView.setText(MethodChecker.fromHtml(t.getTitle()));
         closeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

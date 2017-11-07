@@ -236,6 +236,8 @@ public class TkpdState {
 
         public static final int CATEGORY_NAVIGATION = 54;
         public static final int FEATURED_PRODUCT = 99;
+
+        public static final int APPSHARE = 58;
     }
 
     public class Application {

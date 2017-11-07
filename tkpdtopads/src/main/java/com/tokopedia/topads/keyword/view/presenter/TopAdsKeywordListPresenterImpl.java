@@ -95,6 +95,7 @@ public class TopAdsKeywordListPresenterImpl extends
         keywordAd.setPriceBidFmt(datum.getKeywordPriceBidFmt());
         keywordAd.setLabelPerClick(datum.getLabelPerClick());
         keywordAd.setKeywordTypeDesc(datum.getKeywordTypeDesc());
+        keywordAd.setGroupBid(datum.getGroupBid());
         return keywordAd;
     }
 

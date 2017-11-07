@@ -37,8 +37,10 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.Drawer;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
@@ -145,10 +147,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 && !SessionHandler.getShopID(context).equals("")) {
             data.add(getSellerMenu());
             data.add(getProductMenu());
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
-                    R.drawable.ic_goldmerchant_drawer,
-                    TkpdState.DrawerPosition.GOLD_MERCHANT,
-                    false));
+            data.add(getGoldMerchantMenu());
             data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                     R.drawable.ic_top_ads,
                     TkpdState.DrawerPosition.SELLER_TOP_ADS,
@@ -158,6 +157,15 @@ public class DrawerBuyerHelper extends DrawerHelper
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
                 true));
+
+        if (isAppshareButtonShow()) {
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
+                    R.drawable.share_ke_teman,
+                    TkpdState.DrawerPosition.APPSHARE,
+                    true, true));
+
+        }
+
         data.add(new DrawerItem(context.getString(R.string.drawer_title_activity_contact_us),
                 R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
@@ -172,6 +180,26 @@ public class DrawerBuyerHelper extends DrawerHelper
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
+    }
+
+    private DrawerItem getGoldMerchantMenu(){
+        DrawerItem menu;
+        boolean isGoldMerchant = SessionHandler.isGoldMerchant(context);
+        if(isGoldMerchant) {
+            menu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
+                    R.drawable.ic_goldmerchant_drawer,
+                    TkpdState.DrawerPosition.GOLD_MERCHANT,
+                    drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
+                    0);
+            ((DrawerGroup)menu).add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
+                    TkpdState.DrawerPosition.FEATURED_PRODUCT, false, true));
+        }else {
+            menu = (new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
+                    R.drawable.ic_goldmerchant_drawer,
+                    TkpdState.DrawerPosition.GOLD_MERCHANT,
+                    false));
+        }
+        return menu;
     }
 
     private DrawerItem getProductMenu() {
@@ -449,6 +477,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                         ((TkpdCoreRouter) context.getApplication()).goToDraftProductList(context);
                     }
                     break;
+                case TkpdState.DrawerPosition.FEATURED_PRODUCT:
                 case TkpdState.DrawerPosition.GOLD_MERCHANT:
                     Intent launchIntent = context.getPackageManager()
                             .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
@@ -550,5 +579,11 @@ public class DrawerBuyerHelper extends DrawerHelper
         intent.putExtras(ShopInfoActivity.createBundle(sessionHandler.getShopID(), ""));
         context.startActivity(intent);
         sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
+    }
+
+    private boolean isAppshareButtonShow() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.FIREBASE_REMOTE_CONFIG);
+        return localCacheHandler.getBoolean(TkpdCache.Key.SHOW_HIDE_APP_SHARE_BUTTON_KEY, true);
+
     }
 }
