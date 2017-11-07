@@ -408,10 +408,12 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     }
 
     private void fetchData() {
-        if (presenter != null && adapter != null) {
-            if (adapter.getList().isEmpty() && !adapter.isEmpty() && !presenter.isRequesting()) {
-                presenter.getShopTalk();
-            }
+        if (presenter != null
+                && adapter != null
+                && !adapter.isEmpty()
+                && adapter.getList().isEmpty()
+                && !presenter.isRequesting()) {
+            presenter.getShopTalk();
         }
     }
 }
