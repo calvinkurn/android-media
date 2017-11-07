@@ -26,7 +26,7 @@ const postDataToNative = async (data) => {
   const api_url = await getBaseAPI(env)
   const gateway_code = await getGatewayCode(data)
   const otp = await makePaymentV2(api_url, data, gateway_code)
-  console.log(otp)
+  // console.log(otp)
   return otp
 }
 
@@ -63,15 +63,16 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
 
   return NetworkModule.getResponseJson(`${api_url.api_url_pcidss}`, `POST`, JSON.stringify(data_params), true)
     .then(res => {
-      console.log(res)
+      // console.log(res)
       const jsonResponse = JSON.parse(res)
-      console.log(jsonResponse)
-      if (jsonResponse.status === '200 Ok'){
-        if (jsonResponse.data.errors === null){
-          // insertPayment_v2(data, data_params.transaction_id)
-          return jsonResponse
-        }
-      }
+      // console.log(jsonResponse)
+      return jsonResponse
+      // if (jsonResponse.status === '200 Ok'){
+      //   if (jsonResponse.data.errors === null){
+      //     // insertPayment_v2(data, data_params.transaction_id)
+      //     return jsonResponse
+      //   }
+      // }
     })
     .catch(err => { 
       console.log(err) 
