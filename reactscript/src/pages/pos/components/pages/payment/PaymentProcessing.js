@@ -43,7 +43,7 @@ class PaymentProcessing extends Component {
         bank_name: selectedBankData.bank_name,
         transaction_id
       }
-      console.log(objData)
+      // console.log(objData)
 
       NavigationModule.navigate('posapp://payment/otp', JSON.stringify(objData))
     }
@@ -66,8 +66,8 @@ class PaymentProcessing extends Component {
 const mapStateToProps = (state, ownProps) => {
   const data_process_json = JSON.parse(ownProps.screenProps.data.data_process)
   // console.log(data_process_json)
-  console.log(state)
-  console.log(ownProps)
+  // console.log(state)
+  // console.log(ownProps)
   // console.log(state.checkout)
 
   return {
