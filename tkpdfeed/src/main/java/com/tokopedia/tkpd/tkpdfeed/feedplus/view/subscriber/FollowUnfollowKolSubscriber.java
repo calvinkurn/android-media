@@ -1,7 +1,10 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FollowKolDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 
 import rx.Subscriber;
@@ -35,6 +38,11 @@ public class FollowUnfollowKolSubscriber extends Subscriber<FollowKolDomain> {
     @Override
     public void onNext(FollowKolDomain followKolDomain) {
         view.finishLoadingProgress();
-        kolListener.onSuccessFollowUnfollowKol(rowNumber);
+        if (followKolDomain.getStatus() == FollowKolPostUseCase.SUCCESS_STATUS)
+            kolListener.onSuccessFollowUnfollowKol(rowNumber);
+        else {
+            kolListener.onErrorFollowKol(MainApplication.getAppContext().getString(R.string
+                    .default_request_error_unknown));
+        }
     }
 }
