@@ -13,13 +13,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.tokocash.WalletService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.RefreshHandler;
@@ -27,18 +27,17 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.tokocash.adapter.LinkedAccountAdapter;
+import com.tokopedia.digital.tokocash.dialog.DeleteTokoCashAccountDialog;
 import com.tokopedia.digital.tokocash.domain.HistoryTokoCashRepository;
 import com.tokopedia.digital.tokocash.interactor.AccountSettingInteractor;
 import com.tokopedia.digital.tokocash.listener.IWalletAccountSettingView;
-import com.tokopedia.digital.tokocash.model.AccountTokoCash;
+import com.tokopedia.digital.tokocash.model.AccountWalletItem;
 import com.tokopedia.digital.tokocash.model.OAuthInfo;
-import com.tokopedia.digital.tokocash.network.apiservice.HistoryTokoCashService;
 import com.tokopedia.digital.tokocash.presenter.IWalletAccountSettingPresenter;
 import com.tokopedia.digital.tokocash.presenter.WalletAccountSettingPresenter;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
@@ -101,7 +100,7 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
         compositeSubscription = new CompositeSubscription();
         SessionHandler sessionHandler = new SessionHandler(getActivity());
         AccountSettingInteractor accountSettingInteractor = new AccountSettingInteractor(
-                new HistoryTokoCashRepository(new HistoryTokoCashService(sessionHandler.getAccessTokenTokoCash())),
+                new HistoryTokoCashRepository(new WalletService(sessionHandler.getAccessTokenTokoCash())),
                 compositeSubscription,
                 new JobExecutor(),
                 new UIThread());
@@ -137,7 +136,7 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
     protected void initialVar() {
         progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        accountListAdapter = new LinkedAccountAdapter(new ArrayList<AccountTokoCash>());
+        accountListAdapter = new LinkedAccountAdapter(new ArrayList<AccountWalletItem>());
         accountListAdapter.setActionListener(getActionListener());
         rvConnectedUser.setLayoutManager(linearLayoutManager);
         rvConnectedUser.setNestedScrollingEnabled(false);
@@ -147,9 +146,21 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
     private LinkedAccountAdapter.ActionListener getActionListener() {
         return new LinkedAccountAdapter.ActionListener() {
             @Override
-            public void onDeleteAccessClicked(AccountTokoCash accountTokoCash) {
-                //TODO implement delete account from presenter
-                Toast.makeText(getActivity(), "DELETE ACCOUNT", Toast.LENGTH_SHORT).show();
+            public void onDeleteAccessClicked(AccountWalletItem accountTokoCash) {
+                DeleteTokoCashAccountDialog dialog = DeleteTokoCashAccountDialog.createDialog(
+                        accountTokoCash.getRefreshToken(), accountTokoCash.getIdentifier(),
+                        accountTokoCash.getIdentifierType());
+                dialog.setListener(getDialogListener());
+                dialog.show(getFragmentManager(), "delete_tokocash_dialog");
+            }
+        };
+    }
+
+    private DeleteTokoCashAccountDialog.DeleteAccessAccountListener getDialogListener() {
+        return new DeleteTokoCashAccountDialog.DeleteAccessAccountListener() {
+            @Override
+            public void onDeleteAccess(String revokeToken, String identifier, String identifierType) {
+                presenter.processDeleteConnectedUser(revokeToken, identifier, identifierType);
             }
         };
     }
@@ -240,7 +251,6 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
     public void onRefresh(View view) {
         if (refreshHandler.isRefreshing()) {
             presenter.processGetWalletAccountData();
-            presenter.processGetListLinkedAccount();
         }
     }
 
@@ -250,17 +260,25 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
         refreshHandler.finishRefresh();
         nameAccount.setText(oAuthInfo.getName());
         emailAccount.setText(oAuthInfo.getEmail());
-        phoneAccount.setText(oAuthInfo.getMsisdn());
-    }
-
-    @Override
-    public void renderAccountTokoCashList(List<AccountTokoCash> accountTokoCashList) {
-        accountListAdapter.addAccountList(accountTokoCashList);
+        phoneAccount.setText(oAuthInfo.getMobile());
+        if (oAuthInfo.getAccountList() != null)
+            accountListAdapter.addAccountList(oAuthInfo.getAccountList());
     }
 
     @Override
     public void renderErrorGetWalletAccountSettingData(String message) {
         renderEmptyPage(message);
+    }
+
+    @Override
+    public void renderSuccessUnlinkAccount() {
+        refreshHandler.startRefresh();
+        // TODO arahin ke home karena tokocashnya dah unactive
+    }
+
+    @Override
+    public void renderErrorUnlinkAccount(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override

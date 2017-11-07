@@ -8,7 +8,6 @@ public interface IWalletAccountSettingPresenter {
 
     void processGetWalletAccountData();
 
-    void processGetListLinkedAccount();
-
-    void processDeleteConnectedUser();
+    void processDeleteConnectedUser(String refreshToken,
+                                    String identifier, String identifierType);
 }

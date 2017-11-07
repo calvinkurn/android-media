@@ -3,33 +3,36 @@ package com.tokopedia.digital.tokocash.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * Created by nabillasabbaha on 10/26/17.
  */
 
 public class OAuthInfo implements Parcelable {
 
-    private String userId;
+    private List<AccountWalletItem> accountList;
+    private String tokopediaUserId;
     private String email;
     private String name;
-    private String msisdn;
+    private String mobile;
 
     public OAuthInfo() {
     }
 
     protected OAuthInfo(Parcel in) {
-        userId = in.readString();
+        tokopediaUserId = in.readString();
         email = in.readString();
         name = in.readString();
-        msisdn = in.readString();
+        mobile = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(userId);
+        dest.writeString(tokopediaUserId);
         dest.writeString(email);
         dest.writeString(name);
-        dest.writeString(msisdn);
+        dest.writeString(mobile);
     }
 
     @Override
@@ -49,12 +52,20 @@ public class OAuthInfo implements Parcelable {
         }
     };
 
-    public String getUserId() {
-        return userId;
+    public List<AccountWalletItem> getAccountList() {
+        return accountList;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setAccountList(List<AccountWalletItem> accountList) {
+        this.accountList = accountList;
+    }
+
+    public String getTokopediaUserId() {
+        return tokopediaUserId;
+    }
+
+    public void setTokopediaUserId(String tokopediaUserId) {
+        this.tokopediaUserId = tokopediaUserId;
     }
 
     public String getEmail() {
@@ -73,11 +84,11 @@ public class OAuthInfo implements Parcelable {
         this.name = name;
     }
 
-    public String getMsisdn() {
-        return msisdn;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setMsisdn(String msisdn) {
-        this.msisdn = msisdn;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 }

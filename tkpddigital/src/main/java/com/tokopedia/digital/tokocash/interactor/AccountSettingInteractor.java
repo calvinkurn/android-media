@@ -3,12 +3,8 @@ package com.tokopedia.digital.tokocash.interactor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.digital.tokocash.domain.HistoryTokoCashRepository;
-import com.tokopedia.digital.tokocash.mapper.AccountTokoCashMapper;
 import com.tokopedia.digital.tokocash.mapper.OAuthInfoMapper;
-import com.tokopedia.digital.tokocash.model.AccountTokoCash;
 import com.tokopedia.digital.tokocash.model.OAuthInfo;
-
-import java.util.List;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
@@ -25,7 +21,6 @@ public class AccountSettingInteractor implements IAccountSettingInteractor {
     private ThreadExecutor threadExecutor;
     private PostExecutionThread postExecutionThread;
     private OAuthInfoMapper oAuthInfomapper;
-    private AccountTokoCashMapper accountTokoCashMapper;
 
     public AccountSettingInteractor(HistoryTokoCashRepository repository,
                                     CompositeSubscription compositeSubscription,
@@ -36,7 +31,6 @@ public class AccountSettingInteractor implements IAccountSettingInteractor {
         this.threadExecutor = threadExecutor;
         this.postExecutionThread = postExecutionThread;
         oAuthInfomapper = new OAuthInfoMapper();
-        accountTokoCashMapper = new AccountTokoCashMapper();
     }
 
     @Override
@@ -51,18 +45,13 @@ public class AccountSettingInteractor implements IAccountSettingInteractor {
     }
 
     @Override
-    public void getLinkedAccountList(Subscriber<List<AccountTokoCash>> subscriber) {
+    public void unlinkAccountTokoCash(Subscriber<Boolean> subscriber, String refreshToken,
+                                      String identifier, String identifierType) {
         compositeSubscription.add(
-                repository.getLinkedAccountList()
-                        .map(accountTokoCashMapper)
+                repository.unlinkAccountTokoCash(refreshToken, identifier, identifierType)
                         .unsubscribeOn(Schedulers.from(threadExecutor))
                         .subscribeOn(Schedulers.from(threadExecutor))
                         .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
-    }
-
-    @Override
-    public void unlinkAccountTokoCash(Subscriber<Boolean> isSuccess, String userId) {
-
     }
 }

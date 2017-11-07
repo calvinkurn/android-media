@@ -1,18 +1,19 @@
 package com.tokopedia.digital.tokocash.domain;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.network.apiservices.tokocash.WalletService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-import com.tokopedia.digital.tokocash.entity.AccountTokoCashListEntity;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.tokocash.entity.HelpHistoryTokoCashEntity;
 import com.tokopedia.digital.tokocash.entity.OAuthInfoEntity;
-import com.tokopedia.digital.tokocash.entity.ParamsActionHistoryEntity;
 import com.tokopedia.digital.tokocash.entity.ResponseHelpHistoryEntity;
 import com.tokopedia.digital.tokocash.entity.TokoCashHistoryEntity;
 import com.tokopedia.digital.tokocash.entity.WithdrawSaldoEntity;
 import com.tokopedia.digital.tokocash.model.ParamsActionHistory;
-import com.tokopedia.digital.tokocash.network.apiservice.HistoryTokoCashService;
-import com.tokopedia.digital.tokocash.network.request.RequestHelpHistory;
 import com.tokopedia.digital.utils.DeviceUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,12 +30,12 @@ import rx.functions.Func1;
 
 public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
 
-    private final HistoryTokoCashService historyTokoCashService;
+    private final WalletService walletService;
 
     private Gson gson;
 
-    public HistoryTokoCashRepository(HistoryTokoCashService historyTokoCashService) {
-        this.historyTokoCashService = historyTokoCashService;
+    public HistoryTokoCashRepository(WalletService walletService) {
+        this.walletService = walletService;
         gson = new Gson();
     }
 
@@ -46,7 +47,7 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
         mapHistoryData.put("start_date", startDate);
         mapHistoryData.put("end_date", endDate);
         mapHistoryData.put("page", String.valueOf(page));
-        return historyTokoCashService.getApi().getHistoryTokocash(mapHistoryData)
+        return walletService.getApi().getHistoryTokocash(mapHistoryData)
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<TokoCashHistoryEntity>>() {
                     @Override
                     public Observable<TokoCashHistoryEntity> call(Response<TkpdDigitalResponse> response) {
@@ -65,12 +66,18 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
 
     @Override
     public Observable<ResponseHelpHistoryEntity> submitHelpHistory(String subject, String message, String category, String transactionId) {
-        RequestHelpHistory requestHelpHistory = new RequestHelpHistory();
-        requestHelpHistory.setSubject(subject);
-        requestHelpHistory.setMessage(message);
-        requestHelpHistory.setCategory(category);
-        requestHelpHistory.setTransaction_id(transactionId);
-        return historyTokoCashService.getApi().postHelpHistory(requestHelpHistory)
+        JSONObject requestHelpHistory = new JSONObject();
+        try {
+            requestHelpHistory.put("subject", subject);
+            requestHelpHistory.put("message", message);
+            requestHelpHistory.put("category", category);
+            requestHelpHistory.put("transaction_id", transactionId);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return walletService.getApi().postHelpHistory(requestHelpHistory)
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<ResponseHelpHistoryEntity>>() {
                     @Override
                     public Observable<ResponseHelpHistoryEntity> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
@@ -82,10 +89,14 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
 
     @Override
     public Observable<WithdrawSaldoEntity> moveToSaldo(String url, ParamsActionHistory paramsActionHistory) {
-        ParamsActionHistoryEntity paramsActionHistoryEntity = new ParamsActionHistoryEntity();
-        paramsActionHistoryEntity.setRefundId(paramsActionHistory.getRefundId());
-        paramsActionHistoryEntity.setRefundType(paramsActionHistory.getRefundType());
-        return historyTokoCashService.getApi().withdrawSaldoFromTokocash(url, paramsActionHistoryEntity)
+        JSONObject paramsActionHistoryEntity = new JSONObject();
+        try {
+            paramsActionHistoryEntity.put("refund_id", paramsActionHistory.getRefundId());
+            paramsActionHistoryEntity.put("refund_type", paramsActionHistory.getRefundType());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return walletService.getApi().withdrawSaldoFromTokocash(url, paramsActionHistoryEntity)
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<WithdrawSaldoEntity>>() {
                     @Override
                     public Observable<WithdrawSaldoEntity> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
@@ -96,24 +107,27 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
 
     @Override
     public Observable<OAuthInfoEntity> getOAuthInfo() {
-        return historyTokoCashService.getApi().getOAuthInfo();
+        return walletService.getApi().getOAuthInfoAccount()
+                .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<OAuthInfoEntity>>() {
+                    @Override
+                    public Observable<OAuthInfoEntity> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                        return Observable.just(tkpdDigitalResponseResponse.body().convertDataObj(OAuthInfoEntity.class));
+                    }
+                });
     }
 
     @Override
-    public Observable<AccountTokoCashListEntity> getLinkedAccountList() {
-//        return historyTokoCashService.getApi().getLinkedAccountList()
-//                .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<List<AccountTokoCashEntity>>>() {
-//                    @Override
-//                    public Observable<List<AccountTokoCashEntity>> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
-//                        return Observable.just(tkpdDigitalResponseResponse.body().convertDataList(AccountTokoCashEntity[].class));
-//                    }
-//                });
-        String accountTokoCashDummy = DeviceUtil.loadJSONFromAsset("account_list_dummy_tokocash.json");
-        return Observable.just(gson.fromJson(accountTokoCashDummy, AccountTokoCashListEntity.class));
-    }
-
-    @Override
-    public Observable<Boolean> unlinkAccountTokoCash(String userId) {
-        return null;
+    public Observable<Boolean> unlinkAccountTokoCash(String refreshToken, String identifier, String identifierType) {
+        TKPDMapParam tkpdMapParam = new TKPDMapParam();
+        tkpdMapParam.put("revoke_token", refreshToken);
+        tkpdMapParam.put("identifier", identifier);
+        tkpdMapParam.put("identifier_type", identifierType);
+        return walletService.getApi().revokeAccessAccountTokoCash(tkpdMapParam)
+                .map(new Func1<Response<String>, Boolean>() {
+                    @Override
+                    public Boolean call(Response<String> stringResponse) {
+                        return stringResponse.isSuccessful();
+                    }
+                });
     }
 }

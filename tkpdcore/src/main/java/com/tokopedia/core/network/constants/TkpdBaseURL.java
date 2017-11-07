@@ -756,8 +756,8 @@ public class TkpdBaseURL {
     public static class Wallet {
         public static final String GET_HISTORY = "api/v1/me/history";
         public static final String POST_COMPLAINT = "api/v1/cs/complaint";
-        public static final String GET_OAUTH_INFO = "oauth/info";
-        public static final String GET_LINKED_ACCOUNT_LIST = "api/v1/me/client/list";
+        public static final String GET_OAUTH_INFO_ACCOUNT= "api/v1/me/profile";
+        public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
     }
 
     public static class Truecaller {

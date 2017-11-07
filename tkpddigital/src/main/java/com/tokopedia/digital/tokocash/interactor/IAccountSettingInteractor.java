@@ -1,9 +1,6 @@
 package com.tokopedia.digital.tokocash.interactor;
 
-import com.tokopedia.digital.tokocash.model.AccountTokoCash;
 import com.tokopedia.digital.tokocash.model.OAuthInfo;
-
-import java.util.List;
 
 import rx.Subscriber;
 
@@ -15,7 +12,6 @@ public interface IAccountSettingInteractor {
 
     void getOAuthInfo(Subscriber<OAuthInfo> subscriber);
 
-    void getLinkedAccountList(Subscriber<List<AccountTokoCash>> subscriber);
-
-    void unlinkAccountTokoCash(Subscriber<Boolean> isSuccess, String userId);
+    void unlinkAccountTokoCash(Subscriber<Boolean> subscriber, String refreshToken,
+                               String identifier, String identifierType);
 }

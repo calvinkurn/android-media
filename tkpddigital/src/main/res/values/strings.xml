@@ -156,4 +156,6 @@
     <string name="tokocash_linked_account_date">Terhubung sejak: %s</string>
     <string name="tokocash_unlink_account_button">Hapus Akses</string>
     <string name="tokocash_title_account_setting">Pengaturan Akun</string>
+    <string name="tokocash_dialog_delete_access">Apakah Anda yakin ingin menghapus akses %1$s? \n\n
+        Untuk menghubungkan %2$s dengan TokoCash kembali, Anda harus melakukan pengaturan akun pada halaman aplikasi.</string>
 </resources>

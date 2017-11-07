@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.tokocash.model.AccountTokoCash;
+import com.tokopedia.digital.tokocash.model.AccountWalletItem;
 
 import java.util.List;
 
@@ -24,11 +24,11 @@ import butterknife.ButterKnife;
 
 public class LinkedAccountAdapter extends RecyclerView.Adapter {
 
-    private List<AccountTokoCash> accountTokoCashList;
+    private List<AccountWalletItem> accountTokoCashList;
 
     private ActionListener actionListener;
 
-    public LinkedAccountAdapter(List<AccountTokoCash> accountTokoCashList) {
+    public LinkedAccountAdapter(List<AccountWalletItem> accountTokoCashList) {
         this.accountTokoCashList = accountTokoCashList;
     }
 
@@ -53,7 +53,7 @@ public class LinkedAccountAdapter extends RecyclerView.Adapter {
         return accountTokoCashList.size();
     }
 
-    public void addAccountList(List<AccountTokoCash> accountTokoCashList) {
+    public void addAccountList(List<AccountWalletItem> accountTokoCashList) {
         this.accountTokoCashList.clear();
         this.accountTokoCashList.addAll(accountTokoCashList);
         notifyDataSetChanged();
@@ -78,7 +78,7 @@ public class LinkedAccountAdapter extends RecyclerView.Adapter {
             this.context = context;
         }
 
-        private void bindView(final AccountTokoCash accountTokoCash) {
+        private void bindView(final AccountWalletItem accountTokoCash) {
             ImageHandler.loadImageThumbs(context, ivIcon, accountTokoCash.getImgUrl());
             tvEmail.setText(accountTokoCash.getIdentifier());
             tvRegisteredDate.setText(String.format(
@@ -94,6 +94,6 @@ public class LinkedAccountAdapter extends RecyclerView.Adapter {
     }
 
     public interface ActionListener {
-        void onDeleteAccessClicked(AccountTokoCash accountTokoCash);
+        void onDeleteAccessClicked(AccountWalletItem accountTokoCash);
     }
 }

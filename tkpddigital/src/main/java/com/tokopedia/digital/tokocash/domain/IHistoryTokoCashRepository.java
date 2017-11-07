@@ -30,7 +30,5 @@ public interface IHistoryTokoCashRepository {
 
     Observable<OAuthInfoEntity> getOAuthInfo();
 
-    Observable<AccountTokoCashListEntity> getLinkedAccountList();
-
-    Observable<Boolean> unlinkAccountTokoCash(String userId);
+    Observable<Boolean> unlinkAccountTokoCash(String refreshToken, String identifier, String identifierType);
 }
