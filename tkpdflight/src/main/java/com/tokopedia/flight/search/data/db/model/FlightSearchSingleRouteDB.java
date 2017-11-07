@@ -21,6 +21,12 @@ import java.util.List;
  */
 @Table(database = TkpdFlightDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
+    public static final String TOTAL_NUMERIC = "total_numeric";
+    public static final String AIRLINE = "airline";
+    public static final String IS_REFUNDABLE = "is_refundable";
+    public static final String DEPARTURE_TIME = "departure_time";
+    public static final String DURATION_MINUTE = "duration_minute";
+    public static final String TOTAL_TRANSIT = "total_transit";
     @PrimaryKey
     @Column(name = "id")
     String id;
@@ -34,7 +40,7 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = "departure_airport")
     String departureAirport;
 
-    @Column(name = "departure_time")
+    @Column(name = DEPARTURE_TIME)
     String departureTime;
 
     @Column(name = "departure_time_int")
@@ -49,7 +55,7 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = "arrival_time_int")
     int arrivalTimeInt;
 
-    @Column(name = "total_transit")
+    @Column(name = TOTAL_TRANSIT)
     int totalTransit;
 
     @Column(name = "add_day_arrival")
@@ -58,13 +64,13 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = "duration")
     String duration;
 
-    @Column(name = "duration_minute")
+    @Column(name = DURATION_MINUTE)
     int durationMinute;
 
     @Column(name = "total")
     String total;
 
-    @Column(name = "total_numeric")
+    @Column(name = TOTAL_NUMERIC)
     int totalNumeric;
 
     @Column(name = "before_total")
@@ -73,10 +79,10 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = "routes")
     String routes;
 
-    @Column(name = "airline")
+    @Column(name = AIRLINE)
     String airline;
 
-    @Column(name = "is_refundable")
+    @Column(name = IS_REFUNDABLE)
     boolean isRefundable;
 
     @Override

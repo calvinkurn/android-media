@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/widget_card_with_action_bg"
+    android:orientation="horizontal"
+    android:padding="@dimen/padding_small">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_content_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Penerbangan Pergi"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_content_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_content_title"
+            android:textSize="@dimen/font_title"
+            android:textStyle="bold"
+            tools:text="Jakarta - Surabaya"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_content_submessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_content_message"
+            android:textSize="@dimen/font_subheading"
+            android:textStyle="bold"
+            tools:text="Multi Maskapai"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:background="@color/color_complain_body"
+        />
+
+    <RelativeLayout
+        android:id="@+id/action_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
+        android:gravity="center">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:textSize="@dimen/font_subheading"
+            tools:text="Detail"/>
+    </RelativeLayout>
+</LinearLayout>

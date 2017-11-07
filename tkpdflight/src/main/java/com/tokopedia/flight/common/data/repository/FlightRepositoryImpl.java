@@ -11,8 +11,10 @@ import com.tokopedia.flight.search.data.FlightSearchReturnDataListSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataListSource;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
+import com.tokopedia.flight.search.view.model.FlightFilterModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
@@ -81,9 +83,9 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<Integer> getFlightSearchCount(RequestParams requestParams) {
         if (FlightSearchParamUtil.isReturning(requestParams)) {
-            return flightSearchReturnDataListSource.getCacheDataListCount(null);
+            return flightSearchReturnDataListSource.getCacheDataListCount(FlightSearchParamUtil.toHashMap(requestParams));
         } else {
-            return flightSearchSingleDataListSource.getCacheDataListCount(null);
+            return flightSearchSingleDataListSource.getCacheDataListCount(FlightSearchParamUtil.toHashMap(requestParams));
         }
     }
 }

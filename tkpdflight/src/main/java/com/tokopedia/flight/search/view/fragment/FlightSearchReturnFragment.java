@@ -35,11 +35,6 @@ public class FlightSearchReturnFragment extends FlightSearchFragment {
         return view;
     }
 
-    @Override
-    protected final void searchForPage(int page) {
-        flightSearchPresenter.searchReturningFlight(false);
-    }
-
     protected int getFragmentLayout() {
         return R.layout.fragment_search_return;
     }

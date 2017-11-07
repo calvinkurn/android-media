@@ -18,7 +18,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".search.view.activity.FlightSearchFilterActivity"
-            android:label="@string/search_flight"
+            android:label="@string/filter"
             android:screenOrientation="portrait" />
 
         <activity
@@ -37,6 +37,11 @@
         <activity
             android:name=".detail.view.activity.FlightDetailActivity"
             android:label="@string/search_flight"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".booking.view.FlightBookingActivity"
+            android:label="Isi data pemesan"
             android:screenOrientation="portrait"/>
     </application>
 

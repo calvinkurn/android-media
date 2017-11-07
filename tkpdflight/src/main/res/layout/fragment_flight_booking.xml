@@ -1,0 +1,67 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                            xmlns:tools="http://schemas.android.com/tools"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:fillViewport="true"
+                                            tools:context="com.tokopedia.flight.booking.view.FlightBookingFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="Selesaikan Pesanan Anda Dalam"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:textStyle="bold"
+                tools:text="2 Menit 60 Detik"/>
+        </LinearLayout>
+
+        <com.tokopedia.flight.booking.widget.CardWithActionView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cmv_title="Penerbangan Pergi"/>
+
+        <com.tokopedia.flight.booking.widget.CardWithActionView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cmv_title="Penerbangan Pergi"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_med"
+            android:text="Informasi Kontak"
+            android:textSize="@dimen/font_headline"
+            android:textStyle="bold"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/til_contact_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nama Lengkap (sesuai KTP/SIM/Passport) til">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_contact_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nama Lengkap (sesuai KTP/SIM/Passport)"
+                tools:text="Isyana Saravati"/>
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
