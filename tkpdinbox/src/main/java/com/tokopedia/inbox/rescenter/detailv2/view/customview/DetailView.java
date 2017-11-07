@@ -30,8 +30,6 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
     private TextView textShopName;
     private TextView textAwbNumber;
     private TextView textInvoice;
-    private View viewResponseDeadline;
-    private TextView textResponseDeadline;
 
     public DetailView(Context context) {
         super(context);
@@ -68,8 +66,6 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
         textShopName = (TextView) view.findViewById(R.id.tv_shop_name);
         textAwbNumber = (TextView) view.findViewById(R.id.tv_awb_number);
         textInvoice = (TextView) view.findViewById(R.id.tv_invoice);
-        viewResponseDeadline = view.findViewById(R.id.view_response_deadline);
-        textResponseDeadline = (TextView) view.findViewById(R.id.tv_response_deadline);
     }
 
     @Override
@@ -87,14 +83,8 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
         textCustomerName.setText(data.getBuyerName());
         textInvoice.setText(data.getInvoice());
         textShopName.setText(data.getShopName());
-        viewResponseDeadline.setVisibility(
-                data.isDeadlineVisibility() && data.getResponseDeadline() != null ?
-                        VISIBLE : GONE
-        );
         viewShop.setVisibility(isSeller ? View.VISIBLE : View.GONE);
         viewCustomer.setVisibility(!isSeller ? View.VISIBLE : GONE);
-        textResponseDeadline.setText(data.getResponseDeadline());
-        generateDeadlineBackgroundView(textResponseDeadline);
 
         textCustomerName.setOnClickListener(new OnClickListener() {
             @Override

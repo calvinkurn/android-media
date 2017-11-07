@@ -3,6 +3,7 @@ package com.tokopedia.inbox.rescenter.detailv2.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -32,6 +33,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customview.HistoryView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ListProductView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.SolutionView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.StatusView;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.TimeView;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
@@ -69,10 +71,12 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     View loading;
     View mainView;
     ButtonView buttonView;
-    StatusView statusView;
+    CardView cvNextStep;
+//    StatusView statusView;
     AwbReturView awbReturView;
     AddressReturView addressReturView;
     DetailView detailView;
+    TimeView timeView;
     ListProductView listProductView;
     SolutionView solutionView;
     HistoryView historyView;
@@ -176,24 +180,33 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         loading = view.findViewById(R.id.loading);
         mainView = view.findViewById(R.id.main_view);
         buttonView = (ButtonView) view.findViewById(R.id.button_view);
-        statusView = (StatusView) view.findViewById(R.id.status_view);
+//        statusView = (StatusView) view.findViewById(R.id.status_view);
+        cvNextStep = (CardView) view.findViewById(R.id.cv_next_step);
         awbReturView = (AwbReturView) view.findViewById(R.id.awb_view);
         addressReturView = (AddressReturView) view.findViewById(R.id.address_retur_view);
         detailView = (DetailView) view.findViewById(R.id.detail_view);
+        timeView = (TimeView) view.findViewById(R.id.time_view);
         listProductView = (ListProductView) view.findViewById(R.id.product_view);
         solutionView = (SolutionView) view.findViewById(R.id.solution_view);
         historyView = (HistoryView) view.findViewById(R.id.history_view);
 
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        cvNextStep.setVisibility(View.GONE);
+        initNextStep();
+    }
+
+    private void initNextStep() {
+
     }
 
     @Override
     protected void setViewListener() {
         buttonView.setListener(this);
-        statusView.setListener(this);
+//        statusView.setListener(this);
         awbReturView.setListener(this);
         addressReturView.setListener(this);
         detailView.setListener(this);
+        timeView.setListener(this);
         listProductView.setListener(this);
         solutionView.setListener(this);
         historyView.setListener(this);
@@ -259,11 +272,9 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     private void renderData() {
+        cvNextStep.setVisibility(View.VISIBLE);
         if (getViewData().getButtonData() != null) {
             buttonView.renderData(getViewData().getButtonData());
-        }
-        if (getViewData().getStatusData() != null) {
-            statusView.renderData(getViewData().getStatusData());
         }
         if (getViewData().getAwbData() != null) {
             awbReturView.renderData(getViewData().getAwbData());
@@ -273,6 +284,12 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         }
         if (getViewData().getDetailData() != null) {
             detailView.renderData(getViewData().getDetailData());
+            if (getViewData().getDetailData().isDeadlineVisibility() && getViewData().getDetailData().getResponseDeadline() != null) {
+                timeView.setVisibility(View.VISIBLE);
+                timeView.renderData(getViewData().getDetailData());
+            } else {
+                timeView.setVisibility(View.GONE);
+            }
         }
         if (getViewData().getProductData() != null) {
             listProductView.renderData(getViewData().getProductData());

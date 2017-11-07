@@ -145,6 +145,7 @@
     <string name="string_cancel_ask_help_title">Minta Bantuan?</string>
     <string name="string_cancel_finish_title">Selesaikan Komplain?</string>
     <string name="string_error_min_max_words">Minimal 7 karakter dan maksimal 5000 karakter</string>
+    <string name="string_help_info">Anda dapat meminta bantuan \n<b>Customer Service Tokopedia</b> dalam waktu:</string>
 
     <!--chat bubble-->
     <string name="string_buyer_solution2">Solusi dari Pembeli:</string>

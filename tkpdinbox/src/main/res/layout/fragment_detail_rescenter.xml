@@ -9,12 +9,8 @@
         android:id="@+id/loading"
         android:layout_centerInParent="true" />
 
-    <com.tokopedia.inbox.rescenter.detailv2.view.customview.StatusView
-        android:id="@+id/status_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        />
+    <include layout="@layout/layout_next_step"
+        android:id="@+id/cv_next_step"/>
 
     <com.tokopedia.inbox.rescenter.detailv2.view.customview.ButtonView
         android:id="@+id/button_view"
@@ -28,7 +24,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/main_view"
         android:scrollbars="none"
-        android:layout_below="@id/status_view"
+        android:layout_below="@id/cv_next_step"
         android:layout_above="@id/button_view">
 
         <LinearLayout
@@ -44,6 +40,12 @@
                 android:layout_marginBottom="@dimen/margin_small"
                 />
 
+            <com.tokopedia.inbox.rescenter.detailv2.view.customview.TimeView
+                android:id="@+id/time_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"/>
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView
                 android:id="@+id/awb_view"

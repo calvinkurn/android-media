@@ -1,10 +1,13 @@
 package com.tokopedia.inbox.rescenter.detailv2.domain.model;
 
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
+
 /**
  * Created by hangnadi on 3/9/17.
  */
 
 public class DetailResCenter {
+    private NextActionDomain nextAction;
     private boolean success;
     private String messageError;
     private int errorCode;
@@ -15,6 +18,14 @@ public class DetailResCenter {
     private ResolutionHistoryDomainModel resolutionHistory;
     private ProductDataDomainModel productData;
     private SolutionDomainModel solutionData;
+
+    public NextActionDomain getNextAction() {
+        return nextAction;
+    }
+
+    public void setNextAction(NextActionDomain nextAction) {
+        this.nextAction = nextAction;
+    }
 
     public boolean isSuccess() {
         return success;
