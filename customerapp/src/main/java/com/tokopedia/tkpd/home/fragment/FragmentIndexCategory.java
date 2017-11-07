@@ -176,34 +176,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     FirebaseRemoteConfig firebaseRemoteConfig;
 
     @Override
-    public void onWalletHistoryClicked() {
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
-            startActivity(digitalModuleRouter.instanceIntentTokoCashTopUp());
-        }
-    }
-
-    @Override
-    public void onTopUpTokoCashClicked(String tokocashLabel) {
-        Intent intent = DigitalProductActivity.newInstance(
-                getActivity(), new DigitalCategoryDetailPassData.Builder()
-                        .appLinks("tokopedia://digital/form?category_id=103")
-                        .categoryId("103")
-                        .categoryName(tokocashLabel)
-                        .build()
-        );
-        startActivity(intent);
-    }
-
-    @Override
-    public void onActivationTokoCashClicked() {
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
-            startActivity(digitalModuleRouter.instanceIntentTokoCashActivation());
-        }
-    }
-
-    @Override
     public void onRequestPendingCashBack() {
         tokoCashPresenter.onRequestCashBackPending();
     }
@@ -240,7 +212,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         LinearLayout wrapperLinearLayout;
         DigitalWidgetView digitalWidgetView;
         BannerView bannerView;
-        View pulsaPlaceHolder;
 
         private ViewHolder() {
         }

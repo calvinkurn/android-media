@@ -31,7 +31,6 @@ import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
@@ -183,18 +182,18 @@ public class DrawerBuyerHelper extends DrawerHelper
                 true));
     }
 
-    private DrawerItem getGoldMerchantMenu(){
+    private DrawerItem getGoldMerchantMenu() {
         DrawerItem menu;
         boolean isGoldMerchant = SessionHandler.isGoldMerchant(context);
-        if(isGoldMerchant) {
+        if (isGoldMerchant) {
             menu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
                     R.drawable.ic_goldmerchant_drawer,
                     TkpdState.DrawerPosition.GOLD_MERCHANT,
                     drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                     0);
-            ((DrawerGroup)menu).add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
+            ((DrawerGroup) menu).add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
                     TkpdState.DrawerPosition.FEATURED_PRODUCT, false, true));
-        }else {
+        } else {
             menu = (new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
                     R.drawable.ic_goldmerchant_drawer,
                     TkpdState.DrawerPosition.GOLD_MERCHANT,
@@ -541,23 +540,6 @@ public class DrawerBuyerHelper extends DrawerHelper
             intent.putExtras(bundle);
             context.startActivity(intent);
             sendGTMNavigationEvent(AppEventTracking.EventLabel.TOPPOINTS);
-        }
-    }
-
-    @Override
-    public void onGoToTopCash(String topCashUrl) {
-        if (context.getApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) context.getApplication();
-            context.startActivity(digitalModuleRouter.instanceIntentTokoCashActivation());
-        }
-
-    }
-
-    @Override
-    public void onGoToTopCashWithOtp(String topCashUrl) {
-        if (context.getApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) context.getApplication();
-            context.startActivity(digitalModuleRouter.instanceIntentTokoCashTopUp());
         }
     }
 

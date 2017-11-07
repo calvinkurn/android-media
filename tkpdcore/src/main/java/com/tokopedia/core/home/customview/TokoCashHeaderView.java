@@ -1,7 +1,6 @@
 package com.tokopedia.core.home.customview;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 
@@ -64,6 +64,7 @@ public class TokoCashHeaderView extends RelativeLayout {
             tokoCashAmount.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    UnifyTracking.eventTokoCashCheckSaldoClick();
                     actionListener.actionAppLinkWalletHeader(
                             homeHeaderWalletAction.getRedirectUrlBalance(),
                             homeHeaderWalletAction.getAppLinkBalance()
@@ -77,6 +78,9 @@ public class TokoCashHeaderView extends RelativeLayout {
         tokoCashButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (homeHeaderWalletAction.getTypeAction() == HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION) {
+                    UnifyTracking.eventTokoCashActivateClick();
+                }
                 actionListener.actionAppLinkWalletHeader(
                         homeHeaderWalletAction.getRedirectUrlActionButton(),
                         homeHeaderWalletAction.getAppLinkActionButton()
@@ -97,25 +101,6 @@ public class TokoCashHeaderView extends RelativeLayout {
         });
     }
 
-    @NonNull
-    private OnClickListener getTopUpClickedListener(final String tokocashLabel) {
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actionListener.onTopUpTokoCashClicked(tokocashLabel);
-            }
-        };
-    }
-
-    private OnClickListener onActivationClickedListener() {
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actionListener.onActivationTokoCashClicked();
-            }
-        };
-    }
-
     private void initView(Context context) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -130,21 +115,7 @@ public class TokoCashHeaderView extends RelativeLayout {
         pendingCashBackInfo = (TextView) findViewById(R.id.pending_cashback_info);
     }
 
-    private OnClickListener onMainViewClickedListener() {
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actionListener.onWalletHistoryClicked();
-            }
-        };
-    }
-
     public interface ActionListener {
-        void onWalletHistoryClicked();
-
-        void onTopUpTokoCashClicked(String tokocashLabel);
-
-        void onActivationTokoCashClicked();
 
         void onRequestPendingCashBack();
 

@@ -42,10 +42,4 @@ public interface IDigitalModuleRouter {
     Intent getIntentDeepLinkHandlerActivity();
 
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
-
-    @Deprecated
-    Intent instanceIntentTokoCashActivation();
-
-    Intent instanceIntentTokoCashTopUp();
-
 }

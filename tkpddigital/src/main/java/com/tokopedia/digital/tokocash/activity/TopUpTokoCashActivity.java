@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -92,7 +93,7 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     private ReceivedTokoCashView receivedTokoCashView;
     private BottomSheetView bottomSheetTokoCashView;
 
-    private boolean topUpAvailable; //TODO ini untuk atur ada topup atau tidak
+    private boolean topUpAvailable;
 
     @SuppressWarnings("unused")
     @DeepLink(Constants.Applinks.WALLET_HOME)
@@ -253,6 +254,11 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
             }
         };
     }
+
+    /**
+     *
+     * @value topUpAvailable is for showing or hiding topup
+     */
 
     @Override
     public void renderTopUpDataTokoCash(CategoryData categoryData) {

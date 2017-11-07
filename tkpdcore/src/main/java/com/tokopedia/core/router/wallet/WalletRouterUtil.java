@@ -15,8 +15,8 @@ public class WalletRouterUtil {
     /**
      * @param originSource
      * @param requestCode
-     * @param appLinkScheme
-     * @param alternateRedirectUrl
+     * @param appLinkScheme : using for directing page to native wallet page
+     * @param alternateRedirectUrl : using for redirect url and want to show to webview
      * @param bundlePass
      */
     public static void navigateWallet(Application application,

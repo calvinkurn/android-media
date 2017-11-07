@@ -2520,4 +2520,20 @@ public class UnifyTracking extends TrackingUtils {
     public static void eventProductManageOverflowMenu(String label){
         eventProductManage(AppEventTracking.Action.CLICK_OVERFLOW_MENU,label);
     }
+
+    public static void eventTokoCashActivateClick() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
+                AppEventTracking.Action.CLICK_ACTIVATE,
+                "").getEvent());
+    }
+
+    public static void eventTokoCashCheckSaldoClick() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
+                AppEventTracking.Action.CLICK_SALDO,
+                "").getEvent());
+    }
 }
