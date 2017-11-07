@@ -176,4 +176,6 @@
     <string name="toolbar_title_add_credit_card">Add Credit Card</string>
     <string name="message_please_wait">Please Wait</string>
     <string name="error_message_delete_cc_fail">Unable to delete your card, please try again.</string>
+    <string name="change_payment_toolbar_title">Change Payment Method</string>
+    <string name="title_tokocash">TokoCash</string>
 </resources>

@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
@@ -27,6 +26,7 @@ import com.tokopedia.ride.bookingride.view.adapter.factory.PaymentMethodAdapterT
 import com.tokopedia.ride.bookingride.view.adapter.factory.PaymentMethodTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
 import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.scrooge.ScroogePGUtil;
 
 import java.util.List;
 
@@ -81,12 +81,7 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
             startActivityForResult(EditDeleteCreditCardActivity.getCallingActivity(getActivity(), paymentMethodViewModel), REQUEST_CODE_EDIT_CARD_DETAIL);
         } else if (type == TYPE_CHANGE_PAYMENT_OPTION && !paymentMethodViewModel.isActive()) {
             //set payment method and close the activity in result
-
-            if (paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_CC)) {
-                presenter.selectPaymentOption(paymentMethodViewModel);
-            } else {
-                closeActivity(paymentMethodViewModel);
-            }
+            presenter.selectPaymentOption(paymentMethodViewModel);
         }
     }
 
@@ -161,6 +156,11 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
         result.putExtra(KEY_CHANGE_PAYMENT_RESULT, paymentMethodViewModel);
         getActivity().setResult(RESULT_OK, result);
         getActivity().finish();
+    }
+
+    @Override
+    public void opeScroogePage(String saveUrl, boolean isPostReq, Bundle saveBody) {
+        ScroogePGUtil.openScroogePage(this , saveUrl , isPostReq, saveBody);
     }
 
     @Override

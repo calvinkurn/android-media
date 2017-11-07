@@ -162,14 +162,16 @@ public class ScroogeActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
         }
-        int textColor = ContextCompat.getColor(this, R.color.black);
+        int textColor = ContextCompat.getColor(this, R.color.white);
         toolbar.setTitleTextColor(textColor);
+        toolbar.setTitleTextAppearance(this, R.style.ToolbarText);
+        toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleText);
         toolbar.setSubtitleTextColor(textColor);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.white)));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary)));
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
         if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
+            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
     }
@@ -186,12 +188,6 @@ public class ScroogeActivity extends AppCompatActivity {
             public synchronized void onPageStarted(WebView inView, String inUrl, Bitmap inFavicon) {
                 super.onPageStarted(inView, inUrl, inFavicon);
                 CommonUtils.dumper("ScroogeActivity :: onPageStarted url " + inUrl);
-            }
-
-            public synchronized void onPageFinished(WebView inView, String inUrl) {
-                super.onPageFinished(inView, inUrl);
-                CommonUtils.dumper("ScroogeActivity :: onPageFinished url " + inUrl);
-
                 Intent responseIntent = new Intent();
                 if (inUrl.equalsIgnoreCase(ADD_CC_SUCESS_CALLBACK)) {
                     responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
@@ -210,6 +206,11 @@ public class ScroogeActivity extends AppCompatActivity {
                     setResult(ScroogePGUtil.RESULT_CODE_DELETE_CC_SUCCESS, responseIntent);
                     finish();
                 }
+            }
+
+            public synchronized void onPageFinished(WebView inView, String inUrl) {
+                super.onPageFinished(inView, inUrl);
+                CommonUtils.dumper("ScroogeActivity :: onPageFinished url " + inUrl);
             }
 
             public synchronized void onReceivedError(WebView inView, int iniErrorCode, String inDescription, String inFailingUrl) {

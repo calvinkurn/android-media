@@ -14,12 +14,16 @@ import com.tokopedia.ride.bookingride.view.fragment.ManagePaymentOptionsFragment
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 
+import static com.tokopedia.ride.scrooge.ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE;
+import static com.tokopedia.ride.scrooge.ScroogePGUtil.RESULT_CODE_ADD_CC_SUCCESS;
+
 public class ManagePaymentOptionsActivity extends BaseActivity implements HasComponent<RideComponent> {
     private static final String KEY_TYPE = "KEY_TYPE";
     public static final int TYPE_MANAGE_PAYMENT_OPTION = 1;
     public static final int TYPE_CHANGE_PAYMENT_OPTION = 2;
 
     private RideComponent rideComponent;
+    private int type;
 
     public static Intent getCallingActivity(Activity activity, int type) {
         Intent intent = new Intent(activity, ManagePaymentOptionsActivity.class);
@@ -35,7 +39,7 @@ public class ManagePaymentOptionsActivity extends BaseActivity implements HasCom
         initInjector();
         //executeInjector();
 
-        int type = -1;
+        type = -1;
         if (getIntent() != null) {
             type = getIntent().getIntExtra(KEY_TYPE, 0);
         }
@@ -56,7 +60,7 @@ public class ManagePaymentOptionsActivity extends BaseActivity implements HasCom
     private void setupToolbar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
-            mToolbar.setTitle(R.string.payment_toolbar_title);
+            mToolbar.setTitle(type == TYPE_MANAGE_PAYMENT_OPTION ? R.string.payment_toolbar_title : R.string.change_payment_toolbar_title);
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             invalidateOptionsMenu();

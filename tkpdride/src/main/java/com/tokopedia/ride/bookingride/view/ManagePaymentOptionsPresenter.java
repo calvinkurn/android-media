@@ -12,7 +12,6 @@ import com.tokopedia.ride.bookingride.domain.RequestApiUseCase;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethod;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethodList;
-import com.tokopedia.ride.scrooge.ScroogePGUtil;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -111,6 +110,7 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
                 visitable.setDeleteBody(paymentMethod.getRemoveBody());
                 visitable.setSaveurl(paymentMethod.getSaveUrl());
                 visitable.setSaveBody(paymentMethod.getSaveBody());
+                visitable.setCardType(paymentMethod.getCardType());
 
                 visitables.add(visitable);
             }
@@ -122,7 +122,8 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
     @Override
     public void addCreditCard() {
         if (paymentMethodList != null && paymentMethodList.getAddPayment() != null) {
-            ScroogePGUtil.openScroogePage(getView().getActivity(), paymentMethodList.getAddPayment().getSaveUrl(), true, paymentMethodList.getAddPayment().getSaveBody());
+
+            getView().opeScroogePage(paymentMethodList.getAddPayment().getSaveUrl(), true, paymentMethodList.getAddPayment().getSaveBody());
         }
     }
 

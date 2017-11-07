@@ -17,6 +17,7 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
 
 
     private String name;
+    private String cardType;
     private boolean isActive;
     private String type;
     private String imageUrl;
@@ -42,6 +43,7 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         deleteBody = in.readBundle();
         saveurl = in.readString();
         saveBody = in.readBundle();
+        cardType = in.readString();
     }
 
     public static final Creator<PaymentMethodViewModel> CREATOR = new Creator<PaymentMethodViewModel>() {
@@ -136,6 +138,14 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         this.saveBody = saveBody;
     }
 
+    public String getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
+
     @Override
     public int type(PaymentMethodTypeFactory paymentMethodTypeFactory) {
         return paymentMethodTypeFactory.type(this);
@@ -158,5 +168,6 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         dest.writeBundle(deleteBody);
         dest.writeString(saveurl);
         dest.writeBundle(saveBody);
+        dest.writeString(cardType);
     }
 }

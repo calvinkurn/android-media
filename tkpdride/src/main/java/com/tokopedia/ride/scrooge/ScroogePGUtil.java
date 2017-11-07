@@ -1,6 +1,7 @@
 package com.tokopedia.ride.scrooge;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 
 /**
@@ -21,7 +22,7 @@ public class ScroogePGUtil {
     public static final String RESULT_EXTRA_MSG = "RESULT_EXTRA_MSG";
 
     /**
-     * To launch screens
+     * To launch scrooge activity
      *
      * @param activity
      * @param url
@@ -29,5 +30,16 @@ public class ScroogePGUtil {
      */
     public static void openScroogePage(Activity activity, String url, boolean isPostRequest, Bundle postparams) {
         activity.startActivityForResult(ScroogeActivity.getCallingIntent(activity, url, isPostRequest, postparams), REQUEST_CODE_OPEN_SCROOGE_PAGE);
+    }
+
+    /**
+     * To launch scrooge activity
+     *
+     * @param fragment
+     * @param url
+     * @param postparams
+     */
+    public static void openScroogePage(Fragment fragment, String url, boolean isPostRequest, Bundle postparams) {
+        fragment.startActivityForResult(ScroogeActivity.getCallingIntent(fragment.getActivity(), url, isPostRequest, postparams), REQUEST_CODE_OPEN_SCROOGE_PAGE);
     }
 }

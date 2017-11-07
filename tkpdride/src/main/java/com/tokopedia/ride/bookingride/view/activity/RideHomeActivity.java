@@ -41,6 +41,7 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -657,6 +658,17 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             fragment.setSharedElementEnterTransition(changeBoundsTransition);
         }
         replaceFragment(R.id.bottom_container, fragment, CONFIRM_FRAGMENT_TAG);
+
+        sendScreenEventWithDelay();
+    }
+
+    private void sendScreenEventWithDelay() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ScreenTracking.sendScreen(RideHomeActivity.this, RideHomeActivity.this);
+            }
+        }, 50);
     }
 
     private void onBottomContainerChangeToBookingScreen() {
@@ -697,6 +709,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
                     viewModel.getDestination());
             replaceFragment(R.id.bottom_container, productFragment, PRODUCTS_FRAGMENT_TAG);
+            sendScreenEventWithDelay();
         } else if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof UberProductFragment &&
                 mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
             mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
@@ -885,6 +898,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
                     viewModel.getDestination());
             replaceFragment(R.id.bottom_container, productFragment, PRODUCTS_FRAGMENT_TAG);
+            sendScreenEventWithDelay();
         }
     }
 

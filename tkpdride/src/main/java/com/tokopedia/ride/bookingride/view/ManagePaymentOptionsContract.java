@@ -1,7 +1,7 @@
 package com.tokopedia.ride.bookingride.view;
 
 import android.app.Activity;
-import android.content.Context;
+import android.os.Bundle;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
@@ -31,6 +31,8 @@ public interface ManagePaymentOptionsContract {
         void hideProgressBar();
 
         void closeActivity(PaymentMethodViewModel paymentMethodViewModel);
+
+        void opeScroogePage(String saveUrl, boolean isPostReq, Bundle saveBody);
     }
 
     interface Presenter extends CustomerPresenter<View> {

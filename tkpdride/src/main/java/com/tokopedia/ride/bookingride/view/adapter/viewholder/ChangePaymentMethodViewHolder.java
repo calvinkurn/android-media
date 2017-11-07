@@ -22,7 +22,7 @@ import butterknife.OnClick;
 
 public class ChangePaymentMethodViewHolder extends AbstractViewHolder<PaymentMethodViewModel> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.row_payment_method;
+    public static final int LAYOUT = R.layout.row_change_payment_method;
 
     @BindView(R2.id.payment_method_image)
     ImageView imageView;
