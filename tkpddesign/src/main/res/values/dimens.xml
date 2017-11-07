@@ -64,6 +64,7 @@
 
     <dimen name="small_icon_size">24dp</dimen>
     <dimen name="icon_size">36dp</dimen>
+    <dimen name="large_icon_size">48dp</dimen>
 
     <dimen name="text_input_margin_offset">-4dp</dimen>
     <dimen name="spinner_decimal_spinner_width">80dp</dimen>

@@ -98,6 +98,10 @@ public abstract class BaseListCheckableV2Adapter<T extends ItemType> extends Bas
         }
     }
 
+    public void setCheckedPositionList(HashSet<Integer> checkedPositionList) {
+        this.checkedPositionList = checkedPositionList;
+    }
+
     public boolean isChecked(int position) {
         return checkedPositionList.contains(position);
     }

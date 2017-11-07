@@ -192,6 +192,19 @@ public class FlightSearchStatisticModel implements Parcelable {
         return airlineStatList;
     }
 
+    public FlightAirlineDB getAirline(String airlineID) {
+        List<AirlineStat> airlineStatList = getAirlineStatList();
+        if (airlineStatList!= null) {
+            for (int i = 0, sizei = airlineStatList.size(); i < sizei; i++) {
+                FlightAirlineDB flightAirlineDB = airlineStatList.get(i).getAirlineDB();
+                if (airlineID.equals(flightAirlineDB.getId())) {
+                    return flightAirlineDB;
+                }
+            }
+        }
+        return new FlightAirlineDB(airlineID, "","");
+    }
+
     public List<DepartureStat> getDepartureTimeStatList() {
         return departureTimeStatList;
     }

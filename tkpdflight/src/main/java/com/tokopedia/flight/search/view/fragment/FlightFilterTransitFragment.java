@@ -2,6 +2,7 @@ package com.tokopedia.flight.search.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -21,16 +22,14 @@ import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.TransitEnum;
 import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
-
-/**
- * Created by nathan on 10/27/17.
- */
+import rx.Observable;
+import rx.functions.Func1;
 
 public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
-        implements BaseListV2Adapter.OnBaseListV2AdapterListener<TransitStat>,BaseListCheckableV2Adapter.OnCheckableAdapterListener<TransitStat> {
+        implements BaseListV2Adapter.OnBaseListV2AdapterListener<TransitStat>, BaseListCheckableV2Adapter.OnCheckableAdapterListener<TransitStat> {
     public static final String TAG = FlightFilterTransitFragment.class.getSimpleName();
 
     private OnFlightFilterListener listener;
@@ -97,14 +96,16 @@ public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
 
     @Override
     public void onItemChecked(TransitStat transitStat, boolean isChecked) {
-        List<TransitStat> transitStatList = flightFilterTransitAdapter.getCheckedDataList();
         FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
-        List<TransitEnum> transitEnumList = new ArrayList<>();
-        if (transitStatList != null) {
-            for (int i = 0, sizei = transitStatList.size(); i<sizei; i++) {
-                transitEnumList.add(transitStatList.get(i).getTransitType());
+        List<TransitStat> transitStatList = flightFilterTransitAdapter.getCheckedDataList();
+
+        List<TransitEnum> transitEnumList = Observable.from(transitStatList)
+                .map(new Func1<TransitStat, TransitEnum>() {
+            @Override
+            public TransitEnum call(TransitStat transitStat) {
+                return transitStat.getTransitType();
             }
-        }
+        }).toList().toBlocking().first();
         flightFilterModel.setTransitTypeList(transitEnumList);
         listener.onFilterModelChanged(flightFilterModel);
     }
@@ -113,6 +114,33 @@ public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
     public void loadData(int page, int currentDataSize, int rowPerPage) {
         List<TransitStat> transitStats = listener.getFlightSearchStatisticModel().getTransitTypeStatList();
         onSearchLoaded(transitStats, transitStats.size());
+    }
+
+    @Override
+    public void onSearchLoaded(@NonNull List<TransitStat> list, int totalItem) {
+        super.onSearchLoaded(list, totalItem);
+        FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
+        HashSet<Integer> checkedPositionList = new HashSet<>();
+        if (flightFilterModel!= null) {
+            List<TransitEnum> transitEnumList = flightFilterModel.getTransitTypeList();
+            if (transitEnumList!= null) {
+                for (int i = 0, sizei = transitEnumList.size(); i < sizei; i++) {
+                    TransitEnum transitEnum = transitEnumList.get(i);
+                    List<TransitStat> transitStatList = flightFilterTransitAdapter.getData();
+                    if (transitStatList != null) {
+                        for (int j = 0, sizej = transitStatList.size(); j < sizej; j++) {
+                            TransitStat transitStat = transitStatList.get(j);
+                            if (transitStat.getTransitType().getId() == transitEnum.getId()) {
+                                checkedPositionList.add(j);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        flightFilterTransitAdapter.setCheckedPositionList(checkedPositionList);
+        flightFilterTransitAdapter.notifyDataSetChanged();
     }
 
     @Override

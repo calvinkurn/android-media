@@ -1,12 +1,13 @@
 package com.tokopedia.flight.search.view.model.filter;
 
+import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.R;
 
 /**
  * Created by User on 11/1/2017.
  */
 
-public enum RefundableEnum {
+public enum RefundableEnum implements ItemType {
 
     REFUNDABLE(1,R.string.refundable),
     NOT_REFUNDABLE(2,R.string.non_refundable);
@@ -26,4 +27,8 @@ public enum RefundableEnum {
         return valueRes;
     }
 
+    @Override
+    public int getType() {
+        return 0;
+    }
 }

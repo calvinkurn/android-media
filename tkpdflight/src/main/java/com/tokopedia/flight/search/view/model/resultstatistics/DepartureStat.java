@@ -3,13 +3,14 @@ package com.tokopedia.flight.search.view.model.resultstatistics;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 
 /**
  * Created by User on 11/1/2017.
  */
 
-public class DepartureStat implements Parcelable {
+public class DepartureStat implements Parcelable, ItemType {
     private DepartureTimeEnum departureTimeEnum;
     private int minPrice;
     private String minPriceString;
@@ -70,4 +71,9 @@ public class DepartureStat implements Parcelable {
             return new DepartureStat[size];
         }
     };
+
+    @Override
+    public int getType() {
+        return 0;
+    }
 }

@@ -87,4 +87,6 @@
     <string name="refundable_policy">Kebijakan Pengembalian</string>
     <string name="transit">Transit</string>
     <string name="start_from_x">Mulai dari %1$s</string>
+    <string name="flight_label_price_total">Pilih</string>
+    <string name="flight_label_choose_button">Pilih</string>
 </resources>

@@ -18,15 +18,12 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
+import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 import com.tokopedia.flight.search.view.model.filter.TransitEnum;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by nathan on 10/27/17.
- */
 
 public class FlightSearchFilterFragment extends BaseDaggerFragment {
 
@@ -71,7 +68,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         populatePrice(view, filterModel, statModel);
         populateDuration(view, filterModel, statModel);
         populateTransitLabel(view, filterModel);
-        populateAirlineLabel(view, filterModel);
+        populateAirlineLabel(view, filterModel, statModel);
         populateDepartureLabel(view, filterModel);
         populateRefundLabel(view, filterModel);
 
@@ -149,7 +146,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         transitSelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
             @Override
             public void onDelete(SelectionItem<String> selectionItem) {
-                CommonUtils.dumper(selectionItem.getKey() + " - " + selectionItem.getValue());
+                onDeleteTransit(selectionItem.getKey());
             }
         });
         transitSelectionTextLabelView.setOnClickListener(new View.OnClickListener() {
@@ -185,26 +182,26 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         departureTimeSelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
             @Override
             public void onDelete(SelectionItem<String> selectionItem) {
-
+                onDeleteDeparture(selectionItem.getKey());
             }
         });
     }
 
-    private void populateAirlineLabel(View view, FlightFilterModel filterModel){
+    private void populateAirlineLabel(View view, FlightFilterModel filterModel, FlightSearchStatisticModel statModel){
         SelectionTextLabelView airlineSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_airline);
 
-//        final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
-//        List<S> departureTimeEnumList = filterModel.getAirlineList();
-//        if (departureTimeEnumList != null ) {
-//            for (int i = 0, sizei = departureTimeEnumList.size(); i < sizei; i++) {
-//                DepartureTimeEnum departureTimeEnum = departureTimeEnumList.get(i);
-//                SelectionItem<String> selectionItem = new SelectionItem<>();
-//                selectionItem.setKey(String.valueOf(departureTimeEnum.getId()));
-//                selectionItem.setValue(getString(departureTimeEnum.getValueRes()));
-//                selectionItemList.add(selectionItem);
-//            }
-//        }
-//        departureTimeSelectionTextLabelView.setItemList(selectionItemList);
+        final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
+        List<String> airlineList = filterModel.getAirlineList();
+        if (airlineList != null ) {
+            for (int i = 0, sizei = airlineList.size(); i < sizei; i++) {
+                String airline = airlineList.get(i);
+                SelectionItem<String> selectionItem = new SelectionItem<>();
+                selectionItem.setKey(airline);
+                selectionItem.setValue(statModel.getAirline(airline).getName());
+                selectionItemList.add(selectionItem);
+            }
+        }
+        airlineSelectionTextLabelView.setItemList(selectionItemList);
 
         airlineSelectionTextLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,7 +212,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         airlineSelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
             @Override
             public void onDelete(SelectionItem<String> selectionItem) {
-                onDeleteTransit(selectionItem.getKey());
+                onDeleteAirline(selectionItem.getKey());
             }
         });
     }
@@ -223,6 +220,18 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
     private void populateRefundLabel(View view, FlightFilterModel filterModel){
         SelectionTextLabelView refundPolicySelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_refund_policy);
 
+        final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
+        List<RefundableEnum> refundableEnumList = filterModel.getRefundableTypeList();
+        if (refundableEnumList != null ) {
+            for (int i = 0, sizei = refundableEnumList.size(); i < sizei; i++) {
+                RefundableEnum refundableEnum = refundableEnumList.get(i);
+                SelectionItem<String> selectionItem = new SelectionItem<>();
+                selectionItem.setKey(String.valueOf(refundableEnum.getId()));
+                selectionItem.setValue(getString(refundableEnum.getValueRes()));
+                selectionItemList.add(selectionItem);
+            }
+        }
+        refundPolicySelectionTextLabelView.setItemList(selectionItemList);
 
         refundPolicySelectionTextLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,7 +242,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         refundPolicySelectionTextLabelView.setOnDeleteListener(new SelectionLabelView.OnDeleteListener<SelectionItem<String>>() {
             @Override
             public void onDelete(SelectionItem<String> selectionItem) {
-
+                onDeleteRefund(selectionItem.getKey());
             }
         });
     }
@@ -249,6 +258,48 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
             }
         }
         flightFilterModel.setTransitTypeList(transitEnumList);
+        onFilterFragmentListener.onFilterModelChanged(flightFilterModel);
+    }
+
+    private void onDeleteDeparture(String departureKey){
+        FlightFilterModel flightFilterModel = onFilterFragmentListener.getFlightFilterModel();
+        List<DepartureTimeEnum> departureTimeEnumList = flightFilterModel.getDepartureTimeList();
+        for (int i =0, sizei = departureTimeEnumList.size(); i<sizei ;i++) {
+            DepartureTimeEnum departureTimeEnum = departureTimeEnumList.get(i);
+            if (departureKey.equals(String.valueOf(departureTimeEnum.getId()))){
+                departureTimeEnumList.remove(departureTimeEnum);
+                break;
+            }
+        }
+        flightFilterModel.setDepartureTimeList(departureTimeEnumList);
+        onFilterFragmentListener.onFilterModelChanged(flightFilterModel);
+    }
+
+    private void onDeleteAirline(String airlineKey){
+        FlightFilterModel flightFilterModel = onFilterFragmentListener.getFlightFilterModel();
+        List<String> airlineList = flightFilterModel.getAirlineList();
+        for (int i =0, sizei = airlineList.size(); i<sizei ;i++) {
+            String airline = airlineList.get(i);
+            if (airlineKey.equals(airline)){
+                airlineList.remove(airline);
+                break;
+            }
+        }
+        flightFilterModel.setAirlineList(airlineList);
+        onFilterFragmentListener.onFilterModelChanged(flightFilterModel);
+    }
+
+    private void onDeleteRefund(String refundKey){
+        FlightFilterModel flightFilterModel = onFilterFragmentListener.getFlightFilterModel();
+        List<RefundableEnum> refundableEnumList = flightFilterModel.getRefundableTypeList();
+        for (int i =0, sizei = refundableEnumList.size(); i<sizei ;i++) {
+            RefundableEnum refundableEnum = refundableEnumList.get(i);
+            if (refundKey.equals(String.valueOf(refundableEnum.getId()))){
+                refundableEnumList.remove(refundableEnum);
+                break;
+            }
+        }
+        flightFilterModel.setRefundableTypeList(refundableEnumList);
         onFilterFragmentListener.onFilterModelChanged(flightFilterModel);
     }
 
