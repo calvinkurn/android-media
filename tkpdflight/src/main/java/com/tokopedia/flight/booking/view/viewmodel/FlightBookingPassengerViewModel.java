@@ -10,22 +10,28 @@ import java.util.List;
  */
 
 public class FlightBookingPassengerViewModel implements Parcelable {
+    private boolean singleRoute;
     private int type;
     private String headerTitle;
     private String passengerName;
     private String passengerBirthdate;
     private String passportNumber;
-    private List<FlightBookingLuggageRouteViewModel> luggageViewModels;
-    private List<FlightBookingMealRouteViewModel> mealRouteViewModels;
+    private FlightBookingLuggageViewModel departureLugage;
+    private FlightBookingLuggageViewModel returnLugage;
+    private List<FlightBookingMealViewModel> departureMeals;
+    private List<FlightBookingMealViewModel> returnMeals;
 
     protected FlightBookingPassengerViewModel(Parcel in) {
+        singleRoute = in.readByte() != 0;
         type = in.readInt();
         headerTitle = in.readString();
         passengerName = in.readString();
         passengerBirthdate = in.readString();
         passportNumber = in.readString();
-        luggageViewModels = in.createTypedArrayList(FlightBookingLuggageRouteViewModel.CREATOR);
-        mealRouteViewModels = in.createTypedArrayList(FlightBookingMealRouteViewModel.CREATOR);
+        departureLugage = in.readParcelable(FlightBookingLuggageViewModel.class.getClassLoader());
+        returnLugage = in.readParcelable(FlightBookingLuggageViewModel.class.getClassLoader());
+        departureMeals = in.createTypedArrayList(FlightBookingMealViewModel.CREATOR);
+        returnMeals = in.createTypedArrayList(FlightBookingMealViewModel.CREATOR);
     }
 
     public static final Creator<FlightBookingPassengerViewModel> CREATOR = new Creator<FlightBookingPassengerViewModel>() {
@@ -80,20 +86,44 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         this.passportNumber = passportNumber;
     }
 
-    public List<FlightBookingLuggageRouteViewModel> getLuggageViewModels() {
-        return luggageViewModels;
+    public boolean isSingleRoute() {
+        return singleRoute;
     }
 
-    public void setLuggageViewModels(List<FlightBookingLuggageRouteViewModel> luggageViewModels) {
-        this.luggageViewModels = luggageViewModels;
+    public void setSingleRoute(boolean singleRoute) {
+        this.singleRoute = singleRoute;
     }
 
-    public List<FlightBookingMealRouteViewModel> getMealRouteViewModels() {
-        return mealRouteViewModels;
+    public FlightBookingLuggageViewModel getDepartureLugage() {
+        return departureLugage;
     }
 
-    public void setMealRouteViewModels(List<FlightBookingMealRouteViewModel> mealRouteViewModels) {
-        this.mealRouteViewModels = mealRouteViewModels;
+    public void setDepartureLugage(FlightBookingLuggageViewModel departureLugage) {
+        this.departureLugage = departureLugage;
+    }
+
+    public FlightBookingLuggageViewModel getReturnLugage() {
+        return returnLugage;
+    }
+
+    public void setReturnLugage(FlightBookingLuggageViewModel returnLugage) {
+        this.returnLugage = returnLugage;
+    }
+
+    public List<FlightBookingMealViewModel> getDepartureMeals() {
+        return departureMeals;
+    }
+
+    public void setDepartureMeals(List<FlightBookingMealViewModel> departureMeals) {
+        this.departureMeals = departureMeals;
+    }
+
+    public List<FlightBookingMealViewModel> getReturnMeals() {
+        return returnMeals;
+    }
+
+    public void setReturnMeals(List<FlightBookingMealViewModel> returnMeals) {
+        this.returnMeals = returnMeals;
     }
 
     @Override
@@ -103,12 +133,15 @@ public class FlightBookingPassengerViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (singleRoute ? 1 : 0));
         dest.writeInt(type);
         dest.writeString(headerTitle);
         dest.writeString(passengerName);
         dest.writeString(passengerBirthdate);
         dest.writeString(passportNumber);
-        dest.writeTypedList(luggageViewModels);
-        dest.writeTypedList(mealRouteViewModels);
+        dest.writeParcelable(departureLugage, flags);
+        dest.writeParcelable(returnLugage, flags);
+        dest.writeTypedList(departureMeals);
+        dest.writeTypedList(returnMeals);
     }
 }
