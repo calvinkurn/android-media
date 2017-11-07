@@ -7,7 +7,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextA
  */
 
 public class DetailResCenter {
-    private NextActionDomain nextAction;
     private boolean success;
     private String messageError;
     private int errorCode;
@@ -18,6 +17,29 @@ public class DetailResCenter {
     private ResolutionHistoryDomainModel resolutionHistory;
     private ProductDataDomainModel productData;
     private SolutionDomainModel solutionData;
+    private NextActionDomain nextAction;
+
+    public DetailResCenter() {
+
+    }
+
+    public DetailResCenter(AddressDomainModel address,
+                           ShippingDomainModel shipping,
+                           ButtonDomainModel button,
+                           ResolutionDomainModel resolution,
+                           ResolutionHistoryDomainModel resolutionHistory,
+                           ProductDataDomainModel productData,
+                           SolutionDomainModel solutionData,
+                           NextActionDomain nextAction) {
+        this.address = address;
+        this.shipping = shipping;
+        this.button = button;
+        this.resolution = resolution;
+        this.resolutionHistory = resolutionHistory;
+        this.productData = productData;
+        this.solutionData = solutionData;
+        this.nextAction = nextAction;
+    }
 
     public NextActionDomain getNextAction() {
         return nextAction;

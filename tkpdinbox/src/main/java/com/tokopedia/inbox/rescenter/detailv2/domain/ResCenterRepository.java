@@ -69,6 +69,8 @@ public interface ResCenterRepository {
 
     Observable<GenerateHostModel> generateToken(TKPDMapParam<String, Object> parameters);
 
+    Observable<DetailResCenter> getDetailV2(RequestParams requestParams);
+
     Observable<DetailResChatDomain> getConversation(RequestParams requestParams);
 
     Observable<ResolutionActionDomainData> finishResolution(RequestParams requestParams);

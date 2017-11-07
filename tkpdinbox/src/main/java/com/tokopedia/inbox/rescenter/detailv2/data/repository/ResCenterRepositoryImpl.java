@@ -170,6 +170,14 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
 
     //chat section
 
+
+    @Override
+    public Observable<DetailResCenter> getDetailV2(RequestParams requestParams) {
+        return resCenterDataSourceFactory
+                .createCloudResCenterDataSource()
+                .getResCenterDetailV2(requestParams);
+    }
+
     @Override
     public Observable<DetailResChatDomain> getConversation(RequestParams requestParams) {
         return resCenterDataSourceFactory
@@ -197,4 +205,6 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
                 .createNextActionCloudSource()
                 .getNextAction(requestParams);
     }
+
+
 }

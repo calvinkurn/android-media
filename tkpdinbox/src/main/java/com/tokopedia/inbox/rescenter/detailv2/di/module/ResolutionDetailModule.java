@@ -15,6 +15,7 @@ import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapperV2;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetDetailResChatMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetNextActionMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
@@ -33,7 +34,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GenerateHostUseC
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GenerateHostV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetNextActionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
-import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailWithNextActionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDiscussionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResChatUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
@@ -47,10 +48,8 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.SendDiscussionV2
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.UploadImageUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.UploadImageV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.UploadVideoUseCase;
-import com.tokopedia.inbox.rescenter.detailv2.view.fragment.DetailResChatFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
-import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatFragmentPresenter;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
@@ -96,7 +95,7 @@ public class ResolutionDetailModule {
     @Provides
     DetailResCenterFragmentImpl provideDetailResCenterFragmentPresenter(
             GetResCenterDetailUseCase getResCenterDetailUseCase,
-            GetResCenterDetailWithNextActionUseCase getResCenterDetailWithNextActionUseCase,
+            GetResCenterDetailV2UseCase getResCenterDetailV2UseCase,
             TrackAwbReturProductUseCase trackAwbReturProductUseCase,
             CancelResolutionUseCase cancelResolutionUseCase,
             AskHelpResolutionUseCase askHelpResolutionUseCase,
@@ -108,7 +107,7 @@ public class ResolutionDetailModule {
         return new DetailResCenterFragmentImpl(
                 viewListener,
                 getResCenterDetailUseCase,
-                getResCenterDetailWithNextActionUseCase,
+                getResCenterDetailV2UseCase,
                 trackAwbReturProductUseCase,
                 cancelResolutionUseCase,
                 askHelpResolutionUseCase,
@@ -131,21 +130,6 @@ public class ResolutionDetailModule {
                 resCenterRepository);
     }
 
-    @ResolutionDetailScope
-    @Provides
-    GetResCenterDetailWithNextActionUseCase provideGetResCenterDetailWithNextActionUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ResCenterRepository resCenterRepository,
-            GetResCenterDetailUseCase resCenterDetailUseCase,
-            GetNextActionUseCase nextActionUseCase) {
-        return new GetResCenterDetailWithNextActionUseCase(
-                threadExecutor,
-                postExecutionThread,
-                resCenterRepository,
-                resCenterDetailUseCase,
-                nextActionUseCase);
-    }
 
     @ResolutionDetailScope
     @Provides
@@ -255,6 +239,16 @@ public class ResolutionDetailModule {
 
     @ResolutionDetailScope
     @Provides
+    GetResCenterDetailV2UseCase provideGetResCenterDetailV2UseCase(ThreadExecutor threadExecutor,
+                                               PostExecutionThread postExecutionThread,
+                                               ResCenterRepository resCenterRepository){
+        return new GetResCenterDetailV2UseCase(threadExecutor,
+                postExecutionThread,
+                resCenterRepository);
+    }
+
+    @ResolutionDetailScope
+    @Provides
     ResCenterRepository provideResCenterRepository(ResCenterDataSourceFactory resCenterDataSourceFactory) {
         return new ResCenterRepositoryImpl(resCenterDataSourceFactory);
     }
@@ -277,7 +271,8 @@ public class ResolutionDetailModule {
             ReplyResolutionMapper replyResolutionMapper,
             ReplyResolutionSubmitMapper replyResolutionSubmitMapper,
             GetDetailResChatMapper getDetailResChatMapper,
-            GetNextActionMapper nextActionMapper) {
+            GetNextActionMapper nextActionMapper,
+            DetailResCenterMapperV2 detailResCenterMapperV2) {
 
         return new ResCenterDataSourceFactory(
                 context,
@@ -295,7 +290,8 @@ public class ResolutionDetailModule {
                 replyResolutionMapper,
                 replyResolutionSubmitMapper,
                 getDetailResChatMapper,
-                nextActionMapper
+                nextActionMapper,
+                detailResCenterMapperV2
         );
     }
 
@@ -679,6 +675,10 @@ public class ResolutionDetailModule {
         return new ReplyResolutionSubmitMapper();
     }
 
-
+    @ResolutionDetailScope
+    @Provides
+    DetailResCenterMapperV2 provideDetailResCenterMapperV2() {
+        return new DetailResCenterMapperV2();
+    }
 
 }
