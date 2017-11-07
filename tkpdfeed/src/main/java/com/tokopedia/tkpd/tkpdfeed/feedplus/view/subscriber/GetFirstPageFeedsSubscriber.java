@@ -281,7 +281,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                     recommendationDomain.getUserId(),
                     recommendationDomain.getUserName(),
                     recommendationDomain.getUserPhoto(),
-                    "https://www.tokopedia.com/feirin08",
+                    recommendationDomain.getUrl(),
                     recommendationDomain.getInfo(),
                     recommendationDomain.isFollowed()
             ));
@@ -295,7 +295,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 "Rekomendasi untuk Anda",
                 kolPostDomain.getUserName(),
                 kolPostDomain.getUserPhoto(),
-                kolPostDomain.getTagsType(),
+                kolPostDomain.getLabel(),
                 kolPostDomain.isFollowed(),
                 kolPostDomain.getImageUrl(),
                 kolPostDomain.getCaption(),

@@ -19,12 +19,16 @@ public class KolRecommendationDomain {
 
     private final @Nullable String info;
 
-    public KolRecommendationDomain(String userName, int userId, String userPhoto, boolean isFollowed, String info) {
+    private final @Nullable  String url;
+
+    public KolRecommendationDomain(String userName, int userId, String userPhoto,
+                                   boolean isFollowed, String info, String url) {
         this.userName = userName;
         this.userId = userId;
         this.userPhoto = userPhoto;
         this.isFollowed = isFollowed;
         this.info = info;
+        this.url = url;
     }
 
     @Nullable
@@ -50,5 +54,10 @@ public class KolRecommendationDomain {
     @Nullable
     public String getInfo() {
         return info;
+    }
+
+    @Nullable
+    public String getUrl() {
+        return url;
     }
 }

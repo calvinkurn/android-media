@@ -153,6 +153,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                          createTime
                          userName
                          userPhoto
+                         userInfo
                          content {
                             imageurl
                             tags {
@@ -175,6 +176,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                           createTime
                           userName
                           userPhoto
+                          userInfo
                           content {
                              imageurl
                              tags {
@@ -193,6 +195,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                 userPhoto
                 isFollowed
                 info
+                url
               }
             }
           }

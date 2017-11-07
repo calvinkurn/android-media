@@ -205,3 +205,4 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
         this.totalComment = totalComment;
     }
 }
+
