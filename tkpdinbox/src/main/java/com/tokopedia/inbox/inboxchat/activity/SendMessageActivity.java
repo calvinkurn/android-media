@@ -51,7 +51,6 @@ public class SendMessageActivity extends TActivity {
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.header_chat, null);
-        ImageView avatar = (ImageView) mCustomView.findViewById(R.id.user_avatar);
         toolbar.addView(mCustomView);
         setSupportActionBar(toolbar);
 
@@ -118,15 +117,6 @@ public class SendMessageActivity extends TActivity {
         bundle.putString(PARAM_CUSTOM_SUBJECT, customSubject);
         bundle.putString(PARAM_CUSTOM_MESSAGE, customMessage);
         bundle.putBoolean(IS_HAS_ATTACH_BUTTON, false);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    public static Intent getAskSellerIntent(Context context, String toShopId, String shopName,
-                                            String customSubject, String source, String avatar) {
-        Intent intent = getAskSellerIntent(context, toShopId, shopName, source, avatar);
-        Bundle bundle = intent.getExtras();
-        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
         intent.putExtras(bundle);
         return intent;
     }

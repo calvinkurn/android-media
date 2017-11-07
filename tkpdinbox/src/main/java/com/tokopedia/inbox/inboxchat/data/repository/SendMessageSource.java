@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxchat.data.repository;
 
+import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.data.mapper.SendMessageMapper;
@@ -12,16 +13,16 @@ import rx.Observable;
  */
 
 public class SendMessageSource {
-    private KunyitService kunyitService;
+    private ChatService chatService;
     private SendMessageMapper sendMessageMapper;
 
-    public SendMessageSource(KunyitService kunyitService, SendMessageMapper sendMessageMapper) {
-        this.kunyitService = kunyitService;
+    public SendMessageSource(ChatService chatService, SendMessageMapper sendMessageMapper) {
+        this.chatService = chatService;
         this.sendMessageMapper = sendMessageMapper;
     }
 
     public Observable<SendMessageViewModel> sendMessage(TKPDMapParam<String, Object> requestParams) {
-        return kunyitService.getApi()
+        return chatService.getApi()
                 .sendMessage(requestParams)
                 .map(sendMessageMapper);
     }

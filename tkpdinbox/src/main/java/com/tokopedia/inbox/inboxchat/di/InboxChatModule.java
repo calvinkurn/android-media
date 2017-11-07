@@ -179,9 +179,9 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    SendMessageSource provideSendMessageSource(KunyitService kunyitService,
+    SendMessageSource provideSendMessageSource(ChatService chatService,
                                                SendMessageMapper sendMessageMapper) {
-        return new SendMessageSource(kunyitService, sendMessageMapper);
+        return new SendMessageSource(chatService, sendMessageMapper);
     }
 
     @InboxChatScope

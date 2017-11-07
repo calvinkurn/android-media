@@ -5,4 +5,14 @@ package com.tokopedia.inbox.inboxchat.viewmodel;
  */
 
 public class SendMessageViewModel {
+
+   private boolean isSuccess;
+
+    public SendMessageViewModel(boolean isSuccess) {
+        this.isSuccess = isSuccess;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
 }
