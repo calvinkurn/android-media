@@ -265,7 +265,7 @@ public class TkpdBaseURL {
         public static final String PATH_REMOVE_WISHLIST_PRODUCT = "remove_wishlist_product.pl";
 
         public static final String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
-        public static final String URL_INBOX_MESSAGE_TIME_MACHINE = "https://tokopedia.com/inbox-message.pl";
+        public static final String URL_INBOX_MESSAGE_TIME_MACHINE = MOBILE_DOMAIN + "inbox-message.pl";
     }
 
     public static class Shop {
