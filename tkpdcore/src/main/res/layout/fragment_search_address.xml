@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context="com.tokopedia.core.manage.people.address.fragment.DistrictRecomendationFragment">
+    tools:context="com.tokopedia.core.manage.people.address.fragment.DistrictRecommendationFragment">
 
     <com.tokopedia.design.text.SearchInputView
         android:id="@+id/search_input_view_address"

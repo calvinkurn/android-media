@@ -6,6 +6,7 @@ import com.tokopedia.core.manage.people.address.interactor.DistrictRecommendatio
 import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
 import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
 import com.tokopedia.core.manage.people.address.model.districtrecomendation.AddressResponse;
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.ArrayList;
@@ -21,11 +22,12 @@ public class DistrictRecomendationFragmentPresenterImpl implements DistrictRecom
     private DistrictRecommendationRetrofitInteractor retrofitInteractor;
     private int lastPage = 0;
     private boolean hasNext;
-    private String keroToken = "123"; // Dummy token
-    private String keroUt = "1504521176"; // Dummy Unix Time
+    private Token token;
 
-    public DistrictRecomendationFragmentPresenterImpl(DistrictRecomendationFragmentView view) {
+    public DistrictRecomendationFragmentPresenterImpl(DistrictRecomendationFragmentView view,
+                                                      Token token) {
         this.view = view;
+        this.token = token;
         retrofitInteractor = new DistrictRecommendationRetrofitInteractorImpl();
     }
 
@@ -73,15 +75,13 @@ public class DistrictRecomendationFragmentPresenterImpl implements DistrictRecom
         view.updateRecommendation();
     }
 
-    public void setToken(String token) {
-        keroToken = token;
-    }
-
     private TKPDMapParam<String, String> getParams(String query) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(DistrictRecommendationRetrofitInteractor.Params.PAGE, String.valueOf(++lastPage));
-        params.put(DistrictRecommendationRetrofitInteractor.Params.TOKEN, keroToken);
-        params.put(DistrictRecommendationRetrofitInteractor.Params.UT, keroUt);
+        params.put(DistrictRecommendationRetrofitInteractor.Params.TOKEN,
+                token.getDistrictRecommendation());
+        params.put(DistrictRecommendationRetrofitInteractor.Params.UT,
+                String.valueOf(token.getUnixTime()));
         params.put(DistrictRecommendationRetrofitInteractor.Params.QUERY, query);
         return params;
     }

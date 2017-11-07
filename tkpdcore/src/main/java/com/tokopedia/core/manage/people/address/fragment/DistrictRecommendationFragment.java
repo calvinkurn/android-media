@@ -17,6 +17,7 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.manage.people.address.adapter.DistrictRecommendationAdapter;
 import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
 import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
 import com.tokopedia.core.manage.people.address.presenter.DistrictRecomendationFragmentPresenter;
 import com.tokopedia.core.manage.people.address.presenter.DistrictRecomendationFragmentPresenterImpl;
 import com.tokopedia.design.text.SearchInputView;
@@ -29,10 +30,10 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class DistrictRecomendationFragment extends BasePresenterFragment<DistrictRecomendationFragmentPresenter>
+public class DistrictRecommendationFragment extends BasePresenterFragment<DistrictRecomendationFragmentPresenter>
         implements DistrictRecomendationFragmentView, DistrictRecommendationAdapter.Listener {
 
-    private static final String TAG = DistrictRecomendationFragment.class.getSimpleName();
+    private static final String TAG = DistrictRecommendationFragment.class.getSimpleName();
 
     @BindView(R2.id.search_input_view_address)
     SearchInputView searchInputViewAddress;
@@ -50,12 +51,16 @@ public class DistrictRecomendationFragment extends BasePresenterFragment<Distric
     private DistrictRecommendationAdapter adapter;
     private CompositeSubscription compositeSubscription;
 
-    public DistrictRecomendationFragment() {
+    public DistrictRecommendationFragment() {
         // Required empty public constructor
     }
 
-    public static DistrictRecomendationFragment newInstance() {
-        return new DistrictRecomendationFragment();
+    public static DistrictRecommendationFragment newInstance(Token token) {
+        DistrictRecommendationFragment fragment = new DistrictRecommendationFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Constant.ARGUMENT_DATA_TOKEN, token);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -85,7 +90,8 @@ public class DistrictRecomendationFragment extends BasePresenterFragment<Distric
 
     @Override
     protected void initialPresenter() {
-        presenter = new DistrictRecomendationFragmentPresenterImpl(this);
+        presenter = new DistrictRecomendationFragmentPresenterImpl(this,
+                (Token) getArguments().getParcelable(Constant.ARGUMENT_DATA_TOKEN));
     }
 
     @Override

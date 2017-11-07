@@ -9,14 +9,18 @@ import android.os.Bundle;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.manage.people.address.fragment.DistrictRecomendationFragment;
+import com.tokopedia.core.manage.people.address.fragment.DistrictRecommendationFragment;
+import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
 
 public class DistrictRecommendationActivity extends BasePresenterActivity {
 
     private static final String TAG = "DISTRICT_RECOMMENDATION_FRAGMENT";
 
-    public static Intent createInstance(Activity activity) {
-        return new Intent(activity, DistrictRecommendationActivity.class);
+    public static Intent createInstance(Activity activity, Token token) {
+        Intent intent = new Intent(activity, DistrictRecommendationActivity.class);
+        intent.putExtra(DistrictRecomendationFragmentView.Constant.ARGUMENT_DATA_TOKEN, token);
+        return intent;
     }
 
     @Override
@@ -41,7 +45,9 @@ public class DistrictRecommendationActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        DistrictRecomendationFragment fragment = DistrictRecomendationFragment.newInstance();
+        DistrictRecommendationFragment fragment = DistrictRecommendationFragment.newInstance(
+                (Token) getIntent().getParcelableExtra(DistrictRecomendationFragmentView.Constant.
+                        ARGUMENT_DATA_TOKEN));
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentTransaction.add(R.id.container, fragment, TAG);

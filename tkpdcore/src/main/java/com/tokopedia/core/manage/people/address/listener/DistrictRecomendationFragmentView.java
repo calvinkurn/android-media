@@ -14,6 +14,7 @@ public interface DistrictRecomendationFragmentView {
 
     interface Constant {
         String INTENT_DATA_ADDRESS = "address";
+        String ARGUMENT_DATA_TOKEN = "token";
     }
 
 }

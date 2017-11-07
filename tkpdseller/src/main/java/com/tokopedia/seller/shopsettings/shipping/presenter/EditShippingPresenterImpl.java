@@ -1,7 +1,6 @@
 package com.tokopedia.seller.shopsettings.shipping.presenter;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -104,7 +103,6 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public void bindDataToView(EditShippingCouriers model) {
         this.model = model;
-        Log.v("UpdateAddress", "bindDataToView");
         if (selectedAddress == null) {
             view.setLocationProvinceCityDistrict(shopInformation.provinceName
                     , shopInformation.cityName
