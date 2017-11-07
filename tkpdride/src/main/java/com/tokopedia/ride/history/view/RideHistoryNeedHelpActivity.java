@@ -89,7 +89,6 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            RideGATracking.eventBackPress(getScreenName());
             onBackPressed();
             return true;
         } else {
@@ -114,6 +113,7 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
 
     @Override
     public void onBackPressed() {
+        RideGATracking.eventBackPress(getScreenName());
         if (WebViewGeneral.canGoBack()) {
             WebViewGeneral.goBack();
         } else {

@@ -110,6 +110,7 @@ public class GooglePlacePickerActivity extends BaseActivity implements PlaceAuto
 
     @Override
     public void onBackPressed() {
+        RideGATracking.eventBackPress(getScreenName());
         if (getFragmentManager().findFragmentById(R.id.container) instanceof SelectLocationOnMapFragment) {
             getFragmentManager().popBackStack();
 

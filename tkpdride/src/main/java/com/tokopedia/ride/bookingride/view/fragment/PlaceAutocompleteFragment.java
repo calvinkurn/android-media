@@ -318,6 +318,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @OnClick(R2.id.cabs_autocomplete_back_icon)
     public void actionBackIconClicked() {
+        RideGATracking.eventBackPress(getScreenName());
         getActivity().finish();
     }
 
