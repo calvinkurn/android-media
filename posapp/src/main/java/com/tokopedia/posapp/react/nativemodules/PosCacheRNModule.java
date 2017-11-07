@@ -89,6 +89,13 @@ public class PosCacheRNModule extends ReactContextBaseJavaModule {
                 .subscribe(getDefaultSubscriber(promise));
     }
 
+    @ReactMethod
+    public void insert(String tableName, String data, final Promise promise) {
+        reactCacheRepository.insert(tableName, data)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(getDefaultSubscriber(promise));
+    }
+
     private Subscriber<? super String> getDefaultSubscriber(final Promise promise) {
         return new Subscriber<String>() {
             @Override

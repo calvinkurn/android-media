@@ -54,6 +54,11 @@ public class ReactEtalaseCacheSource implements ReactCacheSource {
         return null;
     }
 
+    @Override
+    public Observable<String> insert(String data) {
+        return Observable.error(new RuntimeException("Method not implemented yet"));
+    }
+
     private Func1<List<EtalaseDomain>, CacheResult> getListMapper() {
         return new Func1<List<EtalaseDomain>, CacheResult>() {
             @Override

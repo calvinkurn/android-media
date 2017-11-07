@@ -26,5 +26,6 @@ public interface PosReactConst {
         String CART = "CART";
         String BANK = "BANK";
         String ETALASE = "ETALASE";
+        String GLOBAL = "GLOBAL";
     }
 }

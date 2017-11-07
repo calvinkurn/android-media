@@ -11,6 +11,7 @@ import com.tokopedia.posapp.react.datasource.ReactCacheRepositoryImpl;
 import com.tokopedia.posapp.react.datasource.cache.ReactBankCacheSource;
 import com.tokopedia.posapp.react.datasource.cache.ReactCartCacheSource;
 import com.tokopedia.posapp.react.datasource.cache.ReactEtalaseCacheSource;
+import com.tokopedia.posapp.react.datasource.cache.ReactGlobalCacheSource;
 import com.tokopedia.posapp.react.datasource.cache.ReactProductCacheSource;
 import com.tokopedia.posapp.react.factory.ReactCacheFactory;
 
@@ -48,12 +49,19 @@ public class ReactCacheModule {
     }
 
     @Provides
+    ReactGlobalCacheSource provideReactGlobalCacheSource(Gson gson) {
+        return new ReactGlobalCacheSource(gson);
+    }
+
+    @Provides
     ReactCacheFactory provideReactCacheFactory(ReactCartCacheSource reactCartCacheSource,
                                                ReactProductCacheSource reactProductCacheSource,
                                                ReactBankCacheSource reactBankCacheSource,
-                                               ReactEtalaseCacheSource reactEtalaseCacheSource) {
+                                               ReactEtalaseCacheSource reactEtalaseCacheSource,
+                                               ReactGlobalCacheSource reactGlobalCacheSource) {
         return new ReactCacheFactory(
-                reactCartCacheSource, reactProductCacheSource, reactBankCacheSource, reactEtalaseCacheSource
+                reactCartCacheSource, reactProductCacheSource, reactBankCacheSource,
+                reactEtalaseCacheSource, reactGlobalCacheSource
         );
     }
 

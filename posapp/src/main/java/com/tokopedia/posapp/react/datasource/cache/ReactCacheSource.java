@@ -18,4 +18,6 @@ public interface ReactCacheSource {
     Observable<String> deleteItem(String id);
 
     Observable<String> update(String data);
+
+    Observable<String> insert(String data);
 }

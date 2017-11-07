@@ -19,4 +19,6 @@ public interface ReactCacheRepository {
     Observable<String> deleteItem(String tableName, String id);
 
     Observable<String> update(String tableName, String data);
+
+    Observable<String> insert(String tableName, String data);
 }

@@ -63,6 +63,11 @@ public class ReactCartCacheSource implements ReactCacheSource {
         return cartFactory.local().updateCartProduct(mapToDomain(cartResponse)).map(getDbOperationMapper());
     }
 
+    @Override
+    public Observable<String> insert(String data) {
+        return Observable.error(new RuntimeException("Method not implemented yet"));
+    }
+
     private CartDomain mapToDomain(CartResponse cartResponse) {
         CartDomain cartDomain = new CartDomain();
         cartDomain.setId(cartResponse.getId());

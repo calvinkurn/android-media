@@ -67,6 +67,11 @@ public class ReactProductCacheSource implements ReactCacheSource {
         return null;
     }
 
+    @Override
+    public Observable<String> insert(String data) {
+        return Observable.error(new RuntimeException("Method not implemented yet"));
+    }
+
     public Observable<String> search(String keyword, String etalaseId) {
         return productFactory.local().searchProduct(keyword, etalaseId)
                 .map(getListMapper())
