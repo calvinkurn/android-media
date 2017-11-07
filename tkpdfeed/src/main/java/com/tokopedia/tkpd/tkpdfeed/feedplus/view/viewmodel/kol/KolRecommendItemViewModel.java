@@ -55,4 +55,5 @@ public class KolRecommendItemViewModel {
         this.followed = followed;
     }
 
+
 }

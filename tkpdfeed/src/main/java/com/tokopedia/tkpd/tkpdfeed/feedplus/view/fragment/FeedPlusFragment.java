@@ -1042,6 +1042,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             ((KolRecommendationViewModel) adapter.getlist().get(originalPos)).getListRecommend()
                     .get(position).setFollowed(!((KolRecommendationViewModel) adapter.getlist()
                     .get(originalPos)).getListRecommend().get(position).isFollowed());
+            ((KolRecommendationViewModel) adapter.getlist().get(originalPos)).setSwapAdapter(true);
             topAdsRecyclerAdapter.notifyItemChanged(rowNumber);
 
         }

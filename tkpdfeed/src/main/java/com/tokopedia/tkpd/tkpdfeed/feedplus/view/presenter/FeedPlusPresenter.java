@@ -193,36 +193,33 @@ public class FeedPlusPresenter
 
     @Override
     public void likeUnlikeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
-//        getView().showLoadingProgress();
-//        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id), new LikeKolPostSubscriber
-//                (rowNumber, getView(), kolListener));
+        getView().showLoadingProgress();
+        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id), new LikeKolPostSubscriber
+                (rowNumber, getView(), kolListener));
 
-        kolListener.onSuccessLikeDislikeKolPost(rowNumber);
     }
 
     @Override
     public void followKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol kolListener) {
-//        getView().showLoadingProgress();
-//        followKolPostUseCase.execute(
-//                FollowKolPostUseCase.getParam(id,
-//                        FollowKolPostUseCase.PARAM_FOLLOW),
-//                new FollowUnfollowKolRecommendationSubscriber(rowNumber, position, getView(),
-//                        kolListener));
+        getView().showLoadingProgress();
+        followKolPostUseCase.execute(
+                FollowKolPostUseCase.getParam(id,
+                        FollowKolPostUseCase.PARAM_FOLLOW),
+                new FollowUnfollowKolRecommendationSubscriber(rowNumber, position, getView(),
+                        kolListener));
 
-        kolListener.onSuccessFollowUnfollowKolFromRecommendation(rowNumber, position);
 
     }
 
     @Override
     public void unfollowKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol kolListener) {
-//        getView().showLoadingProgress();
-//        followKolPostUseCase.execute(
-//                FollowKolPostUseCase.getParam(id,
-//                        FollowKolPostUseCase.PARAM_UNFOLLOW),
-//                new FollowUnfollowKolRecommendationSubscriber(rowNumber, position, getView(),
-//                        kolListener));
+        getView().showLoadingProgress();
+        followKolPostUseCase.execute(
+                FollowKolPostUseCase.getParam(id,
+                        FollowKolPostUseCase.PARAM_UNFOLLOW),
+                new FollowUnfollowKolRecommendationSubscriber(rowNumber, position, getView(),
+                        kolListener));
 
-        kolListener.onSuccessFollowUnfollowKolFromRecommendation(rowNumber, position);
     }
 
 

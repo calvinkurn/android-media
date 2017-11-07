@@ -16,6 +16,7 @@ public class KolRecommendationViewModel implements Visitable<FeedPlusTypeFactory
     ArrayList<KolRecommendItemViewModel> listRecommend;
     private int page;
     private int rowNumber;
+    private boolean swapAdapter;
 
     public KolRecommendationViewModel(String url,
                                       String title,
@@ -68,5 +69,13 @@ public class KolRecommendationViewModel implements Visitable<FeedPlusTypeFactory
 
     public void setListRecommend(ArrayList<KolRecommendItemViewModel> listRecommend) {
         this.listRecommend = listRecommend;
+    }
+
+    public void setSwapAdapter(boolean swapAdapter) {
+        this.swapAdapter = swapAdapter;
+    }
+
+    public boolean isSwapAdapter() {
+        return swapAdapter;
     }
 }

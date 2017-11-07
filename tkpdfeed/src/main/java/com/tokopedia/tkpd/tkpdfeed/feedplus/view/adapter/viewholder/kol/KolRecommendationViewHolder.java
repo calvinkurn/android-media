@@ -44,7 +44,6 @@ public class KolRecommendationViewHolder extends AbstractViewHolder<KolRecommend
     public void bind(final KolRecommendationViewModel element) {
         element.setRowNumber(getAdapterPosition());
         title.setText(MethodChecker.fromHtml(element.getTitle()));
-        adapter.setData(element);
         seeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,5 +51,14 @@ public class KolRecommendationViewHolder extends AbstractViewHolder<KolRecommend
                         .getRowNumber(), element.getUrl());
             }
         });
+
+        if (element.isSwapAdapter()) {
+            adapter = new KolRecommendationAdapter(kolViewListener);
+            listRecommendation.setAdapter(adapter);
+            element.setSwapAdapter(false);
+            adapter.setData(element);
+        } else {
+            adapter.setData(element);
+        }
     }
 }
