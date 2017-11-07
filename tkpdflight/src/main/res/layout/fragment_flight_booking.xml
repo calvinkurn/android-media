@@ -1,10 +1,10 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                                            xmlns:app="http://schemas.android.com/apk/res-auto"
-                                            xmlns:tools="http://schemas.android.com/tools"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:fillViewport="true"
-                                            tools:context="com.tokopedia.flight.booking.view.FlightBookingFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context="com.tokopedia.flight.booking.view.FlightBookingFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,48 +20,96 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                tools:text="Selesaikan Pesanan Anda Dalam"/>
+                android:text="@string/flight_booking_finish_transaction_label"
+                tools:text="" />
 
             <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_time_finish_order_indicator"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:textStyle="bold"
-                tools:text="2 Menit 60 Detik"/>
+                android:text="2 Menit 60 Detik"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <com.tokopedia.flight.booking.widget.CardWithActionView
+            android:id="@+id/cwa_departure_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cmv_title="Penerbangan Pergi"/>
+            app:cmv_title="@string/flight_booking_departure_trip_card_title"
+            app:cmw_action="Detail" />
 
         <com.tokopedia.flight.booking.widget.CardWithActionView
+            android:id="@+id/cwa_return_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cmv_title="Penerbangan Pergi"/>
+            app:cmv_title="@string/flight_booking_return_trip_card_title"
+            app:cmw_action="Detail" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <include
+            layout="@layout/partial_flight_booking_contact_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_med"
-            android:text="Informasi Kontak"
-            android:textSize="@dimen/font_headline"
-            android:textStyle="bold"/>
+            android:layout_marginBottom="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_med"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_small">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/til_contact_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nama Lengkap (sesuai KTP/SIM/Passport) til">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/et_contact_name"
+            <android.support.v7.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nama Lengkap (sesuai KTP/SIM/Passport)"
-                tools:text="Isyana Saravati"/>
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:text="Data Penumpang"
+                android:textSize="@dimen/font_headline"
+                android:textStyle="bold" />
 
+            <android.support.v7.app.AlertController.RecycleListView
+                android:id="@+id/rv_passengers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_small">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:text="Rincian Harga"
+                android:textSize="@dimen/font_headline"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/bg_line_separator" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/button_submit"
+                style="@style/Button.Submit.Orange"
+                android:text="Lanjut" />
+        </LinearLayout>
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

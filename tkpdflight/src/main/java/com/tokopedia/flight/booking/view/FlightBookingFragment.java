@@ -3,6 +3,7 @@ package com.tokopedia.flight.booking.view;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,9 @@ import com.tokopedia.flight.R;
  * A simple {@link Fragment} subclass.
  */
 public class FlightBookingFragment extends BaseDaggerFragment {
+    private AppCompatTextView finishOrderTimeIndicatorAppCompatTextView;
 
-    public static FlightBookingFragment newInstance(){
+    public static FlightBookingFragment newInstance() {
         return new FlightBookingFragment();
     }
 
@@ -29,7 +31,8 @@ public class FlightBookingFragment extends BaseDaggerFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_flight_booking, container, false);
+        View view = inflater.inflate(R.layout.fragment_flight_booking, container, false);
+        return view;
     }
 
     @Override

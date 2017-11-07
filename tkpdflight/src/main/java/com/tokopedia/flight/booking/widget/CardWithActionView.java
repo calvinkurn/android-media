@@ -20,8 +20,11 @@ import com.tokopedia.flight.R;
 public class CardWithActionView extends BaseCustomView {
 
     private AppCompatTextView titleAppCompatTextView;
+    private AppCompatTextView contentInfoAppCompatTextView;
     private AppCompatTextView contentAppCompatTextView;
     private AppCompatTextView subContentAppCompatTextView;
+    private AppCompatTextView subContentInfoAppCompatTextView;
+    private AppCompatTextView actionAppCompatTextView;
     private RelativeLayout actionLayout;
 
     private ActionListener actionListener;
@@ -52,7 +55,9 @@ public class CardWithActionView extends BaseCustomView {
         try {
             String title = styledAttributes.getString(R.styleable.CardWithActionView_cmv_title);
             String content = styledAttributes.getString(R.styleable.CardWithActionView_cmv_content);
+            String contentInfo = styledAttributes.getString(R.styleable.CardWithActionView_cmv_content_info);
             String subContent = styledAttributes.getString(R.styleable.CardWithActionView_cmw_subcontent);
+            String subContentInfo = styledAttributes.getString(R.styleable.CardWithActionView_cmw_subcontent_info);
             if (!TextUtils.isEmpty(title)) {
                 titleAppCompatTextView.setText(String.valueOf(title));
             }
@@ -61,6 +66,12 @@ public class CardWithActionView extends BaseCustomView {
             }
             if (!TextUtils.isEmpty(subContent)) {
                 subContentAppCompatTextView.setText(String.valueOf(subContent));
+            }
+            if (!TextUtils.isEmpty(contentInfo)) {
+                contentInfoAppCompatTextView.setText(String.valueOf(contentInfo));
+            }
+            if (!TextUtils.isEmpty(subContentInfo)) {
+                subContentInfoAppCompatTextView.setText(String.valueOf(subContent));
             }
         } finally {
             styledAttributes.recycle();
@@ -72,7 +83,10 @@ public class CardWithActionView extends BaseCustomView {
         View view = inflate(getContext(), R.layout.widget_card_with_action, this);
         titleAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_content_title);
         contentAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_content_message);
-        subContentAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_content_submessage);
+        contentInfoAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_content_info);
+        subContentAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_subcontent_message);
+        subContentInfoAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_subcontent_info);
+        actionAppCompatTextView = (AppCompatTextView) view.findViewById(R.id.tv_action);
         actionLayout = (RelativeLayout) view.findViewById(R.id.action_layout);
     }
 
@@ -91,5 +105,29 @@ public class CardWithActionView extends BaseCustomView {
 
     public void setActionListener(ActionListener listener) {
         actionListener = listener;
+    }
+
+    public void setTitle(String title) {
+        titleAppCompatTextView.setText(String.valueOf(title));
+    }
+
+    public void setContent(String content) {
+        contentAppCompatTextView.setText(content);
+    }
+
+    public void setSubContent(String subContent) {
+        subContentAppCompatTextView.setText(String.valueOf(subContent));
+    }
+
+    public void setContentInfo(String contentInfo) {
+        contentInfoAppCompatTextView.setText(contentInfo);
+    }
+
+    public void setSubContentInfo(String subContentInfo) {
+        subContentInfoAppCompatTextView.setText(subContentInfo);
+    }
+
+    public void setAction(String action) {
+        actionAppCompatTextView.setText(action);
     }
 }

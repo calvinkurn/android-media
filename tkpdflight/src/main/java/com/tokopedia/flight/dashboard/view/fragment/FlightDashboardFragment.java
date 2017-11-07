@@ -46,7 +46,8 @@ import java.util.Date;
 import javax.inject.Inject;
 
 /**
- * Created by nathan on 10/19/17.
+ * @author  by nathan on 10/19/17.
+ * modified by al
  */
 
 public class FlightDashboardFragment extends BaseDaggerFragment implements FlightDashboardContract.View {

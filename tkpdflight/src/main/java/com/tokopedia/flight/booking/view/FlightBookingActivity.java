@@ -20,4 +20,9 @@ public class FlightBookingActivity extends BaseSimpleActivity {
     protected Fragment getNewFragment() {
         return FlightBookingFragment.newInstance();
     }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
 }
