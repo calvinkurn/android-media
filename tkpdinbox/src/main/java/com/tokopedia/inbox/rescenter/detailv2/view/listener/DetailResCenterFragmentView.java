@@ -92,4 +92,5 @@ public interface DetailResCenterFragmentView {
 
     void doOnActionTimeOut();
 
+    void hideTimeTicker();
 }

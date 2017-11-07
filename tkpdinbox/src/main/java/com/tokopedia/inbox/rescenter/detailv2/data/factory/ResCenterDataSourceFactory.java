@@ -7,6 +7,8 @@ import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.apiservices.user.apis.InboxResCenterApi;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetDetailResChatMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetNextActionMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.source.NextActionCloudSource;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.ResChatCloudSource;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudActionResCenterDataStore;
@@ -42,6 +44,7 @@ public class ResCenterDataSourceFactory {
     private ReplyResolutionMapper replyResolutionMapper;
     private ReplyResolutionSubmitMapper replyResolutionSubmitMapper;
     private GetDetailResChatMapper getDetailResChatMapper;
+    private GetNextActionMapper getNextActionMapper;
 
     public ResCenterDataSourceFactory(Context context,
                                       ResolutionApi resolutionApi,
@@ -57,7 +60,8 @@ public class ResCenterDataSourceFactory {
                                       LoadMoreMapper loadMoreMapper,
                                       ReplyResolutionMapper replyResolutionMapper,
                                       ReplyResolutionSubmitMapper replyResolutionSubmitMapper,
-                                      GetDetailResChatMapper getDetailResChatMapper) {
+                                      GetDetailResChatMapper getDetailResChatMapper,
+                                      GetNextActionMapper getNextActionMapper) {
         this.context = context;
         this.resolutionApi = resolutionApi;
         this.inboxResCenterApi = inboxResCenterApi;
@@ -73,6 +77,7 @@ public class ResCenterDataSourceFactory {
         this.replyResolutionMapper = replyResolutionMapper;
         this.replyResolutionSubmitMapper = replyResolutionSubmitMapper;
         this.getDetailResChatMapper = getDetailResChatMapper;
+        this.getNextActionMapper = getNextActionMapper;
     }
 
     public CloudResCenterDataSource createCloudResCenterDataSource() {
@@ -100,5 +105,9 @@ public class ResCenterDataSourceFactory {
 
     public ResChatCloudSource createResChatCloudSource() {
         return new ResChatCloudSource(getDetailResChatMapper, resolutionApi);
+    }
+
+    public NextActionCloudSource createNextActionCloudSource() {
+        return new NextActionCloudSource(getNextActionMapper, resolutionApi);
     }
 }

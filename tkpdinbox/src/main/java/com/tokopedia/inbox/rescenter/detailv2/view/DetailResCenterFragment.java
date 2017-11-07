@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
@@ -24,6 +25,7 @@ import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.NextActionActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AddressReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView;
@@ -38,6 +40,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragm
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDetailStepDomain;
 import com.tokopedia.inbox.rescenter.discussion.view.activity.ResCenterDiscussionActivity;
 import com.tokopedia.inbox.rescenter.historyaction.HistoryActionActivity;
 import com.tokopedia.inbox.rescenter.historyaddress.HistoryAddressActivity;
@@ -55,6 +58,7 @@ import javax.inject.Inject;
 public class DetailResCenterFragment extends BaseDaggerFragment
         implements DetailResCenterFragmentView {
 
+    public static final int NEXT_STATUS_CURRENT = 1;
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
     private static final String EXTRA_PARAM_VIEW_DATA = "view_data";
     private static final int REQUEST_EDIT_SOLUTION = 123;
@@ -72,7 +76,6 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     View mainView;
     ButtonView buttonView;
     CardView cvNextStep;
-//    StatusView statusView;
     AwbReturView awbReturView;
     AddressReturView addressReturView;
     DetailView detailView;
@@ -80,6 +83,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     ListProductView listProductView;
     SolutionView solutionView;
     HistoryView historyView;
+    TextView tvNextStep;
 
     private TkpdProgressDialog normalLoading;
 
@@ -180,29 +184,24 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         loading = view.findViewById(R.id.loading);
         mainView = view.findViewById(R.id.main_view);
         buttonView = (ButtonView) view.findViewById(R.id.button_view);
-//        statusView = (StatusView) view.findViewById(R.id.status_view);
         cvNextStep = (CardView) view.findViewById(R.id.cv_next_step);
         awbReturView = (AwbReturView) view.findViewById(R.id.awb_view);
         addressReturView = (AddressReturView) view.findViewById(R.id.address_retur_view);
         detailView = (DetailView) view.findViewById(R.id.detail_view);
         timeView = (TimeView) view.findViewById(R.id.time_view);
+        tvNextStep = (TextView) view.findViewById(R.id.tv_next_step);
         listProductView = (ListProductView) view.findViewById(R.id.product_view);
         solutionView = (SolutionView) view.findViewById(R.id.solution_view);
         historyView = (HistoryView) view.findViewById(R.id.history_view);
 
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         cvNextStep.setVisibility(View.GONE);
-        initNextStep();
-    }
-
-    private void initNextStep() {
-
+        timeView.setVisibility(View.GONE);
     }
 
     @Override
     protected void setViewListener() {
         buttonView.setListener(this);
-//        statusView.setListener(this);
         awbReturView.setListener(this);
         addressReturView.setListener(this);
         detailView.setListener(this);
@@ -210,6 +209,16 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         listProductView.setListener(this);
         solutionView.setListener(this);
         historyView.setListener(this);
+
+        cvNextStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(NextActionActivity.newInstance(
+                        getActivity(),
+                        resolutionID,
+                        getViewData().getNextActionDomain()));
+            }
+        });
     }
 
     @Override
@@ -273,6 +282,11 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     private void renderData() {
         cvNextStep.setVisibility(View.VISIBLE);
+        for (NextActionDetailStepDomain nextStep : getViewData().getNextActionDomain().getDetail().getStep()) {
+            if (nextStep.getStatus() == NEXT_STATUS_CURRENT) {
+                tvNextStep.setText(nextStep.getName());
+            }
+        }
         if (getViewData().getButtonData() != null) {
             buttonView.renderData(getViewData().getButtonData());
         }
@@ -600,6 +614,11 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     public void doOnActionTimeOut() {
         showLoadingDialog(false);
         showTimeOutMessage();
+    }
+
+    @Override
+    public void hideTimeTicker() {
+        timeView.setVisibility(View.GONE);
     }
 
     @Override

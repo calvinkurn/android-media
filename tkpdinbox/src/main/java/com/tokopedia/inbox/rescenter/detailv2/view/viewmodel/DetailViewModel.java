@@ -3,6 +3,8 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
+
 /**
  * Created by hangnadi on 3/9/17.
  */
@@ -19,6 +21,7 @@ public class DetailViewModel implements Parcelable {
     private HistoryData historyData;
     private AwbData awbData;
     private AddressReturData addressReturData;
+    private NextActionDomain nextActionDomain;
 
     public void setTimeOut(boolean timeOut) {
         this.timeOut = timeOut;
@@ -108,6 +111,17 @@ public class DetailViewModel implements Parcelable {
         this.addressReturData = addressReturData;
     }
 
+    public NextActionDomain getNextActionDomain() {
+        return nextActionDomain;
+    }
+
+    public void setNextActionDomain(NextActionDomain nextActionDomain) {
+        this.nextActionDomain = nextActionDomain;
+    }
+
+    public DetailViewModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -126,9 +140,7 @@ public class DetailViewModel implements Parcelable {
         dest.writeParcelable(this.historyData, flags);
         dest.writeParcelable(this.awbData, flags);
         dest.writeParcelable(this.addressReturData, flags);
-    }
-
-    public DetailViewModel() {
+        dest.writeParcelable(this.nextActionDomain, flags);
     }
 
     protected DetailViewModel(Parcel in) {
@@ -143,9 +155,10 @@ public class DetailViewModel implements Parcelable {
         this.historyData = in.readParcelable(HistoryData.class.getClassLoader());
         this.awbData = in.readParcelable(AwbData.class.getClassLoader());
         this.addressReturData = in.readParcelable(AddressReturData.class.getClassLoader());
+        this.nextActionDomain = in.readParcelable(NextActionDomain.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<DetailViewModel> CREATOR = new Parcelable.Creator<DetailViewModel>() {
+    public static final Creator<DetailViewModel> CREATOR = new Creator<DetailViewModel>() {
         @Override
         public DetailViewModel createFromParcel(Parcel source) {
             return new DetailViewModel(source);

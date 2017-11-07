@@ -44,7 +44,7 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
 
     @Override
     public void setListener(DetailResCenterFragmentView detailResCenterFragmentView) {
-
+        this.listener = detailResCenterFragmentView;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
     }
 
     private void refreshMainPage() {
-
+        listener.hideTimeTicker();
     }
 
     private TimeTickerUtil.TimeTickerListener getTimeTickerListener() {

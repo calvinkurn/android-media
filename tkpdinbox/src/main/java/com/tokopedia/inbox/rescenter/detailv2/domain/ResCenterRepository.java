@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.NewReplyDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.generatehost.GenerateHostModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionValidationModel;
@@ -73,4 +74,6 @@ public interface ResCenterRepository {
     Observable<ResolutionActionDomainData> finishResolution(RequestParams requestParams);
 
     Observable<ResolutionActionDomainData> askHelpResolutionV2(RequestParams requestParams);
+
+    Observable<NextActionDomain> getNextAction(RequestParams requestParams);
 }

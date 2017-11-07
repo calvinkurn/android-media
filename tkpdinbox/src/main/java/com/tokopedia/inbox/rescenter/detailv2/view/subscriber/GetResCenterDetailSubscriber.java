@@ -111,6 +111,7 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
             model.setStatusData(detailResCenter.getResolution() != null ?
                     mappingStatusData(detailResCenter.getResolution()) : null
             );
+            model.setNextActionDomain(detailResCenter.getNextAction());
         } else {
             model.setSuccess(false);
             model.setMessageError(detailResCenter != null ? detailResCenter.getMessageError() : null);

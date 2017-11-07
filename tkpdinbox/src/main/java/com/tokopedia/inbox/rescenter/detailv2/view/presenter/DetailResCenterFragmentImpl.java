@@ -8,6 +8,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolution
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailWithNextActionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetResCenterDetailSubscriber;
@@ -25,6 +26,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
     private final DetailResCenterFragmentView fragmentView;
     private final GetResCenterDetailUseCase getResCenterDetailUseCase;
+    private final GetResCenterDetailWithNextActionUseCase getResCenterDetailWithNextActionUseCase;
     private final TrackAwbReturProductUseCase trackAwbReturProductUseCase;
     private final CancelResolutionUseCase cancelResolutionUseCase;
     private final AskHelpResolutionUseCase askHelpResolutionUseCase;
@@ -37,6 +39,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     @Inject
     public DetailResCenterFragmentImpl(DetailResCenterFragmentView fragmentView,
                                        GetResCenterDetailUseCase getResCenterDetailUseCase,
+                                       GetResCenterDetailWithNextActionUseCase getResCenterDetailWithNextActionUseCase,
                                        TrackAwbReturProductUseCase trackAwbReturProductUseCase,
                                        CancelResolutionUseCase cancelResolutionUseCase,
                                        AskHelpResolutionUseCase askHelpResolutionUseCase,
@@ -47,6 +50,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
                                        EditAddressUseCase editAddressUseCase) {
         this.fragmentView = fragmentView;
         this.getResCenterDetailUseCase = getResCenterDetailUseCase;
+        this.getResCenterDetailWithNextActionUseCase = getResCenterDetailWithNextActionUseCase;
         this.trackAwbReturProductUseCase = trackAwbReturProductUseCase;
         this.cancelResolutionUseCase = cancelResolutionUseCase;
         this.askHelpResolutionUseCase = askHelpResolutionUseCase;
@@ -60,8 +64,10 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     @Override
     public void setOnFirstTimeLaunch() {
         fragmentView.showLoading(true);
-        getResCenterDetailUseCase.execute(getInitResCenterDetailParam(),
+        getResCenterDetailWithNextActionUseCase.execute(getInitResCenterDetailParam(),
                 new GetResCenterDetailSubscriber(fragmentView));
+//        getResCenterDetailUseCase.execute(getInitResCenterDetailParam(),
+//                new GetResCenterDetailSubscriber(fragmentView));
     }
 
     private RequestParams getInitResCenterDetailParam() {

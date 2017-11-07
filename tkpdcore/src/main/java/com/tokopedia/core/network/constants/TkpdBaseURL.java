@@ -834,6 +834,8 @@ public class TkpdBaseURL {
         public static final String GET_RESOLUTION_APPEAL = BASE_RESOLUTION_DETAIL_V1 + "/appeal";
         public static final String POST_RESOLUTION_APPEAL = BASE_RESOLUTION_DETAIL_V1 + "/appeal";
 
+
+        public static final String BASE_DETAIL_NEXT_ACTION_RESOLUTION_V2 = BASE_DETAIL_RESOLUTION_V2 + "/next_action";
         public static final String GET_RESOLUTION_CONVERSATION_V2 = BASE_DETAIL_RESOLUTION_V2 + "/conversation";
         public static final String POST_RESOLUTION_CONVERSATION_REPLY = BASE_RESOLUTION_DETAIL_V1 + "/reply";
         public static final String POST_RESOLUTION_CONVERSATION_ADDRESS = BASE_RESOLUTION_DETAIL_V1 + "/address";

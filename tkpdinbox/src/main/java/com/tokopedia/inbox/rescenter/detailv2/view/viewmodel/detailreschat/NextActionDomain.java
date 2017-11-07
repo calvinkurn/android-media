@@ -11,6 +11,7 @@ public class NextActionDomain implements Parcelable {
 
     private String last;
     private NextActionDetailDomain detail;
+    private boolean isSuccess;
 
     public NextActionDomain(String last, NextActionDetailDomain detail) {
         this.last = last;
@@ -33,6 +34,18 @@ public class NextActionDomain implements Parcelable {
         this.detail = detail;
     }
 
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(boolean success) {
+        isSuccess = success;
+    }
+
+    public static Creator<NextActionDomain> getCREATOR() {
+        return CREATOR;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -42,14 +55,16 @@ public class NextActionDomain implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.last);
         dest.writeParcelable(this.detail, flags);
+        dest.writeByte(this.isSuccess ? (byte) 1 : (byte) 0);
     }
 
     protected NextActionDomain(Parcel in) {
         this.last = in.readString();
         this.detail = in.readParcelable(NextActionDetailDomain.class.getClassLoader());
+        this.isSuccess = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<NextActionDomain> CREATOR = new Parcelable.Creator<NextActionDomain>() {
+    public static final Creator<NextActionDomain> CREATOR = new Creator<NextActionDomain>() {
         @Override
         public NextActionDomain createFromParcel(Parcel source) {
             return new NextActionDomain(source);
