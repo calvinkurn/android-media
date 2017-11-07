@@ -16,23 +16,25 @@
             android:id="@+id/recycler_view_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
             android:paddingLeft="@dimen/padding_med"
             android:paddingRight="@dimen/padding_med"
             android:paddingTop="@dimen/padding_med" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_marginRight="@dimen/padding_med"
-            android:layout_marginLeft="@dimen/padding_med"
             android:layout_height="1dp"
-            android:background="@color/black_twenty_percent"/>
+            android:layout_marginLeft="@dimen/padding_med"
+            android:layout_marginRight="@dimen/padding_med"
+            android:background="@color/black_twenty_percent" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view_amenity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
             android:paddingBottom="@dimen/padding_vs"
             android:paddingLeft="@dimen/padding_med"
-            android:paddingRight="@dimen/padding_med"/>
+            android:paddingRight="@dimen/padding_med" />
     </LinearLayout>
 </LinearLayout>

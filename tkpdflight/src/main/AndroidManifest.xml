@@ -36,7 +36,6 @@
 
         <activity
             android:name=".detail.view.activity.FlightDetailActivity"
-            android:label="@string/search_flight"
             android:screenOrientation="portrait"/>
     </application>
 

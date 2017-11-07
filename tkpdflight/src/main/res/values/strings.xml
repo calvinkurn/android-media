@@ -82,4 +82,9 @@
     <string name="flight_search_sort_item_cheapest_price">Harga Termurah</string>
     <string name="flight_search_sort_item_most_expensive_price">Harga Termahal</string>
     <string name="filter">Filter</string>
+    <string name="flight_label_choose_button">Pilih</string>
+    <string name="flight_label_price_total">Total Harga</string>
+    <string name="flight_label_detail">Detail</string>
+    <string name="flight_label_normal_price">Harga Normal</string>
+    <string name="flight_label_saving_price">Hemat</string>
 </resources>

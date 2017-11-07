@@ -1,6 +1,5 @@
 package com.tokopedia.flight.detail.view.adapter;
 
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.detail.FlightAirlineIconUtil;
+import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
 import com.tokopedia.flight.search.data.cloud.model.Amenity;
 import com.tokopedia.flight.search.data.cloud.model.Info;
 import com.tokopedia.flight.search.data.cloud.model.Route;

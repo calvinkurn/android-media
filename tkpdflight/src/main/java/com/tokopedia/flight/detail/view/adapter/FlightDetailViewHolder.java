@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.utils.DateFormatUtils;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.detail.FlightAirlineIconUtil;
+import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
 import com.tokopedia.flight.search.data.cloud.model.Route;
 
 /**
