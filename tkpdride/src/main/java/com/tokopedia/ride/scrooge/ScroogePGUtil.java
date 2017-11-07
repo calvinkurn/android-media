@@ -12,7 +12,7 @@ import android.os.Bundle;
 
 public class ScroogePGUtil {
 
-    private static final int REQUEST_CODE_OPEN_SCROOGE_PAGE = 11;
+    public static final int REQUEST_CODE_OPEN_SCROOGE_PAGE = 11;
     public static final int RESULT_CODE_ADD_CC_SUCCESS = 201;
     public static final int RESULT_CODE_ADD_CC_FAIL = 202;
     public static final int RESULT_CODE_DELETE_CC_FAIL = 203;

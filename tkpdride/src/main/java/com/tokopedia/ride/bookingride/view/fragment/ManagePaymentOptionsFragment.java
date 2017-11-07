@@ -1,5 +1,8 @@
 package com.tokopedia.ride.bookingride.view.fragment;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
@@ -31,12 +35,23 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.ride.bookingride.view.activity.ManagePaymentOptionsActivity.TYPE_CHANGE_PAYMENT_OPTION;
+import static com.tokopedia.ride.bookingride.view.activity.ManagePaymentOptionsActivity.TYPE_MANAGE_PAYMENT_OPTION;
+import static com.tokopedia.ride.scrooge.ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE;
+import static com.tokopedia.ride.scrooge.ScroogePGUtil.RESULT_CODE_ADD_CC_SUCCESS;
+
 /**
- * Created by alvarisi on 4/25/17.
+ * Created by Vishal
  */
 
 
 public class ManagePaymentOptionsFragment extends BaseFragment implements ManagePaymentOptionsContract.View, PaymentMethodItemClickListener {
+
+
+    private static final int REQUEST_CODE_EDIT_CARD_DETAIL = 100;
+    private static final String KEY_TYPE = "KEY_TYPE";
+    public static final String KEY_CHANGE_PAYMENT_RESULT = "KEY_CHANGE_PAYMENT_RESULT";
 
     @BindView(R2.id.payment_method_list)
     RecyclerView paymentMethodsRecyclerView;
@@ -48,9 +63,12 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
     ManagePaymentOptionsPresenter presenter;
 
     private PaymentMethodAdapter paymentMethodAdapter;
+    private int type = TYPE_MANAGE_PAYMENT_OPTION;
+    private ProgressDialog progressDialog;
 
-    public static ManagePaymentOptionsFragment newInstance() {
+    public static ManagePaymentOptionsFragment newInstance(int type) {
         Bundle bundle = new Bundle();
+        bundle.putInt(KEY_TYPE, type);
         ManagePaymentOptionsFragment fragment = new ManagePaymentOptionsFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -58,9 +76,24 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
 
     @Override
     public void onPaymentMethodSelected(PaymentMethodViewModel paymentMethodViewModel) {
-        if (paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_CC)) {
-            startActivity(EditDeleteCreditCardActivity.getCallingActivity(getActivity(), paymentMethodViewModel));
+
+        if (type == TYPE_MANAGE_PAYMENT_OPTION && paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_CC)) {
+            startActivityForResult(EditDeleteCreditCardActivity.getCallingActivity(getActivity(), paymentMethodViewModel), REQUEST_CODE_EDIT_CARD_DETAIL);
+        } else if (type == TYPE_CHANGE_PAYMENT_OPTION && !paymentMethodViewModel.isActive()) {
+            //set payment method and close the activity in result
+
+            if (paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_CC)) {
+                presenter.selectPaymentOption(paymentMethodViewModel);
+            } else {
+                closeActivity(paymentMethodViewModel);
+            }
         }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.type = getArguments().getInt(KEY_TYPE);
     }
 
     @Override
@@ -72,8 +105,12 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
     }
 
     private void init() {
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.message_please_wait));
+        progressDialog.setCancelable(false);
+
         //populate list of payment methods
-        presenter.renderPaymentMethodList();
+        presenter.fetchPaymentMethodList();
     }
 
     @Override
@@ -83,7 +120,7 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
 
     @Override
     public void renderPaymentMethodList(List<Visitable> visitables) {
-        PaymentMethodTypeFactory paymentMethodTypeFactory = new PaymentMethodAdapterTypeFactory(this);
+        PaymentMethodTypeFactory paymentMethodTypeFactory = new PaymentMethodAdapterTypeFactory(this, (this.type == TYPE_MANAGE_PAYMENT_OPTION ? PaymentMethodAdapterTypeFactory.TYPE_MANAGE_PAYMENT : PaymentMethodAdapterTypeFactory.TYPE_CHOOSE_PAYMENT));
         paymentMethodAdapter = new PaymentMethodAdapter(paymentMethodTypeFactory);
         paymentMethodAdapter.setElement(visitables);
         LinearLayoutManager layoutManager
@@ -101,6 +138,40 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
     @Override
     public void showProgress() {
         progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showProgressBar() {
+        if (progressDialog != null && !progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+    }
+
+    @Override
+    public void hideProgressBar() {
+        if (progressDialog != null) {
+            progressDialog.hide();
+        }
+    }
+
+    @Override
+    public void closeActivity(PaymentMethodViewModel paymentMethodViewModel) {
+        //close Activity
+        Intent result = new Intent();
+        result.putExtra(KEY_CHANGE_PAYMENT_RESULT, paymentMethodViewModel);
+        getActivity().setResult(RESULT_OK, result);
+        getActivity().finish();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //referesh payment method list in case of success of delete card and add card
+        if ((requestCode == REQUEST_CODE_EDIT_CARD_DETAIL && resultCode == Activity.RESULT_OK) ||
+                (requestCode == REQUEST_CODE_OPEN_SCROOGE_PAGE && resultCode == RESULT_CODE_ADD_CC_SUCCESS)) {
+            presenter.fetchPaymentMethodList();
+        }
     }
 
     @Override

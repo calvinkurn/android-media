@@ -15,10 +15,15 @@ import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 
 public class ManagePaymentOptionsActivity extends BaseActivity implements HasComponent<RideComponent> {
+    private static final String KEY_TYPE = "KEY_TYPE";
+    public static final int TYPE_MANAGE_PAYMENT_OPTION = 1;
+    public static final int TYPE_CHANGE_PAYMENT_OPTION = 2;
+
     private RideComponent rideComponent;
 
-    public static Intent getCallingActivity(Activity activity) {
+    public static Intent getCallingActivity(Activity activity, int type) {
         Intent intent = new Intent(activity, ManagePaymentOptionsActivity.class);
+        intent.putExtra(KEY_TYPE, type);
         return intent;
     }
 
@@ -30,8 +35,13 @@ public class ManagePaymentOptionsActivity extends BaseActivity implements HasCom
         initInjector();
         //executeInjector();
 
+        int type = -1;
+        if (getIntent() != null) {
+            type = getIntent().getIntExtra(KEY_TYPE, 0);
+        }
+
         setupToolbar();
-        ManagePaymentOptionsFragment fragment = ManagePaymentOptionsFragment.newInstance();
+        ManagePaymentOptionsFragment fragment = ManagePaymentOptionsFragment.newInstance(type);
         replaceFragment(R.id.fl_container, fragment);
     }
 

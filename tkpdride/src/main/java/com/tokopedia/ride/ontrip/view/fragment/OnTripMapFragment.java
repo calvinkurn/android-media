@@ -120,13 +120,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final int PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE = 1009;
     private static final int REQUEST_CODE_TOPUP_PENDING_PAYMENT_CHANGE_DESTINATION = 1010;
 
+    public static final String TAG = OnTripMapFragment.class.getSimpleName();
+
     private static final String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
-    private static final String EXTRA_RIDE_REQUEST_ID = "EXTRA_RIDE_REQUEST_ID";
-    private static final String EXTRA_ACTION = "EXTRA_ACTION";
-    public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final String INTERRUPT_TOKOPEDIA_DIALOG_TAG = "interrupt_tokopedia_dialog";
-    public static final String TAG = OnTripMapFragment.class.getSimpleName();
     private static final float DEFAUL_MAP_ZOOM = 14;
     private static final float SELECT_SOURCE_MAP_ZOOM = 16;
     private static final String SMS_INTENT_KEY = "sms";

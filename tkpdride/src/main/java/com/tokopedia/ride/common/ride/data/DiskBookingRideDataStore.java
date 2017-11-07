@@ -31,9 +31,11 @@ import rx.functions.Func1;
 
 public class DiskBookingRideDataStore implements BookingRideDataStore {
     private RideAddressCache addressCache;
+    private PaymentMethodListCache paymentMethodListCache;
 
     public DiskBookingRideDataStore() {
         this.addressCache = new RideAddressCacheImpl();
+        this.paymentMethodListCache = new PaymentMethodListCacheImpl();
     }
 
     @Override
@@ -143,11 +145,21 @@ public class DiskBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<PaymentMethodListEntity> getPaymentMethodList(TKPDMapParam<String, Object> parameters) {
-      return null;
+        return paymentMethodListCache.getCache().onErrorReturn(new Func1<Throwable, PaymentMethodListEntity>() {
+            @Override
+            public PaymentMethodListEntity call(Throwable throwable) {
+                return null;
+            }
+        });
     }
-  
+
     @Override
     public Observable<NearbyRidesEntity> getNearbyCars(TKPDMapParam<String, Object> parameters) {
+        return null;
+    }
+
+    @Override
+    public Observable<String> requestApi(String url, TKPDMapParam<String, Object> parameters) {
         return null;
     }
 }

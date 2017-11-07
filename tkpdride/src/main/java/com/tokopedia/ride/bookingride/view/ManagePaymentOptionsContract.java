@@ -6,6 +6,7 @@ import android.content.Context;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
 
 import java.util.List;
 
@@ -24,11 +25,19 @@ public interface ManagePaymentOptionsContract {
         void hideProgress();
 
         void showProgress();
+
+        void showProgressBar();
+
+        void hideProgressBar();
+
+        void closeActivity(PaymentMethodViewModel paymentMethodViewModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void renderPaymentMethodList();
+        void fetchPaymentMethodList();
 
         void addCreditCard();
+
+        void selectPaymentOption(PaymentMethodViewModel paymentMethodViewModel);
     }
 }

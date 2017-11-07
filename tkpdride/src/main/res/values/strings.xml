@@ -174,4 +174,6 @@
     <string name="ride_push_title_template_accepted">Your %s is booked</string>
     <string name="ride_push_title_template_arriving">Your %s is on its way</string>
     <string name="toolbar_title_add_credit_card">Add Credit Card</string>
+    <string name="message_please_wait">Please Wait</string>
+    <string name="error_message_delete_cc_fail">Unable to delete your card, please try again.</string>
 </resources>

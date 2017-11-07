@@ -1,6 +1,8 @@
 
 package com.tokopedia.ride.common.ride.domain.model;
 
+import android.os.Bundle;
+
 import org.json.JSONObject;
 
 public class AddPayment {
@@ -11,7 +13,7 @@ public class AddPayment {
     private String deleteUrl;
     private String method;
     private Boolean active;
-    private ScroogeWebviewPostDataBody saveBody;
+    private Bundle saveBody;
 
     public String getLabel() {
         return label;
@@ -61,11 +63,11 @@ public class AddPayment {
         this.active = active;
     }
 
-    public ScroogeWebviewPostDataBody getSaveBody() {
+    public Bundle getSaveBody() {
         return saveBody;
     }
 
-    public void setSaveBody(ScroogeWebviewPostDataBody saveBody) {
+    public void setSaveBody(Bundle saveBody) {
         this.saveBody = saveBody;
     }
 

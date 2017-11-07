@@ -8,24 +8,25 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
-import com.tokopedia.ride.bookingride.view.fragment.AddCreditCardFragment;
 import com.tokopedia.ride.bookingride.view.fragment.EditDeleteCreditCardFragment;
+import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 
 /**
  * Created by sandeepgoyal on 28/09/17.
  */
 
-public class EditDeleteCreditCardActivity extends BaseActivity{
-
+public class EditDeleteCreditCardActivity extends BaseActivity implements HasComponent<RideComponent> {
+    private RideComponent rideComponent;
 
     public static final String KEY_PAYMENT_METHOD_VIEW_MODEL = "CardDetails";
 
     public static Intent getCallingActivity(Activity activity, PaymentMethodViewModel paymentMethodViewModel) {
         Intent intent = new Intent(activity, EditDeleteCreditCardActivity.class);
-        intent.putExtra(KEY_PAYMENT_METHOD_VIEW_MODEL,paymentMethodViewModel);
+        intent.putExtra(KEY_PAYMENT_METHOD_VIEW_MODEL, paymentMethodViewModel);
         return intent;
     }
 
@@ -33,6 +34,8 @@ public class EditDeleteCreditCardActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_delete_credit_card);
+
+        initInjector();
 
         PaymentMethodViewModel paymentMethodViewModel = (PaymentMethodViewModel) getIntent().getParcelableExtra(KEY_PAYMENT_METHOD_VIEW_MODEL);
         setupToolbar(paymentMethodViewModel.getType());
@@ -58,4 +61,16 @@ public class EditDeleteCreditCardActivity extends BaseActivity{
         }
     }
 
+    @Override
+    public RideComponent getComponent() {
+        if (rideComponent == null)
+            initInjector();
+        return rideComponent;
+    }
+
+    private void initInjector() {
+        rideComponent = DaggerRideComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
+    }
 }

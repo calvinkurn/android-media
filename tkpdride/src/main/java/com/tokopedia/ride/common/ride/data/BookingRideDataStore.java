@@ -70,4 +70,6 @@ public interface BookingRideDataStore {
     Observable<PaymentMethodListEntity> getPaymentMethodList(TKPDMapParam<String, Object> parameters);
 
     Observable<NearbyRidesEntity> getNearbyCars(TKPDMapParam<String, Object> parameters);
+
+    Observable<String> requestApi(String url, TKPDMapParam<String, Object> parameters);
 }

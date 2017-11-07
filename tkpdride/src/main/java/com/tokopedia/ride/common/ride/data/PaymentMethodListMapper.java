@@ -1,16 +1,20 @@
 package com.tokopedia.ride.common.ride.data;
 
+import android.os.Bundle;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.tokopedia.ride.common.ride.data.entity.AddPaymentEntity;
 import com.tokopedia.ride.common.ride.data.entity.PaymentMethodEntity;
 import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
-import com.tokopedia.ride.common.ride.data.entity.ScroogeWebviewPostDataBodyEntity;
 import com.tokopedia.ride.common.ride.domain.model.AddPayment;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethod;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethodList;
-import com.tokopedia.ride.common.ride.domain.model.ScroogeWebviewPostDataBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Vishal on 25th Oct, 2017.
@@ -80,23 +84,16 @@ public class PaymentMethodListMapper {
         return paymentMethodList;
     }
 
-    private ScroogeWebviewPostDataBody transform(ScroogeWebviewPostDataBodyEntity entity) {
-        ScroogeWebviewPostDataBody body = null;
+    private Bundle transform(JsonObject entity) {
+        Bundle bundle = new Bundle();
 
         if (entity != null) {
-            body = new ScroogeWebviewPostDataBody();
-            body.setCallbackUrl(entity.getCallbackUrl());
-            body.setCustomerEmail(entity.getCustomerEmail());
-            body.setCustomerName(entity.getCustomerName());
-            body.setDate(entity.getDate());
-            body.setIpAddress(entity.getIpAddress());
-            body.setMerchantCode(entity.getMerchantCode());
-            body.setProfileCode(entity.getProfileCode());
-            body.setSignature(entity.getSignature());
-            body.setToken(entity.getToken());
-            body.setUserId(entity.getUserId());
+            Set<Map.Entry<String, JsonElement>> set = entity.entrySet();
+            for (Map.Entry<String, JsonElement> entry : set) {
+                bundle.putString(entry.getKey(), entry.getValue().getAsString());
+            }
         }
 
-        return body;
+        return bundle;
     }
 }

@@ -6,9 +6,11 @@ import com.tokopedia.core.geolocation.domain.MapsRepository;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.ride.bookingride.di.scope.BookingRideScope;
 import com.tokopedia.ride.bookingride.domain.AutoCompletePredictionUseCase;
+import com.tokopedia.ride.bookingride.domain.RequestApiUseCase;
 import com.tokopedia.ride.bookingride.domain.GetCurrentRideRequestUseCase;
 import com.tokopedia.ride.bookingride.domain.GetDistanceMatrixUseCase;
 import com.tokopedia.ride.bookingride.domain.GetNearbyCarsUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPlaceDetailUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPriceEstimateUseCase;
@@ -137,8 +139,24 @@ public class BookingRideModule {
     @Provides
     @BookingRideScope
     GetPaymentMethodListUseCase provideGetPaymentMethodListUseCase(ThreadExecutor threadExecutor,
-                                                    PostExecutionThread postExecutionThread,
-                                                    BookingRideRepository bookingRideRepository) {
+                                                                   PostExecutionThread postExecutionThread,
+                                                                   BookingRideRepository bookingRideRepository) {
         return new GetPaymentMethodListUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
+    }
+
+    @Provides
+    @BookingRideScope
+    GetPaymentMethodListCacheUseCase provideGetPaymentMethodListCacheUseCase(ThreadExecutor threadExecutor,
+                                                                             PostExecutionThread postExecutionThread,
+                                                                             BookingRideRepository bookingRideRepository) {
+        return new GetPaymentMethodListCacheUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
+    }
+
+    @Provides
+    @BookingRideScope
+    RequestApiUseCase provideDeleteCreditCardUseCase(ThreadExecutor threadExecutor,
+                                                     PostExecutionThread postExecutionThread,
+                                                     BookingRideRepository bookingRideRepository) {
+        return new RequestApiUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
     }
 }

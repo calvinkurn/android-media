@@ -1,8 +1,11 @@
 
 package com.tokopedia.ride.common.ride.data.entity;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import org.json.JSONObject;
 
 public class PaymentMethodEntity {
 
@@ -29,10 +32,10 @@ public class PaymentMethodEntity {
     private Boolean active;
     @SerializedName("save_body")
     @Expose
-    private ScroogeWebviewPostDataBodyEntity saveBody;
+    private JsonObject saveBody;
     @SerializedName("remove_body")
     @Expose
-    private ScroogeWebviewPostDataBodyEntity removeBody;
+    private JsonObject removeBody;
     @SerializedName("masked_num")
     @Expose
     private String maskedNum;
@@ -114,19 +117,19 @@ public class PaymentMethodEntity {
         this.active = active;
     }
 
-    public ScroogeWebviewPostDataBodyEntity getSaveBody() {
+    public JsonObject getSaveBody() {
         return saveBody;
     }
 
-    public void setSaveBody(ScroogeWebviewPostDataBodyEntity saveBody) {
+    public void setSaveBody(JsonObject saveBody) {
         this.saveBody = saveBody;
     }
 
-    public ScroogeWebviewPostDataBodyEntity getRemoveBody() {
+    public JsonObject getRemoveBody() {
         return removeBody;
     }
 
-    public void setRemoveBody(ScroogeWebviewPostDataBodyEntity removeBody) {
+    public void setRemoveBody(JsonObject removeBody) {
         this.removeBody = removeBody;
     }
 

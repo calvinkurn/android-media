@@ -73,16 +73,6 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_margin="@dimen/margin_small"
-            android:background="@drawable/button_rounded"
-            android:gravity="center"
-            android:text="@string/edit"
-            android:textColor="@color/grey_600"
-            android:visibility="gone" />
-
-        <TextView
             android:id="@+id/btn_delete"
             android:layout_width="match_parent"
             android:layout_height="60dp"

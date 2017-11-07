@@ -24,6 +24,8 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
     private String expiryMonth;
     private String deleteUrl;
     private Bundle deleteBody;
+    private String saveurl;
+    private Bundle saveBody;
 
 
     public PaymentMethodViewModel() {
@@ -38,6 +40,8 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         expiryYear = in.readString();
         deleteUrl = in.readString();
         deleteBody = in.readBundle();
+        saveurl = in.readString();
+        saveBody = in.readBundle();
     }
 
     public static final Creator<PaymentMethodViewModel> CREATOR = new Creator<PaymentMethodViewModel>() {
@@ -116,6 +120,22 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         this.deleteBody = deleteBody;
     }
 
+    public String getSaveurl() {
+        return saveurl;
+    }
+
+    public void setSaveurl(String saveurl) {
+        this.saveurl = saveurl;
+    }
+
+    public Bundle getSaveBody() {
+        return saveBody;
+    }
+
+    public void setSaveBody(Bundle saveBody) {
+        this.saveBody = saveBody;
+    }
+
     @Override
     public int type(PaymentMethodTypeFactory paymentMethodTypeFactory) {
         return paymentMethodTypeFactory.type(this);
@@ -136,5 +156,7 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         dest.writeString(expiryMonth);
         dest.writeString(deleteUrl);
         dest.writeBundle(deleteBody);
+        dest.writeString(saveurl);
+        dest.writeBundle(saveBody);
     }
 }

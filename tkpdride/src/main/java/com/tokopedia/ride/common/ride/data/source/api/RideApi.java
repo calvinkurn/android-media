@@ -16,7 +16,6 @@ import com.tokopedia.ride.common.ride.data.entity.RideHistoryResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
-import com.tokopedia.ride.common.ride.data.entity.TipListEntity;
 import com.tokopedia.ride.common.ride.data.entity.UpdateDestinationEntity;
 
 import java.util.List;
@@ -28,6 +27,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -101,10 +101,14 @@ public interface RideApi {
     @FormUrlEncoded
     Observable<String> sendTip(@FieldMap TKPDMapParam<String, Object> parameters);
 
+    @GET(RideUrl.GET_NEARBY_CARS)
+    Observable<NearbyRidesEntity> getNearbyCars(@QueryMap TKPDMapParam<String, Object> parameters);
+
     @POST(RideUrl.PAYMENT_METHOD_LIST)
     @FormUrlEncoded
     Observable<PaymentMethodListEntity> getPaymentMethodList(@FieldMap TKPDMapParam<String, Object> parameters);
 
-    @GET(RideUrl.GET_NEARBY_CARS)
-    Observable<NearbyRidesEntity> getNearbyCars(@QueryMap TKPDMapParam<String, Object> parameters);
+    @POST()
+    @FormUrlEncoded
+    Observable<String> requestApi(@Url String url, @FieldMap TKPDMapParam<String, Object> parameters);
 }

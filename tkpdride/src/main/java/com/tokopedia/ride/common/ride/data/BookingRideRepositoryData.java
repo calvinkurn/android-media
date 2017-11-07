@@ -4,7 +4,6 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.bookingride.data.NearbyRidesDestinationMapper;
 import com.tokopedia.ride.bookingride.data.RideAddressCache;
 import com.tokopedia.ride.bookingride.data.RideAddressCacheImpl;
-import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
 import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
@@ -365,6 +364,13 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     public Observable<PaymentMethodList> getPaymentMethodList(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore()
                 .getPaymentMethodList(parameters)
+                .doOnNext(new Action1<PaymentMethodListEntity>() {
+                    @Override
+                    public void call(PaymentMethodListEntity paymentMethodListEntity) {
+                        PaymentMethodListCache cache = new PaymentMethodListCacheImpl();
+                        cache.put(paymentMethodListEntity);
+                    }
+                })
                 .map(new Func1<PaymentMethodListEntity, PaymentMethodList>() {
                     @Override
                     public PaymentMethodList call(PaymentMethodListEntity paymentMethodListEntity) {
@@ -377,5 +383,23 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         return mBookingRideDataStoreFactory.createCloudDataStore()
                 .getNearbyCars(parameters)
                 .map(nearbyRidesDestinationMapper);
+    }
+
+    @Override
+    public Observable<String> requestApi(String url, TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .requestApi(url, parameters);
+    }
+
+    @Override
+    public Observable<PaymentMethodList> getPaymentMethodListFromCache() {
+        return mBookingRideDataStoreFactory.createDiskDataStore()
+                .getPaymentMethodList(new TKPDMapParam<String, Object>())
+                .map(new Func1<PaymentMethodListEntity, PaymentMethodList>() {
+                    @Override
+                    public PaymentMethodList call(PaymentMethodListEntity paymentMethodListEntity) {
+                        return paymentMethodListMapper.transform(paymentMethodListEntity);
+                    }
+                });
     }
 }

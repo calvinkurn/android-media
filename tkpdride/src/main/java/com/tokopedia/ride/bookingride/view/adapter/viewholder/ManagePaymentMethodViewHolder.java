@@ -20,7 +20,7 @@ import butterknife.OnClick;
  * Created by Vishal on 27th Sep, 2017.
  */
 
-public class PaymentMethodViewHolder extends AbstractViewHolder<PaymentMethodViewModel> {
+public class ManagePaymentMethodViewHolder extends AbstractViewHolder<PaymentMethodViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.row_payment_method;
 
@@ -33,7 +33,7 @@ public class PaymentMethodViewHolder extends AbstractViewHolder<PaymentMethodVie
     private PaymentMethodViewModel paymentMethodViewModel;
     private Context context;
 
-    public PaymentMethodViewHolder(View parent, PaymentMethodItemClickListener itemClickListener) {
+    public ManagePaymentMethodViewHolder(View parent, PaymentMethodItemClickListener itemClickListener) {
         super(parent);
         context = parent.getContext();
         this.itemClickListener = itemClickListener;

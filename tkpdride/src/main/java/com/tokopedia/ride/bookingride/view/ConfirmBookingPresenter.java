@@ -8,7 +8,10 @@ import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListUseCase;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
+import com.tokopedia.ride.common.ride.domain.model.PaymentMethod;
+import com.tokopedia.ride.common.ride.domain.model.PaymentMethodList;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -25,16 +28,20 @@ import rx.Subscriber;
 public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingContract.View>
         implements ConfirmBookingContract.Presenter {
     private GetFareEstimateUseCase getFareEstimateUseCase;
+    private GetPaymentMethodListUseCase getPaymentMethodListUseCase;
 
     @Inject
-    public ConfirmBookingPresenter(GetFareEstimateUseCase getFareEstimateUseCase) {
+    public ConfirmBookingPresenter(GetFareEstimateUseCase getFareEstimateUseCase, GetPaymentMethodListUseCase getPaymentMethodListUseCase) {
         this.getFareEstimateUseCase = getFareEstimateUseCase;
+        this.getPaymentMethodListUseCase = getPaymentMethodListUseCase;
     }
 
     @Override
     public void initialize() {
-        actionGetFareAndEstimate(getView().getParam());
         getView().renderInitialView();
+
+        actionGetFareAndEstimate(getView().getParam());
+        getPaymentMethodList();
     }
 
     @Override
@@ -116,6 +123,47 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
                     getView().renderFareEstimate(fareEstimate.getFare().getFareId(), display, fareEstimate.getFare().getValue(), surgeMultiplier, surgeConfirmationHref, fareEstimate.getCode(), fareEstimate.getMessageSuccess());
                 }
 
+            }
+        });
+    }
+
+    /**
+     * Get payment method list
+     */
+    private void getPaymentMethodList() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetPaymentMethodListUseCase.PARAM_PAYMENT_METHOD, "cc");
+        getPaymentMethodListUseCase.execute(requestParams, new Subscriber<PaymentMethodList>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                getView().showErrorMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(PaymentMethodList paymentMethodList) {
+                //find the active payment method
+                PaymentMethod selectedPaymentMethod = null;
+                if (paymentMethodList != null && paymentMethodList.getPaymentMethods() != null) {
+
+                    for (PaymentMethod paymentMethod : paymentMethodList.getPaymentMethods()) {
+                        if (paymentMethod.getActive() == true) {
+                            selectedPaymentMethod = paymentMethod;
+                            break;
+                        }
+                    }
+                }
+
+                if (selectedPaymentMethod != null) {
+                    getView().showPaymentMethod(selectedPaymentMethod.getLabel(), selectedPaymentMethod.getCardTypeImage());
+                } else {
+                    getView().hidePaymentMethod();
+                }
             }
         });
     }

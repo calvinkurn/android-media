@@ -74,4 +74,8 @@ public interface BookingRideRepository {
     Observable<PaymentMethodList> getPaymentMethodList(TKPDMapParam<String, Object> parameters);
 
     Observable<NearbyRides> getNearbyCars(TKPDMapParam<String, Object> parameters);
+
+    Observable<String> requestApi(String url, TKPDMapParam<String, Object> parameters);
+
+    Observable<PaymentMethodList> getPaymentMethodListFromCache();
 }

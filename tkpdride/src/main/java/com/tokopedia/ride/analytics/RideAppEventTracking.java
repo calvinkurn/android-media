@@ -44,8 +44,8 @@ public interface RideAppEventTracking extends AppEventTracking {
         String EventClickCancel = "click cancel";
         String EventClickSubmit  = "click submit";
         String EventClickTNC = "click tnc";
-
     }
+
     interface  Label {
         String No_Label = "";
         String ScreenName = "%s";
@@ -58,8 +58,6 @@ public interface RideAppEventTracking extends AppEventTracking {
         String PromoSearchValue = ScreenName + " - %s";
         String PromoCode = ScreenName + " - %s";
         String CancelReason = ScreenName + " - %s";
-        String RateSuggestion =ScreenName + " - %s - %s";
-
-
+        String RateSuggestion = ScreenName + " - %s - %s";
     }
 }

@@ -33,29 +33,11 @@
         android:paddingRight="@dimen/keyline_1"
         android:paddingTop="12dp">
 
-        <ImageView
-            android:id="@+id/payment_method_image"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginRight="@dimen/new_margin_small"
-            android:padding="8dp"
-            android:src="@drawable/ic_tokocash_icon"
-            android:tint="@color/grey_500" />
-
-        <TextView
-            android:id="@+id/payment_method_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/payment_method_image"
-            android:text="Credit Card"
-            android:textColor="@color/grey_500" />
 
         <ImageView
             android:id="@+id/img_add_icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@drawable/shape_bg_border_green"
             android:padding="8dp"
@@ -66,8 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/new_margin_small"
-            android:layout_toLeftOf="@id/img_add_icon"
+            android:layout_marginLeft="@dimen/new_margin_small"
+            android:layout_toRightOf="@id/img_add_icon"
             android:text="Add Payment Method"
             android:textColor="@color/colorPrimary" />
 

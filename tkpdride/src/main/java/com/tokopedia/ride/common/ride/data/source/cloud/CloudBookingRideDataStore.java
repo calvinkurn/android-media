@@ -159,9 +159,14 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     public Observable<PaymentMethodListEntity> getPaymentMethodList(TKPDMapParam<String, Object> parameters) {
         return mRideApi.getPaymentMethodList(parameters);
     }
-  
+
     @Override
     public Observable<NearbyRidesEntity> getNearbyCars(TKPDMapParam<String, Object> parameters) {
         return mRideApi.getNearbyCars(parameters);
+    }
+
+    @Override
+    public Observable<String> requestApi(String url, TKPDMapParam<String, Object> parameters) {
+        return mRideApi.requestApi(url, parameters);
     }
 }

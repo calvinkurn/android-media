@@ -787,7 +787,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void actionRequestRide(ConfirmBookingViewModel confirmBookingViewModel) {
-        RideGATracking.eventClickRequestRideOption(getScreenName(),confirmBookingViewModel.getProductDisplayName());
+        RideGATracking.eventClickRequestRideOption(getScreenName(), confirmBookingViewModel.getProductDisplayName());
         Intent intent = OnTripActivity.getCallingIntent(this, confirmBookingViewModel);
         startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_REQUEST_CODE);
     }
@@ -817,7 +817,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     private void actionNavigateToPayment() {
-        startActivity(ManagePaymentOptionsActivity.getCallingActivity(this));
+        startActivity(ManagePaymentOptionsActivity.getCallingActivity(this, ManagePaymentOptionsActivity.TYPE_MANAGE_PAYMENT_OPTION));
     }
 
     @Override
@@ -831,7 +831,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     public String getScreenName() {
         if (getFragmentManager() != null && (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment)) {
             return AppScreen.SCREEN_RIDE_BOOKING;
-        }else {
+        } else {
             return AppScreen.SCREEN_RIDE_HOME;
         }
     }

@@ -53,6 +53,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public String getScreenName() {
-       return ((BaseActivity)getActivity()).getScreenName();
+        return ((BaseActivity) getActivity()).getScreenName();
     }
 }

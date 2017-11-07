@@ -1,6 +1,7 @@
 
 package com.tokopedia.ride.common.ride.data.entity;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -28,7 +29,7 @@ public class AddPaymentEntity {
     private Boolean active;
     @SerializedName("save_body")
     @Expose
-    private ScroogeWebviewPostDataBodyEntity saveBody;
+    private JsonObject saveBody;
 
     public String getLabel() {
         return label;
@@ -78,11 +79,11 @@ public class AddPaymentEntity {
         this.active = active;
     }
 
-    public ScroogeWebviewPostDataBodyEntity getSaveBody() {
+    public JsonObject getSaveBody() {
         return saveBody;
     }
 
-    public void setSaveBody(ScroogeWebviewPostDataBodyEntity saveBody) {
+    public void setSaveBody(JsonObject saveBody) {
         this.saveBody = saveBody;
     }
 

@@ -1,6 +1,8 @@
 
 package com.tokopedia.ride.common.ride.domain.model;
 
+import android.os.Bundle;
+
 public class PaymentMethod {
 
     private String label;
@@ -10,8 +12,8 @@ public class PaymentMethod {
     private String method;
     private String tokenId;
     private Boolean active;
-    private ScroogeWebviewPostDataBody saveBody;
-    private ScroogeWebviewPostDataBody removeBody;
+    private Bundle saveBody;
+    private Bundle removeBody;
     private String expiryMonth;
     private String expiryYear;
     private String cardType;
@@ -77,19 +79,19 @@ public class PaymentMethod {
         this.active = active;
     }
 
-    public ScroogeWebviewPostDataBody getSaveBody() {
+    public Bundle getSaveBody() {
         return saveBody;
     }
 
-    public void setSaveBody(ScroogeWebviewPostDataBody saveBody) {
+    public void setSaveBody(Bundle saveBody) {
         this.saveBody = saveBody;
     }
 
-    public ScroogeWebviewPostDataBody getRemoveBody() {
+    public Bundle getRemoveBody() {
         return removeBody;
     }
 
-    public void setRemoveBody(ScroogeWebviewPostDataBody removeBody) {
+    public void setRemoveBody(Bundle removeBody) {
         this.removeBody = removeBody;
     }
 

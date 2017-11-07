@@ -1,5 +1,6 @@
 package com.tokopedia.ride.bookingride.view.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,26 +8,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.bookingride.view.AddCreditCardContract;
+import com.tokopedia.ride.bookingride.di.BookingRideComponent;
+import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
+import com.tokopedia.ride.bookingride.view.EditCardDetailContract;
+import com.tokopedia.ride.bookingride.view.EditCardDetailPresenter;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
+import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.scrooge.ScroogePGUtil;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.ride.bookingride.view.activity.EditDeleteCreditCardActivity.KEY_PAYMENT_METHOD_VIEW_MODEL;
 
 /**
  * Created by sandeepgoyal on 28/09/17.
  */
 
-public class EditDeleteCreditCardFragment extends BaseFragment implements AddCreditCardContract.View {
+public class EditDeleteCreditCardFragment extends BaseFragment implements EditCardDetailContract.View {
 
 
     @BindView(R2.id.txt_card_number)
@@ -34,6 +41,11 @@ public class EditDeleteCreditCardFragment extends BaseFragment implements AddCre
     @BindView(R2.id.txt_card_expiration)
     TextView txtCardExpiration;
     private PaymentMethodViewModel paymentMethodViewModel;
+
+    private ProgressDialog progressDialog;
+
+    @Inject
+    EditCardDetailPresenter presenter;
 
     public static EditDeleteCreditCardFragment newInstance(PaymentMethodViewModel paymentMethodViewModel) {
         Bundle bundle = new Bundle();
@@ -56,7 +68,12 @@ public class EditDeleteCreditCardFragment extends BaseFragment implements AddCre
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.attachView(this);
+
         paymentMethodViewModel = getArguments().getParcelable(KEY_PAYMENT_METHOD_VIEW_MODEL);
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.message_please_wait));
 
         txtCardNumber.setText(paymentMethodViewModel.getName());
         txtCardExpiration.setText(String.format("%s/%s", paymentMethodViewModel.getExpiryMonth(), paymentMethodViewModel.getExpiryYear()));
@@ -64,14 +81,34 @@ public class EditDeleteCreditCardFragment extends BaseFragment implements AddCre
 
     @OnClick(R2.id.btn_delete)
     public void actionDestinationButtonClicked() {
-        Bundle removeParams = paymentMethodViewModel.getDeleteBody();
-        if (removeParams != null) {
-            //add auth param
-            String oAuthString = "Bearer " + SessionHandler.getAccessToken();
-            removeParams.putString("Authorization", oAuthString);
-        }
+        presenter.deleteCard(paymentMethodViewModel);
+    }
 
-        ScroogePGUtil.openScroogePage(getActivity(), paymentMethodViewModel.getDeleteUrl(), false, removeParams);
+    @Override
+    public void showProgress() {
+        if (progressDialog != null && !progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+    }
+
+    @Override
+    public void hideProgress() {
+        if (progressDialog != null) {
+            progressDialog.hide();
+        }
+    }
+
+    @Override
+    public void showErrorMessage(String message) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
+    }
+
+    @Override
+    public void closeActivity() {
+        if (getActivity() != null) {
+            getActivity().setResult(RESULT_OK);
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -80,17 +117,28 @@ public class EditDeleteCreditCardFragment extends BaseFragment implements AddCre
 
         if (requestCode == ScroogePGUtil.RESULT_CODE_DELETE_CC_SUCCESS) {
             //show success message
-            Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+            closeActivity();
 
         } else if (requestCode == ScroogePGUtil.RESULT_CODE_DELETE_CC_FAIL) {
             //show success message
-            Toast.makeText(getActivity(), "Fail", Toast.LENGTH_SHORT).show();
+            showErrorMessage(getString(R.string.error_message_delete_cc_fail));
         }
     }
 
     @Override
     protected void initInjector() {
+        RideComponent component = getComponent(RideComponent.class);
+        BookingRideComponent bookingRideComponent = DaggerBookingRideComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        bookingRideComponent.inject(this);
+    }
 
+    @Override
+    public void onDestroyView() {
+        presenter.detachView();
+        super.onDestroyView();
     }
 
     @Override
