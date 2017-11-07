@@ -23,9 +23,6 @@ class VisibleProductList extends Component {
     this.state = { showEtalasePicker: false }
   }
 
-
-
-
   closePopUp = () => {
     this.setState({ showEtalasePicker: false })
   }
@@ -38,33 +35,32 @@ class VisibleProductList extends Component {
     const queryText = this.props.queryText
     this.props.dispatch(onEtalaseChange(etalaseId))
     this.props.dispatch(resetProductList())
-    this.props.dispatch(fetchProducts(1987772, 0, 25, value, null, queryText))
+    this.props.dispatch(fetchProducts(this.props.shopId, 0, 25, value, null, queryText))
   }
 
   componentDidMount() {
     const { dispatch } = this.props
     const { start, rows } = this.props.products.pagination
+    const { shopId } = this.props
     const queryText = this.props.queryText
-    dispatch(resetProductList())
     dispatch(fetchShopId())
-    dispatch(fetchEtalase(1987772))
-    dispatch(fetchProducts(1987772, 0, 25, 0, null, queryText))
+    dispatch(fetchEtalase(shopId))
+    dispatch(fetchProducts(shopId, 0, 25, 0, null, queryText))
 
-    this.paymentSuccessReloadState =  DeviceEventEmitter.addListener("clearState", (res) => {
+    this.paymentSuccessReloadState = DeviceEventEmitter.addListener("clearState", (res) => {
       console.log(res)
-      if (res){
+      if (res) {
         dispatch(resetProductList())
         dispatch(fetchShopId())
-        dispatch(fetchEtalase(1987772))
-        dispatch(fetchProducts(1987772, 0, 25, 0, null, queryText))
+        dispatch(fetchEtalase(shopId))
+        dispatch(fetchProducts(shopId, 0, 25, 0, null, queryText))
       }
     })
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.paymentSuccessReloadState.remove()
   }
-
 
   renderProduct = ({ item }) => {
     return <Product product={item} key={item.product_id} />
@@ -77,16 +73,18 @@ class VisibleProductList extends Component {
     const queryText = this.props.queryText
     const { start, rows } = this.props.products.pagination
     const etalaseId = this.props.etalases.selected
-    this.props.dispatch(fetchProducts(1987772, start, rows, etalaseId, null, queryText))
+    const { shopId } = this.props
+    this.props.dispatch(fetchProducts(shopId, start, rows, etalaseId, null, queryText))
   }
 
   handleRefresh = () => {
     const { dispatch } = this.props
     const selectedEtalaseId = this.props.etalases.selected
     const queryText = this.props.queryText
+    const { shopId } = this.props
     dispatch(pullToRefresh())
-    dispatch(fetchProducts(1987772, 0, 25, selectedEtalaseId, null, queryText))
-    dispatch(fetchEtalase(1987772))
+    dispatch(fetchProducts(shopId, 0, 25, selectedEtalaseId, null, queryText))
+    dispatch(fetchEtalase(shopId))
   }
 
   render() {
