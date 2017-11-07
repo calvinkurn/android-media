@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.home.interactor;
 
-import com.tokopedia.core.network.apiservices.transaction.TokoCashCashBackService;
+import com.tokopedia.core.network.apiservices.tokocash.TokoCashCashBackService;
 import com.tokopedia.digital.tokocash.domain.TokoCashPendingRepository;
 import com.tokopedia.digital.tokocash.mapper.ITokoCashMapper;
 import com.tokopedia.digital.tokocash.model.CashBackData;

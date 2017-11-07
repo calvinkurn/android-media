@@ -24,7 +24,7 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.tokocash.domain.HistoryTokoCashRepository;
 import com.tokopedia.digital.tokocash.interactor.TokoCashHistoryInteractor;
 import com.tokopedia.digital.tokocash.model.WalletToDepositPassData;
-import com.tokopedia.digital.tokocash.network.apiservice.HistoryTokoCashService;
+import com.tokopedia.core.network.apiservices.tokocash.WalletService;
 import com.tokopedia.digital.tokocash.presenter.IWalletToDepositPresenter;
 import com.tokopedia.digital.tokocash.presenter.WalletToDepositPresenter;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
@@ -125,8 +125,8 @@ public class WalletToDepositFragment extends BasePresenterFragment<IWalletToDepo
     protected void initialPresenter() {
         compositeSubscription = new CompositeSubscription();
         SessionHandler sessionHandler = new SessionHandler(getActivity());
-        HistoryTokoCashService historyTokoCashService = new HistoryTokoCashService(sessionHandler.getAccessTokenTokoCash());
-        HistoryTokoCashRepository historyTokoCashRepository = new HistoryTokoCashRepository(historyTokoCashService);
+        WalletService walletService = new WalletService(sessionHandler.getAccessTokenTokoCash());
+        HistoryTokoCashRepository historyTokoCashRepository = new HistoryTokoCashRepository(walletService);
         TokoCashHistoryInteractor tokoCashHistoryInteractor =
                 new TokoCashHistoryInteractor(
                         historyTokoCashRepository,

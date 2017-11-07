@@ -20,7 +20,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
+import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;

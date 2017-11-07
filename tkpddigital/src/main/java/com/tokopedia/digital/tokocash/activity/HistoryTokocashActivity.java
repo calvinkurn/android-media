@@ -39,7 +39,7 @@ import com.tokopedia.digital.tokocash.listener.TokoCashHistoryListener;
 import com.tokopedia.digital.tokocash.model.HeaderHistory;
 import com.tokopedia.digital.tokocash.model.ItemHistory;
 import com.tokopedia.digital.tokocash.model.TokoCashHistoryData;
-import com.tokopedia.digital.tokocash.network.apiservice.HistoryTokoCashService;
+import com.tokopedia.core.network.apiservices.tokocash.WalletService;
 import com.tokopedia.digital.tokocash.presenter.ITokoCashHistoryPresenter;
 import com.tokopedia.digital.tokocash.presenter.TokoCashHistoryPresenter;
 
@@ -130,7 +130,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         SessionHandler sessionHandler = new SessionHandler(this);
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         IHistoryTokoCashRepository repository = new HistoryTokoCashRepository(
-                new HistoryTokoCashService(sessionHandler.getAccessTokenTokoCash()));
+                new WalletService(sessionHandler.getAccessTokenTokoCash()));
         ITokoCashHistoryInteractor interactor = new TokoCashHistoryInteractor(repository,
                 compositeSubscription,
                 new JobExecutor(),

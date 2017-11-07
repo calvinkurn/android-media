@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
+import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
