@@ -18,7 +18,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.Router;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.DbManagerImpl;
@@ -159,8 +158,6 @@ public class DialogLogoutFragment extends DialogFragment {
                 progressDialog.showDialog();
                 logoutToTheInternet(getActivity());
                 okButton.setClickable(false);
-
-                UnifyTracking.eventLogoutLoca();
             }
         });
         super.onResume();

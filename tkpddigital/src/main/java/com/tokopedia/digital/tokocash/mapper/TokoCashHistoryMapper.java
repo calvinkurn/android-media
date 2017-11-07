@@ -66,9 +66,10 @@ public class TokoCashHistoryMapper implements Func1<TokoCashHistoryEntity, TokoC
                     itemHistory.setAmountChangesSymbol(tokoCashHistoryEntity.getItems()
                             .get(i).getAmount_changes_symbol());
                     itemHistory.setNotes(tokoCashHistoryEntity.getItems().get(i).getNotes());
+                    itemHistory.setAmountPending(tokoCashHistoryEntity.getItems().get(i).getAmount_pending());
 
-                    List<ActionHistory> actionHistoryList = new ArrayList<>();
                     if (tokoCashHistoryEntity.getItems().get(i).getActions() != null) {
+                        List<ActionHistory> actionHistoryList = new ArrayList<>();
                         for (int j = 0; j < tokoCashHistoryEntity.getItems().get(i).getActions().size(); j++) {
                             ActionHistoryEntity actionHistoryEntity = tokoCashHistoryEntity
                                     .getItems().get(i).getActions().get(j);
@@ -82,11 +83,11 @@ public class TokoCashHistoryMapper implements Func1<TokoCashHistoryEntity, TokoC
                             paramAction.setRefundId(actionHistoryEntity.getParams().getRefundId());
                             paramAction.setRefundType(actionHistoryEntity.getParams().getRefundType());
                             actionHistory.setParams(paramAction);
+                            actionHistory.setType(actionHistoryEntity.getType());
                             actionHistoryList.add(actionHistory);
                         }
-                        itemHistoryList.add(itemHistory);
+                        itemHistory.setActionHistoryList(actionHistoryList);
                     }
-                    itemHistory.setActionHistoryList(actionHistoryList);
                     itemHistoryList.add(itemHistory);
                 }
                 tokoCashHistoryData.setItemHistoryList(itemHistoryList);

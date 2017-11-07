@@ -6,7 +6,7 @@ package com.tokopedia.digital.tokocash.presenter;
 
 public interface ITokoCashHistoryPresenter {
 
-    void getHistoryTokoCash(String type, String startDate, String endDate);
+    void getInitHistoryTokoCash(String type, String startDate, String endDate);
 
     void getHistoryLoadMore(String type, String startDate, String endDate);
 }

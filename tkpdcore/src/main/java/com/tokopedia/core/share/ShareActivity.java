@@ -23,7 +23,7 @@ public class ShareActivity extends TActivity implements ShareView {
         return intent;
     }
 
-    public static Intent getCallingRideIntent(Context activity, ShareData shareData){
+    public static Intent getCallingRideIntent(Context activity, ShareData shareData) {
         Intent intent = new Intent(activity, ShareActivity.class);
         intent.putExtra(ShareData.TAG, shareData);
         return intent;
@@ -38,7 +38,7 @@ public class ShareActivity extends TActivity implements ShareView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_share);
-        if (getIntent() != null){
+        if (getIntent() != null) {
             Intent intent = getIntent();
             data = intent.getParcelableExtra(ShareData.TAG);
         }
@@ -48,6 +48,7 @@ public class ShareActivity extends TActivity implements ShareView {
                 ProductShareFragment.class.getSimpleName());
         fragmentTransaction.commit();
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -57,5 +58,10 @@ public class ShareActivity extends TActivity implements ShareView {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

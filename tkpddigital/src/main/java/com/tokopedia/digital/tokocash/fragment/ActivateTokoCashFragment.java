@@ -18,7 +18,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
+import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;

@@ -26,7 +26,7 @@ import com.tokopedia.digital.tokocash.domain.HistoryTokoCashRepository;
 import com.tokopedia.digital.tokocash.interactor.TokoCashHistoryInteractor;
 import com.tokopedia.digital.tokocash.listener.HelpHistoryListener;
 import com.tokopedia.digital.tokocash.model.HelpHistoryTokoCash;
-import com.tokopedia.digital.tokocash.network.apiservice.HistoryTokoCashService;
+import com.tokopedia.core.network.apiservices.tokocash.WalletService;
 import com.tokopedia.digital.tokocash.presenter.HelpHistoryPresenter;
 
 import java.util.List;
@@ -72,7 +72,7 @@ public class HelpHistoryDetailActivity extends BasePresenterActivity<HelpHistory
         SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
         presenter = new HelpHistoryPresenter(getApplicationContext(),
                 new TokoCashHistoryInteractor(
-                        new HistoryTokoCashRepository(new HistoryTokoCashService(sessionHandler.getAccessTokenTokoCash())),
+                        new HistoryTokoCashRepository(new WalletService(sessionHandler.getAccessTokenTokoCash())),
                         new CompositeSubscription(),
                         new JobExecutor(),
                         new UIThread()), this);

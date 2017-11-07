@@ -47,16 +47,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-
-                <!-- LOCALYTICS TEST MESSAGE KEY -->
-                <data android:scheme="@string/key_localytics_testmessage" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".deeplink.activity.DeepLinkActivity"
@@ -115,9 +105,6 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <meta-data
-            android:name="LOCALYTICS_APP_KEY"
-            android:value="@string/key_localytics" />
         <meta-data
             android:name="GTM_RESOURCE"
             android:resource="@raw/gtm_consumer" />

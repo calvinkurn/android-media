@@ -22,7 +22,7 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
+import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -58,6 +58,9 @@ import com.tokopedia.digital.tokocash.interactor.TokoCashBalanceInteractor;
 import com.tokopedia.digital.tokocash.listener.TopUpTokoCashListener;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
 import com.tokopedia.digital.tokocash.presenter.TopUpTokocashPresenter;
+import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
+import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.domain.IDigitalWidgetRepository;
 
 import java.util.List;
 
@@ -130,13 +133,16 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
         IProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
         IDigitalCategoryRepository digitalCategoryRepository =
                 new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
+        IDigitalWidgetRepository digitalWidgetRepository =
+                new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
         ILastOrderNumberRepository lastOrderNumberRepository =
                 new LastOrderNumberRepository(digitalEndpointService, productDigitalMapper);
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
-                        compositeSubscription, digitalCategoryRepository,
+                        compositeSubscription, digitalWidgetRepository, digitalCategoryRepository,
                         lastOrderNumberRepository, cacheHandler,
-                        new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper));
+                        new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper)
+                );
         ITokoCashRepository balanceRepository = new TokoCashRepository(new TokoCashService(
                 sessionHandler.getAccessToken(this)));
         ITokoCashBalanceInteractor balanceInteractor = new TokoCashBalanceInteractor(balanceRepository,
@@ -312,6 +318,9 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_menu_history_tokocash) {
             startActivity(HistoryTokocashActivity.newInstance(this));
+            return true;
+        } else if (item.getItemId() == R.id.action_account_setting_tokocash) {
+            startActivity(WalletAccountSettingActivity.newInstance(this));
             return true;
         } else if (item.getItemId() == R.id.action_menu_help_tokocash) {
             startActivity(DigitalWebActivity.newInstance(this,

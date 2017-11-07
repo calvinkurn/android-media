@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 public class ReceivedTokoCashView extends LinearLayout {
 
     private static String THRESHOLD_DEFAULT = "Rp 20.000.000";
-    private static int MAX_TOTAL_BALANCE = 20000000;
+    private static long MAX_TOTAL_BALANCE = 20000000;
     private static int PROGRESS_DUMMY = 30;
     private static int PROGRESS_COMPLETE = 100;
     private static int PROGRESS_ZERO = 0;
@@ -71,11 +71,11 @@ public class ReceivedTokoCashView extends LinearLayout {
             threshold = THRESHOLD_DEFAULT;
         }
         limitTokocash.setText(String.format(getContext().getString(R.string.limit_balance_tokocash), threshold));
-        renderProgressBarTokoCash(tokoCashData.getRawTotalBalance(), rawThreshold);
+        renderProgressBarTokoCash(tokoCashData.getRawTotalBalance());
     }
 
-    private void renderProgressBarTokoCash(long totalBalance, long rawThreshold) {
-        int progress = (int) (totalBalance / rawThreshold) * PROGRESS_COMPLETE;
+    private void renderProgressBarTokoCash(long totalBalance) {
+        int progress = (int) ((totalBalance * PROGRESS_COMPLETE)/ rawThreshold);
         progressBarTokocash.setMax(PROGRESS_COMPLETE);
         progressBarTokocash.setProgress(PROGRESS_DUMMY);
         if (progress == PROGRESS_ZERO) {

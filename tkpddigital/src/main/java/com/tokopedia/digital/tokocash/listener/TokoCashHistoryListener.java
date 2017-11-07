@@ -26,4 +26,6 @@ public interface TokoCashHistoryListener {
     void renderEmptyTokoCashHistory(List<HeaderHistory> headerHistoryList);
 
     void renderErrorMessage(String message);
+
+    void renderEmptyPage(String message);
 }

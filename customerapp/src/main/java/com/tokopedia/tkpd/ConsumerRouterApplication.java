@@ -41,6 +41,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -49,6 +50,7 @@ import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
+import com.tokopedia.digital.tokocash.activity.TopUpTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
@@ -163,8 +165,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToProductDetail(Context context, String productUrl) {
-        Intent intent = ProductInfoActivity.createInstance(context, productUrl);
-        context.startActivity(intent);
+        DeepLinkChecker.openProduct(productUrl, context);
     }
 
     @Override
@@ -245,7 +246,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent instanceIntentTokoCashTopUp() {
-        return null;
+        return TopUpTokoCashActivity.newInstance(this);
     }
 
     @Override
@@ -574,7 +575,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
+        return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,customSubject, source);
     }
 
     @Override
@@ -669,8 +670,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return Observable.just(dataCashbackModels);
     }
 
-    public void goToAddProduct(Activity activity) {
-        if (activity != null) {
+    public void goToAddProduct(Activity activity){
+        if(activity != null) {
             ProductAddActivity.start(activity);
         }
     }

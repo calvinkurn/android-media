@@ -251,7 +251,6 @@
             android:name=".DeveloperOptions"
             android:label="@string/title_activity_developer_options"
             android:screenOrientation="portrait" />
-        <activity android:name="com.localytics.android.PushTrackingActivity" />
         <activity
             android:name=".TermPrivacy"
             android:label="@string/title_activity_term_and_privacy"
@@ -468,20 +467,6 @@
         <service
             android:name=".manage.people.address.service.ManagePeopleAddressService"
             android:exported="false" />
-        <service
-            android:name="com.localytics.android.GcmListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
-        <service
-            android:name="com.localytics.android.InstanceIDListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
         <service
             android:name=".product.intentservice.ProductInfoIntentService"
             android:exported="false" />

@@ -7,8 +7,11 @@ import com.tokopedia.digital.tokocash.domain.IHistoryTokoCashRepository;
 import com.tokopedia.digital.tokocash.entity.ResponseHelpHistoryEntity;
 import com.tokopedia.digital.tokocash.mapper.HelpHistoryDataMapper;
 import com.tokopedia.digital.tokocash.mapper.TokoCashHistoryMapper;
+import com.tokopedia.digital.tokocash.mapper.WithdrawSaldoMapper;
 import com.tokopedia.digital.tokocash.model.HelpHistoryTokoCash;
+import com.tokopedia.digital.tokocash.model.ParamsActionHistory;
 import com.tokopedia.digital.tokocash.model.TokoCashHistoryData;
+import com.tokopedia.digital.tokocash.model.WithdrawSaldo;
 
 import java.util.List;
 
@@ -27,6 +30,7 @@ public class TokoCashHistoryInteractor implements ITokoCashHistoryInteractor {
     private CompositeSubscription compositeSubscription;
     private TokoCashHistoryMapper tokoCashHistoryMapper;
     private HelpHistoryDataMapper helpHistoryDataMapper;
+    private WithdrawSaldoMapper withdrawSaldoMapper;
     private ThreadExecutor threadExecutor;
     private PostExecutionThread postExecutionThread;
 
@@ -39,6 +43,7 @@ public class TokoCashHistoryInteractor implements ITokoCashHistoryInteractor {
         this.compositeSubscription = compositeSubscription;
         tokoCashHistoryMapper = new TokoCashHistoryMapper();
         helpHistoryDataMapper = new HelpHistoryDataMapper();
+        withdrawSaldoMapper = new WithdrawSaldoMapper();
         this.threadExecutor = jobExecutor;
         this.postExecutionThread = postExecutionThread;
 
@@ -46,9 +51,9 @@ public class TokoCashHistoryInteractor implements ITokoCashHistoryInteractor {
 
     @Override
     public void getHistoryTokoCash(Subscriber<TokoCashHistoryData> subscriber, String type,
-                                   String startDate, String endDate, String afterId) {
+                                   String startDate, String endDate, int page) {
         compositeSubscription.add(
-                repository.getTokoCashHistoryData(type, startDate, endDate, afterId)
+                repository.getTokoCashHistoryData(type, startDate, endDate, page)
                         .map(tokoCashHistoryMapper)
                         .unsubscribeOn(Schedulers.from(threadExecutor))
                         .subscribeOn(Schedulers.from(threadExecutor))
@@ -77,6 +82,17 @@ public class TokoCashHistoryInteractor implements ITokoCashHistoryInteractor {
                                 return responseHelpHistoryEntity != null;
                             }
                         })
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
+                        .subscribe(subscriber));
+    }
+
+    @Override
+    public void postMoveToSaldo(Subscriber<WithdrawSaldo> subscriber, String url, ParamsActionHistory paramsActionHistory) {
+        compositeSubscription.add(
+                repository.moveToSaldo(url, paramsActionHistory)
+                        .map(withdrawSaldoMapper)
                         .unsubscribeOn(Schedulers.from(threadExecutor))
                         .subscribeOn(Schedulers.from(threadExecutor))
                         .observeOn(postExecutionThread.getScheduler())

@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.tokocash.model.ItemHistory;
@@ -91,12 +91,7 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
         }
 
         public void bindView(final ItemHistory itemHistory) {
-            if (itemHistory.getUrlImage() != null) {
-                Glide.with(context)
-                        .load(itemHistory.getUrlImage())
-                        .placeholder(ContextCompat.getDrawable(context, R.drawable.ic_loading_toped))
-                        .into(iconItem);
-            }
+            ImageHandler.loadImageThumbs(context, iconItem, itemHistory.getUrlImage());
             descItem.setText(!TextUtils.isEmpty(itemHistory.getNotes()) ? itemHistory.getNotes() :
                     itemHistory.getDescription());
             titleItem.setText(itemHistory.getTitle());

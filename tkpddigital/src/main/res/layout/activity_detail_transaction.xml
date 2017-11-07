@@ -14,7 +14,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_small"
+        android:paddingBottom="@dimen/med_dp"
         android:paddingLeft="@dimen/padding_detail"
         android:paddingRight="@dimen/padding_detail"
         android:paddingTop="@dimen/padding_detail">
@@ -140,25 +140,19 @@
             <Button
                 android:id="@+id/bantuan_btn"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/btn_height"
-                android:background="@drawable/digital_white_grey_button_more_rounded"
+                android:layout_height="@dimen/btn_login_height"
+                android:background="@drawable/digital_white_border_grey"
                 android:minHeight="0dp"
                 android:text="Bantuan"
                 android:textAllCaps="false"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/fonts" />
 
-            <Button
-                android:id="@+id/opsi_btn"
+            <LinearLayout
+                android:id="@+id/button_opsi"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/btn_height"
-                android:layout_marginTop="@dimen/margin_small"
-                android:background="@color/medium_green"
-                android:minHeight="0dp"
-                android:text="Pindahkan ke Saldo"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="@dimen/fonts" />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by normansyahputa on 8/22/17.
@@ -31,7 +30,7 @@ public class DatePickerUtil {
         Intent intent = new Intent(activity, DatePickerTokoCashActivity.class);
         Calendar maxCalendar = getMaxDateCalendar();
 
-        DateFormat dateFormat = new SimpleDateFormat(DatePickerConstant.DATE_FORMAT, Locale.ENGLISH);
+        DateFormat dateFormat = new SimpleDateFormat(DatePickerConstant.DATE_FORMAT, DatePickerConstant.LOCALE);
         Date minDate = new Date();
         try {
             minDate = dateFormat.parse(MIN_DATE);

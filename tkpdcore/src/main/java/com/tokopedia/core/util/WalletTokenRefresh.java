@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.apiservices.transaction.apis.TokoCashApi;
+import com.tokopedia.core.network.apiservices.tokocash.apis.TokoCashApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.entity.tokocash.WalletTokenEntity;

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -24,8 +24,10 @@ import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -39,7 +41,7 @@ import com.tokopedia.digital.tokocash.listener.TokoCashHistoryListener;
 import com.tokopedia.digital.tokocash.model.HeaderHistory;
 import com.tokopedia.digital.tokocash.model.ItemHistory;
 import com.tokopedia.digital.tokocash.model.TokoCashHistoryData;
-import com.tokopedia.digital.tokocash.network.apiservice.HistoryTokoCashService;
+import com.tokopedia.core.network.apiservices.tokocash.WalletService;
 import com.tokopedia.digital.tokocash.presenter.ITokoCashHistoryPresenter;
 import com.tokopedia.digital.tokocash.presenter.TokoCashHistoryPresenter;
 
@@ -78,10 +80,8 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     RecyclerView historyListRecyclerView;
     @BindView(R2.id.view_empty_no_history)
     RelativeLayout viewEmptyNoHistory;
-    @BindView(R2.id.pb_main_loading)
-    ProgressBar progressLoading;
     @BindView(R2.id.main_content)
-    RelativeLayout mainContent;
+    LinearLayout mainContent;
     @BindView(R2.id.loading_history)
     ProgressBar loadingHistory;
     @BindView(R2.id.text_empty_page)
@@ -90,6 +90,8 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     ImageView emptyIconTransaction;
     @BindView(R2.id.desc_empty_page)
     TextView emptyDescTransaction;
+    @BindView(R2.id.root_view)
+    CoordinatorLayout rootView;
 
     private int datePickerSelection = 2;
     private int datePickerType = 0;
@@ -103,6 +105,8 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     private HistoryTokoCashAdapter adapterHistory;
     private EndlessRecyclerviewListener endlessRecyclerviewListener;
     private CompositeSubscription compositeSubscription;
+    private SnackbarRetry messageSnackbar;
+    private RefreshHandler refreshHandler;
 
     @SuppressWarnings("unused")
     @DeepLink(Constants.Applinks.WALLET_TRANSACTION_HISTORY)
@@ -134,9 +138,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         SessionHandler sessionHandler = new SessionHandler(this);
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         IHistoryTokoCashRepository repository = new HistoryTokoCashRepository(
-                new HistoryTokoCashService(
-                        sessionHandler.getAccessTokenTokoCash())
-        );
+                new WalletService(sessionHandler.getAccessTokenTokoCash()));
         ITokoCashHistoryInteractor interactor = new TokoCashHistoryInteractor(repository,
                 compositeSubscription,
                 new JobExecutor(),
@@ -156,7 +158,21 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         initialFilterRecyclerView();
         initialHistoryRecyclerView();
         showLoading();
-        presenter.getHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
+        refreshHandler = new RefreshHandler(this, getWindow().getDecorView().getRootView(),
+                getRefreshHandlerListener());
+        refreshHandler.startRefresh();
+    }
+
+    private RefreshHandler.OnRefreshHandlerListener getRefreshHandlerListener() {
+        return new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                if (refreshHandler.isRefreshing()) {
+                    presenter.getInitHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
+                    endlessRecyclerviewListener.resetState();
+                }
+            }
+        };
     }
 
     private void initialRangeDateFilter() {
@@ -217,14 +233,13 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
             @Override
             public void clearFilter() {
                 typeFilterSelected = "";
-                presenter.getHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
-                endlessRecyclerviewListener.resetState();
+                refreshHandler.startRefresh();
             }
 
             @Override
             public void selectFilter(String typeFilter) {
                 typeFilterSelected = typeFilter;
-                presenter.getHistoryTokoCash(typeFilter, startDateFormatted, endDateFormatted);
+                presenter.getInitHistoryTokoCash(typeFilter, startDateFormatted, endDateFormatted);
                 endlessRecyclerviewListener.resetState();
             }
         };
@@ -311,17 +326,17 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
 
                 startDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(startDate);
                 endDateFormatted = new SimpleDateFormat(FORMAT_DATE, Locale.ENGLISH).format(endDate);
-                presenter.getHistoryTokoCash(typeFilterSelected, startDateFormatted, endDateFormatted);
-                endlessRecyclerviewListener.resetState();
+                refreshHandler.startRefresh();
             }
         }
     }
 
     @Override
     public void renderDataTokoCashHistory(TokoCashHistoryData tokoCashHistoryData, boolean firstTimeLoad) {
-        mainContent.setVisibility(View.VISIBLE);
         historyListRecyclerView.setVisibility(View.VISIBLE);
         viewEmptyNoHistory.setVisibility(View.GONE);
+        refreshHandler.finishRefresh();
+        mainContent.setVisibility(View.VISIBLE);
         adapterFilter.setListener(getFilterTokoCashListener());
         adapterFilter.addFilterTokoCashList(tokoCashHistoryData.getHeaderHistory());
         adapterHistory.setListener(getItemHistoryListener());
@@ -336,6 +351,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     public void renderEmptyTokoCashHistory(List<HeaderHistory> headerHistoryList) {
         historyListRecyclerView.setVisibility(View.GONE);
         viewEmptyNoHistory.setVisibility(View.VISIBLE);
+        refreshHandler.finishRefresh();
         for (HeaderHistory header : headerHistoryList) {
             if (header.isSelected()) {
                 if (!header.getType().equals(ALL_TRANSACTION_TYPE)) {
@@ -355,21 +371,38 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
 
     @Override
     public void renderErrorMessage(String message) {
-        View view = findViewById(android.R.id.content);
-        if (view != null) NetworkErrorHelper.showSnackbar(this, message);
-        else Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        if (messageSnackbar == null) {
+            messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    presenter.getHistoryLoadMore(typeFilterSelected, startDateFormatted, endDateFormatted);
+                }
+            });
+        }
+        messageSnackbar.showRetrySnackbar();
+    }
+
+    @Override
+    public void renderEmptyPage(String message) {
+        NetworkErrorHelper.showEmptyState(
+                getApplicationContext(), rootView, message, new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        refreshHandler.startRefresh();
+                    }
+                }
+        );
     }
 
     @Override
     public void showLoading() {
         mainContent.setVisibility(View.GONE);
-        progressLoading.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-        if (progressLoading.getVisibility() == View.VISIBLE)
-            progressLoading.setVisibility(View.GONE);
+        if (refreshHandler != null && refreshHandler.isRefreshing())
+            refreshHandler.finishRefresh();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.tokopedia.digital.tokocash.domain;
 
-import com.tokopedia.core.network.apiservices.transaction.TokoCashCashBackService;
+import com.tokopedia.core.network.apiservices.tokocash.TokoCashCashBackService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;

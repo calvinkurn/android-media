@@ -25,7 +25,7 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
 
     private final TokoCashHistoryListener view;
 
-    private String afterId = "";
+    private int page = 1;
 
     public TokoCashHistoryPresenter(ITokoCashHistoryInteractor interactor, TokoCashHistoryListener view) {
         this.interactor = interactor;
@@ -33,9 +33,10 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
     }
 
     @Override
-    public void getHistoryTokoCash(String type, String startDate, String endDate) {
+    public void getInitHistoryTokoCash(String type, String startDate, String endDate) {
         view.showLoadingHistory();
-        interactor.getHistoryTokoCash(getTokoCashHistorySubscriber(), type, startDate, endDate, "");
+        page = 1;
+        interactor.getHistoryTokoCash(getTokoCashHistorySubscriber(), type, startDate, endDate, page);
     }
 
     private Subscriber<TokoCashHistoryData> getTokoCashHistorySubscriber() {
@@ -47,10 +48,12 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
 
             @Override
             public void onError(Throwable e) {
+                view.hideLoading();
+                view.hideLoadingHistory();
                 if (e instanceof ResponseDataNullException) {
-                    view.renderErrorMessage("Empty data list");
+                    view.renderEmptyPage("Empty data list");
                 } else {
-                    errorNetworkHandler(e);
+                    errorFirstTimeNetworkHandler(e);
                 }
             }
 
@@ -64,10 +67,8 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
                 } else {
                     if (tokoCashHistoryData.getItemHistoryList().size() > 0) {
                         view.renderDataTokoCashHistory(tokoCashHistoryData, true);
-                        afterId = String.valueOf(tokoCashHistoryData.getItemHistoryList()
-                                .get(tokoCashHistoryData.getItemHistoryList().size() - 1)
-                                .getTransactionDetailId());
                         view.setHasNextPage(tokoCashHistoryData.isNext_uri());
+                        if (tokoCashHistoryData.isNext_uri()) page++;
                     } else {
                         view.renderEmptyTokoCashHistory(tokoCashHistoryData.getHeaderHistory());
                     }
@@ -79,7 +80,7 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
     @Override
     public void getHistoryLoadMore(String type, String startDate, String endDate) {
         view.showLoadingHistory();
-        interactor.getHistoryTokoCash(getTokoCashHistoryLoadMore(), type, startDate, endDate, afterId);
+        interactor.getHistoryTokoCash(getTokoCashHistoryLoadMore(), type, startDate, endDate, page);
     }
 
     private Subscriber<TokoCashHistoryData> getTokoCashHistoryLoadMore() {
@@ -91,6 +92,7 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
 
             @Override
             public void onError(Throwable e) {
+                view.hideLoadingHistory();
                 errorNetworkHandler(e);
             }
 
@@ -99,11 +101,9 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
                 view.hideLoadingHistory();
                 if (tokoCashHistoryData.getItemHistoryList().size() > 0) {
                     view.renderDataTokoCashHistory(tokoCashHistoryData, false);
-                    afterId = String.valueOf(tokoCashHistoryData.getItemHistoryList()
-                            .get(tokoCashHistoryData.getItemHistoryList().size() - 1)
-                            .getTransactionDetailId());
                 }
                 view.setHasNextPage(tokoCashHistoryData.isNext_uri());
+                if (tokoCashHistoryData.isNext_uri()) page++;
             }
         };
     }
@@ -121,6 +121,22 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
             ServerErrorHandlerUtil.handleError(e);
         } else {
             view.renderErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+    }
+
+    private void errorFirstTimeNetworkHandler(Throwable e) {
+        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+            view.renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+        } else if (e instanceof SocketTimeoutException) {
+            view.renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        } else if (e instanceof ResponseDataNullException) {
+            view.renderEmptyPage(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+            view.renderEmptyPage(e.getMessage());
+        } else if (e instanceof ServerErrorException) {
+            ServerErrorHandlerUtil.handleError(e);
+        } else {
+            view.renderEmptyPage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         }
     }
 }

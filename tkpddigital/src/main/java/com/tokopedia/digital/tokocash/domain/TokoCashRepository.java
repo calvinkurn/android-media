@@ -1,7 +1,6 @@
 package com.tokopedia.digital.tokocash.domain;
 
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
+import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.digital.tokocash.entity.WalletTokenEntity;
 import com.tokopedia.digital.tokocash.mapper.ActivateTokoCashMapper;
