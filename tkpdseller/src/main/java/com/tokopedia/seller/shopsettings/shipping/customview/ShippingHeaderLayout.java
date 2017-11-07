@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -27,10 +28,9 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
         EditShippingPresenter,
         EditShippingViewListener> {
 
+    private static final int POSTAL_CODE_LENGTH = 5;
     EditShippingPresenter presenter;
-
     EditShippingViewListener mainView;
-
     AutoCompleteTextView zipCode;
     EditText shopCity;
     TextInputLayout postalTextInputLayout;
@@ -87,6 +87,15 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
                 return false;
             }
         });
+
+        zipCode.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0 && zipCode.length() > POSTAL_CODE_LENGTH) {
+                    zipCode.setText("");
+                }
+            }
+        });
     }
 
     public void initializeZipCodesAdapter() {
@@ -120,6 +129,10 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
 
     public void updateLocationData(String provinceName, String cityName, String districtName) {
         shopCity.setText(provinceName + ", " + cityName + ", " + districtName);
+    }
+
+    public void updateLocationData(String location) {
+        shopCity.setText(location);
     }
 
     public void setZipCodeError(String error) {

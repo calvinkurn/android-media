@@ -3,6 +3,7 @@ package com.tokopedia.seller.shopsettings.shipping.presenter;
 import android.os.Bundle;
 
 import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.EditShippingCouriers;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ProvinceCitiesDistrict;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;
@@ -95,4 +96,6 @@ public interface EditShippingPresenter {
     void setSelectedAddress(Address address);
 
     Address getselectedAddress();
+
+    Token getToken();
 }

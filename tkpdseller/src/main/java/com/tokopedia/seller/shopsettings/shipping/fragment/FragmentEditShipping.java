@@ -244,6 +244,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     @Override
+    public void setLocationProvinceCityDistrict() {
+        fragmentShippingHeader.updateLocationData(getString(R.string.hint_choose_city));
+    }
+
+    @Override
     public void refreshLocationViewListener(ShopShipping updatedShopShipping) {
         refreshView();
         fragmentShippingHeader.updateLocationData(updatedShopShipping.provinceName,
@@ -338,7 +343,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     @Override
     public void editAddress() {
         startActivityForResult(DistrictRecommendationActivity.createInstance(getActivity(),
-                editShippingPresenter.getShopModel().getToken()),
+                editShippingPresenter.getToken()),
                 GET_DISTRICT_RECCOMENDATION_REQUEST_CODE);
     }
 

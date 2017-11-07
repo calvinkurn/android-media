@@ -33,8 +33,7 @@ import rx.subscriptions.CompositeSubscription;
 public class DistrictRecommendationFragment extends BasePresenterFragment<DistrictRecomendationFragmentPresenter>
         implements DistrictRecomendationFragmentView, DistrictRecommendationAdapter.Listener {
 
-    private static final String TAG = DistrictRecommendationFragment.class.getSimpleName();
-
+    private static final int THRESHOLD = 3;
     @BindView(R2.id.search_input_view_address)
     SearchInputView searchInputViewAddress;
     @BindView(R2.id.recycler_view_suggestion)
@@ -45,7 +44,6 @@ public class DistrictRecommendationFragment extends BasePresenterFragment<Distri
     TextView tvAdvice;
     @BindView(R2.id.tv_no_result)
     TextView tvNoResult;
-
     private int maxItemPosition;
     private OnQueryListener queryListener;
     private DistrictRecommendationAdapter adapter;
@@ -129,7 +127,7 @@ public class DistrictRecommendationFragment extends BasePresenterFragment<Distri
         if (text.length() == 0) {
             presenter.clearData();
         } else {
-            if (text.length() > 2) {
+            if (text.length() >= THRESHOLD) {
                 if (queryListener != null) {
                     maxItemPosition = 0;
                     queryListener.onQuerySubmit(text);

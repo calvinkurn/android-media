@@ -63,6 +63,8 @@ public interface EditShippingViewListener {
 
     void setLocationProvinceCityDistrict(String Province, String City, String District);
 
+    void setLocationProvinceCityDistrict();
+
     void refreshLocationViewListener(ShopShipping updatedShopInfo);
 
     void locationDialogTimeoutListener();

@@ -28,11 +28,11 @@ public class Token implements Parcelable {
     private String districtRecommendation;
     @SerializedName("ut")
     @Expose
-    private long unixTime;
+    private int unixTime;
 
     protected Token(Parcel in) {
         districtRecommendation = in.readString();
-        unixTime = in.readLong();
+        unixTime = in.readInt();
     }
 
     public String getDistrictRecommendation() {
@@ -47,7 +47,7 @@ public class Token implements Parcelable {
         return unixTime;
     }
 
-    public void setUnixTime(long unixTime) {
+    public void setUnixTime(int unixTime) {
         this.unixTime = unixTime;
     }
 
@@ -59,7 +59,7 @@ public class Token implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(districtRecommendation);
-        parcel.writeLong(unixTime);
+        parcel.writeInt(unixTime);
     }
 
 }

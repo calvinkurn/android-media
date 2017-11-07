@@ -7,6 +7,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.manage.people.address.model.districtrecomendation.Address;
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.fragment.FragmentEditShipping;
@@ -194,11 +195,12 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public void bindDataToViewOpenShop(OpenShopData model) {
         openShopModel = model;
-        if (openShopModel.getShopShipping().provinceName == null || openShopModel.getShopShipping().provinceName.isEmpty()) {
-            view.setLocationProvinceCityDistrict(
-                    view.getMainContext().getString(R.string.title_select_province),
-                    view.getMainContext().getString(R.string.title_select_city),
-                    view.getMainContext().getString(R.string.title_select_district));
+        if (selectedAddress != null) {
+            view.setLocationProvinceCityDistrict(selectedAddress.getProvinceName()
+                    , selectedAddress.getCityName()
+                    , selectedAddress.getDistrictName());
+        } else if (openShopModel.getShopShipping().provinceName == null || openShopModel.getShopShipping().provinceName.isEmpty()) {
+            view.setLocationProvinceCityDistrict();
         } else {
             view.setLocationProvinceCityDistrict(openShopModel.getShopShipping().provinceName
                     , openShopModel.getShopShipping().cityName
@@ -357,14 +359,19 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     }
 
     private void putDataToHashMapOpenShop(Map<String, String> shippingParams) {
-        shippingParams.put(COURIER_ORIGIN, shopInformation.districtId.toString());
         shippingParams.put(SHIPMENT_IDS, compiledShippingId());
         shippingParams.put(SHOP_POSTAL, view.getZipCode());
         shippingParams.put(ADDR_STREET, view.getStreetAddress());
         shippingParams.put(SHOP_ID, SessionHandler.getShopID(view.getMainContext()));
         shippingParams.put(LONGITUDE, shopInformation.longitude);
         shippingParams.put(LATITUDE, shopInformation.latitude);
-        shippingParams.put(DISTRICT_ID, shopInformation.districtId.toString());
+        if (selectedAddress != null) {
+            shippingParams.put(COURIER_ORIGIN, String.valueOf(selectedAddress.getDistrictId()));
+            shippingParams.put(DISTRICT_ID, String.valueOf(selectedAddress.getDistrictId()));
+        } else {
+            shippingParams.put(COURIER_ORIGIN, shopInformation.districtId.toString());
+            shippingParams.put(DISTRICT_ID, shopInformation.districtId.toString());
+        }
         addAdditionalOptionsConfigurations(shippingParams);
     }
 
@@ -579,6 +586,16 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     @Override
     public Address getselectedAddress() {
         return selectedAddress;
+    }
+
+    @Override
+    public Token getToken() {
+        if (model != null) {
+            return model.getToken();
+        } else if (openShopModel != null) {
+            return openShopModel.getToken();
+        }
+        return null;
     }
 
     private void sortCourier(EditShippingCouriers editShippingCouriers) {
