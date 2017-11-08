@@ -42,8 +42,11 @@
         <activity
             android:name=".booking.view.activity.FlightBookingLuggageActivity"
             android:screenOrientation="portrait" />
-            android:screenOrientation="portrait" />
         <activity android:name=".booking.view.activity.FlightBookingPassengerActivity"></activity>
+        <activity
+            android:name=".booking.view.activity.FlightBookingPhoneCodeActivity"
+            android:label="@string/activity_label_flight_booking_phone_code"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
