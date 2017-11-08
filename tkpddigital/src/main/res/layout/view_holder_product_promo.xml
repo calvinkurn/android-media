@@ -9,33 +9,31 @@
 
     <TextView
         android:id="@+id/product_promo_title"
+        style="@style/TextProductName"
+        tools:text="Promo title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/grey_800"
-        android:textStyle="bold"
-        tools:text="Promo title"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms"/>
 
     <TextView
         android:id="@+id/product_promo_tag"
-        android:textColor="@color/orange_900"
+        style="@style/TextProductPromoTag"
+        tools:text="Promo tag"
         android:layout_marginStart="@dimen/margin_ms"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginTop="@dimen/padding_vs"
-        android:textStyle="bold"
-        tools:text="Promo tag"
         android:layout_below="@+id/product_promo_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/product_promo_description"
+        style="@style/TextProductDescription"
+        tools:text="Promo description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/product_promo_tag"
-        tools:text="Promo description"
-        android:textColor="@color/grey_600"
         android:layout_marginBottom="@dimen/padding_vs"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms"
@@ -53,21 +51,19 @@
 
         <TextView
             android:id="@+id/product_promo_old_price"
+            style="@style/TextProductOldPrice"
+            tools:text="Rp. 22.500"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/grey_500"
-            tools:text="Rp. 22.500"/>
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/product_promo_price"
+            style="@style/TextProductPromoPrice"
+            tools:text="Rp. 20.000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_ms"
-            android:layout_marginStart="@dimen/margin_ms"
-            tools:text="Rp. 20.000"
-            android:textColor="@color/orange_900"
-            android:textSize="@dimen/font_medium"
-            android:textStyle="bold"/>
+            android:layout_marginStart="@dimen/margin_ms"/>
 
     </LinearLayout>
 

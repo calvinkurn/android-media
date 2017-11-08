@@ -14,27 +14,25 @@
 
         <TextView
             android:id="@+id/title_price"
-            style="@style/TextSubTitleMedium"
+            style="@style/TextProductName"
+            tools:text="Rp 25.000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
-            android:paddingBottom="3dp"
-            tools:text="Rp 1" />
+            android:paddingBottom="3dp"/>
 
         <TextView
             android:id="@+id/tv_price"
-            style="@style/TextSubTitleMedium"
+            style="@style/TextProductPrice"
+            tools:text="Rp. 20.000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/title_price"
             android:layout_marginBottom="@dimen/padding_vs"
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
-            android:paddingTop="3dp"
-            android:textColor="@color/digital_item_title"
-            android:textSize="@dimen/font_small"
-            tools:text="Extra Combo 6GB" />
+            android:paddingTop="3dp"/>
 
         <TextView
             android:id="@+id/empty_stock_notification"
