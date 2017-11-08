@@ -1,12 +1,6 @@
-package com.tokopedia.flight.search.view.model;
-
-import android.support.annotation.IntDef;
+package com.tokopedia.flight.search.view.model.filter;
 
 import com.tokopedia.flight.R;
-
-import static com.tokopedia.flight.search.view.model.TransitEnum.ONE;
-import static com.tokopedia.flight.search.view.model.TransitEnum.THREE_OR_MORE;
-import static com.tokopedia.flight.search.view.model.TransitEnum.TWO;
 
 /**
  * Created by User on 11/1/2017.

@@ -105,16 +105,24 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
     }
 
     @Nullable
-    protected abstract LoadingDataBinder createLoadingDataBinder();
+    protected LoadingDataBinder createLoadingDataBinder(){
+        return new LoadingDataBinder(this);
+    }
 
     @Nullable
-    protected abstract NoResultDataBinder createEmptyViewBinder();
+    protected NoResultDataBinder createEmptyViewBinder(){
+        return new NoResultDataBinder(this);
+    }
 
     @Nullable
-    protected abstract NoResultDataBinder createEmptyViewSearchBinder();
+    protected NoResultDataBinder createEmptyViewSearchBinder(){
+        return new NoResultDataBinder(this);
+    }
 
     @Nullable
-    protected abstract RetryDataBinder createRetryDataBinder();
+    protected RetryDataBinder createRetryDataBinder(){
+        return new RetryDataBinder(this);
+    }
 
     public void setSearchQueryString(String searchQueryString) {
         this.searchQueryString = searchQueryString;

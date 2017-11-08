@@ -1,7 +1,9 @@
-package com.tokopedia.flight.search.view.model;
+package com.tokopedia.flight.search.view.model.filter;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +60,22 @@ public class FlightFilterModel implements Parcelable {
 
     public List<TransitEnum> getTransitTypeList() {
         return transitTypeList;
+    }
+
+    public void setTransitTypeList(List<TransitEnum> transitTypeList) {
+        this.transitTypeList = transitTypeList;
+    }
+
+    public void setDepartureTimeList(List<DepartureTimeEnum> departureTimeList) {
+        this.departureTimeList = departureTimeList;
+    }
+
+    public void setAirlineList(List<String> airlineList) {
+        this.airlineList = airlineList;
+    }
+
+    public void setRefundableTypeList(List<RefundableEnum> refundableTypeList) {
+        this.refundableTypeList = refundableTypeList;
     }
 
     public List<DepartureTimeEnum> getDepartureTimeList() {

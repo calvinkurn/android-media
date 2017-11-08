@@ -3,19 +3,30 @@ package com.tokopedia.flight.search.view.model.resultstatistics;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight.search.view.model.DepartureTimeEnum;
+import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
+import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 
 /**
  * Created by User on 11/1/2017.
  */
 
-public class DepartureStat implements Parcelable {
+public class DepartureStat implements Parcelable, ItemType {
     private DepartureTimeEnum departureTimeEnum;
     private int minPrice;
+    private String minPriceString;
 
-    public DepartureStat(DepartureTimeEnum departureTimeEnum, int minPrice) {
+    public DepartureStat(DepartureTimeEnum departureTimeEnum, int minPrice, String minPriceString) {
         this.departureTimeEnum = departureTimeEnum;
         this.minPrice = minPrice;
+        this.minPriceString = minPriceString;
+    }
+
+    public String getMinPriceString() {
+        return minPriceString;
+    }
+
+    public void setMinPriceString(String minPriceString) {
+        this.minPriceString = minPriceString;
     }
 
     public DepartureTimeEnum getDepartureTime() {
@@ -39,12 +50,14 @@ public class DepartureStat implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.departureTimeEnum == null ? -1 : this.departureTimeEnum.ordinal());
         dest.writeInt(this.minPrice);
+        dest.writeString(this.minPriceString);
     }
 
     protected DepartureStat(Parcel in) {
         int tmpDepartureTimeEnum = in.readInt();
         this.departureTimeEnum = tmpDepartureTimeEnum == -1 ? null : DepartureTimeEnum.values()[tmpDepartureTimeEnum];
         this.minPrice = in.readInt();
+        this.minPriceString = in.readString();
     }
 
     public static final Parcelable.Creator<DepartureStat> CREATOR = new Parcelable.Creator<DepartureStat>() {
@@ -58,4 +71,9 @@ public class DepartureStat implements Parcelable {
             return new DepartureStat[size];
         }
     };
+
+    @Override
+    public int getType() {
+        return 0;
+    }
 }

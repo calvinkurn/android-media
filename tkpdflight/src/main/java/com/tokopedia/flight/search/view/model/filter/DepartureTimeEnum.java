@@ -1,4 +1,4 @@
-package com.tokopedia.flight.search.view.model;
+package com.tokopedia.flight.search.view.model.filter;
 
 import com.tokopedia.flight.R;
 
