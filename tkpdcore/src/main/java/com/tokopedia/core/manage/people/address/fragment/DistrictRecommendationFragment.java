@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,7 +22,6 @@ import com.tokopedia.core.manage.people.address.model.districtrecomendation.Toke
 import com.tokopedia.core.manage.people.address.presenter.DistrictRecomendationFragmentPresenter;
 import com.tokopedia.core.manage.people.address.presenter.DistrictRecomendationFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.design.text.SearchInputView;
 
 import java.util.concurrent.TimeUnit;
 
@@ -36,8 +36,8 @@ public class DistrictRecommendationFragment
         implements DistrictRecomendationFragmentView, DistrictRecommendationAdapter.Listener {
 
     private static final int THRESHOLD = 3;
-    @BindView(R2.id.search_input_view_address)
-    SearchInputView searchInputViewAddress;
+    @BindView(R2.id.search_address)
+    SearchView searchAddress;
     @BindView(R2.id.recycler_view_suggestion)
     RecyclerView rvAddressSuggestion;
     @BindView(R2.id.pb_loading)
@@ -109,21 +109,23 @@ public class DistrictRecommendationFragment
 
     @Override
     protected void initView(View view) {
-        searchInputViewAddress.setSearchHint(getString(R.string.hint_district_recommendation_search));
-        searchInputViewAddress.setListener(new SearchInputView.Listener() {
+        searchAddress.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onSearchSubmitted(String text) {
-                submitQuery(text);
+            public boolean onQueryTextSubmit(String query) {
+                submitQuery(query);
+                return true;
             }
 
             @Override
-            public void onSearchTextChanged(String text) {
-                submitQuery(text);
+            public boolean onQueryTextChange(String newText) {
+                submitQuery(newText);
+                return true;
             }
         });
     }
 
     private void submitQuery(String text) {
+        NetworkErrorHelper.removeEmptyState(getView());
         if (text.length() == 0) {
             hideLoading();
             presenter.clearData();
@@ -165,7 +167,7 @@ public class DistrictRecommendationFragment
 
                 if ((maxItemPosition + 1) == totalItemCount) {
                     if (pbLoading.getVisibility() == View.GONE) {
-                        presenter.searchNextIfAvailable(searchInputViewAddress.getSearchText());
+                        presenter.searchNextIfAvailable(searchAddress.getQuery().toString());
                     }
                 }
             }
@@ -194,7 +196,7 @@ public class DistrictRecommendationFragment
 
     @Override
     public void updateRecommendation() {
-        if (searchInputViewAddress.getSearchText().length() == 0) {
+        if (searchAddress.getQuery().toString().length() == 0) {
             showMessage(getString(R.string.hint_advice_search_address));
         } else {
             adapter.notifyDataSetChanged();
@@ -239,7 +241,7 @@ public class DistrictRecommendationFragment
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        submitQuery(searchInputViewAddress.getSearchText());
+                        submitQuery(searchAddress.getQuery().toString());
                     }
                 });
     }
