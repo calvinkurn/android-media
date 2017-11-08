@@ -91,4 +91,22 @@
     <string name="flight_label_choose_button">Pilih</string>
     <string name="flight_there_has_x_flights">Terdapat %1$d penerbangan</string>
     <string name="flight_save_x_flights">Simpan (%1$d penerbangan)</string>
+    <string name="flight_label_choose_button">Pilih</string>
+    <string name="flight_label_price_total">Total Harga</string>
+    <string name="flight_label_detail">Detail</string>
+    <string name="flight_label_normal_price">Harga Normal</string>
+    <string name="flight_label_saving_price">Hemat</string>
+    <string name="flight_booking_finish_transaction_label">Selesaikan Pesanan Anda Dalam</string>
+    <string name="flight_booking_contact_information">Informasi Kontak</string>
+    <string name="flight_booking_contact_name_hint">Nama Lengkap (sesuai KTP/SIM/Passport)</string>
+    <string name="flight_booking_contact_email_hint">Email</string>
+    <string name="flight_booking_departure_trip_card_title">Penerbangan Pergi</string>
+    <string name="flight_booking_return_trip_card_title">Penerbangan Pulang</string>
+    <string name="flight_booking_contact_phone_number_label">Nomor Telepon</string>
+    <string name="flight_booking_contact_information_card">Pastikan email dan nomor telepon kontak kamu benar. e-tiket akan dikirim ke email dan nomor telepon yang tertera pada informasi kontak.</string>
+    <string name="flight_booking_price_detail">Rincian Harga</string>
+    <string name="flight_booking_passenger_data_label">Data Penumpang</string>
+    <string name="flight_booking_submit_button_label">Lanjut</string>
+    <string name="flight_booking_total_price_label">Pembayaran Anda</string>
+    <string name="flight_title_menu_reset">Reset</string>
 </resources>

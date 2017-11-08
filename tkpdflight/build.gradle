@@ -42,6 +42,7 @@ dependencies {
     compile getTkpdAbstraction()
     compile getTkpdUseCase()
 
+    compile 'com.android.support:support-v4:25.4.0'
     apt rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore
     compile rootProject.ext.dbDependencies.dbFlow

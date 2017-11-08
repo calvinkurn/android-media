@@ -11,18 +11,20 @@
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>
     </style>
+
     <style name="WidgetSelectPassengerViewSubtitle">
         <item name="android:textSize">@dimen/font_subheading</item>
         <item name="android:textColor">@color/grey</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
     <style name="WidgetSelectPassengerViewTitle">
         <item name="android:textSize">@dimen/font_title</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
-    
+
     <style name="FlightCalendarPicker" parent="android:Widget.CalendarView">
         <item name="android:focusedMonthDateColor">@color/colorPrimary</item>
         <item name="android:weekNumberColor">@color/red_500</item>
@@ -32,5 +34,11 @@
     <style name="FlightCalendarPickerViewWeekDayView">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/font_black_primary_70</item>
+    </style>
+
+    <style name="CardWarningStyle">
+        <item name="android:padding">@dimen/padding_ms</item>
+        <item name="android:background">@drawable/bg_card_warning</item>
+        <item name="android:textSize">@dimen/font_caption</item>
     </style>
 </resources>

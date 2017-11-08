@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="130dp"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:gravity="center|center_vertical"
+    android:orientation="horizontal"
+    app:layout_collapseMode="parallax"
+    app:layout_collapseParallaxMultiplier="0.6">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/margin_med"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/departure_airport_code"
+            style="@style/TextView.Title"
+            android:text="CGK" />
+
+        <TextView
+            android:id="@+id/departure_airport_name"
+            style="@style/TextView.Caption.BlackSecondary"
+            android:text="Jakarta" />
+    </LinearLayout>
+
+
+    <ImageView
+        android:layout_width="@dimen/image_width_xxxs"
+        android:layout_height="@dimen/image_width_xxxs"
+        android:src="@drawable/circle_green_stroke" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="5dp"
+        android:src="@drawable/bg_dash_stroke_flight" />
+
+    <ImageView
+        android:layout_width="@dimen/image_width_xxs"
+        android:layout_height="@dimen/image_width_xxs"
+        android:src="@drawable/ic_plane_flight" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/arrival_airport_code"
+            style="@style/TextView.Title"
+            android:text="CGK" />
+
+        <TextView
+            android:id="@+id/arrival_airport_name"
+            style="@style/TextView.Caption.BlackSecondary"
+            android:text="Surabaya" />
+    </LinearLayout>
+</LinearLayout>

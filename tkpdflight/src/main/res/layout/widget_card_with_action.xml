@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_card_with_action_main"
+    android:orientation="horizontal"
+    android:padding="@dimen/padding_small">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_content_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Penerbangan Pergi" />
+
+        <LinearLayout
+            android:id="@+id/content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_content_title"
+            android:orientation="horizontal">
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_content_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_body1"
+                android:textStyle="bold"
+                tools:text="Jakarta - Surabaya" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_content_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_vvs"
+                android:layout_marginStart="@dimen/margin_vvs"
+                android:textSize="@dimen/font_caption"
+                tools:text="(Jum, 03 Nov 2017)" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/subcontent_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/content_layout"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_subcontent_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/font_caption"
+                android:textStyle="bold"
+                tools:text="Air Asia" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_subcontent_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_vvs"
+                android:layout_marginStart="@dimen/margin_vvs"
+                android:textSize="@dimen/font_caption"
+                tools:text="| Langsung | 06:00 CGK - 07:30 SUB" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:background="@color/widget_card_with_action_separator" />
+
+    <RelativeLayout
+        android:id="@+id/action_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
+        android:gravity="center">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:textColor="@color/widget_card_with_action_text_color"
+            android:textSize="@dimen/font_subheading"
+            android:textStyle="bold"
+            tools:text="Detail" />
+    </RelativeLayout>
+</LinearLayout>

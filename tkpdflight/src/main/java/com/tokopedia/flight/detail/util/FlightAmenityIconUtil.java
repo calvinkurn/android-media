@@ -1,4 +1,4 @@
-package com.tokopedia.flight.detail;
+package com.tokopedia.flight.detail.util;
 
 import android.support.annotation.DrawableRes;
 
