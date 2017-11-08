@@ -42,7 +42,7 @@ public class TopAdsDetailGroupViewPresenterImpl extends TopAdsDetailGroupPresent
         groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
             @Override
             public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
-                topAdsDetailViewListener.onTurnOnAdSuccess();
+                topAdsDetailViewListener.onTurnOnAdSuccess(dataResponseActionAds);
             }
 
             @Override
@@ -58,7 +58,7 @@ public class TopAdsDetailGroupViewPresenterImpl extends TopAdsDetailGroupPresent
         groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
             @Override
             public void onSuccess(GroupAdBulkAction dataResponseActionAds) {
-                topAdsDetailViewListener.onTurnOffAdSuccess();
+                topAdsDetailViewListener.onTurnOffAdSuccess(dataResponseActionAds);
             }
 
             @Override

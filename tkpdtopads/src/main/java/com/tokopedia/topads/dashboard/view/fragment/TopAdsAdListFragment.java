@@ -62,7 +62,7 @@ public abstract class TopAdsAdListFragment<P extends
 
     @Override
     public void onSearchTextChanged(String query) {
-        CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
+//        CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
         if (TextUtils.isEmpty(query)) {
             onQueryTextSubmit(query);
         }

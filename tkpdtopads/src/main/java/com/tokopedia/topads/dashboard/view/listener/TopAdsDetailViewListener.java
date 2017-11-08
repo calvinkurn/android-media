@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 
 /**
@@ -8,11 +8,11 @@ import com.tokopedia.topads.dashboard.view.model.Ad;
  */
 public interface TopAdsDetailViewListener<V extends Ad> extends TopAdsDetailListener<V> {
 
-    void onTurnOnAdSuccess();
+    void onTurnOnAdSuccess(BulkAction dataResponseActionAds);
 
     void onTurnOnAdError();
 
-    void onTurnOffAdSuccess();
+    void onTurnOffAdSuccess(BulkAction dataResponseActionAds);
 
     void onTurnOffAdError();
 

@@ -96,7 +96,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
         keywordTotalAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TopAdsKeywordNewChooseGroupActivity.start(TopAdsEditGroupMainPageFragment.this, getActivity(), TopAdsAdListFragment.REQUEST_CODE_AD_ADD, true, ad.getName());
+                TopAdsKeywordNewChooseGroupActivity.start(TopAdsEditGroupMainPageFragment.this, getActivity(), REQUEST_CODE_AD_EDIT, true, ad.getName());
             }
         });
     }

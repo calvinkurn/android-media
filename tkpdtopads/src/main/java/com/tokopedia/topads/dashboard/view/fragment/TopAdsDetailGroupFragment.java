@@ -8,14 +8,16 @@ import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
-import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -131,6 +133,31 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
         super.deleteAd();
         UnifyTracking.eventTopAdsProductDeleteGrup();
         presenter.deleteAd(ad.getId());
+    }
+
+    @Override
+    public void onTurnOffAdSuccess(BulkAction dataResponseActionAds) {
+        fillToAdObject(dataResponseActionAds);
+        super.onTurnOffAdSuccess(dataResponseActionAds);
+    }
+
+    private void fillToAdObject(BulkAction dataResponseActionAds) {
+        if(dataResponseActionAds != null && dataResponseActionAds instanceof GroupAdBulkAction) {
+            Integer status = Integer.valueOf(((GroupAdBulkAction) dataResponseActionAds).getAdList().get(0).getStatus());
+
+            CommonUtils.dumper("status from network -> "+status);
+            if(adFromIntent != null)
+                adFromIntent.setStatus(status);
+
+            if(ad != null)
+                ad.setStatus(status);
+        }
+    }
+
+    @Override
+    public void onTurnOnAdSuccess(BulkAction dataResponseActionAds) {
+        fillToAdObject(dataResponseActionAds);
+        super.onTurnOnAdSuccess(dataResponseActionAds);
     }
 
     @Override

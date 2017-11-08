@@ -147,6 +147,10 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable {
         this.id = id;
     }
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
     public int getStatus() {
         return status;
