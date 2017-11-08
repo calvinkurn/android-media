@@ -3,6 +3,7 @@ package com.tokopedia.inbox.rescenter.detailv2.domain;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.NewReplyDiscussionModel;
@@ -69,7 +70,7 @@ public interface ResCenterRepository {
 
     Observable<GenerateHostModel> generateToken(TKPDMapParam<String, Object> parameters);
 
-    Observable<DetailResCenter> getDetailV2(RequestParams requestParams);
+    Observable<DetailData> getDetailV2(RequestParams requestParams);
 
     Observable<DetailResChatDomain> getConversation(RequestParams requestParams);
 

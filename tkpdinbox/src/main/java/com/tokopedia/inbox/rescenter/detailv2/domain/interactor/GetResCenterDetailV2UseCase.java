@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailData;
 
 import rx.Observable;
 
@@ -13,7 +14,7 @@ import rx.Observable;
  * Created by hangnadi on 3/9/17.
  */
 
-public class GetResCenterDetailV2UseCase extends UseCase<DetailResCenter> {
+public class GetResCenterDetailV2UseCase extends UseCase<DetailData> {
 
     public static final String PARAM_RESOLUTION_ID = "resolution_id";
 
@@ -27,7 +28,7 @@ public class GetResCenterDetailV2UseCase extends UseCase<DetailResCenter> {
     }
 
     @Override
-    public Observable<DetailResCenter> createObservable(RequestParams requestParams) {
+    public Observable<DetailData> createObservable(RequestParams requestParams) {
         return resCenterRepository.getDetailV2(requestParams);
     }
 }

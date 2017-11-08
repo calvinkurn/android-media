@@ -3,20 +3,20 @@ package com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by yfsx on 07/11/17.
+ * Created by yfsx on 08/11/17.
  */
-public class LogResponse {
+public class SolutionResponse {
 
     @SerializedName("id")
     private int id;
-    @SerializedName("action")
-    private String action;
-    @SerializedName("solution")
-    private SolutionResponse solution;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("nameCustom")
+    private String nameCustom;
     @SerializedName("actionBy")
-    private CreateByResponse actionBy;
-    @SerializedName("createBy")
-    private CreateByResponse createBy;
+    private int actionBy;
+    @SerializedName("amount")
+    private AmountResponse amount;
     @SerializedName("createTime")
     private String createTime;
     @SerializedName("createTimeStr")
@@ -30,36 +30,36 @@ public class LogResponse {
         this.id = id;
     }
 
-    public String getAction() {
-        return action;
+    public String getName() {
+        return name;
     }
 
-    public void setAction(String action) {
-        this.action = action;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public SolutionResponse getSolution() {
-        return solution;
+    public String getNameCustom() {
+        return nameCustom;
     }
 
-    public void setSolution(SolutionResponse solution) {
-        this.solution = solution;
+    public void setNameCustom(String nameCustom) {
+        this.nameCustom = nameCustom;
     }
 
-    public CreateByResponse getActionBy() {
+    public int getActionBy() {
         return actionBy;
     }
 
-    public void setActionBy(CreateByResponse actionBy) {
+    public void setActionBy(int actionBy) {
         this.actionBy = actionBy;
     }
 
-    public CreateByResponse getCreateBy() {
-        return createBy;
+    public AmountResponse getAmount() {
+        return amount;
     }
 
-    public void setCreateBy(CreateByResponse createBy) {
-        this.createBy = createBy;
+    public void setAmount(AmountResponse amount) {
+        this.amount = amount;
     }
 
     public String getCreateTime() {
@@ -77,6 +77,5 @@ public class LogResponse {
     public void setCreateTimeStr(String createTimeStr) {
         this.createTimeStr = createTimeStr;
     }
-
 
 }

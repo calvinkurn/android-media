@@ -11,7 +11,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDeta
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
-import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetResCenterDetailSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetResCenterDetailV2Subscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ResolutionActionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.TrackAwbReturProductSubscriber;
 import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
@@ -65,7 +65,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     public void setOnFirstTimeLaunch() {
         fragmentView.showLoading(true);
         getResCenterDetailV2UseCase.execute(getInitResCenterDetailParam(),
-                new GetResCenterDetailSubscriber(fragmentView));
+                new GetResCenterDetailV2Subscriber(fragmentView));
 //        getResCenterDetailUseCase.execute(getInitResCenterDetailParam(),
 //                new GetResCenterDetailSubscriber(fragmentView));
     }
@@ -208,7 +208,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
         RequestParams params = RequestParams.create();
         params.putString(EditAddressUseCase.PARAM_ADDRESS_ID, addressId);
         params.putString(EditAddressUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
-        params.putString(EditAddressUseCase.PARAM_OLD_DATA, oldAddressId + "-" + conversationId );
+        params.putString(EditAddressUseCase.PARAM_OLD_DATA, oldAddressId + "-" + conversationId);
         return params;
     }
 

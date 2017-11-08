@@ -7,6 +7,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.NewReplyDiscussionModel;
@@ -172,7 +173,7 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
 
 
     @Override
-    public Observable<DetailResCenter> getDetailV2(RequestParams requestParams) {
+    public Observable<DetailData> getDetailV2(RequestParams requestParams) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getResCenterDetailV2(requestParams);
