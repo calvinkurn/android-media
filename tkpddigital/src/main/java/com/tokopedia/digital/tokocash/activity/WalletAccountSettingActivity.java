@@ -14,7 +14,8 @@ import com.tokopedia.digital.tokocash.fragment.WalletAccountSettingFragment;
  * @author anggaprasetiyo on 8/24/17.
  */
 
-public class WalletAccountSettingActivity extends BasePresenterActivity {
+public class WalletAccountSettingActivity extends BasePresenterActivity implements
+        WalletAccountSettingFragment.ActionListener {
     private static final String EXTRA_WALLET_ACCOUNT_SETTING_PASS_DATA =
             "EXTRA_WALLET_ACCOUNT_SETTING_PASS_DATA";
     public static final int REQUEST_CODE = WalletAccountSettingActivity.class.hashCode();
@@ -70,5 +71,12 @@ public class WalletAccountSettingActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void directPageToHome() {
+        onBackPressed();
+        setResult(RESULT_OK);
+        finish();
     }
 }

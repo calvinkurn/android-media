@@ -15,6 +15,8 @@ public interface IWalletAccountSettingView extends IBaseView {
 
     void renderSuccessUnlinkAccount();
 
+    void renderSuccessUnlinkToHome();
+
     void renderErrorUnlinkAccount(String message);
 
     void disableSwipeRefresh();

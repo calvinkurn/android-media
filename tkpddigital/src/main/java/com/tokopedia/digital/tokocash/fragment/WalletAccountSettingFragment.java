@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
@@ -14,16 +15,23 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
+import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
+import com.tokopedia.core.drawer2.data.source.LocalProfileSource;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.tokocash.WalletService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.tokocash.adapter.LinkedAccountAdapter;
@@ -66,6 +74,7 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
     private RefreshHandler refreshHandler;
     private LinkedAccountAdapter accountListAdapter;
     private CompositeSubscription compositeSubscription;
+    private ActionListener listener;
 
     public static Fragment newInstance() {
         WalletAccountSettingFragment fragment = new WalletAccountSettingFragment();
@@ -109,7 +118,7 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
 
     @Override
     protected void initialListener(Activity activity) {
-
+        listener = (ActionListener) activity;
     }
 
     @Override
@@ -160,7 +169,15 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
         return new DeleteTokoCashAccountDialog.DeleteAccessAccountListener() {
             @Override
             public void onDeleteAccess(String revokeToken, String identifier, String identifierType) {
-                presenter.processDeleteConnectedUser(revokeToken, identifier, identifierType);
+                GlobalCacheManager cacheProfileUser = new GlobalCacheManager();
+                String cache = cacheProfileUser.getValueString(ProfileSourceFactory.KEY_PROFILE_DATA);
+                ProfileModel profileModel = null;
+                if (cache != null) {
+                    profileModel = CacheUtil.convertStringToModel(cache,
+                            new TypeToken<ProfileModel>() {
+                            }.getType());
+                }
+                presenter.processDeleteConnectedUser(profileModel, revokeToken, identifier, identifierType);
             }
         };
     }
@@ -273,7 +290,18 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
     @Override
     public void renderSuccessUnlinkAccount() {
         refreshHandler.startRefresh();
-        // TODO arahin ke home karena tokocashnya dah unactive
+    }
+
+    @Override
+    public void renderSuccessUnlinkToHome() {
+        deleteCacheBalanceTokoCash();
+        listener.directPageToHome();
+    }
+
+    @NonNull
+    private void deleteCacheBalanceTokoCash() {
+        GlobalCacheManager cache = new GlobalCacheManager();
+        cache.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
     @Override
@@ -301,5 +329,9 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
                     }
                 }
         );
+    }
+
+    public interface ActionListener {
+        void directPageToHome();
     }
 }

@@ -327,6 +327,8 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
             return true;
         } else if (item.getItemId() == R.id.action_account_setting_tokocash) {
             startActivity(WalletAccountSettingActivity.newInstance(this));
+            setResult(RESULT_OK);
+            finish();
             return true;
         } else if (item.getItemId() == R.id.action_menu_help_tokocash) {
             startActivity(DigitalWebActivity.newInstance(this,

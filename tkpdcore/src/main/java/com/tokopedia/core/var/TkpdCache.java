@@ -208,6 +208,8 @@ public class TkpdCache {
         public static final String SHOW_HIDE_APP_SHARE_BUTTON_KEY = "SHOW_HIDE_APP_SHARE_BUTTON_KEY";
         public static final String APP_SHARE_DESCRIPTION_KEY = "APP_SHARE_DESCRIPTION_KEY";
         public static final String MAINAPP_ACTIVATE_BRANCH_LINKS_KEY = "MAINAPP_ACTIVATE_BRANCH_LINKS_KEY";
+
+        public static final String KEY_TOKOCASH_BALANCE_CACHE = "TOKOCASH_BALANCE_CACHE";
     }
 
 }

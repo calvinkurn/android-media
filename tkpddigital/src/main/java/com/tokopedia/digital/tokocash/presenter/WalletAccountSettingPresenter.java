@@ -1,5 +1,6 @@
 package com.tokopedia.digital.tokocash.presenter;
 
+import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
@@ -73,12 +74,12 @@ public class WalletAccountSettingPresenter implements IWalletAccountSettingPrese
     }
 
     @Override
-    public void processDeleteConnectedUser(String refreshToken,
+    public void processDeleteConnectedUser(ProfileModel profileModel, String refreshToken,
                                            String identifier, String identifierType) {
-        interactor.unlinkAccountTokoCash(unlinkSubscriber(), refreshToken, identifier, identifierType);
+        interactor.unlinkAccountTokoCash(unlinkSubscriber(profileModel, identifier), refreshToken, identifier, identifierType);
     }
 
-    private Subscriber<Boolean> unlinkSubscriber() {
+    private Subscriber<Boolean> unlinkSubscriber(final ProfileModel profileModel, final String identifier) {
         return new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -92,9 +93,15 @@ public class WalletAccountSettingPresenter implements IWalletAccountSettingPrese
 
             @Override
             public void onNext(Boolean isSuccess) {
-                if (isSuccess)
-                    view.renderSuccessUnlinkAccount();
+                if (isSuccess) {
+                    if (profileModel != null) {
+                        if (profileModel.getProfileData().getUserInfo().getUserEmail().equals(identifier))
+                            view.renderSuccessUnlinkToHome();
+                        else
+                            view.renderSuccessUnlinkAccount();
 
+                    }
+                }
             }
         };
     }

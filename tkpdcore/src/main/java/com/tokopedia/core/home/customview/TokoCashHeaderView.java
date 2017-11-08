@@ -54,6 +54,7 @@ public class TokoCashHeaderView extends RelativeLayout {
         headerTokoCashLabel.setText(homeHeaderWalletAction.getLabelTitle());
         tokoCashAmount.setText(homeHeaderWalletAction.getBalance());
         tokoCashButton.setText(homeHeaderWalletAction.getLabelActionButton());
+        tokoCashButton.setVisibility(VISIBLE);
         if (homeHeaderWalletAction.getTypeAction()
                 == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
             pendingLayout.setVisibility(GONE);
@@ -61,10 +62,13 @@ public class TokoCashHeaderView extends RelativeLayout {
             if (homeHeaderWalletAction.isVisibleActionButton())
                 tokoCashButton.setVisibility(VISIBLE);
             else tokoCashButton.setVisibility(GONE);
-            tokoCashAmount.setOnClickListener(new OnClickListener() {
+            normalLayout.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventTokoCashCheckSaldoClick();
+                    if (!homeHeaderWalletAction.getAppLinkActionButton().contains("webview") &&
+                            homeHeaderWalletAction.getTypeAction() == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
+                        UnifyTracking.eventTokoCashCheckSaldoClick();
+                    }
                     actionListener.actionAppLinkWalletHeader(
                             homeHeaderWalletAction.getRedirectUrlBalance(),
                             homeHeaderWalletAction.getAppLinkBalance()
@@ -78,7 +82,8 @@ public class TokoCashHeaderView extends RelativeLayout {
         tokoCashButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (homeHeaderWalletAction.getTypeAction() == HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION) {
+                if (!homeHeaderWalletAction.getAppLinkActionButton().contains("webview") &&
+                        homeHeaderWalletAction.getTypeAction() == HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION) {
                     UnifyTracking.eventTokoCashActivateClick();
                 }
                 actionListener.actionAppLinkWalletHeader(
