@@ -124,7 +124,7 @@ class TransactionHistory extends Component {
                       <Text style={[styles.font14, styles.fontcolor71, { width: '80%' }]}>{res.product_name} </Text>
                       <Text style={[styles.font13, styles.fontcolor61, { marginTop: 10 }]}>Jumlah Barang: {res.product_quantity}</Text>
                     </View>
-                    <Text style={[styles.font14, styles.fontcolor71]}>{rowItem.order_products.product_price}</Text>
+                    <Text style={[styles.font14, styles.fontcolor71]}>{res.product_price}</Text>
                   </View>
                 )}
               </View>
