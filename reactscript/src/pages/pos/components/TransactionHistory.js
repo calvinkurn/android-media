@@ -27,9 +27,16 @@ class TransactionHistory extends Component {
     
 
   clickHandler(id){
-    console.log('masuk sini ', id)
     this.setState({ selectedOrder: id })
   }
+
+
+
+  // loadMore = () => {
+  //   console.log('On end reached: history transaction')
+  //   console.log(this.props)
+  //   this.props.dispatch(getTransactionHistory())
+  // }
 
 
 
@@ -137,6 +144,8 @@ class TransactionHistory extends Component {
                 keyExtractor={(item, index) => index}
                 data={this.props.data_history}
                 extraData={this.state}
+                onEndReached={this.loadMore}
+                onEndReachedThreshold={0.5}
                 renderItem={this._renderTransactionHistory.bind(this)} />
             }
           </View>
