@@ -50,12 +50,9 @@ public class GetAllProductUseCase extends UseCase<ProductListDomain> {
                     Observable.defer(new Func0<Observable<ProductListDomain>>() {
                         @Override
                         public Observable<ProductListDomain> call() {
-                            Log.d("o2o", "defer");
                             if (getNextPage) {
-                                Log.d("o2o", "nextPage: true");
                                 return productRepository.getProductList(requestParams);
                             }
-                            Log.d("o2o", "nextPage: false");
                             return Observable.error(new Exception("Repeating Process Finished"));
                         }
                     })
@@ -75,9 +72,7 @@ public class GetAllProductUseCase extends UseCase<ProductListDomain> {
 
                         @Override
                         public void onNext(ProductListDomain productListDomain) {
-                            Log.d("o2o", "product list domain retrieved");
                             if (productListDomain.getNextUri() != null && !productListDomain.getNextUri().isEmpty()) {
-                                Log.d("o2o", "next uri isnt null");
                                 page++;
                                 requestParams.putInt(START, 1 + (requestParams.getInt(ROW, 10) * (page - 1)));
                                 getNextPage = true;
