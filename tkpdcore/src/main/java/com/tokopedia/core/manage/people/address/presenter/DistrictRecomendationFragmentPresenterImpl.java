@@ -1,6 +1,5 @@
 package com.tokopedia.core.manage.people.address.presenter;
 
-import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.manage.people.address.interactor.DistrictRecommendationRetrofitInteractor;
 import com.tokopedia.core.manage.people.address.interactor.DistrictRecommendationRetrofitInteractorImpl;
 import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
@@ -40,19 +39,32 @@ public class DistrictRecomendationFragmentPresenterImpl implements DistrictRecom
 
     private void query(String query) {
         view.showLoading();
-        retrofitInteractor.getDistrictRecommendation(getParams(query))
-                .subscribe(new DefaultSubscriber<AddressResponse>() {
+        retrofitInteractor.getDistrictRecommendation(getParams(query),
+                new DistrictRecommendationRetrofitInteractor.DistrictRecommendationListener() {
                     @Override
-                    public void onNext(AddressResponse addressResponse) {
+                    public void onSuccess(AddressResponse model) {
                         view.hideLoading();
-                        addresses.addAll(addressResponse.getAddresses());
-                        hasNext = addressResponse.isNextAvailable();
+                        addresses.addAll(model.getAddresses());
+                        hasNext = model.isNextAvailable();
                         view.updateRecommendation();
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onFailed(String error) {
                         view.hideLoading();
+                        view.showMessage(error);
+                    }
+
+                    @Override
+                    public void onTimeout(String timeoutError) {
+                        view.hideLoading();
+                        view.showNoConnection(timeoutError);
+                    }
+
+                    @Override
+                    public void onNoConnection() {
+                        view.hideLoading();
+                        view.showNoConnection(null);
                     }
                 });
     }

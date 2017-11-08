@@ -50,7 +50,8 @@
             android:completionThreshold="3"
             android:digits="1234567890"
             android:hint="@string/title_post_code"
-            android:inputType="phone" />
+            android:inputType="phone"
+            android:maxLength="5" />
 
     </android.support.design.widget.TextInputLayout>
 

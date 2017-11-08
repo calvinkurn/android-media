@@ -20,6 +20,7 @@ import com.tokopedia.core.manage.people.address.model.districtrecomendation.Addr
 import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
 import com.tokopedia.core.manage.people.address.presenter.DistrictRecomendationFragmentPresenter;
 import com.tokopedia.core.manage.people.address.presenter.DistrictRecomendationFragmentPresenterImpl;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.text.SearchInputView;
 
 import java.util.concurrent.TimeUnit;
@@ -30,7 +31,8 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class DistrictRecommendationFragment extends BasePresenterFragment<DistrictRecomendationFragmentPresenter>
+public class DistrictRecommendationFragment
+        extends BasePresenterFragment<DistrictRecomendationFragmentPresenter>
         implements DistrictRecomendationFragmentView, DistrictRecommendationAdapter.Listener {
 
     private static final int THRESHOLD = 3;
@@ -40,10 +42,8 @@ public class DistrictRecommendationFragment extends BasePresenterFragment<Distri
     RecyclerView rvAddressSuggestion;
     @BindView(R2.id.pb_loading)
     ProgressBar pbLoading;
-    @BindView(R2.id.tv_advice)
-    TextView tvAdvice;
-    @BindView(R2.id.tv_no_result)
-    TextView tvNoResult;
+    @BindView(R2.id.tv_message)
+    TextView tvMessage;
     private int maxItemPosition;
     private OnQueryListener queryListener;
     private DistrictRecommendationAdapter adapter;
@@ -125,6 +125,7 @@ public class DistrictRecommendationFragment extends BasePresenterFragment<Distri
 
     private void submitQuery(String text) {
         if (text.length() == 0) {
+            hideLoading();
             presenter.clearData();
         } else {
             if (text.length() >= THRESHOLD) {
@@ -144,7 +145,8 @@ public class DistrictRecommendationFragment extends BasePresenterFragment<Distri
     @Override
     protected void initialVar() {
         adapter = new DistrictRecommendationAdapter(presenter.getAddresses(), this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false);
         rvAddressSuggestion.setLayoutManager(linearLayoutManager);
         rvAddressSuggestion.setAdapter(adapter);
 
@@ -193,33 +195,53 @@ public class DistrictRecommendationFragment extends BasePresenterFragment<Distri
     @Override
     public void updateRecommendation() {
         if (searchInputViewAddress.getSearchText().length() == 0) {
-            tvNoResult.setVisibility(View.GONE);
-            rvAddressSuggestion.setVisibility(View.GONE);
-            tvAdvice.setVisibility(View.VISIBLE);
+            showMessage(getString(R.string.hint_advice_search_address));
         } else {
             adapter.notifyDataSetChanged();
             if (adapter.getItemCount() == 0) {
-                rvAddressSuggestion.setVisibility(View.GONE);
-                tvAdvice.setVisibility(View.GONE);
-                tvNoResult.setVisibility(View.VISIBLE);
+                showMessage(getString(R.string.hint_search_address_no_result));
             } else {
-                tvAdvice.setVisibility(View.GONE);
-                tvNoResult.setVisibility(View.GONE);
-                rvAddressSuggestion.setVisibility(View.VISIBLE);
+                hideMessage();
             }
         }
     }
 
     @Override
+    public void showMessage(String message) {
+        rvAddressSuggestion.setVisibility(View.GONE);
+        tvMessage.setText(message);
+        tvMessage.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideMessage() {
+        tvMessage.setVisibility(View.GONE);
+        rvAddressSuggestion.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void showLoading() {
-        tvNoResult.setVisibility(View.GONE);
-        tvAdvice.setVisibility(View.GONE);
+        tvMessage.setVisibility(View.GONE);
         pbLoading.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
         pbLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showNoConnection(String message) {
+        if (message == null) {
+            message = getString(R.string.msg_no_connection);
+        }
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        submitQuery(searchInputViewAddress.getSearchText());
+                    }
+                });
     }
 
     private Subscriber<String> queryAutoCompleteSubscriber() {

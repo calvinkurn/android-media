@@ -24,6 +24,12 @@ public class DistrictRecommendationActivity extends BasePresenterActivity {
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setTheme(R.style.Theme_AppCompat_Light_NoActionBar);
+    }
+
+    @Override
     protected void setupURIPass(Uri data) {
 
     }

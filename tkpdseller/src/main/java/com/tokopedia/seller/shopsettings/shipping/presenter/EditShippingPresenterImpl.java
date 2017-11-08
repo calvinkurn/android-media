@@ -137,7 +137,11 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                         openShopModel.setShipment(model.getShipment());
                         setCourierModel(model.getShipment());
                         shopInformation.setShopDistrictId(Integer.parseInt(locationID));
-                        view.refreshLocationViewListener(shopInformation);
+                        if (selectedAddress == null) {
+                            view.refreshLocationViewListener(shopInformation);
+                        } else {
+                            view.refreshLocationViewListener(selectedAddress);
+                        }
                         sortCourierOpenShop(model);
                         activateCourierServices(model.getShipment());
                         displayCourierOpenShop(model);
@@ -219,7 +223,11 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                 EditShippingPresenterImpl.this.model.setCourier(model.getCourier());
                 setCourierModel(model.courier);
                 shopInformation.setShopDistrictId(Integer.parseInt(districtID));
-                view.refreshLocationViewListener(shopInformation);
+                if (selectedAddress == null) {
+                    view.refreshLocationViewListener(shopInformation);
+                } else {
+                    view.refreshLocationViewListener(selectedAddress);
+                }
                 sortCourier(model);
                 activateCourierServices(model.courier);
                 displayCourierList(model);

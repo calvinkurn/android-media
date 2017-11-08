@@ -257,6 +257,13 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     @Override
+    public void refreshLocationViewListener(Address address) {
+        refreshView();
+        fragmentShippingHeader.updateLocationData(address.getProvinceName(),
+                address.getCityName(), address.getDistrictName());
+    }
+
+    @Override
     public void locationDialogTimeoutListener() {
         progressDialog.dismiss();
     }
@@ -369,9 +376,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
                             address.getProvinceName(),
                             address.getCityName(),
                             address.getDistrictName());
-                    break;
-                case LOCATION_FRAGMENT_REQUEST_CODE:
-                    changeLocationRequest(data);
+                    changeLocationRequest(address.getDistrictId());
                     break;
                 case OPEN_MAP_CODE:
                     changeGoogleMapData(data);
@@ -384,12 +389,12 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         }
     }
 
-    private void changeLocationRequest(Intent data) {
+    private void changeLocationRequest(int originId) {
         progressDialog.showDialog();
         if (getArguments().getInt(MAP_MODE) == CREATE_SHOP_PAGE || getArguments().containsKey(RESUME_OPEN_SHOP_DATA_KEY)) {
-            editShippingPresenter.fetchDataByLocationOpenShop(data.getStringExtra(SELECTED_LOCATION_ID_KEY));
+            editShippingPresenter.fetchDataByLocationOpenShop(String.valueOf(originId));
         } else {
-            editShippingPresenter.fetchDataByLocation(data.getStringExtra(SELECTED_LOCATION_ID_KEY));
+            editShippingPresenter.fetchDataByLocation(String.valueOf(originId));
         }
     }
 
