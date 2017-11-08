@@ -67,8 +67,7 @@ public class TopAdsProductAdListActivity extends BaseSimpleActivity
                             topAdsProductAdListFragment.getFilterView(),
                             getString(R.string.topads_showcase_product_list_title_2),
                             getString(R.string.topads_showcase_product_list_desc_2),
-                            ShowCaseContentPosition.UNDEFINED,
-                            Color.WHITE));
+                            ShowCaseContentPosition.UNDEFINED));
 
             RecyclerView recyclerView = topAdsProductAdListFragment.getRecyclerView();
             recyclerView.postDelayed(new Runnable() {

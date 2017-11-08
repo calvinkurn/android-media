@@ -66,8 +66,7 @@ public class TopAdsGroupAdListActivity extends BaseSimpleActivity
                             topAdsGroupAdListFragment.getFilterView(),
                             getString(R.string.topads_showcase_group_list_title_2),
                             getString(R.string.topads_showcase_group_list_desc_2),
-                            ShowCaseContentPosition.UNDEFINED,
-                            Color.WHITE));
+                            ShowCaseContentPosition.UNDEFINED));
 
             RecyclerView recyclerView = topAdsGroupAdListFragment.getRecyclerView();
             recyclerView.postDelayed(new Runnable() {
