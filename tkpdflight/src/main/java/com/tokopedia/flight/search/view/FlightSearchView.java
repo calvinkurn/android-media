@@ -9,7 +9,6 @@ import com.tokopedia.usecase.RequestParams;
  */
 
 public interface FlightSearchView extends BaseListViewListener<FlightSearchViewModel> {
-    RequestParams getSearchFlightRequestParam();
 
     void setSelectedSortItem(int itemId);
 

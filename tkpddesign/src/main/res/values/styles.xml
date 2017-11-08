@@ -143,9 +143,9 @@
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
-    <style name="checkBoxStyleSeller" parent="Base.Theme.AppCompat">
+    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
         <item name="colorAccent">@color/tkpd_main_green</item>
-        <item name="android:textColorSecondary">#1e000000</item>
+        <item name="android:textColorSecondary">@color/grey_400</item>
     </style>
 
     <style name="BottomSheetBuilder.DialogStyle" parent="Theme.Design.BottomSheetDialog">

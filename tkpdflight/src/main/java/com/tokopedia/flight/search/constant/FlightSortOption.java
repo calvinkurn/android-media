@@ -9,6 +9,7 @@ import java.lang.annotation.RetentionPolicy;
  * Created by alvarisi on 11/1/17.
  */
 @IntDef({
+        FlightSortOption.NO_PREFERENCE,
         FlightSortOption.EARLIEST_DEPARTURE,
         FlightSortOption.LATEST_DEPARTURE,
         FlightSortOption.EARLIEST_ARRIVAL,
@@ -19,6 +20,7 @@ import java.lang.annotation.RetentionPolicy;
         FlightSortOption.MOST_EXPENSIVE})
 @Retention(RetentionPolicy.SOURCE)
 public @interface FlightSortOption {
+    int NO_PREFERENCE = 0;
     int EARLIEST_DEPARTURE = 1;
     int LATEST_DEPARTURE = 2;
     int EARLIEST_ARRIVAL = 3;

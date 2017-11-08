@@ -85,6 +85,10 @@ public abstract class BaseListV2Fragment<T extends ItemType> extends BaseDaggerF
         adapter.addData(list, totalItem);
     }
 
+    public BaseListV2Adapter<T> getAdapter() {
+        return adapter;
+    }
+
     @Override
     public void onLoadSearchError(Throwable t) {
         hideLoading();
