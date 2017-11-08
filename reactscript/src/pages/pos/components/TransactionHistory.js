@@ -40,11 +40,7 @@ class TransactionHistory extends Component {
 
 
   _renderTransactionHistory(rowData){
-    // console.log(rowData)
     const rowItem = rowData.item
-    // console.log(rowItem.order_shop)
-    // console.log(rowItem.order_shop.address_city)
-    // console.log(rowData.index)
 
     return (
       <View>
@@ -346,8 +342,6 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  // console.log(state)
-  // console.log(state.historyTransaction.items[0])
   return {
     ...state.transactionHistory,
     data_history: state.historyTransaction.items,
