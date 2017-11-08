@@ -47,6 +47,14 @@
             android:name=".booking.view.activity.FlightBookingPhoneCodeActivity"
             android:label="@string/activity_label_flight_booking_phone_code"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".booking.view.activity.FlightBookingNationalityActivity"
+            android:label="@string/activity_label_flight_nationality"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".booking.view.activity.FlightBookingIssuingCountry"
+            android:label="@string/activity_label_flight_issuing_country"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

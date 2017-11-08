@@ -33,7 +33,7 @@ public class FlightBookingGetPhoneCodeUseCase extends UseCase<List<FlightBooking
                 .flatMap(new Func1<List<FlightAirportDB>, Observable<List<FlightBookingPhoneCodeViewModel>>>() {
                     @Override
                     public Observable<List<FlightBookingPhoneCodeViewModel>> call(List<FlightAirportDB> flightAirportDBs) {
-                        List<FlightBookingPhoneCodeViewModel> flightBookingPhoneCodeViewModels = new ArrayList<FlightBookingPhoneCodeViewModel>();
+                        List<FlightBookingPhoneCodeViewModel> flightBookingPhoneCodeViewModels = new ArrayList<>();
                         for (FlightAirportDB flightAirportDB : flightAirportDBs) {
                             FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel = new FlightBookingPhoneCodeViewModel();
                             boolean isCountryIdDuplicate = false;
