@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -192,9 +193,11 @@ public class OutletFragment extends BaseDaggerFragment implements Outlet.View, S
         editSearchOutlet.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (keyEvent != null
-                        && keyEvent.getAction() == KeyEvent.ACTION_DOWN
-                        && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                if (keyEvent != null && keyEvent.getAction() != KeyEvent.ACTION_DOWN) {
+                    return false;
+                } else if (i == EditorInfo.IME_ACTION_SEARCH
+                        || keyEvent == null
+                        || keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                     outletPresenter.getOutlet(editSearchOutlet.getText().toString().trim());
                     scrollListener.resetState();
                 }
