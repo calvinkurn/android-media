@@ -369,6 +369,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         }
     }
 
+    @SuppressWarnings("Range")
     private void showMessageErrorInSnackBar(int resId) {
         Snackbar snackBar = SnackbarManager.make(getActivity(),
                 getString(resId), Snackbar.LENGTH_LONG)

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.R;
@@ -19,32 +20,38 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
  * Created by User on 10/26/2017.
  */
 
-public class FlightSearchActivity extends BaseSimpleActivity {
-    private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
-    private String departureLocation;
-    private String arrivalLocation;
-    private String dateString;
-    private String passengerString;
-    private String classString;
+public class FlightSearchActivity extends BaseSimpleActivity
+        implements FlightSearchFragment.OnFlightSearchFragmentListener{
+    protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
+    protected String departureLocation;
+    protected String arrivalLocation;
+    protected String dateString;
+    protected String passengerString;
+    protected String classString;
 
-    private FlightSearchPassDataViewModel passDataViewModel;
+    protected FlightSearchPassDataViewModel passDataViewModel;
 
-    public static void start(Context context) {
-        Intent intent = new Intent(context, FlightSearchActivity.class);
+    public static void start(Context context, FlightSearchPassDataViewModel passDataViewModel) {
+        Intent intent = getCallingIntent(context, passDataViewModel);
         context.startActivity(intent);
     }
 
-    public static Intent getCallingIntent(Activity activity, FlightSearchPassDataViewModel passDataViewModel) {
-        Intent intent = new Intent(activity, FlightSearchActivity.class);
+    public static Intent getCallingIntent(Context context, FlightSearchPassDataViewModel passDataViewModel) {
+        Intent intent = new Intent(context, FlightSearchActivity.class);
         intent.putExtra(EXTRA_PASS_DATA, passDataViewModel);
         return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        passDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
+        initializeDataFromIntent();
         super.onCreate(savedInstanceState);
 
+        setupFlightToolbar();
+    }
+
+    protected void initializeDataFromIntent(){
+        passDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
         String departureCode = passDataViewModel.getDepartureAirport().getAirportId();
         if (TextUtils.isEmpty(departureCode)) {
             departureCode = passDataViewModel.getDepartureAirport().getCityCode();
@@ -62,8 +69,6 @@ public class FlightSearchActivity extends BaseSimpleActivity {
         );
         passengerString = buildPassengerTextFormatted(passDataViewModel.getFlightPassengerViewModel());
         classString = passDataViewModel.getFlightClass().getTitle();
-
-        setupFlightToolbar();
     }
 
     private void setupFlightToolbar() {
@@ -84,7 +89,7 @@ public class FlightSearchActivity extends BaseSimpleActivity {
         return FlightSearchFragment.newInstance(passDataViewModel);
     }
 
-    private String buildPassengerTextFormatted(FlightPassengerViewModel passData) {
+    protected String buildPassengerTextFormatted(FlightPassengerViewModel passData) {
         String passengerFmt = "";
         if (passData.getAdult() > 0) {
             passengerFmt = passData.getAdult() + " " + getString(R.string.flight_dashboard_adult_passenger);
@@ -97,4 +102,14 @@ public class FlightSearchActivity extends BaseSimpleActivity {
         }
         return passengerFmt;
     }
+
+    @Override
+    public void selectFlight(String selectedFlightID) {
+        if (passDataViewModel.isOneWay()) {
+            Toast.makeText(this, "GO TO CART with id " + selectedFlightID, Toast.LENGTH_LONG).show();
+        } else {
+            FlightSearchReturnActivity.start(this, passDataViewModel, selectedFlightID);
+        }
+    }
+
 }

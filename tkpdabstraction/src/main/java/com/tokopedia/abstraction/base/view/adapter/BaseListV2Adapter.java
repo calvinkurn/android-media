@@ -298,7 +298,11 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
 
     @Override
     public int getItemCount() {
-        return getDataSize() + super.getItemCount();
+        if (getDataSize() == 0) {
+            return 1;
+        } else {
+            return getDataSize() + super.getItemCount();
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.tokopedia.flight.search.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
@@ -8,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,8 +46,9 @@ import javax.inject.Inject;
 
 public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewModel> implements FlightSearchView,
         BaseListV2Adapter.OnBaseListV2AdapterListener<FlightSearchViewModel> {
-    private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
+    protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
+    private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
 
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
     private static final String SAVED_STAT_MODEL = "svd_stat_model";
@@ -58,6 +61,11 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     private FlightSearchPassDataViewModel flightSearchPassDataViewModel;
 
     int selectedSortOption = FlightSortOption.NO_PREFERENCE;
+
+    private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
+    public interface OnFlightSearchFragmentListener{
+        void selectFlight(String selectedFlightID);
+    }
 
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
@@ -114,7 +122,6 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         return null;
     }
 
-    @CallSuper
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -150,7 +157,8 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
-        getActivity().startActivity(FlightDetailActivity.createIntent(getActivity(), flightSearchViewModel));
+        this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightSearchViewModel),
+                REQUEST_CODE_SEE_DETAIL_FLIGHT);
     }
 
     @Override
@@ -218,6 +226,14 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
                         filterHasChanged = true;
                     }
                     break;
+                case REQUEST_CODE_SEE_DETAIL_FLIGHT:
+                    if (data != null && data.hasExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED)) {
+                        String selectedId = data.getStringExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED);
+                        if (!TextUtils.isEmpty(selectedId)) {
+                            onFlightSearchFragmentListener.selectFlight(selectedId);
+                        }
+                    }
+                    break;
             }
         }
     }
@@ -262,5 +278,11 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         outState.putParcelable(SAVED_FILTER_MODEL, flightFilterModel);
         outState.putParcelable(SAVED_STAT_MODEL, flightSearchStatisticModel);
         outState.putInt(SAVED_SORT_OPTION, selectedSortOption);
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        onFlightSearchFragmentListener = (OnFlightSearchFragmentListener) context;
     }
 }
