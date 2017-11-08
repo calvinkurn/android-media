@@ -3,11 +3,14 @@ package com.tokopedia.flight.booking.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
+
 /**
  * Created by alvarisi on 11/7/17.
  */
 
-public class FlightBookingLuggageViewModel implements Parcelable {
+public class FlightBookingLuggageViewModel implements Parcelable, ItemType {
+    public static final int TYPE = 7923;
     private String id;
     private String priceFmt;
     private String weightFmt;
@@ -67,5 +70,10 @@ public class FlightBookingLuggageViewModel implements Parcelable {
         dest.writeString(id);
         dest.writeString(priceFmt);
         dest.writeString(weightFmt);
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }
