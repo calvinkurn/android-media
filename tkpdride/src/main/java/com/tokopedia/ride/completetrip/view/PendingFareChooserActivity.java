@@ -102,6 +102,6 @@ public class PendingFareChooserActivity extends BaseActivity implements TokoCash
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_RIDE_PENDING_FAIR_CHOOSER;
+        return AppScreen.SCREEN_RIDE_PENDING_FARE_CHOOSER;
     }
 }

@@ -243,7 +243,7 @@ public final class AppScreen {
     public static final String SCREEN_RIDE_HISTORY = "Ride Your Trips Screen";
     public static final String SCREEN_RIDE_CANCEL_REASON = "Ride Cancel Reason Screen";
     public static final String SCREEN_RIDE_HISTORY_NEED_HELP ="Ride History Need Help Screen";
-    public static final String SCREEN_RIDE_PENDING_FAIR_CHOOSER ="Ride Pending Fair Chooser Screen";
+    public static final String SCREEN_RIDE_PENDING_FARE_CHOOSER ="Ride Pending Fare Chooser Screen";
     public static final String SCREEN_RIDE_TOPUP_TOKOCASH_CHANGE_DESTINATION = "Ride Topup TokoCash Change Destination Screen";
     public static final String SCREEN_DEEPLINK_APPLINKHANDLER = "AppLink Handler";
     public static final String SCREEN_RESOLUTION_CENTER_HISTORY_ACTION = "Resolution Center - History Action Page";
