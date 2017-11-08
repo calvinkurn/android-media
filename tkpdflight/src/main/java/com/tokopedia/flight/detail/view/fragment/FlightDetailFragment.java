@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
-import com.tokopedia.flight.search.data.cloud.model.Route;
+import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 /**

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -105,7 +106,7 @@ public abstract class DataListSource<T, U> {
                     return getRefreshedData(params).flatMap(new Func1<List<U>, Observable<Integer>>() {
                         @Override
                         public Observable<Integer> call(List<U> us) {
-                            return Observable.just(us == null? 0: us.size());
+                            return Observable.just(us == null ? 0 : us.size());
                         }
                     });
                 } else {
@@ -121,6 +122,15 @@ public abstract class DataListSource<T, U> {
 
     public Observable<Boolean> setCacheExpired() {
         return dataListCacheManager.setExpired();
+    }
+
+    public Observable<Boolean> deleteCache() {
+        return dataListDBManager.deleteAll().flatMap(new Func1<Boolean, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(Boolean aBoolean) {
+                return setCacheExpired();
+            }
+        });
     }
 
 }

@@ -41,6 +41,9 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
     }
 
     public static String getQueryFromMap(HashMap<String, Object> params){
+        if (params == null) {
+            return "";
+        }
         return (String) params.get(FlightAirportDataListCloudSource.KEYWORD);
     }
 }

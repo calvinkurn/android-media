@@ -55,6 +55,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     private FlightFilterModel flightFilterModel;
     private FlightSearchStatisticModel flightSearchStatisticModel;
+    private FlightSearchPassDataViewModel flightSearchPassDataViewModel;
 
     int selectedSortOption = FlightSortOption.NO_PREFERENCE;
 
@@ -74,6 +75,9 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        flightSearchPassDataViewModel = getArguments().getParcelable(EXTRA_PASS_DATA);
+
         if (savedInstanceState == null) {
             flightFilterModel = new FlightFilterModel();
             flightSearchStatisticModel = null;
@@ -152,7 +156,8 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     @Override
     public void loadData(int page, int currentDataSize, int rowPerPage) {
         showLoading();
-        flightSearchPresenter.searchAndSortFlight(isReturning(), true, flightFilterModel, selectedSortOption);
+        flightSearchPresenter.searchAndSortFlight(flightSearchPassDataViewModel,
+                isReturning(), false, flightFilterModel, selectedSortOption);
     }
 
     @Override
@@ -180,7 +185,8 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
                             @SuppressWarnings("WrongConstant")
                             @Override
                             public void onBottomSheetItemClick(MenuItem item) {
-                                flightSearchPresenter.searchAndSortFlight(isReturning(),true,flightFilterModel, item.getItemId());
+                                flightSearchPresenter.searchAndSortFlight(flightSearchPassDataViewModel,
+                                        isReturning(),true,flightFilterModel, item.getItemId());
                             }
                         })
                         .createDialog();
@@ -191,9 +197,6 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getAdapter().getData() == null || getAdapter().getData().size() == 0) {
-                    return;
-                }
                 startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
                         isReturning(),
                         flightSearchStatisticModel,
@@ -201,6 +204,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
                         REQUEST_CODE_SEARCH_FILTER);
             }
         });
+        filterAndSortBottomAction.setVisibility(View.GONE);
     }
 
     @Override
@@ -221,6 +225,9 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     @Override
     public void onSearchLoaded(@NonNull List<FlightSearchViewModel> list, int totalItem) {
         super.onSearchLoaded(list, totalItem);
+        if (filterAndSortBottomAction.getVisibility() == View.GONE) {
+            filterAndSortBottomAction.setVisibility(View.VISIBLE);
+        }
         // TODO, will not work if api has paging, will be converted to usecase later
         if (totalItem > 0 && flightSearchStatisticModel == null) {
             flightSearchStatisticModel = new FlightSearchStatisticModel(list);

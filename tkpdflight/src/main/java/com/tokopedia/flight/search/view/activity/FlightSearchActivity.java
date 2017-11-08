@@ -42,8 +42,9 @@ public class FlightSearchActivity extends BaseSimpleActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         passDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
+        super.onCreate(savedInstanceState);
+
         String departureCode = passDataViewModel.getDepartureAirport().getAirportId();
         if (TextUtils.isEmpty(departureCode)) {
             departureCode = passDataViewModel.getDepartureAirport().getCityCode();

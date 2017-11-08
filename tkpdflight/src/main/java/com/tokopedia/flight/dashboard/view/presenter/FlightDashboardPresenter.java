@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
@@ -20,6 +21,8 @@ import java.util.TimeZone;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
+
 /**
  * Created by alvarisi on 10/30/17.
  */
@@ -27,10 +30,12 @@ import javax.inject.Inject;
 public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboardContract.View> implements FlightDashboardContract.Presenter {
 
     private FlightDashboardValidator validator;
+    private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
 
     @Inject
-    public FlightDashboardPresenter(FlightDashboardValidator validator) {
+    public FlightDashboardPresenter(FlightDashboardValidator validator, DeleteFlightCacheUseCase deleteFlightCacheUseCase) {
         this.validator = validator;
+        this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
     }
 
     @Override
@@ -221,7 +226,22 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onSearchTicketButtonClicked() {
         if (validateSearchParam(getView().getCurrentDashboardViewModel())){
-            getView().navigateToSearchPage(getView().getCurrentDashboardViewModel());
+            deleteFlightCacheUseCase.execute(DeleteFlightCacheUseCase.createRequestParam(), new Subscriber<Boolean>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Boolean aBoolean) {
+                    getView().navigateToSearchPage(getView().getCurrentDashboardViewModel());
+                }
+            });
         }
     }
 

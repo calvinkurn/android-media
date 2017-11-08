@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.data.cloud.model.Info;
+import com.tokopedia.flight.search.data.cloud.model.response.Info;
 
 /**
  * Created by zulfikarrahman on 10/31/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.flight.search.data.cloud.model;
+package com.tokopedia.flight.search.data.cloud.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -55,6 +55,9 @@ public class Attributes {
     @SerializedName("before_total")
     @Expose
     private String beforeTotal;
+    @SerializedName("fare")
+    @Expose
+    private Fare fare;
 
     public String getAid() {
         return aid;
@@ -114,5 +117,9 @@ public class Attributes {
 
     public String getBeforeTotal() {
         return beforeTotal;
+    }
+
+    public Fare getFare() {
+        return fare;
     }
 }

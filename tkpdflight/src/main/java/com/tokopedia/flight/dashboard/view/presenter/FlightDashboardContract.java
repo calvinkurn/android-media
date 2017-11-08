@@ -47,6 +47,7 @@ public interface FlightDashboardContract {
         void showFlightClassPassengerIsEmpty(@StringRes int resId);
 
         void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
