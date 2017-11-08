@@ -311,7 +311,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 kolPostDomain.getLikeCount(),
                 kolPostDomain.getCommentCount(),
                 page,
-                "",
+                kolPostDomain.getUserUrl(),
                 kolPostDomain.getItemId(),
                 kolPostDomain.getId(),
                 TimeConverter.generateTime(kolPostDomain.getCreateTime()),

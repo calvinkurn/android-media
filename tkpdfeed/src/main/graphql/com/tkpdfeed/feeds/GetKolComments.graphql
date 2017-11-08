@@ -4,6 +4,7 @@ query GetKolComments($idPost: Int!, $cursor: String, $limit: Int!) {
         data {
             lastcursor
             total_data
+            has_next_page
             comment {
                 id
                 userID

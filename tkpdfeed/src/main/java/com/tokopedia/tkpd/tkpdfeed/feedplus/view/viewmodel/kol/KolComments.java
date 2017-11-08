@@ -9,14 +9,14 @@ import java.util.ArrayList;
 public class KolComments {
 
     private final String lastcursor;
-    private int totalData;
+    private final boolean hasNextPage;
     ArrayList<KolCommentViewModel> listComments;
 
-    public KolComments(String lastcursor, ArrayList<KolCommentViewModel> listComments, int
-            totalData) {
+    public KolComments(String lastcursor, boolean hasNextPage, ArrayList<KolCommentViewModel>
+            listComments) {
         this.listComments = listComments;
         this.lastcursor = lastcursor;
-        this.totalData = totalData;
+        this.hasNextPage = hasNextPage;
     }
 
     public ArrayList<KolCommentViewModel> getListComments() {
@@ -27,7 +27,7 @@ public class KolComments {
         return lastcursor;
     }
 
-    public int getTotalData() {
-        return totalData;
+    public boolean isHasNextPage() {
+        return hasNextPage;
     }
 }

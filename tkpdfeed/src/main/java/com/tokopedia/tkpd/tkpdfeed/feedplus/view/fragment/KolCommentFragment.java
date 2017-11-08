@@ -197,8 +197,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         adapter.setList(list);
 
         if (adapter.getHeader() != null)
-            adapter.getHeader().setCanLoadMore(adapter.getItemCount() - 1 < kolComments.getTotalData
-                    ());
+            adapter.getHeader().setCanLoadMore(kolComments.isHasNextPage());
 
         adapter.notifyDataSetChanged();
 
@@ -216,8 +215,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         adapter.addList(list);
 
         if (adapter.getHeader() != null) {
-            adapter.getHeader().setCanLoadMore(adapter.getItemCount() - 1 < kolComments.getTotalData
-                    ());
+            adapter.getHeader().setCanLoadMore(kolComments.isHasNextPage());
             adapter.getHeader().setLoading(false);
             adapter.notifyItemChanged(0);
         }

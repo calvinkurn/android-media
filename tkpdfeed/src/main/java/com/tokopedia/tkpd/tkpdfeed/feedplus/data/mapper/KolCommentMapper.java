@@ -42,8 +42,8 @@ public class KolCommentMapper implements Func1<GetKolComments.Data, KolComments>
 
     private KolComments convertToDomain(GetKolComments.Data.Data1 data) {
         return new KolComments(data.lastcursor() == null ? "" : data.lastcursor(),
-                convertToList(data.comment()),
-        data.total_data());
+                data.has_next_page() == null ? false : data.has_next_page(),
+                convertToList(data.comment()));
     }
 
     private ArrayList<KolCommentViewModel> convertToList(List<GetKolComments.Data.Comment>

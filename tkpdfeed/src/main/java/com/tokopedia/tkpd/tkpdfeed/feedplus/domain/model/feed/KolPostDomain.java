@@ -79,12 +79,15 @@ public class KolPostDomain {
     @Nullable
     String headerTitle;
 
+    @Nullable
+    private final String userUrl;
+
 
     public KolPostDomain(int id, String imageUrl, String description, int commentCount,
                          int likeCount, boolean isLiked, boolean isFollowed, String createTime,
                          String productPrice, String contentLink, String contentUrl, String userName,
                          String userPhoto, String tagsType, String caption, int itemId, String label,
-                         String headerTitle) {
+                         String headerTitle, String userUrl) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.description = description;
@@ -103,6 +106,7 @@ public class KolPostDomain {
         this.itemId = itemId;
         this.label = label;
         this.headerTitle = headerTitle;
+        this.userUrl = userUrl;
     }
 
     @Nullable
@@ -193,5 +197,10 @@ public class KolPostDomain {
     @Nullable
     public String getHeaderTitle() {
         return headerTitle;
+    }
+
+    @Nullable
+    public String getUserUrl() {
+        return userUrl;
     }
 }

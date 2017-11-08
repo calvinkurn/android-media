@@ -4676,6 +4676,29 @@
               "deprecationReason": null
             },
             {
+              "name": "get_profile_kol_data",
+              "description": null,
+              "args": [
+                {
+                  "name": "userID",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CheckWhiteListType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "PromoWidgetQuery",
               "description": null,
               "args": [
@@ -11358,6 +11381,18 @@
               "deprecationReason": null
             },
             {
+              "name": "userUrl",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "createTime",
               "description": null,
               "args": [],
@@ -11518,6 +11553,18 @@
           "name": "KolRecommendedDataType",
           "description": null,
           "fields": [
+            {
+              "name": "index",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "kols",
               "description": null,
@@ -43774,6 +43821,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "has_next_page",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "isDeprecated": false,

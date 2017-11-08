@@ -329,7 +329,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                     content.tags().get(0).caption() == null ? "" : content.tags().get(0).caption(),
                     content.tags().get(0).id() == null ? 0 : content.tags().get(0).id(),
                     kolpost.userInfo() == null ? "" : kolpost.userInfo(),
-                    kolpost.headerTitle() == null ? "" : kolpost.headerTitle());
+                    kolpost.headerTitle() == null ? "" : kolpost.headerTitle(),
+                    kolpost.userUrl() == null ? "" : kolpost.userUrl());
         } else if (datum.content().followedkolpost() != null) {
             FeedQuery.Data.Followedkolpost kolpost = datum.content()
                     .followedkolpost();
@@ -353,7 +354,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                     content.tags().get(0).caption() == null ? "" : content.tags().get(0).caption(),
                     content.tags().get(0).id() == null ? 0 : content.tags().get(0).id(),
                     kolpost.userInfo() == null ? "" : kolpost.userInfo(),
-                    "");
+                    "",
+                    kolpost.userUrl() == null ? "" : kolpost.userUrl());
         } else {
             return null;
         }
