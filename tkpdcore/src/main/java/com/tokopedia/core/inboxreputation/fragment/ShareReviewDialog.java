@@ -3,29 +3,23 @@ package com.tokopedia.core.inboxreputation.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.utils.SnackbarManager;
@@ -34,8 +28,6 @@ import com.tokopedia.core.inboxreputation.adapter.viewbinder.ShareAdapter;
 import com.tokopedia.core.inboxreputation.model.ShareItem;
 import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReputationDetailItem;
 import com.tokopedia.core.util.ClipboardHandler;
-
-import java.util.ArrayList;
 
 /**
  * Created by stevenfredian on 2/20/17.
@@ -77,7 +69,7 @@ public class ShareReviewDialog {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             adapter.addItem(new ShareItem(context.getDrawable(R.drawable.ic_facebook_share), "Facebook", shareFb()));
             adapter.addItem(new ShareItem(context.getDrawable(R.drawable.ic_copy_share), "Copy Link", shareCopyLink()));
-        }else {
+        } else {
             adapter.addItem(new ShareItem(context.getResources().getDrawable(R.drawable.ic_facebook_share), "Facebook", shareFb()));
             adapter.addItem(new ShareItem(context.getResources().getDrawable(R.drawable.ic_copy_share), "Copy Link", shareCopyLink()));
         }
@@ -125,7 +117,7 @@ public class ShareReviewDialog {
             @Override
             public void onClick(View view) {
                 dismissDialog();
-                ClipboardHandler.CopyToClipboard((Activity) context, context.getString(R.string.domain)+item.getProductUri());
+                ClipboardHandler.CopyToClipboard((Activity) context, getShareLink());
                 Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show();
             }
         };
@@ -146,13 +138,15 @@ public class ShareReviewDialog {
                                         , Snackbar.LENGTH_LONG).show();
                                 dismissDialog();
                             }
+
                             @Override
                             public void onCancel() {
                                 Log.i("facebook", "onCancel");
                             }
+
                             @Override
                             public void onError(FacebookException error) {
-                                Log.i("facebook", "onError: "+error);
+                                Log.i("facebook", "onError: " + error);
                                 SnackbarManager.make(fragment.getActivity(), context.getString(R.string.error_share_review)
                                         , Snackbar.LENGTH_LONG).show();
                                 dismissDialog();
@@ -163,7 +157,7 @@ public class ShareReviewDialog {
                     ShareLinkContent linkContent = new ShareLinkContent.Builder()
                             .setContentTitle(item.getProductName())
                             .setImageUrl(Uri.parse(item.getProductImageUrl()))
-                            .setContentUrl(Uri.parse(context.getString(R.string.domain)+item.getProductUri()))
+                            .setContentUrl(Uri.parse(getShareLink()))
                             .setQuote(item.getReviewMessage().toString())
                             .build();
 
@@ -171,5 +165,13 @@ public class ShareReviewDialog {
                 }
             }
         };
+    }
+
+    public String getShareLink() {
+        if (TextUtils.isEmpty(item.getProductUri()))
+            return context.getString(R.string.domain);
+        else {
+            return item.getProductUri();
+        }
     }
 }

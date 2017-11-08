@@ -59,12 +59,6 @@ public interface HotList {
     void initHotListInstances(Context context);
 
     /**
-     * send some localytics data to internet
-     * @param context
-     */
-    void setLocalyticFlow(Context context);
-
-    /**
      * send AppsFlyer analytics
      * @param context
      */

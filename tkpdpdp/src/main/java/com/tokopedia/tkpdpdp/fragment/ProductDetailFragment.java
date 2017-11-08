@@ -372,9 +372,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductShareClicked(@NonNull ShareData data) {
-        Intent intent = new Intent(getActivity(), ShareActivity.class);
-        intent.putExtra(ShareData.TAG, data);
-        startActivity(intent);
+        startActivity(ShareActivity.createIntent(getActivity(),data));
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -471,7 +469,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.interactionListener.onProductDetailLoaded(successResult);
         this.presenter.sendAnalytics(successResult);
         this.presenter.sendAppsFlyerData(context, successResult, AFInAppEventType.CONTENT_VIEW);
-        this.presenter.sendLocalytics(context, successResult);
         this.presenter.startIndexingApp(appIndexHandler, successResult);
         this.refreshMenu();
         this.updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());

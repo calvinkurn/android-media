@@ -3,11 +3,7 @@ package com.tokopedia.digital.product.adapter;
 import android.app.Fragment;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +24,7 @@ import butterknife.ButterKnife;
  * @author anggaprasetiyo on 5/9/17.
  */
 public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
     private static final int TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM =
             R.layout.view_holder_item_product_desc_and_price_digital_module;
     private static final int TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC =
@@ -37,22 +34,17 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private Fragment hostFragment;
     private List<Product> productList;
-    private String productStyleView;
     private ActionListener actionListener;
 
     public interface ActionListener {
         void onProductItemSelected(Product product);
-
-        void onProductLinkClicked(String url);
     }
 
     public ProductChooserAdapter(Fragment hostFragment,
                                  List<Product> productList,
-                                 String productStyleView,
                                  ActionListener actionListener) {
         this.hostFragment = hostFragment;
         this.productList = productList != null ? productList : new ArrayList<Product>();
-        this.productStyleView = productStyleView;
         this.actionListener = actionListener;
     }
 
@@ -171,23 +163,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 tvProductDescription.setVisibility(View.GONE);
             } else {
                 tvProductDescription.setVisibility(View.VISIBLE);
-                CharSequence detail = MethodChecker.fromHtml(product.getDetail());
-                SpannableStringBuilder strBuilderDetail = new SpannableStringBuilder(detail);
-                URLSpan[] urls = strBuilderDetail.getSpans(0, detail.length(), URLSpan.class);
-                for (final URLSpan span : urls) {
-                    int start = strBuilderDetail.getSpanStart(span);
-                    int end = strBuilderDetail.getSpanEnd(span);
-                    int flags = strBuilderDetail.getSpanFlags(span);
-                    ClickableSpan clickable = new ClickableSpan() {
-                        public void onClick(View view) {
-                            actionListener.onProductLinkClicked(span.getURL());
-                        }
-                    };
-                    strBuilderDetail.setSpan(clickable, start, end, flags);
-                    strBuilderDetail.removeSpan(span);
-                }
-                tvProductDescription.setText(strBuilderDetail);
-                tvProductDescription.setMovementMethod(LinkMovementMethod.getInstance());
+                tvProductDescription.setText(MethodChecker.fromHtml(product.getDetail()));
             }
         }
 
@@ -249,23 +225,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 tvProductPromoDescription.setVisibility(View.GONE);
             } else {
                 tvProductPromoDescription.setVisibility(View.VISIBLE);
-                CharSequence detail = MethodChecker.fromHtml(product.getDetail());
-                SpannableStringBuilder strBuilderDetail = new SpannableStringBuilder(detail);
-                URLSpan[] urls = strBuilderDetail.getSpans(0, detail.length(), URLSpan.class);
-                for (final URLSpan span : urls) {
-                    int start = strBuilderDetail.getSpanStart(span);
-                    int end = strBuilderDetail.getSpanEnd(span);
-                    int flags = strBuilderDetail.getSpanFlags(span);
-                    ClickableSpan clickable = new ClickableSpan() {
-                        public void onClick(View view) {
-                            actionListener.onProductLinkClicked(span.getURL());
-                        }
-                    };
-                    strBuilderDetail.setSpan(clickable, start, end, flags);
-                    strBuilderDetail.removeSpan(span);
-                }
-                tvProductPromoDescription.setText(strBuilderDetail);
-                tvProductPromoDescription.setMovementMethod(LinkMovementMethod.getInstance());
+                tvProductPromoDescription.setText(MethodChecker.fromHtml(product.getDetail()));
             }
             if (TextUtils.isEmpty(product.getPromo().getTag())) {
                 tvProductPromoTag.setVisibility(View.GONE);

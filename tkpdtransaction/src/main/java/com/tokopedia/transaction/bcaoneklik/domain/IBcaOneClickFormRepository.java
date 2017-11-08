@@ -1,9 +1,9 @@
 package com.tokopedia.transaction.bcaoneklik.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickData;
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickSuccessRegisterData;
-import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.BcaOneClickData;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.BcaOneClickSuccessRegisterData;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.PaymentListModel;
 
 import rx.Observable;
 

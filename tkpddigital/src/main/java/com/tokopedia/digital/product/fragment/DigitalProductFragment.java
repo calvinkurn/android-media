@@ -59,6 +59,7 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.activity.DigitalChooserActivity;
+import com.tokopedia.digital.product.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.activity.DigitalUssdActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.adapter.BannerAdapter;
@@ -73,9 +74,7 @@ import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.product.domain.ILastOrderNumberRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
-import com.tokopedia.digital.product.domain.LastOrderNumberRepository;
 import com.tokopedia.digital.product.domain.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.interactor.ProductDigitalInteractor;
@@ -83,9 +82,11 @@ import com.tokopedia.digital.product.listener.IProductDigitalView;
 import com.tokopedia.digital.product.listener.IUssdUpdateListener;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.model.PulsaBalance;
 import com.tokopedia.digital.product.presenter.IProductDigitalPresenter;
@@ -95,6 +96,9 @@ import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
+import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.domain.IDigitalWidgetRepository;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -112,6 +116,8 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.digital.product.activity.DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER;
 
 /**
  * @author anggaprasetiyo on 4/25/17.
@@ -140,7 +146,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
 
-
     private Operator operatorSelectedState;
     private Product productSelectedState;
     private String clientNumberState;
@@ -163,7 +168,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     LinearLayout holderProductDetail;
     @BindView(R2.id.holder_check_balance)
     LinearLayout holderCheckBalance;
-
 
     private BannerAdapter bannerAdapter;
     private String categoryId;
@@ -256,17 +260,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         IProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
+        IDigitalWidgetRepository digitalWidgetRepository =
+                new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
         IDigitalCategoryRepository digitalCategoryRepository =
                 new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
-        ILastOrderNumberRepository lastOrderNumberRepository =
-                new LastOrderNumberRepository(digitalEndpointService, productDigitalMapper);
         IUssdCheckBalanceRepository ussdCheckBalanceRepository = new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper);
-
 
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
-                        compositeSubscription, digitalCategoryRepository,
-                        lastOrderNumberRepository, cacheHandlerLastInputClientNumber, ussdCheckBalanceRepository
+                        compositeSubscription, digitalWidgetRepository, digitalCategoryRepository,
+                        cacheHandlerLastInputClientNumber, ussdCheckBalanceRepository
                 );
         presenter = new ProductDigitalPresenter(this, productDigitalInteractor);
     }
@@ -343,7 +346,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
         for (int i = bannerDataList.size() - 1; i >= 0; i--) {
-            if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) && TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
+            if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) &&
+                    TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
                 bannerDataList.remove(bannerDataList.get(i));
             }
         }
@@ -407,20 +411,21 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void renderCheckPulsaBalanceData(PulsaBalance pulsaBalance) {
-        DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this, pulsaBalance);
+    public void renderCheckPulsaBalanceData() {
+        DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this);
     }
 
     @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
-    public void renderCheckPulsaBalance(PulsaBalance pulsaBalance) {
+    public void renderCheckPulsaBalance() {
         holderCheckBalance.removeAllViews();
         for (int i = 0; i < 2; i++) {
-            String  phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
             Operator operator = presenter.getSelectedUssdOperator(i);
+            if (operator.getName() == null || "".equalsIgnoreCase(operator.getName())) {
+                continue;
+            }
+            String phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
             if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                     operator, phoneNumber)) {
-                phoneNumber = "";
-                presenter.storeUssdPhoneNumber(i, phoneNumber);
                 phoneNumber = presenter.getDeviceMobileNumber(i);
                 if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                         operator, phoneNumber)) {
@@ -437,7 +442,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 startShowCaseUSSD();
             }
         }
-
     }
 
     @Override
@@ -529,8 +533,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void clearContentRendered() {
-        pbMainLoading.setVisibility(View.GONE);
-        mainHolderContainer.setVisibility(View.GONE);
+        if (pbMainLoading != null) {
+            pbMainLoading.setVisibility(View.GONE);
+        }
+        if (mainHolderContainer != null) {
+            mainHolderContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -634,7 +642,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void closeView() {
-        getActivity().finish();
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -681,6 +691,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         } else {
             selectedSimIndex = simPosition;
             selectedCheckPulsaBalanceView = checkPulsaBalanceView;
+            Operator operator = presenter.getSelectedUssdOperator(simPosition);
+            String phoneNumber = presenter.getUssdPhoneNumberFromCache(simPosition);
+            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+                    operator, phoneNumber)) {
+                presenter.storeUssdPhoneNumber(simPosition, "");
+            }
             DigitalProductFragmentPermissionsDispatcher.checkBalanceByUSSDWithCheck(this, simPosition, ussdCode);
         }
     }
@@ -772,6 +788,30 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public void onClientNumberClicked(String number, ClientNumber clientNumber, List<OrderClientNumber> numberList) {
+        if (!numberList.isEmpty()) {
+            startActivityForResult(
+                    DigitalSearchNumberActivity.newInstance(
+                            getActivity(), categoryId, clientNumber, number, numberList
+                    ),
+                    IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
+            );
+        }
+    }
+
+    @Override
+    public void onClientNumberCleared(ClientNumber clientNumber, List<OrderClientNumber> numberList) {
+        if (!numberList.isEmpty()) {
+            startActivityForResult(
+                    DigitalSearchNumberActivity.newInstance(
+                            getActivity(), categoryId, clientNumber, "", numberList
+                    ),
+                    IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
+            );
+        }
+    }
+
+    @Override
     public void onButtonCopyBannerVoucherCodeClicked(String voucherCode) {
         this.voucherCodeCopiedState = voucherCode;
         ClipboardManager clipboard = (ClipboardManager)
@@ -812,10 +852,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     );
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
-                if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
-                    String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
-                    if (!TextUtils.isEmpty(message)) {
-                        showToastMessage(message);
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                        String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+                        if (!TextUtils.isEmpty(message)) {
+                            showToastMessage(message);
+                        }
                     }
                 }
                 break;
@@ -831,6 +873,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             case IDigitalModuleRouter.REQUEST_CODE_LOGIN:
                 if (isUserLoggedIn() && digitalCheckoutPassDataState != null) {
                     presenter.processAddToCartProduct(digitalCheckoutPassDataState);
+                }
+                break;
+            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    OrderClientNumber orderClientNumber = data.getParcelableExtra(EXTRA_CALLBACK_CLIENT_NUMBER);
+                    handleCallbackSearchNumber(orderClientNumber);
+                } else {
+                    handleCallbackSearchNumberCancel();
                 }
                 break;
         }
@@ -879,7 +929,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         } else {
             return super.onOptionsItemSelected(item);
         }
-
     }
 
     @Override
@@ -950,6 +999,75 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private void renderContactDataToClientNumber(ContactData contactData) {
         digitalProductView.renderClientNumberFromContact(contactData.getContactNumber());
+    }
+
+    private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
+        if (orderClientNumber != null) {
+            UnifyTracking.eventSelectNumberOnUserProfileNative(categoryDataState.getName());
+        }
+
+        if (categoryDataState.isSupportedStyle()) {
+            switch (categoryDataState.getOperatorStyle()) {
+                case CategoryData.STYLE_PRODUCT_CATEGORY_1 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_99 :
+                    handleStyle1(orderClientNumber);
+                    break;
+                case CategoryData.STYLE_PRODUCT_CATEGORY_2 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_3 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_4 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_5 :
+                    handleStyleOther(orderClientNumber);
+                    break;
+            }
+        }
+    }
+
+    private void handleStyleOther(OrderClientNumber orderClientNumber) {
+        Operator selectedOperator = null;
+        if (orderClientNumber.getOperatorId() != null) {
+            for (Operator operator : categoryDataState.getOperatorList()) {
+                if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
+                    selectedOperator = operator;
+                    digitalProductView.renderUpdateOperatorSelected(operator);
+                }
+            }
+        }
+
+        digitalProductView.renderClientNumberFromContact(orderClientNumber.getClientNumber());
+        digitalProductView.clearFocusOnClientNumber();
+
+        if (selectedOperator != null) {
+            for (Product product : selectedOperator.getProductList()) {
+                if (orderClientNumber.getProductId() != null) {
+                    if (orderClientNumber.getProductId().equals(product.getProductId())) {
+                        digitalProductView.renderUpdateProductSelected(product);
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleStyle1(OrderClientNumber orderClientNumber) {
+        digitalProductView.renderClientNumberFromContact(orderClientNumber.getClientNumber());
+        digitalProductView.clearFocusOnClientNumber();
+
+        if (orderClientNumber.getOperatorId() != null) {
+            for (Operator operator : categoryDataState.getOperatorList()) {
+                if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
+                    for (Product product : operator.getProductList()) {
+                        if (orderClientNumber.getProductId() != null) {
+                            if (orderClientNumber.getProductId().equals(product.getProductId())) {
+                                digitalProductView.renderUpdateProductSelected(product);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleCallbackSearchNumberCancel() {
+        digitalProductView.clearFocusOnClientNumber();
     }
 
     private void handleCallBackProductChooser(Product product) {
@@ -1123,10 +1241,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             Operator operator = presenter.getSelectedUssdOperator(selectedSimIndex);
             String phoneNumber = presenter.getUssdPhoneNumberFromCache(selectedSimIndex);
 
+            if (operator.getName() == null || "".equalsIgnoreCase(operator.getName())) {
+                return;
+            }
             if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                     operator, phoneNumber)) {
-                phoneNumber = "";
-                presenter.storeUssdPhoneNumber(selectedSimIndex, phoneNumber);
                 phoneNumber = presenter.getDeviceMobileNumber(selectedSimIndex);
 
                 if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),

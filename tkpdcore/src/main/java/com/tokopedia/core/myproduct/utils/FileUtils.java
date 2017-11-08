@@ -174,10 +174,10 @@ public class FileUtils {
         }
     }
 
-    public static boolean isInTkpdCache(File file){
+    public static boolean isInTkpdCache(File file) {
         File tkpdCacheDirectory = getTkpdCacheDirectory();
         String tkpdcacheDirPath = tkpdCacheDirectory.getAbsolutePath();
-        if (file.getAbsolutePath().contains(tkpdcacheDirPath) && file.exists()) {
+        if (file.exists() && file.getAbsolutePath().contains(tkpdcacheDirPath)) {
             return true;
         }
         return false;
@@ -187,7 +187,7 @@ public class FileUtils {
         if (filesToDelete == null || filesToDelete.size() == 0) {
             return;
         }
-        for (int i = 0, sizei = filesToDelete.size(); i<sizei; i++) {
+        for (int i = 0, sizei = filesToDelete.size(); i < sizei; i++) {
             String filePathToDelete = filesToDelete.get(i);
             deleteAllCacheTkpdFile(filePathToDelete);
         }
@@ -237,7 +237,7 @@ public class FileUtils {
     @NonNull
     public static File getTkpdImageCacheFile(String fileName) {
         File tkpdCachedirectory = getTkpdCacheDirectory();
-        return new File(tkpdCachedirectory.getAbsolutePath() + "/"+ fileName + ".jpg");
+        return new File(tkpdCachedirectory.getAbsolutePath() + "/" + fileName + ".jpg");
     }
 
     // URI starts with "content://gmail-ls/"
@@ -263,10 +263,12 @@ public class FileUtils {
                 is = context.getContentResolver().openInputStream(uri);
                 String path = getPathFromMediaUri(context, uri);
                 Bitmap bmp = BitmapFactory.decodeStream(is);
-                bmp = ImageHandler.RotatedBitmap(bmp, path);
+                if (!TextUtils.isEmpty(path)) {
+                    bmp = ImageHandler.RotatedBitmap(bmp, path);
+                }
                 String fileName = FileUtils.generateUniqueFileName();
                 File file = writeImageToTkpdPath(bmp, fileName);
-                if (file!= null) {
+                if (file != null) {
                     return file.getAbsolutePath();
                 } else {
                     return null;
@@ -297,11 +299,18 @@ public class FileUtils {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
         if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                res = cursor.getString(column_index);
+            try {
+                if (cursor.moveToFirst()) {
+                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    res = cursor.getString(column_index);
+                    return res;
+                }
+            } catch (Exception e) {
+                return null;
             }
-            cursor.close();
+            finally {
+                cursor.close();
+            }
         } else {
             return contentUri.getPath();
         }
