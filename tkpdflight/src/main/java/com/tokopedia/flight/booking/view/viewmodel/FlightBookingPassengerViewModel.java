@@ -44,6 +44,9 @@ public class FlightBookingPassengerViewModel implements Parcelable{
         }
     };
 
+    public FlightBookingPassengerViewModel() {
+    }
+
     public int getType() {
         return type;
     }
