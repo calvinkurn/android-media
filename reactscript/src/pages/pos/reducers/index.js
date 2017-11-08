@@ -538,6 +538,7 @@ const paymentRate = (state = {
 
 const historyTransaction = (state = {
   items: [],
+  page: 0,
   isFetching: false,
   isSuccess: false
 }, action) => {
@@ -552,7 +553,8 @@ const historyTransaction = (state = {
     case `FETCH_TRANSACTION_HISTORY_${FULFILLED}`:
       return {
         ...state,
-        items: action.payload.data.data.list,
+        items: [...state.items, ...action.payload.data.data.list],
+        page: action.payload.page,
         isFetching: false,
         isSuccess: true
       }
@@ -569,6 +571,7 @@ const historyTransaction = (state = {
       return state
   }
 }
+
 
 
 
