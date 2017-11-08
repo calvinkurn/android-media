@@ -111,10 +111,11 @@ const insertPayment_v2 = (data, tansaction_id) => {
 
 //  ==================== Transaction History ===================== //
 export const FETCH_TRANSACTION_HISTORY = 'FETCH_TRANSACTION_HISTORY'
-export const getTransactionHistory = () => {
+export const getTransactionHistory = (page) => {
+  let page_api = page + 1
   return {
     type: FETCH_TRANSACTION_HISTORY,
-    payload: fetchTransactionHistory(1) // fetch page 1
+    payload: fetchTransactionHistory(page_api)
   }
 }
 
@@ -131,16 +132,14 @@ const fetchTransactionHistory = async (page) => {
     os_type: '1'
   }
   const txHistory = await apiGetTransactionHistory(`${api_url.base_api_url}o2o/v1/order/get_history`, data)
-  return txHistory
+  const data_response = { ...txHistory, page }
+  return data_response
 }
 
 const apiGetTransactionHistory = (url, data) => {
-  console.log(url)
-  console.log(data)
   return NetworkModule.getResponseJson(url, `POST`, JSON.stringify(data), true)
     .then(res => {
         const jsonResponse = JSON.parse(res)
-        console.log(jsonResponse)
         return jsonResponse
     })
     .catch(err => {

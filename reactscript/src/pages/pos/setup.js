@@ -10,10 +10,6 @@ import Invoice from './setup_invoice'
 
 
 class Root extends Component {
-  componentWillMount() {
-    console.log(this.props)
-  }
-
   render() {
     const { POS_PAGE } = this.props.data
     if (POS_PAGE === 'POS'){

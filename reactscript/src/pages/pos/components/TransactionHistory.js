@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, TouchableOpacity, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, FlatList } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View, Image, Button, TouchableWithoutFeedback, ScrollView, TextInput, TouchableNativeFeedback, FlatList } from 'react-native';
 import { emailValidation } from '../lib/utility'
 import PopupDialog, { DialogTitle } from 'react-native-popup-dialog';
 import { getTransactionHistory, reloadState } from '../actions/index';
@@ -22,7 +22,7 @@ class TransactionHistory extends Component {
 
   componentDidMount() {
     this.props.dispatch(reloadState())
-    this.props.dispatch(getTransactionHistory())
+    this.props.dispatch(getTransactionHistory(0))
   }
 
     
@@ -33,18 +33,17 @@ class TransactionHistory extends Component {
 
 
 
-  // loadMore = () => {
-  //   console.log('On end reached: history transaction')
-  //   console.log(this.props)
-  //   this.props.dispatch(getTransactionHistory())
-  // }
+  loadMore = () => {
+    this.props.dispatch(getTransactionHistory(this.props.page))
+  }
 
 
 
   _renderTransactionHistory(rowData){
     // console.log(rowData)
     const rowItem = rowData.item
-    // console.log(rowItem)
+    // console.log(rowItem.order_shop)
+    // console.log(rowItem.order_shop.address_city)
     // console.log(rowData.index)
 
     return (
@@ -162,7 +161,6 @@ class TransactionHistory extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <ScrollView>
           <View style={[styles.containers]}>
             {this.props.data_history.length !== 0 &&
               <FlatList
@@ -173,8 +171,12 @@ class TransactionHistory extends Component {
                 onEndReachedThreshold={0.5}
                 renderItem={this._renderTransactionHistory.bind(this)} />
             }
+            {this.props.isFetching && 
+              <View style={{ marginTop:20, marginBottom:20, alignItems:'center' }}>
+                <ActivityIndicator size="large" />
+              </View>
+            }
           </View>
-        </ScrollView>
         <PopupDialog
           dialogTitle={ <View style={{ flexDirection: 'row', justifyContent: 'flex-end', padding: 10 }} /> }
           dialogStyle={{ borderRadius: 10 }}
@@ -344,10 +346,13 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  console.log(state)
+  // console.log(state)
+  // console.log(state.historyTransaction.items[0])
   return {
     ...state.transactionHistory,
-    data_history: state.historyTransaction.items
+    data_history: state.historyTransaction.items,
+    page: state.historyTransaction.page,
+    isFetching: state.historyTransaction.isFetching,
   }
 }
 
