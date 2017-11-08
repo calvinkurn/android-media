@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home.fragment;
 
 import android.os.Bundle;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
 

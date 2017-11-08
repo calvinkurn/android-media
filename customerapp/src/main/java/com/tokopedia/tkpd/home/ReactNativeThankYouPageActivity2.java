@@ -14,7 +14,6 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeActivity;
 /**
  * @author ricoharisin .
  */
-@DeepLink("tokopedia://thankyou/marketplace/{template}")
 public class ReactNativeThankYouPageActivity2 extends ReactNativeActivity {
 
 

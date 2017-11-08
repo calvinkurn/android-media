@@ -31,7 +31,7 @@ public class ReactNativeHostFactory {
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();*/
 
-        return createReactNativeHost(application);
+        return createReactNativeHostDev(application);
 
     }
 
@@ -81,8 +81,8 @@ public class ReactNativeHostFactory {
     private static List<ReactPackage> getListPackages(Application application) {
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
-                new CoreReactPackage(),
-                new CodePush(getCodePushDeploymentKey(), application, GlobalConfig.isAllowDebuggingTools())
+                new CoreReactPackage()
+                /*new CodePush(getCodePushDeploymentKey(), application, GlobalConfig.isAllowDebuggingTools())*/
         );
     }
 

@@ -27,6 +27,7 @@ import com.tokopedia.tkpd.home.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
+@DeepLink("tokopedia://thankyou/{platform}/{template}")
 public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     public static final String USER_ID = "User_ID";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
@@ -107,6 +108,10 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     protected void initView() {
         setToolbar();
         Bundle initialProps = getIntent().getExtras();
+        initialProps.putString(ReactConst.KEY_SCREEN, "thankyou-page");
+        initialProps.remove("android.intent.extra.REFERRER");
+        initialProps.remove("is_deep_link_flag");
+        initialProps.remove("deep_link_uri");
         Log.i("ReactNative", initialProps.toString());
         ReactNativeThankYouPageFragment fragment = ReactNativeThankYouPageFragment.createInstance(initialProps);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
