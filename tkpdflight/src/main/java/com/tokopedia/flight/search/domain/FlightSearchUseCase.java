@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.data.cloud.model.Route;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
@@ -46,8 +47,7 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
                     flightSearchViewModelList.add(new FlightSearchViewModel(flightSearchSingleRouteDBs.get(i)));
                 }
 
-                // select distinct all airline in routes, then compare with DB
-                // if any airline is not found, then retrieve all airlines from cloud
+                // select distinct all airline in routes
                 for (int i = 0, sizei = flightSearchViewModelList.size(); i < sizei; i++) {
                     FlightSearchViewModel flightSearchViewModel = flightSearchViewModelList.get(i);
                     List<Route> routeList = flightSearchViewModel.getRouteList();
@@ -160,8 +160,9 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
         }
     }
 
-    public static RequestParams generateRequestParams(boolean isReturning, boolean fromCache, FlightFilterModel flightFilterModel) {
-        return FlightSearchParamUtil.generateRequestParams(isReturning, fromCache, flightFilterModel);
+    public static RequestParams generateRequestParams(boolean isReturning, boolean fromCache, FlightFilterModel flightFilterModel,
+                                                      @FlightSortOption int sortOption) {
+        return FlightSearchParamUtil.generateRequestParams(isReturning, fromCache, flightFilterModel, sortOption);
     }
 
 }

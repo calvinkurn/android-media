@@ -18,7 +18,7 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextView.Title.Bold"
+            style="@style/TextView.Subheading.Bold"
             tools:text="Langsung"/>
         <TextView
             android:id="@+id/tv_desc"

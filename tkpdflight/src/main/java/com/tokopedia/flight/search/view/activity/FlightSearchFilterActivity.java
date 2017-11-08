@@ -36,6 +36,9 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     public static final String EXTRA_STAT_MODEL = "stat_model";
     public static final String EXTRA_FILTER_MODEL = "filter_model";
 
+    public static final String SAVED_TAG = "svd_tag";
+    public static final String SAVED_COUNT = "svd_count";
+
     @Inject
     FlightFilterCountPresenter flightFilterCountPresenter;
 
@@ -44,6 +47,9 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     private boolean isReturning;
     private FlightSearchStatisticModel flightSearchStatisticModel;
     private FlightFilterModel flightFilterModel;
+
+    private String currentTag;
+    private int count;
 
     public static Intent createInstance(Context context,
                                         boolean isReturning,
@@ -66,8 +72,12 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
         if (savedInstanceState == null) {
             flightFilterModel = intent.getParcelableExtra(EXTRA_FILTER_MODEL);
+            currentTag = getTagFragment();
+            count = 0;
         } else {
             flightFilterModel = savedInstanceState.getParcelable(EXTRA_FILTER_MODEL);
+            currentTag = savedInstanceState.getString(SAVED_TAG);
+            count = savedInstanceState.getInt(SAVED_COUNT);
         }
 
         buttonFilter = (Button) findViewById(R.id.button_filter);
@@ -95,7 +105,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
         if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
             int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
             if (backStackCount == 1) {
-                setUpTitleByTag(null); // set default
+                setUpTitleByTag(getTagFragment()); // set default
             } else { //2 or more
                 setUpTitleByTag(getSupportFragmentManager()
                         .getBackStackEntryAt(backStackCount - 2)
@@ -118,6 +128,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     }
 
     public void setUpTitleByTag(String tag) {
+        currentTag = tag;
         if (TextUtils.isEmpty(tag) || getTagFragment().equals(tag)) {
             updateTitle(getTitle().toString());
         } else if (FlightFilterDepartureFragment.TAG.equals(tag)) {
@@ -129,6 +140,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
         } else if (FlightFilterRefundableFragment.TAG.equals(tag)) {
             updateTitle(getString(R.string.refundable_policy));
         }
+        updateButtonFilter(count);
     }
 
     @Override
@@ -144,12 +156,6 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     @Override
     protected boolean isToolbarWhite() {
         return true;
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_FILTER_MODEL, flightFilterModel);
     }
 
     @Override
@@ -186,17 +192,32 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     public void onFilterModelChanged(FlightFilterModel flightFilterModel) {
         this.flightFilterModel = flightFilterModel;
         flightFilterCountPresenter.getFlightCount(isReturning, true, flightFilterModel);
-        //TODO rerun query
     }
 
     @Override
     public void onErrorGetCount(Throwable throwable) {
-        //TODO
+        // no op
     }
 
     @Override
     public void onSuccessGetCount(int count) {
-        //TODO
-        buttonFilter.setText(String.valueOf(count) + " penerbangan");
+        this.count = count;
+        updateButtonFilter(count);
+    }
+
+    private void updateButtonFilter(int count) {
+        if (currentTag.equals(getTagFragment())) {
+            buttonFilter.setText(getString(R.string.flight_there_has_x_flights, count));
+        } else {
+            buttonFilter.setText(getString(R.string.flight_save_x_flights, count));
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(EXTRA_FILTER_MODEL, flightFilterModel);
+        outState.putString(SAVED_TAG, currentTag);
+        outState.putInt(SAVED_COUNT, count);
     }
 }
