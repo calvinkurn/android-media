@@ -62,7 +62,8 @@ public abstract class TopAdsStatisticFragment extends TopAdsBaseDatePickerFragme
 
     @Override
     protected void loadData() {
-        dateLabelView.setDate(startDate, endDate);
+        if(dateLabelView != null)
+            dateLabelView.setDate(startDate, endDate);
     }
 
     public TopAdsStatisticFragment() {
@@ -199,6 +200,18 @@ public abstract class TopAdsStatisticFragment extends TopAdsBaseDatePickerFragme
         mValues = generateValues();
         mLabelDisplay = generateLabelDisplay();
 
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            if (datePickerPresenter!= null && datePickerPresenter.isDateUpdated(startDate, endDate)) {
+                startDate = datePickerPresenter.getStartDate();
+                endDate = datePickerPresenter.getEndDate();
+                loadData();
+            }
+        }
     }
 
     @Override
