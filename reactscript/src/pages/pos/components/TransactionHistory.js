@@ -15,7 +15,8 @@ class TransactionHistory extends Component {
     super(props);
 
     this.state = {
-      selectedOrder: null
+      selectedOrder: null,
+      openSelected: false
     }
   }
 
@@ -27,9 +28,16 @@ class TransactionHistory extends Component {
     
 
   clickHandler(id){
-    console.log('masuk sini ', id)
-    this.setState({ selectedOrder: id })
+    this.setState({ selectedOrder: id, openSelected: !this.state.openSelected })
   }
+
+
+
+  // loadMore = () => {
+  //   console.log('On end reached: history transaction')
+  //   console.log(this.props)
+  //   this.props.dispatch(getTransactionHistory())
+  // }
 
 
 
@@ -67,19 +75,43 @@ class TransactionHistory extends Component {
               <Text style={[styles.font15, styles.fontcolor54]}>Status {rowItem.order_deadline.deadline_shipping}</Text>
             </View>
             <View style={{ marginTop: 25, flexDirection: 'row' }}>
-              <TouchableOpacity onPress={() => this.clickHandler(rowData.index)}>
-                <View style={{ flexDirection: 'row' }}>
-                  {this.state.selectedOrder !== rowData.index ? (<Text style={[styles.font15, { color: '#42b549' }]}>Lihat Details</Text>) 
-                  : (<Text style={[styles.font15, { color: '#42b549' }]}>Sembunyikan Details</Text>)}
-                  {this.state.selectedOrder !== rowData.index ? (<Image source={{ uri: icons.arrow_down }} style={{ height: 12, width: 12, resizeMode: 'contain', marginTop: 5, marginLeft: 7 }} />) 
-                  : (<Image source={{ uri: icons.arrow_up }} style={{ height: 12, width: 12, resizeMode: 'contain', marginTop: 5, marginLeft: 7 }} />)}
-                </View>
-              </TouchableOpacity> 
+              {this.state.selectedOrder !== rowData.index && !this.state.openSelected &&
+                <TouchableOpacity onPress={() => this.clickHandler(rowData.index)}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={[styles.font15, { color: '#42b549' }]}>Lihat Details</Text>
+                    <Image source={{ uri: icons.arrow_down }} style={{ height: 12, width: 12, resizeMode: 'contain', marginTop: 5, marginLeft: 7 }} />
+                  </View>
+                </TouchableOpacity>
+              }
+              {this.state.selectedOrder !== rowData.index && this.state.openSelected &&
+                <TouchableOpacity onPress={() => this.clickHandler(rowData.index)}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={[styles.font15, { color: '#42b549' }]}>Lihat Details</Text>
+                    <Image source={{ uri: icons.arrow_down }} style={{ height: 12, width: 12, resizeMode: 'contain', marginTop: 5, marginLeft: 7 }} />
+                  </View>
+                </TouchableOpacity>
+              }
+              {this.state.selectedOrder == rowData.index && this.state.openSelected &&
+                <TouchableOpacity onPress={() => this.clickHandler(rowData.index)}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={[styles.font15, { color: '#42b549' }]}>Sembunyikan Details</Text>
+                    <Image source={{ uri: icons.arrow_up }} style={{ height: 12, width: 12, resizeMode: 'contain', marginTop: 5, marginLeft: 7 }} />
+                  </View>
+                </TouchableOpacity>
+              }
+              {this.state.selectedOrder == rowData.index && !this.state.openSelected &&
+                <TouchableOpacity onPress={() => this.clickHandler(rowData.index)}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={[styles.font15, { color: '#42b549' }]}>Lihat Details</Text>
+                    <Image source={{ uri: icons.arrow_down }} style={{ height: 12, width: 12, resizeMode: 'contain', marginTop: 5, marginLeft: 7 }} />
+                  </View>
+                </TouchableOpacity>
+              }
             </View>
           </View>
 
 
-          {this.state.selectedOrder === rowData.index && 
+          {this.state.selectedOrder === rowData.index && this.state.openSelected &&  
             <View>
               <View style={[styles.subRow4, { marginTop: 20 }]}>
                 {rowItem.order_products.map((res, idx) => 
@@ -137,6 +169,8 @@ class TransactionHistory extends Component {
                 keyExtractor={(item, index) => index}
                 data={this.props.data_history}
                 extraData={this.state}
+                onEndReached={this.loadMore}
+                onEndReachedThreshold={0.5}
                 renderItem={this._renderTransactionHistory.bind(this)} />
             }
           </View>
