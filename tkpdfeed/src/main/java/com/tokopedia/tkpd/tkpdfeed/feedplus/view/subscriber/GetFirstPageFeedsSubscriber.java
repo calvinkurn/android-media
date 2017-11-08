@@ -9,6 +9,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.BadgeDomain;
@@ -247,13 +248,19 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                     case TYPE_KOL_FOLLOWED:
                     case TYPE_KOL:
-                        KolViewModel kolViewModel = convertToKolViewModel(domain);
-                        listFeedView.add(kolViewModel);
+                        if (domain.getContent() != null
+                                && domain.getContent().getKolPostDomain() != null) {
+                            KolViewModel kolViewModel = convertToKolViewModel(domain);
+                            listFeedView.add(kolViewModel);
+                        }
                         break;
                     case TYPE_KOL_RECOMMENDATION:
-                        KolRecommendationViewModel kolRecommendationViewModel =
-                                convertToKolRecommendationViewModel(domain);
-                        listFeedView.add(kolRecommendationViewModel);
+                        if (domain.getContent() != null
+                                && domain.getContent().getKolRecommendations() != null) {
+                            KolRecommendationViewModel kolRecommendationViewModel =
+                                    convertToKolRecommendationViewModel(domain.getContent().getKolRecommendations());
+                            listFeedView.add(kolRecommendationViewModel);
+                        }
                         break;
                     default:
                         break;
@@ -266,17 +273,17 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return new FeedTopAdsViewModel(page);
     }
 
-    private KolRecommendationViewModel convertToKolRecommendationViewModel(DataFeedDomain domain) {
+    private KolRecommendationViewModel convertToKolRecommendationViewModel(KolRecommendationDomain domain) {
         return new KolRecommendationViewModel(
-                "http://tokopedia.com/",
-                "Explore Posting dari Celgram favoritmu!",
-                convertToListKolRecommend(domain.getContent().getKolRecommendations())
+                domain.getExploreLink(),
+                domain.getHeaderTitle(),
+                convertToListKolRecommend(domain.getListRecommendation())
         );
     }
 
-    private ArrayList<KolRecommendItemViewModel> convertToListKolRecommend(List<KolRecommendationDomain> kolRecommendations) {
+    private ArrayList<KolRecommendItemViewModel> convertToListKolRecommend(List<KolRecommendationItemDomain> kolRecommendations) {
         ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
-        for (KolRecommendationDomain recommendationDomain : kolRecommendations) {
+        for (KolRecommendationItemDomain recommendationDomain : kolRecommendations) {
             list.add(new KolRecommendItemViewModel(
                     recommendationDomain.getUserId(),
                     recommendationDomain.getUserName(),
@@ -292,7 +299,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private KolViewModel convertToKolViewModel(DataFeedDomain domain) {
         KolPostDomain kolPostDomain = domain.getContent().getKolPostDomain();
         return new KolViewModel(
-                "Rekomendasi untuk Anda",
+                kolPostDomain.getHeaderTitle(),
                 kolPostDomain.getUserName(),
                 kolPostDomain.getUserPhoto(),
                 kolPostDomain.getLabel(),

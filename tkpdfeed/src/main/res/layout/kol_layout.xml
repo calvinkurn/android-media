@@ -49,8 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/kol_header"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/ic_plus_green"/>
+        android:scaleType="centerCrop"/>
 
     <RelativeLayout
         android:id="@+id/tooltip_image"
@@ -118,8 +117,9 @@
         android:orientation="horizontal">
 
         <RelativeLayout
+            android:id="@+id/like_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center">
@@ -128,8 +128,9 @@
                 android:id="@+id/like_icon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/margin_small"
-                android:src="@drawable/ic_icon_repsis_like"
+                android:src="@drawable/ic_thumb"
                 />
 
             <TextView
@@ -150,8 +151,9 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/comment_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center">
@@ -160,8 +162,9 @@
                 android:id="@+id/comment_icon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/margin_small"
-                android:src="@drawable/ic_message"
+                android:src="@drawable/ic_comment"
                 />
 
             <TextView

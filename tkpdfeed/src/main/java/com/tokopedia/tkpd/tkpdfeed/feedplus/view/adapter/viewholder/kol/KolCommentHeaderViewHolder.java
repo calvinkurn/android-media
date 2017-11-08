@@ -24,7 +24,7 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
     @LayoutRes
     public static final int LAYOUT = R.layout.kol_comment_header;
 
-    private static final String SPACE = "      ";
+    private static final String SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     private final KolComment.View viewListener;
 
     TextView comment;

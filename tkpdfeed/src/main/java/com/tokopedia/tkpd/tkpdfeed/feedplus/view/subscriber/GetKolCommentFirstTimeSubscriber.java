@@ -20,6 +20,7 @@ public class GetKolCommentFirstTimeSubscriber extends rx.Subscriber<KolComments>
     @Override
     public void onCompleted() {
 
+
     }
 
     @Override
@@ -30,6 +31,7 @@ public class GetKolCommentFirstTimeSubscriber extends rx.Subscriber<KolComments>
 
     @Override
     public void onNext(KolComments kolComments) {
+        viewListener.removeLoading();
         viewListener.updateCursor(kolComments.getLastcursor());
         viewListener.onSuccessGetCommentsFirstTime(kolComments);
     }

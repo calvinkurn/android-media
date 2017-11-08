@@ -53,11 +53,13 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     }
 
     public void sendComment(int id, String comment) {
-        if (isValid(comment)) {
-            getView().showProgressDialog();
-            sendKolCommentUseCase.execute(SendKolCommentUseCase.getParam(id, comment), new
-                    SendKolCommentSubscriber(getView()));
-        }
+//        if (isValid(comment)) {
+//            getView().showProgressDialog();
+//            sendKolCommentUseCase.execute(SendKolCommentUseCase.getParam(id, comment), new
+//                    SendKolCommentSubscriber(getView()));
+//        }
+
+        getView().onSuccessSendComment();
     }
 
     private boolean isValid(String comment) {

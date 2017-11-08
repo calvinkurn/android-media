@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol;
 
 import android.support.annotation.LayoutRes;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,9 +39,10 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     private TextView kolText;
     private ImageView likeIcon;
     private TextView likeText;
-    private ImageView commentIcon;
     private TextView commentText;
-    View topSeparator;
+    private View topSeparator;
+    private View commentButton;
+    private View likeButton;
 
     public KolViewHolder(View itemView, FeedPlus.View.Kol viewListener) {
         super(itemView);
@@ -58,14 +60,20 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         kolText = (TextView) itemView.findViewById(R.id.kol_text);
         likeIcon = (ImageView) itemView.findViewById(R.id.like_icon);
         likeText = (TextView) itemView.findViewById(R.id.like_text);
-        commentIcon = (ImageView) itemView.findViewById(R.id.comment_icon);
         commentText = (TextView) itemView.findViewById(R.id.comment_text);
         topSeparator = itemView.findViewById(R.id.separator);
+        commentButton = itemView.findViewById(R.id.comment_button);
+        likeButton = itemView.findViewById(R.id.like_button);
     }
 
     @Override
     public void bind(KolViewModel element) {
-        title.setText(MethodChecker.fromHtml(element.getTitle()));
+        if (TextUtils.isEmpty(element.getTitle())) {
+            title.setVisibility(View.GONE);
+        } else {
+            title.setVisibility(View.VISIBLE);
+            title.setText(MethodChecker.fromHtml(element.getTitle()));
+        }
         name.setText(MethodChecker.fromHtml(element.getName()));
         ImageHandler.LoadImage(avatar, element.getAvatar());
         label.setText(element.getLabel());
@@ -98,16 +106,16 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         kolText.setText(getKolText(element));
 
         if (element.isLiked()) {
-            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_icon_repsis_like_active);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);
             likeText.setText(String.valueOf(element.getTotalLike()));
         } else {
-            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_icon_repsis_like);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
             likeText.setText(R.string.action_like);
         }
 
-        if(element.getTotalComment() == 0){
+        if (element.getTotalComment() == 0) {
             commentText.setText(R.string.comment);
-        }else{
+        } else {
             commentText.setText(String.valueOf(element.getTotalComment()));
         }
 
@@ -165,28 +173,14 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             }
         });
 
-        likeText.setOnClickListener(new View.OnClickListener() {
+        likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onLikeClicked(element);
             }
         });
 
-        likeIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onLikeClicked(element);
-            }
-        });
-
-        commentIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToKolComment(element.getPage(), getAdapterPosition(), element);
-            }
-        });
-
-        commentText.setOnClickListener(new View.OnClickListener() {
+        commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewListener.onGoToKolComment(element.getPage(), getAdapterPosition(), element);
@@ -205,7 +199,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     }
 
     private void onLikeClicked(KolViewModel element) {
-            viewListener.onLikeUnlikeKol(element.getPage(), getAdapterPosition(), element.getId());
+        viewListener.onLikeUnlikeKol(element.getPage(), getAdapterPosition(), element.getId());
     }
 
     private Spanned getKolText(KolViewModel element) {

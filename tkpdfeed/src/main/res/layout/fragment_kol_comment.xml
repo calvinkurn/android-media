@@ -20,7 +20,7 @@
         <EditText
             android:id="@+id/new_comment"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="@android:color/transparent"

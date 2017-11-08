@@ -10,6 +10,7 @@ query GetKolComments($idPost: Int!, $cursor: String, $limit: Int!) {
                 userName
                 userPhoto
                 comment
+                create_time
             }
         }
     }

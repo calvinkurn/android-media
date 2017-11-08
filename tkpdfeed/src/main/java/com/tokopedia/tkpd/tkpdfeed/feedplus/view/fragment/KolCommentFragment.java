@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -277,6 +278,8 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         ));
 
         kolComment.setText("");
+
+        getActivity().setResult(Activity.RESULT_OK, getActivity().getIntent());
 
     }
 

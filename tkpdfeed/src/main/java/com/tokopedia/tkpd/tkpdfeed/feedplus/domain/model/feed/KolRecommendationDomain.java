@@ -1,63 +1,32 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
 /**
- * @author by nisie on 11/3/17.
+ * @author by nisie on 11/8/17.
  */
 
 public class KolRecommendationDomain {
+    private final String headerTitle;
+    private final String exploreLink;
+    private final List<KolRecommendationItemDomain> listRecommendation;
 
-    private final @Nullable
-    String userName;
-
-    private final @Nullable int userId;
-
-    private final @Nullable String userPhoto;
-
-    private final @Nullable boolean isFollowed;
-
-    private final @Nullable String info;
-
-    private final @Nullable  String url;
-
-    public KolRecommendationDomain(String userName, int userId, String userPhoto,
-                                   boolean isFollowed, String info, String url) {
-        this.userName = userName;
-        this.userId = userId;
-        this.userPhoto = userPhoto;
-        this.isFollowed = isFollowed;
-        this.info = info;
-        this.url = url;
+    public KolRecommendationDomain(String headerTitle, String exploreLink,
+                                   List<KolRecommendationItemDomain> listRecommendation) {
+        this.headerTitle = headerTitle;
+        this.exploreLink = exploreLink;
+        this.listRecommendation = listRecommendation;
     }
 
-    @Nullable
-    public String getUserName() {
-        return userName;
+    public String getHeaderTitle() {
+        return headerTitle;
     }
 
-    @Nullable
-    public int getUserId() {
-        return userId;
+    public String getExploreLink() {
+        return exploreLink;
     }
 
-    @Nullable
-    public String getUserPhoto() {
-        return userPhoto;
-    }
-
-    @Nullable
-    public boolean isFollowed() {
-        return isFollowed;
-    }
-
-    @Nullable
-    public String getInfo() {
-        return info;
-    }
-
-    @Nullable
-    public String getUrl() {
-        return url;
+    public List<KolRecommendationItemDomain> getListRecommendation() {
+        return listRecommendation;
     }
 }

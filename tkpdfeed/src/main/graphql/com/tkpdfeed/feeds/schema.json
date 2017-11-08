@@ -9876,13 +9876,9 @@
               "description": null,
               "args": [],
               "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "FeedKolRecommendedType",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "KolRecommendedDataType",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -11501,6 +11497,57 @@
             },
             {
               "name": "caption",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "KolRecommendedDataType",
+          "description": null,
+          "fields": [
+            {
+              "name": "kols",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "FeedKolRecommendedType",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "headerTitle",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "exploreLink",
               "description": null,
               "args": [],
               "type": {

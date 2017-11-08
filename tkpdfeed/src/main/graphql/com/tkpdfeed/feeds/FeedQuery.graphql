@@ -154,6 +154,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                          userName
                          userPhoto
                          userInfo
+                         headerTitle
                          content {
                             imageurl
                             tags {
@@ -165,8 +166,8 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                               caption
                            }
                          }
-                       }
-                followedkolpost {
+              }
+              followedkolpost {
                           id
                           description
                           commentCount
@@ -186,16 +187,20 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                                link
                                price
                                caption
-                            }
+                             }
                           }
-                        }
+              }
               kolrecommendation {
-                userName
-                userId
-                userPhoto
-                isFollowed
-                info
-                url
+             	       headerTitle
+             	       exploreLink
+             	       kols {
+             		        userName
+             		        userId
+             		        userPhoto
+             		        isFollowed
+             		        info
+             		        url
+             	 	   }
               }
             }
           }
@@ -208,5 +213,5 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
           meta {
             total_data
           }
-        }
+    }
 }

@@ -6,6 +6,7 @@ import com.tkpdfeed.feeds.GetKolComments;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolComments;
 
@@ -51,9 +52,10 @@ public class KolCommentMapper implements Func1<GetKolComments.Data, KolComments>
             for (GetKolComments.Data.Comment comment : comments) {
                 list.add(new KolCommentViewModel(
                         comment.userPhoto() == null ? "" : comment.userPhoto(),
-                        comment.userName() == null ? "" : comment.userPhoto(),
-                        comment.comment() == null ? "" : comment.userPhoto(),
-                        "10 jam yg lalu"));
+                        comment.userName() == null ? "" : comment.userName(),
+                        comment.comment() == null ? "" : comment.comment(),
+                        TimeConverter.generateTime(comment.create_time() == null ? "" : comment
+                                .create_time())));
             }
         return list;
     }

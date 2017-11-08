@@ -38,6 +38,7 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
+
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -111,6 +112,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         TopAdsItemClickListener, TopAdsInfoClickListener, TopAdsListener {
 
     private static final int OPEN_DETAIL = 54;
+    private static final int OPEN_KOL_COMMENT = 101;
+
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
@@ -738,6 +741,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 if (resultCode == Activity.RESULT_OK)
                     showSnackbar(data.getStringExtra("message"));
                 break;
+            case OPEN_KOL_COMMENT:
+                if (resultCode == Activity.RESULT_OK)
+                    onSuccessAddKolComment(data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1));
+                break;
             default:
                 break;
         }
@@ -959,13 +966,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {
-        startActivity(KolCommentActivity.getCallingIntent(getActivity(),
+        startActivityForResult(KolCommentActivity.getCallingIntent(getActivity(),
                 new KolCommentHeaderViewModel(model.getAvatar(), model.getName(), model.getReview
                         (), model.getTime()),
                 new KolCommentProductViewModel(model.getProductImage(), model.getProductName(),
                         model.getProductPrice(), model.isWishlisted()),
-                model.getId()
-        ));
+                model.getId(),
+                rowNumber
+        ), OPEN_KOL_COMMENT);
     }
 
     @Override
@@ -1045,6 +1053,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
             ((KolRecommendationViewModel) adapter.getlist().get(originalPos)).setSwapAdapter(true);
             topAdsRecyclerAdapter.notifyItemChanged(rowNumber);
 
+        }
+    }
+
+    private void onSuccessAddKolComment(int rowNumber) {
+        if (rowNumber != -1) {
+            int originalPos = topAdsRecyclerAdapter.getPlacer().getItem(rowNumber).originalPos();
+            if (originalPos > 0
+                    && rowNumber <= topAdsRecyclerAdapter.getItemCount()
+                    && adapter.getlist().get(originalPos) != null
+                    && adapter.getlist().get(originalPos) instanceof KolRecommendationViewModel) {
+                ((KolViewModel) adapter.getlist().get(originalPos)).setTotalComment(((KolViewModel)
+                        adapter.getlist().get(originalPos)).getTotalComment() + 1);
+            }
         }
     }
 }

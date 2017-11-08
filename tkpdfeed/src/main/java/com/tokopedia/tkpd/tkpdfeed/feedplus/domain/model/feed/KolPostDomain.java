@@ -7,47 +7,84 @@ import javax.annotation.Nullable;
  */
 
 public class KolPostDomain {
-    private final @Nullable
+    private final
+    @Nullable
     int id;
 
-    private final @Nullable String imageUrl;
+    private final
+    @Nullable
+    String imageUrl;
 
-    private final @Nullable String description;
+    private final
+    @Nullable
+    String description;
 
-    private final @Nullable int commentCount;
+    private final
+    @Nullable
+    int commentCount;
 
-    private final @Nullable int likeCount;
+    private final
+    @Nullable
+    int likeCount;
 
-    private final @Nullable boolean isLiked;
+    private final
+    @Nullable
+    boolean isLiked;
 
-    private final @Nullable boolean isFollowed;
+    private final
+    @Nullable
+    boolean isFollowed;
 
-    private final @Nullable String createTime;
+    private final
+    @Nullable
+    String createTime;
 
-    private final @Nullable String productPrice;
+    private final
+    @Nullable
+    String productPrice;
 
-    private final @Nullable String productLink;
+    private final
+    @Nullable
+    String productLink;
 
-    private final @Nullable String productUrl;
+    private final
+    @Nullable
+    String productUrl;
 
-    private final @Nullable String userName;
+    private final
+    @Nullable
+    String userName;
 
-    private final @Nullable String userPhoto;
+    private final
+    @Nullable
+    String userPhoto;
 
-    private final @Nullable String tagsType;
+    private final
+    @Nullable
+    String tagsType;
 
-    private final @Nullable String caption;
+    private final
+    @Nullable
+    String caption;
 
-    private final @Nullable int itemId;
+    private final
+    @Nullable
+    int itemId;
 
-    private final @Nullable String label;
+    private final
+    @Nullable
+    String label;
+
+    private final
+    @Nullable
+    String headerTitle;
 
 
     public KolPostDomain(int id, String imageUrl, String description, int commentCount,
                          int likeCount, boolean isLiked, boolean isFollowed, String createTime,
                          String productPrice, String productLink, String productUrl, String userName,
-                         String userPhoto, String tagsType, String caption, int itemId, String
-                                 label) {
+                         String userPhoto, String tagsType, String caption, int itemId, String label,
+                         String headerTitle) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.description = description;
@@ -65,6 +102,7 @@ public class KolPostDomain {
         this.caption = caption;
         this.itemId = itemId;
         this.label = label;
+        this.headerTitle = headerTitle;
     }
 
     @Nullable
@@ -150,5 +188,10 @@ public class KolPostDomain {
     @Nullable
     public String getLabel() {
         return label;
+    }
+
+    @Nullable
+    public String getHeaderTitle() {
+        return headerTitle;
     }
 }

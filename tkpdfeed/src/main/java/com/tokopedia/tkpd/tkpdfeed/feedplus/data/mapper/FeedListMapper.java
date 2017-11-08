@@ -9,6 +9,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.InspirationDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolPostDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ProductFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.PromotionFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.ShopFeedDomain;
@@ -115,7 +116,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                             List<TopPicksDomain> topPicksDomains,
                             List<InspirationDomain> inspirationDomains,
                             KolPostDomain kolPostDomain,
-                            List<KolRecommendationDomain> kolRecommendations) {
+                            KolRecommendationDomain kolRecommendations) {
         if (content == null) return null;
         return new ContentFeedDomain(content.type(),
                 content.total_product() != null ? content.total_product() : 0,
@@ -252,7 +253,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                         .content().inspirasi());
                 ShopFeedDomain shopFeedDomain = createShopFeedDomain(datum.source().shop());
                 KolPostDomain kolPostDomain = createKolPostDomain(datum);
-                List<KolRecommendationDomain> kolRecommendations
+                KolRecommendationDomain kolRecommendations
                         = convertToKolRecommendationDomain(datum.content().kolrecommendation());
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.content(),
@@ -274,11 +275,24 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
         return dataFeedDomains;
     }
 
-    private List<KolRecommendationDomain> convertToKolRecommendationDomain(List<FeedQuery.Data.Kolrecommendation> kolrecommendation) {
-        List<KolRecommendationDomain> list = new ArrayList<>();
+    private KolRecommendationDomain convertToKolRecommendationDomain(FeedQuery.Data.Kolrecommendation kolrecommendation) {
+        if (kolrecommendation == null) {
+            return null;
+        } else {
+            KolRecommendationDomain domain = new KolRecommendationDomain(kolrecommendation
+                    .headerTitle() == null ? "" : kolrecommendation.headerTitle(),
+                    kolrecommendation.exploreLink() == null ? "" : kolrecommendation.exploreLink(),
+                    convertToListKolRecommendation(kolrecommendation.kols()));
+            return domain;
+        }
+
+    }
+
+    private List<KolRecommendationItemDomain> convertToListKolRecommendation(List<FeedQuery.Data.Kol> kolrecommendation) {
+        List<KolRecommendationItemDomain> list = new ArrayList<>();
         if (kolrecommendation != null) {
-            for (FeedQuery.Data.Kolrecommendation recommendation : kolrecommendation) {
-                list.add(new KolRecommendationDomain(
+            for (FeedQuery.Data.Kol recommendation : kolrecommendation) {
+                list.add(new KolRecommendationItemDomain(
                         recommendation.userName() == null ? "" : recommendation.userName(),
                         recommendation.userId() == null ? 0 : recommendation.userId(),
                         recommendation.userPhoto() == null ? "" : recommendation.userPhoto(),
@@ -314,7 +328,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                     content.tags().get(0).type() == null ? "" : content.tags().get(0).type(),
                     content.tags().get(0).caption() == null ? "" : content.tags().get(0).caption(),
                     content.tags().get(0).id() == null ? 0 : content.tags().get(0).id(),
-                    kolpost.userInfo() == null ? "" : kolpost.userInfo());
+                    kolpost.userInfo() == null ? "" : kolpost.userInfo(),
+                    kolpost.headerTitle() == null ? "" : kolpost.headerTitle());
         } else if (datum.content().followedkolpost() != null) {
             FeedQuery.Data.Followedkolpost kolpost = datum.content()
                     .followedkolpost();
@@ -337,7 +352,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                     content.tags().get(0).type() == null ? "" : content.tags().get(0).type(),
                     content.tags().get(0).caption() == null ? "" : content.tags().get(0).caption(),
                     content.tags().get(0).id() == null ? 0 : content.tags().get(0).id(),
-                    kolpost.userInfo() == null ? "" : kolpost.userInfo());
+                    kolpost.userInfo() == null ? "" : kolpost.userInfo(),
+                    "");
         } else {
             return null;
         }

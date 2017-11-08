@@ -13,6 +13,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.KolCommentFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
 
+import static com.tokopedia.core.talkview.intentservice.TalkDetailIntentService.POSITION;
+
 /**
  * @author by nisie on 10/27/17.
  */
@@ -22,6 +24,7 @@ public class KolCommentActivity extends TActivity implements HasComponent {
     public static final String ARGS_HEADER = "ARGS_HEADER";
     public static final String ARGS_FOOTER = "ARGS_FOOTER";
     public static final String ARGS_ID = "ARGS_ID";
+    public static final String ARGS_POSITION = "ARGS_POSITION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +55,13 @@ public class KolCommentActivity extends TActivity implements HasComponent {
 
     public static Intent getCallingIntent(Context context, KolCommentHeaderViewModel header,
                                           KolCommentProductViewModel productViewModel,
-                                          int id) {
+                                          int id, int rowNumber) {
         Intent intent = new Intent(context, KolCommentActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGS_HEADER, header);
         bundle.putParcelable(ARGS_FOOTER, productViewModel);
         bundle.putInt(ARGS_ID, id);
+        bundle.putInt(ARGS_POSITION, rowNumber);
         intent.putExtras(bundle);
         return intent;
     }
