@@ -94,13 +94,13 @@ public class NetModule {
         return retrofitBuilder.baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN).client(okHttpClient).build();
     }
 
-    @RechargeQualifier
-    @ApplicationScope
-    @Provides
-    public Retrofit provideRechargeRetrofit(@NoAuth OkHttpClient okHttpClient,
-                                         Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.RECHARGE_API_DOMAIN).client(okHttpClient).build();
-    }
+//    @RechargeQualifier
+//    @ApplicationScope
+//    @Provides
+//    public Retrofit provideRechargeRetrofit(@NoAuth OkHttpClient okHttpClient,
+//                                         Retrofit.Builder retrofitBuilder) {
+//        return retrofitBuilder.baseUrl(TkpdBaseURL.RECHARGE_API_DOMAIN).client(okHttpClient).build();
+//    }
 
     @YoutubeQualifier
     @ApplicationScope

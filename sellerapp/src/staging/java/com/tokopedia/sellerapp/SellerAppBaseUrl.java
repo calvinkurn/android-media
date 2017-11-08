@@ -12,7 +12,8 @@ public class SellerAppBaseUrl {
     public static final String BASE_TOPADS_DOMAIN = "https://ta-staging.tokopedia.com/";
     public static final String BASE_MOJITO_DOMAIN = "https://mojito-staging.tokopedia.com/";
     public static final String BASE_HADES_DOMAIN = "https://hades-staging.tokopedia.com";
-    public static final String BASE_RECHARGE_API_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
+    public static final String BASE_DIGITAL_API_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
+    public static final String BASE_DIGITAL_WEBSITE_DOMAIN = "https://pulsa-staging.tokopedia.com/";
     public static final String BASE_ACCOUNTS_DOMAIN = "https://accounts-staging.tokopedia.com/";
     public static final String BASE_INBOX_DOMAIN = "https://inbox-staging.tokopedia.com";
     public static final String BASE_JS_DOMAIN = "https://js-staging.tokopedia.com/";
