@@ -13,6 +13,7 @@ import com.tokopedia.posapp.domain.model.result.BankSavedResult;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
 import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
 import com.tokopedia.posapp.domain.model.product.ProductListDomain;
+import com.tokopedia.posapp.domain.usecase.GetAllProductUseCase;
 import com.tokopedia.posapp.domain.usecase.GetBankUseCase;
 import com.tokopedia.posapp.domain.usecase.GetEtalaseCacheUseCase;
 import com.tokopedia.posapp.domain.usecase.GetEtalaseUseCase;
@@ -33,9 +34,6 @@ import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.core.network.apiservices.ace.apis.BrowseApi.START;
-import static com.tokopedia.seller.product.edit.domain.interactor.GetCategoryRecommUseCase.ROW;
-
 /**
  * Created by okasurya on 8/29/17.
  */
@@ -49,6 +47,9 @@ public class CachePresenter implements Cache.Presenter {
     private static final String ORDER_BY = "order_by";
     private static final String PER_PAGE = "per_page";
     private static final String WHOLESALE = "wholesale";
+    public static final String ROW = "row";
+    public static final String START = "start";
+    public static final String ETALASE = "etalase";
 
     private Context context;
     private GetProductListUseCase getProductListUseCase;
@@ -58,6 +59,7 @@ public class CachePresenter implements Cache.Presenter {
     private GetEtalaseUseCase getEtalaseUseCase;
     private StoreEtalaseCacheUseCase storeEtalaseCacheUseCase;
     private GetEtalaseCacheUseCase getEtalaseCacheUseCase;
+    private GetAllProductUseCase getAllProductUseCase;
 
     private Cache.CallbackListener callbackListener;
 
@@ -75,7 +77,8 @@ public class CachePresenter implements Cache.Presenter {
                           StoreBankUsecase storeBankUsecase,
                           GetEtalaseUseCase getEtalaseUseCase,
                           StoreEtalaseCacheUseCase storeEtalaseCacheUseCase,
-                          GetEtalaseCacheUseCase getEtalaseCacheUseCase
+                          GetEtalaseCacheUseCase getEtalaseCacheUseCase,
+                          GetAllProductUseCase getAllProductUseCase
     ) {
         this.context = context;
         this.getProductListUseCase = getProductListUseCase;
@@ -85,6 +88,7 @@ public class CachePresenter implements Cache.Presenter {
         this.getEtalaseUseCase = getEtalaseUseCase;
         this.storeEtalaseCacheUseCase = storeEtalaseCacheUseCase;
         this.getEtalaseCacheUseCase = getEtalaseCacheUseCase;
+        this.getAllProductUseCase = getAllProductUseCase;
 
         initState();
     }
@@ -92,7 +96,7 @@ public class CachePresenter implements Cache.Presenter {
     @Override
     public void getData() {
         getEtalase();
-        getProduct();
+//        getProduct();
         getBankList();
     }
 
@@ -141,19 +145,51 @@ public class CachePresenter implements Cache.Presenter {
                     @Override
                     public void onNext(DataStatus dataStatus) {
                         Log.d("CachePresenter", dataStatus.getMessage());
+                        getAllProduct();
                     }
                 });
     }
 
-    private void getProduct() {
-//        getEtalaseCacheUseCase.createObservable(RequestParams.EMPTY)
-//                .flatMap(new Func1<List<EtalaseDomain>, Observable<?>>() {
-//                    @Override
-//                    public Observable<> call(List<EtalaseDomain> etalaseDomains) {
-//                        return null;
-//                    }
-//                });
-//
+    private void getAllProduct() {
+        getEtalaseCacheUseCase.createObservable(RequestParams.EMPTY)
+            .flatMapIterable(new Func1<List<EtalaseDomain>, Iterable<EtalaseDomain>>() {
+                @Override
+                public Iterable<EtalaseDomain> call(List<EtalaseDomain> etalaseDomains) {
+                    return etalaseDomains;
+                }
+            })
+            .flatMap(new Func1<EtalaseDomain, Observable<ProductListDomain>>() {
+                @Override
+                public Observable<ProductListDomain> call(EtalaseDomain etalaseDomain) {
+                    return getAllProductUseCase.createObservable(getGatewayProductParam(1, etalaseDomain.getEtalaseId()));
+                }
+            })
+            .flatMap(new Func1<ProductListDomain, Observable<DataStatus>>() {
+                @Override
+                public Observable<DataStatus> call(ProductListDomain productListDomain) {
+                    return storeProductCacheUseCase.createObservable(productListDomain);
+                }
+            })
+            .subscribeOn(Schedulers.newThread())
+            .subscribe(new Subscriber<DataStatus>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(DataStatus dataStatus) {
+                    Log.d("o2o", "product data saved : " + dataStatus.getStatus() + " | " + dataStatus.getMessage());
+                }
+            });
+    }
+
+//    private void getProduct() {
 //        Observable.defer(new Func0<Observable<ProductListDomain>>() {
 //            @Override
 //            public Observable<ProductListDomain> call() {
@@ -167,13 +203,22 @@ public class CachePresenter implements Cache.Presenter {
 //        .repeat()
 //        .subscribeOn(Schedulers.newThread())
 //        .subscribe(new ProductSubscriber());
-    }
+//    }
 
     private RequestParams getGatewayProductParam(int page) {
         RequestParams params = RequestParams.create();
         params.putString(SHOP_ID, SessionHandler.getShopID(context));
         params.putInt(START, 1 + (defaultRowPerPage * (page - 1)));
         params.putInt(ROW, defaultRowPerPage);
+        return params;
+    }
+
+    private RequestParams getGatewayProductParam(int page, String etalaseId) {
+        RequestParams params = RequestParams.create();
+        params.putString(SHOP_ID, SessionHandler.getShopID(context));
+        params.putInt(START, 1 + (defaultRowPerPage * (page - 1)));
+        params.putInt(ROW, defaultRowPerPage);
+        params.putString(ETALASE, etalaseId);
         return params;
     }
 

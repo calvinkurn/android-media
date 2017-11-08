@@ -26,10 +26,8 @@ public class GatewayProductCloudSource {
     }
 
     public Observable<ProductListDomain> getProductList(RequestParams params) {
-        return gatewayProductApi.getProductList(
-            params.getString(SHOP_ID, ""),
-            params.getInt(START, 0),
-            params.getInt(ROW, 10)
-        ).map(getProductListMapper);
+        return gatewayProductApi
+                .getProductList(params.getParamsAllValueInString())
+                .map(getProductListMapper);
     }
 }

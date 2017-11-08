@@ -10,6 +10,8 @@ import com.tokopedia.posapp.domain.model.product.ProductListDomain;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func0;
+import rx.observables.SyncOnSubscribe;
 
 /**
  * Created by okasurya on 8/28/17.
@@ -17,6 +19,7 @@ import rx.Observable;
 
 public class GetProductListUseCase extends UseCase<ProductListDomain> {
     ProductRepository productRepository;
+    private RequestParams requestParam;
 
     @Inject
     public GetProductListUseCase(ThreadExecutor threadExecutor,

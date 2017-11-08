@@ -11,6 +11,7 @@ import com.tokopedia.posapp.data.repository.EtalaseRepositoryImpl;
 import com.tokopedia.posapp.data.source.cloud.api.TomeApi;
 import com.tokopedia.posapp.data.source.cloud.api.GatewayProductApi;
 import com.tokopedia.posapp.di.scope.EtalaseScope;
+import com.tokopedia.posapp.domain.usecase.GetEtalaseCacheUseCase;
 import com.tokopedia.posapp.domain.usecase.GetEtalaseUseCase;
 import com.tokopedia.posapp.domain.usecase.StoreEtalaseCacheUseCase;
 
@@ -57,5 +58,12 @@ public class EtalaseModule {
                                                              PostExecutionThread postExecutionThread,
                                                              EtalaseRepository etalaseRepository) {
         return new StoreEtalaseCacheUseCase(threadExecutor, postExecutionThread, etalaseRepository);
+    }
+
+    @Provides
+    GetEtalaseCacheUseCase provideGetEtalaseCacheUseCase(ThreadExecutor threadExecutor,
+                                                         PostExecutionThread postExecutionThread,
+                                                         EtalaseRepository etalaseRepository) {
+        return new GetEtalaseCacheUseCase(threadExecutor, postExecutionThread, etalaseRepository);
     }
 }
