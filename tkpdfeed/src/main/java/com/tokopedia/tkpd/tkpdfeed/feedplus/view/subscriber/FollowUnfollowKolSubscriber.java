@@ -17,11 +17,17 @@ public class FollowUnfollowKolSubscriber extends Subscriber<FollowKolDomain> {
     protected final FeedPlus.View view;
     protected final FeedPlus.View.Kol kolListener;
     protected final int rowNumber;
+    protected final int id;
+    protected final int status;
 
-    public FollowUnfollowKolSubscriber(int rowNumber, FeedPlus.View view, FeedPlus.View.Kol kolListener) {
+
+    public FollowUnfollowKolSubscriber(int id, int status, int rowNumber, FeedPlus.View view,
+                                       FeedPlus.View.Kol kolListener) {
         this.view = view;
         this.kolListener = kolListener;
         this.rowNumber = rowNumber;
+        this.id = id;
+        this.status = status;
     }
 
     @Override
@@ -32,7 +38,7 @@ public class FollowUnfollowKolSubscriber extends Subscriber<FollowKolDomain> {
     @Override
     public void onError(Throwable e) {
         view.finishLoadingProgress();
-        kolListener.onErrorFollowKol(ErrorHandler.getErrorMessage(e));
+        kolListener.onErrorFollowKol(ErrorHandler.getErrorMessage(e), id, status, rowNumber);
     }
 
     @Override
@@ -42,7 +48,7 @@ public class FollowUnfollowKolSubscriber extends Subscriber<FollowKolDomain> {
             kolListener.onSuccessFollowUnfollowKol(rowNumber);
         else {
             kolListener.onErrorFollowKol(MainApplication.getAppContext().getString(R.string
-                    .default_request_error_unknown));
+                    .default_request_error_unknown), id, status, rowNumber);
         }
     }
 }

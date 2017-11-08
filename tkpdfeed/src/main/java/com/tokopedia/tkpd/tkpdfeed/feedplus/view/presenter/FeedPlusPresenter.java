@@ -179,7 +179,7 @@ public class FeedPlusPresenter
         followKolPostUseCase.execute(
                 FollowKolPostUseCase.getParam(id,
                         FollowKolPostUseCase.PARAM_FOLLOW),
-                new FollowUnfollowKolSubscriber(rowNumber, getView(), kolListener));
+                new FollowUnfollowKolSubscriber(id, FollowKolPostUseCase.PARAM_FOLLOW, rowNumber, getView(), kolListener));
     }
 
     @Override
@@ -188,7 +188,8 @@ public class FeedPlusPresenter
         followKolPostUseCase.execute(
                 FollowKolPostUseCase.getParam(id,
                         FollowKolPostUseCase.PARAM_UNFOLLOW),
-                new FollowUnfollowKolSubscriber(rowNumber, getView(), kolListener));
+                new FollowUnfollowKolSubscriber(id, FollowKolPostUseCase.PARAM_UNFOLLOW,
+                        rowNumber, getView(), kolListener));
     }
 
     @Override
@@ -205,7 +206,8 @@ public class FeedPlusPresenter
         followKolPostUseCase.execute(
                 FollowKolPostUseCase.getParam(id,
                         FollowKolPostUseCase.PARAM_FOLLOW),
-                new FollowUnfollowKolRecommendationSubscriber(rowNumber, position, getView(),
+                new FollowUnfollowKolRecommendationSubscriber(id, FollowKolPostUseCase
+                        .PARAM_FOLLOW, rowNumber, position, getView(),
                         kolListener));
 
 
@@ -217,7 +219,8 @@ public class FeedPlusPresenter
         followKolPostUseCase.execute(
                 FollowKolPostUseCase.getParam(id,
                         FollowKolPostUseCase.PARAM_UNFOLLOW),
-                new FollowUnfollowKolRecommendationSubscriber(rowNumber, position, getView(),
+                new FollowUnfollowKolRecommendationSubscriber(id,FollowKolPostUseCase
+                        .PARAM_UNFOLLOW, rowNumber, position, getView(),
                         kolListener));
 
     }

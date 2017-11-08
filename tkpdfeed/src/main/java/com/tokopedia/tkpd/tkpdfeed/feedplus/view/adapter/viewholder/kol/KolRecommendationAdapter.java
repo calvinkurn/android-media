@@ -75,6 +75,28 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                 }
             });
 
+            followButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (followButton.getText().equals(MainApplication.getAppContext().getString(R.string
+                            .action_follow_english))) {
+                        kolViewListener.onFollowKolFromRecommendationClicked(data.getPage(),
+                                data.getRowNumber(),
+                                data.getListRecommend().get(getAdapterPosition()).getId(),
+                                getAdapterPosition());
+                        data.getListRecommend().get(getAdapterPosition()).setFollowed(true);
+                        notifyItemChanged(getAdapterPosition());
+                    } else {
+                        kolViewListener.onUnfollowKolFromRecommendationClicked(data.getPage(),
+                                data.getRowNumber(),
+                                data.getListRecommend().get(getAdapterPosition()).getId(),
+                                getAdapterPosition());
+                        data.getListRecommend().get(getAdapterPosition()).setFollowed(false);
+                        notifyItemChanged(getAdapterPosition());
+                    }
+                }
+            });
+
         }
     }
 
@@ -86,11 +108,16 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         ImageHandler.LoadImage(avatar, data.getListRecommend().get(position).getImageUrl());
         name.setText(MethodChecker.fromHtml(data.getListRecommend().get(position).getName()));
         label.setText(data.getListRecommend().get(position).getLabel());
 
+        setFollowing(position);
+
+    }
+
+    private void setFollowing(int position) {
         if (data.getListRecommend().get(position).isFollowed()) {
             followButton.setText(MainApplication.getAppContext().getString(R.string.following));
             MethodChecker.setBackground(followButton, MethodChecker.getDrawable(MainApplication
@@ -104,24 +131,6 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
             MethodChecker.setBackground(followButton, MethodChecker.getDrawable(MainApplication
                     .getAppContext(), R.drawable.green_button_rounded_unify));
         }
-
-        followButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (followButton.getText().equals(MainApplication.getAppContext().getString(R.string
-                        .action_follow_english))) {
-                    kolViewListener.onFollowKolFromRecommendationClicked(data.getPage(),
-                            data.getRowNumber(),
-                            data.getListRecommend().get(position).getId(),
-                            position);
-                } else {
-                    kolViewListener.onUnfollowKolFromRecommendationClicked(data.getPage(),
-                            data.getRowNumber(),
-                            data.getListRecommend().get(position).getId(),
-                            position);
-                }
-            }
-        });
     }
 
     @Override

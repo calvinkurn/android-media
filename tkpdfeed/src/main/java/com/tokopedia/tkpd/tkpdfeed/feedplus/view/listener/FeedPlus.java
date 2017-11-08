@@ -40,7 +40,7 @@ public interface FeedPlus {
 
             void onGoToListKolRecommendation(int page, int rowNumber, String url);
 
-            void onErrorFollowKol(String errorMessage);
+            void onErrorFollowKol(String errorMessage, int id, int status, int rowNumber);
 
             void onSuccessFollowUnfollowKol(int rowNumber);
 

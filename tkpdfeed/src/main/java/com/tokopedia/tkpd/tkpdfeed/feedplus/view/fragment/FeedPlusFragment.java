@@ -53,6 +53,7 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolCommentActivity;
@@ -982,8 +983,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorFollowKol(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    public void onErrorFollowKol(String errorMessage, final int id, final int status, final int rowNumber) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                if (status == FollowKolPostUseCase.PARAM_UNFOLLOW)
+                    presenter.unfollowKol(id, rowNumber, FeedPlusFragment.this);
+                else
+                    presenter.followKol(id, rowNumber, FeedPlusFragment.this);
+
+            }
+        }).showRetrySnackbar();
     }
 
     @Override
@@ -1042,18 +1052,20 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessFollowUnfollowKolFromRecommendation(int rowNumber, int position) {
-        int originalPos = topAdsRecyclerAdapter.getPlacer().getItem(rowNumber).originalPos();
-        if (originalPos > 0
-                && rowNumber <= topAdsRecyclerAdapter.getItemCount()
-                && adapter.getlist().get(originalPos) != null
-                && adapter.getlist().get(originalPos) instanceof KolRecommendationViewModel) {
-            ((KolRecommendationViewModel) adapter.getlist().get(originalPos)).getListRecommend()
-                    .get(position).setFollowed(!((KolRecommendationViewModel) adapter.getlist()
-                    .get(originalPos)).getListRecommend().get(position).isFollowed());
-            ((KolRecommendationViewModel) adapter.getlist().get(originalPos)).setSwapAdapter(true);
-            topAdsRecyclerAdapter.notifyItemChanged(rowNumber);
+//        int originalPos = topAdsRecyclerAdapter.getPlacer().getItem(rowNumber).originalPos();
+//        if (originalPos > 0
+//                && rowNumber <= topAdsRecyclerAdapter.getItemCount()
+//                && adapter.getlist().get(originalPos) != null
+//                && adapter.getlist().get(originalPos) instanceof KolRecommendationViewModel) {
+//            ((KolRecommendationViewModel) adapter.getlist().get(originalPos)).getListRecommend()
+//                    .get(position).setFollowed(!((KolRecommendationViewModel) adapter.getlist()
+//                    .get(originalPos)).getListRecommend().get(position).isFollowed());
+//            ((KolRecommendationViewModel) adapter.getlist().get(originalPos)).setSwapAdapter(true);
+//            topAdsRecyclerAdapter.notifyItemChanged(rowNumber);
+//
+//        }
+        NetworkErrorHelper.showSnackbar(getActivity(), "Sukses following");
 
-        }
     }
 
     private void onSuccessAddKolComment(int rowNumber, int totalNewComment) {

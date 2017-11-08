@@ -78,4 +78,5 @@ public class KolRecommendationViewModel implements Visitable<FeedPlusTypeFactory
     public boolean isSwapAdapter() {
         return swapAdapter;
     }
+
 }

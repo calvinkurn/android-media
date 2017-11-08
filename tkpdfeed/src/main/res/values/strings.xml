@@ -54,5 +54,7 @@
     <string name="see_more_comments">Lihat Comments Sebelumnya</string>
     <string name="write_comment">Tulis komentar...</string>
     <string name="comment">Comment</string>
+    <string name="failed_to_follow">Gagal mengikuti pengguna</string>
+    <string name="failed_to_unfollow">Gagal untuk berhenti mengikuti</string>
 
 </resources>

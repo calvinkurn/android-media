@@ -54,6 +54,4 @@ public class KolRecommendItemViewModel {
     public void setFollowed(boolean followed) {
         this.followed = followed;
     }
-
-
 }
