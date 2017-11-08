@@ -45,14 +45,8 @@ public interface DigitalApi {
     @GET(TkpdBaseURL.DigitalApi.PATH_BANNER)
     Observable<Response<TkpdDigitalResponse>> getBanner(@QueryMap Map<String, String> params);
 
-    @GET(TkpdBaseURL.DigitalApi.PATH_RECENT_NUMBER)
-    Observable<Response<TkpdDigitalResponse>> getRecentNumber(@QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.DigitalApi.PATH_LAST_ORDER)
-    Observable<Response<TkpdDigitalResponse>> getLastOrder(@QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.DigitalApi.PATH_ORDER)
-    Observable<Response<TkpdDigitalResponse>> getOrder(@QueryMap Map<String, String> params);
+    @GET(TkpdBaseURL.DigitalApi.PATH_NUMBER_LIST)
+    Observable<Response<TkpdDigitalResponse>> getNumberList(@QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.DigitalApi.PATH_GET_CART)
     Observable<Response<TkpdDigitalResponse>> getCart(@QueryMap Map<String, String> params);
@@ -82,6 +76,5 @@ public interface DigitalApi {
     @POST(TkpdBaseURL.DigitalApi.PATH_USSD)
     @Headers({"Content-Type: application/json"})
     Observable<Response<TkpdDigitalResponse>> parsePulsaMessage(@Body JsonObject requestBody);
-
 
 }

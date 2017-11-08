@@ -1,12 +1,11 @@
 package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventType;
+import com.moe.pushlibrary.PayloadBuilder;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
@@ -1266,16 +1265,6 @@ public class UnifyTracking extends TrackingUtils {
         eventAppsFlyerContentView(afProdIds, keyword, prodIdArray);
     }
 
-
-    public static void eventLocaRegister(String userID) {
-        getLocaEngine().tagEventWithAttribute(
-                "event : " + "Successful Register",
-                userID,
-                new String[]{"customer_name", userID},
-                new String[]{"Login Type", "E-mail"}
-        );
-    }
-
     public static void eventPDPDetail(ProductDetail productDetail) {
         getGTMEngine()
                 .eventDetail(productDetail)
@@ -1300,47 +1289,16 @@ public class UnifyTracking extends TrackingUtils {
                 .clearAddtoCartDataLayer(GTMCart.REMOVE_ACTION);
     }
 
-    public static void eventLoginLoca(CustomerWrapper customerWrapper) {
-        getLocaEngine().sendLoginSuccessfull(customerWrapper);
-    }
-
-    public static void eventRegisterLoca(CustomerWrapper customerWrapper) {
-        getLocaEngine().sendEventRegister(customerWrapper);
-    }
-
-    public static void eventLogoutLoca() {
-        Map<String, String> attrs = new HashMap<>();
-        getLocaEngine().sendEventLoggedOut(attrs);
-    }
-
     public static void eventLocaGoodReview(Integer accuracy, Integer quality) {
-        if (accuracy > 3 && quality > 3) {
-            eventLoca(AppScreen.EVENT_GOOD_REVIEW);
-        }
-    }
-
-    public static void eventViewATC() {
-        eventLoca(AppScreen.SCREEN_VIEWED_ADD_TO_CART);
-    }
-
-    public static void eventViewFavStore() {
-        eventLoca(AppScreen.SCREEN_VIEWED_FAV_STORE);
-    }
-
-    public static void eventViewLoginPage() {
-        eventLoca(AppScreen.SCREEN_VIEWED_LOGIN);
-    }
-
-    public static void eventViewShopTransactionPage() {
-        eventLoca(AppScreen.SCREEN_VIEWED_TRANSACTION_SHOP);
-    }
-
-    public static void eventViewWishlist() {
-        eventLoca(AppScreen.SCREEN_VIEWED_WISHLIST_PAGE);
-    }
-
-    public static void deleteProfileAttrLoca() {
-        getLocaEngine().deleteProfileAttribute("profile : last date has product in cart");
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrInt(
+                AppEventTracking.MOENGAGE.QUALITY_SCORE,
+                quality
+        );
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.SUBMIT_ULASAN_REVIEW
+        );
     }
 
     public static void sendAFCompleteRegistrationEvent() {
@@ -1368,15 +1326,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.INSTALLED,
                 userId
         ).getEvent());
-    }
-
-    public static void sendLocaProductDetailEvent(ProductDetailData successResult, Map<String, String> attributes) {
-        getLocaEngine().sendEventProductView(
-                successResult.getInfo().getProductName(),
-                Integer.toString(successResult.getInfo().getProductId()),
-                successResult.getInfo().getProductCatalogName(),
-                attributes
-        );
     }
 
     public static void eventClickCatalog(String label) {
@@ -2542,5 +2491,56 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventDeleteFeaturedProduct() {
         eventFeaturedProduct(AppEventTracking.EventLabel.DELETE_FEATURED_PRODUCT);
+    }
+
+    public static void eventProductManage(String action, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                action,
+                label
+        ).getEvent());
+    }
+
+    public static void eventProductManageTopNav(String label){
+        eventProductManage(AppEventTracking.Action.CLICK_TOP_NAV,label);
+    }
+
+    public static void eventProductManageSearch(){
+        eventProductManage(AppEventTracking.Action.CLICK_TOP_NAV,AppEventTracking.EventLabel.SEARCH_PRODUCT);
+    }
+
+    public static void eventProductManageClickDetail(){
+        eventProductManage(AppEventTracking.Action.CLICK_PRODUCT_LIST,AppEventTracking.EventLabel.CLICK_PRODUCT_LIST);
+    }
+
+    public static void eventProductManageSortProduct(String label){
+        eventProductManage(AppEventTracking.Action.CLICK_SORT_PRODUCT,label);
+    }
+
+    public static void eventProductManageFilterProduct(String label) {
+        eventProductManage(AppEventTracking.Action.CLICK_FILTER_PRODUCT,label);
+    }
+
+    public static void eventProductManageOverflowMenu(String label){
+        eventProductManage(AppEventTracking.Action.CLICK_OVERFLOW_MENU,label);
+    }
+
+    public static void eventSelectNumberOnUserProfileNative(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.RECHARGE + label,
+                AppEventTracking.Action.SELECT_NUMBER_ON_USER_PROFILE,
+                label
+        ).getEvent());
+    }
+
+    public static void eventSelectNumberOnUserProfileWidget(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                AppEventTracking.Action.SELECT_NUMBER_ON_USER_PROFILE,
+                label
+        ).getEvent());
     }
 }

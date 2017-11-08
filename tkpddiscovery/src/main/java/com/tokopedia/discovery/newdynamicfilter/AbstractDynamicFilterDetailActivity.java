@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdynamicfilter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -58,6 +59,14 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     private String pageTitle;
     private boolean isAutoTextChange = false;
 
+    protected static ArrayList<Parcelable> mappingParcelableOption(List<Option> optionList) {
+        ArrayList<Parcelable> parcelables = new ArrayList<>();
+        for (Option option : optionList) {
+            parcelables.add(option);
+        }
+        return parcelables;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,8 +80,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     }
 
     private void fetchDataFromIntent() {
-        optionList = Parcels.unwrap(
-                getIntent().getParcelableExtra(EXTRA_OPTION_LIST));
+        optionList = getIntent().getParcelableArrayListExtra(EXTRA_OPTION_LIST);
         isSearchable = getIntent().getBooleanExtra(EXTRA_IS_SEARCHABLE, false);
         searchHint = getIntent().getStringExtra(EXTRA_SEARCH_HINT);
         pageTitle = getIntent().getStringExtra(EXTRA_PAGE_TITLE);

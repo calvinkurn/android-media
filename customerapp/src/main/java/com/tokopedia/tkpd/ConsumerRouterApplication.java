@@ -12,6 +12,7 @@ import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -30,6 +31,7 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.OtpRouter;
+import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -39,6 +41,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
@@ -105,7 +108,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter {
+        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication,
+        TkpdInboxRouter, RemoteConfigRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -117,6 +121,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
+
+    private FirebaseRemoteConfig firebaseRemoteConfig;
 
     @Override
     public void onCreate() {
@@ -159,8 +165,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToProductDetail(Context context, String productUrl) {
-        Intent intent = ProductInfoActivity.createInstance(context, productUrl);
-        context.startActivity(intent);
+        DeepLinkChecker.openProduct(productUrl, context);
     }
 
     @Override
@@ -412,6 +417,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void actionApplink(Activity activity, String linkUrl, String extra) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.putExtra("extra", extra);
+        intent.setData(Uri.parse(linkUrl));
+        deepLinkDelegate.dispatchFrom(activity, intent);
+    }
+
+    @Override
     public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
         activity.startActivity(BannerWebView.getCallingIntent(activity, mobileUrl));
     }
@@ -575,6 +589,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public String getFlavor() {
+        return BuildConfig.FLAVOR;
+    }
+
     public Observable<GMFeaturedProductDomainModel> getFeaturedProduct() {
         GMFeaturedProductDomainModel gmFeaturedProductDomainModel = new GMFeaturedProductDomainModel();
         gmFeaturedProductDomainModel.setData(new ArrayList<GMFeaturedProductDomainModel.Datum>());
@@ -607,5 +625,40 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         if(activity != null) {
             ProductAddActivity.start(activity);
         }
+    }
+
+    @Override
+    public boolean isInMyShop(Context context, String shopId) {
+        return context != null && new SessionHandler(context).getShopID().trim().equalsIgnoreCase(shopId.trim());
+    }
+
+    @Override
+    public boolean getBooleanConfig(String key) {
+        return getFirebaseRemoteConfig().getBoolean(key);
+    }
+
+    @Override
+    public byte[] getByteArrayConfig(String key) {
+        return getFirebaseRemoteConfig().getByteArray(key);
+    }
+
+    @Override
+    public double getDoubleConfig(String key) {
+        return getFirebaseRemoteConfig().getDouble(key);
+    }
+
+    @Override
+    public long getLongConfig(String key) {
+        return getFirebaseRemoteConfig().getLong(key);
+    }
+
+    @Override
+    public String getStringConfig(String key) {
+        return getFirebaseRemoteConfig().getString(key);
+    }
+
+    private FirebaseRemoteConfig getFirebaseRemoteConfig() {
+        if(firebaseRemoteConfig == null) firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        return firebaseRemoteConfig;
     }
 }

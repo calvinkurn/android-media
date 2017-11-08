@@ -63,19 +63,20 @@ public class ImageHandler {
 	 * @return
 	 * @throws IOException
 	 */
-	public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
-		ExifInterface exif = new ExifInterface(file);
-		String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
-		int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
-		int rotationAngle = 0;
-		if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
-		if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
-		if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
-		Matrix matrix = new Matrix();
-		matrix.setRotate(rotationAngle, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
-		Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-        return rotatedBitmap;
+    public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
+        ExifInterface exif = new ExifInterface(file);
+        String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+        int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
+        int rotationAngle = 0;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
+        if (rotationAngle == 0) {
+            return bitmap;
+        }
+        Matrix matrix = new Matrix();
+        matrix.setRotate(rotationAngle, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     public static void loadImageWithId(ImageView imageview, int resId) {
@@ -203,6 +204,7 @@ public class ImageHandler {
      * @param url
      */
     public static void LoadImage(ImageView imageview, String url) {
+
 
         if (imageview.getContext() != null) {
             Glide.with(imageview.getContext())

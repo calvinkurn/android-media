@@ -56,7 +56,7 @@ public class CategoryLevelViewModel {
                 return viewModel;
             }
         }
-        throw new RuntimeException("Selected item not found");
+        return null;
     }
 
 

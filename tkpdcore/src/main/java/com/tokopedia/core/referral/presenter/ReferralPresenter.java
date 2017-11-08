@@ -1,7 +1,6 @@
 package com.tokopedia.core.referral.presenter;
 
 import android.app.Activity;
-import android.content.Intent;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -22,15 +21,13 @@ public class ReferralPresenter implements IReferralPresenter {
 
     @Override
     public void shareApp() {
-
-        Intent shareIntent = new Intent(activity, ShareActivity.class);
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.APP_SHARE_TYPE)
                 .setName(activity.getString(R.string.app_share_title))
-                .setDescription(activity.getString(R.string.app_share_contents)+" ")
+                .setTextContent(activity.getString(R.string.app_share_title)+" ")
+                .setDescription(activity.getString(R.string.app_share_contents) + " ")
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
                 .build();
-        shareIntent.putExtra(ShareData.TAG, shareData);
-        activity.startActivity(shareIntent);
+        activity.startActivity(ShareActivity.createIntent(activity, shareData));
     }
 }

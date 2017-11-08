@@ -130,4 +130,9 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
     public void onWebTitlePageCompleted(String title) {
 
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

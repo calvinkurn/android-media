@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Display;
 import android.view.View;
@@ -196,7 +197,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public void setShopAvatar(String imagePath) {
-        if (imagePath != "") {
+        if (!TextUtils.isEmpty(imagePath)) {
             imageText.setVisibility(View.GONE);
             ImageHandler.loadImageFit2(getActivity()
                     , shopAvatar
@@ -484,8 +485,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
             showPhoneVerification(false);
         }
         if (imageLocation != null) {
-            ImageHandler.LoadImage(shopAvatar, imageLocation);
-            imageText.setVisibility(View.GONE);
+            setShopAvatar(imageLocation);
         }
     }
 

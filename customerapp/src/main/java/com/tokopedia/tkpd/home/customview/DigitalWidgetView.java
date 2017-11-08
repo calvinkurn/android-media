@@ -38,6 +38,7 @@ public class DigitalWidgetView extends BaseCustomView {
     private LocalCacheHandler cacheHandler;
     private ActionListener listener;
     private RechargeViewPagerAdapter rechargeViewPagerAdapter;
+    private View pulsaPlaceHolder;
 
     public DigitalWidgetView(@NonNull Context context) {
         super(context);
@@ -64,15 +65,16 @@ public class DigitalWidgetView extends BaseCustomView {
         tabLayout = (TabLayout) view.findViewById(R.id.tab_layout_widget);
         viewPager = (WrapContentViewPager) view.findViewById(R.id.view_pager_widget);
         seeAllProduct = (TextView) view.findViewById(R.id.see_all_product);
-
+        pulsaPlaceHolder = view.findViewById(R.id.pulsa_place_holders);
         cacheHandler = new LocalCacheHandler(
                 getContext(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
 
-        ((LinearLayout) tabLayout.getParent()).setVisibility(View.GONE);
         seeAllProduct.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onClickSeeAllProduct();
+                if(listener != null) {
+                    listener.onClickSeeAllProduct();
+                }
             }
         });
     }
@@ -122,6 +124,7 @@ public class DigitalWidgetView extends BaseCustomView {
 
     private void addChildTablayout(List<Category> rechargeCategory, List<Integer> newRechargePositions) {
         for (int i = 0; i < rechargeCategory.size(); i++) {
+            pulsaPlaceHolder.setVisibility(View.GONE);
             Category category = rechargeCategory.get(i);
             TabLayout.Tab tab = tabLayout.newTab();
             tab.setText(category.getAttributes().getName());
@@ -183,6 +186,10 @@ public class DigitalWidgetView extends BaseCustomView {
         } else {
             viewPager.setCurrentItem(0);
         }
+    }
+
+    public int getPosition() {
+        return viewPager.getCurrentItem();
     }
 
     public interface ActionListener {
