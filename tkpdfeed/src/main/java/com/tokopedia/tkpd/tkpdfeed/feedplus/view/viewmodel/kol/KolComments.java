@@ -9,11 +9,14 @@ import java.util.ArrayList;
 public class KolComments {
 
     private final String lastcursor;
+    private int totalData;
     ArrayList<KolCommentViewModel> listComments;
 
-    public KolComments(String lastcursor, ArrayList<KolCommentViewModel> listComments) {
+    public KolComments(String lastcursor, ArrayList<KolCommentViewModel> listComments, int
+            totalData) {
         this.listComments = listComments;
         this.lastcursor = lastcursor;
+        this.totalData = totalData;
     }
 
     public ArrayList<KolCommentViewModel> getListComments() {
@@ -22,5 +25,9 @@ public class KolComments {
 
     public String getLastcursor() {
         return lastcursor;
+    }
+
+    public int getTotalData() {
+        return totalData;
     }
 }

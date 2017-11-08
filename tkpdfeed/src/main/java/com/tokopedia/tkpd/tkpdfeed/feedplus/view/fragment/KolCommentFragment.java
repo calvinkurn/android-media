@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -23,6 +25,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.SendKolCommentDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolCommentActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolProfileWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.KolCommentAdapter;
@@ -37,6 +40,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentViewMod
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolComments;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.inject.Inject;
 
@@ -46,6 +50,7 @@ import javax.inject.Inject;
 
 public class KolCommentFragment extends BaseDaggerFragment implements KolComment.View {
 
+    public static final String ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT";
     RecyclerView listComment;
     KolCommentAdapter adapter;
 
@@ -66,6 +71,8 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     @Inject
     SessionHandler sessionHandler;
+
+    int totalNewComment = 0;
 
     public static KolCommentFragment createInstance(Bundle bundle) {
         KolCommentFragment fragment = new KolCommentFragment();
@@ -97,9 +104,11 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         if (getArguments() != null) {
             header = getArguments().getParcelable(KolCommentActivity.ARGS_HEADER);
             footer = getArguments().getParcelable(KolCommentActivity.ARGS_FOOTER);
+            totalNewComment = 0;
         } else if (savedInstanceState != null) {
             header = savedInstanceState.getParcelable(KolCommentActivity.ARGS_HEADER);
             footer = savedInstanceState.getParcelable(KolCommentActivity.ARGS_FOOTER);
+            totalNewComment = savedInstanceState.getInt(ARGS_TOTAL_COMMENT);
         } else {
             getActivity().finish();
         }
@@ -110,6 +119,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         super.onSaveInstanceState(outState);
         outState.putParcelable(KolCommentActivity.ARGS_HEADER, header);
         outState.putParcelable(KolCommentActivity.ARGS_FOOTER, footer);
+        outState.putInt(ARGS_TOTAL_COMMENT, totalNewComment);
     }
 
     @Nullable
@@ -180,16 +190,37 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     @Override
     public void onSuccessGetCommentsFirstTime(KolComments kolComments) {
-        if (adapter.getHeader() != null)
-            adapter.getHeader().setCanLoadMore(true);
-
         ArrayList<Visitable> list = new ArrayList<>();
         list.addAll(kolComments.getListComments());
+        Collections.reverse(list);
 
         adapter.setList(list);
+
+        if (adapter.getHeader() != null)
+            adapter.getHeader().setCanLoadMore(adapter.getItemCount() - 1 < kolComments.getTotalData
+                    ());
+
         adapter.notifyDataSetChanged();
 
         listComment.getLayoutManager().scrollToPosition(adapter.getItemCount() - 1);
+    }
+
+
+    @Override
+    public void onSuccessGetComments(KolComments kolComments) {
+
+        ArrayList<Visitable> list = new ArrayList<>();
+        list.addAll(kolComments.getListComments());
+        Collections.reverse(list);
+
+        adapter.addList(list);
+
+        if (adapter.getHeader() != null) {
+            adapter.getHeader().setCanLoadMore(adapter.getItemCount() - 1 < kolComments.getTotalData
+                    ());
+            adapter.getHeader().setLoading(false);
+            adapter.notifyItemChanged(0);
+        }
     }
 
     private void setFooter(KolCommentProductViewModel footer) {
@@ -228,21 +259,6 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     }
 
     @Override
-    public void onSuccessGetComments(KolComments kolComments) {
-
-        if (adapter.getHeader() != null) {
-            adapter.getHeader().setCanLoadMore(true);
-            adapter.getHeader().setLoading(false);
-            adapter.notifyItemChanged(0);
-        }
-
-        ArrayList<Visitable> list = new ArrayList<>();
-        list.addAll(kolComments.getListComments());
-
-        adapter.addList(list);
-    }
-
-    @Override
     public void onSuccessChangeWishlist() {
         setWishlist(true);
     }
@@ -269,17 +285,24 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     }
 
     @Override
-    public void onSuccessSendComment() {
+    public void onSuccessSendComment(SendKolCommentDomain sendKolCommentDomain) {
         adapter.addItem(new KolCommentViewModel(
-                "",
-                sessionHandler.getLoginName(),
-                kolComment.getText().toString(),
-                "Baru saja"
+                sendKolCommentDomain.getDomainUser().getPhoto(),
+                sendKolCommentDomain.getDomainUser().getName(),
+                sendKolCommentDomain.getComment(),
+                sendKolCommentDomain.getTime(),
+                sendKolCommentDomain.getDomainUser().isKol()
         ));
 
         kolComment.setText("");
+        KeyboardHandler.DropKeyboard(getActivity(), kolComment);
+        totalNewComment += 1;
 
-        getActivity().setResult(Activity.RESULT_OK, getActivity().getIntent());
+        listComment.scrollToPosition(adapter.getItemCount() - 1);
+        Intent intent = new Intent();
+        intent.putExtras(getActivity().getIntent().getExtras());
+        intent.putExtra(ARGS_TOTAL_COMMENT, totalNewComment);
+        getActivity().setResult(Activity.RESULT_OK, intent);
 
     }
 

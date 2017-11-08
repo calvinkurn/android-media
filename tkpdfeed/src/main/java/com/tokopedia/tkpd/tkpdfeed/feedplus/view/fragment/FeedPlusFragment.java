@@ -38,7 +38,6 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
-
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -743,7 +742,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 break;
             case OPEN_KOL_COMMENT:
                 if (resultCode == Activity.RESULT_OK)
-                    onSuccessAddKolComment(data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1));
+                    onSuccessAddKolComment(data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
+                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0));
                 break;
             default:
                 break;
@@ -943,8 +943,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductPageFromKol(int page, int rowNumber, String productId, String productImage) {
-        goToProductDetail(productId, productImage, "", "");
+    public void onOpenKolTooltip(int page, int rowNumber, String url) {
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
     }
 
     @Override
@@ -969,7 +969,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         startActivityForResult(KolCommentActivity.getCallingIntent(getActivity(),
                 new KolCommentHeaderViewModel(model.getAvatar(), model.getName(), model.getReview
                         (), model.getTime()),
-                new KolCommentProductViewModel(model.getProductImage(), model.getProductName(),
+                new KolCommentProductViewModel(model.getKolImage(), model.getContentName(),
                         model.getProductPrice(), model.isWishlisted()),
                 model.getId(),
                 rowNumber
@@ -1056,15 +1056,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void onSuccessAddKolComment(int rowNumber) {
+    private void onSuccessAddKolComment(int rowNumber, int totalNewComment) {
         if (rowNumber != -1) {
             int originalPos = topAdsRecyclerAdapter.getPlacer().getItem(rowNumber).originalPos();
             if (originalPos > 0
                     && rowNumber <= topAdsRecyclerAdapter.getItemCount()
                     && adapter.getlist().get(originalPos) != null
-                    && adapter.getlist().get(originalPos) instanceof KolRecommendationViewModel) {
+                    && adapter.getlist().get(originalPos) instanceof KolViewModel) {
                 ((KolViewModel) adapter.getlist().get(originalPos)).setTotalComment(((KolViewModel)
-                        adapter.getlist().get(originalPos)).getTotalComment() + 1);
+                        adapter.getlist().get(originalPos)).getTotalComment() + totalNewComment);
+                topAdsRecyclerAdapter.notifyItemChanged(rowNumber);
             }
         }
     }

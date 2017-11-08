@@ -100,7 +100,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             topSeparator.setVisibility(View.VISIBLE);
         }
 
-        ImageHandler.LoadImage(reviewImage, element.getProductImage());
+        ImageHandler.LoadImage(reviewImage, element.getKolImage());
         tooltip.setText(element.getProductTooltip());
 
         kolText.setText(getKolText(element));
@@ -120,17 +120,6 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         }
 
         setListener(element);
-    }
-
-    private View.OnClickListener onTooltipClicked(final KolViewModel element) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToProductPageFromKol(element.getPage(),
-                        getAdapterPosition(),
-                        element.getProductId(), element.getProductImage());
-            }
-        };
     }
 
     private void setListener(final KolViewModel element) {
@@ -190,9 +179,8 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         tooltipClickArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductPageFromKol(element.getPage(), getAdapterPosition(),
-                        String.valueOf(element.getId()),
-                        element.getProductImage());
+                viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),
+                       element.getContentLink());
             }
         });
 

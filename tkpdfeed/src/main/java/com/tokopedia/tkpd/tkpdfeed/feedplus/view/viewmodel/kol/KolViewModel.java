@@ -9,39 +9,41 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPl
 
 public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
     private final String tagsType;
+    private final String contentLink;
     private String title;
     private String name;
     private String avatar;
     private String label;
+    private String kolProfileUrl;
     private boolean followed;
-    private String productImage;
     private String productTooltip;
     private String review;
     private boolean liked;
     private int totalLike;
     private int totalComment;
     private int page;
-    private String kolProfileUrl;
     private boolean temporarilyFollowed;
-    private String productId;
-    private int id;
+    private String kolImage;
+    private int contentId;
+    private int kolId;
     private boolean reviewExpanded;
     private String time;
-    private String productName;
+    private String contentName;
     private String productPrice;
     private boolean wishlisted;
 
     public KolViewModel(String title, String name, String avatar, String label,
-                        boolean followed, String productImage, String productTooltip,
+                        boolean followed, String kolImage, String productTooltip,
                         String review, boolean liked, int totalLike, int totalComment,
-                        int page, String kolProfileUrl, String productId, int id, String time,
-                        String productName, String productPrice, boolean wishlisted, String tagsType) {
+                        int page, String kolProfileUrl, int contentId, int id, String time,
+                        String contentName, String productPrice, boolean wishlisted, String tagsType,
+                        String contentLink) {
         this.title = title;
         this.name = name;
         this.avatar = avatar;
         this.label = label;
         this.followed = followed;
-        this.productImage = productImage;
+        this.kolImage = kolImage;
         this.productTooltip = productTooltip;
         this.review = review;
         this.liked = liked;
@@ -49,13 +51,14 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
         this.totalComment = totalComment;
         this.page = page;
         this.kolProfileUrl = kolProfileUrl;
-        this.productId = productId;
-        this.id = id;
+        this.contentId = contentId;
+        this.kolId = id;
         this.time = time;
-        this.productName = productName;
+        this.contentName = contentName;
         this.productPrice = productPrice;
         this.wishlisted = wishlisted;
         this.tagsType = tagsType;
+        this.contentLink = contentLink;
     }
 
     public String getTitle() {
@@ -78,8 +81,8 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
         return followed;
     }
 
-    public String getProductImage() {
-        return productImage;
+    public String getKolImage() {
+        return kolImage;
     }
 
     public String getProductTooltip() {
@@ -118,21 +121,21 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
         return temporarilyFollowed;
     }
 
-    public String getProductId() {
-        return productId;
+    public int getProductId() {
+        return contentId;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setProductId(int contentId) {
+        this.contentId = contentId;
     }
 
 
     public int getId() {
-        return id;
+        return kolId;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.kolId = id;
     }
 
     @Override
@@ -168,12 +171,8 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
         this.time = time;
     }
 
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public String getContentName() {
+        return contentName;
     }
 
     public String getProductPrice() {
@@ -189,20 +188,16 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
         return wishlisted;
     }
 
-    public void setWishlisted(boolean wishlisted) {
-        this.wishlisted = wishlisted;
-    }
-
-    public String getTagsType() {
-        return tagsType;
-    }
-
     public void setTotalLike(int totalLike) {
         this.totalLike = totalLike;
     }
 
     public void setTotalComment(int totalComment) {
         this.totalComment = totalComment;
+    }
+
+    public String getContentLink() {
+        return contentLink;
     }
 }
 

@@ -55,6 +55,7 @@ public class KolRecommendationViewHolder extends AbstractViewHolder<KolRecommend
         if (element.isSwapAdapter()) {
             adapter = new KolRecommendationAdapter(kolViewListener);
             listRecommendation.setAdapter(adapter);
+
             element.setSwapAdapter(false);
             adapter.setData(element);
         } else {

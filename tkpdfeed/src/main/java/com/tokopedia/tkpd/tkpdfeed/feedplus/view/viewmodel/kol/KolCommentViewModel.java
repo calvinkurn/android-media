@@ -18,11 +18,12 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelabl
     protected String url;
     protected boolean isOfficial;
 
-    public KolCommentViewModel(String avatarUrl, String name, String review, String time) {
+    public KolCommentViewModel(String avatarUrl, String name, String review, String time, boolean kol) {
         this.avatarUrl = avatarUrl;
         this.name = name;
         this.review = review;
         this.time = time;
+        this.isOfficial = kol;
     }
 
     protected KolCommentViewModel(Parcel in) {

@@ -311,14 +311,15 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 kolPostDomain.getLikeCount(),
                 kolPostDomain.getCommentCount(),
                 page,
-                kolPostDomain.getImageUrl(),
-                String.valueOf(kolPostDomain.getItemId()),
+                "",
+                kolPostDomain.getItemId(),
                 kolPostDomain.getId(),
                 TimeConverter.generateTime(kolPostDomain.getCreateTime()),
                 "",
                 kolPostDomain.getProductPrice(),
                 false,
-                kolPostDomain.getTagsType()
+                kolPostDomain.getTagsType(),
+                kolPostDomain.getContentLink()
         );
     }
 

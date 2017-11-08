@@ -45,11 +45,11 @@ public class KolPostDomain {
 
     private final
     @Nullable
-    String productLink;
+    String contentLink;
 
     private final
     @Nullable
-    String productUrl;
+    String contentUrl;
 
     private final
     @Nullable
@@ -82,7 +82,7 @@ public class KolPostDomain {
 
     public KolPostDomain(int id, String imageUrl, String description, int commentCount,
                          int likeCount, boolean isLiked, boolean isFollowed, String createTime,
-                         String productPrice, String productLink, String productUrl, String userName,
+                         String productPrice, String contentLink, String contentUrl, String userName,
                          String userPhoto, String tagsType, String caption, int itemId, String label,
                          String headerTitle) {
         this.id = id;
@@ -94,8 +94,8 @@ public class KolPostDomain {
         this.isFollowed = isFollowed;
         this.createTime = createTime;
         this.productPrice = productPrice;
-        this.productLink = productLink;
-        this.productUrl = productUrl;
+        this.contentLink = contentLink;
+        this.contentUrl = contentUrl;
         this.userName = userName;
         this.userPhoto = userPhoto;
         this.tagsType = tagsType;
@@ -151,13 +151,13 @@ public class KolPostDomain {
     }
 
     @Nullable
-    public String getProductLink() {
-        return productLink;
+    public String getContentLink() {
+        return contentLink;
     }
 
     @Nullable
-    public String getProductUrl() {
-        return productUrl;
+    public String getContentUrl() {
+        return contentUrl;
     }
 
     @Nullable

@@ -19,7 +19,7 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
 
 
     public static final int LAYOUT = R.layout.kol_comment_item;
-    private static final Object SPACE = "      ";
+    private static final String SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     private final KolComment.View viewListener;
 
     TextView comment;

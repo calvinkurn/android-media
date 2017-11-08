@@ -16,7 +16,7 @@ public class KolCommentHeaderViewModel extends KolCommentViewModel implements
     boolean isLoading;
 
     public KolCommentHeaderViewModel(String avatarUrl, String name, String review, String time) {
-        super(avatarUrl, name, review, time);
+        super(avatarUrl, name, review, time, true);
         this.canLoadMore = false;
         this.isLoading = false;
     }

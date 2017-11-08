@@ -16,8 +16,8 @@ import rx.Observable;
 
 public class SendKolCommentUseCase extends UseCase<SendKolCommentDomain> {
 
-    private static final String PARAM_ID = "id";
-    private static final String PARAM_COMMENT = "comment";
+    public static final String PARAM_ID = "id";
+    public static final String PARAM_COMMENT = "comment";
 
     FeedRepository feedRepository;
 

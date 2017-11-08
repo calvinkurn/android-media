@@ -1,19 +1,16 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.source;
 
-import android.content.Context;
-
 import com.apollographql.android.rx.RxApollo;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloWatcher;
-import com.tkpdfeed.feeds.FeedDetail;
+import com.tkpdfeed.feeds.CreateKolComment;
 import com.tkpdfeed.feeds.GetKolComments;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolCommentMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolSendCommentMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.SendKolCommentDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolCommentsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.SendKolCommentUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolComments;
 
 import rx.Observable;
@@ -24,8 +21,8 @@ import rx.Observable;
 
 public class KolCommentSource {
 
-    private ApolloClient apolloClient;
-    private KolCommentMapper kolCommentMapper;
+    private final ApolloClient apolloClient;
+    private final KolCommentMapper kolCommentMapper;
     private final KolSendCommentMapper kolSendCommentMapper;
 
     public KolCommentSource(ApolloClient apolloClient, KolCommentMapper kolCommentMapper,
@@ -48,6 +45,11 @@ public class KolCommentSource {
     }
 
     public Observable<SendKolCommentDomain> sendComment(RequestParams requestParams) {
-        return null;
+        ApolloWatcher<CreateKolComment.Data> apolloWatcher = apolloClient.newCall(
+                CreateKolComment.builder()
+                        .comment(requestParams.getString(SendKolCommentUseCase.PARAM_COMMENT, ""))
+                        .idPost(requestParams.getInt(SendKolCommentUseCase.PARAM_ID, 0))
+                        .build()).watcher();
+        return RxApollo.from(apolloWatcher).map(kolSendCommentMapper);
     }
 }

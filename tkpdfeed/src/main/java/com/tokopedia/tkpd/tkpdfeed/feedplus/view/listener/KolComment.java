@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.SendKolCommentDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolComments;
 
 /**
@@ -34,7 +35,7 @@ public interface KolComment {
 
         void onErrorSendComment(String errorMessage);
 
-        void onSuccessSendComment();
+        void onSuccessSendComment(SendKolCommentDomain sendKolCommentDomain);
 
         void dismissProgressDialog();
 

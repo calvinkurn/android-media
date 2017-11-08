@@ -42,7 +42,8 @@ public class KolCommentMapper implements Func1<GetKolComments.Data, KolComments>
 
     private KolComments convertToDomain(GetKolComments.Data.Data1 data) {
         return new KolComments(data.lastcursor() == null ? "" : data.lastcursor(),
-                convertToList(data.comment()));
+                convertToList(data.comment()),
+        data.total_data());
     }
 
     private ArrayList<KolCommentViewModel> convertToList(List<GetKolComments.Data.Comment>
@@ -55,7 +56,8 @@ public class KolCommentMapper implements Func1<GetKolComments.Data, KolComments>
                         comment.userName() == null ? "" : comment.userName(),
                         comment.comment() == null ? "" : comment.comment(),
                         TimeConverter.generateTime(comment.create_time() == null ? "" : comment
-                                .create_time())));
+                                .create_time()),
+                        comment.isKol() == null ? false : comment.isKol()));
             }
         return list;
     }
