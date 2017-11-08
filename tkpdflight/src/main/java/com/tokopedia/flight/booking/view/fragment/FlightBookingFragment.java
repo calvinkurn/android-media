@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,12 @@ import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingTripViewModel;
 import com.tokopedia.flight.booking.widget.CardWithActionView;
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -37,8 +43,10 @@ import javax.inject.Inject;
  * A simple {@link Fragment} subclass.
  */
 public class FlightBookingFragment extends BaseDaggerFragment implements FlightBookingContract.View, FlightBookingPassengerAdapter.OnClickListener {
+    private static final String EXTRA_TRIP_PASS_DATA = "EXTRA_TRIP_PASS_DATA";
 
     private static final int REQUEST_CODE_PASSENGER = 1;
+
     private AppCompatTextView timeFinishOrderIndicatorTextView;
     private CardWithActionView departureInfoView;
     private CardWithActionView returnInfoView;
@@ -53,11 +61,18 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private AppCompatEditText etPhoneCountryCode;
     private AppCompatEditText etPhoneNumber;
 
+    private FlightBookingTripViewModel flightBookingTripViewModel;
+
     @Inject
     FlightBookingPresenter presenter;
 
-    public static FlightBookingFragment newInstance() {
-        return new FlightBookingFragment();
+
+    public static FlightBookingFragment newInstance(FlightBookingTripViewModel flightBookingTripViewModel) {
+        FlightBookingFragment fragment = new FlightBookingFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_TRIP_PASS_DATA, flightBookingTripViewModel);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
 
@@ -65,6 +80,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        flightBookingTripViewModel = getArguments().getParcelable(EXTRA_TRIP_PASS_DATA);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -98,6 +118,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
+        presenter.initialize();
     }
 
     @Override
@@ -162,15 +183,76 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         showMessageErrorInSnackBar(resId);
     }
 
+    @Override
+    public FlightBookingTripViewModel getCurrentTripViewModel() {
+        return flightBookingTripViewModel;
+    }
+
+    @Override
+    public void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel returnTrip) {
+        returnInfoView.setVisibility(View.VISIBLE);
+        returnInfoView.setContent(returnTrip.getDepartureAirport() + "-" + returnTrip.getArrivalAirport());
+        returnInfoView.setContentInfo(searchParam.getDepartureDate());
+        String airLineSection = "";
+        boolean isTransit = false;
+        if (returnTrip.getAirlineList().size() > 1) {
+            isTransit = true;
+            airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
+        } else {
+            airLineSection = returnTrip.getAirlineList().get(0).getName();
+        }
+        returnInfoView.setSubContent(airLineSection);
+
+        String tripInfo = "";
+        if (isTransit) {
+            tripInfo += String.format("| %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
+        } else {
+            tripInfo += String.format("| %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
+        }
+        tripInfo += String.format("| %s %s - %s %s", returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
+        returnInfoView.setSubContentInfo(tripInfo);
+    }
+
+    @Override
+    public void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel returnTrip) {
+        departureInfoView.setVisibility(View.VISIBLE);
+        departureInfoView.setContent(returnTrip.getDepartureAirport() + "-" + returnTrip.getArrivalAirport());
+        departureInfoView.setContentInfo(searchParam.getDepartureDate());
+        String airLineSection = "";
+        boolean isTransit = false;
+        if (returnTrip.getAirlineList().size() > 1) {
+            isTransit = true;
+            airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
+        } else {
+            airLineSection = returnTrip.getAirlineList().get(0).getName();
+        }
+        departureInfoView.setSubContent(airLineSection);
+
+        String tripInfo = "";
+        if (isTransit) {
+            tripInfo += String.format("| %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_transit_trip_card));
+        } else {
+            tripInfo += String.format("| %d %s", returnTrip.getAirlineList().size(), getString(R.string.flight_booking_directly_trip_card));
+        }
+        tripInfo += String.format("| %s %s - %s %s", returnTrip.getDepartureTime(), returnTrip.getDepartureAirport(), returnTrip.getArrivalTime(), returnTrip.getArrivalAirport());
+        departureInfoView.setSubContentInfo(tripInfo);
+    }
+
+    @Override
+    public void renderPassengersList(List<FlightBookingPassengerViewModel> passengerViewModels) {
+        FlightBookingPassengerAdapter adapter = new FlightBookingPassengerAdapter();
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        passengerRecyclerView.setLayoutManager(layoutManager);
+        passengerRecyclerView.setHasFixedSize(true);
+        passengerRecyclerView.setAdapter(adapter);
+        adapter.addPassengers(passengerViewModels);
+    }
+
     private void showMessageErrorInSnackBar(int resId) {
         Snackbar snackBar = SnackbarManager.make(getActivity(),
                 getString(resId), Snackbar.LENGTH_LONG)
-                .setAction("Tutup", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
+                .setAction("Tutup", null);
         Button snackBarAction = (Button) snackBar.getView().findViewById(android.support.design.R.id.snackbar_action);
         snackBarAction.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
         snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));

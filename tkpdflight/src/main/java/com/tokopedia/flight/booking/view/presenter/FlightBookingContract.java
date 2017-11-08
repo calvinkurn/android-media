@@ -4,6 +4,12 @@ import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingTripViewModel;
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+
+import java.util.List;
 
 /**
  * Created by alvarisi on 11/8/17.
@@ -25,10 +31,22 @@ public interface FlightBookingContract {
         String getContactPhoneNumber();
 
         void showContactPhoneNumberEmptyError(@StringRes int resId);
+
+        FlightBookingTripViewModel getCurrentTripViewModel();
+
+        void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel returnTrip);
+
+        void showAndRenderDepartureTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel departureTrip);
+
+        String getString(@StringRes int resId);
+
+        void renderPassengersList(List<FlightBookingPassengerViewModel> passengerViewModels);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void onButtonSubmitClicked();
+
+        void initialize();
     }
 }
