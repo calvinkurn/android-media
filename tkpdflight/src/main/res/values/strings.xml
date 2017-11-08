@@ -95,4 +95,8 @@
     <string name="flight_booking_return_trip_card_title">Penerbangan Pulang</string>
     <string name="flight_booking_contact_phone_number_label">Nomor Telepon</string>
     <string name="flight_booking_contact_information_card">Pastikan email dan nomor telepon kontak kamu benar. e-tiket akan dikirim ke email dan nomor telepon yang tertera pada informasi kontak.</string>
+    <string name="flight_booking_price_detail">Rincian Harga</string>
+    <string name="flight_booking_passenger_data_label">Data Penumpang</string>
+    <string name="flight_booking_submit_button_label">Lanjut</string>
+    <string name="flight_booking_total_price_label">Pembayaran Anda</string>
 </resources>

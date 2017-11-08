@@ -20,28 +20,26 @@
             android:name=".search.view.activity.FlightSearchFilterActivity"
             android:label="@string/filter"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".search.view.activity.FlightSearchActivity"
             android:label="@string/search_flight"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".dashboard.view.activity.FlightClassesActivity"
             android:label="@string/search_flight"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".dashboard.view.activity.FlightDatePickerActivity"
             android:label="@string/search_flight"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".detail.view.activity.FlightDetailActivity"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".booking.view.FlightBookingActivity"
+            android:name=".booking.view.activity.FlightBookingActivity"
             android:label="Isi data pemesan"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".booking.view.activity.FlightBookingPassengerActivity"></activity>
     </application>
 
 </manifest>
