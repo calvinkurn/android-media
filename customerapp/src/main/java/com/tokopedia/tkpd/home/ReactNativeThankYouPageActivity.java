@@ -15,9 +15,12 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactInstanceManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -31,6 +34,8 @@ import com.tokopedia.tkpdreactnative.react.ReactConst;
 public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     public static final String USER_ID = "User_ID";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+
+    private ReactInstanceManager reactInstanceManager;
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORES})
     public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
@@ -49,6 +54,14 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         extras.putString(EXTRA_TITLE, pageTitle);
         intent.putExtras(extras);
         return intent;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        reactInstanceManager = ((ReactApplication) getApplication())
+                .getReactNativeHost().getReactInstanceManager();
+
     }
 
     private void setToolbar() {
@@ -144,5 +157,17 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        reactInstanceManager = ((ReactApplication) getApplication())
+                .getReactNativeHost().getReactInstanceManager();
+        if (keyCode == KeyEvent.KEYCODE_MENU && reactInstanceManager != null) {
+            reactInstanceManager.showDevOptionsDialog();
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+
     }
 }
