@@ -9,7 +9,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapperV2;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailV2UseCase;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailResponseData;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionSubmitMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyResolutionMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
@@ -87,7 +87,7 @@ public class CloudResCenterDataSource {
         ).map(detailResCenterMapper);
     }
 
-    public Observable<DetailData> getResCenterDetailV2(RequestParams requestParams) {
+    public Observable<DetailResponseData> getResCenterDetailV2(RequestParams requestParams) {
         return resolutionApi.getResCenterDetailV2(
                 requestParams.getString(
                         GetResCenterDetailV2UseCase.PARAM_RESOLUTION_ID, ""))

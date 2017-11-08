@@ -13,18 +13,28 @@ public class SolutionData implements Parcelable {
     private String name;
     private String nameCustom;
     private int actionBy;
+    private int receivedFlag;
     private AmountData amount;
     private String createTime;
     private String createTimeStr;
 
-    public SolutionData(int id, String name, String nameCustom, int actionBy, AmountData amount, String createTime, String createTimeStr) {
+    public SolutionData(int id, String name, String nameCustom, int actionBy, int receivedFlag, AmountData amount, String createTime, String createTimeStr) {
         this.id = id;
         this.name = name;
         this.nameCustom = nameCustom;
         this.actionBy = actionBy;
+        this.receivedFlag = receivedFlag;
         this.amount = amount;
         this.createTime = createTime;
         this.createTimeStr = createTimeStr;
+    }
+
+    public int getReceivedFlag() {
+        return receivedFlag;
+    }
+
+    public void setReceivedFlag(int receivedFlag) {
+        this.receivedFlag = receivedFlag;
     }
 
     public int getId() {

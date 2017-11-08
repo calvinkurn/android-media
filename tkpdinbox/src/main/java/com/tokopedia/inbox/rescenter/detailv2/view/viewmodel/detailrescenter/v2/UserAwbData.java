@@ -4,6 +4,8 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * Created by yfsx on 07/11/17.
  */
@@ -16,8 +18,9 @@ public class UserAwbData implements Parcelable {
     private int trackable;
     private String createTime;
     private String createTimeStr;
+    private List<AttachmentData> attachments;
 
-    public UserAwbData(int resConvId, String awb, ShippingData shipping, ByData by, int trackable, String createTime, String createTimeStr) {
+    public UserAwbData(int resConvId, String awb, ShippingData shipping, ByData by, int trackable, String createTime, String createTimeStr, List<AttachmentData> attachments) {
         this.resConvId = resConvId;
         this.awb = awb;
         this.shipping = shipping;
@@ -25,6 +28,15 @@ public class UserAwbData implements Parcelable {
         this.trackable = trackable;
         this.createTime = createTime;
         this.createTimeStr = createTimeStr;
+        this.attachments = attachments;
+    }
+
+    public List<AttachmentData> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<AttachmentData> attachments) {
+        this.attachments = attachments;
     }
 
     public int getResConvId() {
@@ -97,6 +109,7 @@ public class UserAwbData implements Parcelable {
         dest.writeInt(this.trackable);
         dest.writeString(this.createTime);
         dest.writeString(this.createTimeStr);
+        dest.writeTypedList(this.attachments);
     }
 
     protected UserAwbData(Parcel in) {
@@ -107,9 +120,10 @@ public class UserAwbData implements Parcelable {
         this.trackable = in.readInt();
         this.createTime = in.readString();
         this.createTimeStr = in.readString();
+        this.attachments = in.createTypedArrayList(AttachmentData.CREATOR);
     }
 
-    public static final Parcelable.Creator<UserAwbData> CREATOR = new Parcelable.Creator<UserAwbData>() {
+    public static final Creator<UserAwbData> CREATOR = new Creator<UserAwbData>() {
         @Override
         public UserAwbData createFromParcel(Parcel source) {
             return new UserAwbData(source);

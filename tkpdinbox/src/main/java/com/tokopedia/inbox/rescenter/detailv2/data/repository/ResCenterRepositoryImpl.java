@@ -7,7 +7,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailResponseData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.NewReplyDiscussionModel;
@@ -20,9 +20,6 @@ import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressD
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 import rx.Observable;
 
@@ -173,7 +170,7 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
 
 
     @Override
-    public Observable<DetailData> getDetailV2(RequestParams requestParams) {
+    public Observable<DetailResponseData> getDetailV2(RequestParams requestParams) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getResCenterDetailV2(requestParams);

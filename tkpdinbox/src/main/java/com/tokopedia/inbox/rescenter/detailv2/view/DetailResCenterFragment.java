@@ -276,7 +276,12 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         if (getViewData().isSuccess()) {
             renderData();
         } else {
-            showEmptyState(getViewData().getMessageError(), null);
+            showEmptyState(getViewData().getMessageError(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    presenter.setOnFirstTimeLaunch();
+                }
+            });
         }
     }
 
@@ -319,7 +324,12 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     public void doOnInitFailed() {
         showLoading(false);
-        showEmptyState(getViewData().getMessageError(), null);
+        showEmptyState(getViewData().getMessageError(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.setOnFirstTimeLaunch();
+            }
+        });
     }
 
     @Override

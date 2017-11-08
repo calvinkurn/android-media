@@ -27,6 +27,22 @@ public class ShopData implements Parcelable {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public PictureData getPicture() {
+        return picture;
+    }
+
+    public void setPicture(PictureData picture) {
+        this.picture = picture;
+    }
+
     @Override
     public int describeContents() {
         return 0;

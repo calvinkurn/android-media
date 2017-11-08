@@ -15,6 +15,8 @@ public class SolutionResponse {
     private String nameCustom;
     @SerializedName("actionBy")
     private int actionBy;
+    @SerializedName("receivedFlag")
+    private int receivedFlag;
     @SerializedName("amount")
     private AmountResponse amount;
     @SerializedName("createTime")
@@ -52,6 +54,14 @@ public class SolutionResponse {
 
     public void setActionBy(int actionBy) {
         this.actionBy = actionBy;
+    }
+
+    public int getReceivedFlag() {
+        return receivedFlag;
+    }
+
+    public void setReceivedFlag(int receivedFlag) {
+        this.receivedFlag = receivedFlag;
     }
 
     public AmountResponse getAmount() {

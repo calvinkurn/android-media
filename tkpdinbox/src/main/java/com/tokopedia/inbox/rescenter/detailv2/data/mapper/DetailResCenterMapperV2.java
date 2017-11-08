@@ -6,6 +6,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.ActionByResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.AddressResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.AmountResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.AttachmentResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.ByResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.ComplainedProductResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailrescenter.v2.CreateByResponse;
@@ -35,11 +36,12 @@ import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.NextAction
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ActionByData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AddressData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AmountData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AttachmentData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ByData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ComplainedProductData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.CreateByData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.CustomerData;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailResponseData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.FirstData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.InvoiceData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LastData;
@@ -73,15 +75,15 @@ import rx.functions.Func1;
  * Created by yfsx on 07/11/17.
  */
 
-public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, DetailData> {
+public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, DetailResponseData> {
     private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
     private static final String ERROR_MESSAGE = "message_error";
 
     @Override
-    public DetailData call(Response<TkpdResponse> response) {
+    public DetailResponseData call(Response<TkpdResponse> response) {
         DetailResponse detailResponse = response.body().convertDataObj(
                 DetailResponse.class);
-        DetailData model = mappingResponse(detailResponse);
+        DetailResponseData model = mappingResponse(detailResponse);
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
                 if (response.body().isNullData()) {
@@ -100,8 +102,8 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
         return model;
     }
 
-    public DetailData mappingResponse(DetailResponse response) {
-        return new DetailData(
+    public DetailResponseData mappingResponse(DetailResponse response) {
+        return new DetailResponseData(
                 response.getFirst() != null ?
                         mappingFirstData(response.getFirst()) :
                         null,
@@ -194,9 +196,20 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                         null,
                 response.getTrackable(),
                 response.getCreateTime(),
-                response.getCreateTimeStr());
+                response.getCreateTimeStr(),
+                response.getAttachments() != null ?
+                        mappingAttachments(response.getAttachments()) :
+                        null);
     }
 
+    private List<AttachmentData> mappingAttachments(List<AttachmentResponse> responseList) {
+        List<AttachmentData> domainList = new ArrayList<>();
+        for (AttachmentResponse response : responseList) {
+            AttachmentData domain = new AttachmentData(response.getFullUrl(), response.getThumbnail());
+            domainList.add(domain);
+        }
+        return domainList;
+    }
     private ShippingData mappingShippingData(ShippingResponse response) {
         return new ShippingData(response.getId(), response.getName());
     }
@@ -425,6 +438,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                 response.getName(),
                 response.getNameCustom(),
                 response.getActionBy(),
+                response.getReceivedFlag(),
                 response.getAmount() != null ?
                         mappingAmountData(response.getAmount()) :
                         null,

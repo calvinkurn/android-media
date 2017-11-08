@@ -13,7 +13,7 @@ import java.util.List;
  * Created by yfsx on 07/11/17.
  */
 
-public class DetailData implements Parcelable {
+public class DetailResponseData implements Parcelable {
 
     private FirstData first;
     private LastData last;
@@ -29,7 +29,7 @@ public class DetailData implements Parcelable {
     private boolean isSuccess;
     private String errorMessage;
 
-    public DetailData(FirstData first, LastData last, ButtonDomain button, ShopData shop, CustomerData customer, OrderData order, ResolutionData resolution, ActionByData actionBy, NextActionDomain nextAction, List<LogData> logs) {
+    public DetailResponseData(FirstData first, LastData last, ButtonDomain button, ShopData shop, CustomerData customer, OrderData order, ResolutionData resolution, ActionByData actionBy, NextActionDomain nextAction, List<LogData> logs) {
         this.first = first;
         this.last = last;
         this.button = button;
@@ -157,7 +157,7 @@ public class DetailData implements Parcelable {
         dest.writeTypedList(this.logs);
     }
 
-    protected DetailData(Parcel in) {
+    protected DetailResponseData(Parcel in) {
         this.first = in.readParcelable(FirstData.class.getClassLoader());
         this.last = in.readParcelable(LastData.class.getClassLoader());
         this.button = in.readParcelable(ButtonDomain.class.getClassLoader());
@@ -170,15 +170,15 @@ public class DetailData implements Parcelable {
         this.logs = in.createTypedArrayList(LogData.CREATOR);
     }
 
-    public static final Parcelable.Creator<DetailData> CREATOR = new Parcelable.Creator<DetailData>() {
+    public static final Parcelable.Creator<DetailResponseData> CREATOR = new Parcelable.Creator<DetailResponseData>() {
         @Override
-        public DetailData createFromParcel(Parcel source) {
-            return new DetailData(source);
+        public DetailResponseData createFromParcel(Parcel source) {
+            return new DetailResponseData(source);
         }
 
         @Override
-        public DetailData[] newArray(int size) {
-            return new DetailData[size];
+        public DetailResponseData[] newArray(int size) {
+            return new DetailResponseData[size];
         }
     };
 }
