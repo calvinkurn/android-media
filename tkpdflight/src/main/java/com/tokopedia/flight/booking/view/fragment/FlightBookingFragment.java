@@ -1,6 +1,8 @@
 package com.tokopedia.flight.booking.view.fragment;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,8 +16,11 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
+import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
+import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPresenter;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.widget.CardWithActionView;
 
 import javax.inject.Inject;
@@ -23,8 +28,9 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FlightBookingFragment extends BaseDaggerFragment implements FlightBookingContract.View {
+public class FlightBookingFragment extends BaseDaggerFragment implements FlightBookingContract.View, FlightBookingPassengerAdapter.OnClickListener {
 
+    private static final int REQUEST_CODE_PASSENGER = 1;
     private AppCompatTextView tvTimeFinishOrderIndicator;
     private CardWithActionView cwaDepartureInfoView;
     private CardWithActionView cwaReturnInfoView;
@@ -79,4 +85,20 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         getComponent(FlightBookingComponent.class).inject(this);
     }
 
+    @Override
+    public void onChangePassengerData(FlightBookingPassengerViewModel viewModel) {
+        startActivityForResult(FlightBookingPassengerActivity.getCallingIntent(getActivity(), viewModel), REQUEST_CODE_PASSENGER);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK){
+            switch (requestCode){
+                case REQUEST_CODE_PASSENGER:
+
+                    break;
+            }
+        }
+    }
 }
