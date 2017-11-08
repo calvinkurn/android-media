@@ -216,7 +216,14 @@ public abstract class TopAdsStatisticFragment extends TopAdsBaseDatePickerFragme
     }
 
     @Override
+    public View getDateLabelView() {
+        return dateLabelView;
+    }
+
+    @Override
     public void onResume() {
+        startDate = null;
+        endDate = null;
         super.onResume();
     }
 

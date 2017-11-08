@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -20,6 +21,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
@@ -34,6 +36,7 @@ import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticAvgFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticConversionFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticCtrFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticImprFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticKlikFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsStatisticSpentFragment;
@@ -56,6 +59,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     int currentPositonPager;
     ProgressDialog progressDialog;
     SnackbarRetry snackbarRetry;
+    private FragmentPagerAdapter viewPagerAdapter;
 
     @Override
     protected boolean isToolbarWhite() {
@@ -91,7 +95,8 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.tab);
         swipeToRefresh = (SwipeToRefresh) findViewById(R.id.swipe_refresh_layout);
-        viewPager.setAdapter(getViewPagerAdapter());
+        viewPagerAdapter = getViewPagerAdapter();
+        viewPager.setAdapter(viewPagerAdapter);
         viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(currentPositonPager);
@@ -125,7 +130,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
             }
         });
-        tabLayout.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
         RefreshHandler refresh = new RefreshHandler(this, getWindow().getDecorView().getRootView(), new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
@@ -133,6 +138,15 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
                 loadData();
             }
         });
+    }
+
+    public View getDateLabelView(){
+        Fragment fragment = viewPagerAdapter.getItem(viewPager.getCurrentItem());
+        if(fragment != null && fragment.isVisible() && fragment instanceof TopAdsStatisticFragment){
+            return ((TopAdsStatisticFragment) fragment).getDateLabelView();
+        }else{
+            return null;
+        }
     }
 
     protected void loadData() {
@@ -144,7 +158,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
         return null;
     }
 
-    public PagerAdapter getViewPagerAdapter() {
+    public FragmentPagerAdapter getViewPagerAdapter() {
         return new TopAdsStatisticPagerAdapter(getSupportFragmentManager(), getFragmentList());
     }
 
