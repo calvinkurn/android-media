@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.view;
+package com.tokopedia.flight.booking.view.fragment;
 
 
 import android.os.Bundle;

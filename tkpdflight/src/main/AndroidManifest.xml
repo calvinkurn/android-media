@@ -39,7 +39,7 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".booking.view.FlightBookingActivity"
+            android:name=".booking.view.activity.FlightBookingActivity"
             android:label="Isi data pemesan"
             android:screenOrientation="portrait"/>
     </application>
