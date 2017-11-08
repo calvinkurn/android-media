@@ -89,6 +89,7 @@
     <string name="start_from_x">Mulai dari %1$s</string>
     <string name="flight_there_has_x_flights">Terdapat %1$d penerbangan</string>
     <string name="flight_save_x_flights">Simpan (%1$d penerbangan)</string>
+    <string name="flight_save">Simpan</string>
     <string name="flight_label_choose_button">Pilih</string>
     <string name="flight_label_price_total">Total Harga</string>
     <string name="flight_label_detail">Detail</string>
