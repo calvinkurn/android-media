@@ -15,7 +15,8 @@ class TransactionHistory extends Component {
     super(props);
 
     this.state = {
-      selectedOrder: null
+      selectedOrder: null,
+      openSelected: false
     }
   }
 
@@ -27,7 +28,7 @@ class TransactionHistory extends Component {
     
 
   clickHandler(id){
-    this.setState({ selectedOrder: id })
+    this.setState({ selectedOrder: id, openSelected: !this.state.openSelected })
   }
 
 
@@ -86,7 +87,7 @@ class TransactionHistory extends Component {
           </View>
 
 
-          {this.state.selectedOrder === rowData.index && 
+          {this.state.selectedOrder === rowData.index && this.state.openSelected &&  
             <View>
               <View style={[styles.subRow4, { marginTop: 20 }]}>
                 {rowItem.order_products.map((res, idx) => 
