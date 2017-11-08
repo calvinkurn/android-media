@@ -403,10 +403,9 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     private void additionalOptionRequest(Intent data) {
-        editShippingPresenter.setCourierAdditionalOptionConfig(data
-                        .getIntExtra(MODIFIED_COURIER_INDEX_KEY, 0)
-                , data
-                        .getStringExtra(EDIT_SHIPPING_RESULT_KEY));
+        editShippingPresenter.setCourierAdditionalOptionConfig(
+                data.getIntExtra(MODIFIED_COURIER_INDEX_KEY, 0),
+                data.getStringExtra(EDIT_SHIPPING_RESULT_KEY));
     }
 
     @Override
