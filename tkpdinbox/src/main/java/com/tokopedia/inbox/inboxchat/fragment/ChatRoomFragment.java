@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
@@ -136,6 +137,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
 //    }
 
     private void initListener() {
+
+        recyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                KeyboardHandler.DropKeyboard(getActivity(), getView());
+            }
+        });
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -553,16 +562,26 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
                 if (String.valueOf(response.getData().getFromUid()).equals(getArguments().getString("sender_id"))) {
                     setOnlineDesc("sedang mengetik");
-                    adapter.showTyping();
-                    if (layoutManager.findLastCompletelyVisibleItemPosition() == adapter.getList().size() - 2) {
-                        layoutManager.scrollToPosition(adapter.getList().size() - 1);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.showTyping();
+                        }
+                    });
+                    if(layoutManager.findLastCompletelyVisibleItemPosition()==adapter.getList().size()-2){
+                        layoutManager.scrollToPosition(adapter.getList().size()-1);
                     }
                 }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
                 if (String.valueOf(response.getData().getFromUid()).equals(getArguments().getString("sender_id"))) {
                     setOnlineDesc("baru saja");
-                    adapter.removeTyping();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.removeTyping();
+                        }
+                    });
                 }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_READ_MESSAGE:

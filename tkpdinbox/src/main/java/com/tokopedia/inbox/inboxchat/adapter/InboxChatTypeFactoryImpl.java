@@ -40,7 +40,7 @@ public class InboxChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
         else if (type == TimeMachineListViewHolder.LAYOUT)
             viewHolder = new TimeMachineListViewHolder(view, viewListener);
         else if (type == EmptyChatListViewHolder.LAYOUT)
-            viewHolder = new EmptyChatListViewHolder(view);
+            viewHolder = new EmptyChatListViewHolder(view, view.getContext());
         else
             return super.createViewHolder(view, type);
 

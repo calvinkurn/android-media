@@ -73,7 +73,7 @@ public class InboxChatContract {
 
         void moveViewToTop();
 
-        void setOptionsMenu();
+        void setOptionsMenuFromSelect();
 
         void finishSearch();
 
@@ -92,6 +92,8 @@ public class InboxChatContract {
         WebSocketInterface getInterface();
 
         void notifyConnectionWebSocket();
+
+        void showErrorWarningDelete();
     }
 
     interface Presenter extends CustomerPresenter<View>{

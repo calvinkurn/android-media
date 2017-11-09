@@ -165,7 +165,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void removeTyping(){
         this.list.remove(typingModel);
-        notifyItemRemoved(list.size());
+        notifyItemRemoved(list.size()-1);
     }
 
     public boolean checkLoadMore(int index) {

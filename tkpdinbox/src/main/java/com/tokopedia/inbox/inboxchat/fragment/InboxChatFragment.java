@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,6 +104,28 @@ public class InboxChatFragment extends BaseDaggerFragment
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.inbox_chat_organize, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == R.id.action_organize) {
+            setOptionsMenu();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -133,6 +156,12 @@ public class InboxChatFragment extends BaseDaggerFragment
         searchInputView.setResetListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mainList.setHasFixedSize(true);
+        mainList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                KeyboardHandler.DropKeyboard(getActivity(), getView());
+            }
+        });
         presenter.attachView(this);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         callbackContext = initCallbackActionMode();
@@ -142,6 +171,8 @@ public class InboxChatFragment extends BaseDaggerFragment
         typeFactory = new InboxChatTypeFactoryImpl(this, presenter);
     }
 
+
+
     private ActionMode.Callback initCallbackActionMode() {
         return new ActionMode.Callback() {
             @Override
@@ -149,6 +180,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                 disableActions();
                 getActivity().getMenuInflater().inflate(presenter.getMenuID(), menu);
                 isMultiActionEnabled = true;
+                presenter.setInActionMode(true);
                 return true;
             }
 
@@ -173,6 +205,7 @@ public class InboxChatFragment extends BaseDaggerFragment
             public void onDestroyActionMode(ActionMode mode) {
                 adapter.clearSelection();
                 isMultiActionEnabled = false;
+                presenter.setInActionMode(false);
                 enableActions();
             }
         };
@@ -239,24 +272,29 @@ public class InboxChatFragment extends BaseDaggerFragment
 
 
     @Override
-    public void setOptionsMenu() {
+    public void setOptionsMenuFromSelect() {
         if (!isMultiActionEnabled) {
             contextMenu = ((AppCompatActivity) getActivity()).startSupportActionMode(callbackContext);
-//            LayoutInflater mInflater = LayoutInflater.from(getActivity());
-//            View mCustomView = mInflater.inflate(R.layout.header_chat, null);
-//            contextMenu.setCustomView(mCustomView);
-
         }
         if (contextMenu != null) {
             contextMenu.invalidate();
             ((InboxChatActivity) getActivity()).showTabLayout(false);
             if (presenter.getSelected() == 0) {
-                contextMenu.finish();
+                finishContextMode();
                 ((InboxChatActivity) getActivity()).showTabLayout(true);
             }
             contextMenu.setTitle(String.valueOf(presenter.getSelected()) + " " + getString(R.string.title_inbox_chat));
         }
+    }
 
+    public void setOptionsMenu() {
+        if (!isMultiActionEnabled) {
+            contextMenu = ((AppCompatActivity) getActivity()).startSupportActionMode(callbackContext);
+        }
+        if (contextMenu != null) {
+            contextMenu.invalidate();
+            contextMenu.setTitle("Pilih chat yang dihapus");
+        }
     }
 
     @Override
@@ -362,6 +400,12 @@ public class InboxChatFragment extends BaseDaggerFragment
     @Override
     public void showError(String message) {
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
+    }
+
+
+    @Override
+    public void showErrorWarningDelete() {
+        SnackbarManager.make(getActivity(), getActivity().getString(R.string.delete_message_warn), Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -484,9 +528,17 @@ public class InboxChatFragment extends BaseDaggerFragment
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                notifier.setVisibility(View.GONE);
+                TextView title = (TextView) notifier.findViewById(R.id.title);
+                title.setText("Terhubung !!!");
             }
         });
+
+        notifier.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                notifier.setVisibility(View.GONE);
+            }
+        }, 1500);
         presenter.resetAttempt();
     }
 
@@ -498,16 +550,20 @@ public class InboxChatFragment extends BaseDaggerFragment
             public void run() {
                 notifier.setVisibility(View.VISIBLE);
                 TextView title = (TextView) notifier.findViewById(R.id.title);
-                View action = notifier.findViewById(R.id.action);
-                title.setText("Terjadi gangguan pada koneksi");
+
+                TextView action = (TextView) notifier.findViewById(R.id.action);
+
+                title.setText("Terjadi gangguan pada koneksi. Mencpba menghubungkan");
                 action.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        presenter.resetAttempt();
-                        presenter.recreateWebSocket();
+//                        presenter.resetAttempt();
+//                        presenter.recreateWebSocket();
+                        notifier.setVisibility(View.GONE);
                     }
                 });
             }
         });
     }
+
 }

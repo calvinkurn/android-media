@@ -19,7 +19,6 @@ import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
-import com.tokopedia.inbox.inboxmessage.model.inboxmessage.InboxMessageItem;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -125,8 +124,8 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         setReadStatus(element);
 
 
-//        avatar.setOnClickListener(onGoToProfile(list.get(position)));
-//        userName.setOnClickListener(onGoToProfile(list.get(position)));
+        avatar.setOnClickListener(onGoToProfile(element));
+        userName.setOnClickListener(onGoToProfile(element));
         mainView.setOnClickListener(onMessageClicked(element, viewListener, getAdapterPosition()));
 
         mainView.setOnLongClickListener(onLongClickListener(element));
@@ -168,7 +167,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
     }
 
     private void setLabel(String labelS) {
-        if (label != null && label.length() > 0) {
+        if (labelS != null && labelS.length() > 0) {
             label.setVisibility(View.VISIBLE);
             label.setText(labelS);
         } else {
@@ -204,27 +203,37 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (presenter.getSelected() == 0) {
-                    element.setReadStatus(STATE_CHAT_READ);
-                    element.setUnreadCounter(0);
-                    presenter.goToDetailMessage(position, element);
-                } else if (element.isChecked()) {
-                    setReadState();
-                    presenter.onDeselect(position);
-                } else {
-                    setSelectedState();
-                    presenter.onSelected(position);
+                if (presenter.isInActionMode()){
+                    if (element.isChecked()) {
+                        setReadState();
+                        presenter.onDeselect(position);
+                    } else {
+                        setSelectedState();
+                        presenter.onSelected(position);
+                    }
+                }else {
+                    if (presenter.getSelected() == 0) {
+                        element.setReadStatus(STATE_CHAT_READ);
+                        element.setUnreadCounter(0);
+                        presenter.goToDetailMessage(position, element);
+                    } else if (element.isChecked()) {
+                        setReadState();
+                        presenter.onDeselect(position);
+                    } else {
+                        setSelectedState();
+                        presenter.onSelected(position);
+                    }
                 }
             }
         };
     }
 
-    private View.OnClickListener onGoToProfile(final InboxMessageItem messageItem) {
+    private View.OnClickListener onGoToProfile(final ChatListViewModel messageItem) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (messageelement.getUserLabelId() != IS_ADMIN)
-//                    presenter.goToProfile(messageelement.getUserId());
+                if (!messageItem.getLabel().equals("Administrator"))
+                    presenter.goToProfile(Integer.parseInt(messageItem.getSenderId()));
             }
         };
     }
@@ -248,7 +257,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
 
     private void setNotReadState(int counter) {
         counterUnread.setVisibility(View.VISIBLE);
-        userName.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        userName.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
 
         if (counter > 0) {
             counterUnread.setText(String.valueOf(counter));

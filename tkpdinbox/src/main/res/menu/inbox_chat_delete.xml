@@ -6,5 +6,5 @@
         android:orderInCategory="100"
         app:showAsAction="always"
         android:title="@string/option_move_trash"
-        android:icon="@drawable/ic_trash"/>
+        android:icon="@drawable/ic_trash_white"/>
 </menu>

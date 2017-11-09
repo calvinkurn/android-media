@@ -28,6 +28,7 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
     private boolean messageIsRead;
     private boolean isOpposite;
     private boolean isHighlight;
+    private String oldMessageTitle;
 
     public int getReplyId() {
         return replyId;
@@ -167,5 +168,13 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
 
     public void setSpanned(Spanned spanned) {
         this.spanned = spanned;
+    }
+
+    public String getOldMessageTitle() {
+        return oldMessageTitle;
+    }
+
+    public void setOldMessageTitle(String oldMessageTitle) {
+        this.oldMessageTitle = oldMessageTitle;
     }
 }

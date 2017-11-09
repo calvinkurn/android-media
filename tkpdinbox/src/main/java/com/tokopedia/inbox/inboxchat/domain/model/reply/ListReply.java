@@ -58,6 +58,10 @@ public class ListReply {
     @Expose
     private boolean isHighlight;
 
+    @SerializedName("old_msg_title")
+    @Expose
+    private String oldMessageTitle;
+
 
     public int getReplyId() {
         return replyId;
@@ -177,5 +181,13 @@ public class ListReply {
 
     public void setHighlight(boolean highlight) {
         isHighlight = highlight;
+    }
+
+    public String getOldMessageTitle() {
+        return oldMessageTitle;
+    }
+
+    public void setOldMessageTitle(String oldMessageTitle) {
+        this.oldMessageTitle = oldMessageTitle;
     }
 }

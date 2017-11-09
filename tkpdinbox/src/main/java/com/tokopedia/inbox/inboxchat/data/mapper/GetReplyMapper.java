@@ -54,6 +54,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                     temp.setSenderName(item.getSenderName());
                     temp.setHighlight(item.isHighlight());
                     temp.setReadStatus(item.isMessageIsRead());
+                    temp.setOldMessageTitle(item.getOldMessageTitle());
                     if(item.isHighlight()){
                         temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
                     }
@@ -76,6 +77,7 @@ public class GetReplyMapper implements Func1<Response<TkpdResponse>, ChatRoomVie
                     if(item.isHighlight()){
                         temp.setSpanned(MethodChecker.fromHtml(item.getMsg()));
                     }
+                    temp.setOldMessageTitle(item.getOldMessageTitle());
                     list.add(temp);
                 }
             }
