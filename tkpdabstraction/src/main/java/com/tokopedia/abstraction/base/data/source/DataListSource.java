@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -132,5 +131,6 @@ public abstract class DataListSource<T, U> {
             }
         });
     }
+
 
 }

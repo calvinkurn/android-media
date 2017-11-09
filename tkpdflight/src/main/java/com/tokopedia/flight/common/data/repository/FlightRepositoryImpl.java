@@ -155,4 +155,13 @@ public class FlightRepositoryImpl implements FlightRepository {
             return flightSearchSingleDataListSource.getCacheDataListCount(FlightSearchParamUtil.toHashMap(requestParams));
         }
     }
+
+    @Override
+    public Observable<FlightSearchSingleRouteDB> getFlightSearchById(boolean isReturning, String id) {
+        if (isReturning) {
+            return flightSearchReturnDataListSource.getSingleFlight(id);
+        } else {
+            return flightSearchSingleDataListSource.getSingleFlight(id);
+        }
+    }
 }

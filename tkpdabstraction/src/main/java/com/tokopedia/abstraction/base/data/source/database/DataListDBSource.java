@@ -10,7 +10,7 @@ import rx.Observable;
  * Created by nathan on 10/23/17.
  */
 
-public interface DataListDBSource<T,U> {
+public interface DataListDBSource<T, U> {
 
     Observable<Boolean> isDataAvailable();
 
@@ -19,5 +19,6 @@ public interface DataListDBSource<T,U> {
     Observable<Boolean> insertAll(List<T> list);
 
     Observable<List<U>> getData(HashMap<String, Object> params);
+
     Observable<Integer> getDataCount(HashMap<String, Object> params);
 }
