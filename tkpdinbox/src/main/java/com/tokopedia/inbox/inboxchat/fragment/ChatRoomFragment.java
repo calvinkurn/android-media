@@ -26,7 +26,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.R;
@@ -43,7 +42,6 @@ import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
 import com.tokopedia.inbox.inboxchat.util.Events;
-import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
@@ -120,7 +118,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         attachButton = (ImageView) rootView.findViewById(R.id.add_url);
         notifier = rootView.findViewById(R.id.notifier);
 //        refreshHandler = new RefreshHandler(getActivity(), rootView, onRefresh());
-        replyWatcher =  Events.text(replyColumn);
+        replyWatcher = Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
         presenter.attachView(this);
         initListener();
@@ -187,8 +185,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 UnifyTracking.eventInsertAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                                                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_INSERT,
-                                                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_INSERT,
+                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
                 presenter.getAttachProductDialog(
                         getArguments().getString(ChatRoomActivity
                                 .PARAM_SENDER_ID, ""),
@@ -252,7 +250,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
 
-
     @Override
     protected String getScreenName() {
         return null;
@@ -310,13 +307,16 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     public void setOnlineDesc(final String when) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(onlineDesc!=null)
-                    onlineDesc.setText(when);
-            }
-        });
+        if (getActivity() != null) {
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (onlineDesc != null)
+                        onlineDesc.setText(when);
+                }
+            });
+        }
     }
 
     @Override
@@ -341,32 +341,38 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void setResult(final ChatRoomViewModel model) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                presenter.setResult(model);
-            }
-        });
+        if (getActivity() != null
+                && presenter != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    presenter.setResult(model);
+                }
+            });
+        }
     }
 
     @Override
     public void notifyConnectionWebSocket() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                notifier.setVisibility(View.VISIBLE);
-                TextView title = (TextView) notifier.findViewById(R.id.title);
-                View action = notifier.findViewById(R.id.action);
-                title.setText("Terjadi gangguan pada koneksi");
-                action.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        presenter.onOpenWebSocket();
-                        presenter.recreateWebSocket();
-                    }
-                });
-            }
-        });
+        if (getActivity() != null && presenter != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    notifier.setVisibility(View.VISIBLE);
+                    TextView title = (TextView) notifier.findViewById(R.id.title);
+                    View action = notifier.findViewById(R.id.action);
+                    title.setText("Terjadi gangguan pada koneksi");
+                    action.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            presenter.onOpenWebSocket();
+                            presenter.recreateWebSocket();
+                        }
+                    });
+                }
+            });
+        }
     }
 
     @Override
@@ -376,12 +382,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void scrollToBottom() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                layoutManager.scrollToPosition(adapter.getList().size() - 1);
-            }
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    layoutManager.scrollToPosition(adapter.getList().size() - 1);
+                }
+            });
+        }
     }
 
     @Override
@@ -415,34 +423,36 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     public void onSuccessSendReply(final WebSocketResponse response) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                setViewEnabled(true);
-                if(getArguments().getString("sender_id").equals(String.valueOf(response.getData().getFromUid()))){
-                    OppositeChatViewModel item = new OppositeChatViewModel();
-                    item.setReplyId(response.getData().getMsgId());
-                    item.setSenderId(String.valueOf(response.getData().getFromUid()));
-                    item.setMsg(response.getData().getMessage().getCensoredReply());
-                    item.setReplyTime(response.getData().getMessage().getTimestamp());
-                    adapter.addReply(item);
-                    scrollToBottom();
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setViewEnabled(true);
+                    if (getArguments().getString("sender_id").equals(String.valueOf(response.getData().getFromUid()))) {
+                        OppositeChatViewModel item = new OppositeChatViewModel();
+                        item.setReplyId(response.getData().getMsgId());
+                        item.setSenderId(String.valueOf(response.getData().getFromUid()));
+                        item.setMsg(response.getData().getMessage().getCensoredReply());
+                        item.setReplyTime(response.getData().getMessage().getTimestamp());
+                        adapter.addReply(item);
+                        scrollToBottom();
 
-                }else {
-                    adapter.removeLast();
-                    MyChatViewModel item = new MyChatViewModel();
-                    item.setReplyId(response.getData().getMsgId());
-                    item.setSenderId(String.valueOf(response.getData().getFromUid()));
-                    item.setMsg(response.getData().getMessage().getCensoredReply());
-                    item.setReplyTime(response.getData().getMessage().getTimestamp());
-                    adapter.addReply(item);
+                    } else {
+                        adapter.removeLast();
+                        MyChatViewModel item = new MyChatViewModel();
+                        item.setReplyId(response.getData().getMsgId());
+                        item.setSenderId(String.valueOf(response.getData().getFromUid()));
+                        item.setMsg(response.getData().getMessage().getCensoredReply());
+                        item.setReplyTime(response.getData().getMessage().getTimestamp());
+                        adapter.addReply(item);
 
-                    finishLoading();
-                    replyColumn.setText("");
-                    scrollToBottom();
+                        finishLoading();
+                        replyColumn.setText("");
+                        scrollToBottom();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -541,16 +551,16 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void onIncomingEvent(WebSocketResponse response) {
         switch (response.getCode()) {
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
-                if(String.valueOf(response.getData().getFromUid()).equals(getArguments().getString("sender_id")))  {
+                if (String.valueOf(response.getData().getFromUid()).equals(getArguments().getString("sender_id"))) {
                     setOnlineDesc("sedang mengetik");
                     adapter.showTyping();
-                    if(layoutManager.findLastCompletelyVisibleItemPosition()==adapter.getList().size()-2){
-                        layoutManager.scrollToPosition(adapter.getList().size()-1);
+                    if (layoutManager.findLastCompletelyVisibleItemPosition() == adapter.getList().size() - 2) {
+                        layoutManager.scrollToPosition(adapter.getList().size() - 1);
                     }
                 }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
-                if(String.valueOf(response.getData().getFromUid()).equals(getArguments().getString("sender_id"))) {
+                if (String.valueOf(response.getData().getFromUid()).equals(getArguments().getString("sender_id"))) {
                     setOnlineDesc("baru saja");
                     adapter.removeTyping();
                 }
@@ -569,18 +579,21 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void newWebSocket() {
-        if (getActivity() != null)
+        if (getActivity() != null && presenter != null)
             presenter.recreateWebSocket();
     }
 
     @Override
     public void onOpenWebSocket() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                notifier.setVisibility(View.GONE);
-            }
-        });
-        presenter.onOpenWebSocket();
+        if (getActivity() != null && presenter != null) {
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    notifier.setVisibility(View.GONE);
+                }
+            });
+            presenter.onOpenWebSocket();
+        }
     }
 }
