@@ -25,6 +25,7 @@ import com.tokopedia.posapp.domain.usecase.StoreProductCacheUseCase;
 import com.tokopedia.posapp.view.Cache;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -164,6 +165,7 @@ public class CachePresenter implements Cache.Presenter {
                     return storeProductCacheUseCase.createObservable(productListDomain);
                 }
             })
+            .toList()
             .subscribeOn(Schedulers.newThread())
             .subscribe(new SaveProductSubscriber());
     }
@@ -178,7 +180,7 @@ public class CachePresenter implements Cache.Presenter {
         return params;
     }
 
-    private class SaveProductSubscriber extends Subscriber<DataStatus> {
+    private class SaveProductSubscriber extends Subscriber<List<DataStatus>> {
 
         @Override
         public void onCompleted() {
@@ -191,8 +193,10 @@ public class CachePresenter implements Cache.Presenter {
         }
 
         @Override
-        public void onNext(DataStatus dataStatus) {
-            Log.d("o2o", "product data saved : " + dataStatus.getStatus() + " | " + dataStatus.getMessage());
+        public void onNext(List<DataStatus> statuses) {
+            for(DataStatus dataStatus: statuses) {
+                Log.d("o2o", "product data saved : " + dataStatus.getStatus() + " | " + dataStatus.getMessage());
+            }
         }
     }
 

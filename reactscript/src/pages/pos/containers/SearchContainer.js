@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch) => {
     onSearch: (text, eid, shopId) => {
       const trimText = text.trim() || ''
       if (trimText) {
-        dispatch(fetchSearchProduct(eid, trimText, shopId))
+        dispatch(searchProduct(trimText, eid))
       }
     },
     onClearSearch: () => {
@@ -44,7 +44,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     onSubmit: (text, eid, shopId) => {
       dispatch(resetProductList())
-      dispatch(onSubmitFetchSearchProduct(text, eid, shopId))
+      dispatch(searchProduct(text, eid))
     }
   }
 }
