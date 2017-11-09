@@ -62,10 +62,10 @@
                 android:layout_marginRight="5dp"
                 android:layout_toEndOf="@+id/btn_delete"
                 android:layout_toRightOf="@+id/btn_delete"
-                android:src="@drawable/ic_loading_toped"
+                android:src="@drawable/loading_page"
                 tools:background="@drawable/bg_label_preorder_gray"
                 tools:ignore="ContentDescription"
-                tools:src="@drawable/ic_loading_toped"/>
+                tools:src="@drawable/loading_page"/>
 
             <TextView
                 android:id="@+id/tv_name_product"

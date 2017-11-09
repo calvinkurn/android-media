@@ -109,4 +109,5 @@
     <string name="authentication_description_1">Anda hanya akan diminta memasukkan CVV untuk setiap transaksi. Verifikasi via SMS akan diperlukan untuk transaksi kasus tertentu.</string>
     <string name="authentication_description_2">Anda akan diminta memasukkan CVV dan verifikasi via SMS untuk setiap transaksi.</string>
     <string name="menu_credit_card_authentication">Pengaturan Autentikasi</string>
+    <string name="title_preorder_proccess_time">Waktu Proses: </string>
 </resources>

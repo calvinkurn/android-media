@@ -114,6 +114,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     ImageView ivProduct;
     @BindView(R2.id.tv_name)
     TextView tvProductName;
+    @BindView(R2.id.preorder_layout)
+    LinearLayout linearLayoutPreOrder;
     @BindView(R2.id.tv_preorder)
     TextView tvPreOrder;
     @BindView(R2.id.tv_preorder_info)
@@ -306,15 +308,14 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         if (data.getProductPreorder() != null
                 && data.getProductPreorder().getPreorderStatus() == 1) {
             tvPreOrder.setVisibility(View.VISIBLE);
-            tvPreOrderInfo.setVisibility(View.VISIBLE);
-            tvPreOrderInfo.setText(MessageFormat.format("{0}{1} {2}",
-                    String.valueOf(tvPreOrderInfo.getText()),
+            linearLayoutPreOrder.setVisibility(View.VISIBLE);
+            tvPreOrderInfo.setText(MessageFormat.format("{0} {1}",
                     data.getProductPreorder().getPreorderProcessTime(),
                     data.getProductPreorder().getPreorderProcessTimeTypeString()));
             btnBuy.setText(getString(R.string.title_pre_order));
         } else {
             tvPreOrder.setVisibility(View.GONE);
-            tvPreOrderInfo.setVisibility(View.GONE);
+            linearLayoutPreOrder.setVisibility(View.GONE);
             btnBuy.setText(getString(R.string.title_buy));
         }
         tvProductName.setText(data.getProductName());

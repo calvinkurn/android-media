@@ -6,7 +6,6 @@ import android.support.annotation.LayoutRes;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,10 +13,9 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
-import com.tokopedia.inbox.inboxchat.adapter.InboxChatAdapter;
-import com.tokopedia.inbox.inboxchat.adapter.NewInboxChatAdapter;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
@@ -26,8 +24,6 @@ import com.tokopedia.inbox.inboxmessage.model.inboxmessage.InboxMessageItem;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import butterknife.BindView;
 
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.STATE_CHAT_READ;
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.STATE_CHAT_UNREAD;
@@ -107,7 +103,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         }
 
         if (element.isHaveTitle()) {
-            String magicString = element.getSectionSize() + " " + array[element.getSpanMode()-1] + " ditemukan";
+            String magicString = element.getSectionSize() + " " + array[element.getSpanMode() - 1] + " ditemukan";
             section.setText(magicString);
             section.setVisibility(View.VISIBLE);
         } else {

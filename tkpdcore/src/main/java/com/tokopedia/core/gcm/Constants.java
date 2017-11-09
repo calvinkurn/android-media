@@ -57,6 +57,7 @@ public interface Constants {
         String HOME = "tokopedia://home";
         String HOME_FEED = "tokopedia://home/feed";
         String FEED = "tokopedia://feed";
+        String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
         String HOME_CATEGORY = "tokopedia://home/category";
         String HOME_HOTLIST = "tokopedia://hot";
         String MESSAGE = "tokopedia://message";
@@ -85,6 +86,7 @@ public interface Constants {
         String REPUTATION = "tokopedia://review";
         String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
         String WEBVIEW = "tokopedia://webview";
+        String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
         String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
         String DIGITAL = "tokopedia://digital";
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
@@ -109,6 +111,8 @@ public interface Constants {
         String TOPCHAT = "tokopedia://topchat/{message_id}";
         String TOPCHAT_IDLESS = "tokopedia://topchat";
         String REFERRAL = "tokopedia://referral";
+        String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
+        String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
         String BROWSER = "tokopedia://browser";
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";

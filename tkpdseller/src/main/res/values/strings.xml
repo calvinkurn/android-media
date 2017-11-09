@@ -161,4 +161,5 @@
     <string name="edit_from_instagram_text_description">Ubah gambar dari Instagram</string>
     <string name="edit_from_gallery_text_description">Ubah gambar dari Galeri</string>
     <string name="edit_from_camera_text_description">Ubah gambar dari Kamera</string>
+    <string name="title_multiple_select">Multi Select</string>
 </resources>

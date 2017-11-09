@@ -1,11 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
-import android.content.Context;
-
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.GenerateHostResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.GenerateHostDomain;
 
@@ -24,11 +20,11 @@ public class GenerateHostMapper implements Func1<Response<TkpdResponse>, Generat
     }
 
     private GenerateHostDomain mappingResponse(Response<TkpdResponse> response) {
-            GenerateHostResponse generateHostResponse =
-                    response.body().convertDataObj(GenerateHostResponse.class);
-            GenerateHostDomain model = new GenerateHostDomain(generateHostResponse.getServerId(),
-                    generateHostResponse.getUploadHost(),
-                    generateHostResponse.getToken());
+        GenerateHostResponse generateHostResponse =
+                response.body().convertDataObj(GenerateHostResponse.class);
+        GenerateHostDomain model = new GenerateHostDomain(generateHostResponse.getServerId(),
+                generateHostResponse.getUploadHost(),
+                generateHostResponse.getToken());
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {

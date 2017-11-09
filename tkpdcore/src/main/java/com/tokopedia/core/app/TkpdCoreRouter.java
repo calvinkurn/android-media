@@ -50,6 +50,8 @@ public interface TkpdCoreRouter {
 
     void actionApplink(Activity activity, String linkUrl);
 
+    void actionApplink(Activity activity, String linkUrl, String extra);
+
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
     Intent getHomeIntent(Context context);
@@ -76,6 +78,8 @@ public interface TkpdCoreRouter {
 
     void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber);
 
+    String getFlavor();
+
     boolean isSupportedDelegateDeepLink(String appLinks);
 
     Intent getIntentDeepLinkHandlerActivity();
@@ -83,4 +87,6 @@ public interface TkpdCoreRouter {
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
 
     void goToAddProduct(Activity activity);
+
+    boolean isInMyShop(Context context, String shopId);
 }

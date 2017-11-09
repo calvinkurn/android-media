@@ -2,6 +2,8 @@ package com.tokopedia.seller.product.edit.view.dialog;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +11,8 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.instoped.InstopedSellerActivity;
+import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 
 /**
  * Created by Toped18 on 5/30/2016.
@@ -71,13 +75,22 @@ public class ImageEditProductDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         if (isPrimary) {
             if (allowDelete) { // primary image and allow delete
-                imageMenu = new CharSequence[]{
-                        getString(R.string.title_img_delete),
-                        getString(R.string.edit_from_camera_text_description),
-                        getString(R.string.edit_from_gallery_text_description),
-                        getString(R.string.edit_from_instagram_text_description),
-                        getString(R.string.action_editor),
-                        getString(R.string.title_img_desc)};
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    imageMenu = new CharSequence[]{
+                            getString(R.string.title_img_delete),
+                            getString(R.string.edit_from_camera_text_description),
+                            getString(R.string.edit_from_gallery_text_description),
+                            getString(R.string.edit_from_instagram_text_description),
+                            getString(R.string.title_img_desc)};
+                } else {
+                    imageMenu = new CharSequence[]{
+                            getString(R.string.title_img_delete),
+                            getString(R.string.edit_from_camera_text_description),
+                            getString(R.string.edit_from_gallery_text_description),
+                            getString(R.string.edit_from_instagram_text_description),
+                            getString(R.string.action_editor),
+                            getString(R.string.title_img_desc)};
+                }
             } else { // primary image and not allow delete
                 imageMenu = new CharSequence[]{
                         getString(R.string.title_img_desc)};
@@ -85,14 +98,25 @@ public class ImageEditProductDialogFragment extends DialogFragment {
 
         } else {
             if (allowDelete) { // not primary image and allow delete
-                imageMenu = new CharSequence[]{
-                        getString(R.string.title_img_delete),
-                        getString(R.string.edit_from_camera_text_description),
-                        getString(R.string.edit_from_gallery_text_description),
-                        getString(R.string.edit_from_instagram_text_description),
-                        getString(R.string.action_editor),
-                        getString(R.string.title_img_desc),
-                        getString(R.string.title_img_default)};
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    imageMenu = new CharSequence[]{
+                            getString(R.string.title_img_delete),
+                            getString(R.string.edit_from_camera_text_description),
+                            getString(R.string.edit_from_gallery_text_description),
+                            getString(R.string.edit_from_instagram_text_description),
+                            getString(R.string.title_img_desc),
+                            getString(R.string.title_img_default)};
+                } else {
+                    imageMenu = new CharSequence[]{
+                            getString(R.string.title_img_delete),
+                            getString(R.string.edit_from_camera_text_description),
+                            getString(R.string.edit_from_gallery_text_description),
+                            getString(R.string.edit_from_instagram_text_description),
+                            getString(R.string.action_editor),
+                            getString(R.string.title_img_desc),
+                            getString(R.string.title_img_default)};
+                }
+
             } else { // not primary image and not allow delete
                 imageMenu = new CharSequence[]{
                         getString(R.string.title_img_desc),
