@@ -55,12 +55,12 @@ public class GalleryCropActivity extends GalleryActivity {
                                        boolean forceOpenCamera,
                                        int maxImageSelection,
                                        boolean compressToTkpd) {
-        Intent imageGallery = new Intent(context, GalleryActivity.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            imageGallery = new Intent(context, GalleryActivity.class);
-        } else {
-            imageGallery = new Intent(context, GalleryCropActivity.class);
-        }
+        Intent imageGallery;
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            imageGallery = new Intent(context, GalleryActivity.class);
+//        } else {
+        imageGallery = new Intent(context, GalleryCropActivity.class);
+//        }
         Bundle bundle = new Bundle();
         bundle.putInt(ADD_PRODUCT_IMAGE_LOCATION, position);
         bundle.putString(FRAGMENT_TO_SHOW, ImageGalleryAlbumFragment.FRAGMENT_TAG);

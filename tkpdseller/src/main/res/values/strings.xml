@@ -162,4 +162,5 @@
     <string name="edit_from_gallery_text_description">Ubah gambar dari Galeri</string>
     <string name="edit_from_camera_text_description">Ubah gambar dari Kamera</string>
     <string name="title_multiple_select">Multi Select</string>
+    <string name="crop_image_menu_watermark">watermark</string>
 </resources>

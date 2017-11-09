@@ -75,14 +75,14 @@ public class ImageEditProductDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         if (isPrimary) {
             if (allowDelete) { // primary image and allow delete
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    imageMenu = new CharSequence[]{
-                            getString(R.string.title_img_delete),
-                            getString(R.string.edit_from_camera_text_description),
-                            getString(R.string.edit_from_gallery_text_description),
-                            getString(R.string.edit_from_instagram_text_description),
-                            getString(R.string.title_img_desc)};
-                } else {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                    imageMenu = new CharSequence[]{
+//                            getString(R.string.title_img_delete),
+//                            getString(R.string.edit_from_camera_text_description),
+//                            getString(R.string.edit_from_gallery_text_description),
+//                            getString(R.string.edit_from_instagram_text_description),
+//                            getString(R.string.title_img_desc)};
+//                } else {
                     imageMenu = new CharSequence[]{
                             getString(R.string.title_img_delete),
                             getString(R.string.edit_from_camera_text_description),
@@ -90,7 +90,7 @@ public class ImageEditProductDialogFragment extends DialogFragment {
                             getString(R.string.edit_from_instagram_text_description),
                             getString(R.string.action_editor),
                             getString(R.string.title_img_desc)};
-                }
+//                }
             } else { // primary image and not allow delete
                 imageMenu = new CharSequence[]{
                         getString(R.string.title_img_desc)};
@@ -98,15 +98,15 @@ public class ImageEditProductDialogFragment extends DialogFragment {
 
         } else {
             if (allowDelete) { // not primary image and allow delete
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    imageMenu = new CharSequence[]{
-                            getString(R.string.title_img_delete),
-                            getString(R.string.edit_from_camera_text_description),
-                            getString(R.string.edit_from_gallery_text_description),
-                            getString(R.string.edit_from_instagram_text_description),
-                            getString(R.string.title_img_desc),
-                            getString(R.string.title_img_default)};
-                } else {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                    imageMenu = new CharSequence[]{
+//                            getString(R.string.title_img_delete),
+//                            getString(R.string.edit_from_camera_text_description),
+//                            getString(R.string.edit_from_gallery_text_description),
+//                            getString(R.string.edit_from_instagram_text_description),
+//                            getString(R.string.title_img_desc),
+//                            getString(R.string.title_img_default)};
+//                } else {
                     imageMenu = new CharSequence[]{
                             getString(R.string.title_img_delete),
                             getString(R.string.edit_from_camera_text_description),
@@ -115,7 +115,7 @@ public class ImageEditProductDialogFragment extends DialogFragment {
                             getString(R.string.action_editor),
                             getString(R.string.title_img_desc),
                             getString(R.string.title_img_default)};
-                }
+//                }
 
             } else { // not primary image and not allow delete
                 imageMenu = new CharSequence[]{
