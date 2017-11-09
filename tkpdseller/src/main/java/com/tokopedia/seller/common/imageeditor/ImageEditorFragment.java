@@ -102,7 +102,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
                 File file = FileUtils.getTkpdImageCacheFile(FileUtils.generateUniqueFileName());
                 croppedPath = file.getAbsolutePath();
                 mCropImageView.startCropWorkerTask(0, 0, CropImageView.RequestSizeOptions.NONE,
-                        Uri.fromFile(file), Bitmap.CompressFormat.JPEG, CROP_COMPRESSION);
+                        Uri.fromFile(file), Bitmap.CompressFormat.PNG, CROP_COMPRESSION);
             }
             return true;
         } else if (item.getItemId() == R.id.main_action_rotate) {
