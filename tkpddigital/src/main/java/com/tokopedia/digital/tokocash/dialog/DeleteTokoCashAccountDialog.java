@@ -1,8 +1,6 @@
 package com.tokopedia.digital.tokocash.dialog;
 
-import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;

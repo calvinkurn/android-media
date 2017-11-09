@@ -273,13 +273,15 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
 
     @Override
     public void renderWalletOAuthInfoData(OAuthInfo oAuthInfo) {
-        mainContainer.setVisibility(View.VISIBLE);
-        refreshHandler.finishRefresh();
-        nameAccount.setText(oAuthInfo.getName());
-        emailAccount.setText(oAuthInfo.getEmail());
-        phoneAccount.setText(oAuthInfo.getMobile());
-        if (oAuthInfo.getAccountList() != null)
-            accountListAdapter.addAccountList(oAuthInfo.getAccountList());
+        if (mainContainer != null) {
+            mainContainer.setVisibility(View.VISIBLE);
+            refreshHandler.finishRefresh();
+            nameAccount.setText(oAuthInfo.getName());
+            emailAccount.setText(oAuthInfo.getEmail());
+            phoneAccount.setText(oAuthInfo.getMobile());
+            if (oAuthInfo.getAccountList() != null)
+                accountListAdapter.addAccountList(oAuthInfo.getAccountList());
+        }
     }
 
     @Override
@@ -322,7 +324,7 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
     private void renderEmptyPage(String message) {
         refreshHandler.finishRefresh();
         NetworkErrorHelper.showEmptyState(
-                getActivity(), rootView, message, new NetworkErrorHelper.RetryClickedListener() {
+                getActivity(), getView(), message, new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
                         refreshHandler.startRefresh();

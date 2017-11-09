@@ -75,6 +75,7 @@ import rx.subscriptions.CompositeSubscription;
 public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPresenter>
         implements TopUpTokoCashListener {
     public static final String EXTRA_TOP_UP_AVAILABLE = "EXTRA_TOP_UP_AVAILABLE";
+    public static final int REQUEST_CODE_ACCOUNT_SETTING = 112;
 
     @BindView(R2.id.balance_tokocash_layout)
     LinearLayout balanceTokoCashViewLayout;
@@ -311,6 +312,11 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                     }
                 }
                 break;
+            case REQUEST_CODE_ACCOUNT_SETTING:
+                if (data != null && data.hasExtra(WalletAccountSettingActivity.KEY_INTENT_RESULT)) {
+                    setResult(RESULT_OK);
+                    finish();
+                }
         }
     }
 
@@ -326,9 +332,8 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
             startActivity(HistoryTokocashActivity.newInstance(this));
             return true;
         } else if (item.getItemId() == R.id.action_account_setting_tokocash) {
-            startActivity(WalletAccountSettingActivity.newInstance(this));
-            setResult(RESULT_OK);
-            finish();
+            startActivityForResult(WalletAccountSettingActivity.newInstance(this),
+                    REQUEST_CODE_ACCOUNT_SETTING);
             return true;
         } else if (item.getItemId() == R.id.action_menu_help_tokocash) {
             startActivity(DigitalWebActivity.newInstance(this,

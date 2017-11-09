@@ -1,5 +1,6 @@
 package com.tokopedia.digital.tokocash.activity;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,8 @@ public class WalletAccountSettingActivity extends BasePresenterActivity implemen
     private static final String EXTRA_WALLET_ACCOUNT_SETTING_PASS_DATA =
             "EXTRA_WALLET_ACCOUNT_SETTING_PASS_DATA";
     public static final int REQUEST_CODE = WalletAccountSettingActivity.class.hashCode();
+    public static final String KEY_INTENT_RESULT = "result";
+    public static final String VALUE_INTENT_RESULT = "delete_all";
 
     public static Intent newInstance(Context context) {
         Intent intent = new Intent(context, WalletAccountSettingActivity.class);
@@ -75,7 +78,9 @@ public class WalletAccountSettingActivity extends BasePresenterActivity implemen
 
     @Override
     public void directPageToHome() {
-        onBackPressed();
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(KEY_INTENT_RESULT,VALUE_INTENT_RESULT);
+        setResult(Activity.RESULT_OK,returnIntent);
         setResult(RESULT_OK);
         finish();
     }
