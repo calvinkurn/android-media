@@ -3,7 +3,6 @@ package com.tokopedia.discovery.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -748,9 +747,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public void startShareActivity(ShareData shareData) {
-        Intent intent = new Intent(BrowseProductActivity.this, ShareActivity.class);
-        intent.putExtra(ShareData.TAG, shareData);
-        startActivity(intent);
+       startActivity(ShareActivity.createIntent(BrowseProductActivity.this,shareData));
     }
 
     @Override

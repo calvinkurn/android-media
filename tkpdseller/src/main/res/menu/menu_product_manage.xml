@@ -26,6 +26,6 @@
     <item
         android:id="@+id/checklist_product_menu"
         android:icon="@drawable/ic_action_checkable"
-        android:title="@string/title_add_product"
+        android:title="@string/title_multiple_select"
         app:showAsAction="always"/>
 </menu>

@@ -135,10 +135,13 @@ public interface AppEventTracking {
         String CLICK_APP_SHARE_REFERRAL = "clickReferral";
         String HOME_DASHBOARD_CLICK_SELLER = "homeDashboardClicked";
         String EVENT_MANAGE_PRODUCT = "eventManageProduct";
+
+        String EVENT_CLICK_USER_PROFILE = "clickUserProfile";
     }
 
     interface Category {
         String HOMEPAGE = "Homepage";
+        String HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
         String PRODUCT_DETAIL = "Product Detail Page";
         String ADD_TO_CART = "Add to Cart";
         String CHECKOUT = "Checkout";
@@ -320,6 +323,8 @@ public interface AppEventTracking {
         String CLICK_SORT_PRODUCT = "click sort product";
         String CLICK_FILTER_PRODUCT = "click filter product";
         String CLICK_OVERFLOW_MENU = "click overflow menu";
+
+        String SELECT_NUMBER_ON_USER_PROFILE = "select number on user profile";
     }
 
     interface EventLabel {
@@ -754,6 +759,7 @@ public interface AppEventTracking {
         String LAST_TRANSACT_DATE     = "last_transaction_date";
         String TOTAL_ACTIVE_PRODUCT     = "total_active_product";
         String SHOP_SCORE     = "shop_score";
+        String QUALITY_SCORE     = "quality_score";
 
     }
 
@@ -777,6 +783,7 @@ public interface AppEventTracking {
         String SEARCH_ATTEMPT = "Search_Attempt";
         String OPEN_THANKYOU_PAGE = "Thank_You_Page_Launched";
         String SUCCESS_PURCHASE_REVIEW = "Success_Purchase_Review";
+        String SUBMIT_ULASAN_REVIEW = "Submit_Ulasan_Review";
 
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";

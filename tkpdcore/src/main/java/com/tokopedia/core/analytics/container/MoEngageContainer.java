@@ -110,7 +110,6 @@ public class MoEngageContainer implements IMoengageContainer {
         executor(isExistingUser, new SingleSubscriber<JSONObject>() {
             @Override
             public void onSuccess(JSONObject value) {
-                CommonUtils.dumper("MoEngage check user "+value.toString());
                 MoEHelper.getInstance(context).trackEvent(eventName, value);
             }
 
