@@ -36,15 +36,19 @@
             android:id="@+id/cwa_departure_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:cmv_title="@string/flight_booking_departure_trip_card_title"
-            app:cmw_action="Detail" />
+            app:cmw_action="Detail"
+            tools:visibility="visible" />
 
         <com.tokopedia.flight.booking.widget.CardWithActionView
             android:id="@+id/cwa_return_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:cmv_title="@string/flight_booking_return_trip_card_title"
-            app:cmw_action="Detail" />
+            app:cmw_action="Detail"
+            tools:visibility="gone" />
 
         <include
             layout="@layout/partial_flight_booking_contact_form"

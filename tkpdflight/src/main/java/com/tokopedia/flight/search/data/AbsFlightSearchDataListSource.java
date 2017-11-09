@@ -19,11 +19,13 @@ import rx.functions.Func1;
  */
 
 public class AbsFlightSearchDataListSource extends DataListSource<FlightSearchData, FlightSearchSingleRouteDB> {
+    private AbsFlightSearchDataListDBSource absFlightSearchDataListDBSource;
 
     public AbsFlightSearchDataListSource(DataListCacheSource dataListCacheManager,
                                          AbsFlightSearchDataListDBSource absFlightSearchDataListDBSource,
                                          DataListCloudSource<FlightSearchData> dataListCloudManager) {
         super(dataListCacheManager, absFlightSearchDataListDBSource, dataListCloudManager);
+        this.absFlightSearchDataListDBSource = absFlightSearchDataListDBSource;
     }
 
     public Observable<List<FlightSearchSingleRouteDB>> getDataList(final RequestParams requestParams) {
@@ -45,5 +47,9 @@ public class AbsFlightSearchDataListSource extends DataListSource<FlightSearchDa
         } else {
             return super.getDataList(FlightSearchParamUtil.toHashMap(requestParams));
         }
+    }
+
+    public Observable<FlightSearchSingleRouteDB> getSingleFlight(String id) {
+        return absFlightSearchDataListDBSource.find(id);
     }
 }

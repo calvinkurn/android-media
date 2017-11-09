@@ -39,6 +39,12 @@ public abstract class AbsFlightSearchDataListDBSource extends BaseDataListDBSour
                         return Observable.just(true);
                     }
                 })
+                .onErrorReturn(new Func1<Throwable, Boolean>() {
+                    @Override
+                    public Boolean call(Throwable throwable) {
+                        return false;
+                    }
+                })
                 .toList()
                 .flatMap(new Func1<List<Boolean>, Observable<Boolean>>() {
                     @Override
@@ -211,5 +217,28 @@ public abstract class AbsFlightSearchDataListDBSource extends BaseDataListDBSour
 
     private Property<Boolean> getRefundableColumn() {
         return new Property<>(getDBClass(), FlightSearchSingleRouteDB.IS_REFUNDABLE);
+    }
+
+    private Property<String> getPrimaryColumn() {
+        return new Property<String>(getDBClass(), FlightSearchSingleRouteDB.ID);
+    }
+
+
+    private ConditionGroup getFindByPrimaryKeyQuery(String primaryKey) {
+        return ConditionGroup.clause()
+                .and(getPrimaryColumn().eq(primaryKey));
+    }
+
+
+    public Observable<FlightSearchSingleRouteDB> find(final String primaryKey) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<FlightSearchSingleRouteDB>() {
+            @Override
+            public void call(Subscriber<? super FlightSearchSingleRouteDB> subscriber) {
+                FlightSearchSingleRouteDB flightSearchSingleRouteDBList = new Select().from(getDBClass())
+                        .where(getFindByPrimaryKeyQuery(primaryKey))
+                        .querySingle();
+                subscriber.onNext(flightSearchSingleRouteDBList);
+            }
+        });
     }
 }

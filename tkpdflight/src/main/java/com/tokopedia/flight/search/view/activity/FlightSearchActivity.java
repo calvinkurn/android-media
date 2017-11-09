@@ -1,16 +1,15 @@
 package com.tokopedia.flight.search.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
@@ -106,7 +105,7 @@ public class FlightSearchActivity extends BaseSimpleActivity
     @Override
     public void selectFlight(String selectedFlightID) {
         if (passDataViewModel.isOneWay()) {
-            Toast.makeText(this, "GO TO CART with id " + selectedFlightID, Toast.LENGTH_LONG).show();
+            startActivity(FlightBookingActivity.getCallingIntent(this, passDataViewModel, selectedFlightID));
         } else {
             FlightSearchReturnActivity.start(this, passDataViewModel, selectedFlightID);
         }

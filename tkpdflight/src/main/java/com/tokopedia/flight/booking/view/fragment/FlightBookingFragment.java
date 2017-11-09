@@ -33,8 +33,8 @@ import com.tokopedia.flight.booking.view.presenter.FlightBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingTripViewModel;
 import com.tokopedia.flight.booking.widget.CardWithActionView;
+import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
@@ -46,7 +46,9 @@ import javax.inject.Inject;
  * A simple {@link Fragment} subclass.
  */
 public class FlightBookingFragment extends BaseDaggerFragment implements FlightBookingContract.View, FlightBookingPassengerAdapter.OnClickListener {
-    private static final String EXTRA_TRIP_PASS_DATA = "EXTRA_TRIP_PASS_DATA";
+    private static final String EXTRA_SEARCH_PASS_DATA = "EXTRA_SEARCH_PASS_DATA";
+    private static final String EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID";
+    private static final String EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID";
 
     private static final int REQUEST_CODE_PASSENGER = 1;
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
@@ -65,7 +67,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private AppCompatEditText etPhoneCountryCode;
     private AppCompatEditText etPhoneNumber;
 
-    private FlightBookingTripViewModel flightBookingTripViewModel;
+    private String departureTripId, returnTripId;
     private FlightBookingParamViewModel paramViewModel;
 
     @Inject
@@ -74,10 +76,12 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private FlightBookingPassengerAdapter adapter;
 
 
-    public static FlightBookingFragment newInstance(FlightBookingTripViewModel flightBookingTripViewModel) {
+    public static Fragment newInstance(FlightSearchPassDataViewModel searchPassDataViewModel, String departureId, String returnId) {
         FlightBookingFragment fragment = new FlightBookingFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_TRIP_PASS_DATA, flightBookingTripViewModel);
+        bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataViewModel);
+        bundle.putString(EXTRA_FLIGHT_DEPARTURE_ID, departureId);
+        bundle.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -90,8 +94,10 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        flightBookingTripViewModel = getArguments().getParcelable(EXTRA_TRIP_PASS_DATA);
+        departureTripId = getArguments().getString(EXTRA_FLIGHT_DEPARTURE_ID);
+        returnTripId = getArguments().getString(EXTRA_FLIGHT_ARRIVAL_ID);
         paramViewModel = new FlightBookingParamViewModel();
+        paramViewModel.setSearchParam((FlightSearchPassDataViewModel) getArguments().getParcelable(EXTRA_SEARCH_PASS_DATA));
     }
 
     @Override
@@ -132,6 +138,20 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         passengerRecyclerView.setLayoutManager(layoutManager);
         passengerRecyclerView.setHasFixedSize(true);
         passengerRecyclerView.setAdapter(adapter);
+
+        departureInfoView.setActionListener(new CardWithActionView.ActionListener() {
+            @Override
+            public void actionClicked() {
+                presenter.onDepartureInfoClicked();
+            }
+        });
+
+        returnInfoView.setActionListener(new CardWithActionView.ActionListener() {
+            @Override
+            public void actionClicked() {
+                presenter.onReturnInfoClicked();
+            }
+        });
         return view;
     }
 
@@ -210,8 +230,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public FlightBookingTripViewModel getCurrentTripViewModel() {
-        return flightBookingTripViewModel;
+    public FlightBookingParamViewModel getCurrentBookingParamViewModel() {
+        return paramViewModel;
     }
 
     @Override
@@ -279,6 +299,21 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         etPhoneCountryCode.setText(countryPhoneCode);
     }
 
+    @Override
+    public String getDepartureTripId() {
+        return departureTripId;
+    }
+
+    @Override
+    public String getReturnTripId() {
+        return returnTripId;
+    }
+
+    @Override
+    public void navigateToDetailTrip(FlightSearchViewModel departureTrip) {
+        startActivity(FlightDetailActivity.createIntent(getActivity(), departureTrip));
+    }
+
     private void showMessageErrorInSnackBar(int resId) {
         Snackbar snackBar = SnackbarManager.make(getActivity(),
                 getString(resId), Snackbar.LENGTH_LONG)
@@ -288,4 +323,5 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
         snackBar.show();
     }
+
 }

@@ -14,6 +14,7 @@ import dagger.Component;
 @Component(modules = FlightBookingModule.class, dependencies = FlightComponent.class)
 public interface FlightBookingComponent {
     void inject(FlightBookingFragment flightBookingFragment);
+
     void inject(FLightBookingPhoneCodeFragment fLightBookingPhoneCodeFragment);
 
     void inject(FlightBookingNationalityFragment flightBookingNationalityFragment);

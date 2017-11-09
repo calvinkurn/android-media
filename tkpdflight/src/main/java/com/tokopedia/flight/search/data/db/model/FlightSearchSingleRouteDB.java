@@ -22,6 +22,7 @@ import java.util.List;
  */
 @Table(database = TkpdFlightDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
+    public static final String ID = "id";
     public static final String TOTAL_NUMERIC = "total_numeric";
     public static final String AIRLINE = "airline";
     public static final String IS_REFUNDABLE = "is_refundable";
@@ -30,7 +31,7 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     public static final String DURATION_MINUTE = "duration_minute";
     public static final String TOTAL_TRANSIT = "total_transit";
     @PrimaryKey
-    @Column(name = "id")
+    @Column(name = ID)
     String id;
 
     @Column(name = "type")
