@@ -9,6 +9,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.domain.model.DataStatus;
 import com.tokopedia.posapp.domain.model.ListDomain;
 import com.tokopedia.posapp.domain.model.bank.BankDomain;
+import com.tokopedia.posapp.domain.model.product.ProductDomain;
 import com.tokopedia.posapp.domain.model.result.BankSavedResult;
 import com.tokopedia.posapp.domain.model.bank.BankInstallmentDomain;
 import com.tokopedia.posapp.domain.model.shop.EtalaseDomain;
@@ -32,6 +33,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func0;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -40,9 +42,9 @@ import rx.schedulers.Schedulers;
 
 public class CachePresenter implements Cache.Presenter {
     private static final String SHOP_ID = "shop_id";
-    private static final String ROW = "row";
+    private static final String START_OFFSET = "startoffset";
+    private static final String ROW_OFFSET = "rowoffset";
     private static final String DATA_PER_ROW = "data_per_row";
-    private static final String START = "start";
     private static final String ETALASE = "etalase";
 
     private Context context;
@@ -141,7 +143,19 @@ public class CachePresenter implements Cache.Presenter {
             .flatMap(new Func1<EtalaseDomain, Observable<ProductListDomain>>() {
                 @Override
                 public Observable<ProductListDomain> call(EtalaseDomain etalaseDomain) {
-                    return getAllProductUseCase.createObservable(getGatewayProductParam(etalaseDomain.getEtalaseId()));
+                    return Observable.zip(
+                            Observable.just(etalaseDomain.getEtalaseId()),
+                            getAllProductUseCase.createObservable(getGatewayProductParam(etalaseDomain.getEtalaseId())),
+                            new Func2<String, ProductListDomain, ProductListDomain>() {
+                                @Override
+                                public ProductListDomain call(String etalaseId, ProductListDomain productListDomain) {
+                                    for(ProductDomain productDomain : productListDomain.getProductDomains()){
+                                        productDomain.setEtalaseId(etalaseId);
+                                    }
+                                    return productListDomain;
+                                }
+                            }
+                    );
                 }
             })
             .flatMap(new Func1<ProductListDomain, Observable<DataStatus>>() {
@@ -157,8 +171,8 @@ public class CachePresenter implements Cache.Presenter {
     private RequestParams getGatewayProductParam(String etalaseId) {
         RequestParams params = RequestParams.create();
         params.putString(SHOP_ID, SessionHandler.getShopID(context));
-        params.putString(START, 1 + "");
-        params.putString(ROW, defaultRowPerPage + "");
+        params.putString(START_OFFSET, 1 + "");
+        params.putString(ROW_OFFSET, defaultRowPerPage + "");
         params.putString(ETALASE, etalaseId);
         params.putInt(DATA_PER_ROW, defaultRowPerPage);
         return params;

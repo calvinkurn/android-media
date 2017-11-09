@@ -31,6 +31,7 @@ public class ProductDbManager extends PosDbOperation<ProductDomain, ProductDb> {
             productDb.setProductImage(data.getProductImage());
             productDb.setProductImage300(data.getProductImage300());
             productDb.setProductImageFull(data.getProductImageFull());
+            productDb.setEtalaseId(data.getEtalaseId());
             return productDb;
         }
 
@@ -62,6 +63,7 @@ public class ProductDbManager extends PosDbOperation<ProductDomain, ProductDb> {
             productDomain.setProductImage(db.getProductImage());
             productDomain.setProductImage300(db.getProductImage300());
             productDomain.setProductImageFull(db.getProductImageFull());
+            productDomain.setEtalaseId(db.getEtalaseId());
             return productDomain;
         }
 

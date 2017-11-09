@@ -42,6 +42,7 @@ public class GetAllProductUseCase extends UseCase<ProductListDomain> {
     public Observable<ProductListDomain> createObservable(RequestParams params) {
         this.requestParams = params;
         this.page = 1;
+        this.getNextPage = true;
 
         return Observable.create(getAllProductObservable());
     }
