@@ -37,7 +37,8 @@ public class ChatTimeConverter {
         calCurrentTime.setTime(new Date());
 
         if (DateUtils.isToday(unixTime)) {
-            return DateFormat.getTimeFormat(MainApplication.getAppContext()).format(unixTime);
+            SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
+            return sdfHour.format(postTime);
         } else if (span.contains("yesterday")
                 || (!DateUtils.isToday(unixTime) && span.contains("hours"))
                 || (!DateUtils.isToday(unixTime) && span.contains("hours"))) {
@@ -52,7 +53,10 @@ public class ChatTimeConverter {
     }
 
     public static String formatTime(long unixTime) {
-        return DateFormat.getTimeFormat(MainApplication.getAppContext()).format(unixTime);
+        Locale localeID = new Locale("in", "ID");
+        Date postTime = new Date(unixTime);
+        SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
+        return sdfHour.format(postTime);
     }
 
     private static String YESTERDAY = "Kemarin";
