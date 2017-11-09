@@ -55,7 +55,7 @@ public class GalleryCropActivity extends GalleryActivity {
                                        boolean forceOpenCamera,
                                        int maxImageSelection,
                                        boolean compressToTkpd) {
-        Intent imageGallery = new Intent(context, GalleryActivity.class);
+        Intent imageGallery;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             imageGallery = new Intent(context, GalleryActivity.class);
         } else {

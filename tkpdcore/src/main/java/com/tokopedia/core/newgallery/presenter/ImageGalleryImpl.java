@@ -82,6 +82,8 @@ public class ImageGalleryImpl implements ImageGallery {
                             }
                         }
 
+                        cur.close();
+
                         return datas;
                     }
                 })

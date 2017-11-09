@@ -1,5 +1,6 @@
 package com.tokopedia.seller.common.imageeditor;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,12 +19,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.imageeditor.component.DaggerGetShopInfoComponent;
 import com.tokopedia.seller.common.imageeditor.component.GetShopInfoComponent;
+import com.tokopedia.seller.common.imageeditor.preference.WatermarkNotifPref;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shop.presenter.GetShopInfoPresenter;
 import com.tokopedia.seller.shop.presenter.GetShopInfoView;
@@ -134,6 +140,18 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
 
     private void setUIByWatermark(boolean isUseWatermark){
         if (isUseWatermark) {
+            if (!WatermarkNotifPref.hasShown()) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                        .setMessage(getString(R.string.crop_image_watermark_cannot_be_changed))
+                        .setPositiveButton(getString(R.string.title_ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                WatermarkNotifPref.setHasShown(true);
+                            }
+                        });
+                AlertDialog dialog = alertDialogBuilder.create();
+                dialog.show();
+            }
             watermarkMenuItem.setIcon(R.drawable.ic_branding_watermark_checked);
             watermarkMenuItem.getIcon().invalidateSelf();
             watermarkView.setVisibility(View.VISIBLE);

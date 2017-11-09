@@ -26,6 +26,8 @@ public class WatermarkView extends View {
     public static final float PADDING_DEFAULT = 12; // dp
     public static final float WIDTH_MIN_FONT = 300; // dp
     public static final float WIDTH_MAX_FONT = 600; // dp
+    public static final int TEXT_LENGTH_THRESHOLD = 18;
+    public static final float TEXT_LENGTH_MULTIPLIER = 0.8f;
 
     private String textString;
     private int xText = 0;
@@ -94,7 +96,7 @@ public class WatermarkView extends View {
 
             this.windowRect = new RectF(left, top, right, bottom);
             int width = (int) (right - left);
-            setTextSize(getCalcTextSize(width));
+            setTextSize(getCalcTextSize(width, textString));
             setTextCoord((int) left, (int) bottom);
         }
     }
@@ -104,13 +106,21 @@ public class WatermarkView extends View {
         invalidate();
     }
 
-    private float getCalcTextSize(int actualWidth) {
+    private float getCalcTextSize(int actualWidth, String textString) {
+        float textMin = TEXT_SIZE_MIN;
+        float textMax = TEXT_SIZE_MAX;
+        if (!TextUtils.isEmpty(textString)) {
+            if (textString.length() >= TEXT_LENGTH_THRESHOLD) {
+                textMin = TEXT_LENGTH_MULTIPLIER * TEXT_SIZE_MIN;
+                textMax = TEXT_LENGTH_MULTIPLIER * TEXT_SIZE_MAX;
+            }
+        }
         if (actualWidth >= WIDTH_MAX_FONT) {
-            return TEXT_SIZE_MAX;
+            return textMax;
         } else if (actualWidth <= WIDTH_MIN_FONT) {
-            return (TEXT_SIZE_MIN);
+            return (textMin);
         } else {
-            return TEXT_SIZE_MIN + (actualWidth - WIDTH_MIN_FONT) * (TEXT_SIZE_MAX - TEXT_SIZE_MIN) / (WIDTH_MAX_FONT - WIDTH_MIN_FONT);
+            return textMin + (actualWidth - WIDTH_MIN_FONT) * (textMax - textMin) / (WIDTH_MAX_FONT - WIDTH_MIN_FONT);
         }
     }
 
@@ -138,7 +148,7 @@ public class WatermarkView extends View {
         setDefaultTextPaint(watermarkTextPaint);
         watermarkTextPaint.setTextSize((int) (mTextSize * ratio * density + 0.5f));
 
-        int padding = (int) (PADDING_DEFAULT * ratio * density );
+        int padding = (int) (PADDING_DEFAULT * ratio * density);
         int xText = padding;
         int yText = mutableBitmap.getHeight() - padding;
 
@@ -147,8 +157,5 @@ public class WatermarkView extends View {
         bitmap.recycle();
 
         return mutableBitmap;
-//        Canvas canvas = new Canvas(mutableBitmap);
-//        canvas.drawText(textString, xText, yText, mTextPaint);
-//        return mutableBitmap;
     }
 }
