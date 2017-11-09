@@ -3,7 +3,7 @@ package com.tokopedia.flight.booking.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight.search.data.cloud.model.Route;
+import com.tokopedia.flight.search.data.cloud.model.response.Route;
 
 /**
  * Created by alvarisi on 11/7/17.

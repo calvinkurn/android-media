@@ -1,4 +1,4 @@
-package com.tokopedia.flight.search.data.cloud.model;
+package com.tokopedia.flight.search.data.cloud.model.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,6 +51,12 @@ public class Route implements ItemType, Parcelable {
 
     private String airlineName;
     private String airlineLogo;
+
+    private String departureAirportName;
+    private String departureAirportCity;
+
+    private String arrivalAirportName;
+    private String arrivalAirportCity;
 
     public String getAirline() {
         return airline;
@@ -105,6 +110,22 @@ public class Route implements ItemType, Parcelable {
         this.airlineName = airlineName;
     }
 
+    public void setArrivalAirportCity(String arrivalAirportCity) {
+        this.arrivalAirportCity = arrivalAirportCity;
+    }
+
+    public void setArrivalAirportName(String arrivalAirportName) {
+        this.arrivalAirportName = arrivalAirportName;
+    }
+
+    public void setDepartureAirportCity(String departureAirportCity) {
+        this.departureAirportCity = departureAirportCity;
+    }
+
+    public void setDepartureAirportName(String departureAirportName) {
+        this.departureAirportName = departureAirportName;
+    }
+
     public String getAirlineLogo() {
         return airlineLogo;
     }
@@ -141,6 +162,10 @@ public class Route implements ItemType, Parcelable {
         dest.writeTypedList(this.amenities);
         dest.writeString(this.airlineName);
         dest.writeString(this.airlineLogo);
+        dest.writeString(this.departureAirportName);
+        dest.writeString(this.departureAirportCity);
+        dest.writeString(this.arrivalAirportName);
+        dest.writeString(this.arrivalAirportCity);
     }
 
     protected Route(Parcel in) {
@@ -157,9 +182,13 @@ public class Route implements ItemType, Parcelable {
         this.amenities = in.createTypedArrayList(Amenity.CREATOR);
         this.airlineName = in.readString();
         this.airlineLogo = in.readString();
+        this.departureAirportName = in.readString();
+        this.departureAirportCity = in.readString();
+        this.arrivalAirportName = in.readString();
+        this.arrivalAirportCity = in.readString();
     }
 
-    public static final Creator<Route> CREATOR = new Creator<Route>() {
+    public static final Parcelable.Creator<Route> CREATOR = new Parcelable.Creator<Route>() {
         @Override
         public Route createFromParcel(Parcel source) {
             return new Route(source);

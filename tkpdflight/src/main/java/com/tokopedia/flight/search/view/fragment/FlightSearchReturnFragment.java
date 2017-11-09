@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 /**
  * Created by hendry on 10/26/2017.
@@ -15,8 +16,9 @@ import com.tokopedia.flight.R;
 
 public class FlightSearchReturnFragment extends FlightSearchFragment {
 
-    public static FlightSearchReturnFragment newInstance() {
+    public static FlightSearchReturnFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle args = new Bundle();
+        args.putParcelable(EXTRA_PASS_DATA, passDataViewModel);
         FlightSearchReturnFragment fragment = new FlightSearchReturnFragment();
         fragment.setArguments(args);
         return fragment;
@@ -30,13 +32,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        //TODO set returning view here
-        return view;
-    }
-
-    protected int getFragmentLayout() {
-        return R.layout.fragment_search_return;
+        return inflater.inflate(R.layout.fragment_search_return, container, false);
     }
 
     protected boolean isReturning(){

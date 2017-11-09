@@ -12,9 +12,9 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
-import com.tokopedia.flight.search.data.cloud.model.Amenity;
-import com.tokopedia.flight.search.data.cloud.model.Info;
-import com.tokopedia.flight.search.data.cloud.model.Route;
+import com.tokopedia.flight.search.data.cloud.model.response.Amenity;
+import com.tokopedia.flight.search.data.cloud.model.response.Info;
+import com.tokopedia.flight.search.data.cloud.model.response.Route;
 
 import java.util.ArrayList;
 import java.util.List;

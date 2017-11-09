@@ -28,6 +28,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 public class FlightDetailActivity extends BaseTabActivity {
 
     public static final String EXTRA_FLIGHT_SEARCH_MODEL = "EXTRA_FLIGHT_SEARCH_MODEL";
+    public static final String EXTRA_FLIGHT_SELECTED = "EXTRA_FLIGHT_SELECTED";
 
     private FlightSearchViewModel flightSearchViewModel;
     private Button buttonSubmit;
@@ -75,7 +76,7 @@ public class FlightDetailActivity extends BaseTabActivity {
 
     private void setResultAndFinish() {
         Intent intent = new Intent();
-        intent.putExtra("EXTRA_FLIGHT_SELECTED", flightSearchViewModel.getId());
+        intent.putExtra(EXTRA_FLIGHT_SELECTED, flightSearchViewModel.getId());
         setResult(RESULT_OK, intent);
         finish();
     }

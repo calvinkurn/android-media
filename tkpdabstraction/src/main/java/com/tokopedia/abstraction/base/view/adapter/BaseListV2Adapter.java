@@ -31,7 +31,7 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
     protected OnBaseListV2AdapterListener<T> onBaseListV2AdapterListener;
 
     private int totalItem;
-    private String searchQueryString;
+    private boolean isInFilterMode;
     private NoResultDataBinder emptyNoResultDataBinder;
     private LoadingDataBinder loadingDataBinder;
 
@@ -124,8 +124,12 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
         return new RetryDataBinder(this);
     }
 
-    public void setSearchQueryString(String searchQueryString) {
-        this.searchQueryString = searchQueryString;
+    public boolean isInFilterMode() {
+        return isInFilterMode;
+    }
+
+    public void setInFilterMode(boolean inFilterMode) {
+        isInFilterMode = inFilterMode;
     }
 
     public void addData(List<T> data) {
@@ -294,7 +298,11 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
 
     @Override
     public int getItemCount() {
-        return getDataSize() + super.getItemCount();
+        if (getDataSize() == 0) {
+            return 1;
+        } else {
+            return getDataSize() + super.getItemCount();
+        }
     }
 
     @Override
@@ -305,10 +313,10 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
             } else if (isRetry()) {
                 return VIEW_RETRY;
             } else {
-                if (TextUtils.isEmpty(searchQueryString)) {
-                    return VIEW_EMPTY;
-                } else {
+                if (isInFilterMode) {
                     return VIEW_EMPTY_SEARCH;
+                } else {
+                    return VIEW_EMPTY;
                 }
             }
         } else { // data is not empty

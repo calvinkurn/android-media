@@ -33,6 +33,10 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
         return getDataList(map);
     }
 
+    public Observable<List<FlightAirlineDB>> getAirlineList() {
+        return getDataList(null);
+    }
+
     public static HashMap<String, Object> generateGetParam(String idToSearch){
         return FlightAirlineParamUtil.generateMap(idToSearch);
     }
