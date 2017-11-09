@@ -26,10 +26,13 @@ import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
+import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPresenter;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingTripViewModel;
 import com.tokopedia.flight.booking.widget.CardWithActionView;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
@@ -46,6 +49,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final String EXTRA_TRIP_PASS_DATA = "EXTRA_TRIP_PASS_DATA";
 
     private static final int REQUEST_CODE_PASSENGER = 1;
+    private static final int REQUEST_CODEP_PHONE_CODE = 2;
 
     private AppCompatTextView timeFinishOrderIndicatorTextView;
     private CardWithActionView departureInfoView;
@@ -62,9 +66,12 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private AppCompatEditText etPhoneNumber;
 
     private FlightBookingTripViewModel flightBookingTripViewModel;
+    private FlightBookingParamViewModel paramViewModel;
 
     @Inject
     FlightBookingPresenter presenter;
+
+    private FlightBookingPassengerAdapter adapter;
 
 
     public static FlightBookingFragment newInstance(FlightBookingTripViewModel flightBookingTripViewModel) {
@@ -84,6 +91,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         flightBookingTripViewModel = getArguments().getParcelable(EXTRA_TRIP_PASS_DATA);
+        paramViewModel = new FlightBookingParamViewModel();
     }
 
     @Override
@@ -105,12 +113,25 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         etPhoneCountryCode = (AppCompatEditText) view.findViewById(R.id.et_phone_country_code);
         etPhoneNumber = (AppCompatEditText) view.findViewById(R.id.et_phone_number);
 
+        etPhoneCountryCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(FlightBookingPhoneCodeActivity.getCallingIntent(getActivity()), REQUEST_CODEP_PHONE_CODE);
+            }
+        });
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.onButtonSubmitClicked();
             }
         });
+
+        adapter = new FlightBookingPassengerAdapter();
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        passengerRecyclerView.setLayoutManager(layoutManager);
+        passengerRecyclerView.setHasFixedSize(true);
+        passengerRecyclerView.setAdapter(adapter);
         return view;
     }
 
@@ -142,7 +163,12 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_PASSENGER:
-
+                    FlightBookingPassengerViewModel passengerViewModel = data.getParcelableExtra(FlightBookingPassengerActivity.EXTRA_PASSENGER);
+                    presenter.onPassengerResultReceived(passengerViewModel);
+                    break;
+                case REQUEST_CODEP_PHONE_CODE:
+                    FlightBookingPhoneCodeViewModel phoneCodeViewModel = data.getParcelableExtra(FLightBookingPhoneCodeFragment.EXTRA_SELECTED_PHONE_CODE);
+                    presenter.onPhoneCodeResultReceived(phoneCodeViewModel);
                     break;
             }
         }
@@ -240,13 +266,17 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void renderPassengersList(List<FlightBookingPassengerViewModel> passengerViewModels) {
-        FlightBookingPassengerAdapter adapter = new FlightBookingPassengerAdapter();
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        passengerRecyclerView.setLayoutManager(layoutManager);
-        passengerRecyclerView.setHasFixedSize(true);
-        passengerRecyclerView.setAdapter(adapter);
         adapter.addPassengers(passengerViewModels);
+    }
+
+    @Override
+    public FlightBookingParamViewModel getCurrentBookingParam() {
+        return paramViewModel;
+    }
+
+    @Override
+    public void renderPhoneCodeView(String countryPhoneCode) {
+        etPhoneCountryCode.setText(countryPhoneCode);
     }
 
     private void showMessageErrorInSnackBar(int resId) {

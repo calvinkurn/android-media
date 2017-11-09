@@ -2,11 +2,9 @@ package com.tokopedia.flight.booking.view.adapter;
 
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseMultipleCheckViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
 

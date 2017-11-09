@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
@@ -15,10 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.binder.NoResultDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.binder.RetryDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.detail.FlightAirlineIconUtil;
-import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
 import com.tokopedia.flight.search.view.model.resultstatistics.DepartureStat;
-import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
 
 /**
  * Created by User on 10/26/2017.

@@ -1,5 +1,7 @@
 package com.tokopedia.flight.booking.view.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -14,6 +16,11 @@ import com.tokopedia.flight.booking.view.fragment.FLightBookingPhoneCodeFragment
  */
 
 public class FlightBookingPhoneCodeActivity extends BaseSimpleActivity implements HasComponent<FlightBookingComponent> {
+
+    public static Intent getCallingIntent(Activity activity) {
+        return new Intent(activity, FlightBookingPhoneCodeActivity.class);
+    }
+
     @Override
     protected Fragment getNewFragment() {
         return new FLightBookingPhoneCodeFragment();
@@ -22,7 +29,7 @@ public class FlightBookingPhoneCodeActivity extends BaseSimpleActivity implement
     @Override
     public FlightBookingComponent getComponent() {
         return DaggerFlightBookingComponent.builder()
-                .flightComponent(((FlightModuleRouter)getApplication()).getFlightComponent())
+                .flightComponent(((FlightModuleRouter) getApplication()).getFlightComponent())
                 .build();
     }
 }

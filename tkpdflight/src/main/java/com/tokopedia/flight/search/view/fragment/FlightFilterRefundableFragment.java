@@ -11,30 +11,18 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
 import com.tokopedia.abstraction.base.view.recyclerview.BaseListRecyclerView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.adapter.FlightFilterRefundableAdapter;
-import com.tokopedia.flight.search.adapter.FlightFilterTransitAdapter;
-import com.tokopedia.flight.search.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
-import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
-import com.tokopedia.flight.search.view.model.filter.TransitEnum;
-import com.tokopedia.flight.search.view.model.resultstatistics.DepartureStat;
-import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
 
 import java.util.HashSet;
 import java.util.List;
-
-import rx.Observable;
-import rx.functions.Func1;
 
 
 public class FlightFilterRefundableFragment extends BaseListV2Fragment<RefundableEnum> implements BaseListV2Adapter.OnBaseListV2AdapterListener<RefundableEnum>,BaseListCheckableV2Adapter.OnCheckableAdapterListener<RefundableEnum> {

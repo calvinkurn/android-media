@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingNationalityAdapter;
-import com.tokopedia.flight.booking.view.adapter.FlightBookingPhoneCodeAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodePresenterImpl;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodeView;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;

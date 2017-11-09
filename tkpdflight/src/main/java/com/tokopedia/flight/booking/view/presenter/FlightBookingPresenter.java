@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 import java.util.ArrayList;
@@ -34,15 +35,32 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
     @Override
     public void initialize() {
         if (isRoundTrip()) {
-            getView().showAndRenderDepartureTripCardDetail(getView().getCurrentTripViewModel().getSearchParam(),getView().getCurrentTripViewModel().getDepartureTrip());
+            getView().showAndRenderDepartureTripCardDetail(getView().getCurrentTripViewModel().getSearchParam(), getView().getCurrentTripViewModel().getDepartureTrip());
             getView().showAndRenderReturnTripCardDetail(getView().getCurrentTripViewModel().getSearchParam(), getView().getCurrentTripViewModel().getReturnTrip());
         } else {
             getView().showAndRenderDepartureTripCardDetail(getView().getCurrentTripViewModel().getSearchParam(), getView().getCurrentTripViewModel().getDepartureTrip());
         }
 
         List<FlightBookingPassengerViewModel> passengerViewModels = buildPassengerViewModel(getView().getCurrentTripViewModel().getSearchParam());
+        getView().getCurrentBookingParam().setPassengerViewModels(passengerViewModels);
         getView().renderPassengersList(passengerViewModels);
         // TODO : Calculate and render "Rincian Harga"
+    }
+
+    @Override
+    public void onPhoneCodeResultReceived(FlightBookingPhoneCodeViewModel phoneCodeViewModel) {
+        getView().getCurrentBookingParam().setPhoneCodeViewModel(phoneCodeViewModel);
+        getView().renderPhoneCodeView(phoneCodeViewModel.getCountryPhoneCode());
+    }
+
+    @Override
+    public void onPassengerResultReceived(FlightBookingPassengerViewModel passengerViewModel) {
+        List<FlightBookingPassengerViewModel> passengerViewModels = getView().getCurrentBookingParam().getPassengerViewModels();
+        int indexPassenger = passengerViewModels.indexOf(passengerViewModel);
+        if (indexPassenger != -1) {
+            passengerViewModels.set(indexPassenger, passengerViewModel);
+        }
+        getView().renderPassengersList(passengerViewModels);
     }
 
     private List<FlightBookingPassengerViewModel> buildPassengerViewModel(FlightSearchPassDataViewModel passData) {
@@ -51,6 +69,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
         List<FlightBookingPassengerViewModel> viewModels = new ArrayList<>();
         for (int i = 1, adultTotal = passData.getFlightPassengerViewModel().getAdult(); i <= adultTotal; i++) {
             FlightBookingPassengerViewModel viewModel = new FlightBookingPassengerViewModel();
+            viewModel.setPassengerId(passengerNumber);
             viewModel.setType(FlightBookingPassenger.ADULT);
             viewModel.setSingleRoute(isSingleRoute);
             viewModel.setHeaderTitle(String.format("%s %d (%s)",
@@ -63,6 +82,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
         }
         for (int i = 1, childTotal = passData.getFlightPassengerViewModel().getChildren(); i <= childTotal; i++) {
             FlightBookingPassengerViewModel viewModel = new FlightBookingPassengerViewModel();
+            viewModel.setPassengerId(passengerNumber);
             viewModel.setType(FlightBookingPassenger.CHILDREN);
             viewModel.setSingleRoute(isSingleRoute);
             viewModel.setHeaderTitle(String.format("%s %d (%s)",
@@ -75,6 +95,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
         }
         for (int i = 1, infantTotal = passData.getFlightPassengerViewModel().getChildren(); i <= infantTotal; i++) {
             FlightBookingPassengerViewModel viewModel = new FlightBookingPassengerViewModel();
+            viewModel.setPassengerId(passengerNumber);
             viewModel.setType(FlightBookingPassenger.INFANT);
             viewModel.setSingleRoute(isSingleRoute);
             viewModel.setHeaderTitle(String.format("%s %d (%s)",

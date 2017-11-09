@@ -5,8 +5,8 @@ import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchWithSortUseCase;
 import com.tokopedia.flight.search.view.FlightSearchView;
-import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 
 import java.util.List;
 

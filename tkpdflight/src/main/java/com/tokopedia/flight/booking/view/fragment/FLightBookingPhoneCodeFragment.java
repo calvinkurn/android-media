@@ -2,17 +2,14 @@ package com.tokopedia.flight.booking.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
-import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPhoneCodeAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodePresenterImpl;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodeView;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
-import com.tokopedia.flight.common.di.component.FlightComponent;
 
 import javax.inject.Inject;
 

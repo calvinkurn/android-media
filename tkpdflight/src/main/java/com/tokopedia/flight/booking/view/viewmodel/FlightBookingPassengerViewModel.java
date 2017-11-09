@@ -9,7 +9,8 @@ import java.util.List;
  * Created by alvarisi on 11/7/17.
  */
 
-public class FlightBookingPassengerViewModel implements Parcelable{
+public class FlightBookingPassengerViewModel implements Parcelable {
+    private int passengerId; //passengerLocalNumber
     private boolean singleRoute;
     private int type;
     private String headerTitle;
@@ -20,7 +21,11 @@ public class FlightBookingPassengerViewModel implements Parcelable{
     private List<FlightBookingMealViewModel> departureMeals;
     private List<FlightBookingMealViewModel> returnMeals;
 
+    public FlightBookingPassengerViewModel() {
+    }
+
     protected FlightBookingPassengerViewModel(Parcel in) {
+        passengerId = in.readInt();
         singleRoute = in.readByte() != 0;
         type = in.readInt();
         headerTitle = in.readString();
@@ -43,9 +48,6 @@ public class FlightBookingPassengerViewModel implements Parcelable{
             return new FlightBookingPassengerViewModel[size];
         }
     };
-
-    public FlightBookingPassengerViewModel() {
-    }
 
     public int getType() {
         return type;
@@ -120,12 +122,34 @@ public class FlightBookingPassengerViewModel implements Parcelable{
     }
 
     @Override
+    public boolean equals(Object obj) {
+        return obj instanceof FlightBookingPassengerViewModel && ((FlightBookingPassengerViewModel) obj).getPassengerId() == passengerId;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result *= prime * passengerId * type;
+        return result;
+    }
+
+    public int getPassengerId() {
+        return passengerId;
+    }
+
+    public void setPassengerId(int passengerId) {
+        this.passengerId = passengerId;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(passengerId);
         dest.writeByte((byte) (singleRoute ? 1 : 0));
         dest.writeInt(type);
         dest.writeString(headerTitle);

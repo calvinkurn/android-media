@@ -3,8 +3,6 @@ package com.tokopedia.flight.search.view.model.filter;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
-
 import java.util.ArrayList;
 import java.util.List;
 

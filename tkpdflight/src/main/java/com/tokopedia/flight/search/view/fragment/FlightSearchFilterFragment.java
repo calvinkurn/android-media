@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.utils.CommonUtils;
 import com.tokopedia.design.label.selection.SelectionItem;
 import com.tokopedia.design.label.selection.SelectionLabelView;
 import com.tokopedia.design.label.selection.text.SelectionTextLabelView;
