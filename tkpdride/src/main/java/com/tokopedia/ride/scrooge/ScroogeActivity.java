@@ -163,9 +163,9 @@ public class ScroogeActivity extends AppCompatActivity {
             toolbar.setElevation(10);
         }
         int textColor = ContextCompat.getColor(this, R.color.white);
-        toolbar.setTitleTextColor(textColor);
         toolbar.setTitleTextAppearance(this, R.style.ToolbarText);
         toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleText);
+        toolbar.setTitleTextColor(textColor);
         toolbar.setSubtitleTextColor(textColor);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary)));
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);

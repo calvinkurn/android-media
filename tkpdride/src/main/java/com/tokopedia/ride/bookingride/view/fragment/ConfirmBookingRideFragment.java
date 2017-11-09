@@ -390,7 +390,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @OnClick(R2.id.tv_change_payment_method)
     public void actionChangePaymentMethod() {
-        //start a new activity
+        //open manage payment activity
         startActivityForResult(ManagePaymentOptionsActivity.getCallingActivity(getActivity(), ManagePaymentOptionsActivity.TYPE_CHANGE_PAYMENT_OPTION), REQUEST_CODE_CHANGE_PAYMENT_METHOD);
     }
 

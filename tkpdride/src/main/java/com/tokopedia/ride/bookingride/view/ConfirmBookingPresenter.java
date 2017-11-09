@@ -8,6 +8,7 @@ import com.tokopedia.core.network.exception.InterruptConfirmationHttpException;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListUseCase;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethod;
@@ -29,11 +30,13 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
         implements ConfirmBookingContract.Presenter {
     private GetFareEstimateUseCase getFareEstimateUseCase;
     private GetPaymentMethodListUseCase getPaymentMethodListUseCase;
+    private GetPaymentMethodListCacheUseCase getPaymentMethodListCacheUseCase;
 
     @Inject
-    public ConfirmBookingPresenter(GetFareEstimateUseCase getFareEstimateUseCase, GetPaymentMethodListUseCase getPaymentMethodListUseCase) {
+    public ConfirmBookingPresenter(GetFareEstimateUseCase getFareEstimateUseCase, GetPaymentMethodListUseCase getPaymentMethodListUseCase, GetPaymentMethodListCacheUseCase getPaymentMethodListCacheUseCase) {
         this.getFareEstimateUseCase = getFareEstimateUseCase;
         this.getPaymentMethodListUseCase = getPaymentMethodListUseCase;
+        this.getPaymentMethodListCacheUseCase = getPaymentMethodListCacheUseCase;
     }
 
     @Override
@@ -168,9 +171,48 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
         });
     }
 
+    /**
+     * Get payment method list from cache
+     */
+    public void getPaymentMethodListFromCache() {
+        getPaymentMethodListCacheUseCase.execute(RequestParams.EMPTY, new Subscriber<PaymentMethodList>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(PaymentMethodList paymentMethodList) {
+                //find the active payment method
+                PaymentMethod selectedPaymentMethod = null;
+                if (paymentMethodList != null && paymentMethodList.getPaymentMethods() != null) {
+
+                    for (PaymentMethod paymentMethod : paymentMethodList.getPaymentMethods()) {
+                        if (paymentMethod.getActive() == true) {
+                            selectedPaymentMethod = paymentMethod;
+                            break;
+                        }
+                    }
+                }
+
+                if (selectedPaymentMethod != null) {
+                    getView().showPaymentMethod(selectedPaymentMethod.getLabel(), selectedPaymentMethod.getCardTypeImage());
+                } else {
+                    getView().hidePaymentMethod();
+                }
+            }
+        });
+    }
+
     @Override
     public void detachView() {
         getFareEstimateUseCase.unsubscribe();
+        getPaymentMethodListUseCase.unsubscribe();
+        getPaymentMethodListCacheUseCase.unsubscribe();
         super.detachView();
     }
 }
