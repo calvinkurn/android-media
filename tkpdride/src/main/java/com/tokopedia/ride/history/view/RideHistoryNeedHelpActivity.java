@@ -13,6 +13,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.webview.fragment.BaseWebViewClient;
@@ -88,7 +89,6 @@ import butterknife.Unbinder;
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            RideGATracking.eventBackPress(getScreenName());
             onBackPressed();
             return true;
         } else {
@@ -113,6 +113,7 @@ import butterknife.Unbinder;
 
     @Override
     public void onBackPressed() {
+        RideGATracking.eventBackPress(getScreenName());
         if (WebViewGeneral.canGoBack()) {
             WebViewGeneral.goBack();
         } else {
@@ -137,5 +138,10 @@ import butterknife.Unbinder;
     @Override
     public void onWebTitlePageCompleted(String title) {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_HISTORY_NEED_HELP;
     }
 }

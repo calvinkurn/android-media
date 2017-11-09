@@ -696,6 +696,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void onBackPressed() {
+        RideGATracking.eventBackPress(getScreenName());
         if (isSeatPanelShowed) {
             hideBlockTranslucentLayout();
             hideSeatPanelLayout();
@@ -809,7 +810,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            RideGATracking.eventBackPress(getScreenName());
             onBackPressed();
             return true;
         } else if (i == R.id.action_history) {
