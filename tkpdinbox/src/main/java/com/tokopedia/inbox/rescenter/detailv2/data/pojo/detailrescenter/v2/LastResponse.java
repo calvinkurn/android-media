@@ -9,8 +9,8 @@ import java.util.List;
  */
 public class LastResponse {
 
-    @SerializedName("sellerAddressResponse")
-    private SellerAddressResponse sellerAddressResponse;
+    @SerializedName("sellerAddress")
+    private SellerAddressResponse sellerAddress;
     @SerializedName("userAwb")
     private UserAwbResponse userAwb;
     @SerializedName("solution")
@@ -19,15 +19,15 @@ public class LastResponse {
     private String problem;
     @SerializedName("status")
     private String status;
-    @SerializedName("complainedProductResponses")
-    private List<ComplainedProductResponse> complainedProductResponses;
+    @SerializedName("complainedProducts")
+    private List<ComplainedProductResponse> complainedProducts;
 
-    public SellerAddressResponse getSellerAddressResponse() {
-        return sellerAddressResponse;
+    public SellerAddressResponse getSellerAddress() {
+        return sellerAddress;
     }
 
-    public void setSellerAddressResponse(SellerAddressResponse sellerAddressResponse) {
-        this.sellerAddressResponse = sellerAddressResponse;
+    public void setSellerAddress(SellerAddressResponse sellerAddress) {
+        this.sellerAddress = sellerAddress;
     }
 
     public UserAwbResponse getUserAwb() {
@@ -62,12 +62,12 @@ public class LastResponse {
         this.status = status;
     }
 
-    public List<ComplainedProductResponse> getComplainedProductResponses() {
-        return complainedProductResponses;
+    public List<ComplainedProductResponse> getComplainedProducts() {
+        return complainedProducts;
     }
 
-    public void setComplainedProductResponses(List<ComplainedProductResponse> complainedProductResponses) {
-        this.complainedProductResponses = complainedProductResponses;
+    public void setComplainedProducts(List<ComplainedProductResponse> complainedProducts) {
+        this.complainedProducts = complainedProducts;
     }
 
 }

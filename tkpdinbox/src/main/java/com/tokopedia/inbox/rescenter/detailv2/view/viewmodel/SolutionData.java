@@ -11,10 +11,20 @@ public class SolutionData implements Parcelable {
     private String solutionText;
     private String solutionDate;
     private String solutionProvider;
+    private String solutionProviderName;
+    private String solutionProblem;
     private boolean editAble;
 
     public String getSolutionText() {
         return solutionText;
+    }
+
+    public String getSolutionProblem() {
+        return solutionProblem;
+    }
+
+    public void setSolutionProblem(String solutionProblem) {
+        this.solutionProblem = solutionProblem;
     }
 
     public void setSolutionText(String solutionText) {
@@ -37,12 +47,23 @@ public class SolutionData implements Parcelable {
         this.solutionProvider = solutionProvider;
     }
 
+    public String getSolutionProviderName() {
+        return solutionProviderName;
+    }
+
+    public void setSolutionProviderName(String solutionProviderName) {
+        this.solutionProviderName = solutionProviderName;
+    }
+
     public boolean isEditAble() {
         return editAble;
     }
 
     public void setEditAble(boolean editAble) {
         this.editAble = editAble;
+    }
+
+    public SolutionData() {
     }
 
     @Override
@@ -55,20 +76,21 @@ public class SolutionData implements Parcelable {
         dest.writeString(this.solutionText);
         dest.writeString(this.solutionDate);
         dest.writeString(this.solutionProvider);
+        dest.writeString(this.solutionProviderName);
+        dest.writeString(this.solutionProblem);
         dest.writeByte(this.editAble ? (byte) 1 : (byte) 0);
-    }
-
-    public SolutionData() {
     }
 
     protected SolutionData(Parcel in) {
         this.solutionText = in.readString();
         this.solutionDate = in.readString();
         this.solutionProvider = in.readString();
+        this.solutionProviderName = in.readString();
+        this.solutionProblem = in.readString();
         this.editAble = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<SolutionData> CREATOR = new Parcelable.Creator<SolutionData>() {
+    public static final Creator<SolutionData> CREATOR = new Creator<SolutionData>() {
         @Override
         public SolutionData createFromParcel(Parcel source) {
             return new SolutionData(source);

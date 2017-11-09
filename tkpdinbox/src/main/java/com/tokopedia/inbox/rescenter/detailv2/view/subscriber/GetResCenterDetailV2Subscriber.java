@@ -43,6 +43,16 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
 
     private final DetailResCenterFragmentView fragmentView;
 
+    public static final int ACTION_BY_BUYER = 1;
+    public static final int ACTION_BY_SELLER = 2;
+    public static final int ACTION_BY_ADMIN = 3;
+    public static final int ACTION_BY_SYSTEM = 4;
+
+    public static final String BUYER = "Pembeli";
+    public static final String SELLER = "Penjual";
+    public static final String ADMIN = "Admin";
+    public static final String SYSTEM = "Sistem";
+
     public GetResCenterDetailV2Subscriber(DetailResCenterFragmentView fragmentView) {
         this.fragmentView = fragmentView;
     }
@@ -90,13 +100,26 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         DetailViewModel viewModel = new DetailViewModel();
         viewModel.setSuccess(true);
         viewModel.setNextActionDomain(detailResponseData.getNextAction());
-        viewModel.setAddressReturData(detailResponseData.getLast().getSellerAddress() != null ? mappingAddressReturData(detailResponseData.getLast().getSellerAddress()) : null);
-        viewModel.setAwbData(detailResponseData.getLast().getUserAwb() != null ? mappingAwbData(detailResponseData.getLast().getUserAwb()) : null);
+        viewModel.setAddressReturData(detailResponseData.getLast().getSellerAddress() != null ?
+                mappingAddressReturData(detailResponseData.getLast().getSellerAddress()) :
+                null);
+        viewModel.setAwbData(detailResponseData.getLast().getUserAwb() != null ?
+                mappingAwbData(detailResponseData.getLast().getUserAwb()) :
+                null);
         viewModel.setButtonData(mappingButtonData(detailResponseData.getButton()));
         viewModel.setDetailData(mappingDetailData(detailResponseData));
-        viewModel.setHistoryData(detailResponseData.getLogs() != null ? mappingHistoryData(detailResponseData.getLogs()) : null);
-        viewModel.setProductData(detailResponseData.getLast().getComplainedProducts() != null ? mappingProductData(detailResponseData.getLast().getComplainedProducts()) : null);
-        viewModel.setSolutionData(detailResponseData.getLast().getSolution() != null ? mappingSolutionData(detailResponseData.getLast().getSolution(), detailResponseData.getButton()) : null);
+        viewModel.setHistoryData(detailResponseData.getLogs() != null ?
+                mappingHistoryData(detailResponseData.getLogs()) :
+                null);
+        viewModel.setProductData(detailResponseData.getLast().getComplainedProducts() != null ?
+                mappingProductData(detailResponseData.getLast().getComplainedProducts()) :
+                null);
+        viewModel.setSolutionData(detailResponseData.getLast().getSolution() != null ?
+                mappingSolutionData(
+                        detailResponseData.getLast().getSolution(),
+                        detailResponseData.getButton(),
+                        detailResponseData.getLast().getProblem()) :
+                null);
         viewModel.setStatusData(mappingStatusData(detailResponseData.getLast()));
         return viewModel;
     }
@@ -132,13 +155,27 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         return statusData;
     }
 
-    private SolutionData mappingSolutionData(LastSolutionData lastSolutionData, ButtonDomain buttonDomain) {
+    private SolutionData mappingSolutionData(LastSolutionData lastSolutionData, ButtonDomain buttonDomain, String problem) {
         SolutionData solutionData = new SolutionData();
         solutionData.setSolutionDate(lastSolutionData.getCreateTimeStr());
         solutionData.setSolutionProvider(String.valueOf(lastSolutionData.getActionBy()));
+        solutionData.setSolutionProviderName(mappingSolutionProvider(lastSolutionData.getActionBy()));
         solutionData.setSolutionText(lastSolutionData.getName());
         solutionData.setEditAble(buttonDomain.getEdit() == 1);
+        solutionData.setSolutionProblem(problem);
         return solutionData;
+    }
+
+    private String mappingSolutionProvider(int actionBy) {
+        if (actionBy == ACTION_BY_BUYER) {
+            return BUYER;
+        } else if (actionBy == ACTION_BY_SELLER) {
+            return SELLER;
+        } else if (actionBy == ACTION_BY_ADMIN) {
+            return ADMIN;
+        } else {
+            return SYSTEM;
+        }
     }
 
     private ProductData mappingProductData(List<ComplainedProductData> complainedProductDataList) {
@@ -151,6 +188,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
             productItem.setProductName(complainedProductData.getProduct().getName());
             productItems.add(productItem);
         }
+        productData.setProductList(productItems);
         return productData;
     }
 

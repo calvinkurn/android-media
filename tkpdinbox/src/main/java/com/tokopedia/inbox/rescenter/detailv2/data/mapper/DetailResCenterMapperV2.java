@@ -142,8 +142,8 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
 
     private LastData mappingLastData(LastResponse response) {
         return new LastData(
-                response.getSellerAddressResponse() != null ?
-                        mappingSellerAddressData(response.getSellerAddressResponse()) :
+                response.getSellerAddress() != null ?
+                        mappingSellerAddressData(response.getSellerAddress()) :
                         null,
                 response.getUserAwb() != null ?
                         mappingUserAwbData(response.getUserAwb()) :
@@ -153,8 +153,8 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                         null,
                 response.getProblem(),
                 response.getStatus(),
-                response.getComplainedProductResponses() != null ?
-                        mappingComplainedProductList(response.getComplainedProductResponses()) :
+                response.getComplainedProducts() != null ?
+                        mappingComplainedProductList(response.getComplainedProducts()) :
                         null);
     }
 

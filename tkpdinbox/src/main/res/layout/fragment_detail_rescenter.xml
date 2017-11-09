@@ -61,15 +61,16 @@
                 android:layout_marginBottom="@dimen/margin_small"
                 />
 
-            <com.tokopedia.inbox.rescenter.detailv2.view.customview.ListProductView
-                android:id="@+id/product_view"
+
+            <com.tokopedia.inbox.rescenter.detailv2.view.customview.SolutionView
+                android:id="@+id/solution_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
                 />
 
-            <com.tokopedia.inbox.rescenter.detailv2.view.customview.SolutionView
-                android:id="@+id/solution_view"
+            <com.tokopedia.inbox.rescenter.detailv2.view.customview.ListProductView
+                android:id="@+id/product_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"

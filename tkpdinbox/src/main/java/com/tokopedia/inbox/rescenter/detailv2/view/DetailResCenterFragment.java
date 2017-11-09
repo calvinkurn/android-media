@@ -34,7 +34,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customview.DetailView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.HistoryView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ListProductView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.SolutionView;
-import com.tokopedia.inbox.rescenter.detailv2.view.customview.StatusView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.TimeView;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
