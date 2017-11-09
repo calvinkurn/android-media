@@ -56,6 +56,10 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
         notifyDataSetChanged();
     }
 
+    public List<FlightBookingPassengerViewModel> getPassengers() {
+        return viewModels;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private AppCompatTextView tvHeaderTitle;

@@ -15,7 +15,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
  * A simple {@link Fragment} subclass.
  */
 public class FlightBookingPassengerFragment extends BaseDaggerFragment {
-    private static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
+    public static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
 
     public static FlightBookingPassengerFragment newInstance(FlightBookingPassengerViewModel viewModel) {
         FlightBookingPassengerFragment fragment = new FlightBookingPassengerFragment();

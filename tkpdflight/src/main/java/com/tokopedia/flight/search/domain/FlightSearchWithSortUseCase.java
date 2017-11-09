@@ -1,7 +1,5 @@
 package com.tokopedia.flight.search.domain;
 
-import android.support.annotation.IntDef;
-
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.comparator.FlightCheapestComparator;
 import com.tokopedia.flight.search.domain.comparator.FlightEarliestArrivalComparator;

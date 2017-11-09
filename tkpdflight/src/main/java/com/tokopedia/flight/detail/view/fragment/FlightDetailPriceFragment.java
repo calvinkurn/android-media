@@ -54,6 +54,7 @@ public class FlightDetailPriceFragment extends Fragment {
         containerChildPrice = view.findViewById(R.id.container_child_price);
         containerInfantPrice = view.findViewById(R.id.container_infant_price);
 
+        totalPrice.setText(flightSearchViewModel.getTotal());
         return view;
     }
 
