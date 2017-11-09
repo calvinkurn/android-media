@@ -9,6 +9,7 @@ import {
   onSearchQueryType,
   fetchProducts,
   resetProductList,
+  searchProduct,
   setSearchText,
   onSubmitFetchSearchProduct,
 } from '../actions/index'
