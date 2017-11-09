@@ -9,7 +9,9 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
+import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.util.SessionHandler;
@@ -64,4 +66,10 @@ public interface TopAdsComponent {
     GetDepositTopAdsUseCase getDepositTopAdsUseCase();
 
     ShopInfoRepository shopInfoRepository();
+
+    @AceQualifier
+    Retrofit aceRetrofit();
+
+    @MojitoQualifier
+    Retrofit mojitoRetrofit();
 }
