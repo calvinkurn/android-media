@@ -3,11 +3,15 @@ package com.tokopedia.flight.booking.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.type.ItemIdType;
+import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
+
 /**
  * Created by alvarisi on 11/7/17.
  */
 
-public class FlightBookingMealViewModel implements Parcelable{
+public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdType{
+    public static final int TYPE = 532;
     private int id;
     private String title;
     private String price;
@@ -33,11 +37,11 @@ public class FlightBookingMealViewModel implements Parcelable{
         }
     };
 
-    public int getId() {
+    public int getIdBooking() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setIdBooking(int id) {
         this.id = id;
     }
 
@@ -58,6 +62,11 @@ public class FlightBookingMealViewModel implements Parcelable{
     }
 
     @Override
+    public String getId() {
+        return String.valueOf(id);
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -72,5 +81,10 @@ public class FlightBookingMealViewModel implements Parcelable{
     @Override
     public String toString() {
         return title;
+    }
+
+    @Override
+    public int getType() {
+        return TYPE;
     }
 }

@@ -25,6 +25,7 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     public static final String AIRLINE = "airline";
     public static final String IS_REFUNDABLE = "is_refundable";
     public static final String DEPARTURE_TIME = "departure_time";
+    public static final String DEPARTURE_TIME_INT = "departure_time_int";
     public static final String DURATION_MINUTE = "duration_minute";
     public static final String TOTAL_TRANSIT = "total_transit";
     @PrimaryKey
@@ -43,7 +44,7 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = DEPARTURE_TIME)
     String departureTime;
 
-    @Column(name = "departure_time_int")
+    @Column(name = DEPARTURE_TIME_INT)
     int departureTimeInt;
 
     @Column(name = "arrival_airport")

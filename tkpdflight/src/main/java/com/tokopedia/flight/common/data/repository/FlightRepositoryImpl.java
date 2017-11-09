@@ -11,10 +11,8 @@ import com.tokopedia.flight.search.data.FlightSearchReturnDataListSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataListSource;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
-import com.tokopedia.flight.search.view.model.FlightFilterModel;
 import com.tokopedia.usecase.RequestParams;
 
-import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
