@@ -2,13 +2,11 @@ package com.tokopedia.flight.dashboard.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.di.component.HasComponent;
 import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.FlightClassesfragment;
@@ -52,11 +50,4 @@ public class FlightClassesActivity extends BaseSimpleActivity implements HasComp
     protected boolean isToolbarWhite() {
         return true;
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        updateTitle(getString(R.string.flight_classes_toolbar_title));
-    }
-
 }

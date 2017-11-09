@@ -122,4 +122,7 @@
     <string name="activity_label_flight_booking_phone_code">Kode Telepon Negara</string>
     <string name="activity_label_flight_nationality">Kewarganegaraan</string>
     <string name="activity_label_flight_issuing_country">Negara Penerbit</string>
+    <string name="flight_booking_toolbar_title">Isi data pemesan</string>
+    <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
+    <string name="flight_select_passenger_toolbar_title">Penumpang</string>
 </resources>
