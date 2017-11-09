@@ -60,7 +60,7 @@ class PaymentInvoice extends Component {
     const data = {
       email_address: email,
       bank_name: bankName,
-      bank_logo: bankLogo,
+      bank_logo_url: bankLogo,
       transaction_date: payment_param.transaction_date,
       final_amount: payment_details.paymentDetails[0].amount,
       invoice_ref_no: payment_details.invoiceRef

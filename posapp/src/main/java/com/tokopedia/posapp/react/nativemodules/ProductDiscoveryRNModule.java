@@ -5,6 +5,7 @@ import android.content.Context;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import com.google.gson.Gson;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -50,6 +51,8 @@ public class ProductDiscoveryRNModule extends ReactContextBaseJavaModule {
         return "ProductDiscoveryModule";
     }
 
+
+    @ReactMethod
     public void search(String data, final Promise promise) {
         ProductSearchRequest request = gson.fromJson(data, ProductSearchRequest.class);
         reactProductCacheSource.search(request.getKeyword(), request.getEtalaseId())
