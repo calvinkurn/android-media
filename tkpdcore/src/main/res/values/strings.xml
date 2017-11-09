@@ -651,6 +651,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="message_undo_to_archive">Sukses memindahkan ke Arsip</string>
     <string name="message_undo_to_inbox">Sukses memindahkan ke Kotak Masuk</string>
     <string name="message_undo_to_trash">Sukses memindahkan ke Sampah</string>
+    <string name="option_organize">Atur</string>
     <string name="option_move_archive">Pindahkan ke Arsip</string>
     <string name="option_move_trash">Hapus</string>
     <string name="option_move_delete">Hapus Selamanya</string>

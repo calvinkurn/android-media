@@ -10,9 +10,23 @@ import com.tokopedia.inbox.inboxchat.adapter.InboxChatTypeFactory;
 
 public class EmptyChatModel implements Visitable<InboxChatTypeFactory> {
 
+    public static final int SEARCH = 1;
+
+    int type;
     String logo;
     String titleText;
     String subtitleText;
+
+    public EmptyChatModel() {
+    }
+
+    public EmptyChatModel(int type) {
+        this.type = type;
+    }
+
+    public int getType() {
+        return type;
+    }
 
     public String getLogo() {
         return logo;

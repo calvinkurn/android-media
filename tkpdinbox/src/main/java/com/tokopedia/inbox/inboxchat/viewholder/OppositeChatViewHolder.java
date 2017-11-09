@@ -31,11 +31,13 @@ import butterknife.BindView;
 public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewModel> {
 
     private int position;
-    TextView message;
-    TextView hour;
-    TextView date;
-    TextView name;
-    TextView label;
+    private TextView message;
+    private TextView hour;
+    private TextView date;
+    private TextView name;
+    private TextView label;
+    private TextView oldMessage;
+
     ChatRoomContract.View viewListener;
 
     @LayoutRes
@@ -48,6 +50,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
         date = (TextView) itemView.findViewById(R.id.date);
         name = (TextView) itemView.findViewById(R.id.name);
         label = (TextView) itemView.findViewById(R.id.label);
+        oldMessage = (TextView) itemView.findViewById(R.id.old_message);
         position = getAdapterPosition();
         this.viewListener = viewListener;
     }
@@ -99,6 +102,13 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
         name.setText(element.getSenderName());
 
         label.setText(element.getRole());
+
+        if(element.getOldMessageTitle()!= null && element.getOldMessageTitle().length()>0){
+            oldMessage.setVisibility(View.VISIBLE);
+            oldMessage.setText(new StringBuilder().append(oldMessage.getContext().getResources().getString(R.string.old_message_warn)).append(" ").append(element.getOldMessageTitle()).toString());
+        }else {
+            oldMessage.setVisibility(View.GONE);
+        }
     }
 
     private SpannableString highlight(Context context, Spanned span, String keyword) {

@@ -30,7 +30,7 @@ import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.STATE_CHAT_U
 
 public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
-    private static final int MAX_MESSAGE_DELETE = 10;
+    private static final int MAX_MESSAGE_DELETE = 3;
     private final InboxChatTypeFactory typeFactory;
     private List<Visitable> list;
     private List<Visitable> listSearch;
@@ -49,7 +49,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
         this.listSearch = new ArrayList<>();
         this.emptyModel = new EmptyModel();
         this.emptyChatModel = new EmptyChatModel();
-        this.emptySearchModel = new EmptyChatModel();
+        this.emptySearchModel = new EmptyChatModel(EmptyChatModel.SEARCH);
         this.loadingModel = new LoadingModel();
         this.presenter = presenter;
         this.listMove = new ArrayList<>();
@@ -118,6 +118,8 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
             Pair<ChatListViewModel, Integer> pair = new Pair<>(item, position);
             listMove.add(pair);
             notifyItemChanged(position);
+        }else{
+            presenter.getView().showErrorWarningDelete();
         }
     }
 

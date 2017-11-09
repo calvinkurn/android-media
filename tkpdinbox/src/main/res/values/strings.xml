@@ -67,7 +67,11 @@
         Pesan</string>
 
     <string name="no_existing_chat"> Tidak Ada Chat</string>
+    <string name="no_existing_chat_user"> Tidak ada pengguna atau chat
+yang ditemukan</string>
     <string name="please_try_chat"> Silakan mengirim chat untuk\nmemulai percakapan</string>
+    <string name="old_message_warn"> Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: </string>
+    <string name="delete_message_warn"> Jumlah pesan yang bisa dihapus hanya </string>
 
 
 

@@ -7,6 +7,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
@@ -55,6 +56,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     private ChatWebSocketListenerImpl listener;
     private WebSocket ws;
     private int attempt;
+    boolean inActionMode;
 
     @Inject
     InboxChatPresenter(GetMessageListUseCase getMessageListUseCase,
@@ -76,6 +78,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         this.inboxMessagePass.setNav(getView().getNav());
         this.pagingHandler = new PagingHandler();
         isRequesting = false;
+        inActionMode = false;
         contactSize = 0;
         chatSize = 0;
         attempt = 0;
@@ -107,10 +110,6 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         } else if (!getView().getRefreshHandler().isRefreshing()) {
             getView().getAdapter().showLoading();
         }
-    }
-
-    public void setResult(InboxChatViewModel result) {
-
     }
 
     private InboxChatViewModel modifyViewModel(InboxChatViewModel result) {
@@ -217,12 +216,12 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     public void onSelected(int position) {
         getView().getAdapter().addChecked(position);
-        getView().setOptionsMenu();
+        getView().setOptionsMenuFromSelect();
     }
 
     public void onDeselect(int position) {
         getView().getAdapter().removeChecked(position);
-        getView().setOptionsMenu();
+        getView().setOptionsMenuFromSelect();
     }
 
     public int getSelected(){
@@ -252,7 +251,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void goToProfile(int userId) {
-
+        getView().startActivity(
+                PeopleInfoNoDrawerActivity.createInstance(getView().getActivity(), String.valueOf(userId))
+        );
     }
 
     public void refreshData() {
@@ -298,7 +299,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             case MESSAGE_TRASH:
                 return R.menu.inbox_message_trash;
             default:
-                return R.menu.inbox_chat;
+                return R.menu.inbox_chat_delete;
         }
     }
 
@@ -367,19 +368,27 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     @Override
     public void recreateWebSocket() {
-        if(attempt > 5) {
-            getView().notifyConnectionWebSocket();
-        }else {
+//        if(attempt > 5) {
+//            getView().notifyConnectionWebSocket();
+//        }else {
             Request request = new Request.Builder().url(magicString)
                     .header("Origin", "https://staging.tokopedia.com")
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;
-        }
+//        }
     }
 
     @Override
     public void resetAttempt() {
         attempt = 0;
+    }
+
+    public boolean isInActionMode() {
+        return inActionMode;
+    }
+
+    public void setInActionMode(boolean inActionMode) {
+        this.inActionMode = inActionMode;
     }
 }
