@@ -6,14 +6,13 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
-import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
-import com.tokopedia.flight.search.data.cloud.model.Route;
+import com.tokopedia.flight.search.data.cloud.model.response.Fare;
+import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.data.db.model.FlightSearchReturnRouteDB;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,11 +24,15 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
     private String type;
     private String aid;
     private String departureAirport;
+    private String departureAirportName; // merge result
+    private String departureAirportCity; // merge result
     private String departureTime; //ini waktu berangkat 2018-01-01T14:45:00Z
-    private int departureTimeInt;
-    private String arrivalAirport; //
+    private int departureTimeInt; //1450
+    private String arrivalAirport;
     private String arrivalTime;
-    private int arrivalTimeInt;
+    private String arrivalAirportName; // merge result
+    private String arrivalAirportCity; // merge result
+    private int arrivalTimeInt; //1450
     private int totalTransit;
     private int addDayArrival;
 
@@ -43,10 +46,14 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
 
     private boolean isReturning;
 
+    private Fare fare;
+
     private List<Route> routeList;
-    private List<FlightAirlineDB> airlineDataList;
+    private List<FlightAirlineDB> airlineDataList; // merge result
 
     public FlightSearchViewModel(FlightSearchSingleRouteDB flightSearchSingleRouteDB){
+        Gson gson = new Gson();
+
         this.id = flightSearchSingleRouteDB.getId();
         this.type = flightSearchSingleRouteDB.getFlightType();
         this.aid = flightSearchSingleRouteDB.getAid();
@@ -70,7 +77,11 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
 
         String routesJsonString = flightSearchSingleRouteDB.getRoutes();
         Type flightRoutesType = new TypeToken<List<Route>> () {}.getType();
-        this.routeList = new Gson().fromJson(routesJsonString, flightRoutesType);
+        this.routeList = gson.fromJson(routesJsonString, flightRoutesType);
+
+        String fareString = flightSearchSingleRouteDB.getFare();
+        Type fareType = new TypeToken<Fare> () {}.getType();
+        this.fare = gson.fromJson(fareString, fareType);
     }
 
     @Override
@@ -110,7 +121,7 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         return arrivalTime;
     }
 
-    public int getArrivalTimeInt() {
+    public long getArrivalTimeInt() {
         return arrivalTimeInt;
     }
 
@@ -162,6 +173,46 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         return routeList;
     }
 
+    public Fare getFare() {
+        return fare;
+    }
+
+    public void setArrivalAirportCity(String arrivalAirportCity) {
+        this.arrivalAirportCity = arrivalAirportCity;
+    }
+
+    public void setArrivalAirportName(String arrivalAirportName) {
+        this.arrivalAirportName = arrivalAirportName;
+    }
+
+    public void setDepartureAirportName(String departureAirportName) {
+        this.departureAirportName = departureAirportName;
+    }
+
+    public void setDepartureAirportCity(String departureAirportCity) {
+        this.departureAirportCity = departureAirportCity;
+    }
+
+    public String getDepartureAirportName() {
+        return departureAirportName;
+    }
+
+    public String getDepartureAirportCity() {
+        return departureAirportCity;
+    }
+
+    public String getArrivalAirportName() {
+        return arrivalAirportName;
+    }
+
+    public String getArrivalAirportCity() {
+        return arrivalAirportCity;
+    }
+
+    public List<FlightAirlineDB> getAirlineDataList() {
+        return airlineDataList;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -173,10 +224,14 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         dest.writeString(this.type);
         dest.writeString(this.aid);
         dest.writeString(this.departureAirport);
+        dest.writeString(this.departureAirportName);
+        dest.writeString(this.departureAirportCity);
         dest.writeString(this.departureTime);
         dest.writeInt(this.departureTimeInt);
         dest.writeString(this.arrivalAirport);
         dest.writeString(this.arrivalTime);
+        dest.writeString(this.arrivalAirportName);
+        dest.writeString(this.arrivalAirportCity);
         dest.writeInt(this.arrivalTimeInt);
         dest.writeInt(this.totalTransit);
         dest.writeInt(this.addDayArrival);
@@ -187,6 +242,7 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         dest.writeString(this.beforeTotal);
         dest.writeByte(this.isRefundable ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isReturning ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.fare, flags);
         dest.writeTypedList(this.routeList);
         dest.writeTypedList(this.airlineDataList);
     }
@@ -196,10 +252,14 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         this.type = in.readString();
         this.aid = in.readString();
         this.departureAirport = in.readString();
+        this.departureAirportName = in.readString();
+        this.departureAirportCity = in.readString();
         this.departureTime = in.readString();
         this.departureTimeInt = in.readInt();
         this.arrivalAirport = in.readString();
         this.arrivalTime = in.readString();
+        this.arrivalAirportName = in.readString();
+        this.arrivalAirportCity = in.readString();
         this.arrivalTimeInt = in.readInt();
         this.totalTransit = in.readInt();
         this.addDayArrival = in.readInt();
@@ -210,6 +270,7 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         this.beforeTotal = in.readString();
         this.isRefundable = in.readByte() != 0;
         this.isReturning = in.readByte() != 0;
+        this.fare = in.readParcelable(Fare.class.getClassLoader());
         this.routeList = in.createTypedArrayList(Route.CREATOR);
         this.airlineDataList = in.createTypedArrayList(FlightAirlineDB.CREATOR);
     }

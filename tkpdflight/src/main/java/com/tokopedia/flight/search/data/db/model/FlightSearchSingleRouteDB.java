@@ -10,9 +10,10 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.common.database.TkpdFlightDatabase;
-import com.tokopedia.flight.search.data.cloud.model.Attributes;
-import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
-import com.tokopedia.flight.search.data.cloud.model.Route;
+import com.tokopedia.flight.search.data.cloud.model.response.Attributes;
+import com.tokopedia.flight.search.data.cloud.model.response.Fare;
+import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
+import com.tokopedia.flight.search.data.cloud.model.response.Route;
 
 import java.util.List;
 
@@ -80,6 +81,9 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     @Column(name = "routes")
     String routes;
 
+    @Column(name = "fare")
+    String fare;
+
     @Column(name = AIRLINE)
     String airline;
 
@@ -91,11 +95,13 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         return 0;
     }
 
-    public FlightSearchSingleRouteDB(){
+    public FlightSearchSingleRouteDB() {
 
     }
 
-    public FlightSearchSingleRouteDB(FlightSearchData flightSearchData){
+    public FlightSearchSingleRouteDB(FlightSearchData flightSearchData) {
+        Gson gson = new Gson();
+
         this.id = flightSearchData.getId();
         this.type = flightSearchData.getFlightType();
         Attributes attributes = flightSearchData.getAttributes();
@@ -103,9 +109,11 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         this.departureAirport = attributes.getDepartureAirport();
         this.departureTime = attributes.getDepartureTime();
         this.departureTimeInt = attributes.getDepartureTimeInt();
+
         this.arrivalAirport = attributes.getArrivalAirport();
         this.arrivalTime = attributes.getArrivalTime();
         this.arrivalTimeInt = attributes.getArrivalTimeInt();
+
         this.totalTransit = attributes.getTotalTransit();
         this.addDayArrival = attributes.getAddDayArrival();
         this.duration = attributes.getDuration();
@@ -115,22 +123,25 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         this.beforeTotal = attributes.getBeforeTotal();
 
         List<Route> routeList = attributes.getRoutes();
-        this.routes = new Gson().toJson(routeList);
+        this.routes = gson.toJson(routeList);
+
+        Fare fare = attributes.getFare();
+        this.fare = gson.toJson(fare);
 
         this.airline = "";
         this.isRefundable = true;
-        for (int i = 0, sizei = routeList.size(); i<sizei; i++) {
-            if (! routeList.get(i).getRefundable()){
+        for (int i = 0, sizei = routeList.size(); i < sizei; i++) {
+            if (!routeList.get(i).getRefundable()) {
                 isRefundable = false;
             }
             if (!TextUtils.isEmpty(airline)) {
-                airline+="-";
+                airline += "-";
             }
-            airline+=routeList.get(i).getAirline();
+            airline += routeList.get(i).getAirline();
         }
     }
 
-    public String getFlightType(){
+    public String getFlightType() {
         return type;
     }
 
@@ -196,6 +207,10 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
 
     public String getRoutes() {
         return routes;
+    }
+
+    public String getFare() {
+        return fare;
     }
 
     public String getAirline() {

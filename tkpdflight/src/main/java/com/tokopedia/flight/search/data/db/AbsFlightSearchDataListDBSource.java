@@ -6,7 +6,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.property.IntProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
-import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
+import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;

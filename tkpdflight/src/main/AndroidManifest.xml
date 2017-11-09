@@ -25,6 +25,10 @@
             android:label="@string/search_flight"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".search.view.activity.FlightSearchReturnActivity"
+            android:label="@string/search_flight"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".dashboard.view.activity.FlightClassesActivity"
             android:label="@string/flight_classes_toolbar_title"
             android:screenOrientation="portrait" />

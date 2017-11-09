@@ -5,6 +5,7 @@ import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightFilterCountUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.view.FlightFilterCountView;
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 
 import javax.inject.Inject;
@@ -24,9 +25,10 @@ public class FlightFilterCountPresenter extends BaseDaggerPresenter<FlightFilter
         this.flightFilterCountUseCase = flightFilterCountUseCase;
     }
 
-    //TODO params
     public void getFlightCount(boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel) {
-        flightFilterCountUseCase.execute(FlightSearchUseCase.generateRequestParams(isReturning, isFromCache, flightFilterModel,
+        flightFilterCountUseCase.execute(FlightSearchUseCase.generateRequestParams(
+                null,
+                isReturning, isFromCache, flightFilterModel,
                 FlightSortOption.NO_PREFERENCE),
                 getSubscriberFlightCount());
     }

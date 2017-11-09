@@ -209,7 +209,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
         if (currentTag.equals(getTagFragment())) {
             buttonFilter.setText(getString(R.string.flight_there_has_x_flights, count));
         } else {
-            buttonFilter.setText(getString(R.string.flight_save_x_flights, count));
+            buttonFilter.setText(getString(R.string.flight_save));
         }
     }
 

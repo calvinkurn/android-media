@@ -1,4 +1,4 @@
-package com.tokopedia.flight.search.data.cloud.model;
+package com.tokopedia.flight.search.data.cloud.model.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;

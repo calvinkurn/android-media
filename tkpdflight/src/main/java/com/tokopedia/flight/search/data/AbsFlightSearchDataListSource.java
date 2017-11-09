@@ -3,7 +3,7 @@ package com.tokopedia.flight.search.data;
 import com.tokopedia.abstraction.base.data.source.DataListSource;
 import com.tokopedia.abstraction.base.data.source.cache.DataListCacheSource;
 import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
-import com.tokopedia.flight.search.data.cloud.model.FlightSearchData;
+import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
 import com.tokopedia.flight.search.data.db.AbsFlightSearchDataListDBSource;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
@@ -27,9 +27,6 @@ public class AbsFlightSearchDataListSource extends DataListSource<FlightSearchDa
     }
 
     public Observable<List<FlightSearchSingleRouteDB>> getDataList(final RequestParams requestParams) {
-//        final HashMap<String, Object> map = generateGetParam(queryText);
-//        return getDataList(map);
-        //TODO set query
         if (FlightSearchParamUtil.isFromCache(requestParams)) {
             return super.getCacheDataList(FlightSearchParamUtil.toHashMap(requestParams));
         } else {
@@ -43,24 +40,10 @@ public class AbsFlightSearchDataListSource extends DataListSource<FlightSearchDa
     }
 
     public Observable<List<FlightSearchSingleRouteDB>> getDataListCount(RequestParams requestParams) {
-//        final HashMap<String, Object> map = generateGetParam(queryText);
-//        return getDataList(map);
-        //TODO set query
         if (FlightSearchParamUtil.isFromCache(requestParams)) {
             return super.getCacheDataList(FlightSearchParamUtil.toHashMap(requestParams));
         } else {
             return super.getDataList(FlightSearchParamUtil.toHashMap(requestParams));
         }
     }
-
-    //TODO set query
-//    public static HashMap<String, Object> generateGetParam(String query){
-//        HashMap<String, Object> map = new HashMap<>();
-//        map.put(FlightAirportDataListCloudSource.KEYWORD, query);
-//        return map;
-//    }
-//
-//    public static String getQueryFromMap(HashMap<String, Object> params){
-//        return (String) params.get(FlightAirportDataListCloudSource.KEYWORD);
-//    }
 }

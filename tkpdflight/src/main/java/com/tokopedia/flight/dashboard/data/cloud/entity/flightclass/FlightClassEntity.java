@@ -20,6 +20,12 @@ public class FlightClassEntity {
     @Expose
     private FlightClassAttributeEntity attributes;
 
+    public FlightClassEntity(String id, String type, String label) {
+        this.id = id;
+        this.type = type;
+        this.attributes = new FlightClassAttributeEntity(label);
+    }
+
     public String getId() {
         return id;
     }
