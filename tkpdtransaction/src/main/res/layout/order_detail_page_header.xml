@@ -23,8 +23,9 @@
             android:src="@drawable/facebook_square_blue" />
 
         <LinearLayout
+            android:id="@+id/order_detail_status_layout"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/small_dp"
             android:layout_marginStart="@dimen/small_dp"
             android:layout_weight="3"

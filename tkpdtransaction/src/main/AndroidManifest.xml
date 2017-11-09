@@ -62,6 +62,10 @@
             android:name=".purchase.detail.activity.OrderDetailActivity"
             android:label="title_activity_people_tx_details"/>
 
+        <activity
+            android:name=".purchase.detail.activity.OrderHistoryActivity"
+            android:label="title_activity_people_tx_details"/>
+
         <service
             android:name="com.tokopedia.transaction.purchase.services.TxActionIntentService"
             android:exported="false"/>

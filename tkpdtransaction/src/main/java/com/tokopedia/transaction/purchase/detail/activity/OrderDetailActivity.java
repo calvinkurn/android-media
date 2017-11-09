@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.TActivity;
@@ -50,11 +53,12 @@ public class OrderDetailActivity extends TActivity {
 
     private void setMainScrollProperty() {
         NestedScrollView mainScrollView = (NestedScrollView) findViewById(R.id.main_scroll_view);
-        mainScrollView.setNestedScrollingEnabled(false);
     }
 
     private void setStatusView(OrderDetailData data) {
+        ViewGroup statusLayout = (ViewGroup) findViewById(R.id.order_detail_status_layout);
         TextView statusTextView = (TextView) findViewById(R.id.text_view_status);
+        statusLayout.setOnClickListener(onStatusLayoutClickedListener());
         statusTextView.setText(data.getOrderStatus());
     }
 
@@ -77,12 +81,14 @@ public class OrderDetailActivity extends TActivity {
         RecyclerView buttonListRecyclerView = (RecyclerView) findViewById(R.id.button_list);
         buttonListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         buttonListRecyclerView.setAdapter(new ButtonAdapter(data.getButtonList()));
+        buttonListRecyclerView.setNestedScrollingEnabled(false);
     }
 
     private void setItemListView(OrderDetailData data) {
         RecyclerView itemListRecycleView = (RecyclerView) findViewById(R.id.item_list);
         itemListRecycleView.setLayoutManager(new LinearLayoutManager(this));
         itemListRecycleView.setAdapter(new OrderItemAdapter(data.getItemList()));
+        itemListRecycleView.setNestedScrollingEnabled(false);
     }
 
     private void setInvoiceView(OrderDetailData data) {
@@ -161,6 +167,16 @@ public class OrderDetailActivity extends TActivity {
         dummyButton.setId(ButtonAttribute.ASK_SELLER_ID);
         buttonAttributes.add(dummyButton);
         return buttonAttributes;
+    }
+
+    private View.OnClickListener onStatusLayoutClickedListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OrderDetailActivity.this, OrderHistoryActivity.class);
+                startActivity(intent);
+            }
+        };
     }
 
 }
