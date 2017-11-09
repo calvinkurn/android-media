@@ -16,5 +16,7 @@ import rx.Observable;
 public interface EtalaseRepository {
     Observable<List<EtalaseDomain>> getEtalase(RequestParams requestParams);
 
+    Observable<List<EtalaseDomain>> getEtalaseCache();
+
     Observable<DataStatus> storeEtalaseToCache(ListDomain<EtalaseDomain> data);
 }

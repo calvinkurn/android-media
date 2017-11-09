@@ -34,35 +34,32 @@ public class ProductLocalSource {
                 });
     }
 
-    private List<ProductDomain> mapToDomainList(List<com.tokopedia.core.shopinfo.models.productmodel.List> productList) {
-        List<ProductDomain> domainList = new ArrayList<>();
-        for (com.tokopedia.core.shopinfo.models.productmodel.List item : productList) {
-            ProductDomain domain = new ProductDomain();
-            domain.setProductId(item.productId);
-            domain.setProductName(item.productName);
-            domain.setProductPrice(item.productPrice);
-            domain.setProductUrl(item.productUrl);
-            domain.setProductImage(item.productImage);
-            domain.setProductImage300(item.productImage300);
-            domain.setProductImageFull(item.productImageFull);
-            domainList.add(domain);
-        }
-        return domainList;
-    }
-
     public Observable<List<ProductDomain>> getAllProduct() {
         return productDbManager.getAllData();
     }
 
     public Observable<List<ProductDomain>> searchProduct(String keyword, String etalaseId) {
-        if(etalaseId != null && !etalaseId.isEmpty()) {
-            return productDbManager.getListData(ConditionGroup.clause()
-                    .and(ProductDb_Table.productName.like(keyword))
-                    .and(ProductDb_Table.etalaseId.eq(etalaseId)));
+        if(!isEmpty(keyword)) {
+            if(!isEmpty(etalaseId)) {
+                return productDbManager.getListData(ConditionGroup.clause()
+                        .and(ProductDb_Table.productName.like(keyword))
+                        .and(ProductDb_Table.etalaseId.eq(etalaseId)));
+            } else {
+                return productDbManager.getListData(ConditionGroup.clause()
+                        .and(ProductDb_Table.productName.like(keyword)));
+            }
         } else {
-            return productDbManager.getListData(ConditionGroup.clause()
-                    .and(ProductDb_Table.productName.like(keyword)));
+            if(!isEmpty(etalaseId)) {
+                return productDbManager.getListData(ConditionGroup.clause()
+                        .and(ProductDb_Table.etalaseId.eq(etalaseId)));
+            } else {
+                return getAllProduct();
+            }
         }
+    }
+
+    private boolean isEmpty(String value) {
+        return value == null || value.trim().isEmpty();
     }
 
     public Observable<ProductDomain> getProduct(int productId) {

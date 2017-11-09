@@ -8,7 +8,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.router.posapp.PosAppRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.view.activity.LoginActivity;
-import com.tokopedia.posapp.view.activity.OTPActivity;
 
 /**
  * Created by okasurya on 7/28/17.
@@ -18,7 +17,7 @@ public class PosAppSplashScreen extends SplashScreen {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getIntent().getBooleanExtra(PosAppRouter.IS_LOGOUT, false)) {
+        if (getIntent().getBooleanExtra(PosAppRouter.IS_LOGOUT, false)) {
             PosSessionHandler.clearPosUserData(this);
             PosCacheHandler.clearUserData(this);
         }

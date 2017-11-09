@@ -858,8 +858,8 @@ public class TkpdBaseURL {
     }
 
     public class Pos {
-        public static final String GET_ETALASE = "o2o/v1/shops/{shopId}/get_etalase";
-        public static final String GET_PRODUCT_LIST = "o2o/v1/shops/{shopId}/get_products/{startOffset}/{rowOffset}";
+        public static final String GET_ETALASE = "o2o/v1/shops/get_etalase";
+        public static final String GET_PRODUCT_LIST = "o2o/v1/shops/get_products";
         public static final String GET_PAYMENT_PARAM = "o2o/get_payment_params";
         public static final String GET_CREDIT_CARDS = "o2o/v1/payment/get_credit_cards";
         public static final String GET_INSTALLMENT_TERM = "o2o/v1/payment/get_installment_terms/{merchant_code}/{profile_code}";

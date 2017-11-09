@@ -25,6 +25,6 @@ public class EtalaseCloudSource {
     }
 
     public Observable<List<EtalaseDomain>> getEtalase(RequestParams params) {
-        return gatewayProductApi.getEtalase(params.getString(SHOP_ID, "")).map(getEtalaseMapper);
+        return gatewayProductApi.getEtalase(params.getParamsAllValueInString()).map(getEtalaseMapper);
     }
 }

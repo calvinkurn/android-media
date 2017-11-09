@@ -191,6 +191,7 @@ public class PosRouterApplication extends MainApplication implements
     public void onLogout(AppComponent appComponent) {
         PosSessionHandler.clearPosUserData(this);
         PosCacheHandler.clearUserData(this);
+        SchedulerService.cancelCacheScheduler(getApplicationContext());
     }
 
     @Override

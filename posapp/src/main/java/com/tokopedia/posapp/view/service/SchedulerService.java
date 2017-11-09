@@ -20,7 +20,8 @@ public class SchedulerService extends IntentService {
     private static final String ACTION_START = "com.tokopedia.posapp.view.SchedulerService.action.START";
     public static final int CACHE_SERVICE_REQUEST_CODE = 1001;
 
-    private static final long SIX_HOUR = 1000 * 60 * 60 * 6;
+    private static final long SIX_HOURS = 1000 * 60 * 60 * 6;
+    private static final long THREE_HOURS = 1000 * 60 * 60 * 3;
 
     public SchedulerService() {
         super("SchedulerService");
@@ -38,24 +39,36 @@ public class SchedulerService extends IntentService {
         if (intent != null
                 && intent.getAction().equals(ACTION_START)
                 && SessionHandler.isV4Login(this)) {
-            handleActionStart();
+            setCacheScheduler();
         }
         stopSelf();
     }
 
-    private void handleActionStart() {
-//        if(isAlarmManagerNotRunning()) {
-            startService(CacheService.getServiceIntent(getApplicationContext()));
+    private void setCacheScheduler() {
+        startService(CacheService.getServiceIntent(getApplicationContext()));
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP,
+                new Date().getTime() + THREE_HOURS,
+                THREE_HOURS,
+                getCachePendingIntent(getApplicationContext())
+        );
+    }
 
-            PendingIntent pendingIntent = PendingIntent.getService(
-                    getApplicationContext(),
-                    CACHE_SERVICE_REQUEST_CODE,
-                    CacheService.getServiceIntent(getApplicationContext()),
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-            AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, new Date().getTime() + SIX_HOUR, SIX_HOUR, pendingIntent);
-//        }
+    private static PendingIntent getCachePendingIntent(Context context) {
+        return PendingIntent.getService(
+            context,
+            CACHE_SERVICE_REQUEST_CODE,
+            CacheService.getServiceIntent(context),
+            PendingIntent.FLAG_UPDATE_CURRENT
+        );
+    }
+
+    public static void cancelCacheScheduler(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.cancel(getCachePendingIntent(context));
+        }
     }
 
     private boolean isAlarmManagerNotRunning() {
@@ -64,19 +77,5 @@ public class SchedulerService extends IntentService {
                 CACHE_SERVICE_REQUEST_CODE,
                 CacheService.getServiceIntent(getApplicationContext()),
                 PendingIntent.FLAG_NO_CREATE) == null;
-    }
-
-    /**
-     * The server could be overloaded just because each client request data at the same time,
-     * hence I created a random time range.
-     *
-     * @param begin beginning hour of time range
-     * @param end ending hour of time range
-     * @return random time in long value
-     */
-    private long getRandomTime(long begin, long end) {
-        Random random = new Random();
-
-        return begin + (long) (random.nextDouble() * (end - begin));
     }
 }

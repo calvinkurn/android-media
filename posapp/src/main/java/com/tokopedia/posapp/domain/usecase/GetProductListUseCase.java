@@ -17,6 +17,7 @@ import rx.Observable;
 
 public class GetProductListUseCase extends UseCase<ProductListDomain> {
     ProductRepository productRepository;
+    private RequestParams requestParam;
 
     @Inject
     public GetProductListUseCase(ThreadExecutor threadExecutor,
