@@ -106,6 +106,17 @@
     <string name="flight_booking_passenger_data_label">Data Penumpang</string>
     <string name="flight_booking_submit_button_label">Lanjut</string>
     <string name="flight_booking_total_price_label">Pembayaran Anda</string>
+    <string name="flight_booking_contact_name_empty_error">Nama kontak tidak boleh kosong</string>
+    <string name="flight_booking_contact_email_empty_error">Email kontak tidak boleh kosong</string>
+    <string name="flight_booking_contact_email_invalid_error">Email kontak tidak valid</string>
+    <string name="flight_booking_contact_phone_empty_error">Telepon Kontak tidak boleh kosong</string>
+    <string name="flight_booking_prefix_passenger">Penumpang</string>
+    <string name="flight_booking_postfix_adult_passenger">Dewasa</string>
+    <string name="flight_booking_postfix_children_passenger">Anak</string>
+    <string name="flight_booking_postfix_infant_passenger">Bayi</string>
+    <string name="flight_booking_multiple_airline_trip_card">Multi Maskapai</string>
+    <string name="flight_booking_transit_trip_card">Transit</string>
+    <string name="flight_booking_directly_trip_card">Langsung</string>
     <string name="flight_title_menu_reset">Reset</string>
     <string name="flight_booking_phone_code_label">(+ %1$s)</string>
     <string name="activity_label_flight_booking_phone_code">Kode Telepon Negara</string>

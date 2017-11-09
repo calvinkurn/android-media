@@ -10,20 +10,25 @@ import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingFragment;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingTripViewModel;
 
 /**
  * Created by alvarisi on 11/6/17.
  */
 
 public class FlightBookingActivity extends BaseSimpleActivity implements HasComponent<FlightBookingComponent> {
+    private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
 
-    public static Intent getCallingIntent(Activity activity) {
-        return new Intent(activity, FlightBookingActivity.class);
+    public static Intent getCallingIntent(Activity activity, FlightBookingTripViewModel flightBookingTripViewModel) {
+        Intent intent = new Intent(activity, FlightBookingActivity.class);
+        intent.putExtra(EXTRA_PASS_DATA, flightBookingTripViewModel);
+        return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightBookingFragment.newInstance();
+        FlightBookingTripViewModel flightBookingTripViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
+        return FlightBookingFragment.newInstance(flightBookingTripViewModel);
     }
 
     @Override
