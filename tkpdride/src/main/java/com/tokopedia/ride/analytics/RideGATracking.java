@@ -286,8 +286,8 @@ public class RideGATracking extends UnifyTracking {
     }
 
     private static String toLowerCase(String screenName){
-        if(screenName == null){
-            return "";
+        if(screenName == null || screenName.isEmpty()){
+            return "Uber Screen";
         }
 
         return screenName.toLowerCase();
