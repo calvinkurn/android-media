@@ -52,7 +52,7 @@ public class TimeConverter {
             }
         } catch (ParseException e) {
             e.printStackTrace();
-            return "";
+            return postTime;
         }
 
     }

@@ -108,9 +108,13 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         if (element.isLiked()) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);
             likeText.setText(String.valueOf(element.getTotalLike()));
+            likeText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R.color
+                    .tkpd_main_green));
         } else {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
             likeText.setText(R.string.action_like);
+            likeText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R.color
+                    .black_54));
         }
 
         if (element.getTotalComment() == 0) {
@@ -180,7 +184,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             @Override
             public void onClick(View v) {
                 viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),
-                       element.getContentLink());
+                        element.getContentLink());
             }
         });
 
