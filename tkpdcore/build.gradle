@@ -186,7 +186,6 @@ dependencies {
     compile rootProject.ext.apolloDependencies.apolloRxSupport
     compile rootProject.ext.apolloDependencies.apolloRuntime
     compile rootProject.ext.apolloDependencies.apolloAndroidSupport
-    compile project(path: ':tkpddesign')
 }
 
 apply plugin: 'com.google.gms.google-services'
