@@ -10,6 +10,7 @@ import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.Conversati
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationButtonResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationCreateTimeResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationFlagResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationListResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationProductResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.ConversationShippingDetailResponse;
@@ -33,6 +34,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.Conve
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationCreateTimeDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationFlagDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationListDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationProductDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationShippingDetailDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ConversationSolutionDomain;
@@ -88,8 +90,8 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
                         mappingButtonDomain(detailResChatResponse.getButton()) :
                         null,
                 detailResChatResponse.getActionBy(),
-                detailResChatResponse.getConversation() != null ?
-                        mappingConversationDomain(detailResChatResponse.getConversation()) :
+                detailResChatResponse.getConversationList() != null ?
+                        mappingConversationListDomain(detailResChatResponse.getConversationList()) :
                         null,
                 detailResChatResponse.getOrderResponse() != null ?
                         mappingOrderDomain(detailResChatResponse.getOrderResponse()) :
@@ -198,6 +200,14 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
                 response.getRecomplaint(),
                 response.getRecomplaintLabel(),
                 response.getRecomplaintText());
+    }
+
+    private ConversationListDomain mappingConversationListDomain(ConversationListResponse response) {
+        return new ConversationListDomain(
+                response.getCanLoadMore(),
+                response.getConversation() != null ?
+                        mappingConversationDomain(response.getConversation()) :
+                        null);
     }
 
     private List<ConversationDomain> mappingConversationDomain(List<ConversationResponse> responseList) {

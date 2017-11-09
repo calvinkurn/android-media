@@ -29,7 +29,7 @@ public class DetailResChatResponse {
     private int actionBy;
 
     @SerializedName("conversation")
-    private List<ConversationResponse> conversation;
+    private ConversationListResponse conversationList;
 
     @SerializedName("order")
     private OrderResponse orderResponse;
@@ -85,12 +85,12 @@ public class DetailResChatResponse {
         this.actionBy = actionBy;
     }
 
-    public List<ConversationResponse> getConversation() {
-        return conversation;
+    public ConversationListResponse getConversationList() {
+        return conversationList;
     }
 
-    public void setConversation(List<ConversationResponse> conversation) {
-        this.conversation = conversation;
+    public void setConversationList(ConversationListResponse conversationList) {
+        this.conversationList = conversationList;
     }
 
     public OrderResponse getOrderResponse() {

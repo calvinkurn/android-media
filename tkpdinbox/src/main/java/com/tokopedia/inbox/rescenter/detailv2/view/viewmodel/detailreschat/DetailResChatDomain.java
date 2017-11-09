@@ -17,7 +17,7 @@ public class DetailResChatDomain implements Parcelable {
     private ResolutionDomain resolution;
     private ButtonDomain button;
     private int actionBy;
-    private List<ConversationDomain> conversation;
+    private ConversationListDomain conversationList;
     private OrderDomain order;
     private LastDomain last;
     private boolean success;
@@ -28,7 +28,7 @@ public class DetailResChatDomain implements Parcelable {
                                ResolutionDomain resolution,
                                ButtonDomain button,
                                int actionBy,
-                               List<ConversationDomain> conversation,
+                               ConversationListDomain conversationList,
                                OrderDomain order,
                                LastDomain last) {
         this.nextAction = nextAction;
@@ -37,7 +37,7 @@ public class DetailResChatDomain implements Parcelable {
         this.resolution = resolution;
         this.button = button;
         this.actionBy = actionBy;
-        this.conversation = conversation;
+        this.conversationList = conversationList;
         this.order = order;
         this.last = last;
     }
@@ -90,12 +90,12 @@ public class DetailResChatDomain implements Parcelable {
         this.actionBy = actionBy;
     }
 
-    public List<ConversationDomain> getConversation() {
-        return conversation;
+    public ConversationListDomain getConversationList() {
+        return conversationList;
     }
 
-    public void setConversation(List<ConversationDomain> conversation) {
-        this.conversation = conversation;
+    public void setConversationList(ConversationListDomain conversationList) {
+        this.conversationList = conversationList;
     }
 
     public OrderDomain getOrder() {
@@ -135,7 +135,7 @@ public class DetailResChatDomain implements Parcelable {
         dest.writeParcelable(this.resolution, flags);
         dest.writeParcelable(this.button, flags);
         dest.writeInt(this.actionBy);
-        dest.writeTypedList(this.conversation);
+        dest.writeParcelable(this.conversationList, flags);
         dest.writeParcelable(this.order, flags);
         dest.writeParcelable(this.last, flags);
         dest.writeByte(this.success ? (byte) 1 : (byte) 0);
@@ -148,13 +148,13 @@ public class DetailResChatDomain implements Parcelable {
         this.resolution = in.readParcelable(ResolutionDomain.class.getClassLoader());
         this.button = in.readParcelable(ButtonDomain.class.getClassLoader());
         this.actionBy = in.readInt();
-        this.conversation = in.createTypedArrayList(ConversationDomain.CREATOR);
+        this.conversationList = in.readParcelable(ConversationListDomain.class.getClassLoader());
         this.order = in.readParcelable(OrderDomain.class.getClassLoader());
         this.last = in.readParcelable(LastDomain.class.getClassLoader());
         this.success = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<DetailResChatDomain> CREATOR = new Parcelable.Creator<DetailResChatDomain>() {
+    public static final Creator<DetailResChatDomain> CREATOR = new Creator<DetailResChatDomain>() {
         @Override
         public DetailResChatDomain createFromParcel(Parcel source) {
             return new DetailResChatDomain(source);

@@ -685,7 +685,7 @@ public class DetailResChatFragment
 
     private void initChatData(DetailResChatDomain detailResChatDomain, boolean isFirstInit) {
         int lastAction = 0;
-        for (ConversationDomain conversationDomain : detailResChatDomain.getConversation()) {
+        for (ConversationDomain conversationDomain : detailResChatDomain.getConversationList().getConversationDomains()) {
             String actionType = conversationDomain.getAction().getType();
             if (actionType.equals(CREATE)) {
                 chatAdapter.addItem(new ChatCreateLeftViewModel
