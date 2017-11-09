@@ -36,6 +36,8 @@ public class StatusMapper implements Func1<Pair<StatusEntity, Boolean>, Status> 
 //            status.setAttributes(attributes);
             status.setMaintenance(pair.first.getAttributes().isMaintenance());
             status.setUseCache(pair.second);
+            status.setMinimunAndroidBuild(Integer.valueOf(pair.first.getAttributes().getVersion()
+                    .getMinimumAndroidBuild()));
         }
 
         return status;

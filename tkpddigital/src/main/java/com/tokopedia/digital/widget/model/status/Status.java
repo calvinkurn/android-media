@@ -12,6 +12,7 @@ public class Status implements Parcelable {
     private String type;
     private boolean useCache;
     private boolean isMaintenance;
+    private int minimunAndroidBuild;
 
     public Status() {
     }
@@ -54,6 +55,10 @@ public class Status implements Parcelable {
         return type;
     }
 
+    public int getMinimunAndroidBuild() {
+        return minimunAndroidBuild;
+    }
+
     public void setType(String type) {
         this.type = type;
     }
@@ -64,5 +69,9 @@ public class Status implements Parcelable {
 
     public void setMaintenance(boolean maintenance) {
         isMaintenance = maintenance;
+    }
+
+    public void setMinimunAndroidBuild(int minimunAndroidBuild) {
+        this.minimunAndroidBuild = minimunAndroidBuild;
     }
 }

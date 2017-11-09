@@ -266,7 +266,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                 });
     }
 
-    void saveStatusToCache(String statusString) {
+    private void saveStatusToCache(String statusString) {
         GlobalCacheManager managerStatus = new GlobalCacheManager();
         managerStatus.setKey(KEY_STATUS_CURRENT);
         managerStatus.setValue(statusString);

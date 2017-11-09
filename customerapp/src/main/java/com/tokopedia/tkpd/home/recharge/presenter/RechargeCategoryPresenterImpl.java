@@ -80,12 +80,18 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
             @Override
             public void onError(Throwable e) {
-
+                if (e instanceof WidgetRuntimeException) {
+                    view.renderErrorMessage();
+                } else {
+                    view.renderErrorNetwork();
+                }
             }
 
             @Override
             public void onNext(Status status) {
-                if (!status.isMaintenance()) {
+                if (status.isMaintenance() || !isVersionMatch(status)) {
+                    view.failedRenderDataRechargeCategory();
+                } else {
                     rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber(status.isUseCache()),
                             status.isUseCache());
                 }
@@ -113,18 +119,16 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
         };
     }
 
-//    private boolean isVersionMatch(Status status) {
-//        try {
-//            int minApiSupport = Integer.parseInt(
-//                    status.getVersion().getMinimumAndroidBuild()
-//            );
-//            Log.d(TAG, "version code : " + getVersionCode());
-//            return getVersionCode() >= minApiSupport;
-//        } catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
+    private boolean isVersionMatch(Status status) {
+        try {
+            int minApiSupport = status.getMinimunAndroidBuild();
+            Log.d(TAG, "version code : " + getVersionCode());
+            return getVersionCode() >= minApiSupport;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     private void finishPrepareRechargeModule(boolean useCache) {
         if (activity != null && view != null) {
