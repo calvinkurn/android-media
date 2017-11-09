@@ -5,14 +5,23 @@ import android.util.Patterns;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
+import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by alvarisi on 11/8/17.
@@ -20,9 +29,12 @@ import javax.inject.Inject;
 
 public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingContract.View> implements FlightBookingContract.Presenter {
 
-    @Inject
-    public FlightBookingPresenter() {
+    private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
 
+    @Inject
+    public FlightBookingPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase) {
+
+        this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
     }
 
     @Override
@@ -35,13 +47,75 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
     @Override
     public void initialize() {
         if (isRoundTrip()) {
-            getView().showAndRenderDepartureTripCardDetail(getView().getCurrentTripViewModel().getSearchParam(), getView().getCurrentTripViewModel().getDepartureTrip());
-            getView().showAndRenderReturnTripCardDetail(getView().getCurrentTripViewModel().getSearchParam(), getView().getCurrentTripViewModel().getReturnTrip());
+            Observable.zip(
+                    flightBookingGetSingleResultUseCase.createObservable(flightBookingGetSingleResultUseCase.createRequestParam(false, getView().getDepartureTripId())),
+                    flightBookingGetSingleResultUseCase.createObservable(flightBookingGetSingleResultUseCase.createRequestParam(true, getView().getReturnTripId())),
+                    new Func2<FlightSearchViewModel, FlightSearchViewModel, FlightBookingParamViewModel>() {
+                        @Override
+                        public FlightBookingParamViewModel call(FlightSearchViewModel departureFlight, FlightSearchViewModel returnFlight) {
+                            FlightBookingParamViewModel flightBookingTripViewModel = getView().getCurrentBookingParamViewModel();
+                            flightBookingTripViewModel.setDepartureTrip(departureFlight);
+                            flightBookingTripViewModel.setReturnTrip(returnFlight);
+                            return flightBookingTripViewModel;
+                        }
+                    }).onBackpressureDrop()
+                    .subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<FlightBookingParamViewModel>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(FlightBookingParamViewModel flightBookingParamViewModel) {
+                            if (isViewAttached()) {
+                                renderUi();
+                            }
+                        }
+                    });
         } else {
-            getView().showAndRenderDepartureTripCardDetail(getView().getCurrentTripViewModel().getSearchParam(), getView().getCurrentTripViewModel().getDepartureTrip());
+            flightBookingGetSingleResultUseCase.execute(flightBookingGetSingleResultUseCase.createRequestParam(false, getView().getDepartureTripId()), new Subscriber<FlightSearchViewModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+
+                }
+
+                @Override
+                public void onNext(FlightSearchViewModel departureFlight) {
+                    if (isViewAttached()) {
+                        FlightBookingParamViewModel flightBookingTripViewModel = getView().getCurrentBookingParamViewModel();
+                        flightBookingTripViewModel.setDepartureTrip(departureFlight);
+                        renderUi();
+                    }
+                }
+            });
         }
 
-        List<FlightBookingPassengerViewModel> passengerViewModels = buildPassengerViewModel(getView().getCurrentTripViewModel().getSearchParam());
+
+    }
+
+    private void renderUi() {
+        if (isRoundTrip()) {
+            getView().showAndRenderDepartureTripCardDetail(getView().getCurrentBookingParamViewModel().getSearchParam(), getView().getCurrentBookingParamViewModel().getDepartureTrip());
+            getView().showAndRenderReturnTripCardDetail(getView().getCurrentBookingParamViewModel().getSearchParam(), getView().getCurrentBookingParamViewModel().getReturnTrip());
+        } else {
+            getView().showAndRenderDepartureTripCardDetail(getView().getCurrentBookingParamViewModel().getSearchParam(), getView().getCurrentBookingParamViewModel().getDepartureTrip());
+        }
+
+        List<FlightBookingPassengerViewModel> passengerViewModels = buildPassengerViewModel(getView().getCurrentBookingParamViewModel().getSearchParam());
         getView().getCurrentBookingParam().setPassengerViewModels(passengerViewModels);
         getView().renderPassengersList(passengerViewModels);
         // TODO : Calculate and render "Rincian Harga"
@@ -61,6 +135,16 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
             passengerViewModels.set(indexPassenger, passengerViewModel);
         }
         getView().renderPassengersList(passengerViewModels);
+    }
+
+    @Override
+    public void onDepartureInfoClicked() {
+        getView().navigateToDetailTrip(getView().getCurrentBookingParam().getDepartureTrip());
+    }
+
+    @Override
+    public void onReturnInfoClicked() {
+        getView().navigateToDetailTrip(getView().getCurrentBookingParam().getReturnTrip());
     }
 
     private List<FlightBookingPassengerViewModel> buildPassengerViewModel(FlightSearchPassDataViewModel passData) {
@@ -110,7 +194,7 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
     }
 
     private boolean isRoundTrip() {
-        return getView().getCurrentTripViewModel().getReturnTrip() != null;
+        return getView().getReturnTripId() != null && getView().getReturnTripId().length() > 0;
     }
 
     private boolean validateFields() {

@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingTripViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
@@ -34,7 +33,7 @@ public interface FlightBookingContract {
 
         void showContactPhoneNumberEmptyError(@StringRes int resId);
 
-        FlightBookingTripViewModel getCurrentTripViewModel();
+        FlightBookingParamViewModel getCurrentBookingParamViewModel();
 
         void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightSearchViewModel returnTrip);
 
@@ -47,6 +46,12 @@ public interface FlightBookingContract {
         FlightBookingParamViewModel getCurrentBookingParam();
 
         void renderPhoneCodeView(String countryPhoneCode);
+
+        String getDepartureTripId();
+
+        String getReturnTripId();
+
+        void navigateToDetailTrip(FlightSearchViewModel departureTrip);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -58,5 +63,10 @@ public interface FlightBookingContract {
         void onPhoneCodeResultReceived(FlightBookingPhoneCodeViewModel phoneCodeViewModel);
 
         void onPassengerResultReceived(FlightBookingPassengerViewModel passengerViewModel);
+
+        void onDepartureInfoClicked();
+
+        void onReturnInfoClicked();
+
     }
 }

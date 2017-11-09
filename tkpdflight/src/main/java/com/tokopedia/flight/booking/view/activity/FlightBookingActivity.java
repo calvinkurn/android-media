@@ -10,25 +10,38 @@ import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingFragment;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingTripViewModel;
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 /**
  * Created by alvarisi on 11/6/17.
  */
 
 public class FlightBookingActivity extends BaseSimpleActivity implements HasComponent<FlightBookingComponent> {
-    private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
+    private static final String EXTRA_PASS_SEARCH_DATA = "EXTRA_PASS_SEARCH_DATA";
+    private static final String EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID";
+    private static final String EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID";
 
-    public static Intent getCallingIntent(Activity activity, FlightBookingTripViewModel flightBookingTripViewModel) {
+    public static Intent getCallingIntent(Activity activity, FlightSearchPassDataViewModel passDataViewModel, String departureId) {
         Intent intent = new Intent(activity, FlightBookingActivity.class);
-        intent.putExtra(EXTRA_PASS_DATA, flightBookingTripViewModel);
+        intent.putExtra(EXTRA_FLIGHT_DEPARTURE_ID, departureId);
+        intent.putExtra(EXTRA_PASS_SEARCH_DATA, passDataViewModel);
+        return intent;
+    }
+
+    public static Intent getCallingIntent(Activity activity, FlightSearchPassDataViewModel passDataViewModel, String departureId, String returnId) {
+        Intent intent = new Intent(activity, FlightBookingActivity.class);
+        intent.putExtra(EXTRA_FLIGHT_DEPARTURE_ID, departureId);
+        intent.putExtra(EXTRA_FLIGHT_ARRIVAL_ID, returnId);
+        intent.putExtra(EXTRA_PASS_SEARCH_DATA, passDataViewModel);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        FlightBookingTripViewModel flightBookingTripViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
-        return FlightBookingFragment.newInstance(flightBookingTripViewModel);
+        String departureId = getIntent().getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID);
+        String returnId = getIntent().getStringExtra(EXTRA_FLIGHT_ARRIVAL_ID);
+        FlightSearchPassDataViewModel searchPassDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_SEARCH_DATA);
+        return FlightBookingFragment.newInstance(searchPassDataViewModel, departureId, returnId);
     }
 
     @Override
