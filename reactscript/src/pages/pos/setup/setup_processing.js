@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
-import store from './store/Store'
-import PaymentProcessing from './components/pages/payment/PaymentProcessing'
-import PaymentInvoice from './components/pages/invoice/PaymentInvoice'
 import { StackNavigator } from 'react-navigation'
+import store from '../store/Store'
+import PaymentProcessing from '../components/pages/payment/PaymentProcessing'
+import PaymentInvoice from '../components/pages/invoice/PaymentInvoice'
+
 
 
 
@@ -12,15 +13,10 @@ const App = StackNavigator({
         screen: PaymentProcessing,
         path: 'PaymentProcessing',
     }
-    // PaymentInvoice: {screen: PaymentInvoice}
 }, { headerMode: 'none' })
 
 
 class Root extends Component {
-    componentDidMount(){
-        console.log(this.props)
-    }
-
     render() {
         return (
             <Provider store={store}>
