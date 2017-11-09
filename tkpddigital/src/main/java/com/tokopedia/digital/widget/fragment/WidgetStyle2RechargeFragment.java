@@ -76,11 +76,12 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     private List<Operator> operators;
 
-    public static WidgetStyle2RechargeFragment newInstance(Category category, int position) {
+    public static WidgetStyle2RechargeFragment newInstance(Category category, int position, boolean useCache) {
         WidgetStyle2RechargeFragment fragment = new WidgetStyle2RechargeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PARAM_CATEGORY, category);
         bundle.putInt(ARG_TAB_INDEX_POSITION, position);
+        bundle.putBoolean(ARG_USE_CACHE, useCache);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -126,7 +127,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 new ProductMapper(),
                 new OperatorMapper(),
                 new JobExecutor(),
-                new UIThread());
+                new UIThread(),
+                useCache);
 
         presenter = new DigitalWidgetStyle2Presenter(getActivity(), interactor, this);
     }

@@ -912,7 +912,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     //region recharge
     //Modified by Nabilla Sabbaha 3/10/2017
     @Override
-    public void renderDataRechargeCategory(List<com.tokopedia.digital.widget.model.category.Category> rechargeCategory) {
+    public void renderDataRechargeCategory(List<com.tokopedia.digital.widget.model.category.Category> rechargeCategory, boolean useCache) {
         holder.wrapperScrollview.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         holder.wrapperScrollview.setFocusable(true);
         holder.wrapperScrollview.setFocusableInTouchMode(true);
@@ -929,7 +929,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             }
         });
         holder.digitalWidgetView.setListener(getWidgetActionListener());
-        holder.digitalWidgetView.renderDataWidget(rechargeCategory, getFragmentManager());
+        holder.digitalWidgetView.renderDataWidget(rechargeCategory, useCache, getFragmentManager());
     }
 
     @NonNull

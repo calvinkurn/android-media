@@ -1,5 +1,7 @@
 package com.tokopedia.digital.widget.domain;
 
+import android.support.v4.util.Pair;
+
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -15,6 +17,7 @@ import com.tokopedia.digital.widget.data.entity.response.ResponseMetaFavoriteNum
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
 import com.tokopedia.digital.widget.data.mapper.IFavoriteNumberMapper;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
+import com.tokopedia.digital.widget.model.status.Status;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,14 +52,19 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     @Override
-    public Observable<List<CategoryEntity>> getObservableCategoryData() {
-        return Observable.concat(getObservableCategoryDataDB(), getObservableCategoryDataNetwork())
-                .first(new Func1<List<CategoryEntity>, Boolean>() {
-                    @Override
-                    public Boolean call(List<CategoryEntity> categoryEntities) {
-                        return categoryEntities != null && !categoryEntities.isEmpty();
-                    }
-                });
+    public Observable<List<CategoryEntity>> getObservableCategoryData(boolean isUseCache) {
+        if (isUseCache) {
+            return getObservableCategoryDataDB();
+        } else {
+            return getObservableCategoryDataNetwork();
+        }
+//        return Observable.concat(getObservableCategoryDataDB(), getObservableCategoryDataNetwork())
+//                .first(new Func1<List<CategoryEntity>, Boolean>() {
+//                    @Override
+//                    public Boolean call(List<CategoryEntity> categoryEntities) {
+//                        return categoryEntities != null && !categoryEntities.isEmpty();
+//                    }
+//                });
     }
 
     private Observable<List<CategoryEntity>> getObservableCategoryDataDB() {
@@ -104,14 +112,19 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     @Override
-    public Observable<List<ProductEntity>> getObservableProducts() {
-        return Observable.concat(getObservableProductsDB(), getObservableProductsNetwork())
-                .first(new Func1<List<ProductEntity>, Boolean>() {
-                    @Override
-                    public Boolean call(List<ProductEntity> products) {
-                        return products != null && !products.isEmpty();
-                    }
-                });
+    public Observable<List<ProductEntity>> getObservableProducts(boolean useCache) {
+        if (useCache) {
+            return getObservableProductsDB();
+        } else {
+            return getObservableProductsNetwork();
+        }
+//        return Observable.concat(getObservableProductsDB(), getObservableProductsNetwork())
+//                .first(new Func1<List<ProductEntity>, Boolean>() {
+//                    @Override
+//                    public Boolean call(List<ProductEntity> products) {
+//                        return products != null && !products.isEmpty();
+//                    }
+//                });
     }
 
     private Observable<List<ProductEntity>> getObservableProductsDB() {
@@ -158,14 +171,19 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     @Override
-    public Observable<List<OperatorEntity>> getObservableOperators() {
-        return Observable.concat(getObservableOperatorsDB(), getObservableOperatorsNetwork())
-                .first(new Func1<List<OperatorEntity>, Boolean>() {
-                    @Override
-                    public Boolean call(List<OperatorEntity> operators) {
-                        return operators != null && !operators.isEmpty();
-                    }
-                });
+    public Observable<List<OperatorEntity>> getObservableOperators(boolean useCache) {
+        if (useCache) {
+            return getObservableOperatorsDB();
+        } else {
+            return getObservableOperatorsNetwork();
+        }
+//        return Observable.concat(getObservableOperatorsDB(), getObservableOperatorsNetwork())
+//                .first(new Func1<List<OperatorEntity>, Boolean>() {
+//                    @Override
+//                    public Boolean call(List<OperatorEntity> operators) {
+//                        return operators != null && !operators.isEmpty();
+//                    }
+//                });
     }
 
     private Observable<List<OperatorEntity>> getObservableOperatorsDB() {
@@ -211,37 +229,48 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                 });
     }
 
-    @Override
-    public Observable<StatusEntity> getObservableStatus() {
-        return Observable.concat(getObservableStatusDB(), getObservableStatusNetwork())
-                .first(new Func1<StatusEntity, Boolean>() {
-                    @Override
-                    public Boolean call(StatusEntity status) {
-                        return status != null;
-                    }
-                })
-                .doOnNext(validateStatus(true));
-    }
+//    @Override
+//    public Observable<StatusEntity> getObservableStatus() {
+//        return getObservableStatusNetwork()
+//                .doOnNext(validateStatus(true));
+//    }
 
-    private Observable<StatusEntity> getObservableStatusDB() {
-        return Observable.just(true)
-                .map(new Func1<Boolean, StatusEntity>() {
+    public Observable<Pair<StatusEntity, Boolean>> getObservableStatus2() {
+        return getObservableStatusNetwork()
+                .map(new Func1<StatusEntity, Pair<StatusEntity, Boolean>>() {
                     @Override
-                    public StatusEntity call(Boolean aBoolean) {
-                        GlobalCacheManager manager = new GlobalCacheManager();
-                        return CacheUtil.convertStringToModel(
-                                manager.getValueString(KEY_STATUS),
+                    public Pair<StatusEntity, Boolean> call(StatusEntity status) {
+                        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
+                        String currentStatusString = globalCacheManager.getValueString(KEY_STATUS_CURRENT);
+                        String statusString = CacheUtil.convertModelToString(status,
                                 new TypeToken<StatusEntity>() {
                                 }.getType());
+                        boolean useCache;
+                        if (currentStatusString != null && !currentStatusString.equals(statusString)) {
+                            globalCacheManager.delete(KEY_CATEGORY);
+                            globalCacheManager.delete(KEY_OPERATOR);
+                            globalCacheManager.delete(KEY_PRODUCT);
 
-                    }
-                })
-                .onErrorReturn(new Func1<Throwable, StatusEntity>() {
-                    @Override
-                    public StatusEntity call(Throwable throwable) {
-                        return null;
+                            saveStatusToCache(statusString);
+
+                            useCache = false;
+                        } else if (currentStatusString == null) {
+                            saveStatusToCache(statusString);
+
+                            useCache = false;
+                        } else {
+                            useCache = true;
+                        }
+                        return new Pair<>(status, useCache);
                     }
                 });
+    }
+
+    void saveStatusToCache(String statusString) {
+        GlobalCacheManager managerStatus = new GlobalCacheManager();
+        managerStatus.setKey(KEY_STATUS_CURRENT);
+        managerStatus.setValue(statusString);
+        managerStatus.store();
     }
 
     private Observable<StatusEntity> getObservableStatusNetwork() {
@@ -266,36 +295,36 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                 });
     }
 
-    private Action1<StatusEntity> validateStatus(final boolean isInitialGetStatus) {
-        return new Action1<StatusEntity>() {
-            @Override
-            public void call(StatusEntity status) {
-                GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-                String currentStatusString = globalCacheManager.getValueString(KEY_STATUS_CURRENT);
-                String statusString = CacheUtil.convertModelToString(status,
-                        new TypeToken<StatusEntity>() {
-                        }.getType());
-                if (currentStatusString != null && !currentStatusString.equals(statusString)) {
-                    globalCacheManager.delete(KEY_CATEGORY);
-                    globalCacheManager.delete(KEY_OPERATOR);
-                    globalCacheManager.delete(KEY_PRODUCT);
-
-                    GlobalCacheManager managerStatus = new GlobalCacheManager();
-                    managerStatus.setKey(KEY_STATUS_CURRENT);
-                    managerStatus.setValue(statusString);
-                    managerStatus.store();
-                } else if (currentStatusString != null && currentStatusString.equals(statusString)
-                        && !isInitialGetStatus) {
-                    throw new RuntimeException("Is no need to reload widget");
-                } else if (currentStatusString == null) {
-                    GlobalCacheManager managerStatus = new GlobalCacheManager();
-                    managerStatus.setKey(KEY_STATUS_CURRENT);
-                    managerStatus.setValue(statusString);
-                    managerStatus.store();
-                }
-            }
-        };
-    }
+//    private Action1<StatusEntity> validateStatus(final boolean isInitialGetStatus) {
+//        return new Action1<StatusEntity>() {
+//            @Override
+//            public void call(StatusEntity status) {
+//                GlobalCacheManager globalCacheManager = new GlobalCacheManager();
+//                String currentStatusString = globalCacheManager.getValueString(KEY_STATUS_CURRENT);
+//                String statusString = CacheUtil.convertModelToString(status,
+//                        new TypeToken<StatusEntity>() {
+//                        }.getType());
+//                if (currentStatusString != null && !currentStatusString.equals(statusString)) {
+//                    globalCacheManager.delete(KEY_CATEGORY);
+//                    globalCacheManager.delete(KEY_OPERATOR);
+//                    globalCacheManager.delete(KEY_PRODUCT);
+//
+//                    GlobalCacheManager managerStatus = new GlobalCacheManager();
+//                    managerStatus.setKey(KEY_STATUS_CURRENT);
+//                    managerStatus.setValue(statusString);
+//                    managerStatus.store();
+//                } else if (currentStatusString != null && currentStatusString.equals(statusString)
+//                        && !isInitialGetStatus) {
+//                    throw new RuntimeException("Is no need to reload widget");
+//                } else if (currentStatusString == null) {
+//                    GlobalCacheManager managerStatus = new GlobalCacheManager();
+//                    managerStatus.setKey(KEY_STATUS_CURRENT);
+//                    managerStatus.setValue(statusString);
+//                    managerStatus.store();
+//                }
+//            }
+//        };
+//    }
 
     @Override
     public Observable<DigitalNumberList> getObservableNumberList(TKPDMapParam<String, String> param) {
