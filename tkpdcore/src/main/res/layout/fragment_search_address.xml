@@ -38,4 +38,10 @@
         android:padding="@dimen/padding_large"
         android:text="@string/hint_advice_search_address" />
 
+    <LinearLayout
+        android:id="@+id/network_error_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"></LinearLayout>
 </LinearLayout>

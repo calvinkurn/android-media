@@ -1,6 +1,6 @@
 package com.tokopedia.core.manage.people.address.listener;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
 /**
  * Created by Irfan Khoirul on 31/10/17.
@@ -18,7 +18,7 @@ public interface DistrictRecomendationFragmentView {
 
     void hideMessage();
 
-    void showNoConnection(@Nullable String message);
+    void showNoConnection(@NonNull String message);
 
     interface Constant {
         String INTENT_DATA_ADDRESS = "address";

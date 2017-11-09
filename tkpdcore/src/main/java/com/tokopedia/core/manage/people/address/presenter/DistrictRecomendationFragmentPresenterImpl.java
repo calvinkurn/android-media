@@ -64,7 +64,7 @@ public class DistrictRecomendationFragmentPresenterImpl implements DistrictRecom
                     @Override
                     public void onNoConnection() {
                         view.hideLoading();
-                        view.showNoConnection(null);
+                        view.showNoConnection("");
                     }
                 });
     }

@@ -91,7 +91,7 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
         zipCode.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0 && zipCode.length() > POSTAL_CODE_LENGTH) {
+                if (i == 0 && !Character.isDigit(zipCode.getText().toString().charAt(0))) {
                     zipCode.setText("");
                 }
             }
@@ -101,8 +101,8 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
     public void initializeZipCodesAdapter() {
         ArrayList<String> zipCodes = presenter.getselectedAddress().getZipCodes();
         zipCodes.add(0, getResources().getString(R.string.hint_type_postal_code));
-        zipCodeAdapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text,
-                presenter.getselectedAddress().getZipCodes());
+        zipCodeAdapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text_double_row,
+                R.id.item, presenter.getselectedAddress().getZipCodes());
         zipCode.setAdapter(zipCodeAdapter);
     }
 

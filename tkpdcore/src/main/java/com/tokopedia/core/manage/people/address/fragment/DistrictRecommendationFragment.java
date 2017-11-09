@@ -3,10 +3,12 @@ package com.tokopedia.core.manage.people.address.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -44,6 +46,8 @@ public class DistrictRecommendationFragment
     ProgressBar pbLoading;
     @BindView(R2.id.tv_message)
     TextView tvMessage;
+    @BindView(R2.id.network_error_view)
+    LinearLayout networkErrorView;
     private int maxItemPosition;
     private OnQueryListener queryListener;
     private DistrictRecommendationAdapter adapter;
@@ -125,7 +129,15 @@ public class DistrictRecommendationFragment
     }
 
     private void submitQuery(String text) {
-        NetworkErrorHelper.removeEmptyState(getView());
+        try {
+            View networkError = networkErrorView.findViewById(R.id.main_retry);
+            if (networkError != null) {
+                networkErrorView.removeAllViewsInLayout();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
         if (text.length() == 0) {
             hideLoading();
             presenter.clearData();
@@ -233,11 +245,11 @@ public class DistrictRecommendationFragment
     }
 
     @Override
-    public void showNoConnection(String message) {
-        if (message == null) {
+    public void showNoConnection(@NonNull String message) {
+        if (message.length() == 0) {
             message = getString(R.string.msg_no_connection);
         }
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), message,
+        NetworkErrorHelper.showEmptyState(getActivity(), networkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
