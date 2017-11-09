@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -177,5 +178,10 @@ public class TopupTokoCashChangeDestination extends BaseActivity {
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = AuthUtil.md5(timeMillis);
         return String.format("%s_%s", requestId, token.isEmpty() ? timeMillis : token);
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_TOPUP_TOKOCASH_CHANGE_DESTINATION;
     }
 }
