@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.binder.NoResultDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.binder.RetryDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.detail.FlightAirlineIconUtil;
+import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
 import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
 
 /**
