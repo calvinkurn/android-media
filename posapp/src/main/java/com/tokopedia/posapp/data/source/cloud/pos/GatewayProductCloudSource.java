@@ -13,8 +13,6 @@ import rx.Observable;
 
 public class GatewayProductCloudSource {
     private static final String SHOP_ID = "shop_id";
-    private static final String START = "start";
-    private static final String ROW = "row";
 
     private GatewayProductApi gatewayProductApi;
     private GetGatewayProductListMapper getProductListMapper;
@@ -27,7 +25,7 @@ public class GatewayProductCloudSource {
 
     public Observable<ProductListDomain> getProductList(RequestParams params) {
         return gatewayProductApi
-                .getProductList(params.getParamsAllValueInString())
+                .getProductList(params.getString(SHOP_ID, ""), params.getParamsAllValueInString())
                 .map(getProductListMapper);
     }
 }

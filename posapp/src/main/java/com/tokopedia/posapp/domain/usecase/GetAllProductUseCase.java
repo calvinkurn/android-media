@@ -22,7 +22,7 @@ import rx.observables.AsyncOnSubscribe;
  */
 
 public class GetAllProductUseCase extends UseCase<ProductListDomain> {
-    private static final String ROW = "row";
+    private static final String DATA_PER_ROW = "data_per_row";
     private static final String START = "start";
 
     private ProductRepository productRepository;
@@ -41,9 +41,13 @@ public class GetAllProductUseCase extends UseCase<ProductListDomain> {
     @Override
     public Observable<ProductListDomain> createObservable(RequestParams params) {
         this.requestParams = params;
-        page = 1;
+        this.page = 1;
 
-        Observable.OnSubscribe<ProductListDomain> os = AsyncOnSubscribe.createStateless(
+        return Observable.create(getAllProductObservable());
+    }
+
+    private Observable.OnSubscribe<ProductListDomain> getAllProductObservable() {
+        return AsyncOnSubscribe.createStateless(
             new Action2<Long, Observer<Observable<? extends ProductListDomain>>>() {
                 @Override
                 public void call(Long aLong, final Observer<Observable<? extends ProductListDomain>> observer) {
@@ -74,7 +78,7 @@ public class GetAllProductUseCase extends UseCase<ProductListDomain> {
                         public void onNext(ProductListDomain productListDomain) {
                             if (productListDomain.getNextUri() != null && !productListDomain.getNextUri().isEmpty()) {
                                 page++;
-                                requestParams.putInt(START, 1 + (requestParams.getInt(ROW, 10) * (page - 1)));
+                                requestParams.putString(START, 1 + (requestParams.getInt(DATA_PER_ROW, 10) * (page - 1)) + "");
                                 getNextPage = true;
                             } else {
                                 getNextPage = false;
@@ -86,7 +90,5 @@ public class GetAllProductUseCase extends UseCase<ProductListDomain> {
                 }
             }
         );
-
-        return Observable.create(os);
     }
 }

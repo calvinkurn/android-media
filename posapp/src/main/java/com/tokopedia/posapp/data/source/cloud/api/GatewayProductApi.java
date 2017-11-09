@@ -23,7 +23,7 @@ public interface GatewayProductApi {
     String ROW_OFFSET = "rowOffset";
 
     @GET(TkpdBaseURL.Pos.GET_PRODUCT_LIST)
-    Observable<Response<TkpdResponse>> getProductList(@QueryMap Map<String, String> params);
+    Observable<Response<TkpdResponse>> getProductList(@Path("shopId") String shopId, @QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Pos.GET_ETALASE)
     Observable<Response<TkpdResponse>> getEtalase(@Path(SHOP_ID) String shopId);
