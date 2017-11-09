@@ -69,7 +69,6 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     private ImageUploadHandler uploadImageDialog;
 
 
-
     public static AttachmentFragment newInstance(ResultViewModel resultViewModel) {
         AttachmentFragment fragment = new AttachmentFragment();
         Bundle bundle = new Bundle();
@@ -143,6 +142,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
+
     @Override
     protected String getScreenName() {
         return null;

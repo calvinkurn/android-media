@@ -399,7 +399,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
         //get current place if auto detect location was clicked
         if (mCurrentLocation != null && mAutoDetectLocation) {
-            mAutoDetectLocation = false;
             getCurrentPlace();
         }
     }
@@ -568,11 +567,11 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     @Override
     public void actionAutoDetectLocation() {
+        mAutoDetectLocation = true;
         if (mCurrentLocation != null || ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             getCurrentPlace();
         } else if (mGoogleApiClient != null) {
             checkLocationSettings();
-            mAutoDetectLocation = true;
         }
     }
 
@@ -686,6 +685,10 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
                             placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
                             placeVm.setTitle(address);
+                            if(mAutoDetectLocation) {
+                                mAutoDetectLocation = false;
+                                getView().sendAutoDetectGAEvent(placeVm);
+                            }
                             getView().onPlaceSelectedFound(placeVm);
                         }
                     }
@@ -699,6 +702,10 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             placeVm.setAndFormatLongitude(place.getLatLng().longitude);
                             placeVm.setPlaceId(place.getId());
                             placeVm.setTitle(String.valueOf(place.getName()));
+                            if(mAutoDetectLocation) {
+                                mAutoDetectLocation = false;
+                                getView().sendAutoDetectGAEvent(placeVm);
+                            }
                             getView().onPlaceSelectedFound(placeVm);
                         }
                     }

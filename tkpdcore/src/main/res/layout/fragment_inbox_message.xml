@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"/>
         </com.tokopedia.core.customwidget.SwipeToRefresh>
 
         <LinearLayout
@@ -45,47 +46,44 @@
                 android:layout_gravity="center"/>
         </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/notifier"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:alpha="0.5"
-            android:background="#000000"
+            android:background="@color/red_500"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
             android:visibility="gone"
-            android:padding="16dp">
+            tools:visibility="visible">
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:text="JJJJ"
+                android:layout_weight="1"
+                tools:text="JJJJ"
                 android:textColor="@color/white"/>
 
-            <TextView
+            <ImageView
                 android:id="@+id/action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:text="XXXX"
-                android:textColor="@color/white"/>
+                android:src="@drawable/ic_close_24dp"/>
 
-        </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:visibility="gone"
         android:layout_width="@dimen/fab_button_diameter"
         android:layout_height="@dimen/fab_button_diameter"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:background="@color/tkpd_dark_green"
         android:src="@drawable/ic_action_filter_white_24dp"
+        android:visibility="gone"
         app:backgroundTint="@color/green_500"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:layout_anchorGravity="bottom|right|end"/>
 
 </android.support.design.widget.CoordinatorLayout>

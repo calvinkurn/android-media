@@ -362,7 +362,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     notifier.setVisibility(View.VISIBLE);
                     TextView title = (TextView) notifier.findViewById(R.id.title);
                     View action = notifier.findViewById(R.id.action);
-                    title.setText("Terjadi gangguan pada koneksi");
+                    title.setText(R.string.error_no_connection_retrying);
                     action.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
