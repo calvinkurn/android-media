@@ -85,14 +85,14 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                                 data.getListRecommend().get(getAdapterPosition()).getId(),
                                 getAdapterPosition());
                         data.getListRecommend().get(getAdapterPosition()).setFollowed(true);
-                        notifyDataSetChanged();
+                        notifyItemChanged(getAdapterPosition());
                     } else {
                         kolViewListener.onUnfollowKolFromRecommendationClicked(data.getPage(),
                                 data.getRowNumber(),
                                 data.getListRecommend().get(getAdapterPosition()).getId(),
                                 getAdapterPosition());
                         data.getListRecommend().get(getAdapterPosition()).setFollowed(false);
-                        notifyDataSetChanged();
+                        notifyItemChanged(getAdapterPosition());
                     }
                 }
             });
