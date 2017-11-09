@@ -1,5 +1,8 @@
 package com.tokopedia.flight.booking.view.viewmodel;
 
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+
 import java.util.List;
 
 /**
@@ -7,6 +10,9 @@ import java.util.List;
  */
 
 public class FlightBookingParamViewModel {
+    private FlightSearchViewModel departureTrip;
+    private FlightSearchViewModel returnTrip;
+    private FlightSearchPassDataViewModel searchParam;
     private FlightBookingPhoneCodeViewModel phoneCodeViewModel;
     private List<FlightBookingPassengerViewModel> passengerViewModels;
 
@@ -27,5 +33,29 @@ public class FlightBookingParamViewModel {
 
     public void setPassengerViewModels(List<FlightBookingPassengerViewModel> passengerViewModels) {
         this.passengerViewModels = passengerViewModels;
+    }
+
+    public FlightSearchViewModel getDepartureTrip() {
+        return departureTrip;
+    }
+
+    public void setDepartureTrip(FlightSearchViewModel departureTrip) {
+        this.departureTrip = departureTrip;
+    }
+
+    public FlightSearchViewModel getReturnTrip() {
+        return returnTrip;
+    }
+
+    public void setReturnTrip(FlightSearchViewModel returnTrip) {
+        this.returnTrip = returnTrip;
+    }
+
+    public FlightSearchPassDataViewModel getSearchParam() {
+        return searchParam;
+    }
+
+    public void setSearchParam(FlightSearchPassDataViewModel searchParam) {
+        this.searchParam = searchParam;
     }
 }

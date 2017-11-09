@@ -4,12 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.widget.Toast;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
 import com.tokopedia.flight.search.view.fragment.FlightSearchReturnFragment;
@@ -19,9 +16,9 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
  * Created by User on 10/26/2017.
  */
 
-public class FlightSearchReturnActivity extends FlightSearchActivity implements FlightSearchFragment.OnFlightSearchFragmentListener{
+public class FlightSearchReturnActivity extends FlightSearchActivity implements FlightSearchFragment.OnFlightSearchFragmentListener {
 
-    private static final String EXTRA_SEL_DEPARTURE_ID= "EXTRA_DEPARTURE_ID";
+    private static final String EXTRA_SEL_DEPARTURE_ID = "EXTRA_DEPARTURE_ID";
 
     private String selectedDepartureID;
 
@@ -74,6 +71,6 @@ public class FlightSearchReturnActivity extends FlightSearchActivity implements 
 
     @Override
     public void selectFlight(String selectedFlightID) {
-        Toast.makeText(this, "GO TO CART with id " + selectedDepartureID + " AND " + selectedFlightID, Toast.LENGTH_LONG).show();
+        startActivity(FlightBookingActivity.getCallingIntent(this, passDataViewModel, selectedFlightID, selectedFlightID));
     }
 }
