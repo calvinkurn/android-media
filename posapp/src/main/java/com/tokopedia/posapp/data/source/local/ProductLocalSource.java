@@ -42,11 +42,11 @@ public class ProductLocalSource {
         if(!isEmpty(keyword)) {
             if(!isEmpty(etalaseId)) {
                 return productDbManager.getListData(ConditionGroup.clause()
-                        .and(ProductDb_Table.productName.like(keyword))
+                        .and(ProductDb_Table.productName.like(getKeyword(keyword)))
                         .and(ProductDb_Table.etalaseId.eq(etalaseId)));
             } else {
                 return productDbManager.getListData(ConditionGroup.clause()
-                        .and(ProductDb_Table.productName.like(keyword)));
+                        .and(ProductDb_Table.productName.like(getKeyword(keyword))));
             }
         } else {
             if(!isEmpty(etalaseId)) {
@@ -56,6 +56,10 @@ public class ProductLocalSource {
                 return getAllProduct();
             }
         }
+    }
+
+    private String getKeyword(String keyword) {
+        return "%%" + keyword + "%%";
     }
 
     private boolean isEmpty(String value) {
