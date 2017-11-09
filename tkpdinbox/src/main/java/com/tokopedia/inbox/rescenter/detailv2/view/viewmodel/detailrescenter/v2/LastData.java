@@ -13,7 +13,7 @@ public class LastData implements Parcelable {
 
     private SellerAddressData sellerAddress;
     private UserAwbData userAwb;
-    private SolutionData solution;
+    private LastSolutionData solution;
     private String problem;
     private String status;
     private List<ComplainedProductData> complainedProducts;
@@ -34,11 +34,11 @@ public class LastData implements Parcelable {
         this.userAwb = userAwb;
     }
 
-    public SolutionData getSolution() {
+    public LastSolutionData getSolution() {
         return solution;
     }
 
-    public void setSolution(SolutionData solution) {
+    public void setSolution(LastSolutionData solution) {
         this.solution = solution;
     }
 
@@ -66,7 +66,7 @@ public class LastData implements Parcelable {
         this.complainedProducts = complainedProducts;
     }
 
-    public LastData(SellerAddressData sellerAddress, UserAwbData userAwb, SolutionData solution, String problem, String status, List<ComplainedProductData> complainedProducts) {
+    public LastData(SellerAddressData sellerAddress, UserAwbData userAwb, LastSolutionData solution, String problem, String status, List<ComplainedProductData> complainedProducts) {
         this.sellerAddress = sellerAddress;
         this.userAwb = userAwb;
         this.solution = solution;
@@ -94,7 +94,7 @@ public class LastData implements Parcelable {
     protected LastData(Parcel in) {
         this.sellerAddress = in.readParcelable(SellerAddressData.class.getClassLoader());
         this.userAwb = in.readParcelable(UserAwbData.class.getClassLoader());
-        this.solution = in.readParcelable(SolutionData.class.getClassLoader());
+        this.solution = in.readParcelable(LastSolutionData.class.getClassLoader());
         this.problem = in.readString();
         this.status = in.readString();
         this.complainedProducts = in.createTypedArrayList(ComplainedProductData.CREATOR);

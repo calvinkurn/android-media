@@ -10,13 +10,13 @@ public class LogData implements Parcelable {
 
     private int id;
     private String action;
-    private SolutionData solution;
+    private LastSolutionData solution;
     private CreateByData actionBy;
     private CreateByData createBy;
     private String createTime;
     private String createTimeStr;
 
-    public LogData(int id, String action, SolutionData solution, CreateByData actionBy, CreateByData createBy, String createTime, String createTimeStr) {
+    public LogData(int id, String action, LastSolutionData solution, CreateByData actionBy, CreateByData createBy, String createTime, String createTimeStr) {
         this.id = id;
         this.action = action;
         this.solution = solution;
@@ -42,11 +42,11 @@ public class LogData implements Parcelable {
         this.action = action;
     }
 
-    public SolutionData getSolution() {
+    public LastSolutionData getSolution() {
         return solution;
     }
 
-    public void setSolution(SolutionData solution) {
+    public void setSolution(LastSolutionData solution) {
         this.solution = solution;
     }
 
@@ -101,7 +101,7 @@ public class LogData implements Parcelable {
     protected LogData(Parcel in) {
         this.id = in.readInt();
         this.action = in.readString();
-        this.solution = in.readParcelable(SolutionData.class.getClassLoader());
+        this.solution = in.readParcelable(LastSolutionData.class.getClassLoader());
         this.actionBy = in.readParcelable(CreateByData.class.getClassLoader());
         this.createBy = in.readParcelable(CreateByData.class.getClassLoader());
         this.createTime = in.readString();

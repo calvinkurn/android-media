@@ -22,6 +22,14 @@ public class ButtonData implements Parcelable {
     private boolean showAcceptAdminSolution;
     private String acceptDialogText;
 
+    private String askHelpLabel;
+    private String cancelLabel;
+    private String acceptLabel;
+    private String editLabel;
+    private String inputAddressLabel;
+    private String appealLabel;
+    private String inputAwbLabel;
+
     public boolean isShowEdit() {
         return showEdit;
     }
@@ -127,6 +135,69 @@ public class ButtonData implements Parcelable {
         return acceptDialogText;
     }
 
+    public void setAcceptDialogText(String acceptDialogText) {
+        this.acceptDialogText = acceptDialogText;
+    }
+
+    public String getAskHelpLabel() {
+        return askHelpLabel;
+    }
+
+    public void setAskHelpLabel(String askHelpLabel) {
+        this.askHelpLabel = askHelpLabel;
+    }
+
+    public String getCancelLabel() {
+        return cancelLabel;
+    }
+
+    public void setCancelLabel(String cancelLabel) {
+        this.cancelLabel = cancelLabel;
+    }
+
+    public String getAcceptLabel() {
+        return acceptLabel;
+    }
+
+    public void setAcceptLabel(String acceptLabel) {
+        this.acceptLabel = acceptLabel;
+    }
+
+    public String getEditLabel() {
+        return editLabel;
+    }
+
+    public void setEditLabel(String editLabel) {
+        this.editLabel = editLabel;
+    }
+
+    public String getInputAddressLabel() {
+        return inputAddressLabel;
+    }
+
+    public void setInputAddressLabel(String inputAddressLabel) {
+        this.inputAddressLabel = inputAddressLabel;
+    }
+
+    public String getAppealLabel() {
+        return appealLabel;
+    }
+
+    public void setAppealLabel(String appealLabel) {
+        this.appealLabel = appealLabel;
+    }
+
+    public String getInputAwbLabel() {
+        return inputAwbLabel;
+    }
+
+    public void setInputAwbLabel(String inputAwbLabel) {
+        this.inputAwbLabel = inputAwbLabel;
+    }
+
+    public ButtonData() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -147,9 +218,13 @@ public class ButtonData implements Parcelable {
         dest.writeByte(this.showInputAwb ? (byte) 1 : (byte) 0);
         dest.writeByte(this.showAcceptAdminSolution ? (byte) 1 : (byte) 0);
         dest.writeString(this.acceptDialogText);
-    }
-
-    public ButtonData() {
+        dest.writeString(this.askHelpLabel);
+        dest.writeString(this.cancelLabel);
+        dest.writeString(this.acceptLabel);
+        dest.writeString(this.editLabel);
+        dest.writeString(this.inputAddressLabel);
+        dest.writeString(this.appealLabel);
+        dest.writeString(this.inputAwbLabel);
     }
 
     protected ButtonData(Parcel in) {
@@ -166,9 +241,16 @@ public class ButtonData implements Parcelable {
         this.showInputAwb = in.readByte() != 0;
         this.showAcceptAdminSolution = in.readByte() != 0;
         this.acceptDialogText = in.readString();
+        this.askHelpLabel = in.readString();
+        this.cancelLabel = in.readString();
+        this.acceptLabel = in.readString();
+        this.editLabel = in.readString();
+        this.inputAddressLabel = in.readString();
+        this.appealLabel = in.readString();
+        this.inputAwbLabel = in.readString();
     }
 
-    public static final Parcelable.Creator<ButtonData> CREATOR = new Parcelable.Creator<ButtonData>() {
+    public static final Creator<ButtonData> CREATOR = new Creator<ButtonData>() {
         @Override
         public ButtonData createFromParcel(Parcel source) {
             return new ButtonData(source);

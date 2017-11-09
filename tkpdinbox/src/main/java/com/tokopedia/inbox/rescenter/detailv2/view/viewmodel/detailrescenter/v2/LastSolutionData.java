@@ -7,7 +7,7 @@ import android.os.Parcelable;
 /**
  * Created by yfsx on 08/11/17.
  */
-public class SolutionData implements Parcelable {
+public class LastSolutionData implements Parcelable {
 
     private int id;
     private String name;
@@ -18,7 +18,7 @@ public class SolutionData implements Parcelable {
     private String createTime;
     private String createTimeStr;
 
-    public SolutionData(int id, String name, String nameCustom, int actionBy, int receivedFlag, AmountData amount, String createTime, String createTimeStr) {
+    public LastSolutionData(int id, String name, String nameCustom, int actionBy, int receivedFlag, AmountData amount, String createTime, String createTimeStr) {
         this.id = id;
         this.name = name;
         this.nameCustom = nameCustom;
@@ -109,7 +109,7 @@ public class SolutionData implements Parcelable {
         dest.writeString(this.createTimeStr);
     }
 
-    protected SolutionData(Parcel in) {
+    protected LastSolutionData(Parcel in) {
         this.id = in.readInt();
         this.name = in.readString();
         this.nameCustom = in.readString();
@@ -119,15 +119,15 @@ public class SolutionData implements Parcelable {
         this.createTimeStr = in.readString();
     }
 
-    public static final Parcelable.Creator<SolutionData> CREATOR = new Parcelable.Creator<SolutionData>() {
+    public static final Parcelable.Creator<LastSolutionData> CREATOR = new Parcelable.Creator<LastSolutionData>() {
         @Override
-        public SolutionData createFromParcel(Parcel source) {
-            return new SolutionData(source);
+        public LastSolutionData createFromParcel(Parcel source) {
+            return new LastSolutionData(source);
         }
 
         @Override
-        public SolutionData[] newArray(int size) {
-            return new SolutionData[size];
+        public LastSolutionData[] newArray(int size) {
+            return new LastSolutionData[size];
         }
     };
 }

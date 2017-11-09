@@ -54,7 +54,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.SellerAddressData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ShippingData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ShopData;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.SolutionData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LastSolutionData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.StatusData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.TroubleData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.UserAwbData;
@@ -131,7 +131,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                 response.getNextAction() != null ?
                         mappingNextActionDomain(response.getNextAction()) :
                         null,
-                response.getLogs().size() != 0 ?
+                response.getLogs() != null ?
                         mappingLogDataList(response.getLogs()) :
                         null);
     }
@@ -153,7 +153,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                         null,
                 response.getProblem(),
                 response.getStatus(),
-                response.getComplainedProductResponses().size() != 0 ?
+                response.getComplainedProductResponses() != null ?
                         mappingComplainedProductList(response.getComplainedProductResponses()) :
                         null);
     }
@@ -417,7 +417,11 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
     }
 
     private CreateByData mappingCreatedByData(CreateByResponse response) {
-        return new CreateByData(response.getId(), response.getName(), mappingPictureData(response.getPicture()));
+        return new CreateByData(response.getId(),
+                response.getName(),
+                response.getPicture() != null ?
+                        mappingPictureData(response.getPicture()) :
+                        null);
     }
 
     private PictureData mappingPictureData(PictureResponse response) {
@@ -432,8 +436,8 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
         return new AmountData(response.getIdr(), response.getInteger());
     }
 
-    private SolutionData mappingSolutionData(SolutionResponse response) {
-        return new SolutionData(
+    private LastSolutionData mappingSolutionData(SolutionResponse response) {
+        return new LastSolutionData(
                 response.getId(),
                 response.getName(),
                 response.getNameCustom(),
