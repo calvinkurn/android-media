@@ -31,6 +31,7 @@ import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -62,7 +63,6 @@ public abstract class TopAdsAdListFragment<P extends
 
     @Override
     public void onSearchTextChanged(String query) {
-//        CommonUtils.hideKeyboard(getActivity(), getActivity().getCurrentFocus());
         if (TextUtils.isEmpty(query)) {
             onQueryTextSubmit(query);
         }
@@ -103,15 +103,7 @@ public abstract class TopAdsAdListFragment<P extends
     }
 
     protected TopAdsComponent getTopAdsComponent(){
-        if(getActivity() != null){
-            if(getActivity().getApplication() instanceof TopAdsModuleRouter){
-                return ((TopAdsModuleRouter)getActivity().getApplication()).getTopAdsComponent();
-            }else{
-                return null;
-            }
-        }else {
-            return null;
-        }
+        return TopAdsComponentUtils.getTopAdsComponent(getActivity());
     }
 
     @Override

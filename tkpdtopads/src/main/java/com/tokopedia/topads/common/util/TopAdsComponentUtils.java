@@ -16,14 +16,10 @@ public class TopAdsComponentUtils {
         return getTopAdsComponent(fragment.getActivity());
     }
 
-    public static TopAdsComponent getTopAdsComponent(Activity activity){
-        if(activity != null){
-            if(activity.getApplication() instanceof TopAdsModuleRouter){
-                return ((TopAdsModuleRouter)activity.getApplication()).getTopAdsComponent();
-            }else{
-                return null;
-            }
-        }else {
+    public static TopAdsComponent getTopAdsComponent(Activity activity) {
+        if (activity != null && activity.getApplication() != null && activity.getApplication() instanceof TopAdsModuleRouter) {
+            return ((TopAdsModuleRouter) activity.getApplication()).getTopAdsComponent();
+        } else {
             return null;
         }
     }

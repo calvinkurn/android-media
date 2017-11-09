@@ -8,6 +8,7 @@ import com.tokopedia.topads.R;
 import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailViewPresenter;
@@ -49,15 +50,7 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailViewPr
     }
 
     protected TopAdsComponent getTopAdsComponent(){
-        if(getActivity() != null){
-            if(getActivity().getApplication() instanceof TopAdsModuleRouter){
-                return ((TopAdsModuleRouter)getActivity().getApplication()).getTopAdsComponent();
-            }else{
-                return null;
-            }
-        }else {
-            return null;
-        }
+        return TopAdsComponentUtils.getTopAdsComponent(getActivity());
     }
 
     protected void initDateLabelView(View view) {
