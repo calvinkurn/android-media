@@ -117,16 +117,15 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-        try {
+        if(manager != null && manager.getRunningServices(Integer.MAX_VALUE) != null) {
             for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
                 if (serviceClass.getName().equals(service.service.getClassName())) {
                     return true;
                 }
             }
-        }catch (Exception e){
+        }else {
             return false;
         }
-        return false;
     }
 
     private void registerDraftReceiver(){
