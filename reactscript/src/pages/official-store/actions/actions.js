@@ -57,13 +57,24 @@ export const fetchCampaigns = (User_ID) => {
         .replace(':imageSquare', imageSquare)
 
     const getBanners = () => {
-        const url = endpoints.banners
-        return NetworkModule.getResponse(url, "GET", "", true)
+        var config = {
+                url: endpoints.banners,
+                method: "GET",
+                authorizationMode: "wsauth"
+            }
+        //const url = endpoints.banners
+        return NetworkModule.request(config)
     }
 
     const getCampaigns = (User_ID) => {
-        return NetworkModule.getResponse(url, "GET", "", true)
+        var config = {
+            url: url,
+            method: "GET",
+            authorizationMode: "wsauth"
+        }
+        return NetworkModule.request(config)
             .then(response => {
+                console.log("akuuuu keren"+response)
                 const jsonResponseCampaigns = JSON.parse(response)
                 const campaigns = jsonResponseCampaigns.data.campaigns
                 return getBanners()
@@ -86,7 +97,12 @@ export const fetchCampaigns = (User_ID) => {
                         
                         let wishlistProd = []
                         let URL_wishlist = `${MOJITO_HOSTNAME}/v1/users/` + User_ID + `/wishlist/check/` + pIds.toString();
-                        return NetworkModule.getResponse(URL_wishlist, "GET", '', true)
+                        var config = {
+                                url: URL_wishlist,
+                                method: "GET",
+                                authorizationMode: "wsauth"
+                             }
+                        return NetworkModule.request(config)
                             .then(response => {
                                 let jsonResponse = JSON.parse(response)
                                 wishlistProd = jsonResponse.data.ids.map(id => +id)
@@ -185,7 +201,11 @@ export const fetchBrands = (limit, offset, User_ID, status) => ({
 getBrands = (limit, offset, User_ID, status) => {
     const Check_UserID = !User_ID ? 0 : User_ID
     const URL_ = `${MOJITO_HOSTNAME}/os/api/v1/brands/list?device=lite&microsite=true&user_id=${Check_UserID}&limit=${limit}&offset=${offset}`
-    return NetworkModule.getResponse(URL_, "GET", "", false)
+    var config = {
+                    url: URL_,
+                    method: "GET"
+                }
+    return NetworkModule.request(config)
         .then(response => {
             const jsonResponse = JSON.parse(response)
             const brands = jsonResponse.data
@@ -205,9 +225,13 @@ getBrands = (limit, offset, User_ID, status) => {
             shopIds = shopIds.toString()
             const shopCount = shopIds.length
             const url = `${MOJITO_HOSTNAME}/os/api/v1/brands/microsite/products?device=lite&source=osmicrosite&rows=4&full_domain=tokopedia.lite:3000&ob=11&image_size=200&image_square=true&brandCount=${shopCount}&brands=${shopIds}`
+            var config = {
+                        url: url,
+                        method: "GET"
+                    }
             let ids = []
             let wishlistProd = []
-            return NetworkModule.getResponse(url, "GET", "", false)
+            return NetworkModule.request(config)
                 .then(brandsProducts => {
                     const jsonResponse = JSON.parse(brandsProducts)
                     const brands = jsonResponse.data.brands
@@ -323,11 +347,21 @@ export const addToWishlist = (productId, User_ID) => {
         .replace(':imageSquare', imageSquare)
 
     const fetchDatas = () => {
-        return NetworkModule.getResponse(url, "GET", "", true)
+        var config = {
+                    url: url,
+                    method: "GET",
+                    authorizationMode: "wsauth"
+                }
+        return NetworkModule.request(config)
             .then(response => {
                 const jsonResponse = JSON.parse(response)
                 const campaigns = jsonResponse.data.campaigns
-                NetworkModule.getResponse("https://mojito.tokopedia.com/users/" + User_ID + "/wishlist/" + productId + "/v1.1", "POST", "{}", true)
+                var config = {
+                            url: "https://mojito.tokopedia.com/users/" + User_ID + "/wishlist/" + productId + "/v1.1",
+                            method: "POST",
+                            authorizationMode: "wsauth"
+                        }
+                NetworkModule.request(config)
                     .then(responseWishlist => console.log("Success AddToWishlist"))
                     .catch(err => console.log(err))
                 return { campaigns, productId }
@@ -348,7 +382,12 @@ export const addToWishlist = (productId, User_ID) => {
 export const REMOVE_FROM_WISHLIST = 'REMOVE_FROM_WISHLIST'
 export const removeFromWishlist = (productId, User_ID) => {
     const removeData = () => {
-        NetworkModule.getResponse("https://mojito.tokopedia.com/users/" + User_ID + "/wishlist/" + productId + "/v1.1", "DELETE", "{}", true)
+        var config = {
+                        url: "https://mojito.tokopedia.com/users/" + User_ID + "/wishlist/" + productId + "/v1.1",
+                        method: "DELETE",
+                        authorizationMode: "wsauth"
+                     }
+        NetworkModule.request(config)
             .then(response => console.log(response))
             .catch(error => console.log(error))
         return productId
@@ -366,7 +405,14 @@ export const removeFromWishlist = (productId, User_ID) => {
 export const ADD_TO_FAVOURITE = 'ADD_TO_FAVOURITE'
 export const addToFavourite = (shopId, User_ID) => ({
     type: ADD_TO_FAVOURITE,
-    payload: NetworkModule.getResponse("https://ws.tokopedia.com/v4/action/favorite-shop/fav_shop.pl", "POST", '{ "shop_id": ' + shopId + ' }', true)
+    payload: NetworkModule.request({
+                                    url: "https://ws.tokopedia.com/v4/action/favorite-shop/fav_shop.pl",
+                                    method: "POST",
+                                    authorizationMode: "wsauth",
+                                    params: {
+                                        shop_id: shopId
+                                    }
+                                 })
         .then(response => {
             let jsonResponse = JSON.parse(response)
             return shopId
@@ -379,7 +425,14 @@ export const addToFavourite = (shopId, User_ID) => ({
 export const REMOVE_FROM_FAVOURITE = 'REMOVE_FROM_FAVOURITE'
 export const removeFromFavourite = (shopId, User_ID) => ({
     type: REMOVE_FROM_FAVOURITE,
-    payload: NetworkModule.getResponse("https://ws.tokopedia.com/v4/action/favorite-shop/fav_shop.pl", "POST", '{ "shop_id": ' + shopId + ' }', true)
+    payload: NetworkModule.request({
+                                     url: "https://ws.tokopedia.com/v4/action/favorite-shop/fav_shop.pl",
+                                     method: "POST",
+                                     authorizationMode: "wsauth",
+                                     params: {
+                                         shop_id: shopId
+                                     }
+                                  })
         .then(response => {
             let jsonResponse = JSON.parse(response)
             return shopId
