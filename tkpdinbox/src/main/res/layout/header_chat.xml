@@ -3,7 +3,9 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/main_header"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
+                android:gravity="center_vertical"
+                android:layout_gravity="center"
                 android:orientation="vertical">
 
     <ImageView
@@ -59,9 +61,9 @@
         android:id="@+id/subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/user_avatar"
         android:layout_alignLeft="@+id/title"
         android:layout_alignStart="@+id/title"
+        android:layout_below="@id/title"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="9sp"
         android:textColor="@color/black_38"
