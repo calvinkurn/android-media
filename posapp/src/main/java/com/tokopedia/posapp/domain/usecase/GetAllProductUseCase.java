@@ -6,7 +6,10 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.posapp.data.repository.ProductRepository;
+import com.tokopedia.posapp.domain.model.product.ProductDomain;
 import com.tokopedia.posapp.domain.model.product.ProductListDomain;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -23,12 +26,13 @@ import rx.observables.AsyncOnSubscribe;
 
 public class GetAllProductUseCase extends UseCase<ProductListDomain> {
     private static final String DATA_PER_ROW = "data_per_row";
-    private static final String START = "start";
+    private static final String START_OFFSET = "startoffset";
 
     private ProductRepository productRepository;
     private RequestParams requestParams;
     private boolean getNextPage = true;
     private int page = 1;
+    private ProductListDomain products;
 
     @Inject
     public GetAllProductUseCase(ThreadExecutor threadExecutor,
@@ -43,6 +47,8 @@ public class GetAllProductUseCase extends UseCase<ProductListDomain> {
         this.requestParams = params;
         this.page = 1;
         this.getNextPage = true;
+        this.products = new ProductListDomain();
+        products.setProductDomains(new ArrayList<ProductDomain>());
 
         return Observable.create(getAllProductObservable());
     }
@@ -72,6 +78,7 @@ public class GetAllProductUseCase extends UseCase<ProductListDomain> {
                         public void onError(Throwable e) {
                             e.printStackTrace();
                             Log.d("o2o", "repeat error msg: " + e.getMessage());
+                            observer.onNext(Observable.just(products));
                             observer.onCompleted();
                         }
 
@@ -79,12 +86,13 @@ public class GetAllProductUseCase extends UseCase<ProductListDomain> {
                         public void onNext(ProductListDomain productListDomain) {
                             if (productListDomain.getNextUri() != null && !productListDomain.getNextUri().isEmpty()) {
                                 page++;
-                                requestParams.putString(START, 1 + (requestParams.getInt(DATA_PER_ROW, 10) * (page - 1)) + "");
+                                requestParams.putString(START_OFFSET, 1 + (requestParams.getInt(DATA_PER_ROW, 10) * (page - 1)) + "");
                                 getNextPage = true;
                             } else {
                                 getNextPage = false;
                             }
-                            observer.onNext(Observable.just(productListDomain));
+
+                            products.getProductDomains().addAll(productListDomain.getProductDomains());
                             onCompleted();
                         }
                     });
