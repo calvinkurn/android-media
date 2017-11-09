@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdreactnative.react.data.datasource.interceptor;
+package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.support.annotation.NonNull;
 
@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -15,10 +16,11 @@ import okhttp3.Response;
  * @author by alvarisi on 10/9/17.
  */
 
-public class ReactNativeInterceptor extends TkpdAuthInterceptor {
+public class ReactNativeInterceptor implements Interceptor {
     protected HashMap<String, String> headers;
 
-    public ReactNativeInterceptor() {
+    public ReactNativeInterceptor(HashMap<String, String> headers) {
+        this.headers = headers;
     }
 
     @Override
@@ -37,9 +39,5 @@ public class ReactNativeInterceptor extends TkpdAuthInterceptor {
         }
         builder.method(request.method(), request.body());
         return builder.build();
-    }
-
-    public void setHeaders(HashMap<String, String> headers) {
-        this.headers = headers;
     }
 }

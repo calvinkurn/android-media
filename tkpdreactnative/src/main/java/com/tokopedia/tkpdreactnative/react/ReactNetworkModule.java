@@ -117,12 +117,12 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
                     break;
                 case ReactConst.Networking.HEADERS:
                     if (map.getValue() instanceof HashMap) {
-                        builder.setHeaders((HashMap<String, String>) map.getValue());
+                        builder.setHeaders((HashMap<String, Object>) map.getValue());
                     }
                     break;
                 case ReactConst.Networking.PARAMS:
                     if (map.getValue() instanceof HashMap) {
-                        builder.setParams((HashMap<String, String>) map.getValue());
+                        builder.setParams((HashMap<String, Object>) map.getValue());
                     }
                     break;
 

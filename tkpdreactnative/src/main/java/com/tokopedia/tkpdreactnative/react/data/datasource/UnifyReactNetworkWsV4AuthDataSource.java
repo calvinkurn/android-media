@@ -1,12 +1,13 @@
 package com.tokopedia.tkpdreactnative.react.data.datasource;
 
+import android.content.Context;
 import android.net.Uri;
 
 import com.tokopedia.core.base.common.service.CommonService;
 import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
-import com.tokopedia.tkpdreactnative.react.data.datasource.interceptor.ReactNativeWsAuthInterceptor;
 
 import retrofit2.Retrofit;
 import rx.Observable;
@@ -15,21 +16,20 @@ import rx.Observable;
  * Created by alvarisi on 10/9/17.
  */
 
-public class UnifyReactNetworkWsAuthDataSource {
+public class UnifyReactNetworkWsV4AuthDataSource {
     private Retrofit.Builder retrofit;
-    private String token;
+    private Context context;
 
-    public UnifyReactNetworkWsAuthDataSource(Retrofit.Builder retrofit) {
+    public UnifyReactNetworkWsV4AuthDataSource(Retrofit.Builder retrofit, Context context) {
         this.retrofit = retrofit;
+        this.context = context;
     }
 
     public Observable<String> request(ReactNetworkingConfiguration configuration) {
-        ReactNativeWsAuthInterceptor reactNativeInterceptor = new ReactNativeWsAuthInterceptor();
-        reactNativeInterceptor.setHeaders(configuration.getHeaders());
 
         Uri uri = Uri.parse(configuration.getUrl());
         CommonService commonService = retrofit.baseUrl(uri.getScheme() + "://" + uri.getHost())
-                .client(OkHttpFactory.create().buildClientDynamicAuth().newBuilder().addInterceptor(reactNativeInterceptor).build())
+                .client(OkHttpFactory.create().buildClientDefaultAuth())
                 .build().create(CommonService.class);
         return requestToNetwork(configuration, commonService);
     }
@@ -37,17 +37,15 @@ public class UnifyReactNetworkWsAuthDataSource {
     private Observable<String> requestToNetwork(ReactNetworkingConfiguration configuration, CommonService commonService) {
         switch (configuration.getMethod()) {
             case ReactConst.GET:
-                return commonService.get(configuration.getUrl(), configuration.getParams());
+                if (configuration.getParams().size() == 0) return commonService.get(configuration.getUrl());
+                else return commonService.get(configuration.getUrl(), AuthUtil.generateParamsNetwork(context, configuration.getParams()));
             case ReactConst.POST:
-                return commonService.post(configuration.getUrl(), configuration.getParams());
-            case ReactConst.DELETE:
-                return commonService.delete(configuration.getUrl(), configuration.getParams());
-            case ReactConst.PUT:
-                return commonService.put(configuration.getUrl(), configuration.getParams());
-            case ReactConst.HEAD:
-                return commonService.head(configuration.getUrl(), configuration.getParams());
+                if (configuration.getParams().size() == 0) return commonService.post(configuration.getUrl());
+                return commonService.post(configuration.getUrl(), AuthUtil.generateParamsNetwork(context, configuration.getParams()));
             default:
                 return commonService.get(configuration.getUrl(), configuration.getParams());
         }
     }
+
+
 }

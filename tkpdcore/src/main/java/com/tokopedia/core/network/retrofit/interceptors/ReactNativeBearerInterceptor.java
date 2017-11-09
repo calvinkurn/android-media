@@ -1,4 +1,6 @@
-package com.tokopedia.tkpdreactnative.react.data.datasource.interceptor;
+package com.tokopedia.core.network.retrofit.interceptors;
+
+import java.util.HashMap;
 
 import okhttp3.Request;
 
@@ -9,7 +11,8 @@ import okhttp3.Request;
 public class ReactNativeBearerInterceptor extends ReactNativeInterceptor {
     private String token;
 
-    public ReactNativeBearerInterceptor(String token) {
+    public ReactNativeBearerInterceptor(HashMap<String, String> headers, String token) {
+        super(headers);
         this.token = token;
     }
 

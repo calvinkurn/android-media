@@ -1,6 +1,9 @@
 package com.tokopedia.tkpdreactnative.react.domain;
 
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author  by alvarisi on 10/6/17.
@@ -8,13 +11,13 @@ import java.util.HashMap;
 
 public class ReactNetworkingConfiguration {
     private String url;
-    private HashMap<String, String> params;
+    private TKPDMapParam<String, String> params;
     private String method;
     private String encoding;
     private HashMap<String, String> headers;
     private String authorizationMode;
 
-    private ReactNetworkingConfiguration(String url, HashMap<String, String> params, String method, String encoding, HashMap<String, String> headers, String authorizationMode) {
+    private ReactNetworkingConfiguration(String url, TKPDMapParam<String, String> params, String method, String encoding, HashMap<String, String> headers, String authorizationMode) {
         this.url = url;
         this.params = params;
         this.method = method;
@@ -28,7 +31,7 @@ public class ReactNetworkingConfiguration {
         return url;
     }
 
-    public HashMap<String, String> getParams() {
+    public TKPDMapParam<String, String> getParams() {
         return params;
     }
 
@@ -50,10 +53,10 @@ public class ReactNetworkingConfiguration {
 
     public static final class Builder {
         private String url;
-        private HashMap<String, String> params;
+        private HashMap<String, Object> params;
         private String method;
         private String encoding;
-        private HashMap<String, String> headers;
+        private HashMap<String, Object> headers;
         private String authorizationMode;
 
         public Builder() {
@@ -64,7 +67,7 @@ public class ReactNetworkingConfiguration {
             return this;
         }
 
-        public Builder setParams(HashMap<String, String> params) {
+        public Builder setParams(HashMap<String, Object> params) {
             this.params = params;
             return this;
         }
@@ -79,7 +82,7 @@ public class ReactNetworkingConfiguration {
             return this;
         }
 
-        public Builder setHeaders(HashMap<String, String> headers) {
+        public Builder setHeaders(HashMap<String, Object> headers) {
             this.headers = headers;
             return this;
         }
@@ -93,14 +96,20 @@ public class ReactNetworkingConfiguration {
             if (this.method == null) {
                 this.method = "GET";
             }
-            if (this.params == null) {
-                this.params = new HashMap<>();
+            TKPDMapParam<String, String> stringMapParams = new TKPDMapParam<>();
+            if (this.params != null) {
+                for (Map.Entry<String, Object> entry : params.entrySet()) {
+                    stringMapParams.put(entry.getKey(), String.valueOf(entry.getValue()));
+                }
             }
             if (this.encoding == null) {
                 this.encoding = "urlencoded";
             }
-            if (this.headers == null) {
-                this.headers = new HashMap<>();
+            HashMap<String, String> stringMapHeader = new HashMap<>();
+            if (this.headers != null) {
+                for (Map.Entry<String, Object> entry : headers.entrySet()) {
+                    stringMapHeader.put(entry.getKey(), String.valueOf(entry.getValue()));
+                }
             }
             if (this.authorizationMode == null) {
                 this.authorizationMode = "none";
@@ -108,7 +117,7 @@ public class ReactNetworkingConfiguration {
             if (this.url == null) {
                 throw new RuntimeException("Url must nnot empty");
             }
-            return new ReactNetworkingConfiguration(url, params, method, encoding, headers, authorizationMode);
+            return new ReactNetworkingConfiguration(url, stringMapParams, method, encoding, stringMapHeader, authorizationMode);
         }
     }
 }

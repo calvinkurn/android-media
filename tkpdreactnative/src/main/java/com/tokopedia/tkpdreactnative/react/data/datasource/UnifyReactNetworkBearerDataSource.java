@@ -7,7 +7,7 @@ import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
-import com.tokopedia.tkpdreactnative.react.data.datasource.interceptor.ReactNativeBearerInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.ReactNativeBearerInterceptor;
 
 import retrofit2.Retrofit;
 import rx.Observable;
@@ -26,16 +26,11 @@ public class UnifyReactNetworkBearerDataSource {
     }
 
     public Observable<String> request(ReactNetworkingConfiguration configuration) {
-        ReactNativeBearerInterceptor reactNativeInterceptor = new ReactNativeBearerInterceptor(
-                sessionHandler.getAccessToken(
-                        sessionHandler.getActiveContext()
-                )
-        );
-        reactNativeInterceptor.setHeaders(configuration.getHeaders());
+        String token = sessionHandler.getAccessToken(sessionHandler.getActiveContext());
 
         Uri uri = Uri.parse(configuration.getUrl());
         CommonService commonService = retrofit.baseUrl(uri.getScheme() + "://" + uri.getHost())
-                .client(OkHttpFactory.create().buildClientDynamicAuth().newBuilder().addInterceptor(reactNativeInterceptor).build())
+                .client(OkHttpFactory.create().buildClientReactNativeBearer(configuration.getHeaders(), token))
                 .build().create(CommonService.class);
         return requestToNetwork(configuration, commonService);
     }

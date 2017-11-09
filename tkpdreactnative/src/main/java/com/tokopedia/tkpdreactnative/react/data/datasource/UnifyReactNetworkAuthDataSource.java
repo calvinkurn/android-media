@@ -14,10 +14,11 @@ import rx.Observable;
  * Created by alvarisi on 10/9/17.
  */
 
-public class UnifyReactNetworkDataSource {
+public class UnifyReactNetworkAuthDataSource {
     private Retrofit.Builder retrofit;
+    private String token;
 
-    public UnifyReactNetworkDataSource(Retrofit.Builder retrofit) {
+    public UnifyReactNetworkAuthDataSource(Retrofit.Builder retrofit) {
         this.retrofit = retrofit;
     }
 
@@ -25,7 +26,7 @@ public class UnifyReactNetworkDataSource {
 
         Uri uri = Uri.parse(configuration.getUrl());
         CommonService commonService = retrofit.baseUrl(uri.getScheme() + "://" + uri.getHost())
-                .client(OkHttpFactory.create().buildClientReactNativeNoAuth(configuration.getHeaders()).newBuilder().build())
+                .client(OkHttpFactory.create().buildClientReactNativeAuth(configuration.getHeaders()).newBuilder().build())
                 .build().create(CommonService.class);
         return requestToNetwork(configuration, commonService);
     }
@@ -46,4 +47,6 @@ public class UnifyReactNetworkDataSource {
                 return commonService.get(configuration.getUrl(), configuration.getParams());
         }
     }
+
+
 }
