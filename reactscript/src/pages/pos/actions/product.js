@@ -1,4 +1,4 @@
-import { PosCacheModule } from 'NativeModules'
+import { PosCacheModule, ProductDiscoveryModule } from 'NativeModules'
 
 
 // ===================== Product List ======================= //
@@ -18,17 +18,31 @@ export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryTe
 // ==================== Search Product ==================== //
 export const SEARCH_PRODUCT = 'SEARCH_PRODUCT'
 export const searchProduct = (product, etalaseId) => {
+  const payload = {
+    keyword: product,
+    etalase_id: etalaseId == 0 ? '' : etalaseId
+  }
+
   return {
     type: SEARCH_PRODUCT,
-    payload: ProductDiscoveryModule.search(`{ product: ${product}, etalase_id: ${etalaseId} }`)
-                .then(res => {
-                  const jsonResponse = JSON.parse(res)
-                  console.log(jsonResponse)
-                  return jsonResponse
-                })
-                .catch(err => {})
+    payload: searchProd(payload)
   }
 }
+
+const searchProd = (payload) => {
+  return ProductDiscoveryModule.search(JSON.stringify(payload))
+    .then(res => {
+      const resJson = JSON.parse(res)
+      console.log(resJson)
+      return resJson
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+
+
 
 export const FETCH_ETALASE = 'FETCH_ETALASE'
 export const fetchEtalase = (shopId) => ({
