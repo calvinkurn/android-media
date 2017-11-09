@@ -58,6 +58,7 @@ public class CardWithActionView extends BaseCustomView {
             String contentInfo = styledAttributes.getString(R.styleable.CardWithActionView_cmv_content_info);
             String subContent = styledAttributes.getString(R.styleable.CardWithActionView_cmw_subcontent);
             String subContentInfo = styledAttributes.getString(R.styleable.CardWithActionView_cmw_subcontent_info);
+            String actionLabel = styledAttributes.getString(R.styleable.CardWithActionView_cmw_action);
             if (!TextUtils.isEmpty(title)) {
                 titleAppCompatTextView.setText(String.valueOf(title));
             }
@@ -72,6 +73,9 @@ public class CardWithActionView extends BaseCustomView {
             }
             if (!TextUtils.isEmpty(subContentInfo)) {
                 subContentInfoAppCompatTextView.setText(String.valueOf(subContent));
+            }
+            if (!TextUtils.isEmpty(actionLabel)) {
+                actionAppCompatTextView.setText(String.valueOf(actionLabel));
             }
         } finally {
             styledAttributes.recycle();
