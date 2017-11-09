@@ -21,7 +21,7 @@ public class AppealSolutionResponseDomain {
     @Nullable
     private boolean isSuccess;
 
-    public AppealSolutionResponseDomain(@Nullable List<AppealSolutionDomain>  solutions, @Nullable FreeReturnDomain freeReturn) {
+    public AppealSolutionResponseDomain(@Nullable List<AppealSolutionDomain> solutions, @Nullable FreeReturnDomain freeReturn) {
         this.solutions = solutions;
         this.freeReturn = freeReturn;
     }

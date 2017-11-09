@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
@@ -101,7 +102,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         }
 
         if (element.isHaveTitle()) {
-            String magicString = element.getSectionSize() + " " + array[element.getSpanMode()-1] + " ditemukan";
+            String magicString = element.getSectionSize() + " " + array[element.getSpanMode() - 1] + " ditemukan";
             section.setText(magicString);
             section.setVisibility(View.VISIBLE);
         } else {

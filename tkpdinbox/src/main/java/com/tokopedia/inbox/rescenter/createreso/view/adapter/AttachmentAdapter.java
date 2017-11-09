@@ -98,6 +98,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.It
 
     public class ItemHolder extends RecyclerView.ViewHolder {
         ImageView ivImage, ivClose;
+
         public ItemHolder(View itemView) {
             super(itemView);
             ivImage = (ImageView) itemView.findViewById(R.id.iv_image);
