@@ -71,6 +71,6 @@ public class FlightSearchReturnActivity extends FlightSearchActivity implements 
 
     @Override
     public void selectFlight(String selectedFlightID) {
-        startActivity(FlightBookingActivity.getCallingIntent(this, passDataViewModel, selectedFlightID, selectedFlightID));
+        startActivity(FlightBookingActivity.getCallingIntent(this, passDataViewModel, selectedDepartureID, selectedFlightID));
     }
 }

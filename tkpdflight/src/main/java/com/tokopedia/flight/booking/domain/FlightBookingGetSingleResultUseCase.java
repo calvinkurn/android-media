@@ -1,6 +1,7 @@
 package com.tokopedia.flight.booking.domain;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -32,12 +33,15 @@ public class FlightBookingGetSingleResultUseCase extends UseCase<FlightSearchVie
 
     @Override
     public Observable<FlightSearchViewModel> createObservable(RequestParams requestParams) {
-        String id = requestParams.getString(PARAM_ID, "");
-        boolean isReturning = requestParams.getBoolean(PARAM_IS_RETURNING, false);
+        final String id = requestParams.getString(PARAM_ID, "");
+        final boolean isReturning = requestParams.getBoolean(PARAM_IS_RETURNING, false);
         return flightRepository.getFlightSearchById(isReturning, id)
                 .flatMap(new Func1<FlightSearchSingleRouteDB, Observable<FlightSearchViewModel>>() {
                     @Override
                     public Observable<FlightSearchViewModel> call(FlightSearchSingleRouteDB flightSearchSingleRouteDB) {
+                        Log.v("flight", "ini sebelumnyah " + isReturning + " - " + id);
+                        if (flightSearchSingleRouteDB == null)
+                            throw new RuntimeException("ini null" + isReturning + " - " + id);
                         return Observable.just(new FlightSearchViewModel(flightSearchSingleRouteDB));
                     }
                 })
