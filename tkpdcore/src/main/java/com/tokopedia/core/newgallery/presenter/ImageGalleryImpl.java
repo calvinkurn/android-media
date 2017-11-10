@@ -110,7 +110,7 @@ public class ImageGalleryImpl implements ImageGallery {
                                 null, null, BUCKET_ORDER_BY);
 
                         if (cur.moveToFirst()) {
-                            Map<String, List<String>> data = new HashMap<String, List<String>>();
+                            Map<String, List<String>> data = new HashMap<>();
                             int bucketColumn = cur
                                     .getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
 
@@ -173,17 +173,27 @@ public class ImageGalleryImpl implements ImageGallery {
         }
 
         protected String doInBackground(Void... params) {
-            Cursor cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{"_data", "bucket_display_name"}, null, null, null);
+            String[] projection = new String[]{MediaStore.Images.Media._ID,
+                    MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+                    MediaStore.Images.Media.DATE_TAKEN,
+                    MediaStore.Images.Media.DATA};
+            String BUCKET_ORDER_BY = MediaStore.Images.Media.DATE_TAKEN + " DESC";
+            Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+            Cursor cursor = contentResolver.query(images, projection, null, null, BUCKET_ORDER_BY);
             if (cursor != null) {
-                int column_index_data = cursor.getColumnIndexOrThrow("_data");
+                int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                int bucketColumn = cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
+                int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
                 while (cursor.moveToNext()) {
                     String pathFile = cursor.getString(column_index_data);
+                    String bucketName = cursor.getString(bucketColumn);
                     File file = new File(pathFile);
                     if (file.exists()) {
                         boolean check = ImageGalleryImpl.this.checkFile(file);
                         if (!ImageGalleryImpl.this.Check(file.getParent(), ImageGalleryImpl.this.pathList) && check) {
                             ImageGalleryImpl.this.pathList.add(file.getParent());
-                            ImageGalleryImpl.this.dataAlbum.add(new ImageModel(file.getParentFile().getName(), pathFile, file.getParent()));
+                            ImageGalleryImpl.this.dataAlbum.add(new ImageModel(bucketName, pathFile, file.getParent()));
                         }
                     }
                 }
