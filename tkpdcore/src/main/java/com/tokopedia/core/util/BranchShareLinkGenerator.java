@@ -6,6 +6,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.var.TkpdCache;
 
 import io.branch.indexing.BranchUniversalObject;
@@ -97,8 +98,11 @@ public class BranchShareLinkGenerator {
         if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)) {
             return true;
         } else {
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(activity, TkpdCache.FIREBASE_REMOTE_CONFIG);
-            return localCacheHandler.getBoolean(TkpdCache.Key.MAINAPP_ACTIVATE_BRANCH_LINKS_KEY, true);
+            if(activity.getApplication() instanceof RemoteConfigRouter) {
+                return ((RemoteConfigRouter) activity.getApplication())
+                        .getBooleanConfig(TkpdCache.Key.CONFIG_MAINAPP_ACTIVATE_BRANCH_LINKS);
+            }
+            return true;
         }
     }
 
@@ -115,12 +119,13 @@ public class BranchShareLinkGenerator {
     }
 
     private static String getAppShareDescription(Activity activity, String type) {
-        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)) {
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(activity, TkpdCache.FIREBASE_REMOTE_CONFIG);
-            return localCacheHandler.getString(TkpdCache.Key.APP_SHARE_DESCRIPTION_KEY, "") + " \n";
-        } else {
-            return "";
+        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type) &&
+                activity.getApplication() instanceof RemoteConfigRouter) {
+            return ((RemoteConfigRouter) activity.getApplication())
+                    .getStringConfig(TkpdCache.Key.CONFIG_APP_SHARE_DESCRIPTION)  + " \n";
         }
+
+        return "";
     }
 
     public interface GenerateShareContents {
