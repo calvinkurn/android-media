@@ -130,10 +130,18 @@ public interface AppEventTracking {
         String CLICK_CANCEL_APP_UPDATE = "clickCancelAppUpdate";
 
         String SELLER_WIDGET = "sellerWidget";
+        String TOP_ADS_SELLER_APP = "TopAdsSellerApp";
+        String CLICK_CREATE_SHOP = "clickCreateShop";
+        String CLICK_APP_SHARE_REFERRAL = "clickReferral";
+        String HOME_DASHBOARD_CLICK_SELLER = "homeDashboardClicked";
+        String EVENT_MANAGE_PRODUCT = "eventManageProduct";
+
+        String EVENT_CLICK_USER_PROFILE = "clickUserProfile";
     }
 
     interface Category {
         String HOMEPAGE = "Homepage";
+        String HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
         String PRODUCT_DETAIL = "Product Detail Page";
         String ADD_TO_CART = "Add to Cart";
         String CHECKOUT = "Checkout";
@@ -209,6 +217,15 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT_SOLD = "GM Statistic - Products Sold";
         String APP_UPDATE = "Application Update";
         String SELLER_APP_WIDGET = "Seller App Widget";
+        String TOP_ADS_PRODUCT = "TopAds - Product";
+        String TOP_ADS_SHOP = "TopAds - Shop";
+        String DASHBOARD = "Dashboard";
+        String DASHBOARD_FAB = "Dashboard FAB";
+        String GOLD_MERCHANT_ATC = "Gold Merchant ATC";
+        String GOLD_MERCHANT_CHECKOUT = "Gold Merchant Checkout";
+        String TOP_ADS_PRODUCT_SHOP = "TopAds - Product/Shop";
+        String REFERRAL="Referral";
+        String FEATURED_PRODUCT = "Featured Product";
     }
 
     interface Action {
@@ -293,10 +310,21 @@ public interface AppEventTracking {
         String FILTER = "Filter";
         String INSTALL = "Install";
         String REMOVE = "Remove";
-
+        String CLICK_USSD_CEK_SALDO = "Click Cek Saldo from USSD";
+        String CLICK_USSD_BUY_PULSA = "Click Beli from USSD";
+        String CLICK_USSD_EDIT_NUMBER = "Click Edit Number from USSD";
         String CLICK_ICON_ON_ALL_CATEGORIES = "Click Icon on All Categories";
         String VOUCHER_SUCCESS = "Voucher Success - ";
         String VOUCHER_ERROR = "Voucher Error - ";
+        String SUBMIT = "Submit";
+        String CLICK_DASHBOARD_CARD = "Click - Dashboard Card";
+        String CLICK_TOP_NAV = "click top nav";
+        String CLICK_PRODUCT_LIST = "click product list";
+        String CLICK_SORT_PRODUCT = "click sort product";
+        String CLICK_FILTER_PRODUCT = "click filter product";
+        String CLICK_OVERFLOW_MENU = "click overflow menu";
+
+        String SELECT_NUMBER_ON_USER_PROFILE = "select number on user profile";
     }
 
     interface EventLabel {
@@ -402,6 +430,7 @@ public interface AppEventTracking {
         String PROFILE = "Profile";
         String SHOP_EN = "Shop";
         String PRODUCT = "Product - ";
+        String APPSHARE = "App share";
 
         String REGISTER = "Register";
         String CTA = "CTA";
@@ -485,6 +514,130 @@ public interface AppEventTracking {
         String EXPAND_SUB_CATEGORY = "Expand Subcategory";
         String PAYMENT_AND_TOPUP = "Pembayaran dan Top Up";
         String DIGITAL_TRANSACTION_LIST = "Daftar Transaksi Digital";
+        String ADD_BALANCE = "Add Balance";
+        String BALANCE_OPTION_50_RB = "Rp. 50,000";
+        String BALANCE_OPTION_100_RB = "Rp. 100,000";
+        String BALANCE_OPTION_500_RB = "Rp. 500,000";
+        String BALANCE_OPTION_1_JT = "Rp. 1000,000";
+        String PERIOD_OPTION = "Date Period - ";
+        String PERIOD_OPTION_TODAY = "Hari ini";
+        String PERIOD_OPTION_YESTERDAY = "Kemarin";
+        String PERIOD_OPTION_LAST_7_DAY = "7 Hari Terakhir";
+        String PERIOD_OPTION_LAST_1_MONTH = "30 Hari Terakhir";
+        String PERIOD_OPTION_THIS_MONTH = "Bulan ini";
+        String STATISTIC_BAR = "Statistic Bar -";
+        String STATISTIC_OPTION_IMPRESSION = "Impression";
+        String STATISTIC_OPTION_CLICK = "Click";
+        String STATISTIC_OPTION_CTR = "CTR";
+        String STATISTIC_OPTION_CONVERSION = "Conversion";
+        String STATISTIC_OPTION_AVERAGE_CONVERSION = "Average Conversion";
+        String STATISTIC_OPTION_CPC = "CPC";
+        String GROUP_PRODUCT_OPTION_NEW_GROUP = "Grup Baru";
+        String GROUP_PRODUCT_OPTION_EXISTING_GROUP = "Grup yang Ada";
+        String GROUP_PRODUCT_OPTION_WITHOUT_GROUP = "Tanpa Grup";
+        String GROUP_STATUS_FILTER_ALL = "Semua Status";
+        String GROUP_STATUS_FILTER_ACTIVE = "Aktif";
+        String GROUP_STATUS_FILTER_INACTIVE = "Tidak Terkirim";
+        String GROUP_STATUS_FILTER_NOT_SEND = "Tidak Aktif";
+        String PRODUCT_STATUS_FILTER_ALL_GROUP = "Semua Grup";
+        String PRODUCT_STATUS_FILTER_IN_GROUP = "Ada di Grup";
+        String PRODUCT_STATUS_FILTER_NOT_IN_GROUP= "Tidak Ada di Grup";
+        String BUDGET_NOT_LIMITED = "Anggaran Tidak Dibatasi";
+        String BUDGET_PER_DAY = "Perhari";
+        String SHOWTIME_AUTO = "Otomatis";
+        String SHOWTIME_SETUP = "Atur tanggal mulai dan berhenti";
+        String KEYWORD_TYPE_PHRASE = "Phrase Match";
+        String KEYWORD_TYPE_EXACT = "Exact Match";
+        String DATE_CUSTOM = "Date Custom";
+        String STATISTIC_DASHBOARD = "Statistic (TopAds Dashboard) - ";
+        String GROUP = "Group";
+        String ADD_GROUP_STEP_1 = "New Promo Step 1";
+        String ADD_GROUP_STEP_2 = "New Promo Step 2 - ";
+        String ADD_GROUP_STEP_3 = "New Promo Step 3 - ";
+        String GROUPS_FILTER = "Groups Filter - ";
+        String ADD_PRODUCT_STEP_1 = "Add Product Promo Step 1";
+        String ADD_PRODUCT_STEP_2 = "Add Product Promo Step 2- ";
+        String ADD_PRODUCT_STEP_3 = "Add Product Promo Step 3 - ";
+        String KEYWORD_POSITIF = "Keyword - ";
+        String KEYWORD_NEGATIF = "Negatif - ";
+        String EDIT_GROUP_MANAGE_GROUP = "Edit Group Promo - Atur Grup ";
+        String EDIT_GROUP_COST = "Edit Group Promo - Biaya ";
+        String EDIT_GROUP_SCHEDULE = "Edit Group Promo - Jadwal Tampil ";
+        String DELETE_GROUP = "Delete Group Promo";
+        String DATE_CUSTOM_WITHOUT_DASH = "Date Custom";
+        String STATISTIC_WITH_DASH = "Statistic - ";
+        String ADD_SHOP_PROMO_BUDGET = "Add Shop Promo Budget - ";
+        String ADD_SHOP_PROMO_SHOWTIME = "Add Shop Promo Show Time - ";
+        String FAB_DASHBOARD = "FAB Menu";
+        String MANAGE_PRODUCT = "Manage Product";
+        String ETALASE = "Etalase";
+        String CHANGE_PACKAGE_GOLD_MERCHANT = "Change Package";
+        String GM_CHECKOUT = "GM Checkout";
+        String ENTER = "Enter";
+        String OPEN_SHOP_ONBOARDING = "Open Shop - Onboarding";
+        String CONTINUE_SHOP_BIODATA = "Continue Shop Biodata";
+        String CONTINUE_SHOP_BIODATA_ERROR = "Continue Shop Biodata Error";
+        String SAVE_LOGISTIC = "Save Logistic";
+        String SAVE_LOGISTIC_ERROR = "Save Logistic Error";
+        String KEYWORD = "Keyword";
+        String PRODUCT_WITHOUT_DASH = "Product";
+        String PERIOD_OPTION_MAIN_PAGE = "Date Period (Main Page) - ";
+        String DATE_CUSTOM_MAIN_PAGE = "Date Custom (Main Page)";
+        String PERIOD_OPTION_STATISTIK = "Date Period (Statistik Page) - ";
+        String DATE_CUSTOM_STATISTIK = "Date Custom (Statistik Page)";
+        String PERIOD_OPTION_GROUP = "Date Period (Group Page) - ";
+        String DATE_CUSTOM_GROUP = "Date Custom (Group Page)";
+        String PERIOD_OPTION_PRODUCT = "Date Period (Product Page) - ";
+        String DATE_CUSTOM_PRODUCT = "Date Custom (Product Page)";
+        String PERIOD_OPTION_GROUP_DETAIL = "Date Period (Detail Group Page) - ";
+        String DATE_CUSTOM_GROUP_DETAIL = "Date Custom (Detail Group Page)";
+        String PERIOD_OPTION_PRODUCT_DETAIL = "Date Period (Detail Product Page) - ";
+        String DATE_CUSTOM_PRODUCT_DETAIL = "Date Custom (Detail Product Page)";
+        String EDIT_GROUP_ADD_PRODUCT = "Edit Group Promo - Tambah Produk";
+        String EDIT_PRODUCT_COST = "Edit Product Promo - Biaya ";
+        String EDIT_PRODUCT_SCHEDULE = "Edit Product Promo - Jadwal Tampil ";
+        String EDIT_GROUP_NAME = "Edit Group Promo - Ganti Nama Grup";
+        String DETAIL_PROMO_PRODUCT_PDP = "Detail Product Promo - PDP";
+        String DETAIL_PROMO_PRODUCT_GROUP = "Detail Product Promo - Detail Group";
+        String ADD_PRODUCT_EXISTING_GROUP_STEP_1 = "Avaiable Group Step 1 - Add Product";
+        String ADD_PRODUCT_WITHOUT_GROUP_STEP_1 = "Without Group Step 1- Add Product";
+        String ADD_PRODUCT_WITHOUT_GROUP_STEP_2 = "Without Group Step 2 - ";
+        String ADD_PROMO = "Add Promo - ";
+        String ADD_PROMO_GROUP = "Add Group Promo";
+        String ADD_PROMO_PRODUCT = "Add Produk Promo";
+        String ADD_PROMO_KEYWORD_POSITIF = "Add Positive Keyword";
+        String ADD_PROMO_KEYWORD_NEGATIVE = "Add Negative Keyword";
+        String APP_SHARE_LABEL="Share";
+        String FEATURED_PRODUCT = "Featured Product";
+        String ADD_FEATURED_PRODUCT = "Add Featured Product";
+        String TICK_ERROR = "Tick Error";
+        String SAVE_FEATURED_PRODUCT_PICKER = "Simpan - ";
+        String SORT_FEATURED_PRODUCT_CHANGE = "Atur Urutan (Change)";
+        String SORT_FEATURED_PRODUCT_NO_CHANGE = "Atur Urutan (No Change)";
+        String DELETE_FEATURED_PRODUCT = "Delete";
+
+        String DASHBOARD_MAIN_SHOP_INFO = "Shop Info";
+        String DASHBOARD_MAIN_TRANSACTION = "Penjualan";
+        String DASHBOARD_MAIN_INBOX = "Kotak Masuk";
+
+        String DASHBOARD_ITEM_SETTINGS = "Settings";
+        String DASHBOARD_ITEM_PERFORMA_TOKO = "Performa Toko";
+        String DASHBOARD_ITEM_REPUTASI_TOKO = "Reputasi Toko";
+        String DASHBOARD_ITEM_TRANSAKSI_SUKSES = "Transaksi Sukses";
+
+        String DASHBOARD_ITEM_ORDER_BARU = "Order Baru";
+        String DASHBOARD_ITEM_KONFIRMASI_PENGIRIMAN = "Konfirmasi Pengiriman";
+        String DASHBOARD_ITEM_STATUS_PENGIRIMAN = "Transaksi Sukses";
+        String DASHBOARD_ITEM_PELUANG = "Peluang";
+        String DASHBOARD_ITEM_PESAN = "Pesan";
+        String DASHBOARD_ITEM_DISKUSI_PRODUK = "Diskusi Produk";
+        String DASHBOARD_ITEM_ULASAN = "Ulasan";
+
+        String SEARCH_PRODUCT = "search product";
+        String CLICK_PRODUCT_LIST = "click product list";
+        String CATEGORY = "category";
+        String CONDITION = "condition";
+        String PICTURE_STATUS = "picture status";
     }
 
     interface SOCIAL_MEDIA {
@@ -501,53 +654,53 @@ public interface AppEventTracking {
 
     interface GTM {
         String GA_ID = "GA_ID";
-        String GTM_ID       = "GTM_ID";
+        String GTM_ID = "GTM_ID";
         String GTM_RESOURCE = "GTM_RESOURCE";
 
-        String LUCKY_BUYER          = "msg_lucky_buyer";
-        String LUCKY_BUYER_DETAIL   = "msg_lucky_buyer_detail";
-        String LUCKY_BUYER_VALID    = "msg_lucky_valid";
+        String LUCKY_BUYER = "msg_lucky_buyer";
+        String LUCKY_BUYER_DETAIL = "msg_lucky_buyer_detail";
+        String LUCKY_BUYER_VALID = "msg_lucky_valid";
 
-        String LUCKY_MERCHANT           = "msg_lucky_merchant";
-        String LUCKY_MERCHANT_DETAIL    = "msg_lucky_merchant_detail";
-        String OVERRIDE_BANNER          = "is_override_url_banner";
-        String CREATE_TICKET            = "is_create_ticket";
-        String REPORT                   = "enable_report";
-        String CONTACT_US               = "disable_contactus";
-        String TICKER_SEARCH            = "is_show_ticker_search";
-        String TICKER_SEARCH_TEXT       = "ticker_text_search";
-        String FILTER_SORT              = "sort_filter_data";
-        String EXCLUDED_URL             = "excluded-url";
-        String EXCLUDED_HOST            = "excluded-host";
+        String LUCKY_MERCHANT = "msg_lucky_merchant";
+        String LUCKY_MERCHANT_DETAIL = "msg_lucky_merchant_detail";
+        String OVERRIDE_BANNER = "is_override_url_banner";
+        String CREATE_TICKET = "is_create_ticket";
+        String REPORT = "enable_report";
+        String CONTACT_US = "disable_contactus";
+        String TICKER_SEARCH = "is_show_ticker_search";
+        String TICKER_SEARCH_TEXT = "ticker_text_search";
+        String FILTER_SORT = "sort_filter_data";
+        String EXCLUDED_URL = "excluded-url";
+        String EXCLUDED_HOST = "excluded-host";
 
-        String TICKER_PDP       = "is_show_ticker_pdp";
-        String TICKER_PDP_TEXT  = "ticker_text_pdp";
-        String TICKER_CART      = "is_show_ticker_cart";
+        String TICKER_PDP = "is_show_ticker_pdp";
+        String TICKER_PDP_TEXT = "ticker_text_pdp";
+        String TICKER_CART = "is_show_ticker_cart";
         String TICKER_CART_TEXT = "ticker_text_cart";
-        String TICKER_ATC       = "is_show_ticker_atc";
-        String TICKER_ATC_TEXT  = "ticker_text_atc";
+        String TICKER_ATC = "is_show_ticker_atc";
+        String TICKER_ATC_TEXT = "ticker_text_atc";
 
-        String SEARCH_RECENT                = "recent_search";
-        String SEARCH_POPULAR               = "popular_search";
-        String SEARCH_AUTOCOMPLETE          = "autocomplete";
-        String SEARCH_HOTLIST               = "hotlist";
-        String SEARCH_AUTOCOMPLETE_IN_CAT   = "in_category";
+        String SEARCH_RECENT = "recent_search";
+        String SEARCH_POPULAR = "popular_search";
+        String SEARCH_AUTOCOMPLETE = "autocomplete";
+        String SEARCH_HOTLIST = "hotlist";
+        String SEARCH_AUTOCOMPLETE_IN_CAT = "in_category";
 
-        String UTM_SOURCE   = "utm_source";
-        String UTM_MEDIUM   = "utm_medium";
+        String UTM_SOURCE = "utm_source";
+        String UTM_MEDIUM = "utm_medium";
         String UTM_CAMPAIGN = "utm_campaign";
-        String UTM_CONTENT  = "utm_content";
-        String UTM_TERM     = "utm_term";
-        String UTM_GCLID    = "gclid";
+        String UTM_CONTENT = "utm_content";
+        String UTM_TERM = "utm_term";
+        String UTM_GCLID = "gclid";
 
-        String UTM_SOURCE_APPEND   = "&"+UTM_SOURCE+"=";
-        String UTM_MEDIUM_APPEND   = "&"+UTM_MEDIUM+"=";
-        String UTM_CAMPAIGN_APPEND = "&"+UTM_CAMPAIGN+"=";
-        String UTM_CONTENT_APPEND  = "&"+UTM_CONTENT+"=";
-        String UTM_TERM_APPEND     = "&"+UTM_TERM+"=";
-        String UTM_GCLID_APPEND    = "&"+UTM_GCLID+"=";
+        String UTM_SOURCE_APPEND = "&" + UTM_SOURCE + "=";
+        String UTM_MEDIUM_APPEND = "&" + UTM_MEDIUM + "=";
+        String UTM_CAMPAIGN_APPEND = "&" + UTM_CAMPAIGN + "=";
+        String UTM_CONTENT_APPEND = "&" + UTM_CONTENT + "=";
+        String UTM_TERM_APPEND = "&" + UTM_TERM + "=";
+        String UTM_GCLID_APPEND = "&" + UTM_GCLID + "=";
 
-        String RESOLUTION_CENTER_UPLOAD_VIDEO   = "upload_video_resolution_center";
+        String RESOLUTION_CENTER_UPLOAD_VIDEO = "upload_video_resolution_center";
     }
 
     interface MOENGAGE {
@@ -557,16 +710,16 @@ public interface AppEventTracking {
         String PURCHASE_DATE = "purchaseDate";
         String PRICE = "price";
         String IS_GOLD_MERCHANT = "is_gold_merchant";
-        String IS_SELLER        = "is_seller";
-        String SHOP_ID          = "shop_id";
-        String SHOP_NAME        = "shop_name";
+        String IS_SELLER = "is_seller";
+        String SHOP_ID = "shop_id";
+        String SHOP_NAME = "shop_name";
         String MOBILE_NUM = "Mobile Number";
         String USER_ID = "User_ID";
         String MEDIUM = "Medium";
         String EMAIL = "Email";
         String LOGIN_STATUS = "logged_in_status";
         String PRODUCTS_NUMBER = "number_of_products";
-        String SUBCATEGORY = "subcategory_name";
+        String SUBCATEGORY = "subcategory";
         String SUBCATEGORY_ID = "subcategory_id";
         String CATEGORY = "category";
         String CATEGORY_ID = "category_id";
@@ -590,6 +743,24 @@ public interface AppEventTracking {
         String PURCHASE_SITE = "purchase_site";
         String TOTAL_PRICE = "purchase_site";
         String REVIEW_SCORE = "review_score";
+
+        String TOTAL_SOLD_ITEM = "total_sold_item";
+        String REG_DATE = "registration_date";
+        String DATE_SHOP_CREATED = "date_shop_created";
+        String SHOP_LOCATION     = "shop_location";
+
+        String TOKOCASH_AMT     = "tokocash_amt";
+        String SALDO_AMT     = "saldo_amt";
+        String TOPADS_AMT     = "topads_amt";
+        String TOPADS_USER     = "is_topads_user";
+        String HAS_PURCHASED_TICKET     = "has_purchased_ticket";
+        String HAS_PURCHASED_MARKETPLACE     = "has_purchased_marketplace";
+        String HAS_PURCHASED_DIGITAL     = "has_purchased_digital";
+        String LAST_TRANSACT_DATE     = "last_transaction_date";
+        String TOTAL_ACTIVE_PRODUCT     = "total_active_product";
+        String SHOP_SCORE     = "shop_score";
+        String QUALITY_SCORE     = "quality_score";
+
     }
 
     interface EventMoEngage {
@@ -602,7 +773,7 @@ public interface AppEventTracking {
         String CLICK_HOTLIST = "Clicked_Hotlist_Item";
         String ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
         String CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
-        String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Open";
+        String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Launched";
         String CAT_SCREEN_OPEN = "Category_Screen_Launched";
         String PRODUCT_ADDED_TO_CART = "Product_Added_To_Cart_Marketplace";
         String PRODUCT_REMOVED_FROM_CART = "Product_Removed_From_Cart_Marketplace";
@@ -612,6 +783,7 @@ public interface AppEventTracking {
         String SEARCH_ATTEMPT = "Search_Attempt";
         String OPEN_THANKYOU_PAGE = "Thank_You_Page_Launched";
         String SUCCESS_PURCHASE_REVIEW = "Success_Purchase_Review";
+        String SUBMIT_ULASAN_REVIEW = "Submit_Ulasan_Review";
 
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";
@@ -631,7 +803,9 @@ public interface AppEventTracking {
     interface AddProduct {
         String EVENT_CLICK_ADD_PRODUCT = "clickAddProduct";
         String CATEGORY_ADD_PRODUCT = "Add Product";
+        String CATEGORY_EDIT_PRODUCT = "Edit Product";
         String EVENT_ACTION_ADD = "Add";
+        String EVENT_ACTION_EDIT = "Edit";
         String EVENT_ACTION_ADD_MORE = "Add More";
         String EVENT_ACTION_ERROR = "Error";
         String EVENT_ACTION_ERROR_SERVER = "Error Server";
@@ -653,5 +827,16 @@ public interface AppEventTracking {
         String FIELDS_OPTIONAL_PRODUCT_VIDEO = "O6";
         String FIELDS_OPTIONAL_PREORDER = "O7";
         String FIELDS_OPTIONAL_SHARE = "O8";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL1 = "O9";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL2 = "O10";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL1_CUSTOM = "O11";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL2_CUSTOM = "O12";
+    }
+
+    interface CustomDimension {
+        String USER_ID = "userId";
+        String PRODUCT_ID = "productId";
+        String SHOP_ID = "shopId";
+        String PROMO_ID = "promoId";
     }
 }

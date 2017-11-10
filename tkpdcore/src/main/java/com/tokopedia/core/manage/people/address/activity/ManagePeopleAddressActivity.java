@@ -118,9 +118,14 @@ public class ManagePeopleAddressActivity extends BasePresenterActivity<ManagePeo
     @Override
     public void setFilterViewVisibility(boolean isAble) {
         if (isAble) {
-            fab.setVisibility(View.VISIBLE);
+            fab.show();
         } else {
-            fab.setVisibility(View.GONE);
+            fab.hide();
         }
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

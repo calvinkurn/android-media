@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Slide;
@@ -16,6 +18,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Response;
 import rx.Subscriber;
@@ -30,6 +33,7 @@ import rx.subscriptions.CompositeSubscription;
 public class CategoryImpl implements Category {
 
     private static final String TICKER_CLOSED_CACHE_KEY = "TICKER_CLOSED_CACHE";
+    private static final String TICKER_FIRST_ANNOUNCEMENT_KEY = "TICKER_FIRST_ANNOUNCEMENT";
     CategoryApi categoryApi;
     CategoryView view;
     CompositeSubscription subscription = new CompositeSubscription();
@@ -90,8 +94,17 @@ public class CategoryImpl implements Category {
 
     @Override
     public void fetchTickers(final FetchTickersListener listener) {
-        if (MainApplication.getIsResetTickerState())
+        if (MainApplication.getIsResetTickerState()) {
             resetTickerState();
+        }
+
+        List<Ticker.Tickers> showedTickers = CacheUtil.convertStringToListModel(tickerCacheHandler.getString(TICKER_FIRST_ANNOUNCEMENT_KEY),
+                new TypeToken<ArrayList<Ticker.Tickers>>() {
+                }.getType());
+
+        if(showedTickers != null) {
+            listener.onSuccess(new ArrayList<Ticker.Tickers>(showedTickers));
+        }
         Subscriber<Response<Ticker>> subscriber = new Subscriber<Response<Ticker>>() {
             @Override
             public void onCompleted() {
@@ -112,6 +125,11 @@ public class CategoryImpl implements Category {
                     for (Ticker.Tickers tickersItem: response.body().getData().getTickers()) {
                         showedTickers.add(tickersItem);
                     }
+
+                    tickerCacheHandler.putString(TICKER_FIRST_ANNOUNCEMENT_KEY,CacheUtil.convertListModelToString(showedTickers,
+                            new TypeToken<ArrayList<Ticker.Tickers>>() {
+                            }.getType()));
+                    tickerCacheHandler.applyEditor();
                     listener.onSuccess(showedTickers);
                 } else {
                     listener.onError();
@@ -150,45 +168,7 @@ public class CategoryImpl implements Category {
         tickerCacheHandler.putBoolean(TICKER_CLOSED_CACHE_KEY,false);
     }
 
-    @Override
-    public void fetchBanners(final FacadePromo.GetPromoListener listener) {
-        Subscriber<Response<Banner>> subscriber = new Subscriber<Response<Banner>>() {
-            @Override
-            public void onCompleted() {
-                Log.d(TAG, messageTAG + "onCompleted()");
-            }
 
-            @Override
-            public void onError(Throwable e) {
-                listener.OnError();
-            }
-
-            @Override
-            public void onNext(Response<Banner> bannerResponse) {
-                Banner b = bannerResponse.body();
-
-                if (bannerResponse.isSuccessful() && b.getData() != null)
-                     view.onSuccessFetchBanners(b);
-
-            }
-        };
-        subscription
-                .add(
-                        categoryApi.getBanners(
-                                SessionHandler.getLoginID(MainApplication.getAppContext()),
-                                CategoryApi.size,
-                                CategoryApi.ANDROID_DEVICE,
-                                CategoryApi.state,
-                                CategoryApi.newExpired,
-                                CategoryApi.TARGET_SLIDE_TYPE
-                        ).subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .unsubscribeOn(Schedulers.io())
-                                .subscribe(
-                                        subscriber
-                                )
-                );
-    }
 
     @Override
     public void subscribe() {

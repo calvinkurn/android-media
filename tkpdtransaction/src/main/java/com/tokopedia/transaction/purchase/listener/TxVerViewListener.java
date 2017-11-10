@@ -18,6 +18,8 @@ public interface TxVerViewListener extends IBaseView {
 
     void showFailedResetData(String message);
 
+    void showCancelTransactionDialog(String message, String paymentId);
+
     void showNoConnectionLoadMoreData(String message);
 
     void showNoConnectionPullRefresh(String message);
@@ -27,6 +29,8 @@ public interface TxVerViewListener extends IBaseView {
     void showEmptyData(int typeRequest);
 
     void showProcessGetData(int typeRequest);
+
+    void showSnackbarWithMessage(String message);
 
     void resetData();
 }

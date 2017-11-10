@@ -2,6 +2,8 @@ package com.tokopedia.inbox.inboxmessage.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -66,5 +68,61 @@ public class SendMessageActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    public static Intent getAskSellerIntent(Context context, String toShopId,
+                                            String shopName, String source) {
+        Intent intent = new Intent(context, SendMessageActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(SendMessageFragment.PARAM_SHOP_ID, toShopId);
+        bundle.putString(SendMessageFragment.PARAM_OWNER_FULLNAME, shopName);
+        bundle.putString(SendMessageFragment.PARAM_SOURCE, source);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                            String customSubject, String customMessage, String source) {
+        Intent intent = getAskSellerIntent(context, toShopId, shopName, customSubject, source);
+        Bundle bundle = intent.getExtras();
+        bundle.putString(SendMessageFragment.PARAM_CUSTOM_MESSAGE, customMessage);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getAskSellerIntent(Context context, String toShopId, String shopName,
+                                            String customSubject, String source) {
+        Intent intent = getAskSellerIntent(context, toShopId, shopName, source);
+        Bundle bundle = intent.getExtras();
+        bundle.putString(SendMessageFragment.PARAM_CUSTOM_SUBJECT, customSubject);
+        intent.putExtras(bundle);
+
+        return intent;
+    }
+
+    public static Intent getAskUserIntent(Context context, String userId,
+                                          String userName, String source) {
+        Intent intent = new Intent(context, SendMessageActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(SendMessageFragment.PARAM_USER_ID, userId);
+        bundle.putString(SendMessageFragment.PARAM_OWNER_FULLNAME, userName);
+        bundle.putString(SendMessageFragment.PARAM_SOURCE, source);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getAskBuyerIntent(Context context, String toUserId, String
+            customerName, String customSubject, String customMessage, String source) {
+        Intent intent = getAskUserIntent(context, toUserId, customerName, source);
+        Bundle bundle = intent.getExtras();
+        bundle.putString(SendMessageFragment.PARAM_CUSTOM_SUBJECT, customSubject);
+        bundle.putString(SendMessageFragment.PARAM_CUSTOM_MESSAGE, customMessage);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

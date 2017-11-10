@@ -2,19 +2,13 @@ package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
-import com.localytics.android.Localytics;
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
+import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 
 import org.json.JSONArray;
-
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,23 +22,6 @@ public class PaymentTracking extends TrackingUtils {
         getGTMEngine().eventTransaction(purchase);
         getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
         getGTMEngine().clearTransactionDataLayer(purchase);
-    }
-
-    public static void eventTransactionLoca(Map<String, String> values, ArrayList<Product> products) {
-        String screenName = MainApplication.getAppContext().getString(R.string.cart_pg_3);
-        String transcatAttrKey = MainApplication.getAppContext().getString(R.string.event_value_total_transaction);
-        getLocaEngine()
-                .tagScreen(screenName)
-                .tageEventandInApp("event : Viewed " + screenName)
-                .tagEvent(MainApplication.getAppContext().getString(R.string.event_finish_transaction), values, Long.parseLong(values.get(transcatAttrKey)))
-                .incrementProfileAttribute(transcatAttrKey, Long.parseLong(values.get(transcatAttrKey)), Localytics.ProfileScope.APPLICATION);
-
-        if (products != null && !products.isEmpty()) {
-            for (Product product : products) {
-                getLocaEngine()
-                        .tagPurchasedEvent(product);
-            }
-        }
     }
 
     /* new from TopPayActivity revamped*/
@@ -65,26 +42,8 @@ public class PaymentTracking extends TrackingUtils {
         getAFEngine().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 
-    public static void atcLoca(ProductCartPass productCartPass, String productId,
-                               String priceItem, Map<String, String> values) {
-        eventLoca("event : " + MainApplication.getAppContext().getString(R.string.event_add_to_cart), values);
-        getLocaEngine().tagAddedToCart(productCartPass.getProductName(), productId, productCartPass.getProductCategory(), Long.parseLong(priceItem.replace("Rp", "").replace(".", "").trim()), null)
-                .setProfileAttribute(
-                        MainApplication.getAppContext().getString(R.string.profile_last_date_add_to_cart),
-                        new GregorianCalendar().getTime(),
-                        Localytics.ProfileScope.APPLICATION);
-    }
-
     public static void atcAF(Map<String, Object> values) {
         getAFEngine().sendTrackEvent(AFInAppEventType.ADD_TO_CART, values);
-    }
-
-    public static void confirmPaymentLoca(Map<String, String> values) {
-        String transcatAttrKey = MainApplication.getAppContext().getString(R.string.event_value_total_transaction);
-        long amtPayment = Long.valueOf(values.get(transcatAttrKey));
-        eventLoca(MainApplication.getAppContext().getString(R.string.event_confirm_payment),
-                values, amtPayment);
-        getLocaEngine().incrementProfileAttribute(transcatAttrKey, amtPayment, Localytics.ProfileScope.APPLICATION);
     }
 
     public static void checkoutEventAppsflyer(ProductCartPass param) {
@@ -102,5 +61,14 @@ public class PaymentTracking extends TrackingUtils {
                 .eventCheckout(checkout)
                 .sendScreen(AppScreen.SCREEN_CART_SUMMARY_CHECKOUT)
                 .clearCheckoutDataLayer();
+    }
+
+
+    public static void eventPromoImpression(Promotion promotion) {
+        getGTMEngine().eventBannerImpression(promotion);
+    }
+
+    public static void eventPromoClick(Promotion promotion) {
+        getGTMEngine().eventBannerClick(promotion);
     }
 }

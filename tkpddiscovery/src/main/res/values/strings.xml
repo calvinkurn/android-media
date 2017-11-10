@@ -17,4 +17,9 @@
     <string name="formated_in_category">di %1$s</string>
     <string name="shop_list_favorite_button_already_favorited">Favorit</string>
     <string name="shop_list_favorite_button_not_yet_favorited">Favoritkan</string>
+    <string name="dynamic_filter_apply_button_text">Simpan</string>
+    <string name="filter_button_reset_text">Reset</string>
+    <string name="dynamic_filter_finish_button_text">Terapkan</string>
+    <string name="choose_category">Pilih Kategori</string>
+    <string name="choose_category_desc">Klik di sini untuk menjelajahi kategori-kategori di Tokopedia</string>
 </resources>

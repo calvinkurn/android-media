@@ -150,4 +150,9 @@ public class ResCenterActivity extends BasePresenterActivity<ResCenterPresenter>
         }
         super.onBackPressed();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

@@ -20,22 +20,32 @@ import java.util.List;
 public interface FeedPlus{
 
     interface View extends CustomerView {
-        void onShareButtonClicked( String shareUrl,
-                                   String title,
-                                   String imgUrl,
-                                   String contentMessage);
 
-        void onGoToProductDetail(String productId);
+        void setFirstCursor(String firstCursor);
+
+        interface Toppicks {
+            void onToppicksClicked(int page, int rowNumber, String name, String url);
+
+            void onSeeAllToppicks(int page, int rowNumber);
+        }
+
+        void onShareButtonClicked(String shareUrl,
+                                  String title,
+                                  String imgUrl,
+                                  String contentMessage,
+                                  String pageRowNumber);
+
+        void onGoToProductDetail(int rowNumber, int page, String productId);
 
         void onGoToProductDetailFromRecentView(String productID);
 
-        void onGoToProductDetailFromInspiration(String productId);
+        void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId);
 
-        void onGoToFeedDetail(String feedId);
+        void onGoToFeedDetail(int page, int rowNumber, String feedId);
 
-        void onGoToShopDetail(Integer shopId, String url);
+        void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url);
 
-        void onCopyClicked(String s, String name);
+        void onCopyClicked(int page, int rowNumber, String id, String s, String name);
 
         void onGoToBlogWebView(String url);
 
@@ -59,7 +69,7 @@ public interface FeedPlus{
 
         void updateFavorite(int adapterPosition);
 
-        void onViewMorePromoClicked();
+        void onViewMorePromoClicked(int page, int rowNumber);
 
         void showRefresh();
 
@@ -71,7 +81,7 @@ public interface FeedPlus{
 
         void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeedView);
 
-        void onSeePromo(String link, String name);
+        void onSeePromo(int page, int rowNumber, String id, String link, String name);
 
         void onRetryClicked();
 
@@ -99,31 +109,31 @@ public interface FeedPlus{
 
         void unsetEndlessScroll();
 
-        void onShowNewFeed();
+        void onShowNewFeed(String totalData);
 
-        void onGoToPromoPageFromHeader();
+        void onGoToPromoPageFromHeader(int page, int rowNumber);
 
         void onHideNewFeed();
 
         boolean hasFeed();
 
-        void updateFavoriteFromEmpty();
+        void updateFavoriteFromEmpty(String shopId);
 
         void showTopAds(boolean isTopAdsShown);
 
         void onEmptyOfficialStoreClicked();
 
-        void onBrandClicked(OfficialStoreViewModel officialStoreViewModel);
+        void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel officialStoreViewModel);
 
-        void onSeeAllOfficialStoresFromCampaign(String redirectUrl);
+        void onSeeAllOfficialStoresFromCampaign(int page, int rowNumber, String redirectUrl);
 
-        void onGoToCampaign(String redirectUrl, String title);
+        void onGoToCampaign(int page, int rowNumber, String redirectUrl, String title);
 
-        void onSeeAllOfficialStoresFromBrands();
+        void onSeeAllOfficialStoresFromBrands(int page, int rowNumber);
 
-        void onGoToProductDetailFromCampaign(String productId);
+        void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId);
 
-        void onGoToShopDetailFromCampaign(String shopUrl);
+        void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl);
     }
 
     interface Presenter extends CustomerPresenter<View>{

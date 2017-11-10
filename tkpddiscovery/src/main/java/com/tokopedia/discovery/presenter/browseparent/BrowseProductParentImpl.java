@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.discovery.model.Breadcrumb;
@@ -52,7 +53,6 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
     NetworkParam.Product p;
     HotListBannerModel hotListBannerModel;
     BrowseProductActivityModel browseProductActivityModel;
-    private int index;
     private Stack<SimpleCategory> categoryLevel = new Stack<>();
 
     public BrowseProductParentImpl(BrowseProductParentView view) {
@@ -127,7 +127,6 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
     @Override
     public void fetchArguments(Bundle argument) {
         if (argument != null && !isAfterRotate) {
-            index = argument.getInt(ProductFragment.INDEX, 0);
             browseProductActivityModel = Parcels.unwrap(argument.getParcelable(BrowseParentFragment.BROWSE_PRODUCT_ACTIVITY_MODEL));
             view.setSource(browseProductActivityModel.getSource());
             Log.d(TAG, "BROWSE_PRODUCT_ACTIVITY_MODEL " + browseProductActivityModel.toString());
@@ -227,7 +226,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
         switch (type) {
             case DiscoveryListener.DYNAMIC_ATTRIBUTE:
                 DynamicFilterModel.DynamicFilterContainer dynamicFilterContainer = (DynamicFilterModel.DynamicFilterContainer) data.getModel2();
-                view.setDynamicFilterAtrribute(dynamicFilterContainer.body().getData(), index);
+                view.setDynamicFilterAtrribute(dynamicFilterContainer.body().getData(), PAGER_THREE_TAB_PRODUCT_POSITION);
                 break;
             case DiscoveryListener.BROWSE_PRODUCT:
                 browseProductModel = (BrowseProductModel) data.getModel2().body();
@@ -281,9 +280,11 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                             getOfficialStoreBanner(p.q);
                         }
                     }
-                    if (view.checkHasFilterAttrIsNull(index)) {
-                        discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
+
+                    if (view.checkHasFilterAttrIsNull(PAGER_THREE_TAB_PRODUCT_POSITION)) {
+                        fetchDynamicAttribute(source, p.q, p.sc);
                     }
+
                     if(source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)){
                         view.showTabLayout();
                     }
@@ -296,6 +297,26 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 view.setOfficialStoreBanner((BannerOfficialStoreModel) data.getModel2().body());
                 break;
         }
+    }
+
+    private void fetchDynamicAttribute(String source, String query, String depId) {
+
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY.equals(source)) {
+            query = "";
+        }
+
+        String sourceKey = source;
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP.equals(sourceKey)
+                || BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG.equals(sourceKey)) {
+            sourceKey = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
+        }
+
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT.equals(source)
+                && TextUtils.isEmpty(depId)) {
+            depId = "0";
+        }
+
+        discoveryInteractor.getDynamicAttribute(view.getContext(), sourceKey, depId, query);
     }
 
     private boolean isSearchResultNotEmpty() {

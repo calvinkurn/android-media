@@ -1,26 +1,22 @@
 package com.tokopedia.tkpd.home.recharge.interactor;
 
-import com.tokopedia.core.database.recharge.recentNumber.RecentData;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
+import com.tokopedia.digital.widget.model.category.Category;
+import com.tokopedia.digital.widget.model.status.Status;
 
-import java.util.Map;
+import java.util.List;
+
+import rx.Subscriber;
 
 /**
  * @author ricoharisin on 7/4/16.
+ * Modified by Nabilla Sabbaha on 08/07/2017
  */
 public interface RechargeNetworkInteractor {
 
-    void getRecentNumbers(Map<String,String> params, OnGetRecentNumbersListener listener);
+    void getCategoryData(Subscriber<List<Category>> subscriber);
 
-    void getLastOrder(Map<String, String>params, OnGetRecentOrderListener listener);
+    void getStatus(Subscriber<Status> subscriber);
 
-    interface OnGetRecentNumbersListener {
-        void onGetRecentNumbersSuccess(RecentData recentNumber);
-        void onNetworkError();
-    }
+    void onDestroy();
 
-    interface OnGetRecentOrderListener {
-        void onGetLastOrderSuccess(LastOrder lastOrder);
-        void onNetworkError();
-    }
 }

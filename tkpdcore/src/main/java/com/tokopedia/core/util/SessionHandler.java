@@ -75,7 +75,6 @@ public class SessionHandler {
     private static final String UUID_KEY = "uuid";
     private static final String DEFAULT_UUID_VALUE = "";
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
-    private static final String KEY_LAST_ORDER = "RECHARGE_LAST_ORDER";
     private static final String USER_DATA = "USER_DATA";
     private static final String KEY_IV = "tokopedia1234567";
 
@@ -138,7 +137,8 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
         LocalCacheHandler.clearCache(context, "ETALASE_ADD_PROD");
         LocalCacheHandler.clearCache(context, "REGISTERED");
-        LocalCacheHandler.clearCache(context, KEY_LAST_ORDER);
+        LocalCacheHandler.clearCache(context, TkpdCache.DIGITAL_WIDGET_LAST_ORDER);
+        LocalCacheHandler.clearCache(context, TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_MAIN);
         LocalCacheHandler.clearCache(context, CACHE_PROMOTION_PRODUCT);
         LocalCacheHandler.clearCache(context, CACHE_PHONE_VERIF_TIMER);
@@ -504,6 +504,9 @@ public class SessionHandler {
         editor.apply();
         TrackingUtils.eventPushUserID();
         Crashlytics.setUserIdentifier(u_id);
+
+        BranchSdkUtils.sendLoginEvent(u_id);
+
         //return status;
     }
 
@@ -515,6 +518,9 @@ public class SessionHandler {
                 Crashlytics.setUserIdentifier("");
             }
         }
+
+        //Set logout to Branch.io sdk,
+        BranchSdkUtils.sendLogoutEvent();
     }
 
     private void clearUserData() {

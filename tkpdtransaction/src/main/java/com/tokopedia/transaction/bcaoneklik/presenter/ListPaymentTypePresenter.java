@@ -1,7 +1,10 @@
 package com.tokopedia.transaction.bcaoneklik.presenter;
 
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickData;
-import com.tokopedia.transaction.bcaoneklik.model.PaymentListModel;
+import android.content.Context;
+
+import com.tokopedia.transaction.bcaoneklik.listener.ListPaymentTypeView;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.BcaOneClickData;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.PaymentListModel;
 
 import rx.Subscriber;
 
@@ -11,11 +14,28 @@ import rx.Subscriber;
 
 public interface ListPaymentTypePresenter {
 
-    void onRegisterOneClickBcaChosen(Subscriber<BcaOneClickData> subscriber);
+    void onRequestBcaOneClickAccessToken(
+            String tokenId, String credentialType, String credentialNumber,
+            int mode
+    );
 
-    void onGetPaymentList(Subscriber<PaymentListModel> subscriber);
+    void onRequestBcaOneClickRegisterToken();
 
-    void onDeletePaymentList(Subscriber<PaymentListModel> subscriber, String tokenId);
+    void checkCreditCardWhiteList();
+
+    void onGetBcaOneClickList(Subscriber<PaymentListModel> subscriber);
+
+    void onGetCreditCardList(Context context);
+
+    void onGetAllPaymentList(Context context);
+
+    void onDeleteBcaOneClick(String tokenId);
+
+    void setViewListener(ListPaymentTypeView view);
+
+    void onCreditCardDeleted(Context context, String tokenId);
+
+    String getUserLoginAccountName();
 
     void onDestroyed();
 }

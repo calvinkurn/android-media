@@ -14,7 +14,7 @@ import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
 import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
-import com.tokopedia.seller.common.widget.DateLabelView;
+import com.tokopedia.design.label.DateLabelView;
 
 import javax.inject.Inject;
 
@@ -81,7 +81,7 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
     @Override
     public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
         this.datePickerViewModel = datePickerViewModel;
-        loadDataByDateAndPage(datePickerViewModel, page);
+        loadDataByDateAndPage(datePickerViewModel, getCurrentPage());
         setDateLabelView();
     }
 
@@ -100,7 +100,7 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
             datePickerPresenter.saveDateSetting(datePickerViewModel);
         }
         setDateLabelView();
-        loadDataByDateAndPage(datePickerViewModel, page);
+        loadDataByDateAndPage(datePickerViewModel, getCurrentPage());
     }
 
     @Override

@@ -22,6 +22,11 @@ def getTkpdPdp() {
             rootProject.ext.tkpdDependencies.tkpdpdp : project(':tkpdpdp');
 }
 
+def getTkpdDesign() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
@@ -109,6 +114,7 @@ dependencies {
     compile getTkpdCore()
     compile getTopAdsSdk()
     compile getTkpdPdp()
+    compile getTkpdDesign()
 
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
@@ -121,4 +127,8 @@ dependencies {
     })
 
     testCompile 'junit:junit:4.12'
+
+    compile(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
 }

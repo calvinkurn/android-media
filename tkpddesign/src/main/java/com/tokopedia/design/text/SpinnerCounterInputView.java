@@ -82,7 +82,9 @@ public class SpinnerCounterInputView extends BaseCustomView {
             spinnerTextView.setEntries(ConverterUtils.convertCharSequenceToString(entries));
         }
         if (values != null) {
-            spinnerTextView.setValues(ConverterUtils.convertCharSequenceToString(values));
+            String[] valueArr = ConverterUtils.convertCharSequenceToString(values);
+            spinnerTextView.setValues(valueArr);
+            setSpinnerValue(valueArr[0]);
         }
         counterInputView.showCounterButton(showCounterButton);
         setMaxLength(maxLength);
@@ -146,6 +148,14 @@ public class SpinnerCounterInputView extends BaseCustomView {
 
     public String getSpinnerValue(int position) {
         return spinnerTextView.getSpinnerValue(position);
+    }
+
+    public String getSpinnerEntry() {
+        return spinnerTextView.getSpinnerEntry();
+    }
+
+    public String getSpinnerEntry(int position) {
+        return spinnerTextView.getSpinnerEntry(position);
     }
 
     public void setSpinnerValue(String value) {

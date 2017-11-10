@@ -1,12 +1,11 @@
 package com.tokopedia.tkpd.home.facade;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.core.facade.BaseFacade;
 import com.tokopedia.core.network.entity.home.Slide;
-
-import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,29 +17,15 @@ import java.util.List;
 public class FacadePromo extends BaseFacade {
 
     public static class PromoItem implements Parcelable {
-        public String imgUrl;
-        public String promoUrl;
+        public String imgUrl="";
+        public String promoUrl="";
+        public String title="";
+        public String id="";
+        public String appLink="";
 
         public PromoItem() {
 
         }
-
-        protected PromoItem(android.os.Parcel in) {
-            imgUrl = in.readString();
-            promoUrl = in.readString();
-        }
-
-        public static final Creator<PromoItem> CREATOR = new Creator<PromoItem>() {
-            @Override
-            public PromoItem createFromParcel(android.os.Parcel in) {
-                return new PromoItem(in);
-            }
-
-            @Override
-            public PromoItem[] newArray(int size) {
-                return new PromoItem[size];
-            }
-        };
 
         @Override
         public int describeContents() {
@@ -48,10 +33,33 @@ public class FacadePromo extends BaseFacade {
         }
 
         @Override
-        public void writeToParcel(android.os.Parcel parcel, int i) {
-            parcel.writeString(imgUrl);
-            parcel.writeString(promoUrl);
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.imgUrl);
+            dest.writeString(this.promoUrl);
+            dest.writeString(this.title);
+            dest.writeString(this.id);
+            dest.writeString(this.appLink);
         }
+
+        protected PromoItem(Parcel in) {
+            this.imgUrl = in.readString();
+            this.promoUrl = in.readString();
+            this.title = in.readString();
+            this.id = in.readString();
+            this.appLink = in.readString();
+        }
+
+        public static final Creator<PromoItem> CREATOR = new Creator<PromoItem>() {
+            @Override
+            public PromoItem createFromParcel(Parcel source) {
+                return new PromoItem(source);
+            }
+
+            @Override
+            public PromoItem[] newArray(int size) {
+                return new PromoItem[size];
+            }
+        };
     }
 
     public FacadePromo(Context context) {
@@ -76,8 +84,11 @@ public class FacadePromo extends BaseFacade {
 
     public static PromoItem parseTicker(Slide.Slides s){
         PromoItem p = new PromoItem();
+        p.id = s.getId();
+        p.title = s.getTitle();
         p.imgUrl = s.getImageUrl();
         p.promoUrl = s.getRedirectUrl();
+        p.appLink = s.getApplink();
         return p;
     }
 }

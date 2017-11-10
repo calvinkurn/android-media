@@ -1,6 +1,8 @@
 package com.tokopedia.ride.ontrip.view;
 
 import android.Manifest;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -21,6 +23,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -41,16 +44,20 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
+import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.common.ride.domain.model.UpdateDestination;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
+import com.tokopedia.ride.ontrip.domain.UpdateRideRequestUseCase;
+import com.tokopedia.ride.ontrip.view.service.ActivityRecognizedService;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -88,6 +95,7 @@ import rx.subscriptions.CompositeSubscription;
 public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.View>
         implements OnTripMapContract.Presenter {
     private static final String DATE_SERVER_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final long TEN_SECS = 10000;
     private static long CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = 4000;
 
     private CreateRideRequestUseCase createRideRequestUseCase;
@@ -96,6 +104,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private GetRideRequestDetailUseCase getRideRequestUseCase;
     private GetFareEstimateUseCase getFareEstimateUseCase;
     private GetRideProductUseCase getRideProductUseCase;
+    private UpdateRideRequestUseCase updateRideRequestUseCase;
     private RideRequest activeRideRequest;
 
     private GoogleApiClient googleApiClient;
@@ -103,6 +112,9 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private Location currentLocation;
     private CompositeSubscription subscription;
     private boolean isZoomFitByDriverAndCustomer;
+    private boolean isUserInRide;
+    private double userLocationLatitude, userLocationLongitude;
+    private float userBearing;
 
     @Inject
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
@@ -110,20 +122,22 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                               GetRideRequestMapUseCase getRideRequestMapUseCase,
                               GetRideRequestDetailUseCase getRideRequestUseCase,
                               GetFareEstimateUseCase getFareEstimateUseCase,
-                              GetRideProductUseCase getRideProductUseCase) {
+                              GetRideProductUseCase getRideProductUseCase,
+                              UpdateRideRequestUseCase updateRideRequestUseCase) {
         this.createRideRequestUseCase = createRideRequestUseCase;
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
         this.getRideRequestMapUseCase = getRideRequestMapUseCase;
         this.getRideRequestUseCase = getRideRequestUseCase;
         this.getFareEstimateUseCase = getFareEstimateUseCase;
         this.getRideProductUseCase = getRideProductUseCase;
+        this.updateRideRequestUseCase = updateRideRequestUseCase;
         this.subscription = new CompositeSubscription();
     }
 
 
     @Override
     public void initialize() {
-        getView().showRequestLoadingLayout();
+        getView().showBlockTranslucentLayout();
         getView().showLoadingWaitingResponse();
         getView().hideRideRequestStatus();
         getView().hideCancelRequestButton();
@@ -185,7 +199,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
      */
     @Override
     public void actionRideRequest(final RequestParams requestParam) {
-        getView().showRequestLoadingLayout();
+        getView().showBlockTranslucentLayout();
         getFareEstimateUseCase.execute(getView().getFareEstimateParam(), new Subscriber<FareEstimate>() {
             @Override
             public void onCompleted() {
@@ -196,7 +210,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    getView().hideRequestLoadingLayout();
+                    getView().hideBlockTranslucentLayout();
                     String error;
                     if (e instanceof UnknownHostException) {
                         error = getView().getActivity().getString(R.string.error_no_connection);
@@ -239,7 +253,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 e.printStackTrace();
 
                 if (!isViewAttached()) return;
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 if (e instanceof InterruptConfirmationHttpException) {
                     if (!(e.getCause() instanceof JsonSyntaxException) && ((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.TOS_TOKOPEDIA_INTERRUPT)) {
                         getView().openInterruptConfirmationDialog(
@@ -291,7 +305,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         actionSetAddressInPicker(result);
         switch (result.getStatus()) {
             case RideStatus.NO_DRIVER_AVAILABLE:
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 getView().hideFindingUberNotification();
                 getView().hideLoadingWaitingResponse();
                 getView().showNoDriverAvailableDialog();
@@ -316,7 +330,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 break;
             case RideStatus.ACCEPTED:
                 getView().saveActiveRequestId(result.getRequestId());
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
@@ -340,10 +354,11 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     getView().zoomMapFitByDriverAndCustomer(latLngs);
                     isZoomFitByDriverAndCustomer = true;
                 }
+
                 break;
             case RideStatus.ARRIVING:
                 getView().saveActiveRequestId(result.getRequestId());
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
@@ -364,7 +379,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 break;
             case RideStatus.IN_PROGRESS:
                 getView().saveActiveRequestId(result.getRequestId());
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().hideCancelRequestButton();
@@ -373,10 +388,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderAcceptedRequest(result);
                 getView().renderInProgressRequest(result);
                 getView().hideCurrentLocationIndicator();
-                updatePolylineBetweenDriverAndDestination(result);
+                updatePolylineBetweenUserAndDestination(result);
                 break;
             case RideStatus.DRIVER_CANCELED:
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().renderDriverCanceledRequest(result);
@@ -384,7 +399,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().clearSavedActiveProductName();
                 break;
             case RideStatus.RIDER_CANCELED:
-                getView().hideRequestLoadingLayout();
+                getView().hideBlockTranslucentLayout();
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().renderRiderCanceledRequest(result);
@@ -395,28 +410,69 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 CommonUtils.dumper("proccessGetCurrentRideRequest## Ride Completed");
                 if (result.getPayment() != null && result.getPayment().isReceiptReady()) {
                     CommonUtils.dumper("proccessGetCurrentRideRequest## Ride Completed ReceiptReady");
-                    getView().hideRequestLoadingLayout();
+                    getView().hideBlockTranslucentLayout();
                     getView().hideFindingUberNotification();
                     getView().hideAcceptedNotification();
                     getView().renderCompletedRequest(result);
+                }else{
+                    getView().saveActiveRequestId(result.getRequestId());
+                    getView().hideBlockTranslucentLayout();
+                    getView().hideFindingUberNotification();
+                    getView().hideAcceptedNotification();
+                    getView().hideCancelRequestButton();
+                    getView().hideLoadingWaitingResponse();
+                    getView().showBottomSection();
+                    getView().renderCompletedRequestWithoutReceipt(result);
                 }
                 break;
             default:
         }
     }
 
-    private void updatePolylineBetweenDriverAndDestination(RideRequest result) {
+    private void updatePolylineBetweenUserAndDestination(RideRequest result) {
         getView().updateSourceCoordinate(result.getPickup().getLatitude(), result.getPickup().getLongitude());
         getView().updateDestinationCoordinate(result.getDestination().getLatitude(), result.getDestination().getLongitude());
         boolean animation = true;
         if (getView().isAlreadyRouteDrawed()) {
             animation = false;
         }
-        getOverViewPolyLineDriverBetweenDestination(animation, result);
+        getOverViewPolyLineBetweenUserAndDestination(animation, result);
     }
 
-    private void getOverViewPolyLineDriverBetweenDestination(final boolean animation, RideRequest result) {
-        RequestParams polylineRequestParams = getView().getPolyLineParamDriverBetweenDestination(result.getLocation().getLatitude(), result.getLocation().getLongitude());
+    private void getOverViewPolyLineBetweenUserAndDestination(final boolean animation, final RideRequest result) {
+
+
+        if (result.getLocation() != null && result.getLocation().getLatitude() != 0 && result.getLocation().getLongitude() != 0) {
+            userLocationLatitude = result.getLocation().getLatitude();
+            userLocationLongitude = result.getLocation().getLongitude();
+            userBearing = result.getLocation().getBearing();
+        } else {
+            //check if current location is null then return
+            if (currentLocation == null) {
+                if (getView().isAlreadyRouteDrawed()) {
+                    return;
+                }
+
+                userLocationLatitude = result.getPickup().getLatitude();
+                userLocationLongitude = result.getPickup().getLongitude();
+            } else {
+                //if device is not running then return
+                RideConfiguration configuration = new RideConfiguration(getView().getActivity());
+                if (!configuration.isDeviceInVehicle()) {
+                    CommonUtils.dumper("Device is not running");
+                    return;
+                } else {
+                    CommonUtils.dumper("Device is running");
+                }
+
+                userLocationLatitude = currentLocation.getLatitude();
+                userLocationLongitude = currentLocation.getLongitude();
+                userBearing = currentLocation.getBearing();
+            }
+        }
+
+
+        RequestParams polylineRequestParams = getView().getPolyLineParamDriverBetweenDestination(userLocationLatitude, userLocationLongitude);
 
         if (polylineRequestParams != null) {
             getOverviewPolylineUseCase.execute(polylineRequestParams, new Subscriber<List<OverviewPolyline>>() {
@@ -450,8 +506,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                             latLngs.add(new LatLng(activeRideRequest.getDestination().getLatitude(), activeRideRequest.getDestination().getLongitude()));
 
                             //draw vehicle location based on last update
-                            if (activeRideRequest.getLocation() != null) {
-                                getView().reDrawDriverMarker(activeRideRequest);
+                            if (currentLocation != null || result.getLocation() != null) {
+                                getView().reDrawDriverMarker(userLocationLatitude, userLocationLongitude, userBearing);
                             }
 
                             getView().renderSourceMarker(activeRideRequest.getPickup().getLatitude(), activeRideRequest.getPickup().getLongitude());
@@ -561,7 +617,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
                             //draw vehicle location based on last update
                             if (activeRideRequest.getLocation() != null) {
-                                getView().reDrawDriverMarker(activeRideRequest);
+                                getView().reDrawDriverMarker(activeRideRequest.getLocation().getLatitude(), activeRideRequest.getLocation().getLongitude(), activeRideRequest.getLocation().getBearing());
                             }
 
                             getView().renderSourceMarker(activeRideRequest.getPickup().getLatitude(), activeRideRequest.getPickup().getLongitude());
@@ -802,6 +858,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         createRideRequestUseCase.unsubscribe();
         getOverviewPolylineUseCase.unsubscribe();
         getRideRequestMapUseCase.unsubscribe();
+        updateRideRequestUseCase.unsubscribe();
         super.detachView();
     }
 
@@ -869,8 +926,14 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                                 } else {
                                     checkLocationSettings();
                                 }
+
+                                //request updates for user activities in very 10 secs
+                                Intent intent = new Intent(getView().getActivity(), ActivityRecognizedService.class);
+                                PendingIntent pendingIntent = PendingIntent.getService(getView().getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(googleApiClient, TEN_SECS, pendingIntent);
                             }
                         }
+
 
                         @Override
                         public void onConnectionSuspended(int i) {
@@ -885,6 +948,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     })
                     .addApi(LocationServices.API)
                     .addApi(Places.GEO_DATA_API)
+                    .addApi(ActivityRecognition.API)
                     .build();
         }
 
@@ -1038,6 +1102,47 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 }
             }.start();
         }
+    }
+
+    @Override
+    public void updateDestination(final PlacePassViewModel destinationTemp) {
+        getView().showUpdateDestinationLoading();
+
+        RequestParams params = RequestParams.create();
+        params.putString(UpdateRideRequestUseCase.PARAM_END_LATITUDE, String.valueOf(destinationTemp.getLatitude()));
+        params.putString(UpdateRideRequestUseCase.PARAM_END_LONGITUDE, String.valueOf(destinationTemp.getLongitude()));
+        params.putString(UpdateRideRequestUseCase.PARAM_END_ADD_NAME, destinationTemp.getTitle());
+        params.putString(UpdateRideRequestUseCase.PARAM_END_ADD, destinationTemp.getAddress());
+        params.putString(UpdateRideRequestUseCase.PARAM_REQUEST_ID, activeRideRequest.getRequestId());
+
+        updateRideRequestUseCase.execute(params, new Subscriber<UpdateDestination>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    getView().hideUpdateDestinationLoading();
+                    getView().showMessage(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(UpdateDestination updateDestination) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    getView().hideUpdateDestinationLoading();
+
+                    if (updateDestination != null && updateDestination.getPendingPayment() != null) {
+                        //show topup pending payment interrupt
+                        getView().startTopupTokoCashChangeDestinationActivity(updateDestination.getPendingPayment(), activeRideRequest.getRequestId());
+                    } else {
+                        getView().setDestination(destinationTemp);
+                    }
+                }
+            }
+        });
     }
 
     @Override

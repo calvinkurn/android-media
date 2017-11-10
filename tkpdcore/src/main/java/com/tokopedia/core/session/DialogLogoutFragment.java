@@ -18,7 +18,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.Router;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.DbManagerImpl;
@@ -51,6 +50,7 @@ public class DialogLogoutFragment extends DialogFragment {
     Button okButton;
     TkpdProgressDialog progressDialog;
 
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Activity activity = getActivity();
@@ -81,8 +81,8 @@ public class DialogLogoutFragment extends DialogFragment {
         SessionService sessionService = new SessionService();
         compositeSubscription.add(
                 sessionService.getApi().logout(AuthUtil.generateParams(activity, new HashMap<String, String>()))
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<Response<TkpdResponse>>() {
                             @Override
@@ -158,8 +158,6 @@ public class DialogLogoutFragment extends DialogFragment {
                 progressDialog.showDialog();
                 logoutToTheInternet(getActivity());
                 okButton.setClickable(false);
-
-                UnifyTracking.eventLogoutLoca();
             }
         });
         super.onResume();

@@ -15,6 +15,8 @@ public class Product implements Parcelable {
 
     private String desc;
     private String detail;
+    private String detailUrl;
+    private String detailUrlText;
     private String info;
     private String price;
     private int pricePlain;
@@ -26,6 +28,8 @@ public class Product implements Parcelable {
         setProductType(builder.productType);
         setDesc(builder.desc);
         setDetail(builder.detail);
+        setDetailUrl(builder.detailUrl);
+        setDetailUrlText(builder.detailUrlText);
         setInfo(builder.info);
         setPrice(builder.price);
         setPricePlain(builder.pricePlain);
@@ -47,6 +51,22 @@ public class Product implements Parcelable {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public String getDetailUrl() {
+        return detailUrl;
+    }
+
+    public void setDetailUrl(String detailUrl) {
+        this.detailUrl = detailUrl;
+    }
+
+    public String getDetailUrlText() {
+        return detailUrlText;
+    }
+
+    public void setDetailUrlText(String detailUrlText) {
+        this.detailUrlText = detailUrlText;
     }
 
     public String getInfo() {
@@ -117,6 +137,8 @@ public class Product implements Parcelable {
         dest.writeString(this.productType);
         dest.writeString(this.desc);
         dest.writeString(this.detail);
+        dest.writeString(this.detailUrl);
+        dest.writeString(this.detailUrlText);
         dest.writeString(this.info);
         dest.writeString(this.price);
         dest.writeInt(this.pricePlain);
@@ -132,6 +154,8 @@ public class Product implements Parcelable {
         this.productType = in.readString();
         this.desc = in.readString();
         this.detail = in.readString();
+        this.detailUrl = in.readString();
+        this.detailUrlText = in.readString();
         this.info = in.readString();
         this.price = in.readString();
         this.pricePlain = in.readInt();
@@ -151,12 +175,13 @@ public class Product implements Parcelable {
         }
     };
 
-
     public static final class Builder {
         private String productId;
         private String productType;
         private String desc;
         private String detail;
+        private String detailUrl;
+        private String detailUrlText;
         private String info;
         private String price;
         private int pricePlain;
@@ -183,6 +208,16 @@ public class Product implements Parcelable {
 
         public Builder detail(String val) {
             detail = val;
+            return this;
+        }
+
+        public Builder detailUrl(String val) {
+            detailUrl = val;
+            return this;
+        }
+
+        public Builder detailUrlText(String val) {
+            detailUrlText = val;
             return this;
         }
 

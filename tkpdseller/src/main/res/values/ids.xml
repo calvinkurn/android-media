@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="date_label_view" type="id" />
     <item name="fab_speed_dial" type="id" />
     <item name="subtitle_first_shop_score_detail_summary" type="id">Performa toko anda</item>
 </resources>

@@ -7,7 +7,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
-import com.tokopedia.core.network.core.TkpdV4ResponseError;
+import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
@@ -18,6 +18,7 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
+import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -33,6 +34,12 @@ import dagger.Provides;
 
 @Module
 public class InterceptorModule {
+
+    @ApplicationScope
+    @Provides
+    public ApiCacheInterceptor provideApiCacheInterceptor() {
+        return new ApiCacheInterceptor();
+    }
 
     @ApplicationScope
     @Provides
@@ -103,14 +110,14 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    TkpdErrorResponseInterceptor provideTkpdErrorResponseInterceptor(){
+    TkpdErrorResponseInterceptor provideTkpdErrorResponseInterceptor() {
         return new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class);
     }
 
     @TopAdsQualifier
     @ApplicationScope
     @Provides
-    TkpdErrorResponseInterceptor provideTopAdsErrorResponseInterceptor(){
+    TkpdErrorResponseInterceptor provideTopAdsErrorResponseInterceptor() {
         return new TkpdErrorResponseInterceptor(TopAdsResponseError.class);
     }
 

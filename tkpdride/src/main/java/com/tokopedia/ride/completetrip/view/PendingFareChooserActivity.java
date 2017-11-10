@@ -2,15 +2,19 @@ package com.tokopedia.ride.completetrip.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.completetrip.view.viewmodel.TokoCashProduct;
 
 import java.util.ArrayList;
@@ -33,6 +37,18 @@ public class PendingFareChooserActivity extends BaseActivity implements TokoCash
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_fare_chooser);
+
+        //setup toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(R.string.pending_fare_choose_nominal);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                toolbar.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            }
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            invalidateOptionsMenu();
+        }
 
         listsRecyclerView = (RecyclerView) findViewById(R.id.rv_lists);
         products = getIntent().getParcelableArrayListExtra(EXTRA_PRODUCTS);
@@ -76,5 +92,16 @@ public class PendingFareChooserActivity extends BaseActivity implements TokoCash
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        RideGATracking.eventBackPress(getScreenName());
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_PENDING_FARE_CHOOSER;
     }
 }

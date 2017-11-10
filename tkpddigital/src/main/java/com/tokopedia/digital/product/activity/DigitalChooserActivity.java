@@ -151,12 +151,6 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     }
 
     @Override
-    public void onProductItemChooserCanceled() {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         invalidateTitleToolBar();
@@ -179,4 +173,8 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
         if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

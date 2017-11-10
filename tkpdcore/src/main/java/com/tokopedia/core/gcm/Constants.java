@@ -43,16 +43,22 @@ public interface Constants {
     int ARG_NOTIFICATION_APPLINK_MESSAGE_ID = 1001;
     int ARG_NOTIFICATION_APPLINK_DISCUSSION_ID = 1002;
     int ARG_NOTIFICATION_APPLINK_PROMO = 1003;
+    String APPLINK_CUSTOMER_SCHEME = "tokopedia";
 
     String MOE_KEY_URL = "gcm_webUrl";
 
     String ACTION_BC_RESET_APPLINK = "com.tokopedia.tkpd.APPLINK_ACTION";
     String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";
 
+    String WEB_PLAYSTORE_BUYER_APP_URL = "https://play.google.com/store/apps/details?id=com.tokopedia.tkpd";
+
     interface Applinks {
         String HOME = "tokopedia://home";
         String HOME_FEED = "tokopedia://home/feed";
+        String FEED = "tokopedia://feed";
+        String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
         String HOME_CATEGORY = "tokopedia://home/category";
+        String HOME_HOTLIST = "tokopedia://hot";
         String MESSAGE = "tokopedia://message";
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
         String TALK = "tokopedia://talk";
@@ -79,6 +85,7 @@ public interface Constants {
         String REPUTATION = "tokopedia://review";
         String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
         String WEBVIEW = "tokopedia://webview";
+        String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
         String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
         String DIGITAL = "tokopedia://digital";
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
@@ -97,16 +104,27 @@ public interface Constants {
         String RECENT_VIEW = "tokopedia://recentlyviewed";
         String TOPPICKS = "tokopedia://toppicks";
         String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
+        String LOGIN = "tokopedia://login";
+        String OFFICIAL_STORES = "tokopedia://official-stores";
+        String RESCENTER = "tokopedia://resolution/{resolution_id}";
+        String REFERRAL = "tokopedia://referral";
+        String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
+        String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
+        String BROWSER = "tokopedia://browser";
+        String REGISTER = "tokopedia://registration";
+        String FAVORITE = "tokopedia://home/favorite";
 
         interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";
             String SALES = "sellerapp://sales";
             String TOPADS_CREDIT = "sellerapp://topads/buy";
-            String TOPADS_PRODUCT_CREATE = "sellerapp://topads/product/create";
+            String TOPADS_PRODUCT_CREATE = "sellerapp://topads/create";
             String GOLD_MERCHANT = "sellerapp://gold";
             String SELLER_APP_HOME = "sellerapp://home";
             String TOPADS_DASHBOARD = "sellerapp://topads";
             String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
+            String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
+            String BROWSER = "sellerapp://browser";
         }
     }
 

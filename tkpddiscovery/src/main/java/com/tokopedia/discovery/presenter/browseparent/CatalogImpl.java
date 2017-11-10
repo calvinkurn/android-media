@@ -138,7 +138,11 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
                     return;
 
                 Pair<List<CatalogModel>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseCategoryModel(catalogModel);
-                view.notifyChangeData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                if (listPagingHandlerModelPair.getModel1().size() == 0) {
+                    view.displayEmptyResult();
+                } else {
+                    view.notifyChangeData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                }
                 fetchDynamicAttribut();
                 break;
             case DiscoveryListener.DYNAMIC_ATTRIBUTE:
@@ -158,7 +162,10 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
     @Override
     public void fetchDynamicAttribut() {
         if (browseView.checkHasFilterAttrIsNull(index)) {
-            discoveryInteractor.getDynamicAttribute(view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, browseView.getBrowseProductActivityModel().getDepartmentId());
+            discoveryInteractor.getDynamicAttribute(
+                    view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG,
+                    browseView.getBrowseProductActivityModel().getDepartmentId(),
+                    browseView.getBrowseProductActivityModel().getQ());
         }
     }
 }

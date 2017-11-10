@@ -6,7 +6,9 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -16,11 +18,9 @@ import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
-import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.utils.DeviceUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,6 +46,10 @@ public class CategoryProductStyle1View extends
     TextView btnBuyDigital;
     @BindView(R2.id.cb_instant_checkout)
     CheckBox cbInstantCheckout;
+    @BindView(R2.id.layout_checkout)
+    RelativeLayout layoutCheckout;
+    @BindView(R2.id.tooltip_instant_checkout)
+    ImageView tooltipInstantCheckout;
 
     private DigitalProductChooserView digitalProductChooserView;
     private ClientNumberInputView clientNumberInputView;
@@ -94,7 +98,6 @@ public class CategoryProductStyle1View extends
                     break;
                 }
             }
-
         }
         renderInstantCheckoutOption();
         btnBuyDigital.setOnClickListener(getButtonBuyClickListener());
@@ -151,20 +154,31 @@ public class CategoryProductStyle1View extends
         }
     }
 
+    @Override
+    public void clearFocusOnClientNumber() {
+        clientNumberInputView.clearFocus();
+    }
+
     /**
      * apakah mendukung instant checkout ?
      */
     private void renderInstantCheckoutOption() {
         if (data.isInstantCheckout()) {
-            cbInstantCheckout.setVisibility(VISIBLE);
+            layoutCheckout.setVisibility(VISIBLE);
             cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
             cbInstantCheckout.setChecked(
                     actionListener.isRecentInstantCheckoutUsed(data.getCategoryId())
             );
         } else {
             cbInstantCheckout.setChecked(false);
-            cbInstantCheckout.setVisibility(GONE);
+            layoutCheckout.setVisibility(GONE);
         }
+        tooltipInstantCheckout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetView.show();
+            }
+        });
     }
 
     private void renderClientNumberInputForm() {
@@ -185,15 +199,9 @@ public class CategoryProductStyle1View extends
             clientNumberInputView.setText(lastClientNumberHistory);
         }
 
-
         if (hasLastOrderHistoryData()) {
             if (!data.getClientNumberList().isEmpty()) {
-                List<String> recentClientNumberString = new ArrayList<>();
-                for (OrderClientNumber orderClientNumber
-                        : historyClientNumber.getRecentClientNumberList()) {
-                    recentClientNumberString.add(orderClientNumber.getClientNumber());
-                }
-                clientNumberInputView.setAdapterAutoCompleteClientNumber(recentClientNumberString);
+                clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
             }
         }
     }
@@ -227,7 +235,7 @@ public class CategoryProductStyle1View extends
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(cbInstantCheckout.isChecked())
+                if (cbInstantCheckout.isChecked())
                     UnifyTracking.eventClickBeliInstantSaldo(data.getName(), data.getName());
                 else
                     UnifyTracking.eventClickBeli(data.getName(), data.getName());
@@ -342,6 +350,19 @@ public class CategoryProductStyle1View extends
                 clearHolder(holderChooserProduct);
                 clearHolder(holderAdditionalInfoProduct);
                 clearHolder(holderPriceInfoProduct);
+            }
+
+            @Override
+            public void onClientNumberHasFocus(String clientNumber) {
+                actionListener.onClientNumberClicked(clientNumber,
+                        data.getClientNumberList().get(0),
+                        historyClientNumber.getRecentClientNumberList());
+            }
+
+            @Override
+            public void onClientNumberCleared() {
+                actionListener.onClientNumberCleared(data.getClientNumberList().get(0),
+                        historyClientNumber.getRecentClientNumberList());
             }
         };
     }

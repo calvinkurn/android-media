@@ -13,9 +13,9 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
+import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 /**
  * Created by normansyahputa on 11/29/16.
@@ -25,7 +25,8 @@ public class SplashScreenActivity extends SplashScreen {
 
     @Override
     public void finishSplashScreen() {
-        if (!sessionHandler.getShopID().isEmpty() && !sessionHandler.getShopID().equals("0")) {
+        if (sessionHandler != null && !TextUtils.isEmpty(sessionHandler.getShopID()) &&
+                !sessionHandler.getShopID().isEmpty() && !sessionHandler.getShopID().equals("0")) {
             if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
                 String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
                 DeepLinkDelegate delegate = DeepLinkHandlerActivity.getDelegateInstance();
@@ -37,15 +38,15 @@ public class SplashScreenActivity extends SplashScreen {
                     intent.putExtras(bundle);
                     delegate.dispatchFrom(this, intent);
                 } else {
-                    startActivity(new Intent(SplashScreenActivity.this, SellerHomeActivity.class));
+                    startActivity(DashboardActivity.createInstance(this));
                 }
             } else {
                 // Means it is a Seller
-                startActivity(new Intent(SplashScreenActivity.this, SellerHomeActivity.class));
+                startActivity(DashboardActivity.createInstance(this));
             }
         } else {
             // Means it is buyer
-            if (!TextUtils.isEmpty(sessionHandler.getLoginID())) {
+            if (sessionHandler != null && !TextUtils.isEmpty(sessionHandler.getLoginID())) {
                 Intent intent = moveToCreateShop(this);
                 startActivity(intent);
             } else {

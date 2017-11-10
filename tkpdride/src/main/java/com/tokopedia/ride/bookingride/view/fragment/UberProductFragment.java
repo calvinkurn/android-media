@@ -18,6 +18,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
@@ -68,6 +69,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     View errorView;
     @BindView(R2.id.layout_progress_view)
     View progressView;
+    @BindView(R2.id.tv_sort_fare)
+    TextView fareHeaderView;
 
     @Inject
     UberProductPresenter presenter;
@@ -338,6 +341,16 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void actionMinimumTimeEstResult(String timeEst) {
         interactionListener.onMinimumTimeEstCalculated(timeEst);
+    }
+
+    @Override
+    public void showFareListHeader() {
+        fareHeaderView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideFareListHeader() {
+        fareHeaderView.setVisibility(View.GONE);
     }
 
     @Override

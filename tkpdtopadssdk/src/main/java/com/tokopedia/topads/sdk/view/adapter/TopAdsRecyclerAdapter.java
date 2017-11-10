@@ -164,6 +164,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setEndlessScrollListenerVisibleThreshold(int threshold) {
         this.endlessScrollListener.setVisibleThreshold(threshold);
+        this.itemTreshold = threshold;
     }
 
     public void unsetEndlessScrollListener() {
@@ -174,6 +175,10 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void setEndlessScrollListener() {
         unsetListener = false;
         recyclerView.addOnScrollListener(endlessScrollListener);
+    }
+
+    public void clearAds(){
+        placer.clearAds();
     }
 
     @Override
@@ -285,6 +290,10 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public boolean isLoading(int position) {
         return position == placer.getItemList().indexOf(loadingViewModel);
+    }
+
+    public boolean isLoading(){
+        return placer.getItemList().contains(loadingViewModel);
     }
 
     public void reset() {

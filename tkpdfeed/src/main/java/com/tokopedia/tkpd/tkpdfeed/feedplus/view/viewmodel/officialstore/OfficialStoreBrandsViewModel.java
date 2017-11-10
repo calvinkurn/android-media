@@ -11,7 +11,9 @@ import java.util.ArrayList;
 
 public class OfficialStoreBrandsViewModel implements Visitable<FeedPlusTypeFactory> {
 
+    private final int page;
     private ArrayList<OfficialStoreViewModel> listStore;
+    private int rowNumber;
 
     public ArrayList<OfficialStoreViewModel> getListStore() {
         return listStore;
@@ -22,7 +24,20 @@ public class OfficialStoreBrandsViewModel implements Visitable<FeedPlusTypeFacto
         return feedPlusTypeFactory.type(this);
     }
 
-    public OfficialStoreBrandsViewModel(ArrayList<OfficialStoreViewModel> listStore) {
+    public OfficialStoreBrandsViewModel(ArrayList<OfficialStoreViewModel> listStore, int page) {
         this.listStore = listStore;
+        this.page = page;
+    }
+
+    public void setRowNumber(int rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
+    public int getRowNumber() {
+        return rowNumber;
+    }
+
+    public int getPage() {
+        return page;
     }
 }

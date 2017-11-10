@@ -37,5 +37,7 @@ public interface ShopEditorView extends BaseView {
     void initAnalytics();
     void uploadImage(String data);
 
+    void deleteShopCachev2();
+
     View getRootView();
 }

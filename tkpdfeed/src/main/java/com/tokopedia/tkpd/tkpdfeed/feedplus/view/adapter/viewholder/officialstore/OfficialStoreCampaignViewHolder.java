@@ -37,6 +37,7 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
     TextView title;
     View mainView;
     View seeAll;
+    TextView seeAllText;
 
     private OfficialStoreCampaignAdapter adapter;
 
@@ -48,6 +49,7 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
         title = (TextView) itemView.findViewById(R.id.official_store_title);
         mainView = itemView.findViewById(R.id.main_view);
         seeAll = itemView.findViewById(R.id.footer);
+        seeAllText = (TextView) itemView.findViewById(R.id.see_all_text);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
                 itemView.getContext(),
@@ -81,13 +83,12 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
         recyclerView.setAdapter(adapter);
 
 
-
-
     }
 
     @Override
     public void bind(final OfficialStoreCampaignViewModel officialStoreViewModel) {
-        adapter.setList(officialStoreViewModel.getListProduct());
+        officialStoreViewModel.setRowNumber(getAdapterPosition());
+        adapter.setData(officialStoreViewModel);
         ImageHandler.LoadImage(imageView, officialStoreViewModel.getOfficialStoreHeaderImageUrl());
         title.setText(MethodChecker.fromHtml(officialStoreViewModel.getTitle()));
         mainView.setBackgroundColor(Color.parseColor(officialStoreViewModel.getHexColor()));
@@ -95,14 +96,29 @@ public class OfficialStoreCampaignViewHolder extends AbstractViewHolder<Official
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToCampaign(officialStoreViewModel.getRedirectUrl(),
+                viewListener.onGoToCampaign(
+                        officialStoreViewModel.getPage(),
+                        officialStoreViewModel.getRowNumber(),
+                        officialStoreViewModel.getRedirectUrl(),
                         officialStoreViewModel.getTitle());
             }
         });
         seeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onSeeAllOfficialStoresFromCampaign(officialStoreViewModel.getRedirectUrl());
+                viewListener.onSeeAllOfficialStoresFromCampaign(
+                        officialStoreViewModel.getPage(),
+                        officialStoreViewModel.getRowNumber(),
+                        officialStoreViewModel.getRedirectUrl());
+            }
+        });
+        seeAllText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onSeeAllOfficialStoresFromCampaign(
+                        officialStoreViewModel.getPage(),
+                        officialStoreViewModel.getRowNumber(),
+                        officialStoreViewModel.getRedirectUrl());
             }
         });
     }

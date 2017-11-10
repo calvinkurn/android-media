@@ -13,6 +13,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.view.MenuItem;
@@ -36,7 +37,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -113,6 +114,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     ImageView ivProduct;
     @BindView(R2.id.tv_name)
     TextView tvProductName;
+    @BindView(R2.id.preorder_layout)
+    LinearLayout linearLayoutPreOrder;
     @BindView(R2.id.tv_preorder)
     TextView tvPreOrder;
     @BindView(R2.id.tv_preorder_info)
@@ -305,15 +308,14 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         if (data.getProductPreorder() != null
                 && data.getProductPreorder().getPreorderStatus() == 1) {
             tvPreOrder.setVisibility(View.VISIBLE);
-            tvPreOrderInfo.setVisibility(View.VISIBLE);
-            tvPreOrderInfo.setText(MessageFormat.format("{0}{1} {2}",
-                    String.valueOf(tvPreOrderInfo.getText()),
+            linearLayoutPreOrder.setVisibility(View.VISIBLE);
+            tvPreOrderInfo.setText(MessageFormat.format("{0} {1}",
                     data.getProductPreorder().getPreorderProcessTime(),
                     data.getProductPreorder().getPreorderProcessTimeTypeString()));
             btnBuy.setText(getString(R.string.title_pre_order));
         } else {
             tvPreOrder.setVisibility(View.GONE);
-            tvPreOrderInfo.setVisibility(View.GONE);
+            linearLayoutPreOrder.setVisibility(View.GONE);
             btnBuy.setText(getString(R.string.title_buy));
         }
         tvProductName.setText(data.getProductName());
@@ -323,6 +325,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         );
         etQuantity.setEnabled(true);
         etRemark.setEnabled(true);
+        if (!TextUtils.isEmpty(productCartPass.getNotes())) {
+            etRemark.setText(productCartPass.getNotes());
+        }
         tvProductPrice.setText(data.getProductPrice());
     }
 
@@ -723,7 +728,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     private void processCartAnalytics(ProductDetail productDetail) {
-        if(productDetail != null) {
+        if (productDetail != null) {
             com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
             product.setCategoryName(productDetail.getProductCatName());
             product.setCategoryId(productDetail.getProductCatId());
@@ -775,6 +780,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     private void quantityChangedEvent(Editable quantity) {
+        if (orderData == null) {
+            presenter.getCartFormData(this, productCartPass);
+            return;
+        }
         orderData.setQuantity(quantity.length() == 0 ?
                 0 : Integer.parseInt(etQuantity.getText().toString()));
         if (orderData.getQuantity() < orderData.getMinOrder()) {
@@ -885,7 +894,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected void onResume() {
         super.onResume();
-        UnifyTracking.eventViewATC();
     }
 
     private void showBuyError(String errorMessage) {
@@ -993,4 +1001,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         }
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

@@ -20,6 +20,8 @@ public class CategoryData implements Parcelable {
     public static final String STYLE_PRODUCT_CATEGORY_4 = "style_4";
     public static final String STYLE_PRODUCT_CATEGORY_5 = "style_5";
     public static final String STYLE_PRODUCT_CATEGORY_99 = "style_99";
+    public static final String SLUG_PRODUCT_CATEGORY_PULSA = "pulsa";
+
 
     private static final String[] STYLE_COLLECTION_SUPPORTED = new String[]{
             STYLE_PRODUCT_CATEGORY_1, STYLE_PRODUCT_CATEGORY_2, STYLE_PRODUCT_CATEGORY_2,
@@ -40,6 +42,7 @@ public class CategoryData implements Parcelable {
     private String slug;
     private String defaultOperatorId;
     private String operatorStyle;
+    private String operatorLabel;
     private List<ClientNumber> clientNumberList = new ArrayList<>();
     private List<Operator> operatorList = new ArrayList<>();
 
@@ -59,6 +62,7 @@ public class CategoryData implements Parcelable {
         setSlug(builder.slug);
         setDefaultOperatorId(builder.defaultOperatorId);
         setOperatorStyle(builder.operatorStyle);
+        setOperatorLabel(builder.operatorLabel);
         setClientNumberList(builder.clientNumberList);
         setOperatorList(builder.operatorList);
         setBannerDataListIncluded(builder.bannerDataListIncluded);
@@ -135,6 +139,14 @@ public class CategoryData implements Parcelable {
 
     public void setOperatorStyle(String operatorStyle) {
         this.operatorStyle = operatorStyle;
+    }
+
+    public String getOperatorLabel() {
+        return operatorLabel;
+    }
+
+    public void setOperatorLabel(String operatorLabel) {
+        this.operatorLabel = operatorLabel;
     }
 
     public List<ClientNumber> getClientNumberList() {
@@ -220,6 +232,7 @@ public class CategoryData implements Parcelable {
         dest.writeString(this.slug);
         dest.writeString(this.defaultOperatorId);
         dest.writeString(this.operatorStyle);
+        dest.writeString(this.operatorLabel);
         dest.writeTypedList(this.clientNumberList);
         dest.writeTypedList(this.operatorList);
         dest.writeTypedList(this.bannerDataListIncluded);
@@ -239,6 +252,7 @@ public class CategoryData implements Parcelable {
         this.slug = in.readString();
         this.defaultOperatorId = in.readString();
         this.operatorStyle = in.readString();
+        this.operatorLabel = in.readString();
         this.clientNumberList = in.createTypedArrayList(ClientNumber.CREATOR);
         this.operatorList = in.createTypedArrayList(Operator.CREATOR);
         this.bannerDataListIncluded = in.createTypedArrayList(BannerData.CREATOR);
@@ -257,7 +271,6 @@ public class CategoryData implements Parcelable {
         }
     };
 
-
     public static final class Builder {
         private String categoryId;
         private String categoryType;
@@ -271,6 +284,7 @@ public class CategoryData implements Parcelable {
         private String slug;
         private String defaultOperatorId;
         private String operatorStyle;
+        private String operatorLabel;
         private List<ClientNumber> clientNumberList;
         private List<Operator> operatorList;
         private List<BannerData> bannerDataListIncluded;
@@ -336,6 +350,11 @@ public class CategoryData implements Parcelable {
 
         public Builder operatorStyle(String val) {
             operatorStyle = val;
+            return this;
+        }
+
+        public Builder operatorLabel(String val) {
+            operatorLabel = val;
             return this;
         }
 

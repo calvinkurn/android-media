@@ -30,4 +30,9 @@
     <string name="kurir">Kurir</string>
     <string name="choose_etalase">Pilih Etalase</string>
     <string name="add_etalase">Tambah Etalase</string>
+    <string name="title_latest_discussion">Diskusi Terakhir</string>
+    <string name="title_all_discussion">Lihat Semua Diskusi</string>
+    <string name="title_copy_promo_code">Salin Kode</string>
+    <string name="title_copied">Kode Promo Berhasil Disalin</string>
+    <string name="headerview_label_official_store">Produk dari Brand Resmi</string>
 </resources>

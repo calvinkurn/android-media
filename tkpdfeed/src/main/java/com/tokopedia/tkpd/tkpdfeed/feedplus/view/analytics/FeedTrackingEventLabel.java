@@ -12,7 +12,7 @@ public class FeedTrackingEventLabel {
     public class View {
         public static final String VIEW_RECENT = "View Recent";
 
-        public static final String FEED_PDP = "Feed - PDP";
+        public static final String FEED_PDP = "Feed - PDP"; 
         public static final String PRODUCTLIST_PDP = "Product List - PDP";
         public static final String FEED_PRODUCT_LIST = "Feed - Product List";
         public static final String FEED_SHOP = "Feed - Shop";
@@ -39,7 +39,10 @@ public class FeedTrackingEventLabel {
                 "Lihat Semua";
         public static final String OFFICIAL_STORE_CAMPAIGN = "Official Store Campaign - ";
         public static final String OFFICIAL_STORE_CAMPAIGN_PDP = "Official Store Campaign - PDP";
-        public static final String OFFICIAL_STORE_CAMPAIGN_SHOP = "Official Store Campaign - Shop";
+        public static final String OFFICIAL_STORE_CAMPAIGN_SHOP = "Official Store Campaign - " +
+                "Shop";
+        public static final String TOPPICKS_SEE_ALL = "Toppicks - Lihat Semua";
+        public static final String TOPPICKS = "Toppicks : ";
     }
 
     public class Share {
