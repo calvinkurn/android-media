@@ -371,7 +371,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
                     Address address = data.getParcelableExtra(
                             DistrictRecomendationFragmentView.Constant.INTENT_DATA_ADDRESS);
                     editShippingPresenter.setSelectedAddress(address);
-                    fragmentShippingHeader.initializeZipCodesAdapter();
+                    fragmentShippingHeader.initializeZipCodes();
                     fragmentShippingHeader.updateLocationData(
                             address.getProvinceName(),
                             address.getCityName(),

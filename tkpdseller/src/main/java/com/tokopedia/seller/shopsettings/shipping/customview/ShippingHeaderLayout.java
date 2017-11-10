@@ -98,7 +98,8 @@ public class ShippingHeaderLayout extends EditShippingCustomView<ShopShipping,
         });
     }
 
-    public void initializeZipCodesAdapter() {
+    public void initializeZipCodes() {
+        zipCode.setText("");
         ArrayList<String> zipCodes = presenter.getselectedAddress().getZipCodes();
         zipCodes.add(0, getResources().getString(R.string.hint_type_postal_code));
         zipCodeAdapter = new ArrayAdapter<>(getContext(), R.layout.item_autocomplete_text_double_row,
