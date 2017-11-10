@@ -430,7 +430,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 @Override
                 public void run() {
                     setViewEnabled(true);
-                    if (getArguments().getString("sender_id").equals(String.valueOf(response.getData().getFromUid()))) {
+                    if (getArguments().getString(PARAM_MESSAGE_ID).equals(String.valueOf(response
+                            .getData()
+                            .getMsgId()))) {
                         OppositeChatViewModel item = new OppositeChatViewModel();
                         item.setReplyId(response.getData().getMsgId());
                         item.setSenderId(String.valueOf(response.getData().getFromUid()));
@@ -553,7 +555,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void onIncomingEvent(WebSocketResponse response) {
         switch (response.getCode()) {
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
-                if (String.valueOf(response.getData().getFromUid()).equals(getArguments().getString("sender_id"))) {
+                if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
+                        (PARAM_MESSAGE_ID))) {
                     setOnlineDesc("sedang mengetik");
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -567,7 +570,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
-                if (String.valueOf(response.getData().getFromUid()).equals(getArguments().getString("sender_id"))) {
+                if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
+                        (PARAM_MESSAGE_ID))) {
                     setOnlineDesc("baru saja");
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
