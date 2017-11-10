@@ -138,13 +138,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     private void initListener() {
 
-        recyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                KeyboardHandler.DropKeyboard(getActivity(), getView());
-            }
-        });
-
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -294,7 +287,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             onlineDesc = (TextView) toolbar.findViewById(R.id.subtitle);
             label = (TextView) toolbar.findViewById(R.id.label);
             onlineStatus = (ImageView) toolbar.findViewById(R.id.online_status);
-            ImageHandler.loadImageCircle2(getActivity(), avatar, null, R.drawable.ic_image_avatar_boy);
+            ImageHandler.loadImageCircle2(getActivity(), avatar, getArguments().getString(PARAM_SENDER_IMAGE), R.drawable.ic_image_avatar_boy);
             user.setText(getArguments().getString(PARAM_SENDER_NAME));
             label.setText(getArguments().getString(PARAM_SENDER_TAG));
             setOnlineDesc("baru saja");

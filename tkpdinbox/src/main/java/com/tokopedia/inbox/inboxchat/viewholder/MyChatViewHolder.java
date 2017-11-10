@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
@@ -30,6 +31,7 @@ import java.util.Date;
 
 public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
 
+    View view;
     TextView message;
     TextView hour;
     TextView date;
@@ -41,7 +43,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
 
     public MyChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView);
-
+        view = itemView;
         message = (TextView) itemView.findViewById(R.id.message);
         hour = (TextView) itemView.findViewById(R.id.hour);
         date = (TextView) itemView.findViewById(R.id.date);
@@ -51,6 +53,13 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
 
     @Override
     public void bind(MyChatViewModel element) {
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                KeyboardHandler.DropKeyboard(itemView.getContext(), view);
+            }
+        });
 
         if(!element.isHighlight()) {
             message.setText(MethodChecker.fromHtml(element.getMsg()));

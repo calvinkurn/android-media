@@ -444,7 +444,7 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
                 message.getAttributes().getContact().getAttributes().getTag(),
                 String.valueOf(message.getAttributes().getContact().getId()),
                 message.getAttributes().getContact().getRole(),
-                InboxChatViewModel.GET_CHAT_MODE, null);
+                InboxChatViewModel.GET_CHAT_MODE, null, null);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         viewListener.startActivityForResult(intent, OPEN_DETAIL_MESSAGE);
         viewListener.getActivity().overridePendingTransition(0, 0);

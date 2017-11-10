@@ -26,6 +26,7 @@ public interface InboxMessageConstant {
     String PARAM_SENDER_NAME = "name";
     String PARAM_SENDER_TAG = "tag";
     String PARAM_SENDER_ID = "sender_id";
+    String PARAM_SENDER_IMAGE = "image";
     String PARAM_MODE = "mode";
     String PARAM_KEYWORD = "keyword";
 

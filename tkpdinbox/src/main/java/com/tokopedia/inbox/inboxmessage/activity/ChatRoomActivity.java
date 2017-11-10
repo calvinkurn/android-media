@@ -85,7 +85,7 @@ public class ChatRoomActivity extends BasePresenterActivity
             toolbar.setElevation(10);
         }
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_material);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
@@ -250,7 +250,7 @@ public class ChatRoomActivity extends BasePresenterActivity
 
     public static Intent getCallingIntent(Context context, String nav, String messageId,
                                           int position, String senderName, String senderTag,
-                                          String senderId, String role, int mode, String keyword) {
+                                          String senderId, String role, int mode, String keyword, String image) {
         Intent intent = new Intent(context, ChatRoomActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_NAV, nav);
@@ -258,6 +258,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         bundle.putString(PARAM_MESSAGE_ID, messageId);
         bundle.putInt(PARAM_POSITION, position);
         bundle.putString(PARAM_SENDER_NAME, senderName);
+        bundle.putString(PARAM_SENDER_IMAGE, image);
         bundle.putString(PARAM_SENDER_TAG, senderTag);
         bundle.putString(PARAM_SENDER_ID, senderId);
         bundle.putString(PARAM_SENDER_ROLE, role);

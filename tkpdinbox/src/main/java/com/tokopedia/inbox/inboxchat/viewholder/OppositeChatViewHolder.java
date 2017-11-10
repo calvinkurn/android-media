@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
@@ -31,6 +32,7 @@ import butterknife.BindView;
 public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewModel> {
 
     private int position;
+    private View view;
     private TextView message;
     private TextView hour;
     private TextView date;
@@ -45,6 +47,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
 
     public OppositeChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView);
+        view = itemView;
         message = (TextView) itemView.findViewById(R.id.message);
         hour = (TextView) itemView.findViewById(R.id.hour);
         date = (TextView) itemView.findViewById(R.id.date);
@@ -57,7 +60,13 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
 
     @Override
     public void bind(OppositeChatViewModel element) {
-        //        ImageHandler.loadImageCircle2(context, avatar, list.get(position).getUserImage());
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                KeyboardHandler.DropKeyboard(itemView.getContext(), view);
+            }
+        });
+
         if(!element.isHighlight()) {
             message.setText(MethodChecker.fromHtml(element.getMsg()));
         }else {

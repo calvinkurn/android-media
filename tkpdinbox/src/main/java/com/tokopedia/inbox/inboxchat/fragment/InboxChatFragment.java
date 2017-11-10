@@ -28,6 +28,7 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
@@ -156,12 +157,6 @@ public class InboxChatFragment extends BaseDaggerFragment
         searchInputView.setResetListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mainList.setHasFixedSize(true);
-        mainList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                KeyboardHandler.DropKeyboard(getActivity(), getView());
-            }
-        });
         presenter.attachView(this);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         callbackContext = initCallbackActionMode();
@@ -229,6 +224,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                 }
             }
         });
+
         searchLoading.setVisibility(View.VISIBLE);
         presenter.getMessage();
     }
@@ -399,13 +395,23 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void showError(String message) {
-        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
 
     @Override
     public void showErrorWarningDelete() {
-        SnackbarManager.make(getActivity(), getActivity().getString(R.string.delete_message_warn), Snackbar.LENGTH_LONG).show();
+        NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.delete_message_warn));
+    }
+
+    @Override
+    public void showErrorFull() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getMessage();
+            }
+        });
     }
 
     @Override

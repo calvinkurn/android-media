@@ -94,6 +94,8 @@ public class InboxChatContract {
         void notifyConnectionWebSocket();
 
         void showErrorWarningDelete();
+
+        void showErrorFull();
     }
 
     interface Presenter extends CustomerPresenter<View>{

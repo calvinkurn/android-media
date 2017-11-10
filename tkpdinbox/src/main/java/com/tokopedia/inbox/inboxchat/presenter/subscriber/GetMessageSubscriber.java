@@ -33,7 +33,7 @@ public class GetMessageSubscriber extends Subscriber<InboxChatViewModel>{
     @Override
     public void onError(Throwable e) {
         presenter.setRequesting(false);
-        view.showError("Pencarian Gagal");
+        presenter.setError();
     }
 
     @Override
