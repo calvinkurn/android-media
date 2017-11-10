@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
 import com.tokopedia.abstraction.base.view.recyclerview.BaseListRecyclerView;
+import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
 import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
@@ -51,13 +52,11 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
 
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
-    private static final String SAVED_STAT_MODEL = "svd_stat_model";
     private static final String SAVED_SORT_OPTION = "svd_sort_option";
 
     BottomActionView filterAndSortBottomAction;
 
     private FlightFilterModel flightFilterModel;
-    private FlightSearchStatisticModel flightSearchStatisticModel;
     private FlightSearchPassDataViewModel flightSearchPassDataViewModel;
 
     int selectedSortOption = FlightSortOption.NO_PREFERENCE;
@@ -88,11 +87,9 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
         if (savedInstanceState == null) {
             flightFilterModel = new FlightFilterModel();
-            flightSearchStatisticModel = null;
             selectedSortOption = FlightSortOption.NO_PREFERENCE;
         } else {
             flightFilterModel = savedInstanceState.getParcelable(SAVED_FILTER_MODEL);
-            flightSearchStatisticModel = savedInstanceState.getParcelable(SAVED_STAT_MODEL);
             selectedSortOption = savedInstanceState.getInt(SAVED_SORT_OPTION);
         }
     }
@@ -209,11 +206,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
-                        isReturning(),
-                        flightSearchStatisticModel,
-                        flightFilterModel),
-                        REQUEST_CODE_SEARCH_FILTER);
+                flightSearchPresenter.getFlightStatistic(isReturning());
             }
         });
         filterAndSortBottomAction.setVisibility(View.GONE);
@@ -248,10 +241,6 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         if (filterAndSortBottomAction.getVisibility() == View.GONE) {
             filterAndSortBottomAction.setVisibility(View.VISIBLE);
         }
-        // TODO, will not work if api has paging, will be converted to usecase later
-        if (totalItem > 0 && flightSearchStatisticModel == null) {
-            flightSearchStatisticModel = new FlightSearchStatisticModel(list);
-        }
     }
 
     @Override
@@ -269,6 +258,23 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         hideLoading();
     }
 
+    @Override
+    public void onSuccessGetStatistic(FlightSearchStatisticModel flightSearchStatisticModel) {
+        startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
+                isReturning(),
+                flightSearchStatisticModel,
+                flightFilterModel),
+                REQUEST_CODE_SEARCH_FILTER);
+    }
+
+    @Override
+    public void onErrorGetFlightStatistic(Throwable throwable) {
+        String message = throwable.getMessage();
+        if (!TextUtils.isEmpty(message)) {
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
+        }
+    }
+
 
     @Override
     public void onDestroy() {
@@ -280,7 +286,6 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(SAVED_FILTER_MODEL, flightFilterModel);
-        outState.putParcelable(SAVED_STAT_MODEL, flightSearchStatisticModel);
         outState.putInt(SAVED_SORT_OPTION, selectedSortOption);
     }
 
