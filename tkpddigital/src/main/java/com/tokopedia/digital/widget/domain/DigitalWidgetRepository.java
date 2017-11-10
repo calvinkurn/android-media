@@ -40,7 +40,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     private final static String KEY_OPERATOR = "RECHARGE_OPERATOR";
     private final static String KEY_STATUS_CURRENT = "RECHARGE_STATUS_CURRENT";
 
-    private static int CACHE_DURATION = 60 * 30;
+//    private static int CACHE_DURATION = 60 * 30;
 
     private final DigitalEndpointService digitalEndpointService;
     private final IFavoriteNumberMapper favoriteNumberMapper;
@@ -104,7 +104,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                                     CacheUtil.convertListModelToString(categoryEntity,
                                             new TypeToken<List<CategoryEntity>>() {
                                             }.getType()));
-                            globalCacheManager.setCacheDuration(CACHE_DURATION);
+//                            globalCacheManager.setCacheDuration(CACHE_DURATION);
                             globalCacheManager.store();
                         }
                     }
@@ -163,7 +163,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                             globalCacheManager.setValue(CacheUtil.convertListModelToString(productEntities,
                                     new TypeToken<List<ProductEntity>>() {
                                     }.getType()));
-                            globalCacheManager.setCacheDuration(CACHE_DURATION);
+//                            globalCacheManager.setCacheDuration(CACHE_DURATION);
                             globalCacheManager.store();
                         }
                     }
@@ -222,7 +222,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                             globalCacheManager.setValue(CacheUtil.convertListModelToString(operatorEntities,
                                     new TypeToken<List<OperatorEntity>>() {
                                     }.getType()));
-                            globalCacheManager.setCacheDuration(CACHE_DURATION);
+//                            globalCacheManager.setCacheDuration(CACHE_DURATION);
                             globalCacheManager.store();
                         }
                     }
@@ -280,19 +280,19 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                     public StatusEntity call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
                         return tkpdDigitalResponseResponse.body().convertDataObj(StatusEntity.class);
                     }
-                })
-                .doOnNext(new Action1<StatusEntity>() {
-                    @Override
-                    public void call(StatusEntity statusEntity) {
-                        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-                        globalCacheManager.setKey(KEY_STATUS);
-                        globalCacheManager.setValue(CacheUtil.convertModelToString(statusEntity,
-                                new TypeToken<StatusEntity>() {
-                                }.getType()));
-                        globalCacheManager.setCacheDuration(CACHE_DURATION);
-                        globalCacheManager.store();
-                    }
                 });
+//                .doOnNext(new Action1<StatusEntity>() {
+//                    @Override
+//                    public void call(StatusEntity statusEntity) {
+//                        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
+//                        globalCacheManager.setKey(KEY_STATUS);
+//                        globalCacheManager.setValue(CacheUtil.convertModelToString(statusEntity,
+//                                new TypeToken<StatusEntity>() {
+//                                }.getType()));
+//                        globalCacheManager.setCacheDuration(CACHE_DURATION);
+//                        globalCacheManager.store();
+//                    }
+//                });
     }
 
 //    private Action1<StatusEntity> validateStatus(final boolean isInitialGetStatus) {
