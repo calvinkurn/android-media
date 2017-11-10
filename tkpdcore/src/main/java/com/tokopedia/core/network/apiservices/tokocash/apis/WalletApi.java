@@ -2,9 +2,6 @@ package com.tokopedia.core.network.apiservices.tokocash.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-
-import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -28,11 +25,11 @@ public interface WalletApi {
     Observable<Response<TkpdDigitalResponse>> getHistoryTokocash(@QueryMap Map<String, String> params);
 
     @POST(TkpdBaseURL.Wallet.POST_COMPLAINT)
-    Observable<Response<TkpdDigitalResponse>> postHelpHistory(@Body JSONObject requestHelpHistory);
+    Observable<Response<TkpdDigitalResponse>> postHelpHistory(@Body Map<String, String> params);
 
     @POST
     Observable<Response<TkpdDigitalResponse>> withdrawSaldoFromTokocash(@Url String url,
-                                                                        @Body JSONObject paramsActionHistoryEntity);
+                                                                        @Body Map<String, String> params);
 
     @GET(TkpdBaseURL.Wallet.GET_OAUTH_INFO_ACCOUNT)
     Observable<Response<TkpdDigitalResponse>> getOAuthInfoAccount();

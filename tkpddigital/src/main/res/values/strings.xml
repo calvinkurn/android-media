@@ -74,7 +74,7 @@
     <string name="benefit_tokocash_title_item_4">Refund dana ke TokoCash</string>
     <string name="benefit_tokocash_detail_item_4">Jika terjadi pembatalan transaksi, kamu tidak perlu khawatir karena dana akan dikembalikan ke akun TokoCash-mu.</string>
     <string name="syarat_ketentuan_tokocash">Dengan klik tombol \'Aktivasi\' Anda menyetujui \n syarat dan ketentuan TokoCash.</string>
-    <string name="url_help_center_tokocash">https://www.tokopedia.com/bantuan/115000145223-TokoCash/#tentang-tokocash</string>
+    <string name="url_help_center_tokocash">https://www.tokopedia.com/bantuan/pembeli/fitur-belanja/tokocash/</string>
     <string name="desc_success_tokocash">Selamat, Anda berhasil melakukan aktivasi TokoCash dengan nomor %s. \nKini Anda bisa bertransaksi dengan lebih mudah di Tokopedia.</string>
     <string name="repeat_sms_verification">Kirim SMS Ulang (%s)</string>
     <string name="tokocash_title_success">Aktivasi TokoCash Berhasil!</string>

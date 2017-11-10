@@ -12,9 +12,6 @@ import com.tokopedia.digital.tokocash.entity.WithdrawSaldoEntity;
 import com.tokopedia.digital.tokocash.model.ParamsActionHistory;
 import com.tokopedia.digital.utils.DeviceUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -66,18 +63,12 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
 
     @Override
     public Observable<ResponseHelpHistoryEntity> submitHelpHistory(String subject, String message, String category, String transactionId) {
-        JSONObject requestHelpHistory = new JSONObject();
-        try {
-            requestHelpHistory.put("subject", subject);
-            requestHelpHistory.put("message", message);
-            requestHelpHistory.put("category", category);
-            requestHelpHistory.put("transaction_id", transactionId);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return walletService.getApi().postHelpHistory(requestHelpHistory)
+        TKPDMapParam tkpdMapParam = new TKPDMapParam();
+        tkpdMapParam.put("subject", subject);
+        tkpdMapParam.put("message", message);
+        tkpdMapParam.put("category", category);
+        tkpdMapParam.put("transaction_id", transactionId);
+        return walletService.getApi().postHelpHistory(tkpdMapParam)
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<ResponseHelpHistoryEntity>>() {
                     @Override
                     public Observable<ResponseHelpHistoryEntity> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
@@ -89,14 +80,10 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
 
     @Override
     public Observable<WithdrawSaldoEntity> moveToSaldo(String url, ParamsActionHistory paramsActionHistory) {
-        JSONObject paramsActionHistoryEntity = new JSONObject();
-        try {
-            paramsActionHistoryEntity.put("refund_id", paramsActionHistory.getRefundId());
-            paramsActionHistoryEntity.put("refund_type", paramsActionHistory.getRefundType());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return walletService.getApi().withdrawSaldoFromTokocash(url, paramsActionHistoryEntity)
+        TKPDMapParam tkpdMapParam = new TKPDMapParam();
+        tkpdMapParam.put("refund_id", paramsActionHistory.getRefundId());
+        tkpdMapParam.put("refund_type", paramsActionHistory.getRefundType());
+        return walletService.getApi().withdrawSaldoFromTokocash(url, tkpdMapParam)
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<WithdrawSaldoEntity>>() {
                     @Override
                     public Observable<WithdrawSaldoEntity> call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
