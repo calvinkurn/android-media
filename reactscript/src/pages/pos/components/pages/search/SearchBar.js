@@ -32,8 +32,8 @@ class SearchBar extends Component {
     }}>
       <TouchableWithoutFeedback onPress={
         () => {
-          console.log(item)
-          console.log(this.props)
+          // console.log(item)
+          // console.log(this.props)
           // this.props.onSearchItemTap(this.props.shopId, item)
           this.toggleResults(false)
           Keyboard.dismiss()
@@ -86,7 +86,7 @@ class SearchBar extends Component {
             underlineColorAndroid='transparent'
             onSubmitEditing={
               () => {
-                this.props.onSubmit(this.props.queryText, this.props.etalaseId, this.props.shopId)
+                this.props.onSubmit(this.props.queryText, this.props.etalaseId)
                 this.toggleResults(false)
               }
             }

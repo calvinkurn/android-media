@@ -71,11 +71,28 @@ export const searchProduct = (product, etalaseId) => {
   }
 }
 
+
+
+// ==================== Search Product ==================== //
+export const SEARCH_PRODUCT_SUBMIT = 'SEARCH_PRODUCT_SUBMIT'
+export const searchProductSubmit = (product, etalaseId) => {
+  // console.log(product, etalaseId)
+  const payload = {
+    keyword: product,
+    etalase_id: etalaseId == 0 ? '' : etalaseId
+  }
+
+  return {
+    type: SEARCH_PRODUCT_SUBMIT,
+    payload: searchProd(payload)
+  }
+}
+
 const searchProd = (payload) => {
   return ProductDiscoveryModule.search(JSON.stringify(payload))
     .then(res => {
       const resJson = JSON.parse(res)
-      console.log(resJson)
+      // console.log(resJson)
       return resJson
     })
     .catch(err => {
@@ -88,7 +105,7 @@ const searchProd = (payload) => {
 // ==================== To Show the Query in The TextInput ==================== //
 export const ON_SEARCH_QUERY_TYPE = 'ON_SEARCH_QUERY_TYPE'
 export const onSearchQueryType = (queryText) => {
-  console.log(queryText)
+  // console.log(queryText)
   return {
     type: ON_SEARCH_QUERY_TYPE,
     payload: queryText
@@ -134,17 +151,17 @@ export const setSearchText = (q) => {
   }
 }
 
-export const ON_SUBMIT_FETCH_SEARCH_PRODUCT = 'ON_SUBMIT_FETCH_SEARCH_PRODUCT'
-export const onSubmitFetchSearchProduct = (queryText, eId, shopId) => {
-  const text = queryText.replace(' ', '+')
-  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=25&shop_id=${shopId}&start=0&q=${text}`
-  const etalaseId = +eId || 0
-  if (etalaseId) {
-    url += `&etalase=${etalaseId}`
-  }
-  return {
-    type: ON_SUBMIT_FETCH_SEARCH_PRODUCT,
-    payload: axios.get(url),
-    queryText: queryText,
-  }
-}
+// export const ON_SUBMIT_FETCH_SEARCH_PRODUCT = 'ON_SUBMIT_FETCH_SEARCH_PRODUCT'
+// export const onSubmitFetchSearchProduct = (queryText, eId, shopId) => {
+//   const text = queryText.replace(' ', '+')
+//   let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=25&shop_id=${shopId}&start=0&q=${text}`
+//   const etalaseId = +eId || 0
+//   if (etalaseId) {
+//     url += `&etalase=${etalaseId}`
+//   }
+//   return {
+//     type: ON_SUBMIT_FETCH_SEARCH_PRODUCT,
+//     payload: axios.get(url),
+//     queryText: queryText,
+//   }
+// }

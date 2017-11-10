@@ -27,8 +27,8 @@ export const search = (state = {
         isFetching: true,
       }
     case `${SEARCH_PRODUCT}_${FULFILLED}`:
-      console.log(action.payload)
-      console.log(action.payload.data.list)
+      // console.log(action.payload)
+      // console.log(action.payload.data.list)
       return {
         ...state,
         items: action.payload.data.list.map(p => ({
@@ -48,7 +48,7 @@ export const search = (state = {
         query: '',
       }
     case SET_SEARCH_TEXT:
-      console.log(action.payload)
+      // console.log(action.payload)
       return {
         ...state,
         query: action.payload

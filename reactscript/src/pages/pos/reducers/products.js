@@ -2,7 +2,8 @@ import {
     FETCH_PRODUCTS,
     PULL_TO_REFRESH,
     RESET_PRODUCT_LIST,
-    ON_SUBMIT_FETCH_SEARCH_PRODUCT,
+    // ON_SUBMIT_FETCH_SEARCH_PRODUCT,
+    SEARCH_PRODUCT_SUBMIT,
 } from '../actions/index'
 import { PENDING, FULFILLED, REJECTED } from 'redux-promise-middleware'
 import { differenceBy } from 'lodash'
@@ -66,11 +67,13 @@ export const products = (state = {
             rows: 25,
           },
         }
-      case `${ON_SUBMIT_FETCH_SEARCH_PRODUCT}_${FULFILLED}`:
-        console.log(ON_SUBMIT_FETCH_SEARCH_PRODUCT)
+      case `${SEARCH_PRODUCT_SUBMIT}_${FULFILLED}`:
+        // console.log(SEARCH_PRODUCT_SUBMIT)
+        // console.log(action.payload)
+        // console.log(action.payload.data.list)
         return {
           ...state,
-          items: action.payload.data.data.products
+          items: action.payload.data.list
         }
       default:
         return state

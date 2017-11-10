@@ -11,12 +11,13 @@ import {
   resetProductList,
   searchProduct,
   setSearchText,
-  onSubmitFetchSearchProduct,
+  searchProductSubmit,
+  // onSubmitFetchSearchProduct,
 } from '../actions/index'
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(state)
-  console.log(ownProps)
+  // console.log(state)
+  // console.log(ownProps)
   return {
     items: state.search.items,
     queryText: state.search.query,
@@ -47,7 +48,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     onSubmit: (text, eid, shopId) => {
       dispatch(resetProductList())
-      dispatch(searchProduct(text, eid))
+      dispatch(searchProductSubmit(text, eid))
     }
   }
 }
