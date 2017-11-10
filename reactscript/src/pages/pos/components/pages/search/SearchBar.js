@@ -27,6 +27,7 @@ class SearchBar extends Component {
     }}>
       <TouchableWithoutFeedback onPress={
         () => {
+          console.log(item)
           this.props.onSearchItemTap(item)
           this.toggleResults(false)
           Keyboard.dismiss()

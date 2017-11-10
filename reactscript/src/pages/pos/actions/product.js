@@ -15,32 +15,6 @@ export const fetchProducts = (shopId, start, rows, etalaseId, productId, queryTe
   }
 }
 
-// ==================== Search Product ==================== //
-export const SEARCH_PRODUCT = 'SEARCH_PRODUCT'
-export const searchProduct = (product, etalaseId) => {
-  const payload = {
-    keyword: product,
-    etalase_id: etalaseId == 0 ? '' : etalaseId
-  }
-
-  return {
-    type: SEARCH_PRODUCT,
-    payload: searchProd(payload)
-  }
-}
-
-const searchProd = (payload) => {
-  return ProductDiscoveryModule.search(JSON.stringify(payload))
-    .then(res => {
-      const resJson = JSON.parse(res)
-      console.log(resJson)
-      return resJson
-    })
-    .catch(err => {
-      console.log(err)
-    })
-}
-
 
 
 
@@ -81,7 +55,36 @@ export const resetProductList = () => {
 }
 
 
-// Search actions
+
+// ==================== Search Product ==================== //
+export const SEARCH_PRODUCT = 'SEARCH_PRODUCT'
+export const searchProduct = (product, etalaseId) => {
+  const payload = {
+    keyword: product,
+    etalase_id: etalaseId == 0 ? '' : etalaseId
+  }
+
+  return {
+    type: SEARCH_PRODUCT,
+    payload: searchProd(payload)
+  }
+}
+
+const searchProd = (payload) => {
+  return ProductDiscoveryModule.search(JSON.stringify(payload))
+    .then(res => {
+      const resJson = JSON.parse(res)
+      console.log(resJson)
+      return resJson
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+
+
+// ==================== Search actions ==================== //
 export const ON_SEARCH_QUERY_TYPE = 'ON_SEARCH_QUERY_TYPE'
 export const onSearchQueryType = (queryText) => {
   return {
@@ -105,6 +108,7 @@ export const fetchSearchProduct = (eId, queryText, shopId) => {
     queryText: queryText,
   }
 }
+
 
 export const ON_SEARCH_RESULT_TAP = 'ON_SEARCH_RESULT_TAP'
 export const onSearchResultTap = () => {
