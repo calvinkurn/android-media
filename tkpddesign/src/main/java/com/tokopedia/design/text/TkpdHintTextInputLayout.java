@@ -41,7 +41,6 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher;
 public class TkpdHintTextInputLayout extends LinearLayout {
 
     private static final int INVALID_MAX_LENGTH = -1;
-    public static final int ANIMATION_DURATION = 200;
     private FrameLayout mFrameLayout;
     private EditText mEditText;
 
