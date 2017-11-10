@@ -10,6 +10,8 @@ import com.tokopedia.core.network.retrofit.interceptors.DynamicTkpdAuthIntercept
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.MsisdnInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.ReactNativeBearerInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.ReactNativeInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.ResolutionInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.RideInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
@@ -21,6 +23,8 @@ import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.util.GlobalConfig;
+
+import java.util.HashMap;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -97,6 +101,38 @@ public class OkHttpFactory {
 
     public OkHttpClient buildClientDynamicAuth() {
         return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new DynamicTkpdAuthInterceptor())
+                .addInterceptor(getHttpLoggingInterceptor())
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildClientReactNativeNoAuth(HashMap<String, String> headers) {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new ReactNativeInterceptor(headers))
+                .addInterceptor(new TkpdBaseInterceptor())
+                .addInterceptor(getHttpLoggingInterceptor())
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildClientReactNativeAuth(HashMap<String, String> headers) {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new ReactNativeInterceptor(headers))
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new DynamicTkpdAuthInterceptor())
+                .addInterceptor(getHttpLoggingInterceptor())
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildClientReactNativeBearer(HashMap<String, String> headers, String token) {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new ReactNativeBearerInterceptor(headers, token))
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new DynamicTkpdAuthInterceptor())
                 .addInterceptor(getHttpLoggingInterceptor())
