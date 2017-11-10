@@ -76,7 +76,12 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         }
         name.setText(MethodChecker.fromHtml(element.getName()));
         ImageHandler.LoadImage(avatar, element.getAvatar());
-        label.setText(element.getLabel());
+
+        if (element.isFollowed()) {
+            label.setText(element.getTime());
+        } else {
+            label.setText(element.getLabel());
+        }
 
         if (element.isFollowed() && !element.isTemporarilyFollowed()) {
             followButton.setVisibility(View.GONE);
@@ -199,14 +204,14 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
                 MAX_CHAR) {
             String subDescription = MethodChecker.fromHtml(element.getReview()).toString().substring(0,
                     MAX_CHAR);
-            return MethodChecker
-                    .fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
-                            + MainApplication.getAppContext().getString(R.string
-                            .read_more_english));
+            return MethodChecker.fromHtml(
+                    subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
+                            + "<font color='#42b549'>"
+                            + MainApplication.getAppContext().getString(R.string.read_more_english)
+                            + "</font>");
         } else {
             return MethodChecker.fromHtml(element.getReview());
         }
     }
-
 
 }
