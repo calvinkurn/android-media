@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
@@ -42,10 +43,6 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
 
     public DrawerData getData() {
         return data;
-    }
-
-    public void setDrawerProfileData(DrawerProfile drawerProfile){
-        data.setDrawerProfile(drawerProfile);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -83,7 +80,12 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
         holder.tvName.setText(data.getDrawerProfile().getShopName());
         holder.tvOnline.setText("Online");
         holder.tvOutlet.setText(((PosAppDataGetter)context.getApplicationContext()).getOutletName());
-        holder.ivAvatar.setImageResource(R.drawable.qc_launcher);
+        if (data.getDrawerProfile().getUserAvatar() != null
+                && !data.getDrawerProfile().getUserAvatar().equals("")) {
+            ImageHandler.LoadImage(holder.ivAvatar, data.getDrawerProfile().getUserAvatar());
+        } else {
+            holder.ivAvatar.setImageResource(R.drawable.qc_launcher);
+        }
     }
 
     @Override

@@ -296,8 +296,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                     .getData().setDrawerProfile(profile);
         else if (drawerHelper.getAdapter().getHeader() instanceof DrawerPosHeaderDataBinder) {
             ((DrawerPosHeaderDataBinder) drawerHelper.getAdapter().getHeader())
-                    .setDrawerProfileData(profile);
-            drawerHelper.getAdapter().notifyDataSetChanged();
+                    .getData().setDrawerProfile(profile);
         }
 
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
