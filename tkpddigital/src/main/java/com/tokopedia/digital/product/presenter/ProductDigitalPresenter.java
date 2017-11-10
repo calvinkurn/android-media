@@ -411,7 +411,6 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
             } else {
                 view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed), view.getActivity().getString(R.string.message_ussd_title));
             }
-
         } else {
             view.showAccessibilityAlertDialog();
         }

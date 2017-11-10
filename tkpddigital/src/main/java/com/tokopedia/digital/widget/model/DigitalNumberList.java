@@ -22,15 +22,8 @@ public class DigitalNumberList {
         return orderClientNumbers;
     }
 
-    public void setOrderClientNumbers(List<OrderClientNumber> orderClientNumbers) {
-        this.orderClientNumbers = orderClientNumbers;
-    }
-
     public OrderClientNumber getLastOrder() {
         return lastOrder;
     }
 
-    public void setLastOrder(OrderClientNumber lastOrder) {
-        this.lastOrder = lastOrder;
-    }
 }
