@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -46,6 +47,7 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 
 import java.util.ArrayList;
 
@@ -73,6 +75,8 @@ public class DrawerBuyerHelper extends DrawerHelper
     private SessionHandler sessionHandler;
     private GlobalCacheManager globalCacheManager;
 
+    FirebaseRemoteConfig firebaseRemoteConfig;
+
     public DrawerBuyerHelper(Activity activity,
                              SessionHandler sessionHandler,
                              LocalCacheHandler drawerCache,
@@ -97,6 +101,7 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public ArrayList<DrawerItem> createDrawerData() {
+        fetchRemoteConfig();
         ArrayList<DrawerItem> data = new ArrayList<>();
 
         if (sessionHandler.isV4Login()) {
@@ -109,6 +114,22 @@ public class DrawerBuyerHelper extends DrawerHelper
             footerShadow.setVisibility(View.GONE);
         }
         return data;
+    }
+
+    private void fetchRemoteConfig() {
+        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(context);
+        remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
+            @Override
+            public void onComplete(FirebaseRemoteConfig instance) {
+                firebaseRemoteConfig = instance;
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
     }
 
     private void createDataGuest(ArrayList<DrawerItem> data) {
@@ -158,13 +179,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SETTINGS,
                 true));
 
-        if (isAppshareButtonShow()) {
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
-                    R.drawable.share_ke_teman,
-                    TkpdState.DrawerPosition.APPSHARE,
-                    true, true));
-
-        }
+        showAppShareButton(data);
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_activity_contact_us),
                 R.drawable.ic_contactus,
@@ -588,9 +603,12 @@ public class DrawerBuyerHelper extends DrawerHelper
         sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
     }
 
-    private boolean isAppshareButtonShow() {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.FIREBASE_REMOTE_CONFIG);
-        return localCacheHandler.getBoolean(TkpdCache.Key.SHOW_HIDE_APP_SHARE_BUTTON_KEY, true);
-
+    private void showAppShareButton(ArrayList<DrawerItem> data) {
+        if(firebaseRemoteConfig.getBoolean(TkpdCache.Key.CONFIG_SHOW_HIDE_APP_SHARE_BUTTON)) {
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
+                    R.drawable.share_ke_teman,
+                    TkpdState.DrawerPosition.APPSHARE,
+                    true, true));
+        }
     }
 }

@@ -76,11 +76,19 @@ public class SolutionDetailFragmentPresenter
                     editAppealSolutionModel.refundAmount = intAmount;
                 }
             }
+        } else {
             if (resultViewModel != null) {
-                mainView.updateBottomButton(resultViewModel.refundAmount);
+                resultViewModel.refundAmount = 0;
             } else {
-                mainView.updateBottomButton(editAppealSolutionModel.refundAmount);
+                editAppealSolutionModel.refundAmount = 0;
             }
+            mainView.updatePriceEditText(String.valueOf(0));
+        }
+
+        if (resultViewModel != null) {
+            mainView.updateBottomButton(resultViewModel.refundAmount);
+        } else {
+            mainView.updateBottomButton(editAppealSolutionModel.refundAmount);
         }
     }
 
@@ -92,8 +100,8 @@ public class SolutionDetailFragmentPresenter
             mainView.submitData(resultViewModel);
         } else {
             editAppealSolutionModel.solution = solutionViewModel.getId();
-            editAppealSolutionModel.solutionName = solutionViewModel.getName();
-            mainView.showDialogCompleteEditAppeal(editAppealSolutionModel)  ;
+            editAppealSolutionModel.solutionName = solutionViewModel.getSolutionName();
+            mainView.showDialogCompleteEditAppeal(editAppealSolutionModel);
         }
     }
 
@@ -107,10 +115,10 @@ public class SolutionDetailFragmentPresenter
                     new EditSolutionWithRefundSubscriber(mainView));
         } else {
             postAppealSolutionUseCase.execute(PostAppealSolutionUseCase.
-                    postAppealSolutionUseCaseParams(
-                            editAppealSolutionModel.resolutionId,
-                            editAppealSolutionModel.solution,
-                            editAppealSolutionModel.refundAmount),
+                            postAppealSolutionUseCaseParams(
+                                    editAppealSolutionModel.resolutionId,
+                                    editAppealSolutionModel.solution,
+                                    editAppealSolutionModel.refundAmount),
                     new AppealSolutionWithRefundSubscriber(mainView));
         }
     }

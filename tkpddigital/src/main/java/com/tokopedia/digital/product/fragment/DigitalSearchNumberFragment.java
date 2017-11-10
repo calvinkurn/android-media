@@ -138,6 +138,7 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
             editTextSearchNumber.setText(number);
             editTextSearchNumber.setSelection(number.length());
         }
+
         numberListAdapter = new NumberListAdapter(this, clientNumbers);
         rvNumberList.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvNumberList.setAdapter(numberListAdapter);
@@ -180,21 +181,29 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
 
     private void filterData(String query) {
         List<OrderClientNumber> searchClientNumbers = new ArrayList<>();
+        if (!TextUtils.isEmpty(query) & !isContain(query)) {
+            searchClientNumbers.add(new OrderClientNumber.Builder()
+                    .clientNumber(query)
+                    .build());
+        }
         for (OrderClientNumber orderClientNumber : clientNumbers) {
             if (orderClientNumber.getClientNumber().contains(query)) {
                 searchClientNumbers.add(orderClientNumber);
             }
         }
-        if (!searchClientNumbers.isEmpty()) {
-            numberListAdapter.setNumbers(searchClientNumbers);
-            numberListAdapter.notifyDataSetChanged();
-        } else {
-            searchClientNumbers.add(new OrderClientNumber.Builder()
-                    .clientNumber(query)
-                    .build());
-            numberListAdapter.setNumbers(searchClientNumbers);
-            numberListAdapter.notifyDataSetChanged();
+        numberListAdapter.setNumbers(searchClientNumbers);
+        numberListAdapter.notifyDataSetChanged();
+    }
+
+    private boolean isContain(String number) {
+        boolean found = false;
+        for (OrderClientNumber orderClientNumber : clientNumbers) {
+            if (orderClientNumber.getClientNumber().equalsIgnoreCase(number)) {
+                found = true;
+                break;
+            }
         }
+        return found;
     }
 
     @Override

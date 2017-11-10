@@ -2,7 +2,7 @@ package com.tokopedia.core.gcm;
 
 /**
  * @author by alvarisi on 12/20/16.
- *         this class contain all string used for applink/PN case
+ * this class contain all string used for applink/PN case
  */
 
 public interface Constants {
@@ -56,6 +56,7 @@ public interface Constants {
         String HOME = "tokopedia://home";
         String HOME_FEED = "tokopedia://home/feed";
         String FEED = "tokopedia://feed";
+        String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
         String HOME_CATEGORY = "tokopedia://home/category";
         String HOME_HOTLIST = "tokopedia://hot";
         String MESSAGE = "tokopedia://message";
@@ -84,6 +85,7 @@ public interface Constants {
         String REPUTATION = "tokopedia://review";
         String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
         String WEBVIEW = "tokopedia://webview";
+        String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
         String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
         String DIGITAL = "tokopedia://digital";
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
@@ -106,6 +108,8 @@ public interface Constants {
         String OFFICIAL_STORES = "tokopedia://official-stores";
         String RESCENTER = "tokopedia://resolution/{resolution_id}";
         String REFERRAL = "tokopedia://referral";
+        String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
+        String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
         String WALLET_HOME = "tokopedia://wallet";
         String WALLET_ACTIVATION = "tokopedia://wallet/activation";
         String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
@@ -113,7 +117,7 @@ public interface Constants {
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
 
-        interface SellerApp {
+        interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";
             String SALES = "sellerapp://sales";
             String TOPADS_CREDIT = "sellerapp://topads/buy";

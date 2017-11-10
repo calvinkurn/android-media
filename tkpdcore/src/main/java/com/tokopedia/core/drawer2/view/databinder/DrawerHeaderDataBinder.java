@@ -188,8 +188,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.percentText.setVisibility(View.VISIBLE);
 
 
-        if (data.getDrawerProfile().getUserAvatar() != null && !data.getDrawerProfile().getUserAvatar().equals(""))
-            ImageHandler.LoadImage(holder.avatar, data.getDrawerProfile().getUserAvatar());
+        if (data.getDrawerProfile().getUserAvatar() != null)
+            ImageHandler.loadImage(context,holder.avatar, data.getDrawerProfile().getUserAvatar(),R.drawable.ic_image_avatar_boy,R.drawable.ic_image_avatar_boy);
 
         holder.name.setText(data.getDrawerProfile().getUserName());
         holder.percentText.setText(String.format("%s%%", String.valueOf(data.getProfileCompletion())));

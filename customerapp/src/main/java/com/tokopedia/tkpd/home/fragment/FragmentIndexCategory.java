@@ -91,7 +91,7 @@ import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.OnGetBrandsListener;
-import com.tokopedia.tkpd.home.ReactNativeOfficialStoresActivity;
+import com.tokopedia.tkpd.home.ReactNativeActivity;
 import com.tokopedia.tkpd.home.TopPicksView;
 import com.tokopedia.tkpd.home.adapter.BrandsRecyclerViewAdapter;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
@@ -261,8 +261,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void initData() {
+
         loadDummyPromos();
         rechargeCategoryPresenter.fetchDataRechargeCategory();
+
         getAnnouncement();
         getPromo();
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
@@ -293,6 +295,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         });
     }
 
+
+
     private void getAnnouncement() {
         if (!category.isTickerClosed()) {
             category.fetchTickers(new Category.FetchTickersListener() {
@@ -300,6 +304,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 public void onSuccess(final ArrayList<Ticker.Tickers> tickersResponse) {
                     holder.tickerContainer.setVisibility(View.VISIBLE);
                     if (tickersResponse.size() > 1) {
+                        tickerShowed.clear();
                         tickerIncrementPage = runnableIncrementTicker();
                         tickerShowed.clear();
                         tickerHandler = new Handler();
@@ -679,7 +684,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 if (firebaseRemoteConfig != null
                         && firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
                     getActivity().startActivity(
-                            ReactNativeOfficialStoresActivity.createReactNativeActivity(
+                            ReactNativeActivity.createOfficialStoresReactNativeActivity(
                                     getActivity(), ReactConst.Screen.OFFICIAL_STORE,
                                     getString(R.string.react_native_banner_official_title)
                             )

@@ -234,6 +234,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void actionApplink(Activity activity, String linkUrl, String extra) {
+
+    }
+
+    @Override
     public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
 
     }
@@ -568,6 +573,10 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public String getFlavor() {
+        return BuildConfig.FLAVOR;
+    }
+
     public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
         if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
                 || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {
@@ -600,5 +609,10 @@ public abstract class SellerRouterApplication extends MainApplication
     public void goToUserPaymentList(Activity activity) {
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);
+    }
+
+    @Override
+    public boolean isInMyShop(Context context, String shopId) {
+        return context != null && new SessionHandler(context).getShopID().trim().equalsIgnoreCase(shopId.trim());
     }
 }
