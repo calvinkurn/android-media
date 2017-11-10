@@ -81,7 +81,7 @@ public class ImageAlbumAdapter extends RecyclerView.Adapter<ImageAlbumAdapter.Vi
         public void bindView(ImageModel item, int maxSelection) {
             this.folderModel = item;
             mAlbumname.setText(item.getName());
-            ImageHandler.loadImageFit2(itemView.getContext(), mImageView, new File(item.getPathFolder()));
+            ImageHandler.loadImageFit2(itemView.getContext(), mImageView, new File(item.getPathFile()));
             setMaxSelection(maxSelection);
         }
 
