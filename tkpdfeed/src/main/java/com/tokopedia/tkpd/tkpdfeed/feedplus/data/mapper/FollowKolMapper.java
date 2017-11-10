@@ -36,6 +36,6 @@ public class FollowKolMapper implements Func1<FollowKol.Data, FollowKolDomain> {
     }
 
     private FollowKolDomain convertToDomain(FollowKol.Data.Data1 data) {
-        return new FollowKolDomain(data.status());
+        return new FollowKolDomain(data.status() == null ? 0 : data.status());
     }
 }

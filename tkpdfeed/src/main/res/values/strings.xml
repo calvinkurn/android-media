@@ -56,5 +56,7 @@
     <string name="comment">Comment</string>
     <string name="failed_to_follow">Gagal follow </string>
     <string name="failed_to_unfollow">Gagal unfollow </string>
+    <string name="prompt_delete_comment_kol">Apakah anda ingin menghapus komen ini?</string>
+    <string name="success_delete_kol_comment">Sukses menghapus komentar</string>
 
 </resources>

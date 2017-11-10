@@ -285,6 +285,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     @Override
     public void onSuccessSendComment(SendKolCommentDomain sendKolCommentDomain) {
         adapter.addItem(new KolCommentViewModel(
+                sendKolCommentDomain.getId(),
                 sendKolCommentDomain.getDomainUser().getPhoto(),
                 sendKolCommentDomain.getDomainUser().getName(),
                 sendKolCommentDomain.getComment(),
@@ -317,6 +318,31 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
                     .NORMAL_PROGRESS);
 
         progressDialog.showDialog();
+    }
+
+    @Override
+    public void onDeleteCommentKol(int id, int adapterPosition) {
+        presenter.deleteComment(id, adapterPosition);
+    }
+
+    @Override
+    public void onErrorDeleteComment(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessDeleteComment(int adapterPosition) {
+        if (adapterPosition < adapter.getItemCount()) {
+            adapter.deleteItem(adapterPosition);
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
+                    .success_delete_kol_comment));
+
+            totalNewComment -= 1;
+            Intent intent = new Intent();
+            intent.putExtras(getActivity().getIntent().getExtras());
+            intent.putExtra(ARGS_TOTAL_COMMENT, totalNewComment);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+        }
     }
 
     private void setWishlist(boolean wishlisted) {

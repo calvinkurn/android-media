@@ -1,0 +1,8 @@
+mutation DeleteKolComment($idComment: Int!){
+	delete_comment_kol(idComment: $idComment) {
+    		error
+    		data {
+    			success
+    		}
+    	}
+}

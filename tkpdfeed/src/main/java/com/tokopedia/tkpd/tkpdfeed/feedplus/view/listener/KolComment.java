@@ -40,6 +40,12 @@ public interface KolComment {
         void dismissProgressDialog();
 
         void showProgressDialog();
+
+        void onDeleteCommentKol(int id, int adapterPosition);
+
+        void onErrorDeleteComment(String errorMessage);
+
+        void onSuccessDeleteComment(int adapterPosition);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -49,5 +55,6 @@ public interface KolComment {
 
         void updateCursor(String lastcursor);
 
+        void deleteComment(int id, int adapterPosition);
     }
 }

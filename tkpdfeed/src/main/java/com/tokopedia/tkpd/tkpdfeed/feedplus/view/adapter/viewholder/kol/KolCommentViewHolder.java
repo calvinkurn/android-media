@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,19 +24,20 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
     private static final String SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     private final KolComment.View viewListener;
 
+    View mainView;
     TextView comment;
     TextView time;
     ImageView avatar;
     ImageView badge;
 
-    public KolCommentViewHolder(View itemView, KolComment.View viewListener) {
+    public KolCommentViewHolder(View itemView, final KolComment.View viewListener) {
         super(itemView);
         this.viewListener = viewListener;
         avatar = (ImageView) itemView.findViewById(R.id.avatar);
         time = (TextView) itemView.findViewById(R.id.time);
         comment = (TextView) itemView.findViewById(R.id.comment);
         badge = (ImageView) itemView.findViewById(R.id.badge);
-
+        mainView = itemView.findViewById(R.id.main_view);
     }
 
     @Override
@@ -57,9 +60,38 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
             comment.setText(MethodChecker.fromHtml(getCommentText(element)));
         }
 
+        mainView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                showDeleteDialog(v,viewListener, element.getId(), getAdapterPosition());
+                return true;
+            }
+        });
+
     }
 
     private String getCommentText(KolCommentViewModel element) {
         return "<b>" + element.getName() + "</b>" + " " + element.getReview();
+    }
+
+    private void showDeleteDialog(View v, final KolComment.View viewListener, final int id, final int adapterPosition) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+        builder.setMessage(R.string.prompt_delete_comment_kol);
+        builder.setPositiveButton(R.string.title_delete, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                viewListener.onDeleteCommentKol(id, adapterPosition);
+            }
+        });
+        builder.setNegativeButton(R.string.title_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

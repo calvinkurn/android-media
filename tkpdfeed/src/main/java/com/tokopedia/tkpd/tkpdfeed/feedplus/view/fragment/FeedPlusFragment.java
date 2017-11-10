@@ -74,7 +74,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductMod
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
@@ -743,7 +742,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 break;
             case OPEN_KOL_COMMENT:
                 if (resultCode == Activity.RESULT_OK)
-                    onSuccessAddKolComment(data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
+                    onSuccessAddDeleteKolComment(data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0));
                 break;
             default:
@@ -1068,7 +1067,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     }
 
-    private void onSuccessAddKolComment(int rowNumber, int totalNewComment) {
+    private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
         if (rowNumber != -1) {
             int originalPos = topAdsRecyclerAdapter.getPlacer().getItem(rowNumber).originalPos();
             if (originalPos > 0

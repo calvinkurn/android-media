@@ -25,6 +25,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FollowKolMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolCommentMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolDeleteCommentMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolSendCommentMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.LikeKolMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RecentProductMapper;
@@ -40,6 +41,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.KolSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.AddWishlistUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.CheckNewFeedUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.DeleteKolCommentUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase;
@@ -337,9 +339,12 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    KolCommentSource provideKolCommentSource(ApolloClient apolloClient, KolCommentMapper
-            kolCommentMapper, KolSendCommentMapper kolSendCommentMapper) {
-        return new KolCommentSource(apolloClient, kolCommentMapper, kolSendCommentMapper);
+    KolCommentSource provideKolCommentSource(ApolloClient apolloClient,
+                                             KolCommentMapper kolCommentMapper,
+                                             KolSendCommentMapper kolSendCommentMapper,
+                                             KolDeleteCommentMapper kolDeleteCommentMapper) {
+        return new KolCommentSource(apolloClient, kolCommentMapper,
+                kolSendCommentMapper, kolDeleteCommentMapper);
     }
 
     @FeedPlusScope
@@ -404,5 +409,22 @@ public class FeedPlusModule {
                 postExecutionThread,
                 feedRepository);
     }
+
+    @FeedPlusScope
+    @Provides
+    DeleteKolCommentUseCase provideDeleteKolCommentUseCase(ThreadExecutor threadExecutor,
+                                                           PostExecutionThread postExecutionThread,
+                                                           FeedRepository feedRepository) {
+        return new DeleteKolCommentUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    KolDeleteCommentMapper provideKolDeleteCommentMapper() {
+        return new KolDeleteCommentMapper();
+    }
+
 
 }

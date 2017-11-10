@@ -1,9 +1,11 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.DeleteKolCommentUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolCommentsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.SendKolCommentUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolComment;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.DeleteKolCommentSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetKolCommentFirstTimeSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetKolCommentSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.SendKolCommentSubscriber;
@@ -19,6 +21,8 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
 
     private final GetKolCommentsUseCase getKolCommentsUseCase;
     private final SendKolCommentUseCase sendKolCommentUseCase;
+    private final DeleteKolCommentUseCase deleteKolCommentUseCase;
+
     private String cursor;
 
     @Override
@@ -29,9 +33,11 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
 
     @Inject
     public KolCommentPresenter(GetKolCommentsUseCase getKolCommentsUseCase,
-                               SendKolCommentUseCase sendKolCommentUseCase) {
+                               SendKolCommentUseCase sendKolCommentUseCase,
+                               DeleteKolCommentUseCase deleteKolCommentUseCase) {
         this.getKolCommentsUseCase = getKolCommentsUseCase;
         this.sendKolCommentUseCase = sendKolCommentUseCase;
+        this.deleteKolCommentUseCase = deleteKolCommentUseCase;
     }
 
     @Override
@@ -50,6 +56,13 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     @Override
     public void updateCursor(String lastcursor) {
         this.cursor = lastcursor;
+    }
+
+    @Override
+    public void deleteComment(int id, int adapterPosition) {
+        getView().showProgressDialog();
+        deleteKolCommentUseCase.execute(DeleteKolCommentUseCase.getParam(id), new
+                DeleteKolCommentSubscriber(getView(), adapterPosition));
     }
 
     public void sendComment(int id, String comment) {

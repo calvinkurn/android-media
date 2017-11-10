@@ -5,6 +5,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FeedFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.KolCommentSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.source.KolSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.CheckFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DeleteKolCommentDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FollowKolDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.LikeKolDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.SendKolCommentDomain;
@@ -83,5 +84,10 @@ public class FeedRepositoryImpl implements FeedRepository {
     @Override
     public Observable<FollowKolDomain> followKol(RequestParams requestParams) {
         return kolSource.followKolPost(requestParams);
+    }
+
+    @Override
+    public Observable<DeleteKolCommentDomain> deleteKolComment(RequestParams requestParams) {
+        return kolCommentSource.deleteKolComment(requestParams);
     }
 }
