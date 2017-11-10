@@ -33,6 +33,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customview.ButtonView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.DetailView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.HistoryView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ListProductView;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.ProveView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.SolutionView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.TimeView;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
@@ -81,6 +82,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     TimeView timeView;
     ListProductView listProductView;
     SolutionView solutionView;
+    ProveView proveView;
     HistoryView historyView;
     TextView tvNextStep;
 
@@ -191,6 +193,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         tvNextStep = (TextView) view.findViewById(R.id.tv_next_step);
         listProductView = (ListProductView) view.findViewById(R.id.product_view);
         solutionView = (SolutionView) view.findViewById(R.id.solution_view);
+        proveView = (ProveView) view.findViewById(R.id.prove_view);
         historyView = (HistoryView) view.findViewById(R.id.history_view);
 
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
@@ -207,6 +210,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         timeView.setListener(this);
         listProductView.setListener(this);
         solutionView.setListener(this);
+        proveView.setListener(this);
         historyView.setListener(this);
 
         cvNextStep.setOnClickListener(new View.OnClickListener() {
@@ -314,6 +318,9 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         }
         if (getViewData().getSolutionData() != null) {
             solutionView.renderData(getViewData().getSolutionData());
+        }
+        if (getViewData().getProveData() != null) {
+            proveView.renderData(getViewData().getProveData());
         }
         if (getViewData().getHistoryData() != null) {
             historyView.renderData(getViewData().getHistoryData());

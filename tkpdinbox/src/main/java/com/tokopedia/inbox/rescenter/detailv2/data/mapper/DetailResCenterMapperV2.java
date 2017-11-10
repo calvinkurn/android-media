@@ -36,7 +36,7 @@ import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.NextAction
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ActionByData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AddressData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AmountData;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AttachmentData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AttachmentDataDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ByData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ComplainedProductData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.CreateByData;
@@ -137,7 +137,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
     }
 
     private FirstData mappingFirstData(FirstResponse response) {
-        return new FirstData(response.getBuyerRemark());
+        return new FirstData(response.getBuyerRemark(), response.getAttachments() != null ? mappingAttachments(response.getAttachments()) : null);
     }
 
     private LastData mappingLastData(LastResponse response) {
@@ -202,10 +202,10 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                         null);
     }
 
-    private List<AttachmentData> mappingAttachments(List<AttachmentResponse> responseList) {
-        List<AttachmentData> domainList = new ArrayList<>();
+    private List<AttachmentDataDomain> mappingAttachments(List<AttachmentResponse> responseList) {
+        List<AttachmentDataDomain> domainList = new ArrayList<>();
         for (AttachmentResponse response : responseList) {
-            AttachmentData domain = new AttachmentData(response.getFullUrl(), response.getThumbnail());
+            AttachmentDataDomain domain = new AttachmentDataDomain(response.getFullUrl(), response.getThumbnail());
             domainList.add(domain);
         }
         return domainList;

@@ -20,6 +20,8 @@
     <string name="title_section_last_solution_user_solution">Solusi dari Pembeli</string>
     <string name="title_section_product_resolution">Produk Yang Dikomplain</string>
     <string name="title_section_history_resolution">Riwayat Komplain</string>
+    <string name="title_section_prove">Lampiran Bukti</string>
+    <string name="title_section_prove_status">Keterangan</string>
 
     <string name="action_track">Lacak</string>
     <string name="action_see_more_awb">Lihat Riwayat No. Resi</string>

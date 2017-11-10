@@ -76,6 +76,12 @@
                 android:layout_marginBottom="@dimen/margin_small"
                 />
 
+            <com.tokopedia.inbox.rescenter.detailv2.view.customview.ProveView
+                android:id="@+id/prove_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"/>
+
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.HistoryView
                 android:id="@+id/history_view"
                 android:layout_width="match_parent"

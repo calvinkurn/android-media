@@ -5,6 +5,7 @@ import android.util.Log;
 import com.tkpd.library.utils.Logger;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AddressReturData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AttachmentData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AwbAttachmentViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AwbData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ButtonData;
@@ -14,13 +15,15 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryItem;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProductData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProductItem;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProveData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.SolutionData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.StatusData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AddressData;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AttachmentData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.AttachmentDataDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ComplainedProductData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.CustomerData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.DetailResponseData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.FirstData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LastData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LogData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.OrderData;
@@ -120,8 +123,28 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
                         detailResponseData.getButton(),
                         detailResponseData.getLast().getProblem()) :
                 null);
+        viewModel.setProveData(detailResponseData.getFirst() != null ?
+                mappingProveData(detailResponseData.getFirst()) :
+                null);
         viewModel.setStatusData(mappingStatusData(detailResponseData.getLast()));
         return viewModel;
+    }
+
+    private ProveData mappingProveData(FirstData data) {
+        ProveData proveData = new ProveData();
+        proveData.setRemark(data.getBuyerRemark());
+        proveData.setAttachment(data.getAttachments() != null ? mappingAttachmentData(data.getAttachments()) : null);
+        return proveData;
+    }
+
+    private List<AttachmentData> mappingAttachmentData(List<AttachmentDataDomain> dataDomains) {
+        List<AttachmentData> attachmentDataList = new ArrayList<>();
+        for (AttachmentDataDomain dataDomain : dataDomains) {
+            AttachmentData attachmentData = new AttachmentData();
+            attachmentData.setImageThumbUrl(dataDomain.getThumbnail());
+            attachmentData.setImageUrl(dataDomain.getFullUrl());
+        }
+        return attachmentDataList;
     }
 
     private ButtonData mappingButtonData(ButtonDomain domainModel) {
@@ -240,13 +263,13 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
         awbData.setShipmentID(String.valueOf(userAwbData.getShipping().getId()));
         awbData.setShipmentRef(userAwbData.getAwb());
         awbData.setAwbDate(userAwbData.getCreateTimeStr());
-        awbData.setAttachments(userAwbData.getAttachments() != null ? mappingAttachments(userAwbData.getAttachments()) : null);
+        awbData.setAttachments(userAwbData.getAttachments() != null ? mappingAwbAttachments(userAwbData.getAttachments()) : null);
         return awbData;
     }
 
-    private List<AwbAttachmentViewModel> mappingAttachments(List<AttachmentData> attachmentDataList) {
+    private List<AwbAttachmentViewModel> mappingAwbAttachments(List<AttachmentDataDomain> attachmentDataList) {
         List<AwbAttachmentViewModel> attachmentViewModels = new ArrayList<>();
-        for (AttachmentData attachmentData : attachmentDataList) {
+        for (AttachmentDataDomain attachmentData : attachmentDataList) {
             AwbAttachmentViewModel awbAttachmentViewModel = new AwbAttachmentViewModel();
             awbAttachmentViewModel.setImageThumbUrl(attachmentData.getThumbnail());
             awbAttachmentViewModel.setImageUrl(attachmentData.getFullUrl());

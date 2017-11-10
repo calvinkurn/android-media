@@ -6,12 +6,12 @@ import android.os.Parcelable;
 /**
  * Created by yfsx on 07/11/17.
  */
-public class AttachmentData implements Parcelable {
+public class AttachmentDataDomain implements Parcelable {
 
     private String fullUrl;
     private String thumbnail;
 
-    public AttachmentData(String fullUrl, String thumbnail) {
+    public AttachmentDataDomain(String fullUrl, String thumbnail) {
         this.fullUrl = fullUrl;
         this.thumbnail = thumbnail;
     }
@@ -44,20 +44,20 @@ public class AttachmentData implements Parcelable {
         dest.writeString(this.thumbnail);
     }
 
-    protected AttachmentData(Parcel in) {
+    protected AttachmentDataDomain(Parcel in) {
         this.fullUrl = in.readString();
         this.thumbnail = in.readString();
     }
 
-    public static final Creator<AttachmentData> CREATOR = new Creator<AttachmentData>() {
+    public static final Creator<AttachmentDataDomain> CREATOR = new Creator<AttachmentDataDomain>() {
         @Override
-        public AttachmentData createFromParcel(Parcel source) {
-            return new AttachmentData(source);
+        public AttachmentDataDomain createFromParcel(Parcel source) {
+            return new AttachmentDataDomain(source);
         }
 
         @Override
-        public AttachmentData[] newArray(int size) {
-            return new AttachmentData[size];
+        public AttachmentDataDomain[] newArray(int size) {
+            return new AttachmentDataDomain[size];
         }
     };
 }

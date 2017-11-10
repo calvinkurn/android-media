@@ -3,15 +3,19 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * Created by yfsx on 07/11/17.
  */
 public class FirstData implements Parcelable {
 
     private String buyerRemark;
+    private List<AttachmentDataDomain> attachments;
 
-    public FirstData(String buyerRemark) {
+    public FirstData(String buyerRemark, List<AttachmentDataDomain> attachments) {
         this.buyerRemark = buyerRemark;
+        this.attachments = attachments;
     }
 
     public String getBuyerRemark() {
@@ -22,6 +26,14 @@ public class FirstData implements Parcelable {
         this.buyerRemark = buyerRemark;
     }
 
+    public List<AttachmentDataDomain> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<AttachmentDataDomain> attachments) {
+        this.attachments = attachments;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -30,13 +42,15 @@ public class FirstData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.buyerRemark);
+        dest.writeTypedList(this.attachments);
     }
 
     protected FirstData(Parcel in) {
         this.buyerRemark = in.readString();
+        this.attachments = in.createTypedArrayList(AttachmentDataDomain.CREATOR);
     }
 
-    public static final Parcelable.Creator<FirstData> CREATOR = new Parcelable.Creator<FirstData>() {
+    public static final Creator<FirstData> CREATOR = new Creator<FirstData>() {
         @Override
         public FirstData createFromParcel(Parcel source) {
             return new FirstData(source);

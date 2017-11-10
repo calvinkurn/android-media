@@ -18,6 +18,7 @@ public class DetailViewModel implements Parcelable {
     private DetailData detailData;
     private ProductData productData;
     private SolutionData solutionData;
+    private ProveData proveData;
     private HistoryData historyData;
     private AwbData awbData;
     private AddressReturData addressReturData;
@@ -119,6 +120,14 @@ public class DetailViewModel implements Parcelable {
         this.nextActionDomain = nextActionDomain;
     }
 
+    public ProveData getProveData() {
+        return proveData;
+    }
+
+    public void setProveData(ProveData proveData) {
+        this.proveData = proveData;
+    }
+
     public DetailViewModel() {
     }
 
@@ -137,6 +146,7 @@ public class DetailViewModel implements Parcelable {
         dest.writeParcelable(this.detailData, flags);
         dest.writeParcelable(this.productData, flags);
         dest.writeParcelable(this.solutionData, flags);
+        dest.writeParcelable(this.proveData, flags);
         dest.writeParcelable(this.historyData, flags);
         dest.writeParcelable(this.awbData, flags);
         dest.writeParcelable(this.addressReturData, flags);
@@ -152,6 +162,7 @@ public class DetailViewModel implements Parcelable {
         this.detailData = in.readParcelable(DetailData.class.getClassLoader());
         this.productData = in.readParcelable(ProductData.class.getClassLoader());
         this.solutionData = in.readParcelable(SolutionData.class.getClassLoader());
+        this.proveData = in.readParcelable(ProveData.class.getClassLoader());
         this.historyData = in.readParcelable(HistoryData.class.getClassLoader());
         this.awbData = in.readParcelable(AwbData.class.getClassLoader());
         this.addressReturData = in.readParcelable(AddressReturData.class.getClassLoader());

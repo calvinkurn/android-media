@@ -18,9 +18,9 @@ public class UserAwbData implements Parcelable {
     private int trackable;
     private String createTime;
     private String createTimeStr;
-    private List<AttachmentData> attachments;
+    private List<AttachmentDataDomain> attachments;
 
-    public UserAwbData(int resConvId, String awb, ShippingData shipping, ByData by, int trackable, String createTime, String createTimeStr, List<AttachmentData> attachments) {
+    public UserAwbData(int resConvId, String awb, ShippingData shipping, ByData by, int trackable, String createTime, String createTimeStr, List<AttachmentDataDomain> attachments) {
         this.resConvId = resConvId;
         this.awb = awb;
         this.shipping = shipping;
@@ -31,11 +31,11 @@ public class UserAwbData implements Parcelable {
         this.attachments = attachments;
     }
 
-    public List<AttachmentData> getAttachments() {
+    public List<AttachmentDataDomain> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(List<AttachmentData> attachments) {
+    public void setAttachments(List<AttachmentDataDomain> attachments) {
         this.attachments = attachments;
     }
 
@@ -120,7 +120,7 @@ public class UserAwbData implements Parcelable {
         this.trackable = in.readInt();
         this.createTime = in.readString();
         this.createTimeStr = in.readString();
-        this.attachments = in.createTypedArrayList(AttachmentData.CREATOR);
+        this.attachments = in.createTypedArrayList(AttachmentDataDomain.CREATOR);
     }
 
     public static final Creator<UserAwbData> CREATOR = new Creator<UserAwbData>() {
