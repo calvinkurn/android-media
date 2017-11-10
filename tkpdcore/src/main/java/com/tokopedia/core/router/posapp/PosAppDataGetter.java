@@ -5,4 +5,7 @@ package com.tokopedia.core.router.posapp;
  */
 
 public interface PosAppDataGetter {
+
+    String getOutletName();
+
 }

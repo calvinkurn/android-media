@@ -22,6 +22,7 @@ import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.router.posapp.PosAppDataGetter;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.deeplink.DeepLinkDelegate;
@@ -46,7 +47,7 @@ import javax.inject.Inject;
  */
 
 public class PosRouterApplication extends MainApplication implements
-        TkpdCoreRouter, IDigitalModuleRouter, IReactNativeRouter, ReactApplication {
+        TkpdCoreRouter, IDigitalModuleRouter, IReactNativeRouter, ReactApplication, PosAppDataGetter {
 
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private ReactNativeComponent reactNativeComponent;
@@ -54,6 +55,11 @@ public class PosRouterApplication extends MainApplication implements
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
+
+    @Override
+    public String getOutletName() {
+        return PosSessionHandler.getOutletName(this);
+    }
 
     @Override
     protected List<CacheApiWhiteListDomain> getWhiteList() {
