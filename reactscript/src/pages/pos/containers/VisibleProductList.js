@@ -141,6 +141,7 @@ class VisibleProductList extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log(state)
   const products = state.products
   const etalases = state.etalase
   const queryText = state.search.query
