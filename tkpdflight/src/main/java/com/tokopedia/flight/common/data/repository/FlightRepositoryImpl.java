@@ -139,7 +139,6 @@ public class FlightRepositoryImpl implements FlightRepository {
         return flightClassesDataSource.getClasses();
     }
 
-    //TODO define query
     @Override
     public Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(RequestParams requestParams) {
         if (FlightSearchParamUtil.isReturning(requestParams)) {
@@ -149,7 +148,6 @@ public class FlightRepositoryImpl implements FlightRepository {
         }
     }
 
-    //TODO define query
     @Override
     public Observable<Integer> getFlightSearchCount(RequestParams requestParams) {
         if (FlightSearchParamUtil.isReturning(requestParams)) {

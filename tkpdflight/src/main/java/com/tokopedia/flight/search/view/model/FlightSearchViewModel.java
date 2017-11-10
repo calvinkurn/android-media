@@ -7,12 +7,15 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.data.db.model.FlightSearchReturnRouteDB;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -20,6 +23,7 @@ import java.util.List;
  */
 
 public class FlightSearchViewModel implements ItemType, Parcelable {
+    public static final int ONE_HOURS_DAY = 2400;
     private String id;
     private String type;
     private String aid;
@@ -51,7 +55,7 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
     private List<Route> routeList;
     private List<FlightAirlineDB> airlineDataList; // merge result
 
-    public FlightSearchViewModel(FlightSearchSingleRouteDB flightSearchSingleRouteDB){
+    public FlightSearchViewModel(FlightSearchSingleRouteDB flightSearchSingleRouteDB) {
         Gson gson = new Gson();
 
         this.id = flightSearchSingleRouteDB.getId();
@@ -76,12 +80,65 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         this.isReturning = flightSearchSingleRouteDB instanceof FlightSearchReturnRouteDB;
 
         String routesJsonString = flightSearchSingleRouteDB.getRoutes();
-        Type flightRoutesType = new TypeToken<List<Route>> () {}.getType();
+        Type flightRoutesType = new TypeToken<List<Route>>() {
+        }.getType();
         this.routeList = gson.fromJson(routesJsonString, flightRoutesType);
 
         String fareString = flightSearchSingleRouteDB.getFare();
-        Type fareType = new TypeToken<Fare> () {}.getType();
+        Type fareType = new TypeToken<Fare>() {
+        }.getType();
         this.fare = gson.fromJson(fareString, fareType);
+    }
+
+    public void mergeWithAirportAndAirlines(HashMap<String, FlightAirlineDB> dbAirlineMaps,
+                                            HashMap<String, FlightAirportDB> dbAirportMaps) {
+        List<Route> routeList = getRouteList();
+        List<FlightAirlineDB> airlineDBArrayList = new ArrayList<>();
+        for (int j = 0, sizej = routeList.size(); j < sizej; j++) {
+            Route route = routeList.get(j);
+            String airlineID = route.getAirline();
+            if (dbAirlineMaps.containsKey(airlineID)) {
+                String airlineNameFromMap = dbAirlineMaps.get(airlineID).getName();
+                String airlineLogoFromMap = dbAirlineMaps.get(airlineID).getLogo();
+                route.setAirlineName(airlineNameFromMap);
+                route.setAirlineLogo(airlineLogoFromMap);
+                airlineDBArrayList.add(new FlightAirlineDB(airlineID, airlineNameFromMap, airlineLogoFromMap));
+            } else {
+                airlineDBArrayList.add(new FlightAirlineDB(airlineID, "", ""));
+            }
+
+            String depAirportID = route.getDepartureAirport();
+            if (dbAirportMaps.containsKey(depAirportID)) {
+                String name = dbAirportMaps.get(depAirportID).getAirportName();
+                String city = dbAirportMaps.get(depAirportID).getCityName();
+                route.setDepartureAirportName(name);
+                route.setDepartureAirportCity(city);
+            }
+            String arrAirportID = route.getArrivalAirport();
+            if (dbAirportMaps.containsKey(arrAirportID)) {
+                String name = dbAirportMaps.get(arrAirportID).getAirportName();
+                String city = dbAirportMaps.get(arrAirportID).getCityName();
+                route.setArrivalAirportName(name);
+                route.setArrivalAirportCity(city);
+            }
+        }
+        setAirlineDataList(airlineDBArrayList);
+
+        String depAirport = getDepartureAirport();
+        if (dbAirportMaps.containsKey(depAirport)) {
+            String name = dbAirportMaps.get(depAirport).getAirportName();
+            String city = dbAirportMaps.get(depAirport).getCityName();
+            setDepartureAirportName(name);
+            setDepartureAirportCity(city);
+        }
+
+        String arrAirport = getArrivalAirport();
+        if (dbAirportMaps.containsKey(arrAirport)) {
+            String name = dbAirportMaps.get(arrAirport).getAirportName();
+            String city = dbAirportMaps.get(arrAirport).getCityName();
+            setArrivalAirportName(name);
+            setArrivalAirportCity(city);
+        }
     }
 
     @Override
@@ -125,6 +182,10 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         return arrivalTimeInt;
     }
 
+    public long getArrivalTimeIntPlusDay() {
+        return addDayArrival * ONE_HOURS_DAY + arrivalTimeInt;
+    }
+
     public int getTotalTransit() {
         return totalTransit;
     }
@@ -153,7 +214,7 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
         return beforeTotal;
     }
 
-    public List<FlightAirlineDB> getAirlineList(){
+    public List<FlightAirlineDB> getAirlineList() {
         return airlineDataList;
     }
 

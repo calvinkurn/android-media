@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
@@ -12,11 +13,12 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.functions.Func2;
+import rx.functions.Func3;
 
 /**
  * @author by alvarisi on 11/9/17.
@@ -48,23 +50,44 @@ public class FlightBookingGetSingleResultUseCase extends UseCase<FlightSearchVie
                 .flatMap(new Func1<FlightSearchViewModel, Observable<FlightSearchViewModel>>() {
                     @Override
                     public Observable<FlightSearchViewModel> call(FlightSearchViewModel flightSearchViewModel) {
+                        final List<String> searchResDistinctAirlineIds = new ArrayList<>();
+                        final List<String> searchResDistinctAirportIds = new ArrayList<>();
                         List<Route> routeList = flightSearchViewModel.getRouteList();
-                        List<String> airLinesId = new ArrayList<>();
                         for (int j = 0, sizej = routeList.size(); j < sizej; j++) {
                             Route route = routeList.get(j);
                             String airline = route.getAirline();
+                            String departureAirport = route.getDepartureAirport();
+                            String arrivalAirport = route.getArrivalAirport();
 
-                            if (!TextUtils.isEmpty(airline) && !airLinesId.contains(airline)) {
-                                airLinesId.add(airline);
+                            if (!TextUtils.isEmpty(airline) && !searchResDistinctAirlineIds.contains(airline)) {
+                                searchResDistinctAirlineIds.add(airline);
+                            }
+                            if (!TextUtils.isEmpty(departureAirport) && !searchResDistinctAirportIds.contains(departureAirport)) {
+                                searchResDistinctAirportIds.add(departureAirport);
+                            }
+                            if (!TextUtils.isEmpty(arrivalAirport) && !searchResDistinctAirportIds.contains(arrivalAirport)) {
+                                searchResDistinctAirportIds.add(arrivalAirport);
                             }
                         }
 
-                        return Observable.zip(flightRepository.getAirlineList(airLinesId),
+                        return Observable.zip(flightRepository.getAirlineList(searchResDistinctAirlineIds),
+                                flightRepository.getAirportList(searchResDistinctAirportIds),
                                 Observable.just(flightSearchViewModel),
-                                new Func2<List<FlightAirlineDB>, FlightSearchViewModel, FlightSearchViewModel>() {
+                                new Func3<List<FlightAirlineDB>, List<FlightAirportDB>,
+                                        FlightSearchViewModel, FlightSearchViewModel>() {
                                     @Override
-                                    public FlightSearchViewModel call(List<FlightAirlineDB> flightAirlineDBs, FlightSearchViewModel flightSearchViewModel) {
-                                        flightSearchViewModel.setAirlineDataList(flightAirlineDBs);
+                                    public FlightSearchViewModel call(List<FlightAirlineDB> airlineDBList,
+                                                                      List<FlightAirportDB> flightAirportDBs,
+                                                                      FlightSearchViewModel flightSearchViewModel) {
+                                        HashMap<String, FlightAirlineDB> dbAirlineMaps = new HashMap<>();
+                                        HashMap<String, FlightAirportDB> dbAirportMaps = new HashMap<>();
+                                        for (int i = 0, sizei = airlineDBList.size(); i < sizei; i++) {
+                                            dbAirlineMaps.put(airlineDBList.get(i).getId(), airlineDBList.get(i));
+                                        }
+                                        for (int i = 0, sizei = flightAirportDBs.size(); i < sizei; i++) {
+                                            dbAirportMaps.put(flightAirportDBs.get(i).getAirportId(), flightAirportDBs.get(i));
+                                        }
+                                        flightSearchViewModel.mergeWithAirportAndAirlines(dbAirlineMaps, dbAirportMaps);
                                         return flightSearchViewModel;
                                     }
                                 });

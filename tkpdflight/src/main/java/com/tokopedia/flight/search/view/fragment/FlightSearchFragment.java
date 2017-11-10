@@ -193,8 +193,12 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
                             @SuppressWarnings("WrongConstant")
                             @Override
                             public void onBottomSheetItemClick(MenuItem item) {
-                                flightSearchPresenter.searchAndSortFlight(flightSearchPassDataViewModel,
-                                        isReturning(),true,flightFilterModel, item.getItemId());
+                                if (getAdapter().getData() == null) {
+                                    flightSearchPresenter.searchAndSortFlight(flightSearchPassDataViewModel,
+                                            isReturning(), true, flightFilterModel, item.getItemId());
+                                } else {
+                                    flightSearchPresenter.sortFlight(getAdapter().getData(), item.getItemId());
+                                }
                             }
                         })
                         .createDialog();
