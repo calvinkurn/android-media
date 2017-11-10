@@ -6,12 +6,14 @@ import {
   SectionList,
   TouchableWithoutFeedback,
   Image,
-  Keyboard
+  Keyboard,
+  FlatList
 } from 'react-native'
 
 import NotFound from './SearchNotFound'
 import { Text } from '../../../common/TKPText'
 import { icons } from '../../../lib/config'
+import { NavigationModule } from 'NativeModules'
 
 
 
@@ -31,9 +33,11 @@ class SearchBar extends Component {
       <TouchableWithoutFeedback onPress={
         () => {
           console.log(item)
-          this.props.onSearchItemTap(item)
+          console.log(this.props)
+          // this.props.onSearchItemTap(this.props.shopId, item)
           this.toggleResults(false)
           Keyboard.dismiss()
+          NavigationModule.navigate(`posapp://product/${item.id}`, '')
         }
       }>
         <View>
@@ -47,21 +51,21 @@ class SearchBar extends Component {
     </View>
   )
 
-  renderHeader = ({ section }) => (
-    <View style={{
-      paddingLeft: '10%',
-      justifyContent: 'center',
-      height: 78,
-      borderBottomWidth: 1,
-      borderBottomColor: '#e0e0e0'
-    }}>
-      <Text style={{
-        fontSize: 14,
-        fontWeight: '400',
-        color: '#9b9b9b'
-      }}>{section.title}</Text>
-    </View>
-  )
+  // renderHeader = ({ section }) => (
+  //   <View style={{
+  //     paddingLeft: '10%',
+  //     justifyContent: 'center',
+  //     height: 78,
+  //     borderBottomWidth: 1,
+  //     borderBottomColor: '#e0e0e0'
+  //   }}>
+  //     <Text style={{
+  //       fontSize: 14,
+  //       fontWeight: '400',
+  //       color: '#9b9b9b'
+  //     }}>{section.title}</Text>
+  //   </View>
+  // )
 
   toggleResults = (visible) => {
     this.setState({ showResults: visible })
@@ -110,19 +114,30 @@ class SearchBar extends Component {
         </View>
         {
           this.state.showResults && (
+            // <View style={styles.results}>
+            //   {
+            //     this.props.items.length > 0 ? (<SectionList
+            //       keyboardShouldPersistTaps='always'
+            //       keyExtractor={(item) => {
+            //         return item.id
+            //       }}
+            //       renderItem={this.renderItem}
+            //       renderSectionHeader={this.renderHeader}
+            //       sections={[ // homogenous rendering between sections
+            //         { data: this.props.items, title: 'Pencarian Terakhir' },
+            //         { data: [{ text: 'Samsung S4', id: 4 }], title: 'Popular Search', },
+            //       ]}
+            //     />)
+            //       : (<NotFound />)
+            //   }
+            // </View>
             <View style={styles.results}>
               {
-                this.props.items.length > 0 ? (<SectionList
+                this.props.items.length > 0 ? (<FlatList
                   keyboardShouldPersistTaps='always'
-                  keyExtractor={(item) => {
-                    return item.id
-                  }}
+                  keyExtractor={(item) => item.id }
+                  data={this.props.items}
                   renderItem={this.renderItem}
-                  renderSectionHeader={this.renderHeader}
-                  sections={[ // homogenous rendering between sections
-                    { data: this.props.items, title: 'Pencarian Terakhir' },
-                    { data: [{ text: 'Samsung S4', id: 4 }], title: 'Popular Search', },
-                  ]}
                 />)
                   : (<NotFound />)
               }
