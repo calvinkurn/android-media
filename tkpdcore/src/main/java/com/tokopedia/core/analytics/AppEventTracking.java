@@ -759,6 +759,7 @@ public interface AppEventTracking {
         String LAST_TRANSACT_DATE     = "last_transaction_date";
         String TOTAL_ACTIVE_PRODUCT     = "total_active_product";
         String SHOP_SCORE     = "shop_score";
+        String QUALITY_SCORE     = "quality_score";
 
     }
 
@@ -782,6 +783,7 @@ public interface AppEventTracking {
         String SEARCH_ATTEMPT = "Search_Attempt";
         String OPEN_THANKYOU_PAGE = "Thank_You_Page_Launched";
         String SUCCESS_PURCHASE_REVIEW = "Success_Purchase_Review";
+        String SUBMIT_ULASAN_REVIEW = "Submit_Ulasan_Review";
 
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";

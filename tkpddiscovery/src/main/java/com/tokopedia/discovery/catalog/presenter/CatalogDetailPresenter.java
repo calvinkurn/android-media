@@ -3,21 +3,20 @@ package com.tokopedia.discovery.catalog.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.catalog.interactor.CatalogDataInteractor;
 import com.tokopedia.discovery.catalog.interactor.ICataloDataInteractor;
 import com.tokopedia.discovery.catalog.listener.IDetailCatalogView;
 import com.tokopedia.discovery.catalog.model.CatalogDetailData;
 import com.tokopedia.discovery.catalog.model.CatalogImage;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.share.ShareActivity;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -119,9 +118,7 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
             catalogView.showToastMessage("Data katalog belum tersedia");
             return;
         }
-        Intent intent = new Intent(activity, ShareActivity.class);
-        intent.putExtra(ShareData.TAG, shareData);
-        catalogView.navigateToActivity(intent);
+        catalogView.navigateToActivity(ShareActivity.createIntent(activity,shareData));
     }
 
     @Override

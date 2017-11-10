@@ -56,6 +56,7 @@ public interface Constants {
         String HOME = "tokopedia://home";
         String HOME_FEED = "tokopedia://home/feed";
         String FEED = "tokopedia://feed";
+        String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
         String HOME_CATEGORY = "tokopedia://home/category";
         String HOME_HOTLIST = "tokopedia://hot";
         String MESSAGE = "tokopedia://message";

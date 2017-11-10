@@ -74,9 +74,7 @@ import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.product.domain.ILastOrderNumberRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
-import com.tokopedia.digital.product.domain.LastOrderNumberRepository;
 import com.tokopedia.digital.product.domain.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.interactor.ProductDigitalInteractor;
@@ -266,14 +264,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
         IDigitalCategoryRepository digitalCategoryRepository =
                 new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
-        ILastOrderNumberRepository lastOrderNumberRepository =
-                new LastOrderNumberRepository(digitalEndpointService, productDigitalMapper);
         IUssdCheckBalanceRepository ussdCheckBalanceRepository = new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper);
 
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
                         compositeSubscription, digitalWidgetRepository, digitalCategoryRepository,
-                        lastOrderNumberRepository, cacheHandlerLastInputClientNumber, ussdCheckBalanceRepository
+                        cacheHandlerLastInputClientNumber, ussdCheckBalanceRepository
                 );
         presenter = new ProductDigitalPresenter(this, productDigitalInteractor);
     }
@@ -646,7 +642,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void closeView() {
-        getActivity().finish();
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     @Override

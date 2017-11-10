@@ -9,6 +9,7 @@ import {
   Platform
 } from 'react-native'
 import { NavigationModule } from 'NativeModules'
+import _ from 'lodash'
 
 
 
@@ -16,10 +17,11 @@ const { width, height } = Dimensions.get('window')
 
 const TopBanner = ({ navigation, dataTopBanners }) => {
   const banners = dataTopBanners
+  const topBanner = banners.images.find(image => image.positions === 0)
   const renderBanner = () => {
     return (
       <View style={styles.topBannerContainer}>
-        <Image source={{uri: banners.images[3].file_url}} style={styles.topBannerImage}/>
+        <Image source={{uri: topBanner.file_url}} style={styles.topBannerImage}/>
       </View>
     )
   }
