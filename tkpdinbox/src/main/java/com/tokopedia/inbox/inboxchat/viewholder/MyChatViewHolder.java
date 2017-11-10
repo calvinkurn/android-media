@@ -62,12 +62,13 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         });
 
         if(!element.isHighlight()) {
-            message.setText(element.getMsg());
+            message.setText(MethodChecker.fromHtml(element.getMsg()));
         }else {
             if(element.getSpanned()!= null && viewListener.getKeyword()!=null) {
                 message.setText(highlight(itemView.getContext(), element.getSpanned(), viewListener.getKeyword()));
             }else {
-                message.setText(element.getMsg());
+                message.setText(
+                        element.getMsg());
             }
         }
         message.setMovementMethod(new SelectableSpannedMovementMethod());
