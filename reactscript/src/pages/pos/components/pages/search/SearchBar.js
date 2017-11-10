@@ -11,6 +11,9 @@ import {
 
 import NotFound from './SearchNotFound'
 import { Text } from '../../../common/TKPText'
+import { icons } from '../../../lib/config'
+
+
 
 class SearchBar extends Component {
   constructor(props) {
@@ -91,7 +94,7 @@ class SearchBar extends Component {
                 } else {
                   this.toggleResults(true)
                   this.props.onSearchType(text)
-                  this.props.onSearch(text, this.props.etalaseId, this.props.shopId)
+                  this.props.onSearch(text, this.props.etalaseId)
                 }
               }
             }
@@ -101,7 +104,7 @@ class SearchBar extends Component {
               this.props.onClearSearch()
               this.toggleResults(false)
             }}>
-              <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/close-icon.png' }} />
+              <Image source={{ uri: icons.close_icon }} />
             </TouchableWithoutFeedback>
           </View>
         </View>

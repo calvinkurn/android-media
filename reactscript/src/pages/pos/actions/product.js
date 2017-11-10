@@ -93,29 +93,29 @@ export const onSearchQueryType = (queryText) => {
   }
 }
 
-export const FETCH_SEARCH_PRODUCT = 'FETCH_SEARCH_PRODUCT'
-export const fetchSearchProduct = (eId, queryText, shopId) => {
-  const text = queryText.replace(' ', '+')
-  let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=${shopId}&start=0&q=${text}`
+// export const FETCH_SEARCH_PRODUCT = 'FETCH_SEARCH_PRODUCT'
+// export const fetchSearchProduct = (eId, queryText, shopId) => {
+//   const text = queryText.replace(' ', '+')
+//   let url = `https://ace.tokopedia.com/search/product/v3.1?device=android&source=shop_product&ob=14&rows=5&shop_id=${shopId}&start=0&q=${text}`
 
-  const etalaseId = +eId || 0
-  if (etalaseId) {
-    url += `&etalase=${etalaseId}`
-  }
-  return {
-    type: FETCH_SEARCH_PRODUCT,
-    payload: axios.get(url),
-    queryText: queryText,
-  }
-}
+//   const etalaseId = +eId || 0
+//   if (etalaseId) {
+//     url += `&etalase=${etalaseId}`
+//   }
+//   return {
+//     type: FETCH_SEARCH_PRODUCT,
+//     payload: axios.get(url),
+//     queryText: queryText,
+//   }
+// }
 
 
-export const ON_SEARCH_RESULT_TAP = 'ON_SEARCH_RESULT_TAP'
-export const onSearchResultTap = () => {
-  return {
-    type: ON_SEARCH_RESULT_TAP,
-  }
-}
+// export const ON_SEARCH_RESULT_TAP = 'ON_SEARCH_RESULT_TAP'
+// export const onSearchResultTap = () => {
+//   return {
+//     type: ON_SEARCH_RESULT_TAP,
+//   }
+// }
 
 export const CLEAR_SEARCH_RESULTS = 'CLEAR_SEARCH_RESULTS'
 export const clearSearchResults = () => {

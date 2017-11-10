@@ -15,6 +15,8 @@ import {
 } from '../actions/index'
 
 const mapStateToProps = (state, ownProps) => {
+  console.log(state)
+  console.log(ownProps)
   return {
     items: state.search.items,
     queryText: state.search.query,
@@ -26,7 +28,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onSearch: (text, eid, shopId) => {
+    onSearch: (text, eid) => {
       const trimText = text.trim() || ''
       if (trimText) {
         dispatch(searchProduct(trimText, eid))
