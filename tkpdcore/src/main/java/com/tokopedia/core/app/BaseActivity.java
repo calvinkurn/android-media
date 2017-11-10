@@ -226,6 +226,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             if (GlobalConfig.isSellerApp()) {
                 intent = new Intent(this, WelcomeActivity.class);
             } else {
+                ((TkpdCoreRouter) getApplication()).invalidateCategoryMenuData();
                 intent = HomeRouter.getHomeActivity(this);
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
