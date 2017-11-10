@@ -48,7 +48,7 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
                         .subscribe(subscriber));
     }
 
-    public void getStatus2(Subscriber<Status> subscriber) {
+    public void getStatus(Subscriber<Status> subscriber) {
         compositeSubscription.add(
                 repository.getObservableStatus()
                         .map(statusMapper)

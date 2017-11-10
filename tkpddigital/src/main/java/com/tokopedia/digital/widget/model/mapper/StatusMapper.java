@@ -11,6 +11,7 @@ import rx.functions.Func1;
 
 /**
  * Created by nabillasabbaha on 10/4/17.
+ * Modified by rizkyfadillah on 11/9/17
  */
 
 public class StatusMapper implements Func1<Pair<StatusEntity, Boolean>, Status> {
@@ -21,23 +22,12 @@ public class StatusMapper implements Func1<Pair<StatusEntity, Boolean>, Status> 
         status.setType(pair.first.getType());
 
         if (pair.first.getAttributes() != null) {
-//            Attributes attributes = new Attributes();
-//            attributes.setMaintenance(pair.first.getAttributes().isMaintenance());
-
             if (pair.first.getAttributes().getVersion() != null) {
-//                Version version = new Version();
-//                version.setCategory(pair.first.getAttributes().getVersion().getCategory());
-//                version.setMinimumAndroidBuild(pair.first.getAttributes().getVersion().getMinimumAndroidBuild());
-//                version.setOperator(pair.first.getAttributes().getVersion().getOperator());
-//                version.setProduct(pair.first.getAttributes().getVersion().getProduct());
-//                attributes.setVersion(version);
+                status.setMinimunAndroidBuild(Integer.valueOf(pair.first.getAttributes().getVersion()
+                        .getMinimumAndroidBuild()));
             }
-
-//            status.setAttributes(attributes);
             status.setMaintenance(pair.first.getAttributes().isMaintenance());
             status.setUseCache(pair.second);
-            status.setMinimunAndroidBuild(Integer.valueOf(pair.first.getAttributes().getVersion()
-                    .getMinimumAndroidBuild()));
         }
 
         return status;

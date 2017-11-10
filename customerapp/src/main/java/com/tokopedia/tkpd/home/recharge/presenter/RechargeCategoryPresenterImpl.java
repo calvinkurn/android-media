@@ -38,40 +38,10 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
     @Override
     public void fetchDataRechargeCategory() {
-//        rechargeNetworkInteractor.getStatus(getStatusSubscriber());
-        rechargeNetworkInteractor.getStatus2(getStatusSubscriber2());
+        rechargeNetworkInteractor.getStatus(getStatusSubscriber());
     }
 
-//    private Subscriber<Status> getStatusSubscriber() {
-//        return new Subscriber<Status>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                if (e instanceof WidgetRuntimeException) {
-//                    view.renderErrorMessage();
-//                } else {
-//                    view.renderErrorNetwork();
-//                }
-//            }
-//
-//            @Override
-//            public void onNext(Status status) {
-//                if (status != null) {
-//                    if (status.isMaintenance() || !isVersionMatch(status)) {
-//                        view.failedRenderDataRechargeCategory();
-//                    } else {
-//                        rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber(status.isUseCache()));
-//                    }
-//                }
-//            }
-//        };
-//    }
-
-    private Subscriber<Status> getStatusSubscriber2() {
+    private Subscriber<Status> getStatusSubscriber() {
         return new Subscriber<Status>() {
             @Override
             public void onCompleted() {
