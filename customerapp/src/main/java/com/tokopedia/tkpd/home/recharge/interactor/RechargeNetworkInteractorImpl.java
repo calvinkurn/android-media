@@ -48,20 +48,9 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
                         .subscribe(subscriber));
     }
 
-//    @Override
-//    public void getStatus(Subscriber<Status> subscriber) {
-//        compositeSubscription.add(
-//                repository.getObservableStatus()
-//                        .map(statusMapper)
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribeOn(Schedulers.newThread())
-//                        .unsubscribeOn(Schedulers.newThread())
-//                        .subscribe(subscriber));
-//    }
-
     public void getStatus2(Subscriber<Status> subscriber) {
         compositeSubscription.add(
-                repository.getObservableStatus2()
+                repository.getObservableStatus()
                         .map(statusMapper)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.newThread())
