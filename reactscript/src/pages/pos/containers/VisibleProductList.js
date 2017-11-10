@@ -13,9 +13,11 @@ import {
 } from 'react-native'
 import { Text } from '../common/TKPText'
 import Picker from '../components/pages/product/EtalaseSelectPopUp'
-import { fetchProducts, fetchEtalase, pullToRefresh, onEtalaseChange, resetProductList, fetchShopId } from '../actions/index'
+import { fetchProducts, fetchEtalase, searchProductSubmit, pullToRefresh, onEtalaseChange, resetProductList, fetchShopId } from '../actions/index'
 import Product from '../components/pages/product/Product'
 import SearchContainer from '../containers/SearchContainer'
+import { icons } from '../lib/config'
+
 
 class VisibleProductList extends Component {
   constructor(props) {
@@ -27,15 +29,17 @@ class VisibleProductList extends Component {
     this.setState({ showEtalasePicker: false })
   }
 
-  onPickerChange = (value, index) => {
+  onPickerChange = (value) => {
     const etalaseId = value
-    if (etalaseId == this.props.etalases.selected || this.props.products.isFetching) {
+    const { queryText, etalases, products } = this.props
+
+    if (etalaseId == etalases.selected || products.isFetching) {
       return
     }
-    const queryText = this.props.queryText
+
     this.props.dispatch(onEtalaseChange(etalaseId))
     this.props.dispatch(resetProductList())
-    this.props.dispatch(fetchProducts(this.props.shopId, 0, 25, value, null, queryText))
+    this.props.dispatch(searchProductSubmit(queryText, etalaseId))
   }
 
   componentDidMount() {
@@ -113,7 +117,7 @@ class VisibleProductList extends Component {
             <TouchableNativeFeedback onPress={() => { this.setState({ showEtalasePicker: true }) }}>
               <View style={styles.etalasePicker}>
                 <Text style={{ fontSize: 14, paddingRight: 50 }}>{selectedEtalase[0].name}</Text>
-                <Image source={{ uri: 'https://ecs7.tokopedia.net/img/android_o2o/arrow-down-grey.png' }} />
+                <Image source={{ uri: icons.arrow_down_grey }} style={{ width: 10, height: 10, resizeMode: 'contain' }} />
               </View>
             </TouchableNativeFeedback>
           </View>
