@@ -17,7 +17,6 @@ import com.tokopedia.digital.widget.data.entity.response.ResponseMetaFavoriteNum
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
 import com.tokopedia.digital.widget.data.mapper.IFavoriteNumberMapper;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
-import com.tokopedia.digital.widget.model.status.Status;
 
 import java.util.ArrayList;
 import java.util.List;
