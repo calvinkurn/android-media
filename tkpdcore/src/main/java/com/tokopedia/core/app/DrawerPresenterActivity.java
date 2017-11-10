@@ -21,6 +21,7 @@ import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
+import com.tokopedia.core.drawer2.view.databinder.DrawerPosHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.util.GlobalConfig;
@@ -293,6 +294,12 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
             ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
                     .getData().setDrawerProfile(profile);
+        else if (drawerHelper.getAdapter().getHeader() instanceof DrawerPosHeaderDataBinder) {
+            ((DrawerPosHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .setDrawerProfileData(profile);
+            drawerHelper.getAdapter().notifyDataSetChanged();
+        }
+
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
         drawerHelper.setFooterData(profile);
     }
