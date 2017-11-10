@@ -487,6 +487,7 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void onSearchSubmitted(String text) {
+        refreshHandler.setPullEnabled(false);
         if(text.length()>0) {
             presenter.initSearch(text);
             searchLoading.setVisibility(View.VISIBLE);
@@ -494,7 +495,8 @@ public class InboxChatFragment extends BaseDaggerFragment
                     TopChatTrackingEventLabel.Action.INBOX_CHAT_SEARCH,
                     TopChatTrackingEventLabel.Name.INBOX_CHAT);
         }else {
-            presenter.resetSearch();
+            onSearchReset();
+
         }
         KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
@@ -506,6 +508,7 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void onSearchReset() {
+        refreshHandler.setPullEnabled(true);
         presenter.resetSearch();
     }
 
