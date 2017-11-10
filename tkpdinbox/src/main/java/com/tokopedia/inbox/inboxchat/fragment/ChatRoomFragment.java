@@ -22,13 +22,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
@@ -70,6 +71,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Inject
     ChatRoomPresenter presenter;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -439,9 +443,18 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         item.setMsg(response.getData().getMessage().getCensoredReply());
                         item.setReplyTime(response.getData().getMessage().getTimestamp());
                         adapter.addReply(item);
-                        scrollToBottom();
+//                        scrollToBottom();
+                        recyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Call smooth scroll
+                                recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+                            }
+                        });
 
-                    } else {
+                    } else if (String.valueOf(response
+                            .getData()
+                            .getFromUid()).equals(sessionHandler.getLoginID(MainApplication.getAppContext()))) {
                         adapter.removeLast();
                         MyChatViewModel item = new MyChatViewModel();
                         item.setReplyId(response.getData().getMsgId());
@@ -452,7 +465,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
                         finishLoading();
                         replyColumn.setText("");
-                        scrollToBottom();
+//                        scrollToBottom();
+                        recyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Call smooth scroll
+                                recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+                            }
+                        });
                     }
                 }
             });
@@ -562,11 +582,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         @Override
                         public void run() {
                             adapter.showTyping();
+                            if (layoutManager.findLastCompletelyVisibleItemPosition() == adapter.getList().size() - 2) {
+                                layoutManager.scrollToPosition(adapter.getList().size() - 1);
+                            }
                         }
                     });
-                    if(layoutManager.findLastCompletelyVisibleItemPosition()==adapter.getList().size()-2){
-                        layoutManager.scrollToPosition(adapter.getList().size()-1);
-                    }
+
                 }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
@@ -577,6 +598,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         @Override
                         public void run() {
                             adapter.removeTyping();
+                            if (layoutManager.findLastCompletelyVisibleItemPosition() == adapter.getList().size() - 2) {
+                                layoutManager.scrollToPosition(adapter.getList().size());
+                            }
                         }
                     });
                 }

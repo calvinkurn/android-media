@@ -160,12 +160,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void showTyping() {
         this.list.add(typingModel);
-        notifyItemInserted(list.size());
+        notifyItemInserted(list.size() -1);
     }
 
     public void removeTyping(){
         this.list.remove(typingModel);
-        notifyItemRemoved(list.size()-1);
+        notifyItemRemoved(list.size());
     }
 
     public boolean checkLoadMore(int index) {
