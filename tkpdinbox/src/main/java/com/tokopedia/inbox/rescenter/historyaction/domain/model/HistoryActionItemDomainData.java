@@ -9,6 +9,16 @@ public class HistoryActionItemDomainData {
     private String actionByText;
     private String conversationID;
     private String date;
+    private String dateTimestamp;
+
+    public String getDateTimestamp() {
+        return dateTimestamp;
+    }
+
+    public void setDateTimestamp(String dateTimestamp) {
+        this.dateTimestamp = dateTimestamp;
+    }
+
     private String historyStr;
 
     public int getActionBy() {

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.historyaction.view.model.HistoryActionViewItem;
 import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionFragmentView;
@@ -46,17 +47,19 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
     @SuppressWarnings("WeakerAccess")
     public class ActionViewHolder extends RecyclerView.ViewHolder {
 
-        TextView date;
-        TextView history;
+        TextView history, tvUsername, tvTime, tvDateNumber, tvMonth;
         ImageView indicator;
         View lineIndicator;
 
         public ActionViewHolder(View itemView) {
             super(itemView);
-            date = (TextView) itemView.findViewById(R.id.tv_date);
-            history = (TextView) itemView.findViewById(R.id.tv_action_text);
+            history = (TextView) itemView.findViewById(R.id.tv_history_text);
             indicator = (ImageView) itemView.findViewById(R.id.indicator);
             lineIndicator = itemView.findViewById(R.id.line_indicator);
+            tvUsername = (TextView) itemView.findViewById(R.id.tv_username);
+            tvTime = (TextView) itemView.findViewById(R.id.tv_time);
+            tvDateNumber = (TextView) itemView.findViewById(R.id.tv_date_number);
+            tvMonth = (TextView) itemView.findViewById(R.id.tv_month);
         }
     }
 
@@ -65,7 +68,7 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         switch (viewType) {
             case VIEW_SHIPPING_ITEM:
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-                View view = inflater.inflate(R.layout.recyclerview_history_action, parent, false);
+                View view = inflater.inflate(R.layout.recyclerview_rescenter_history_item, parent, false);
                 return new ActionViewHolder(view);
             default:
                 return super.onCreateViewHolder(parent, viewType);
@@ -92,9 +95,10 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void renderData(ActionViewHolder holder, HistoryActionViewItem item) {
-        holder.date.setText(
-                context.getString(R.string.template_history_additional_information, item.getActionByText(), item.getDate())
-        );
+        holder.tvUsername.setText(item.getActionByText());
+        holder.tvMonth.setText(DateFormatUtils.get3LettersMonth(item.getDate()));
+        holder.tvDateNumber.setText(DateFormatUtils.getDayNumber(item.getDate()));
+        holder.tvTime.setText(DateFormatUtils.getTimeWithWIB(item.getDate()));
         holder.history.setText(item.getHistoryText());
     }
 
@@ -102,11 +106,13 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         setPadding(holder);
         setIndicator(holder, item);
         if (item.isLatest()) {
-            holder.date.setTypeface(Typeface.DEFAULT_BOLD);
+            holder.tvUsername.setTypeface(Typeface.DEFAULT_BOLD);
+            holder.tvTime.setTypeface(Typeface.DEFAULT_BOLD);
             holder.history.setTypeface(Typeface.DEFAULT_BOLD);
             holder.history.setTextColor(ContextCompat.getColor(context, R.color.black));
         } else {
-            holder.date.setTypeface(null, Typeface.NORMAL);
+            holder.tvUsername.setTypeface(null, Typeface.NORMAL);
+            holder.tvTime.setTypeface(null, Typeface.NORMAL);
             holder.history.setTypeface(null, Typeface.NORMAL);
             holder.history.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
         }
@@ -119,7 +125,7 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         );
 
         holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
+                item.isLatest() ? R.drawable.bg_circle_green : R.drawable.ic_dot_grey_24dp
         );
     }
 

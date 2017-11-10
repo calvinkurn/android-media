@@ -19,6 +19,9 @@ public class DateFormatUtils {
     public static final String FORMAT_D_MMMM_YYYY = "d MMMM yyyy";
     public static final String FORMAT_T_Z = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static final String FORMAT_DD_MMM_YYYY_HH_MM = "dd MMM yyyy HH:mm";
+    public static final String FORMAT_MMM = "MMM";
+    public static final String FORMAT_DD = "dd";
+    public static final String FORMAT_HH_MM = "HH:mm";
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
 
     @SuppressLint("SimpleDateFormat")
@@ -55,6 +58,29 @@ public class DateFormatUtils {
             e.printStackTrace();
             return dateString;
         }
+    }
 
+    public static String get3LettersMonth(String dateString) {
+        String date = DateFormatUtils.formatDate(
+                DateFormatUtils.FORMAT_T_Z,
+                DateFormatUtils.FORMAT_MMM,
+                dateString);
+        return date;
+    }
+
+    public static String getDayNumber(String dateString) {
+        String date = DateFormatUtils.formatDate(
+                DateFormatUtils.FORMAT_T_Z,
+                DateFormatUtils.FORMAT_DD,
+                dateString);
+        return date;
+    }
+
+    public static String getTimeWithWIB(String dateString) {
+        String date = DateFormatUtils.formatDate(
+                DateFormatUtils.FORMAT_T_Z,
+                DateFormatUtils.FORMAT_HH_MM,
+                dateString) + " WIB";
+        return date;
     }
 }

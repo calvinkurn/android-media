@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryItem;
@@ -68,17 +69,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
-        TextView date;
-        TextView history;
+        TextView history, tvUsername, tvTime, tvDateNumber, tvMonth;
         ImageView indicator;
         View lineIndicator;
 
         public HistoryViewHolder(View itemView) {
             super(itemView);
-            date = (TextView) itemView.findViewById(R.id.tv_date);
             history = (TextView) itemView.findViewById(R.id.tv_history_text);
             indicator = (ImageView) itemView.findViewById(R.id.indicator);
             lineIndicator = itemView.findViewById(R.id.line_indicator);
+            tvUsername = (TextView) itemView.findViewById(R.id.tv_username);
+            tvTime = (TextView) itemView.findViewById(R.id.tv_time);
+            tvDateNumber = (TextView) itemView.findViewById(R.id.tv_date_number);
+            tvMonth = (TextView) itemView.findViewById(R.id.tv_month);
         }
     }
 
@@ -93,10 +96,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     public void onBindViewHolder(HistoryViewHolder holder, int position) {
         HistoryItem item = historyItems.get(position);
         Context context = holder.itemView.getContext();
-        holder.date.setText(
-                context.getString(R.string.template_history_additional_information, item.getProvider(), item.getDate())
-        );
         holder.history.setText(item.getHistoryText());
+        holder.tvUsername.setText(item.getProvider());
+        holder.tvMonth.setText(DateFormatUtils.get3LettersMonth(item.getDateTimestamp()));
+        holder.tvDateNumber.setText(DateFormatUtils.getDayNumber(item.getDateTimestamp()));
+        holder.tvTime.setText(DateFormatUtils.getTimeWithWIB(item.getDateTimestamp()));
         holder.indicator.setImageResource(
                 item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
         );

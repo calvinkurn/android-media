@@ -56,6 +56,7 @@ public class HistoryActionSubsriber extends Subscriber<HistoryActionData> {
             data.setActionByText(item.getActionByText() != null ? item.getActionByText() : "");
             data.setConversationID(item.getConversationID());
             data.setDate(item.getDate());
+            data.setDateTimestamp(item.getDateTimestamp());
             data.setLatest(i == 0);
             data.setHistoryText(item.getHistoryStr());
             historyActionViewItems.add(data);

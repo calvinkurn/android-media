@@ -42,6 +42,7 @@ public class HistoryActionMapper implements Func1<Response<TkpdResponse>, Histor
         for (ListHistoryAction item : listHistoryActions) {
             HistoryActionItemDomainData data = new HistoryActionItemDomainData();
             data.setActionBy(item.getActionBy());
+            data.setDateTimestamp(item.getCreateTime());
             data.setActionByText(item.getActionByStr());
             data.setDate(item.getCreateTimeStr());
             data.setHistoryStr(item.getRemark());

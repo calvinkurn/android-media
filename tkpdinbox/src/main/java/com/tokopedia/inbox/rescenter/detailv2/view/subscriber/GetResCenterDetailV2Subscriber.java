@@ -201,7 +201,9 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
             item.setLatest(latest);
             item.setDate(logData.getCreateTimeStr());
             item.setHistoryText(logData.getAction());
-            item.setProvider(String.valueOf(logData.getActionBy().getId()));
+            item.setProvider(logData.getActionBy().getName());
+            item.setDateTimestamp(logData.getCreateTime());
+            item.setProviderId(logData.getActionBy().getId());
             latest = false;
             historyItems.add(item);
         }
