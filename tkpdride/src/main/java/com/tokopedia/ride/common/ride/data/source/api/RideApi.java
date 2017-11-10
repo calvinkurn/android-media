@@ -1,5 +1,6 @@
 package com.tokopedia.ride.common.ride.data.source.api;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
@@ -111,4 +112,7 @@ public interface RideApi {
     @POST()
     @FormUrlEncoded
     Observable<String> requestApi(@Url String url, @FieldMap TKPDMapParam<String, Object> parameters);
+
+    @POST(RideUrl.PAY_PENDING_AMOUNT)
+    Observable<JsonObject> payPendingAmount();
 }

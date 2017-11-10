@@ -1,9 +1,12 @@
 package com.tokopedia.ride.completetrip.view;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.domain.GetPayPendingDataUseCase;
 import com.tokopedia.ride.common.configuration.RideStatus;
+import com.tokopedia.ride.common.ride.domain.model.PayPending;
 import com.tokopedia.ride.common.ride.domain.model.Receipt;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.GiveDriverRatingUseCase;
@@ -30,6 +33,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
     private GetRideRequestDetailUseCase getRideRequestDetailUseCase;
     private GiveDriverRatingUseCase giveDriverRatingUseCase;
     private GetSingleRideHistoryUseCase getSingleRideHistoryUseCase;
+    private GetPayPendingDataUseCase getPayPendingDataUseCase;
     private SendTipUseCase sendTipUseCase;
 
     @Inject
@@ -37,12 +41,14 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                                  GetRideRequestDetailUseCase getRideRequestDetailUseCase,
                                  GiveDriverRatingUseCase giveDriverRatingUseCase,
                                  GetSingleRideHistoryUseCase getSingleRideHistoryUseCase,
-                                 SendTipUseCase sendTipUseCase) {
+                                 SendTipUseCase sendTipUseCase,
+                                 GetPayPendingDataUseCase getPayPendingDataUseCase) {
         this.getReceiptUseCase = getReceiptUseCase;
         this.getRideRequestDetailUseCase = getRideRequestDetailUseCase;
         this.giveDriverRatingUseCase = giveDriverRatingUseCase;
         this.getSingleRideHistoryUseCase = getSingleRideHistoryUseCase;
         this.sendTipUseCase = sendTipUseCase;
+        this.getPayPendingDataUseCase = getPayPendingDataUseCase;
     }
 
     @Override
@@ -206,6 +212,35 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                     getView().hideRatingLayout();
                     getView().closePage();
                 }
+            }
+        });
+    }
+
+    @Override
+    public void payPendingFare() {
+        getView().showProgressbar();
+        getPayPendingDataUseCase.execute(RequestParams.EMPTY, new Subscriber<PayPending>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideProgressbar();
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(PayPending payPending) {
+                getView().hideProgressbar();
+
+                //we have to show onNext
+                CommonUtils.dumper("Vishal :: " + payPending.getUrl());
+                CommonUtils.dumper("Vishal :: " + payPending.getPostData());
+
+                getView().opeScroogePage(payPending.getUrl() , payPending.getPostData());
+                //
             }
         });
     }

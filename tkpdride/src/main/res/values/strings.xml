@@ -82,7 +82,7 @@
     <string name="ride_push_driver_cancel">Driver canceled your booking</string>
     <string name="ride_push_book_request_again">Please Book another Uber</string>
     <string name="ride_home_driver_cancel_last_rid">Driver canceled your last ride.</string>
-    <string name="complete_trip_tokocash_charged">TokoCash Charged</string>
+    <string name="complete_trip_amount_charged">Amount Charged</string>
     <string name="ride_push_in_progress">Trip Started</string>
     <string name="ride_push_track_ride">Track Your Ride</string>
     <string name="title_fetching_ride">Fetching Ride Details</string>
@@ -178,4 +178,5 @@
     <string name="error_message_delete_cc_fail">Unable to delete your card, please try again.</string>
     <string name="change_payment_toolbar_title">Change Payment Method</string>
     <string name="title_tokocash">TokoCash</string>
+    <string name="complete_pay_pending_fare">Pay Pending Fare</string>
 </resources>

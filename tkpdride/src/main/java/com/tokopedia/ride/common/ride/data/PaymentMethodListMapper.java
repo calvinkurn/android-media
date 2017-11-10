@@ -74,7 +74,7 @@ public class PaymentMethodListMapper {
                 paymentMethod.setExpiryMonth(paymentMethodEntity.getExpiryMonth());
                 paymentMethod.setImage(paymentMethodEntity.getImage());
                 paymentMethod.setExpiryYear(paymentMethodEntity.getExpiryYear());
-                paymentMethod.setLabel(paymentMethodEntity.getLabel());
+                paymentMethod.setLabel(transform(paymentMethodEntity.getLabel(), paymentMethodEntity.getMode()));
                 paymentMethod.setMaskedNumber(paymentMethodEntity.getMaskedNum());
                 paymentMethodList.add(paymentMethod);
             }
@@ -82,6 +82,17 @@ public class PaymentMethodListMapper {
         }
 
         return paymentMethodList;
+    }
+
+    private String transform(String label, String mode) {
+        if (!mode.equalsIgnoreCase("wallet")) {
+            //pick last 4 digits only
+            if (label != null && label.length() > 4) {
+                label = "\u2022\u2022\u2022\u2022 " + label.substring(label.length() - 4);
+            }
+        }
+
+        return label;
     }
 
     private Bundle transform(JsonObject entity) {

@@ -4,6 +4,11 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 
+import com.tkpd.library.utils.CommonUtils;
+
+import java.net.URLEncoder;
+import java.util.Iterator;
+
 /**
  * Created by Vishal Gupta on 10/27/17.
  * <p>
@@ -28,7 +33,7 @@ public class ScroogePGUtil {
      * @param url
      * @param postparams
      */
-    public static void openScroogePage(Activity activity, String url, boolean isPostRequest, Bundle postparams) {
+    public static void openScroogePage(Activity activity, String url, boolean isPostRequest, String postparams) {
         activity.startActivityForResult(ScroogeActivity.getCallingIntent(activity, url, isPostRequest, postparams), REQUEST_CODE_OPEN_SCROOGE_PAGE);
     }
 
@@ -39,7 +44,47 @@ public class ScroogePGUtil {
      * @param url
      * @param postparams
      */
-    public static void openScroogePage(Fragment fragment, String url, boolean isPostRequest, Bundle postparams) {
+    public static void openScroogePage(Fragment fragment, String url, boolean isPostRequest, String postparams) {
         fragment.startActivityForResult(ScroogeActivity.getCallingIntent(fragment.getActivity(), url, isPostRequest, postparams), REQUEST_CODE_OPEN_SCROOGE_PAGE);
+    }
+
+    /**
+     * To launch scrooge activity
+     *
+     * @param fragment
+     * @param url
+     * @param postparams
+     */
+    public static void openScroogePage(Fragment fragment, String url, boolean isPostRequest, Bundle postparams) {
+        fragment.startActivityForResult(ScroogeActivity.getCallingIntent(fragment.getActivity(), url, isPostRequest, getPostData(postparams)), REQUEST_CODE_OPEN_SCROOGE_PAGE);
+    }
+
+    private static String getPostData(Bundle mPostParams) {
+        try {
+            CommonUtils.dumper("ScroogeActivity :: Extracting Strings from Bundle...");
+            boolean isFirstKey = true;
+            StringBuffer stringBuffer = new StringBuffer();
+            Iterator iterator = mPostParams.keySet().iterator();
+
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
+                if (mPostParams.getString(key) != null) {
+                    if (!isFirstKey) {
+                        stringBuffer.append("&");
+                    } else {
+                        isFirstKey = false;
+                    }
+                    stringBuffer.append(URLEncoder.encode(key, "UTF-8"));
+                    stringBuffer.append("=");
+                    stringBuffer.append(URLEncoder.encode(mPostParams.getString(key), "UTF-8"));
+                }
+            }
+
+            CommonUtils.dumper("ScroogeActivity :: URL encoded String is " + stringBuffer.toString());
+            return stringBuffer.toString();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

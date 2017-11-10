@@ -3,9 +3,8 @@ package com.tokopedia.ride.common.ride.domain;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
-import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
-import com.tokopedia.ride.common.ride.domain.model.PaymentMethod;
+import com.tokopedia.ride.common.ride.domain.model.PayPending;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethodList;
 import com.tokopedia.ride.common.ride.domain.model.PriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
@@ -78,4 +77,6 @@ public interface BookingRideRepository {
     Observable<String> requestApi(String url, TKPDMapParam<String, Object> parameters);
 
     Observable<PaymentMethodList> getPaymentMethodListFromCache();
+
+    Observable<PayPending> payPendingAmount();
 }

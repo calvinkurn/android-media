@@ -45,15 +45,15 @@ public class ManagePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
 
         paymentMethodName.setText(element.getName());
 
-        if (element.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_CC)) {
+        if (element.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_WALLET)) {
+            imageView.setImageResource(R.drawable.ic_tokocash_icon);
+        } else {
             Glide.with(context).load(element.getImageUrl())
                     .asBitmap()
                     .fitCenter()
                     .dontAnimate()
-                    .error(R.drawable.cabs_uber_ic)
+                    .error(R.drawable.tokocash)
                     .into(imageView);
-        } else {
-            imageView.setImageResource(R.drawable.ic_tokocash_icon);
         }
     }
 

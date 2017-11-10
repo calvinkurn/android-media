@@ -31,4 +31,5 @@ public interface RideUrl {
     String SEND_TIP = "/uber/tip/send";
     String PAYMENT_METHOD_LIST = "v1/uber/payment_method/list";
     String GET_NEARBY_CARS = "/uber/cars";
+    String PAY_PENDING_AMOUNT = "v1/uber/pending/pay";
 }

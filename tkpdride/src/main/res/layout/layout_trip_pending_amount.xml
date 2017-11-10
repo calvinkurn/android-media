@@ -72,7 +72,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/complete_trip_choose_tokocash_amount"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/font_small"
+            android:visibility="gone" />
 
 
         <RelativeLayout
@@ -81,7 +82,8 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:paddingBottom="@dimen/eight_dp"
-            android:paddingTop="@dimen/eight_dp">
+            android:paddingTop="@dimen/eight_dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_tokocash_selected_product"
@@ -119,17 +121,18 @@
             android:layout_marginTop="@dimen/eight_dp"
             android:text="@string/complete_trip_tip_top_up_more_tokocash_than_your_pending_fare_to_ease_your_booking_experience"
             android:textAlignment="center"
-            android:textSize="@dimen/fontvs" />
+            android:textSize="@dimen/fontvs"
+            android:visibility="gone" />
 
         <TextView
-            android:id="@+id/btn_topup_tokocash"
+            android:id="@+id/btn_pay_pending_fare"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/rounded_filled_green_bttn"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
-            android:text="@string/complete_trip_top_up_tokocash"
+            android:text="@string/complete_pay_pending_fare"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="@dimen/font_small" />

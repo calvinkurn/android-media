@@ -137,14 +137,14 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
 
     @Override
     public void showProgressBar() {
-        if (progressDialog != null && !progressDialog.isShowing()) {
+        if (getActivity() != null && progressDialog != null && !progressDialog.isShowing()) {
             progressDialog.show();
         }
     }
 
     @Override
     public void hideProgressBar() {
-        if (progressDialog != null) {
+        if (getActivity() != null && progressDialog != null) {
             progressDialog.hide();
         }
     }
@@ -160,7 +160,7 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
 
     @Override
     public void opeScroogePage(String saveUrl, boolean isPostReq, Bundle saveBody) {
-        ScroogePGUtil.openScroogePage(this , saveUrl , isPostReq, saveBody);
+        ScroogePGUtil.openScroogePage(this, saveUrl, isPostReq, saveBody);
     }
 
     @Override

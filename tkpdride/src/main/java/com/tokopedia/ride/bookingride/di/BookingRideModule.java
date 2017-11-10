@@ -6,10 +6,10 @@ import com.tokopedia.core.geolocation.domain.MapsRepository;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.ride.bookingride.di.scope.BookingRideScope;
 import com.tokopedia.ride.bookingride.domain.AutoCompletePredictionUseCase;
-import com.tokopedia.ride.bookingride.domain.RequestApiUseCase;
 import com.tokopedia.ride.bookingride.domain.GetCurrentRideRequestUseCase;
 import com.tokopedia.ride.bookingride.domain.GetDistanceMatrixUseCase;
 import com.tokopedia.ride.bookingride.domain.GetNearbyCarsUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPayPendingDataUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPlaceDetailUseCase;
@@ -19,6 +19,7 @@ import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
+import com.tokopedia.ride.bookingride.domain.RequestApiUseCase;
 import com.tokopedia.ride.common.place.domain.PlaceRepository;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 
@@ -158,5 +159,13 @@ public class BookingRideModule {
                                                      PostExecutionThread postExecutionThread,
                                                      BookingRideRepository bookingRideRepository) {
         return new RequestApiUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
+    }
+
+    @Provides
+    @BookingRideScope
+    GetPayPendingDataUseCase provideGetPayPendingDataUseCase(ThreadExecutor threadExecutor,
+                                                             PostExecutionThread postExecutionThread,
+                                                             BookingRideRepository bookingRideRepository) {
+        return new GetPayPendingDataUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
     }
 }

@@ -4,6 +4,7 @@ package com.tokopedia.ride.completetrip.view;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -57,6 +58,7 @@ import com.tokopedia.ride.completetrip.view.viewmodel.TokoCashProduct;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
+import com.tokopedia.ride.scrooge.ScroogePGUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -149,8 +151,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     RelativeLayout tokocashOptionRelativeLayout;
     @BindView(R2.id.tv_tokocash_selected_product)
     TextView tokocashSelectedProductTextView;
-    @BindView(R2.id.btn_topup_tokocash)
-    TextView topupButtonTextView;
 
     @Inject
     CompleteTripPresenter presenter;
@@ -162,6 +162,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     private int selectedTipIndex = -1;
     private ArrayList<String> tipList;
     private int tipAmount;
+    private ProgressDialog progressDialog;
 
     public interface OnFragmentInteractionListener {
         void actionSuccessRatingSubmited();
@@ -645,8 +646,11 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         startActivityForResult(PendingFareChooserActivity.getCallingIntent(getActivity(), products), TOKOCASH_PRODUCT_REQUEST_CODE);
     }
 
-    @OnClick(R2.id.btn_topup_tokocash)
-    public void actionTopupTokocash() {
+    @OnClick(R2.id.btn_pay_pending_fare)
+    public void actionPayPendingFare() {
+        presenter.payPendingFare();
+
+        /*
         if (passData == null) return;
         if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
             passData.setIdemPotencyKey(generateIdEmpotency(receipt.getRequestId()));
@@ -655,7 +659,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                     digitalModuleRouter.instanceIntentCartDigitalProduct(passData),
                     IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
             );
-        }
+        }*/
     }
 
 
@@ -729,5 +733,32 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         }
 
         return 0;
+    }
+
+    @Override
+    public void opeScroogePage(String url, String postData) {
+        if (getActivity() != null) {
+            ScroogePGUtil.openScroogePage(getActivity(), url, true, postData);
+        }
+    }
+
+    @Override
+    public void showProgressbar() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage(getString(R.string.message_please_wait));
+            progressDialog.setCancelable(false);
+        }
+
+        if (getActivity() != null && progressDialog != null && !progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+    }
+
+    @Override
+    public void hideProgressbar() {
+        if (getActivity() != null && progressDialog != null) {
+            progressDialog.hide();
+        }
     }
 }

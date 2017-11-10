@@ -33,7 +33,7 @@ public class PendingPaymentEntity {
     private String topupUrl;
     @SerializedName("show_topup_options")
     @Expose
-    boolean showTopupOptions;
+    boolean showTopupOptions = true; //keep default value as true
 
     public String getPendingAmount() {
         return pendingAmount;

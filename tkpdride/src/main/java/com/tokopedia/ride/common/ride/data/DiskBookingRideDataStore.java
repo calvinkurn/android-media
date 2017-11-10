@@ -1,5 +1,6 @@
 package com.tokopedia.ride.common.ride.data;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.bookingride.data.RideAddressCache;
 import com.tokopedia.ride.bookingride.data.RideAddressCacheImpl;
@@ -160,6 +161,11 @@ public class DiskBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<String> requestApi(String url, TKPDMapParam<String, Object> parameters) {
+        return null;
+    }
+
+    @Override
+    public Observable<JsonObject> payPendingAmount() {
         return null;
     }
 }

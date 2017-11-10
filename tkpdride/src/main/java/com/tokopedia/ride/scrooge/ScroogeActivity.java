@@ -44,13 +44,13 @@ public class ScroogeActivity extends AppCompatActivity {
     private WebView mWebView;
     private ProgressBar mProgress;
     private Toolbar mToolbar;
-    private Bundle mPostParams;
+    private String mPostParams;
     private String mURl;
 
     private int requestCode;
     private boolean isPostRequest;
 
-    public static Intent getCallingIntent(Context context, String url, boolean isPostRequest, Bundle postParams) {
+    public static Intent getCallingIntent(Context context, String url, boolean isPostRequest, String postParams) {
         Intent intent = new Intent(context, ScroogeActivity.class);
         intent.putExtra(EXTRA_KEY_POST_PARAMS, postParams);
         intent.putExtra(EXTRA_KEY_URL, url);
@@ -61,17 +61,14 @@ public class ScroogeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPostParams = (Bundle) getIntent().getParcelableExtra(EXTRA_KEY_POST_PARAMS);
+        mPostParams = getIntent().getStringExtra(EXTRA_KEY_POST_PARAMS);
         mURl = getIntent().getStringExtra(EXTRA_KEY_URL);
         isPostRequest = getIntent().getBooleanExtra(EXTRA_IS_POST_REQUEST, false);
 
         initUI();
 
-        if (isPostRequest) {
-            this.mWebView.postUrl(mURl, getPostData(mPostParams));
-        } else {
-            this.mWebView.loadUrl(mURl, getHeaders(mPostParams));
-        }
+        if (mPostParams == null) mPostParams = "";
+        this.mWebView.postUrl(mURl, mPostParams.getBytes());
     }
 
     private Map<String, String> getHeaders(Bundle mPostParams) {
@@ -84,34 +81,7 @@ public class ScroogeActivity extends AppCompatActivity {
         return headers;
     }
 
-    private byte[] getPostData(Bundle mPostParams) {
-        try {
-            CommonUtils.dumper("ScroogeActivity :: Extracting Strings from Bundle...");
-            boolean isFirstKey = true;
-            StringBuffer stringBuffer = new StringBuffer();
-            Iterator iterator = mPostParams.keySet().iterator();
 
-            while (iterator.hasNext()) {
-                String key = (String) iterator.next();
-                if (mPostParams.getString(key) != null) {
-                    if (!isFirstKey) {
-                        stringBuffer.append("&");
-                    } else {
-                        isFirstKey = false;
-                    }
-                    stringBuffer.append(URLEncoder.encode(key, "UTF-8"));
-                    stringBuffer.append("=");
-                    stringBuffer.append(URLEncoder.encode(mPostParams.getString(key), "UTF-8"));
-                }
-            }
-
-            CommonUtils.dumper("ScroogeActivity :: URL encoded String is " + stringBuffer.toString());
-            return stringBuffer.toString().getBytes();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
 
     private void initUI() {
         //create main layout
