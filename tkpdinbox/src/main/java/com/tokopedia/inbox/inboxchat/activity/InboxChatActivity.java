@@ -197,7 +197,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
     public void onGetNotif(Bundle data) {
         super.onGetNotif(data);
         InboxChatFragment something = (InboxChatFragment) fragmentList.get(viewPager.getCurrentItem());
-        something.restackList(data);
+//        something.restackList(data);
     }
 
     public void showTabLayout(boolean b) {

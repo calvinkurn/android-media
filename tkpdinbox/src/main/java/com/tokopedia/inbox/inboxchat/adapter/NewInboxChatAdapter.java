@@ -224,26 +224,30 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     public void moveToTop(String senderId, String lastReply, boolean showNotif) {
         String currentId;
         for (int i = 0; i < list.size(); i++) {
-            ChatListViewModel temp = (ChatListViewModel) list.get(i);
-            currentId = String.valueOf(temp.getSenderId());
-            if (currentId.equals(senderId)) {
-                if (showNotif) {
-                    int unread = temp.getUnreadCounter();
-                    unread++;
-                    temp.setMessage(lastReply);
-                    temp.setUnreadCounter(unread);
-                    temp.setReadStatus(STATE_CHAT_UNREAD);
-                }else{
-                    temp.setMessage(lastReply);
-                    temp.setUnreadCounter(0);
-                    temp.setReadStatus(STATE_CHAT_READ);
+            try {
+                ChatListViewModel temp = (ChatListViewModel) list.get(i);
+                currentId = String.valueOf(temp.getSenderId());
+                if (currentId.equals(senderId)) {
+                    if (showNotif) {
+                        int unread = temp.getUnreadCounter();
+                        unread++;
+                        temp.setMessage(lastReply);
+                        temp.setUnreadCounter(unread);
+                        temp.setReadStatus(STATE_CHAT_UNREAD);
+                    }else{
+                        temp.setMessage(lastReply);
+                        temp.setUnreadCounter(0);
+                        temp.setReadStatus(STATE_CHAT_READ);
+                    }
+                    list.remove(i);
+                    notifyItemRemoved(i);
+                    list.add(0, temp);
+                    notifyItemInserted(0);
+                    notifyItemRangeChanged(0, i+1);
+                    presenter.moveViewToTop();
+                    break;
                 }
-                list.remove(i);
-                notifyItemRemoved(i);
-                list.add(0, temp);
-                notifyItemInserted(0);
-                notifyItemRangeChanged(0, i);
-                presenter.moveViewToTop();
+            }catch (ClassCastException e){
                 break;
             }
         }
@@ -284,24 +288,28 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     public void showTyping(int msgId) {
         for (int i = 0; i < list.size(); i++) {
-            ChatListViewModel tempModel = ((ChatListViewModel) list.get(i));
-            String temp = tempModel.getId();
-            if(msgId == Integer.valueOf(temp)){
-                tempModel.setTyping(true);
-                notifyItemChanged(i);
-                break;
+            if(list.get(i) instanceof ChatListViewModel){
+                ChatListViewModel tempModel = ((ChatListViewModel) list.get(i));
+                String temp = tempModel.getId();
+                if(msgId == Integer.valueOf(temp)){
+                    tempModel.setTyping(true);
+                    notifyItemChanged(i);
+                    break;
+                }
             }
         }
     }
 
     public void removeTyping(int msgId) {
         for (int i = 0; i < list.size(); i++) {
-            ChatListViewModel tempModel = ((ChatListViewModel) list.get(i));
-            String temp = tempModel.getId();
-            if(msgId == Integer.valueOf(temp)){
-                tempModel.setTyping(false);
-                notifyItemChanged(i);
-                break;
+            if(list.get(i) instanceof ChatListViewModel) {
+                ChatListViewModel tempModel = ((ChatListViewModel) list.get(i));
+                String temp = tempModel.getId();
+                if (msgId == Integer.valueOf(temp)) {
+                    tempModel.setTyping(false);
+                    notifyItemChanged(i);
+                    break;
+                }
             }
         }
     }

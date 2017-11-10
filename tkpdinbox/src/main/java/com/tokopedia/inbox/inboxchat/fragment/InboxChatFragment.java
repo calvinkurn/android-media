@@ -510,7 +510,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onIncomingEvent(WebSocketResponse response) {
+    public void onIncomingEvent(final WebSocketResponse response) {
         switch (response.getCode()) {
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
                 adapter.showTyping(response.getData().getMsgId());
@@ -518,6 +518,13 @@ public class InboxChatFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
                 adapter.removeTyping(response.getData().getMsgId());
                 break;
+            case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.moveToTop(String.valueOf(response.getData().getFromUid()), response.getData().getMessage().getCensoredReply(), true);
+                    }
+                });
             default:
                 break;
         }
@@ -525,8 +532,10 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void newWebSocket() {
-        if (getActivity() != null)
+        if (getActivity() != null) {
+            notifyConnectionWebSocket();
             presenter.recreateWebSocket();
+        }
     }
 
     @Override
@@ -535,7 +544,9 @@ public class InboxChatFragment extends BaseDaggerFragment
             @Override
             public void run() {
                 TextView title = (TextView) notifier.findViewById(R.id.title);
-                title.setText("Terhubung !!!");
+                title.setText("Terhubung!");
+                TextView action = (TextView) notifier.findViewById(R.id.action);
+                action.setVisibility(View.GONE);
             }
         });
 
@@ -551,25 +562,28 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void notifyConnectionWebSocket() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                notifier.setVisibility(View.VISIBLE);
-                TextView title = (TextView) notifier.findViewById(R.id.title);
+        if (getActivity() != null && presenter != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    notifier.setVisibility(View.VISIBLE);
+                    TextView title = (TextView) notifier.findViewById(R.id.title);
 
-                TextView action = (TextView) notifier.findViewById(R.id.action);
+                    TextView action = (TextView) notifier.findViewById(R.id.action);
 
-                title.setText("Terjadi gangguan pada koneksi. Mencpba menghubungkan");
-                action.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                    title.setText(R.string.error_no_connection_retrying);
+                    action.setVisibility(View.VISIBLE);
+                    action.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 //                        presenter.resetAttempt();
 //                        presenter.recreateWebSocket();
-                        notifier.setVisibility(View.GONE);
-                    }
-                });
-            }
-        });
+                            notifier.setVisibility(View.GONE);
+                        }
+                    });
+                }
+            });
+        }
     }
 
 }

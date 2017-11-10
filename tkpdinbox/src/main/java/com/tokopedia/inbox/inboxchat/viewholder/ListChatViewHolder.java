@@ -129,7 +129,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
 
 
         avatar.setOnClickListener(onGoToProfile(element));
-        userName.setOnClickListener(onGoToProfile(element));
+
         mainView.setOnClickListener(onMessageClicked(element, viewListener, getAdapterPosition()));
 
         mainView.setOnLongClickListener(onLongClickListener(element));

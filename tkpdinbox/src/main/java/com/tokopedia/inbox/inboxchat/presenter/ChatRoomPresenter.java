@@ -94,15 +94,15 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     public void recreateWebSocket() {
-        if(attempt > 5) {
+//        if(attempt > 5) {
             getView().notifyConnectionWebSocket();
-        }else {
+//        }else {
             Request request = new Request.Builder().url(magicString)
                     .header("Origin", "https://staging.tokopedia.com")
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;
-        }
+//        }
     }
 
     public void onGoToProfile(String s) {
@@ -280,7 +280,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void onOpenWebSocket() {
-        attempt = 0;
+//        attempt = 0;
         if(isFirstTime){
             isFirstTime = false;
             String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
