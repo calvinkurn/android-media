@@ -1,6 +1,7 @@
 import { NetworkModule } from 'NativeModules'
 import { 
   getAddrName,
+  getShopName,
   getBaseAPI,
   getEnv,
 } from '../lib/utility'
@@ -16,12 +17,13 @@ export const sendEmailReceipt = (emailAddress, data, items) => {
 
 const processSendEmail = async (emailAddress, data, items) => {
   const outlet_name = await getAddrName()
+  const shop_name = await getShopName()
   const detail_items = getDetailItems(items)
   const env = await getEnv()
   const api_url = await getBaseAPI(env)
   const data_params = {
     ...data,
-    outlet_name,
+    outlet_name: `${shop_name} - ${outlet_name}`,
     detail_items
   }
   const send_email = await proceedSendEmail(data_params, api_url)

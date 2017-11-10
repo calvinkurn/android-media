@@ -31,6 +31,12 @@ export const getShopId = () => {
       .catch(err => console.log(err))
 }
 
+export const getShopName = () => {
+    return SessionModule.getShopName()
+    .then(res => {return res})
+    .catch(err => console.log(err))
+}
+
 export const getEnv = () => {
     return SessionModule.getEnv()
       .then(res => { return res })
