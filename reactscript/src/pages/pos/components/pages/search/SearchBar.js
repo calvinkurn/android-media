@@ -30,16 +30,11 @@ class SearchBar extends Component {
       paddingLeft: '10%',
       justifyContent: 'center'
     }}>
-      <TouchableWithoutFeedback onPress={
-        () => {
-          // console.log(item)
-          // console.log(this.props)
-          // this.props.onSearchItemTap(this.props.shopId, item)
+      <TouchableWithoutFeedback onPress={() => {
           this.toggleResults(false)
           Keyboard.dismiss()
           NavigationModule.navigate(`posapp://product/${item.id}`, '')
-        }
-      }>
+        }}>
         <View>
           <Text
             style={{ fontSize: 14 }}
@@ -47,25 +42,9 @@ class SearchBar extends Component {
             numberOfLines={1}>{item.text}</Text>
         </View>
       </TouchableWithoutFeedback>
-
     </View>
   )
 
-  // renderHeader = ({ section }) => (
-  //   <View style={{
-  //     paddingLeft: '10%',
-  //     justifyContent: 'center',
-  //     height: 78,
-  //     borderBottomWidth: 1,
-  //     borderBottomColor: '#e0e0e0'
-  //   }}>
-  //     <Text style={{
-  //       fontSize: 14,
-  //       fontWeight: '400',
-  //       color: '#9b9b9b'
-  //     }}>{section.title}</Text>
-  //   </View>
-  // )
 
   toggleResults = (visible) => {
     this.setState({ showResults: visible })
@@ -114,23 +93,6 @@ class SearchBar extends Component {
         </View>
         {
           this.state.showResults && (
-            // <View style={styles.results}>
-            //   {
-            //     this.props.items.length > 0 ? (<SectionList
-            //       keyboardShouldPersistTaps='always'
-            //       keyExtractor={(item) => {
-            //         return item.id
-            //       }}
-            //       renderItem={this.renderItem}
-            //       renderSectionHeader={this.renderHeader}
-            //       sections={[ // homogenous rendering between sections
-            //         { data: this.props.items, title: 'Pencarian Terakhir' },
-            //         { data: [{ text: 'Samsung S4', id: 4 }], title: 'Popular Search', },
-            //       ]}
-            //     />)
-            //       : (<NotFound />)
-            //   }
-            // </View>
             <View style={styles.results}>
               {
                 this.props.items.length > 0 ? (<FlatList
