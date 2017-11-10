@@ -1,4 +1,4 @@
-package com.tokopedia.posapp.view.drawer;
+package com.tokopedia.core.drawer2.view.databinder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,13 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
+import com.tokopedia.core.router.posapp.PosAppDataGetter;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
-import com.tokopedia.posapp.PosSessionHandler;
-import com.tokopedia.posapp.R;
 
 /**
  * Created by Herdi_WORK on 07.09.17.
@@ -37,9 +36,16 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
                                         LocalCacheHandler drawerCache) {
         super(dataBindAdapter);
         this.context = context;
-//        this.data = createDataFromCache(drawerCache);
+        this.data = new DrawerData();
         this.listener = listener;
+    }
 
+    public DrawerData getData() {
+        return data;
+    }
+
+    public void setDrawerProfileData(DrawerProfile drawerProfile){
+        data.setDrawerProfile(drawerProfile);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -55,11 +61,11 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tvName = itemView.findViewById(R.id.tv_name);
-            tvOnline = itemView.findViewById(R.id.tv_online);
-            tvOutlet = itemView.findViewById(R.id.tv_outlet);
+            tvName = (TextView) itemView.findViewById(R.id.tv_name);
+            tvOnline = (TextView) itemView.findViewById(R.id.tv_online);
+            tvOutlet = (TextView) itemView.findViewById(R.id.tv_outlet);
             ivOnline = itemView.findViewById(R.id.iv_online);
-            ivAvatar = itemView.findViewById(R.id.iv_avatar);
+            ivAvatar = (ImageView) itemView.findViewById(R.id.iv_avatar);
         }
     }
 
@@ -71,11 +77,12 @@ public class DrawerPosHeaderDataBinder extends DataBinder<DrawerPosHeaderDataBin
 
     @Override
     public void bindViewHolder(DrawerPosHeaderDataBinder.ViewHolder holder, int position) {
-        holder.tvName.setText(PosSessionHandler.getShopName(context));
         holder.tvOnline.setVisibility(View.VISIBLE);
         holder.ivOnline.setVisibility(View.VISIBLE);
+        holder.tvOutlet.setVisibility(View.VISIBLE);
+        holder.tvName.setText(data.getDrawerProfile().getShopName());
         holder.tvOnline.setText("Online");
-        holder.tvOutlet.setText(PosSessionHandler.getOutletName(context));
+        holder.tvOutlet.setText(((PosAppDataGetter)context.getApplicationContext()).getOutletName());
         holder.ivAvatar.setImageResource(R.drawable.qc_launcher);
     }
 
