@@ -1,23 +1,19 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-//import SearchScreen from '../components/search/SearchScreen'
 import SearchScreen from '../components/pages/search/SearchBar'
 import {
-  fetchSearchProduct,
-  onSearchResultTap,
   clearSearchResults,
-  onSearchQueryType,
-  fetchProducts,
-  resetProductList,
   searchProduct,
+  onSearchQueryType,
   setSearchText,
+  resetProductList,
+  fetchProducts,
   searchProductSubmit,
-  // onSubmitFetchSearchProduct,
 } from '../actions/index'
 
+
+
 const mapStateToProps = (state, ownProps) => {
-  // console.log(state)
-  // console.log(ownProps)
   return {
     items: state.search.items,
     queryText: state.search.query,
