@@ -25,9 +25,6 @@ public class ChatTimeConverter {
     public static String formatTimeStamp(long unixTime) {
         Locale localeID = new Locale("in", "ID");
 
-        String span = String.valueOf(DateUtils.getRelativeTimeSpanString(System.currentTimeMillis(), unixTime, 0));
-        span = span.toLowerCase();
-
         Date postTime = new Date(unixTime);
 
         Calendar calPostDate = Calendar.getInstance();
@@ -37,10 +34,11 @@ public class ChatTimeConverter {
         calCurrentTime.setTime(new Date());
 
         if (DateUtils.isToday(unixTime)) {
-            return DateFormat.getTimeFormat(MainApplication.getAppContext()).format(unixTime);
-        } else if (span.contains("yesterday")
-                || (!DateUtils.isToday(unixTime) && span.contains("hours"))
-                || (!DateUtils.isToday(unixTime) && span.contains("hours"))) {
+            SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
+            return sdfHour.format(postTime);
+        } else if (calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
+                && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)
+                && isYesterday(calCurrentTime.get(Calendar.DAY_OF_MONTH), calPostDate.get(Calendar.DAY_OF_MONTH))) {
             return YESTERDAY;
         } else if (calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)) {
             SimpleDateFormat sdfDay = new SimpleDateFormat("dd MMM", localeID);
@@ -51,8 +49,15 @@ public class ChatTimeConverter {
         }
     }
 
+    private static boolean isYesterday(int currentDay, int postDay) {
+        return currentDay - postDay == 1;
+    }
+
     public static String formatTime(long unixTime) {
-        return DateFormat.getTimeFormat(MainApplication.getAppContext()).format(unixTime);
+        Locale localeID = new Locale("in", "ID");
+        Date postTime = new Date(unixTime);
+        SimpleDateFormat sdfHour = new SimpleDateFormat("HH:mm", localeID);
+        return sdfHour.format(postTime);
     }
 
     private static String YESTERDAY = "Kemarin";
