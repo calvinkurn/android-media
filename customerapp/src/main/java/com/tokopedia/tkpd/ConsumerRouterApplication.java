@@ -86,6 +86,9 @@ import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
+import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
