@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -41,8 +40,6 @@ import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.product.domain.ILastOrderNumberRepository;
-import com.tokopedia.digital.product.domain.LastOrderNumberRepository;
 import com.tokopedia.digital.product.domain.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.interactor.ProductDigitalInteractor;
@@ -137,12 +134,9 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                 new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
         IDigitalWidgetRepository digitalWidgetRepository =
                 new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
-        ILastOrderNumberRepository lastOrderNumberRepository =
-                new LastOrderNumberRepository(digitalEndpointService, productDigitalMapper);
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
-                        compositeSubscription, digitalWidgetRepository, digitalCategoryRepository,
-                        lastOrderNumberRepository, cacheHandler,
+                        compositeSubscription, digitalWidgetRepository, digitalCategoryRepository, cacheHandler,
                         new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper)
                 );
         ITokoCashRepository balanceRepository = new TokoCashRepository(new TokoCashService(
@@ -257,7 +251,6 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     }
 
     /**
-     *
      * @value topUpAvailable is for showing or hiding topup
      */
 
