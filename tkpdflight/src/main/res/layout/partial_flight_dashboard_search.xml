@@ -6,65 +6,84 @@
     android:orientation="vertical"
     android:padding="@dimen/margin_sm">
 
-    <RadioGroup
-        android:id="@+id/radio_travel_tyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/radio_one_way"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/flight_search_one_way"
-            style="@style/RadioButton"/>
-
-        <RadioButton
-            android:id="@+id/radio_round_trip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/flight_search_return"
-            style="@style/RadioButton"/>
-
-    </RadioGroup>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/button_one_way_trip"
+            style="@style/ButtonRound"
+            android:layout_marginEnd="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:text="@string/flight_search_one_way" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/button_round_trip"
+            style="@style/ButtonRound"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginStart="@dimen/margin_vs"
+            android:text="@string/flight_search_return" />
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <com.tokopedia.flight.dashboard.view.widget.TextInputView
-                android:id="@+id/text_input_view_departure_airport"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:tiv_icon="@drawable/ic_flight_departure"
-                app:tiv_title_text="@string/flight_search_airport_departure_title"
-                app:tiv_hint_text="@string/flight_search_airport_departure_title"/>
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_caption"
+                    android:text="@string/flight_search_airport_departure_title" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Penerbangan Asal"
+                    android:textSize="@dimen/font_body2" />
+
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_line_separator" />
 
             <com.tokopedia.flight.dashboard.view.widget.TextInputView
                 android:id="@+id/text_input_view_arrival_airport"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_vs"
-                app:tiv_icon="@drawable/ic_flight_arrival"
-                app:tiv_title_text="@string/flight_search_airport_arrival_title"
-                app:tiv_hint_text="@string/flight_search_airport_arrival_title"/>
+                android:layout_weight="1"
+                app:tiv_hint_text="@string/flight_search_airport_arrival_title"
+                app:tiv_title_text="@string/flight_search_airport_arrival_title" />
         </LinearLayout>
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/image_reverse_airport"
             android:layout_width="@dimen/image_width_m"
             android:layout_height="@dimen/image_width_m"
-            android:src="@drawable/ic_flight_reverse" />
-    </LinearLayout>
+            android:layout_gravity="center"
+            android:src="@drawable/ic_flight_reverse_horizontal" />
+    </FrameLayout>
+
 
     <com.tokopedia.flight.dashboard.view.widget.TextInputView
         android:id="@+id/text_input_view_date_departure"

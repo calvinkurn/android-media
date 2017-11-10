@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -20,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.RadioGroup;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -38,7 +36,6 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
-import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
@@ -47,8 +44,8 @@ import java.util.Date;
 import javax.inject.Inject;
 
 /**
- * @author  by nathan on 10/19/17.
- * modified by al
+ * @author by nathan on 10/19/17.
+ *         modified by al
  */
 
 public class FlightDashboardFragment extends BaseDaggerFragment implements FlightDashboardContract.View {
@@ -69,7 +66,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     TextInputView classTextInputView;
     TextInputView departureDateTextInputView;
     TextInputView returnDateTextInputView;
-    RadioGroup sexRadioGroup;
+    AppCompatButton oneWayTripAppCompatButton;
+    AppCompatButton roundTripAppCompatButton;
 
     @Inject
     FlightDashboardPresenter presenter;
@@ -94,6 +92,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_flight_dashboard, container, false);
         AppCompatButton searchTicketButton = (AppCompatButton) view.findViewById(R.id.button_search_ticket);
+        oneWayTripAppCompatButton = (AppCompatButton) view.findViewById(R.id.button_one_way_trip);
+        roundTripAppCompatButton = (AppCompatButton) view.findViewById(R.id.button_round_trip);
         reverseAirportImageView = (AppCompatImageView) view.findViewById(R.id.image_reverse_airport);
         airportDepartureTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_departure_airport);
         airportArrivalTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_arrival_airport);
@@ -101,17 +101,25 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         classTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_class);
         departureDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_departure);
         returnDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_return);
-        sexRadioGroup = (RadioGroup) view.findViewById(R.id.radio_travel_tyle);
-        sexRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+        oneWayTripAppCompatButton.setSelected(true);
+        oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                if (checkedId == R.id.radio_one_way) {
-                    presenter.onSingleTripChecked();
-                } else {
-                    presenter.onRoundTripChecked();
-                }
+            public void onClick(View v) {
+                presenter.onSingleTripChecked();
             }
         });
+
+        roundTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                oneWayTripAppCompatButton.setTextColor(getResources().getColor(R.color.white));
+                presenter.onRoundTripChecked();
+                roundTripAppCompatButton.setSelected(true);
+                oneWayTripAppCompatButton.setSelected(false);
+            }
+        });
+
         searchTicketButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,6 +204,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void renderSingleTripView() {
+        oneWayTripAppCompatButton.setTextColor(getResources().getColor(R.color.white));
+        roundTripAppCompatButton.setTextColor(getResources().getColor(R.color.grey_400));
+        oneWayTripAppCompatButton.setSelected(true);
+        roundTripAppCompatButton.setSelected(false);
         returnDateTextInputView.animate()
                 .alpha(0.0f)
                 .setDuration(300)
@@ -228,6 +240,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void renderRoundTripView() {
+        oneWayTripAppCompatButton.setTextColor(getResources().getColor(R.color.grey_400));
+        roundTripAppCompatButton.setTextColor(getResources().getColor(R.color.white));
+        oneWayTripAppCompatButton.setSelected(false);
+        roundTripAppCompatButton.setSelected(true);
 
         returnDateTextInputView.animate()
                 .alpha(1.0f)
