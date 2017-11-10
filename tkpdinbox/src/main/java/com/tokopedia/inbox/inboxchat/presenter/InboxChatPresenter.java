@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxchat.presenter;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Pair;
 
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -8,6 +9,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
@@ -244,7 +246,8 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                 listMessage.getSenderId(),
                 listMessage.getRole(),
                 viewModel.getMode(),
-                viewModel.getKeyword());
+                viewModel.getKeyword(),
+                listMessage.getImage());
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         getView().startActivityForResult(intent, OPEN_DETAIL_MESSAGE);
         getView().overridePendingTransition(0, 0);
@@ -254,6 +257,13 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         getView().startActivity(
                 PeopleInfoNoDrawerActivity.createInstance(getView().getActivity(), String.valueOf(userId))
         );
+    }
+
+    public void goToShop(int shopId){
+        Intent intent = new Intent(getView().getActivity(), ShopInfoActivity.class);
+        Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
+        intent.putExtras(bundle);
+        getView().startActivity(intent);
     }
 
     public void refreshData() {
@@ -390,5 +400,13 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     public void setInActionMode(boolean inActionMode) {
         this.inActionMode = inActionMode;
+    }
+
+    public void setError() {
+        if(pagingHandler.getPage()==1){
+            getView().showErrorFull();
+        }else {
+            getView().showError("Pencarian Gagal");
+        }
     }
 }

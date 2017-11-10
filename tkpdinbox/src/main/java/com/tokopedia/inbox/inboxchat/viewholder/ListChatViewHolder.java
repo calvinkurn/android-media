@@ -57,6 +57,10 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
 
     String[] array;
 
+    final static String USER = "Pengguna";
+    final static String ADMIN = "Administrator";
+    final static String SELLER = "Penjual";
+
     @LayoutRes
     public static final int LAYOUT = R.layout.message_item;
 
@@ -92,9 +96,9 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                 userName.setText(element.getName());
             } else if (element.getSpanMode() == ChatListViewModel.SPANNED_CONTACT) {
                 userName.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
-                message.setText(element.getMessage());
+                message.setText(element.getMessage().trim());
             } else {
-                message.setText(element.getMessage());
+                message.setText(element.getMessage().trim());
                 userName.setText(element.getName());
             }
             message.setTypeface(null, Typeface.NORMAL);
@@ -167,7 +171,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
     }
 
     private void setLabel(String labelS) {
-        if (labelS != null && labelS.length() > 0) {
+        if (labelS != null && labelS.length() > 0 && !labelS.equals(USER)) {
             label.setVisibility(View.VISIBLE);
             label.setText(labelS);
         } else {
@@ -232,8 +236,14 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!messageItem.getLabel().equals("Administrator"))
-                    presenter.goToProfile(Integer.parseInt(messageItem.getSenderId()));
+                if (!messageItem.getLabel().equals(ADMIN)) {
+                    if(messageItem.getLabel().equals(SELLER)){
+                        presenter.goToShop(Integer.parseInt(messageItem.getSenderId()));
+                    }else {
+                        presenter.goToProfile(Integer.parseInt(messageItem.getSenderId()));
+                    }
+
+                }
             }
         };
     }
@@ -251,13 +261,13 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
 
     private void setReadState() {
         counterUnread.setVisibility(View.GONE);
-        userName.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+        userName.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
 
     }
 
     private void setNotReadState(int counter) {
         counterUnread.setVisibility(View.VISIBLE);
-        userName.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        userName.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
 
         if (counter > 0) {
             counterUnread.setText(String.valueOf(counter));
