@@ -226,7 +226,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             if (GlobalConfig.isSellerApp()) {
                 intent = new Intent(this, WelcomeActivity.class);
             } else {
-                ((TkpdCoreRouter) getApplication()).invalidateCategoryMenuData();
+                invalidateCategoryCache();
                 intent = HomeRouter.getHomeActivity(this);
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -353,12 +353,17 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         } else {
+                            invalidateCategoryCache();
                             Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         }
                     }
                 });
+    }
+
+    private void invalidateCategoryCache() {
+        ((TkpdCoreRouter) getApplication()).invalidateCategoryMenuData();
     }
 
     public void checkIfForceLogoutMustShow() {
