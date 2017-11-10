@@ -59,7 +59,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
     public void bind(OppositeChatViewModel element) {
         //        ImageHandler.loadImageCircle2(context, avatar, list.get(position).getUserImage());
         if(!element.isHighlight()) {
-            message.setText(element.getMsg());
+            message.setText(MethodChecker.fromHtml(element.getMsg()));
         }else {
             if(element.getSpanned()!= null && viewListener.getKeyword()!=null) {
                 message.setText(highlight(itemView.getContext(), element.getSpanned(), viewListener.getKeyword()));
