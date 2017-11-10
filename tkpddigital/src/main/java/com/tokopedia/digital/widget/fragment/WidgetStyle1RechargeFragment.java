@@ -200,7 +200,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 } else {
                     if (category.getAttributes().isValidatePrefix()) {
                         if (selectedOperator == null) {
-                            if ((temp.length() >= 3 && temp.length() <= 4) || temp.length() > minLengthDefaultOperator) {
+                            if (temp.length() >= 3) {
                                 presenter.validatePhonePrefix(temp, category.getId(),
                                         category.getAttributes().isValidatePrefix());
                             }
@@ -232,6 +232,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
+                UnifyTracking.eventSelectNumberOnUserProfileWidget(category.getAttributes().getName());
+
                 LastOrder lastOrder = new LastOrder();
                 Attributes attributes = new Attributes();
                 attributes.setClientNumber(orderClientNumber.getClientNumber());

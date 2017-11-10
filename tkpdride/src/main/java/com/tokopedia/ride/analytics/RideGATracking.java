@@ -3,7 +3,6 @@ package com.tokopedia.ride.analytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.ride.common.configuration.RideStatus;
 
 /**
  * Created by sandeepgoyal on 10/10/17.
@@ -15,7 +14,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventClickBack),
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                String.format(RideAppEventTracking.Label.ScreenName, toLowerCase(screenName))
         ).getEvent());
     }
 
@@ -24,7 +23,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventClickOnYourTrips,
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                String.format(RideAppEventTracking.Label.ScreenName,toLowerCase(screenName))
         ).getEvent());
     }
 
@@ -33,7 +32,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventClickSource,
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                String.format(RideAppEventTracking.Label.ScreenName,toLowerCase(screenName))
         ).getEvent());
     }
 
@@ -42,7 +41,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventClickDestination,
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                String.format(RideAppEventTracking.Label.ScreenName,toLowerCase(screenName))
         ).getEvent());
     }
 
@@ -70,7 +69,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventDeletePromotion,
-                String.format(RideAppEventTracking.Label.PromotionName,screenName,promotionName)
+                String.format(RideAppEventTracking.Label.PromotionName,toLowerCase(screenName),promotionName)
         ).getEvent());
     }
 
@@ -79,7 +78,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventClickRideOption,rideOption),
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                String.format(RideAppEventTracking.Label.ScreenName,toLowerCase(screenName))
         ).getEvent());
     }
 
@@ -88,7 +87,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventAutoDetectCurrentLocation),
-                String.format(RideAppEventTracking.Label.AddressSelected,screenName,addressSelected)
+                String.format(RideAppEventTracking.Label.AddressSelected,toLowerCase(screenName),addressSelected)
         ).getEvent());
     }
 
@@ -97,7 +96,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventClickSourceOpenMap),
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                String.format(RideAppEventTracking.Label.ScreenName,toLowerCase(screenName))
         ).getEvent());
     }
 
@@ -115,7 +114,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventClickDoneSourceMap,
-                String.format(RideAppEventTracking.Label.AddressSelected,screenName,addressSelected)
+                String.format(RideAppEventTracking.Label.AddressSelected,toLowerCase(screenName),addressSelected)
         ).getEvent());
     }
 
@@ -124,7 +123,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventClickDestinationOpenMap),
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                String.format(RideAppEventTracking.Label.ScreenName,toLowerCase(screenName))
         ).getEvent());
     }
 
@@ -135,7 +134,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventClickDestinationRecentAddress),
-                String.format(RideAppEventTracking.Label.AddressSelected,screenName,addressSelected)
+                String.format(RideAppEventTracking.Label.AddressSelected,toLowerCase(screenName),addressSelected)
         ).getEvent());
 
     }
@@ -145,7 +144,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventClickHelpTrip,
-                String.format(RideAppEventTracking.Label.BookingDetails,screenName,date,fare,bookingStatus)
+                String.format(RideAppEventTracking.Label.BookingDetails,toLowerCase(screenName),date,fare,bookingStatus)
         ).getEvent());
     }
     public static void eventSelectHelpOption(String helpOption) {
@@ -162,7 +161,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventClickApplyPromoSearch,
-                String.format(RideAppEventTracking.Label.PromoSearchValue,screenName,promoSearchValue)
+                String.format(RideAppEventTracking.Label.PromoSearchValue,toLowerCase(screenName),promoSearchValue)
         ).getEvent());
     }
 
@@ -171,7 +170,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventClickApplyOffers,
-                String.format(RideAppEventTracking.Label.PromoCode,screenName,promoCode)
+                String.format(RideAppEventTracking.Label.PromoCode,toLowerCase(screenName),promoCode)
         ).getEvent());
     }
 
@@ -180,7 +179,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventClickReadOfferDetails,
-                String.format(RideAppEventTracking.Label.PromoCode,screenName,promoCode)
+                String.format(RideAppEventTracking.Label.PromoCode,toLowerCase(screenName),promoCode)
         ).getEvent());
     }
 
@@ -189,7 +188,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventClickCancelRequestRide,
-                String.format(RideAppEventTracking.Label.ScreenName,screenName)
+                String.format(RideAppEventTracking.Label.ScreenName,toLowerCase(screenName))
         ).getEvent());
     }
 
@@ -198,7 +197,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventSelectCancelReason,
-                String.format(RideAppEventTracking.Label.CancelReason,screenName,reason)
+                String.format(RideAppEventTracking.Label.CancelReason,toLowerCase(screenName),reason)
         ).getEvent());
     }
 
@@ -208,7 +207,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 RideAppEventTracking.Action.EventChangeDestiantionMap,
-                screenName
+                toLowerCase(screenName)
         ).getEvent());
     }
 
@@ -217,7 +216,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventDoneOnDestinationMap),
-                String.format(RideAppEventTracking.Label.AddressSelected,screenName,addressSelected)
+                String.format(RideAppEventTracking.Label.AddressSelected,toLowerCase(screenName),addressSelected)
         ).getEvent());
     }
 
@@ -226,7 +225,7 @@ public class RideGATracking extends UnifyTracking {
                 RideAppEventTracking.Event.GenericUberEvent,
                 RideAppEventTracking.Category.EventCategory,
                 String.format(RideAppEventTracking.Action.EventClickReceipt),
-                String.format(RideAppEventTracking.Label.BookingDetails,screenName,date,fare,bookingStatus)
+                String.format(RideAppEventTracking.Label.BookingDetails,toLowerCase(screenName),date,fare,bookingStatus)
         ).getEvent());
     }
 
@@ -284,5 +283,13 @@ public class RideGATracking extends UnifyTracking {
                 String.format(RideAppEventTracking.Action.EventClickTNC),
                 AppScreen.SCREEN_RIDE_COMPLETED
         ).getEvent());
+    }
+
+    private static String toLowerCase(String screenName){
+        if(screenName == null || screenName.isEmpty()){
+            return "Uber Screen";
+        }
+
+        return screenName.toLowerCase();
     }
 }
