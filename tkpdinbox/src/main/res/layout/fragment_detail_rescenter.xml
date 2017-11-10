@@ -78,6 +78,7 @@
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.ProveView
                 android:id="@+id/prove_view"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"/>

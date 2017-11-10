@@ -2,11 +2,16 @@ package com.tokopedia.inbox.rescenter.detailv2.view.customview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.customview.BaseView;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ProveAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProveData;
 
@@ -17,10 +22,25 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProveData;
 public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> {
 
     private RecyclerView rvAttachment;
-    private String remark;
+    private TextView tvRemark;
+    ProveAdapter adapter;
 
     public ProveView(Context context) {
         super(context);
+    }
+
+    @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        rvAttachment = (RecyclerView) view.findViewById(R.id.rv_attachment);
+        tvRemark = (TextView) view.findViewById(R.id.tv_remark);
+
+        rvAttachment.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        adapter = new ProveAdapter(context);
+        rvAttachment.setAdapter(adapter);
     }
 
     public ProveView(Context context, AttributeSet attrs) {
@@ -49,6 +69,10 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
 
     @Override
     public void renderData(@NonNull ProveData proveData) {
-
+        setVisibility(VISIBLE);
+        tvRemark.setText(proveData.getRemark());
+        if (proveData.getAttachment() != null) {
+            adapter.setAttachmentDataList(proveData.getAttachment());
+        }
     }
 }
