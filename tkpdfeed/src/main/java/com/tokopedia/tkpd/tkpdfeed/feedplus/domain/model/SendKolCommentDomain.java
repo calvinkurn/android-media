@@ -12,12 +12,15 @@ public class SendKolCommentDomain {
     private final String comment;
     private final String time;
     private final KolCommentUserDomain domainUser;
+    private boolean canDeleteComment;
 
-    public SendKolCommentDomain(int id, String comment, String time, KolCommentUserDomain domainUser) {
+    public SendKolCommentDomain(int id, String comment, String time, KolCommentUserDomain
+            domainUser, boolean canDeleteComment) {
         this.id = id;
         this.comment = comment;
         this.time = time;
         this.domainUser = domainUser;
+        this.canDeleteComment = canDeleteComment;
     }
 
     public int getId() {
@@ -34,5 +37,9 @@ public class SendKolCommentDomain {
 
     public KolCommentUserDomain getDomainUser() {
         return domainUser;
+    }
+
+    public boolean canDeleteComment() {
+        return canDeleteComment;
     }
 }

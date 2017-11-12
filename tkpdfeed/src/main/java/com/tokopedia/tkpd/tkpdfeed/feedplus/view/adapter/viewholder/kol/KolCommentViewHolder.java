@@ -9,9 +9,12 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolComment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentViewModel;
+
+import javax.inject.Inject;
 
 /**
  * @author by nisie on 10/31/17.
@@ -19,6 +22,9 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentViewMod
 
 public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel> {
 
+
+    @Inject
+    SessionHandler sessionHandler;
 
     public static final int LAYOUT = R.layout.kol_comment_item;
     private static final String SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -63,8 +69,12 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
         mainView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                showDeleteDialog(v,viewListener, element.getId(), getAdapterPosition());
-                return true;
+                if (element.canDeleteComment()) {
+                    showDeleteDialog(v, viewListener, element.getId(), getAdapterPosition());
+                    return true;
+                } else {
+                    return false;
+                }
             }
         });
 

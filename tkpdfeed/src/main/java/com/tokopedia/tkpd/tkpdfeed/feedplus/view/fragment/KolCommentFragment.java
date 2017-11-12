@@ -290,7 +290,8 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
                 sendKolCommentDomain.getDomainUser().getName(),
                 sendKolCommentDomain.getComment(),
                 sendKolCommentDomain.getTime(),
-                sendKolCommentDomain.getDomainUser().isKol()
+                sendKolCommentDomain.getDomainUser().isKol(),
+                sendKolCommentDomain.canDeleteComment()
         ));
 
         kolComment.setText("");

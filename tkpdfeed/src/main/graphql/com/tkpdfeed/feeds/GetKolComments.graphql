@@ -13,6 +13,7 @@ query GetKolComments($idPost: Int!, $cursor: String, $limit: Int!) {
                 comment
                 create_time
                 isKol
+                isCommentOwner
             }
         }
     }

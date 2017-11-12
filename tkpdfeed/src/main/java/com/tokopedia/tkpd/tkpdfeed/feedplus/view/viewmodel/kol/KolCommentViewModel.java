@@ -18,16 +18,20 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelabl
     private String time;
     private String url;
     private boolean isOfficial;
+    private String userId;
+    private boolean canDeleteComment;
 
     public KolCommentViewModel(int id, String avatarUrl, String name, String review, String time,
-                               boolean kol) {
+                               boolean isOfficial, boolean canDeleteComment) {
         this.id = id;
         this.avatarUrl = avatarUrl;
         this.name = name;
         this.review = review;
         this.time = time;
-        this.isOfficial = kol;
+        this.isOfficial = isOfficial;
+        this.canDeleteComment = canDeleteComment;
     }
+
 
     protected KolCommentViewModel(Parcel in) {
         id = in.readInt();
@@ -37,6 +41,8 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelabl
         time = in.readString();
         url = in.readString();
         isOfficial = in.readByte() != 0;
+        userId = in.readString();
+        canDeleteComment = in.readByte() != 0;
     }
 
     public static final Creator<KolCommentViewModel> CREATOR = new Creator<KolCommentViewModel>() {
@@ -104,6 +110,19 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelabl
         this.isOfficial = official;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean canDeleteComment() {
+        return canDeleteComment;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -118,13 +137,7 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelabl
         dest.writeString(time);
         dest.writeString(url);
         dest.writeByte((byte) (isOfficial ? 1 : 0));
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        dest.writeString(userId);
+        dest.writeByte((byte) (canDeleteComment ? 1 : 0));
     }
 }
