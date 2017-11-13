@@ -3,13 +3,12 @@ package com.tokopedia.seller.common.imageeditor;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.myproduct.fragment.ImageGalleryAlbumFragment;
 import com.tokopedia.core.newgallery.GalleryActivity;
+
 import java.util.ArrayList;
 
 /**
