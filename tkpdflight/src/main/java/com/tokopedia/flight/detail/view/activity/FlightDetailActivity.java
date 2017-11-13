@@ -63,7 +63,9 @@ public class FlightDetailActivity extends BaseTabActivity {
         arrivalAirportName = (TextView) findViewById(R.id.arrival_airport_name);
 
         departureAirportCode.setText(flightSearchViewModel.getDepartureAirport());
+        departureAirportName.setText(flightSearchViewModel.getDepartureAirportCity());
         arrivalAirportCode.setText(flightSearchViewModel.getArrivalAirport());
+        arrivalAirportName.setText(flightSearchViewModel.getArrivalAirportCity());
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,7 +1,5 @@
 package com.tokopedia.flight.common.data.repository;
 
-import android.util.Log;
-
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
@@ -19,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -160,15 +157,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<FlightSearchSingleRouteDB> getFlightSearchById(boolean isReturning, String id) {
         if (isReturning) {
-            return flightSearchReturnDataListSource.getSingleFlight(id)
-                    .doOnNext(new Action1<FlightSearchSingleRouteDB>() {
-                        @Override
-                        public void call(FlightSearchSingleRouteDB flightSearchSingleRouteDB) {
-                            if (flightSearchSingleRouteDB == null) Log.v("flight", "kosong nuh");
-                            else Log.v("flight", "ada kok");
-
-                        }
-                    });
+            return flightSearchReturnDataListSource.getSingleFlight(id);
         } else {
             return flightSearchSingleDataListSource.getSingleFlight(id);
         }

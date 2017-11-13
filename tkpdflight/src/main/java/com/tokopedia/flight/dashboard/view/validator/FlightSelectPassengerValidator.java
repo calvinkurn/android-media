@@ -16,7 +16,7 @@ public class FlightSelectPassengerValidator {
     }
 
     public boolean validateTotalPassenger(FlightPassengerViewModel passData) {
-        int total = passData.getAdult() + passData.getChildren() + passData.getInfant();
+        int total = passData.getAdult() + passData.getChildren();
         return total <= MAX_PASSENGER_VALUE;
     }
 

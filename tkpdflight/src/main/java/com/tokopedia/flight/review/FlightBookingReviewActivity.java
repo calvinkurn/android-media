@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.view.activity;
+package com.tokopedia.flight.review;
 
 import android.support.v4.app.Fragment;
 
@@ -7,17 +7,15 @@ import com.tokopedia.abstraction.di.component.HasComponent;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
-import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment;
 
 /**
- * Created by zulfikarrahman on 11/8/17.
+ * Created by zulfikarrahman on 11/9/17.
  */
 
-public class FlightBookingIssuingCountry extends BaseSimpleActivity implements HasComponent<FlightBookingComponent> {
-
+public class FlightBookingReviewActivity extends BaseSimpleActivity implements HasComponent<FlightBookingComponent> {
     @Override
     protected Fragment getNewFragment() {
-        return new FlightBookingNationalityFragment();
+        return new FlightBookingReviewFragment();
     }
 
     @Override

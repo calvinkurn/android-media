@@ -54,8 +54,26 @@ public class FlightDetailPriceFragment extends Fragment {
         containerChildPrice = view.findViewById(R.id.container_child_price);
         containerInfantPrice = view.findViewById(R.id.container_infant_price);
 
-        totalPrice.setText(flightSearchViewModel.getTotal());
+        updateView();
         return view;
+    }
+
+    void updateView() {
+        adultPrice.setText(flightSearchViewModel.getFare().getAdult());
+        labelAdultPrice.setText(R.string.flight_label_adult);
+        if(flightSearchViewModel.getFare().getChildNumeric() > 0){
+            containerChildPrice.setVisibility(View.VISIBLE);
+            labelChildPrice.setText(R.string.flight_label_child);
+            childPrice.setText(flightSearchViewModel.getFare().getChild());
+        }
+        if(flightSearchViewModel.getFare().getInfantNumeric() > 0){
+            containerInfantPrice.setVisibility(View.VISIBLE);
+            labelInfantPrice.setText(R.string.flight_label_infant);
+            infantPrice.setText(flightSearchViewModel.getFare().getInfant());
+        }
+        normalPrice.setText(flightSearchViewModel.getBeforeTotal());
+        savingPrice.setText(flightSearchViewModel.getBeforeTotal());
+        totalPrice.setText(flightSearchViewModel.getTotal());
     }
 
     public static FlightDetailPriceFragment createInstance(FlightSearchViewModel flightSearchViewModel) {

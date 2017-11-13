@@ -29,7 +29,7 @@
     <string name="select_passenger_children_title">Anak</string>
     <string name="select_passenger_infant_subtitle">(Kurang dari 2 tahun)</string>
     <string name="select_passenger_infant_title">Bayi</string>
-    <string name="select_passenger_total_passenger_error_message">Total Penumpang maksimal 7 penumpang</string>
+    <string name="select_passenger_total_passenger_error_message">Total Penumpang maksimal 7 penumpang (Dewasa dan Anak)</string>
     <string name="select_passenger_infant_greater_than_adult_error_message">Jumlah penumpang bayi tidak boleh melebihi jumlah penumpang dewasa</string>
     <string name="select_passenger_adult_atleast_one_error_message">Penumpang dewasa harus ada</string>
     <string name="select_passenger_submit_button">Simpan</string>
@@ -123,9 +123,23 @@
     <string name="activity_label_flight_booking_phone_code">Kode Telepon Negara</string>
     <string name="activity_label_flight_nationality">Kewarganegaraan</string>
     <string name="activity_label_flight_issuing_country">Negara Penerbit</string>
+    <string name="flight_label_adult">Dewasa</string>
+    <string name="flight_label_child">Anak</string>
+    <string name="flight_label_infant">Bayi</string>
+    <string name="flight_label_finish_review_time">Selesaikan Pesanan Anda Dalam</string>
+    <string name="flight_label_departure_flight">Penerbangan Pergi</string>
+    <string name="flight_label_passenger_data">Data Penumpang</string>
+    <string name="flight_label_warn_to_check_again">Periksa kembali rincian pesanan sebelum lanjut ke halaman pembayaran.</string>
+    <string name="flight_label_detail_price">Rincian Harga</string>
+    <string name="flight_label_continued_payment">Lanjut Pembayaran</string>
+    <string name="flight_label_return_flight">Penerbangan Pulang</string>
     <string name="flight_booking_toolbar_title">Isi data pemesan</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
     <string name="flight_select_passenger_toolbar_title">Penumpang</string>
     <string name="duration_flight_dd_hh_mm">%1$d Hari %2$d j %3$d m</string>
     <string name="duration_flight_hh_mm">%1$d Jam %2$d Menit</string>
+    <string name="flight_dashboard_departure_airport_hint">Penerbangan Asal</string>
+    <string name="flight_dashboard_arrival_airport_hint">Penerbangan Tujuan</string>
+    <string name="flight_airportpicker_departure_title">Penerbangan Asal</string>
+    <string name="flight_airportpicker_arrival_title">Penerbangan Tujuan</string>
 </resources>
