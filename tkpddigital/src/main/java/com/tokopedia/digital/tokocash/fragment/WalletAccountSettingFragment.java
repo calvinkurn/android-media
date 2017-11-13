@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +23,6 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
-import com.tokopedia.core.drawer2.data.source.LocalProfileSource;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.tokocash.WalletService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -67,8 +65,6 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
     TextView phoneAccount;
     @BindView(R2.id.rv_account_list)
     RecyclerView rvConnectedUser;
-    @BindView(R2.id.root_view)
-    CoordinatorLayout rootView;
 
     private TkpdProgressDialog progressDialogNormal;
     private RefreshHandler refreshHandler;
@@ -323,14 +319,25 @@ public class WalletAccountSettingFragment extends BasePresenterFragment<IWalletA
 
     private void renderEmptyPage(String message) {
         refreshHandler.finishRefresh();
-        NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(), message, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        refreshHandler.startRefresh();
+        View rootView = getView();
+        if (rootView != null)
+            NetworkErrorHelper.showEmptyState(
+                    getActivity(), rootView, message, new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            refreshHandler.startRefresh();
+                        }
                     }
-                }
-        );
+            );
+        else
+            NetworkErrorHelper.createSnackbarWithAction(
+                    getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            refreshHandler.startRefresh();
+                        }
+                    }
+            ).showRetrySnackbar();
     }
 
     public interface ActionListener {

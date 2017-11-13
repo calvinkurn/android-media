@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -22,10 +25,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:descendantFocusability="beforeDescendants"
                 android:focusable="true"
-                android:focusableInTouchMode="true">
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/header_container"
@@ -41,7 +44,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingBottom="@dimen/digital_padding_14"
-                        android:text="Anda dapat mengelola TokoCash dengan akun Tokopedia melalui halaman ini." />
+                        android:text="Anda dapat mengelola TokoCash dengan akun Tokopedia melalui halaman ini."/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -49,7 +52,7 @@
                         android:layout_marginTop="@dimen/margin_small"
                         android:text="Nama"
                         android:textColor="@color/digital_voucher_notes"
-                        android:textSize="@dimen/fontvs" />
+                        android:textSize="@dimen/fontvs"/>
 
                     <TextView
                         android:id="@+id/name_account"
@@ -58,13 +61,13 @@
                         android:layout_marginBottom="@dimen/margin_vs"
                         android:layout_marginTop="@dimen/margin_vs"
                         android:textColor="@color/digital_voucher"
-                        android:textSize="@dimen/fonts" />
+                        android:textSize="@dimen/fonts"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginBottom="@dimen/margin_sm"
-                        android:background="@color/separator_tokocash" />
+                        android:background="@color/separator_tokocash"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -72,7 +75,7 @@
                         android:layout_marginTop="@dimen/margin_small"
                         android:text="Email"
                         android:textColor="@color/digital_voucher_notes"
-                        android:textSize="@dimen/fontvs" />
+                        android:textSize="@dimen/fontvs"/>
 
                     <TextView
                         android:id="@+id/email_account"
@@ -81,13 +84,13 @@
                         android:layout_marginBottom="@dimen/margin_vs"
                         android:layout_marginTop="@dimen/margin_vs"
                         android:textColor="@color/digital_voucher"
-                        android:textSize="@dimen/fonts" />
+                        android:textSize="@dimen/fonts"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginBottom="@dimen/margin_sm"
-                        android:background="@color/separator_tokocash" />
+                        android:background="@color/separator_tokocash"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -95,7 +98,7 @@
                         android:layout_marginTop="@dimen/margin_small"
                         android:text="Nomor Handphone"
                         android:textColor="@color/digital_voucher_notes"
-                        android:textSize="@dimen/fontvs" />
+                        android:textSize="@dimen/fontvs"/>
 
                     <TextView
                         android:id="@+id/phone_account"
@@ -104,20 +107,20 @@
                         android:layout_marginBottom="@dimen/margin_vs"
                         android:layout_marginTop="@dimen/margin_vs"
                         android:textColor="@color/digital_voucher"
-                        android:textSize="@dimen/fonts" />
+                        android:textSize="@dimen/fonts"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginBottom="@dimen/margin_sm"
-                        android:background="@color/separator_tokocash" />
+                        android:background="@color/separator_tokocash"/>
 
 
                 </LinearLayout>
 
                 <android.support.v4.widget.Space
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/digital_padding_10" />
+                    android:layout_height="@dimen/digital_padding_10"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -134,23 +137,23 @@
                         android:paddingTop="@dimen/digital_padding_10"
                         android:text="Akun yang Terhubung ke TokoCash"
                         android:textColor="@color/digital_item_title"
-                        android:textSize="@dimen/font_medium" />
+                        android:textSize="@dimen/font_medium"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/separator_tokocash" />
+                        android:background="@color/separator_tokocash"/>
 
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_account_list"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
+</FrameLayout>
 
-</android.support.design.widget.CoordinatorLayout>
