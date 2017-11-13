@@ -335,6 +335,7 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToTimeMachine(String url) {
+        dropKeyboard();
         startActivity(TimeMachineActivity.getCallingIntent(getActivity(), url));
     }
 
@@ -450,6 +451,11 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void dropKeyboard() {
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+    }
+
+    @Override
     public void moveViewToTop() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -522,6 +528,7 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void onSearchSubmitted(String text) {
+        refreshHandler.setPullEnabled(false);
         if(text.length()>0) {
             presenter.initSearch(text);
             searchLoading.setVisibility(View.VISIBLE);
@@ -529,9 +536,10 @@ public class InboxChatFragment extends BaseDaggerFragment
                     TopChatTrackingEventLabel.Action.INBOX_CHAT_SEARCH,
                     TopChatTrackingEventLabel.Name.INBOX_CHAT);
         }else {
-            presenter.resetSearch();
+            onSearchReset();
+
         }
-        KeyboardHandler.DropKeyboard(getActivity(), getView());
+        dropKeyboard();
     }
 
     @Override
@@ -541,6 +549,7 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void onSearchReset() {
+        refreshHandler.setPullEnabled(true);
         presenter.resetSearch();
     }
 
@@ -621,4 +630,9 @@ public class InboxChatFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.closeWebsocket();
+    }
 }

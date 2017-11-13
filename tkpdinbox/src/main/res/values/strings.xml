@@ -149,4 +149,5 @@ yang ditemukan</string>
     <string name="string_edit_button">Ubah</string>
     <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi.Mencoba
         menghubungkan...</string>
+    <string name="title_time_machine_message">Riwayat</string>
 </resources>

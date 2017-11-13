@@ -141,7 +141,7 @@
 
         <activity
             android:name=".inboxchat.activity.TimeMachineActivity"
-            android:label="@string/title_inbox_message"
+            android:label="@string/title_time_machine_message"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 

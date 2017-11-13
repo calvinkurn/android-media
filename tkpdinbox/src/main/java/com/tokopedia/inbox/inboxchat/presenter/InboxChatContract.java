@@ -85,11 +85,15 @@ public class InboxChatContract {
         void showErrorWarningDelete(int maxMessageDelete);
 
         void showErrorFull();
+
+        void dropKeyboard();
     }
 
     interface Presenter extends CustomerPresenter<View>{
         void recreateWebSocket();
 
         void resetAttempt();
+
+        void closeWebsocket();
     }
 }

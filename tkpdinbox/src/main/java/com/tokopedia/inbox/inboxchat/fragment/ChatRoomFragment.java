@@ -22,13 +22,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
@@ -70,6 +71,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Inject
     ChatRoomPresenter presenter;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -160,12 +164,13 @@ public class ChatRoomFragment extends BaseDaggerFragment
             @Override
             public void call(Boolean aBoolean) {
                 Log.i("call: ", "isTyping");
-                try {
-                    if(aBoolean)
+                if (aBoolean) {
+                    try {
                         presenter.setIsTyping(getArguments().getString(ChatRoomActivity
-                            .PARAM_MESSAGE_ID));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                                .PARAM_MESSAGE_ID));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -388,14 +393,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void scrollToBottom() {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    layoutManager.scrollToPosition(adapter.getList().size() - 1);
-                }
-            });
-        }
+        layoutManager.scrollToPosition(adapter.getList().size() - 1);
     }
 
     @Override
@@ -426,6 +424,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         finishLoading();
         replyColumn.setText("");
         scrollToBottom();
+
+        getActivity().setResult(Activity.RESULT_OK);
     }
 
     public void onSuccessSendReply(final WebSocketResponse response) {
@@ -434,16 +434,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 @Override
                 public void run() {
                     setViewEnabled(true);
-                    if (getArguments().getString("sender_id").equals(String.valueOf(response.getData().getFromUid()))) {
-                        OppositeChatViewModel item = new OppositeChatViewModel();
-                        item.setReplyId(response.getData().getMsgId());
-                        item.setSenderId(String.valueOf(response.getData().getFromUid()));
-                        item.setMsg(response.getData().getMessage().getCensoredReply());
-                        item.setReplyTime(response.getData().getMessage().getTimestamp());
-                        adapter.addReply(item);
-                        scrollToBottom();
-
-                    } else {
+                    if (isCurrentThread(response.getData().getMsgId())
+                            && isMyMessage(response.getData().getFromUid())) {
                         adapter.removeLast();
                         MyChatViewModel item = new MyChatViewModel();
                         item.setReplyId(response.getData().getMsgId());
@@ -451,7 +443,20 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         item.setMsg(response.getData().getMessage().getCensoredReply());
                         item.setReplyTime(response.getData().getMessage().getTimestamp());
                         adapter.addReply(item);
-
+                        finishLoading();
+                        replyColumn.setText("");
+                        scrollToBottom();
+                    }
+                    else if (isCurrentThread(response.getData().getMsgId())) {
+                        OppositeChatViewModel item = new OppositeChatViewModel();
+                        item.setReplyId(response.getData().getMsgId());
+                        item.setSenderId(String.valueOf(response.getData().getFromUid()));
+                        item.setMsg(response.getData().getMessage().getCensoredReply());
+                        item.setReplyTime(response.getData().getMessage().getTimestamp());
+                        if (adapter.isTyping()) {
+                            adapter.removeTyping();
+                        }
+                        adapter.addReply(item);
                         finishLoading();
                         replyColumn.setText("");
                         scrollToBottom();
@@ -459,6 +464,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 }
             });
         }
+    }
+
+    private boolean isMyMessage(int fromUid) {
+        return String.valueOf(fromUid).equals(sessionHandler.getLoginID(MainApplication.getAppContext()));
+    }
+
+    private boolean isCurrentThread(int msgId) {
+        return getArguments().getString(PARAM_MESSAGE_ID).equals(String.valueOf(msgId));
     }
 
     @Override
@@ -480,13 +493,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setMsg(getReplyMessage());
         item.setReplyTime(MyChatViewModel.SENDING_TEXT);
         item.setDummy(true);
-        item.setSenderId(getArguments().getString("sender_id"));
-        adapter.addReply(item);
-        scrollToBottom();
-        setResult();
-    }
-
-    public void addDummyMessage(OppositeChatViewModel item) {
         item.setSenderId(getArguments().getString("sender_id"));
         adapter.addReply(item);
         scrollToBottom();
@@ -557,26 +563,34 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void onIncomingEvent(WebSocketResponse response) {
         switch (response.getCode()) {
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
-                if (String.valueOf(response.getData().getFromUid()).equals(getArguments().getString("sender_id"))) {
+                if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
+                        (PARAM_MESSAGE_ID))) {
                     setOnlineDesc("sedang mengetik");
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             adapter.showTyping();
+                            if (layoutManager.findLastCompletelyVisibleItemPosition() == adapter.getList().size() - 2) {
+                                layoutManager.scrollToPosition(adapter.getList().size() - 1);
+                            }
                         }
                     });
-                    if(layoutManager.findLastCompletelyVisibleItemPosition()==adapter.getList().size()-2){
-                        layoutManager.scrollToPosition(adapter.getList().size()-1);
-                    }
+
                 }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
-                if (String.valueOf(response.getData().getFromUid()).equals(getArguments().getString("sender_id"))) {
+                if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
+                        (PARAM_MESSAGE_ID))) {
                     setOnlineDesc("baru saja");
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            adapter.removeTyping();
+                            if (adapter.isTyping()) {
+                                adapter.removeTyping();
+                                if (layoutManager.findLastCompletelyVisibleItemPosition() == adapter.getList().size() - 2) {
+                                    layoutManager.scrollToPosition(adapter.getList().size());
+                                }
+                            }
                         }
                     });
                 }
@@ -622,5 +636,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
             }, 1500);
             presenter.onOpenWebSocket();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.closeWebSocket();
     }
 }
