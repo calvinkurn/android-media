@@ -21,7 +21,7 @@ import com.tokopedia.tkpd.R;
 public class ApplinkUnsupportedImpl implements ApplinkUnsupported {
 
     private static final String MAINAPP_IS_NEED_UPDATE = "mainapp_applink_is_need_update";
-    private static final String MAINAPP_LATEST_VERSION_CODE = "mainapp_applink_latest_version_code";
+    private static final String MAINAPP_LATEST_VERSION_CODE = "mainapp_latest_version_code";
     private static final String MAINAPP_UPDATE_TITLE = "mainapp_applink_update_title";
     private static final String MAINAPP_UPDATE_MESSAGE = "mainapp_applink_update_message";
     private static final String MAINAPP_UPDATE_LINK = "mainapp_applink_update_link";
@@ -50,7 +50,7 @@ public class ApplinkUnsupportedImpl implements ApplinkUnsupported {
                         .setMessage(detail.getUpdateMessage())
                         .setPositiveButton(activity.getString(R.string.deeplink_receiver_applink_update_button_title), null)
                         .setNegativeButton(activity.getString(R.string.deeplink_receiver_applink_update_button_cancel_title), null)
-                        .setCancelable(false)
+                        .setCancelable(true)
                         .create();
 
                 alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -78,6 +78,7 @@ public class ApplinkUnsupportedImpl implements ApplinkUnsupported {
                         });
                     }
                 });
+                alertDialog.show();
             }
         }
     }
