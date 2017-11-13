@@ -104,5 +104,7 @@ public class InboxChatContract {
         void recreateWebSocket();
 
         void resetAttempt();
+
+        void closeWebsocket();
     }
 }
