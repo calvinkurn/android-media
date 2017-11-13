@@ -1,15 +1,18 @@
 package com.tokopedia.inbox.inboxchat.fragment;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,9 +23,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
@@ -50,6 +51,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -189,7 +191,9 @@ public class InboxChatFragment extends BaseDaggerFragment
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
                 if (item.getItemId() == R.id.action_delete){
-                    presenter.deleteMessage();
+                    List<Pair> temp = new ArrayList<>();
+                    temp.addAll(adapter.getListMove());
+                    askOption(presenter.getSelected(), temp).show();
                     mode.finish();
                     return true;
                 }
@@ -205,6 +209,37 @@ public class InboxChatFragment extends BaseDaggerFragment
             }
         };
     }
+
+
+    private AlertDialog askOption(int selected, final List<Pair> listMove)
+    {
+        AlertDialog myQuittingDialogBox =new AlertDialog.Builder(getActivity())
+                //set message, title, and icon
+                .setTitle("Delete")
+                .setMessage("Apakah anda yakin menghapus "+selected+ " pesan?")
+                .setIcon(R.drawable.ic_trash)
+
+                .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        presenter.deleteMessage(listMove);
+                        dialog.dismiss();
+                    }
+
+                })
+                .setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+
+                    }
+                })
+                .create();
+        return myQuittingDialogBox;
+
+    }
+
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -400,8 +435,8 @@ public class InboxChatFragment extends BaseDaggerFragment
 
 
     @Override
-    public void showErrorWarningDelete() {
-        NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.delete_message_warn));
+    public void showErrorWarningDelete(int maxMessageDelete) {
+        NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.delete_message_warn) + " " + maxMessageDelete);
     }
 
     @Override

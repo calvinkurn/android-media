@@ -4,25 +4,14 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
-import com.tokopedia.inbox.inboxchat.adapter.InboxChatAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.NewInboxChatAdapter;
 import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
-import com.tokopedia.inbox.inboxmessage.adapter.InboxMessageAdapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.inbox.inboxchat.adapter.DummyAdapter;
-import com.tokopedia.inbox.inboxchat.adapter.InboxChatAdapter;
-import com.tokopedia.inbox.inboxmessage.adapter.InboxMessageAdapter;
-
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -93,7 +82,7 @@ public class InboxChatContract {
 
         void notifyConnectionWebSocket();
 
-        void showErrorWarningDelete();
+        void showErrorWarningDelete(int maxMessageDelete);
 
         void showErrorFull();
     }

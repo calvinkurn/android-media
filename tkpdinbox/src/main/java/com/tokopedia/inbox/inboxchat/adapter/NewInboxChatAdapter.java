@@ -112,14 +112,15 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void addChecked(int position) {
-        if(listMove.size()<= MAX_MESSAGE_DELETE){
+        if(listMove.size()+1<= MAX_MESSAGE_DELETE){
             ChatListViewModel item = (ChatListViewModel) list.get(position);
             item.setChecked(true);
             Pair<ChatListViewModel, Integer> pair = new Pair<>(item, position);
             listMove.add(pair);
             notifyItemChanged(position);
         }else{
-            presenter.getView().showErrorWarningDelete();
+            removeChecked(position);
+            presenter.getView().showErrorWarningDelete(MAX_MESSAGE_DELETE);
         }
     }
 

@@ -161,7 +161,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void call(Boolean aBoolean) {
                 Log.i("call: ", "isTyping");
                 try {
-                    presenter.setIsTyping(getArguments().getString(ChatRoomActivity
+                    if(aBoolean)
+                        presenter.setIsTyping(getArguments().getString(ChatRoomActivity
                             .PARAM_MESSAGE_ID));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -175,8 +176,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     public void call(Boolean aBoolean) {
                         Log.i("call: ", "stopTyping");
                         try {
-                            presenter.stopTyping(getArguments().getString(ChatRoomActivity
-                                    .PARAM_MESSAGE_ID));
+                            if(aBoolean) {
+                                presenter.stopTyping(getArguments().getString(ChatRoomActivity
+                                        .PARAM_MESSAGE_ID));
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
