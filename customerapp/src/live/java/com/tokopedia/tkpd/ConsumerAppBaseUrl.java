@@ -30,7 +30,7 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static final String BASE_DIGITAL_WEBSITE_DOMAIN = "https://pulsa.tokopedia.com/";
     public static final String BASE_PAYMENT_URL_DOMAIN = "https://pay.tokopedia.com";
-    public static final String GRAPHQL_DOMAIN = "https://gql.tokopedia.com/graphql";
+    public static final String GRAPHQL_DOMAIN = "https://gql.tokopedia.com/";
     public static final String SCROOGE_DOMAIN = "https://pay.tokopedia.com/";
     public static final String SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
     public static final String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
