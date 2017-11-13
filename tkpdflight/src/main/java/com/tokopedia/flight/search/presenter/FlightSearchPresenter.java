@@ -2,6 +2,7 @@ package com.tokopedia.flight.search.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchWithSortUseCase;
 import com.tokopedia.flight.search.domain.FlightSortUseCase;
@@ -9,6 +10,7 @@ import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
 import java.util.List;
 
@@ -24,12 +26,15 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
     private FlightSearchWithSortUseCase flightSearchWithSortUseCase;
     private FlightSortUseCase flightSortUseCase;
+    private FlightSearchStatisticUseCase flightSearchStatisticUseCase;
 
     @Inject
     public FlightSearchPresenter(FlightSearchWithSortUseCase flightSearchWithSortUseCase,
-                                 FlightSortUseCase flightSortUseCase) {
+                                 FlightSortUseCase flightSortUseCase,
+                                 FlightSearchStatisticUseCase flightSearchStatisticUseCase) {
         this.flightSearchWithSortUseCase = flightSearchWithSortUseCase;
         this.flightSortUseCase = flightSortUseCase;
+        this.flightSearchStatisticUseCase = flightSearchStatisticUseCase;
     }
 
     public void searchAndSortFlight(FlightSearchPassDataViewModel flightSearchPassDataViewModel,
@@ -42,6 +47,13 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                 getSubscriberSearchFlight(sortOptionId));
     }
 
+    public void getFlightStatistic(boolean isReturning) {
+        flightSearchStatisticUseCase.execute(FlightSearchUseCase.generateRequestParams(
+                null,
+                isReturning, true, null,FlightSortOption.NO_PREFERENCE),
+                getSubscriberSearchStatisticFlight());
+    }
+
     public void sortFlight(List<FlightSearchViewModel> flightSearchViewModelList,
                            @FlightSortOption int sortOptionId) {
         flightSortUseCase.withList(flightSearchViewModelList).execute(null,
@@ -52,6 +64,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     public void detachView() {
         super.detachView();
         flightSearchWithSortUseCase.unsubscribe();
+        flightSearchStatisticUseCase.unsubscribe();
     }
 
     private Subscriber<List<FlightSearchViewModel>> getSubscriberSearchFlight(final int sortOptionId) {
@@ -76,4 +89,22 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         };
     }
 
+    public Subscriber<FlightSearchStatisticModel> getSubscriberSearchStatisticFlight() {
+        return new Subscriber<FlightSearchStatisticModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onLoadSearchError(e);
+            }
+
+            @Override
+            public void onNext(FlightSearchStatisticModel statisticModel) {
+                getView().onSuccessGetStatistic(statisticModel);
+            }
+        };
+    }
 }

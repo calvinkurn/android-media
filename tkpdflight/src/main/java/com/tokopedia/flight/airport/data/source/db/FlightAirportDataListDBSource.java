@@ -1,10 +1,10 @@
 package com.tokopedia.flight.airport.data.source.db;
 
-import com.raizlabs.android.dbflow.sql.language.Delete;
+import android.text.TextUtils;
+
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
-import com.tokopedia.abstraction.base.data.source.database.DataListDBSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCity;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
@@ -46,16 +46,20 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                     public Observable<Boolean> call(FlightAirportCountry flightAirportCountry) {
                         for (FlightAirportCity flightAirportCity: flightAirportCountry.getAttributes().getCities()) {
                             if(flightAirportCity.getFlightAirportDetails() != null && flightAirportCity.getFlightAirportDetails().size() > 1){
-                                insertFlight(flightAirportCountry, flightAirportCity, new FlightAirportDetail("", "", new ArrayList<String>()));
+                                List<String> airportIds = new ArrayList<>();
+                                for(FlightAirportDetail flightAirportDetail :flightAirportCity.getFlightAirportDetails()){
+                                    airportIds.add(flightAirportDetail.getId());
+                                }
+                                insertFlight(flightAirportCountry, flightAirportCity, new FlightAirportDetail("", "", new ArrayList<String>()), TextUtils.join(",", airportIds));
                             }
                             for (FlightAirportDetail flightAirportDetail : flightAirportCity.getFlightAirportDetails()) {
-                                insertFlight(flightAirportCountry, flightAirportCity, flightAirportDetail);
+                                insertFlight(flightAirportCountry, flightAirportCity, flightAirportDetail, "");
                             }
                         }
                         return Observable.just(true);
                     }
 
-                    private void insertFlight(FlightAirportCountry flightAirportCountry, FlightAirportCity flightAirportCity, FlightAirportDetail flightAirportDetail) {
+                    private void insertFlight(FlightAirportCountry flightAirportCountry, FlightAirportCity flightAirportCity, FlightAirportDetail flightAirportDetail, String airportIds) {
                         FlightAirportDB flightAirportDB = new FlightAirportDB();
                         flightAirportDB.setCountryId(flightAirportCountry.getId());
                         flightAirportDB.setCountryName(flightAirportCountry.getAttributes().getName());
@@ -65,6 +69,7 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                         flightAirportDB.setCityCode(flightAirportCity.getCode());
                         flightAirportDB.setAirportId(flightAirportDetail.getId());
                         flightAirportDB.setAirportName(flightAirportDetail.getName());
+                        flightAirportDB.setAirportIds(airportIds);
                         String aliases = "";
                         for (String alias: flightAirportDetail.getAliases()) {
                             aliases += alias;

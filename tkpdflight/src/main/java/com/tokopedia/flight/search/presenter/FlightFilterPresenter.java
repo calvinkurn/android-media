@@ -16,12 +16,12 @@ import rx.Subscriber;
  * Created by zulfikarrahman on 10/24/17.
  */
 
-public class FlightFilterCountPresenter extends BaseDaggerPresenter<FlightFilterCountView> {
+public class FlightFilterPresenter extends BaseDaggerPresenter<FlightFilterCountView> {
 
     private final FlightFilterCountUseCase flightFilterCountUseCase;
 
     @Inject
-    public FlightFilterCountPresenter(FlightFilterCountUseCase flightFilterCountUseCase) {
+    public FlightFilterPresenter(FlightFilterCountUseCase flightFilterCountUseCase) {
         this.flightFilterCountUseCase = flightFilterCountUseCase;
     }
 

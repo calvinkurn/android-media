@@ -63,9 +63,15 @@ public abstract class AbsFlightSearchDataListDBSource extends BaseDataListDBSour
         return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightSearchSingleRouteDB>>() {
             @Override
             public void call(Subscriber<? super List<FlightSearchSingleRouteDB>> subscriber) {
-                List<? extends FlightSearchSingleRouteDB> flightSearchSingleRouteDBList = new Select().from(getDBClass())
-                        .where(getSQLCondition(flightFilterModel))
-                        .queryList();
+                List<? extends FlightSearchSingleRouteDB> flightSearchSingleRouteDBList;
+                if (flightFilterModel == null) {
+                    flightSearchSingleRouteDBList = new Select().from(getDBClass())
+                            .queryList();
+                } else {
+                    flightSearchSingleRouteDBList = new Select().from(getDBClass())
+                            .where(getSQLCondition(flightFilterModel))
+                            .queryList();
+                }
                 subscriber.onNext((List<FlightSearchSingleRouteDB>) flightSearchSingleRouteDBList);
             }
         });

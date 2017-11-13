@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.R;
@@ -33,7 +34,7 @@ public abstract class BaseListV2Fragment<T extends ItemType> extends BaseDaggerF
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        BaseListRecyclerView recyclerView = getRecyclerView(view);
+        RecyclerView recyclerView = getRecyclerView(view);
         swipeToRefresh = getSwipeRefreshLayout(view);
         if (adapter!= null) {
             if (recyclerView != null) {
@@ -63,7 +64,7 @@ public abstract class BaseListV2Fragment<T extends ItemType> extends BaseDaggerF
 
     protected abstract BaseListV2Adapter<T> getNewAdapter();
 
-    public abstract BaseListRecyclerView getRecyclerView(View view);
+    public abstract RecyclerView getRecyclerView(View view);
 
     public abstract @Nullable SwipeRefreshLayout getSwipeRefreshLayout(View view);
 

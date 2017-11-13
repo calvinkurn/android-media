@@ -27,7 +27,9 @@ public class FlightSearchParamUtil {
         }
         requestParams.putBoolean(PARAM_IS_RETURNING, isReturning);
         requestParams.putBoolean(PARAM_FROM_CACHE, fromCache);
-        requestParams.putObject(PARAM_FILTER_MODEL, flightFilterModel);
+        if (flightFilterModel !=null) {
+            requestParams.putObject(PARAM_FILTER_MODEL, flightFilterModel);
+        }
         requestParams.putInt(PARAM_SORT, sortOptionId);
         return requestParams;
     }

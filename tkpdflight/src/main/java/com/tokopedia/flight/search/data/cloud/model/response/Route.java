@@ -134,6 +134,22 @@ public class Route implements ItemType, Parcelable {
         this.airlineLogo = airlineLogo;
     }
 
+    public String getDepartureAirportName() {
+        return departureAirportName;
+    }
+
+    public String getDepartureAirportCity() {
+        return departureAirportCity;
+    }
+
+    public String getArrivalAirportName() {
+        return arrivalAirportName;
+    }
+
+    public String getArrivalAirportCity() {
+        return arrivalAirportCity;
+    }
+
     @Override
     public int getType() {
         return TYPE;
