@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
-import com.tokopedia.flight.search.presenter.FlightFilterCountPresenter;
+import com.tokopedia.flight.search.presenter.FlightFilterPresenter;
 import com.tokopedia.flight.search.view.FlightFilterCountView;
 import com.tokopedia.flight.search.view.fragment.FlightFilterAirlineFragment;
 import com.tokopedia.flight.search.view.fragment.FlightFilterDepartureFragment;
@@ -40,7 +40,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     public static final String SAVED_COUNT = "svd_count";
 
     @Inject
-    FlightFilterCountPresenter flightFilterCountPresenter;
+    FlightFilterPresenter flightFilterPresenter;
 
     private Button buttonFilter;
 
@@ -92,8 +92,8 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
                 .flightComponent(((FlightModuleRouter) getApplication()).getFlightComponent())
                 .build()
                 .inject(this);
-        flightFilterCountPresenter.attachView(this);
-        flightFilterCountPresenter.getFlightCount(isReturning, true, flightFilterModel);
+        flightFilterPresenter.attachView(this);
+        flightFilterPresenter.getFlightCount(isReturning, true, flightFilterModel);
     }
 
     private void onButtonFilterClicked() {
@@ -191,7 +191,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     @Override
     public void onFilterModelChanged(FlightFilterModel flightFilterModel) {
         this.flightFilterModel = flightFilterModel;
-        flightFilterCountPresenter.getFlightCount(isReturning, true, flightFilterModel);
+        flightFilterPresenter.getFlightCount(isReturning, true, flightFilterModel);
     }
 
     @Override

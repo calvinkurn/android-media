@@ -126,4 +126,6 @@
     <string name="flight_booking_toolbar_title">Isi data pemesan</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
     <string name="flight_select_passenger_toolbar_title">Penumpang</string>
+    <string name="duration_flight_dd_hh_mm">%1$d Hari %2$d j %3$d m</string>
+    <string name="duration_flight_hh_mm">%1$d Jam %2$d Menit</string>
 </resources>
