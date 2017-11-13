@@ -31,7 +31,8 @@ import com.tokopedia.core.util.SessionHandler;
  * Created on 3/23/16.
  */
 public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
-        implements NotificationReceivedListener, DrawerDataListener {
+        implements NotificationReceivedListener, DrawerDataListener,
+        DrawerHeaderDataBinder.RetryTokoCashListener {
 
     private static final String TAG = DrawerPresenterActivity.class.getSimpleName();
     private static final int MAX_NOTIF = 999;
@@ -342,5 +343,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerDataManager.unsubscribe();
     }
 
-
+    @Override
+    public void onRetryTokoCash() {
+        drawerDataManager.getTokoCash();
+    }
 }
