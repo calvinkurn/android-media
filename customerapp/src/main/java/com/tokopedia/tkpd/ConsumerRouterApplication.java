@@ -12,6 +12,7 @@ import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -30,6 +31,7 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.OtpRouter;
+import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -106,7 +108,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter {
+        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication,
+        TkpdInboxRouter, RemoteConfigRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -118,6 +121,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
+
+    private FirebaseRemoteConfig firebaseRemoteConfig;
 
     @Override
     public void onCreate() {
@@ -625,5 +630,35 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isInMyShop(Context context, String shopId) {
         return context != null && new SessionHandler(context).getShopID().trim().equalsIgnoreCase(shopId.trim());
+    }
+
+    @Override
+    public boolean getBooleanConfig(String key) {
+        return getFirebaseRemoteConfig().getBoolean(key);
+    }
+
+    @Override
+    public byte[] getByteArrayConfig(String key) {
+        return getFirebaseRemoteConfig().getByteArray(key);
+    }
+
+    @Override
+    public double getDoubleConfig(String key) {
+        return getFirebaseRemoteConfig().getDouble(key);
+    }
+
+    @Override
+    public long getLongConfig(String key) {
+        return getFirebaseRemoteConfig().getLong(key);
+    }
+
+    @Override
+    public String getStringConfig(String key) {
+        return getFirebaseRemoteConfig().getString(key);
+    }
+
+    private FirebaseRemoteConfig getFirebaseRemoteConfig() {
+        if(firebaseRemoteConfig == null) firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        return firebaseRemoteConfig;
     }
 }
