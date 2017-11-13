@@ -8,6 +8,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
@@ -383,7 +384,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 //            getView().notifyConnectionWebSocket();
 //        }else {
         Request request = new Request.Builder().url(magicString)
-                .header("Origin", "https://staging.tokopedia.com")
+                .header("Origin", TkpdBaseURL.WEB_DOMAIN)
                 .build();
         ws = client.newWebSocket(request, listener);
         attempt++;
