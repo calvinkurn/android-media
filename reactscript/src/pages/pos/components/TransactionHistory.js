@@ -126,11 +126,11 @@ class TransactionHistory extends Component {
               
               <View style={styles.subRow5}>
                 <View style={{ flexDirection: 'column' }}>
-                  <Text style={[styles.font13, styles.fontcolor61]}>Metode Pembayaran</Text>
+                  {/* <Text style={[styles.font13, styles.fontcolor61]}>Metode Pembayaran</Text>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Image source={{ uri: icons.bca }} style={{ height: 24, width: 48, resizeMode: 'contain' }} />
                     <Text style={[styles.font15, styles.fontcolor54, { marginLeft: 15 }]}>BCA</Text>
-                  </View>
+                  </View> */}
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={[styles.font16, styles.fontcolor70]}>Total Pembayaran: </Text>
