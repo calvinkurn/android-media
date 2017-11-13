@@ -28,6 +28,7 @@ public class EmptyChatListViewHolder extends AbstractViewHolder<EmptyChatModel> 
     public EmptyChatListViewHolder(View itemView, Context context) {
         super(itemView);
         this.context = context;
+
         logo = (ImageView) itemView.findViewById(R.id.image);
         title = (TextView) itemView.findViewById(R.id.title);
         subtitle = (TextView) itemView.findViewById(R.id.subtitle);
@@ -41,7 +42,7 @@ public class EmptyChatListViewHolder extends AbstractViewHolder<EmptyChatModel> 
             subtitle.setText(context.getString(R.string.please_try_chat));
             subtitle.setVisibility(View.VISIBLE);
         } else {
-            logo.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.empty_chat));
+            logo.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.empty_search));
             title.setText(context.getString(R.string.no_existing_chat_user));
             subtitle.setVisibility(View.GONE);
         }

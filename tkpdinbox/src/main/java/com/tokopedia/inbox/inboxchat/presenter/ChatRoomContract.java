@@ -77,5 +77,7 @@ public class ChatRoomContract {
         void getAttachProductDialog(String shopId, String senderRole);
 
         void onOpenWebSocket();
+
+        void closeWebSocket();
     }
 }

@@ -95,7 +95,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void getMessage() {
-        if(viewModel!=null)  viewModel.setKeyword("");
+        if (viewModel != null) viewModel.setKeyword("");
         showLoading();
         getView().disableActions();
         getView().removeError();
@@ -115,8 +115,8 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     private InboxChatViewModel modifyViewModel(InboxChatViewModel result) {
-        String temp="";
-        if(viewModel!=null) {
+        String temp = "";
+        if (viewModel != null) {
             temp = viewModel.getKeyword();
         }
         viewModel = result;
@@ -146,9 +146,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         getView().getAdapter().showEmptySearch(false);
 
         if (getView().getAdapter().getList().size() == 0) {
-            if(result.getMode() == InboxChatViewModel.SEARCH_CHAT_MODE){
+            if (result.getMode() == InboxChatViewModel.SEARCH_CHAT_MODE) {
                 getView().getAdapter().showEmptySearch(true);
-            }else if(result.getMode() == InboxChatViewModel.GET_CHAT_MODE) {
+            } else if (result.getMode() == InboxChatViewModel.GET_CHAT_MODE) {
                 getView().getAdapter().showEmptyFull(true);
             }
         }
@@ -190,14 +190,13 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         }
 
 
-
         getView().getAdapter().showEmptyFull(false);
         getView().getAdapter().showEmptySearch(false);
 
         if (getView().getAdapter().getList().size() == 0) {
-            if(result.getMode() == InboxChatViewModel.SEARCH_CHAT_MODE){
+            if (result.getMode() == InboxChatViewModel.SEARCH_CHAT_MODE) {
                 getView().getAdapter().showEmptySearch(true);
-            }else if(result.getMode() == InboxChatViewModel.GET_CHAT_MODE) {
+            } else if (result.getMode() == InboxChatViewModel.GET_CHAT_MODE) {
                 getView().getAdapter().showEmptyFull(true);
             }
         }
@@ -226,7 +225,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         getView().setOptionsMenuFromSelect();
     }
 
-    public int getSelected(){
+    public int getSelected() {
         return getView().getAdapter().getListMove().size();
     }
 
@@ -261,7 +260,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         );
     }
 
-    public void goToShop(int shopId){
+    public void goToShop(int shopId) {
         Intent intent = new Intent(getView().getActivity(), ShopInfoActivity.class);
         Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
         intent.putExtras(bundle);
@@ -321,8 +320,8 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     private void searchAll(String keyword) {
-        if(!isRequesting) {
-            if(viewModel!=null) viewModel.setKeyword(keyword);
+        if (!isRequesting) {
+            if (viewModel != null) viewModel.setKeyword(keyword);
             searchMessageUseCase.execute(SearchMessageUseCase.generateParam(keyword), new SearchMessageSubscriber(getView(), this));
             isRequesting = true;
         }
@@ -333,9 +332,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void search(String keyword, String by) {
-        if(!isRequesting) {
-            if(viewModel!=null) viewModel.setKeyword(keyword);
-            searchMessageUseCase.execute(SearchMessageUseCase.generateParam(keyword, pagingHandler.getPage(),by), new SearchMessageSubscriber(getView(), this));
+        if (!isRequesting) {
+            if (viewModel != null) viewModel.setKeyword(keyword);
+            searchMessageUseCase.execute(SearchMessageUseCase.generateParam(keyword, pagingHandler.getPage(), by), new SearchMessageSubscriber(getView(), this));
             isRequesting = true;
         }
     }
@@ -383,17 +382,24 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 //        if(attempt > 5) {
 //            getView().notifyConnectionWebSocket();
 //        }else {
-            Request request = new Request.Builder().url(magicString)
-                    .header("Origin", "https://staging.tokopedia.com")
-                    .build();
-            ws = client.newWebSocket(request, listener);
-            attempt++;
+        Request request = new Request.Builder().url(magicString)
+                .header("Origin", "https://staging.tokopedia.com")
+                .build();
+        ws = client.newWebSocket(request, listener);
+        attempt++;
+
+        client.dispatcher().executorService().shutdown();
 //        }
     }
 
     @Override
     public void resetAttempt() {
         attempt = 0;
+    }
+
+    @Override
+    public void closeWebsocket() {
+        ws.close(1000, "Goodbye !");
     }
 
     public boolean isInActionMode() {
@@ -405,9 +411,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void setError() {
-        if(pagingHandler.getPage()==1){
+        if (pagingHandler.getPage() == 1) {
             getView().showErrorFull();
-        }else {
+        } else {
             getView().showError("Pencarian Gagal");
         }
     }

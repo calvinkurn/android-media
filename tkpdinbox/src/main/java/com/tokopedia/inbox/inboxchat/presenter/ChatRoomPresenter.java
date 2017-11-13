@@ -90,7 +90,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void detachView() {
         super.detachView();
-        client.dispatcher().executorService().shutdown();
     }
 
     public void recreateWebSocket() {
@@ -102,6 +101,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;
+
+            client.dispatcher().executorService().shutdown();
         }
     }
 
@@ -290,5 +291,11 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void closeWebSocket() {
+//        client.dispatcher().executorService().shutdown();
+        ws.close(1000, "Goodbye !");
     }
 }

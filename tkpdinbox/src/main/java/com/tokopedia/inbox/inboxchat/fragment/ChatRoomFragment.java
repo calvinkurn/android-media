@@ -623,4 +623,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
             presenter.onOpenWebSocket();
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.closeWebSocket();
+    }
 }
