@@ -165,6 +165,7 @@
 
     <string name="error_top_ads_click_budget_max">Biaya maksimal maksimum %1s</string>
     <string name="error_top_ads_click_budget_minimum">Biaya minimal Rp %1s</string>
+    <string name="error_top_ads_click_budget_must_be_filled">Biaya harus diisi</string>
     <string name="error_top_ads_click_budget_multiple_by">Biaya harus kelipatan Rp %1s</string>
     <string name="error_top_ads_daily_budget_minimal">Biaya per hari minimal %1sx biaya maks per klik</string>
     <string name="error_top_ads_daily_budget_cannot_empyt">Anggaran tidak boleh kosong</string>
@@ -250,6 +251,6 @@
     <string name="top_ads_keyword_add_group_promo_no">Batal</string>
 
     <string name="topads_keyword_add_cancel_dialog">Kata kunci yang sudah Anda masukkan akan hilang\nTinggalkan halaman ini?</string>
-    <string name="static_suggestion_bid_recommendation">Sesuaikan biaya dengan anggaran promo Anda.\nRekomendasi biaya: Rp 50 sampai Rp 200 per klik.</string>
+    <string name="static_suggestion_bid_recommendation">Sesuaikan biaya dengan anggaran promo Anda.</string>
 
 </resources>

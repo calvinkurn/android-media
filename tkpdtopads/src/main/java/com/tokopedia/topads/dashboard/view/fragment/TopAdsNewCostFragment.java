@@ -15,19 +15,16 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
-import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
-import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.topads.dashboard.view.widget.PrefixEditText;
-import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
-import com.tokopedia.topads.keyword.utils.EmptyCurrencyIdrTextWatcher;
 
 /**
  * Created by zulfikarrahman on 8/7/17.
@@ -39,7 +36,13 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
     protected T stepperModel;
     protected StepperListener stepperListener;
-
+    protected Button submitButton;
+    protected ProgressDialog progressDialog;
+    protected TextView headerText;
+    protected TextView titleCost;
+    protected TextView titleSuggestionBidUse;
+    protected TextView titleSuggestionBid;
+    protected V detailAd;
     private TextInputLayout maxPriceInputLayout;
     private PrefixEditText maxPriceEditText;
     private RadioGroup budgetRadioGroup;
@@ -48,16 +51,10 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     private TextInputLayout budgetPerDayInputLayout;
     private View containerBudgetPerDay;
     private PrefixEditText budgetPerDayEditText;
-    protected Button submitButton;
-    protected ProgressDialog progressDialog;
-    protected TextView headerText;
-    protected TextView titleCost;
-    protected TextView titleSuggestionBidUse;
-    protected TextView titleSuggestionBid;
-
-    protected V detailAd;
     private String suggestionBidText;
     private String prefixSuggestion;
+    private boolean isFirstTime; // when first time, all edit text should be empty without validation
+    private String IS_FIRST_TIME = "IS_FIRST_TIME";
 
     protected void onClickedNext() {
         showLoading();
@@ -80,7 +77,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         budgetLifeTimeRadioButton = (RadioButton) view.findViewById(R.id.radio_button_budget_life_time);
         budgetPerDayRadioButton = (RadioButton) view.findViewById(R.id.radio_button_budget_per_day);
         budgetPerDayInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_budget_per_day);
-        containerBudgetPerDay = (View) view.findViewById(R.id.container_budget_per_day);
+        containerBudgetPerDay = view.findViewById(R.id.container_budget_per_day);
         budgetPerDayEditText = (PrefixEditText) view.findViewById(R.id.edit_text_budget_per_day);
         submitButton = (Button) view.findViewById(R.id.button_submit);
         headerText = (TextView) view.findViewById(R.id.header_text);
@@ -114,6 +111,12 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         loadSuggestionBid();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(IS_FIRST_TIME, isFirstTime);
+    }
+
     protected abstract void loadSuggestionBid();
 
     protected abstract void onSuggestionTitleUseClick();
@@ -122,6 +125,16 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         if(data == null)
             return;
         setSuggestionBidText(data.getData().get(0).getMedianFmt());
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            isFirstTime = savedInstanceState.getBoolean(IS_FIRST_TIME, false);
+        } else {
+            isFirstTime = true;
+        }
+        super.onViewCreated(view, savedInstanceState);
     }
 
     protected void setSuggestionBidText(@Nullable String data){
@@ -154,6 +167,10 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
 
+                if (isFirstTime) {
+                    isFirstTime = false;
+                    return;
+                }
 
                 String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
                 if (!TextUtils.isEmpty(errorMessage)) {
