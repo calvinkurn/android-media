@@ -57,10 +57,10 @@ public class InstopedSellerCropperActivity extends InstopedSellerActivity {
         }
     }
 
-    private void finishWithSingleImage(String imageUrl){
+    protected void finishWithSingleImage(String imageUrl){
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add(imageUrl);
-        ImageEditorWatermarkActivity.start(this,arrayList, true);
+        ImageEditorActivity.start(this,arrayList, true);
     }
 
     @Override
