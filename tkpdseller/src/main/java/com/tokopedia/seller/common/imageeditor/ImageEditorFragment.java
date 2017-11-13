@@ -79,9 +79,14 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
         mCropImageView.setOnSetImageUriCompleteListener(this);
         mCropImageView.setOnCropImageCompleteListener(this);
 
-        File imgFile = new File(localPath);
+        final File imgFile = new File(localPath);
         if (imgFile.exists()) {
-            mCropImageView.setImageUriAsync(Uri.fromFile(imgFile));
+            mCropImageView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mCropImageView.setImageUriAsync(Uri.fromFile(imgFile));
+                }
+            });
         }
     }
 

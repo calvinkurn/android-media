@@ -34,11 +34,10 @@ public class GalleryBrowser extends TActivity implements ImageGalleryView{
 	public static final int RESULT_CODE		  = 323;
 	public static final String IMAGE_URL = "image_url";
 	public static final String IMAGE_URLS = "image_urls";
-
+	ImageGalleryImpl imageGallery;
 	private ArrayList<ListImageHolder> BucketList = new ArrayList<ListImageHolder>();
 	private ArrayList<ListImageHolder> BucketImageList = new ArrayList<ListImageHolder>();
 	private List<FolderModel> test;
-	
 	private ImageGalleryAlbumAdapter mAlbumAdapter;
 	private ImageGalleryAdapter mPhotoAdapter;
 	private RelativeLayout rootView;// rootview for animation
@@ -47,7 +46,20 @@ public class GalleryBrowser extends TActivity implements ImageGalleryView{
 	private GridView mGridView;		// GridView for viewing list of Photo
 	private ListView mListView;		// ListView for viewing list of Album Photo
 	private boolean isAlbum = true;		// true - state in Album folder || false - state in Photo folder
-	ImageGalleryImpl imageGallery;
+
+	public static ListImageHolder fromFolderModel(FolderModel folderModel) {
+		ListImageHolder listImageHolder = new ListImageHolder();
+		listImageHolder.setFolderName(folderModel.getPath());
+		listImageHolder.setFirstPhotoURL("file://" + folderModel.getImageModels().get(0).getPath());
+		return listImageHolder;
+	}
+
+	public static ListImageHolder fromFolderModelEl(ImageModel imageModel) {
+		ListImageHolder listImageHolder = new ListImageHolder();
+		listImageHolder.setFirstPhotoURL("file://" + imageModel.getPath());
+		listImageHolder.setUrl(imageModel.getPath());
+		return listImageHolder;
+	}
 
 	@Override
 	public String getScreenName() {
@@ -59,13 +71,13 @@ public class GalleryBrowser extends TActivity implements ImageGalleryView{
 		super.onCreate(savedInstanceState);
 		inflateView(R.layout.activity_gallery_browser);
 		rootView		 = (RelativeLayout) findViewById(R.id.gallery_rootview);
-		topView			 = (View) findViewById(R.id.gallery_topview);
-		bottomView		 = (View) findViewById(R.id.gallery_bottomview);
+		topView = findViewById(R.id.gallery_topview);
+		bottomView = findViewById(R.id.gallery_bottomview);
 		mGridView		 = (GridView) findViewById(R.id.gallery_gridview);
 		mListView		 = (ListView) findViewById(R.id.gallery_listview);
 		if (RequestPermissionUtil.checkHasPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
 			imageGallery = new ImageGalleryImpl(this);
-			test = imageGallery.fetchImageUsingDb(this);
+			test = imageGallery.fetchImageUsingDb();
 		}else {
 			finish();
 		}
@@ -97,7 +109,7 @@ public class GalleryBrowser extends TActivity implements ImageGalleryView{
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		if(isAlbum){
@@ -110,6 +122,11 @@ public class GalleryBrowser extends TActivity implements ImageGalleryView{
 
 	@Override
 	public void fetchImageFromDb() {
+
+	}
+
+	@Override
+	public void fetchImageFromDb(String folderPath) {
 
 	}
 
@@ -153,49 +170,10 @@ public class GalleryBrowser extends TActivity implements ImageGalleryView{
 	}
 
 	@Override
-	public void moveToGallery(List<ImageModel> imageModels, int selection) {
+	public void moveToGallery(List<ImageModel> imageModels, int selection) { /* this is just for nothing */}
 
-	}
-
-	public static class ListImageHolder{
-		private String firstPhotoURL;
-		private String folderName;
-		private String url;
-
-		public String getFirstPhotoURL() {
-			return firstPhotoURL;
-		}
-		public void setFirstPhotoURL(String firstPhotoURL) {
-			this.firstPhotoURL = firstPhotoURL;
-		}
-		public String getFolderName() {
-			return folderName;
-		}
-		public void setFolderName(String folderName) {
-			this.folderName = folderName;
-		}
-		public String getUrl() {
-			return url;
-		}
-		public void setUrl(String url) {
-			this.url = url;
-		}
-
-
-	}
-
-	public static ListImageHolder fromFolderModel(FolderModel folderModel){
-		ListImageHolder listImageHolder = new ListImageHolder();
-		listImageHolder.setFolderName(folderModel.getPath());
-		listImageHolder.setFirstPhotoURL("file://"+folderModel.getImageModels().get(0).getPath());
-		return listImageHolder;
-	}
-	public static ListImageHolder fromFolderModelEl(ImageModel imageModel){
-		ListImageHolder listImageHolder = new ListImageHolder();
-		listImageHolder.setFirstPhotoURL("file://" + imageModel.getPath());
-		listImageHolder.setUrl(imageModel.getPath());
-		return listImageHolder;
-	}
+	@Override
+	public void moveToGallery(int position, int maxSelection) { /* this is just for nothing */}
 
 	@Override
 	public void initFragment(String FRAGMENT_TAG) {
@@ -224,7 +202,7 @@ public class GalleryBrowser extends TActivity implements ImageGalleryView{
 
 	@Override
 	public void sendResultImageGallery(List<String> paths) {
-
+/* DO NOTHING */
 	}
 
 	@Override
@@ -233,7 +211,49 @@ public class GalleryBrowser extends TActivity implements ImageGalleryView{
 	}
 
 	@Override
+	public void retrieveData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum, ArrayList<String> pathList) {
+		/* DO NOTHING */
+	}
+
+	@Override
+	public void retrieveItemData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum, ArrayList<String> pathList) {
+		/* DO NOTHING */
+	}
+
+	@Override
 	protected boolean isLightToolbarThemes() {
 		return true;
+	}
+
+	public static class ListImageHolder {
+		private String firstPhotoURL;
+		private String folderName;
+		private String url;
+
+		public String getFirstPhotoURL() {
+			return firstPhotoURL;
+		}
+
+		public void setFirstPhotoURL(String firstPhotoURL) {
+			this.firstPhotoURL = firstPhotoURL;
+		}
+
+		public String getFolderName() {
+			return folderName;
+		}
+
+		public void setFolderName(String folderName) {
+			this.folderName = folderName;
+		}
+
+		public String getUrl() {
+			return url;
+		}
+
+		public void setUrl(String url) {
+			this.url = url;
+		}
+
+
 	}
 }

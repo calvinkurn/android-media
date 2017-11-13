@@ -41,12 +41,7 @@ public class InstopedSellerCropperActivity extends InstopedSellerActivity {
     }
 
     private static Intent createIntent (Context context, int maxResult){
-        Intent moveToProductActivity;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            moveToProductActivity = new Intent(context, InstopedSellerActivity.class);
-        } else {
-            moveToProductActivity = new Intent(context, InstopedSellerCropperActivity.class);
-        }
+        Intent moveToProductActivity = new Intent(context, InstopedSellerCropperActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(FRAGMENT_TO_SHOW, InstagramAuth.TAG);
         bundle.putInt(MAX_RESULT, maxResult);
