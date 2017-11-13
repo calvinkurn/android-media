@@ -4,21 +4,16 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractor;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdAction;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
-import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
+import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractor;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import rx.Subscriber;
 
 /**
  * Created by zulfikarrahman on 1/3/17.
@@ -30,9 +25,8 @@ public class TopAdsDetailGroupViewPresenterImpl extends TopAdsDetailGroupPresent
 
     public TopAdsDetailGroupViewPresenterImpl(Context context,
                                               TopAdsDetailViewListener<GroupAd> topAdsDetailViewListener,
-                                              TopAdsGroupAdInteractor groupAdInteractor,
-                                              TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase, TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase) {
-        super(context, topAdsDetailViewListener, groupAdInteractor, topAdsGetDetailGroupUseCase, topAdsGetSuggestionUseCase);
+                                              TopAdsGroupAdInteractor groupAdInteractor) {
+        super(context, topAdsDetailViewListener, groupAdInteractor, null, null);
         this.topAdsDetailViewListener = topAdsDetailViewListener;
     }
 

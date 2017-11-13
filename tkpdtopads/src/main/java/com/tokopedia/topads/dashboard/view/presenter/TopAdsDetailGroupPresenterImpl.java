@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -31,7 +32,8 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
     private TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
     private TopAdsGetSuggestionUseCase getSuggestionUseCase;
 
-    public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailListener<GroupAd> topAdsDetailListener, TopAdsGroupAdInteractor groupAdInteractor, TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase, TopAdsGetSuggestionUseCase getSuggestionUseCase) {
+    public TopAdsDetailGroupPresenterImpl(Context context, TopAdsDetailListener<GroupAd> topAdsDetailListener, TopAdsGroupAdInteractor groupAdInteractor,
+                                          @Nullable TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase, @Nullable TopAdsGetSuggestionUseCase getSuggestionUseCase) {
         super(context, topAdsDetailListener);
         this.groupAdInteractor = groupAdInteractor;
         this.topAdsGetDetailGroupUseCase = topAdsGetDetailGroupUseCase;
@@ -55,7 +57,10 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
         groupAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<GroupAd>>>() {
             @Override
             public void onSuccess(PageDataResponse<List<GroupAd>> pageDataResponse) {
-                getDetailGroup(id, pageDataResponse.getData().get(0));
+                if (topAdsGetDetailGroupUseCase != null)
+                    getDetailGroup(id, pageDataResponse.getData().get(0));
+                else
+                    topAdsDetailListener.onAdLoaded(pageDataResponse.getData().get(0));
             }
 
             @Override
@@ -79,9 +84,13 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
 
             @Override
             public void onNext(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel) {
-                // add keyword total
-                groupAd.setKeywordTotal(topAdsDetailGroupDomainModel.getKeywordTotal());
-                getSuggestion(adId, groupAd);
+                if (getSuggestionUseCase != null) {
+                    // add keyword total
+                    groupAd.setKeywordTotal(topAdsDetailGroupDomainModel.getKeywordTotal());
+                    getSuggestion(adId, groupAd);
+                } else {
+                    topAdsDetailListener.onAdLoaded(groupAd);
+                }
             }
         });
     }

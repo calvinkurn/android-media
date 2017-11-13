@@ -18,18 +18,11 @@ import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
-import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
-import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
-import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupViewPresenterImpl;
-
-import javax.inject.Inject;
 
 /**
  * Created by zulfikarrahman on 1/3/17.
@@ -38,10 +31,6 @@ import javax.inject.Inject;
 public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<TopAdsDetailGroupPresenter, GroupAd> {
 
     public static final String GROUP_AD_PARCELABLE = "GROUP_AD_PARCELABLE";
-    @Inject
-    TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
-    @Inject
-    TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
     private LabelView items;
     private OnTopAdsDetailGroupListener listener;
 
@@ -53,16 +42,6 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
         bundle.putBoolean(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, forceRefresh);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    protected void initInjector() {
-        super.initInjector();
-        DaggerTopAdsCreatePromoComponent.builder()
-                .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .topAdsComponent(getComponent(TopAdsComponent.class))
-                .build()
-                .inject(this);
     }
 
     @Override
@@ -86,7 +65,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsDetailGroupViewPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()), topAdsGetDetailGroupUseCase, topAdsGetSuggestionUseCase);
+        presenter = new TopAdsDetailGroupViewPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()));
     }
 
     @Override
