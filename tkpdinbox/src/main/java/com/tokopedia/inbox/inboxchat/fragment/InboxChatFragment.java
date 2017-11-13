@@ -568,7 +568,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void newWebSocket() {
+    public void onErrorWebSocket() {
         if (getActivity() != null) {
             notifyConnectionWebSocket();
             presenter.recreateWebSocket();

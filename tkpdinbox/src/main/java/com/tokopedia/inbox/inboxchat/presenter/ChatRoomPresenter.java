@@ -94,7 +94,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     public void recreateWebSocket() {
 //        if(attempt > 5) {
-        getView().notifyConnectionWebSocket();
+//        getView().notifyConnectionWebSocket();
 //        }else {
         Request request = new Request.Builder().url(magicString)
                 .header("Origin", "https://staging.tokopedia.com")

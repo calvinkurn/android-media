@@ -608,7 +608,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void newWebSocket() {
+    public void onErrorWebSocket() {
         if (getActivity() != null && presenter != null) {
             notifyConnectionWebSocket();
             presenter.recreateWebSocket();
