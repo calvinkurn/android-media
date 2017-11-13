@@ -744,6 +744,15 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             public void onError(Exception e) {
                 e.printStackTrace();
             }
+
+            @Override
+            public void onNotNeedUpdate() {
+                if (ParentIndexHome.this.getIntent().getBooleanExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, false)) {
+                    if (getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter) getApplication()).getApplinkUnsupported(ParentIndexHome.this).showAndCheckApplinkUnsupported();
+                    }
+                }
+            }
         });
     }
 

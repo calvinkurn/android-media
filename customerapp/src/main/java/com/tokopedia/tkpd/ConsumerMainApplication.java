@@ -55,8 +55,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
 
-        IntentFilter intentFilter = new IntentFilter(DeepLinkHandler.ACTION);
-        LocalBroadcastManager.getInstance(this).registerReceiver(new DeepLinkReceiver(), intentFilter);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
     }
