@@ -76,7 +76,6 @@ public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragme
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            RideGATracking.eventBackPress(getScreenName());
             onBackPressed();
             return true;
         } else if (i == R.id.action_remove) {
@@ -102,6 +101,7 @@ public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragme
 
     @Override
     public void onBackPressed() {
+        RideGATracking.eventBackPress(getScreenName());
         if (backButtonListener != null) {
             ConfirmBookingViewModel confirmBookingViewModel = backButtonListener.getConfirmParam();
             Intent intent = getIntent();

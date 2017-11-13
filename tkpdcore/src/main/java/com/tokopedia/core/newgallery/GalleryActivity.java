@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -19,17 +18,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.SparseArray;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.FutureTarget;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
-import com.tkpd.library.ui.floatbutton.ListenerFabClick;
-import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
@@ -52,18 +45,9 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 
-import org.parceler.Parcels;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,11 +58,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
@@ -114,14 +93,13 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     String FRAGMENT;
     int position;
 
-    ImageGallery imageGallery;
+    ImageGallery imageGalleryPresenter;
+
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
+
     private FragmentManager supportFragmentManager;
     private Unbinder unbinder;
-
-//    @BindView(R2.id.fab)
-//    FloatingActionButton fab;
 
     private boolean forceOpenCamera;
     private int maxSelection;
@@ -290,38 +268,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         });
 
 
-        imageGallery = new ImageGalleryImpl(this);
-
-//        if (fab != null)
-//            fab.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    GalleryActivityPermissionsDispatcher.onFabClickedWithCheck(GalleryActivity.this, view);
-//                }
-//            });
-
-//        fabSpeedDial.setListenerFabClick(new ListenerFabClick() {
-//            @Override
-//            public void onFabClick() {
-//                if (!fabSpeedDial.isShown()) {
-//                    fabSpeedDial.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
-//
-//        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
-//            @Override
-//            public boolean onMenuItemSelected(MenuItem menuItem) {
-//                int id = menuItem.getItemId();
-//
-//                if (id == R.id.action_instagram) {
-//                    GalleryActivityPermissionsDispatcher.onInstagramClickedWithCheck(GalleryActivity.this);
-//                } else if (id == R.id.action_camera) {
-//                    onCameraClicked();
-//                }
-//                return false;
-//            }
-//        });
+        imageGalleryPresenter = new ImageGalleryImpl(this);
 
         fabSpeedDial.setVisibility(View.GONE);
     }
@@ -339,28 +286,53 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
     @Override
     public void fetchImageFromDb() {
-        if (imageGallery != null) {
-            imageGallery.fetchImageUsingDb(this);
+        if (imageGalleryPresenter != null) {
+            imageGalleryPresenter.getItemAlbum();
+        }
+    }
+
+    @Override
+    public void fetchImageFromDb(String folderPath) {
+        if (imageGalleryPresenter != null) {
+            imageGalleryPresenter.getItemListAlbum(folderPath);
         }
     }
 
     @Override
     public void loadData(List<FolderModel> models) {
+       /* do nothing */
+    }
+
+    @Override
+    public void retrieveData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> dataAlbum, ArrayList<String> pathList) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(ImageGalleryAlbumFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryAlbumFragment) {
             ImageGalleryAlbumFragment imageGalleryAlbumFragment = (ImageGalleryAlbumFragment) fragment;
             // Load Data
-            imageGalleryAlbumFragment.loadData(models);
+            imageGalleryAlbumFragment.addDatas(dataAlbum);
+        }
+    }
+
+    @Override
+    public void retrieveItemData(ArrayList<com.tokopedia.core.newgallery.model.ImageModel> data, ArrayList<String> pathList) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
+        if (fragment != null && fragment instanceof ImageGalleryFragment) {
+            ((ImageGalleryFragment) fragment).addItems(data);
         }
     }
 
     @Override
     public void moveToGallery(List<ImageModel> imageModels, int maxSelection) {
+        /* do nothing removed this later */
+    }
+
+    @Override
+    public void moveToGallery(int position, int maxSelection) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment) {
             Log.d(TAG, messageTAG + ImageGalleryFragment.FRAGMENT_TAG + " already created!!!");
         } else {
-            Fragment imageGalleryFragment = ImageGalleryFragment.newInstance(imageModels, maxSelection);
+            Fragment imageGalleryFragment = ImageGalleryFragment.newInstance(imageGalleryPresenter.getFolderPath(position), maxSelection);
             moveToFragment(imageGalleryFragment, true, ImageGalleryFragment.FRAGMENT_TAG);
         }
     }
@@ -722,5 +694,12 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null)
+            unbinder.unbind();
     }
 }
