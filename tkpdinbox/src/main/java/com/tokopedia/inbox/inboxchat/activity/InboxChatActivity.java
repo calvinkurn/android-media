@@ -8,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -27,9 +29,8 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.adapter.ChatPagerAdapter;
-import com.tokopedia.inbox.inboxchat.adapter.InboxChatAdapter;
-import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
+import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.List;
 import butterknife.BindView;
 
 public class InboxChatActivity extends DrawerPresenterActivity
-        implements InboxMessageConstant, NotificationReceivedListener{
+        implements InboxMessageConstant, NotificationReceivedListener {
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
@@ -135,7 +136,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
 //        indicator.addTab(indicator.newTab().setText(getString(R.string.title_inbox_message_all)));
         indicator.addTab(indicator.newTab().setCustomView(R.layout.circle_text));
-        ((TextView)indicator.getTabAt(indicator.getTabCount()-1).getCustomView().findViewById(R.id.tab_title)).setText(getString(R.string.title_inbox_chat_all));
+        ((TextView) indicator.getTabAt(indicator.getTabCount() - 1).getCustomView().findViewById(R.id.tab_title)).setText(getString(R.string.title_inbox_chat_all));
         indicator.addTab(indicator.newTab().setText(getString(R.string.title_inbox_archive)));
 
         if (getIntent().getExtras() != null && getIntent().getExtras().getInt(BUNDLE_POSITION, -1) != -1)
@@ -185,7 +186,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
         if (isTaskRoot() && GlobalConfig.isSellerApp()) {
             startActivity(SellerAppRouter.getSellerHomeActivity(this));
             finish();
-        } else if (isTaskRoot()){
+        } else if (isTaskRoot()) {
             startActivity(HomeRouter.getHomeActivity(this));
             finish();
         }
@@ -201,14 +202,21 @@ public class InboxChatActivity extends DrawerPresenterActivity
     }
 
     public void showTabLayout(boolean b) {
-        b=false;
+        b = false;
         toolbar = (Toolbar) findViewById(com.tokopedia.core.R.id.app_bar);
-        if(b){
+        if (b) {
             toolbar.setTitleTextColor(getResources().getColor(R.color.white));
             indicator.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             toolbar.setTitleTextColor(getResources().getColor(R.color.black));
             indicator.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onGetNotificationDrawer(DrawerNotification notification) {
+        super.onGetNotificationDrawer(notification);
+        TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
+        titleTextView.setText("Chat (" + notification.getInboxMessage() + ")");
     }
 }
