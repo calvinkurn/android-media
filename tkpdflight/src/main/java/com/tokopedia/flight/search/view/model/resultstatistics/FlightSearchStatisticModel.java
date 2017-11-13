@@ -202,7 +202,7 @@ public class FlightSearchStatisticModel implements Parcelable {
                 }
             }
         }
-        return new FlightAirlineDB(airlineID, "","");
+        return new FlightAirlineDB(airlineID, "","","");
     }
 
     public List<DepartureStat> getDepartureTimeStatList() {

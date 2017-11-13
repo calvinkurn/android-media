@@ -98,13 +98,14 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
             Route route = routeList.get(j);
             String airlineID = route.getAirline();
             if (dbAirlineMaps.containsKey(airlineID)) {
-                String airlineNameFromMap = dbAirlineMaps.get(airlineID).getName();
+                String airlineNameFromMap = dbAirlineMaps.get(airlineID).getFullName();
+                String airlineShortNameFromMap = dbAirlineMaps.get(airlineID).getShortName();
                 String airlineLogoFromMap = dbAirlineMaps.get(airlineID).getLogo();
                 route.setAirlineName(airlineNameFromMap);
                 route.setAirlineLogo(airlineLogoFromMap);
-                airlineDBArrayList.add(new FlightAirlineDB(airlineID, airlineNameFromMap, airlineLogoFromMap));
+                airlineDBArrayList.add(new FlightAirlineDB(airlineID, airlineNameFromMap, airlineShortNameFromMap, airlineLogoFromMap));
             } else {
-                airlineDBArrayList.add(new FlightAirlineDB(airlineID, "", ""));
+                airlineDBArrayList.add(new FlightAirlineDB(airlineID, "","", ""));
             }
 
             String depAirportID = route.getDepartureAirport();
