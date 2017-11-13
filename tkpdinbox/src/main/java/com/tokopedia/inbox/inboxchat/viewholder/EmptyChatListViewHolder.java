@@ -35,14 +35,14 @@ public class EmptyChatListViewHolder extends AbstractViewHolder<EmptyChatModel> 
 
     @Override
     public void bind(EmptyChatModel element) {
-        if(element.getType() != EmptyChatModel.SEARCH){
+        if (element.getType() != EmptyChatModel.SEARCH) {
             logo.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.empty_chat));
             title.setText(context.getString(R.string.no_existing_chat));
             subtitle.setText(context.getString(R.string.please_try_chat));
-            title.setVisibility(View.VISIBLE);
-        }else {
+            subtitle.setVisibility(View.VISIBLE);
+        } else {
             logo.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.empty_chat));
-            subtitle.setText(context.getString(R.string.no_existing_chat_user));
+            title.setText(context.getString(R.string.no_existing_chat_user));
             subtitle.setVisibility(View.GONE);
         }
     }
