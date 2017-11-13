@@ -529,7 +529,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();
-        initTokoCashFromCache();
+        category.fetchCacheTokocash();
     }
 
     private void initCategoryRecyclerView() {
@@ -651,18 +651,17 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
      * TokoCash Header show from Cache
      * Created by Nabilla Sabbaha 20171113
      */
-    private void initTokoCashFromCache() {
-        GlobalCacheManager cache = new GlobalCacheManager();
-        if (cache.isAvailable(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE)) {
-            String cacheWallet = cache.getValueString(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
-            TokoCashModel tokoCashModel = CacheUtil.convertStringToModel(cacheWallet,
-                    new TypeToken<TokoCashModel>() {
-                    }.getType());
-            this.tokoCashData = TokoCashUtil.convertToViewModel(
-                    tokoCashModel.getTokoCashData());
-            holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
-            holder.tokoCashHeaderView.renderData(tokoCashData, false, "");
-        }
+    @Override
+    public void onSuccessFetchTokoCashDataFromCache(TokoCashModel tokoCashModel) {
+        this.tokoCashData = TokoCashUtil.convertToViewModel(
+                tokoCashModel.getTokoCashData());
+        holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
+        holder.tokoCashHeaderView.renderData(tokoCashData, false, "");
+    }
+
+    @Override
+    public void onErrorFetchTokoCashDataFromCache(String message) {
+
     }
 
     /**
