@@ -2,12 +2,9 @@ package com.tokopedia.topads.dashboard.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupEditPromoFragment;
 
@@ -17,11 +14,6 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupEditPromoFragment
 
 public class TopAdsGroupEditPromoActivity extends BaseSimpleActivity {
 
-    @Override
-    public String getScreenName() {
-        return null;
-    }
-
     public static Intent createIntent(Context context, String adId, int choosenOption,
                                       String groupName, String groupId) {
         Intent intent = new Intent(context, TopAdsGroupEditPromoActivity.class);
@@ -30,6 +22,16 @@ public class TopAdsGroupEditPromoActivity extends BaseSimpleActivity {
         intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP_NAME, groupName);
         intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP_ID, groupId);
         return intent;
+    }
+
+    @Override
+    public String getScreenName() {
+        return null;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 
     @Override

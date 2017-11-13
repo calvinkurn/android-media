@@ -7,7 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,9 +20,8 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
-import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
@@ -54,16 +52,20 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     ViewPager viewPager;
     TabLayout tabLayout;
     SwipeToRefresh swipeToRefresh;
-
-    private List<Cell> cells;
     int currentPositonPager;
     ProgressDialog progressDialog;
     SnackbarRetry snackbarRetry;
+    private List<Cell> cells;
     private FragmentPagerAdapter viewPagerAdapter;
 
     @Override
     protected boolean isToolbarWhite() {
         return true;
+    }
+
+    @Override
+    protected boolean isAllowElevation() {
+        return false;
     }
 
     @Override

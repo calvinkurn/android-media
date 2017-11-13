@@ -3,11 +3,9 @@ package com.tokopedia.topads.keyword.view.activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,16 +37,20 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
         HasComponent<AppComponent>,
         TopAdsAdListFragment.OnAdListFragmentListener, TopAdsKeywordListFragment.GroupTopAdsListener {
 
+    public static final int OFFSCREEN_PAGE_LIMIT = 2;
     private static final String TAG = TopAdsKeywordListActivity.class.getName();
     private static final int DELAY_SHOW_CASE_THREAD = 300;//ms
-
-    public static final int OFFSCREEN_PAGE_LIMIT = 2;
     boolean isShowingShowCase = false;
     private ShowCaseDialog showCaseDialog;
     private SearchView searchView;
     private MenuItem searchItem;
     private int totalGroupAd;
     private MenuItem filter;
+
+    @Override
+    protected boolean isAllowElevation() {
+        return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
