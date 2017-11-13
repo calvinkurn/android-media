@@ -9,16 +9,18 @@ import com.google.gson.annotations.SerializedName;
 public class CreateTimeResponse {
 
     @SerializedName("timestampz")
-    private String timestampz;
-    @SerializedName("createTimeStr")
+    private String createTimestamp;
+    @SerializedName("str")
     private String createTimeStr;
+    @SerializedName("time")
+    private String createTime;
 
-    public String getTimestampz() {
-        return timestampz;
+    public String getCreateTimestamp() {
+        return createTimestamp;
     }
 
-    public void setTimestampz(String timestampz) {
-        this.timestampz = timestampz;
+    public void setCreateTimestamp(String createTimestamp) {
+        this.createTimestamp = createTimestamp;
     }
 
     public String getCreateTimeStr() {
@@ -27,5 +29,13 @@ public class CreateTimeResponse {
 
     public void setCreateTimeStr(String createTimeStr) {
         this.createTimeStr = createTimeStr;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }
