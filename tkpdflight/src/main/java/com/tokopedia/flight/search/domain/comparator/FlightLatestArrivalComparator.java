@@ -11,6 +11,6 @@ import java.util.Comparator;
 public class FlightLatestArrivalComparator implements Comparator<FlightSearchViewModel> {
     @Override
     public int compare(FlightSearchViewModel o1, FlightSearchViewModel o2) {
-        return (int) (o2.getArrivalTimeInt() - o1.getArrivalTimeInt());
+        return (int) (o2.getArrivalTimeIntPlusDay() - o1.getArrivalTimeIntPlusDay());
     }
 }

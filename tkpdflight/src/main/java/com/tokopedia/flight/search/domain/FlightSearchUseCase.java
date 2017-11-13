@@ -55,7 +55,7 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
                 for (int i = 0, sizei = flightSearchViewModelList.size(); i < sizei; i++) {
                     FlightSearchViewModel flightSearchViewModel = flightSearchViewModelList.get(i);
                     List<Route> routeList = flightSearchViewModel.getRouteList();
-                    for (int j = 0, sizej = routeList.size(); i < sizej; i++) {
+                    for (int j = 0, sizej = routeList.size(); j < sizej; j++) {
                         Route route = routeList.get(j);
                         String airline = route.getAirline();
                         String departureAirport = route.getDepartureAirport();
@@ -100,53 +100,7 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
         }
         for (int i = 0, sizei = flightSearchViewModelList.size(); i<sizei; i++) {
             FlightSearchViewModel flightSearchViewModel = flightSearchViewModelList.get(i);
-            List<Route> routeList = flightSearchViewModel.getRouteList();
-            List<FlightAirlineDB> airlineDBArrayList = new ArrayList<>();
-            for (int j = 0, sizej = routeList.size(); j < sizej; j++) {
-                Route route = routeList.get(j);
-                String airlineID = route.getAirline();
-                if (dbAirlineMaps.containsKey(airlineID)){
-                    String airlineNameFromMap = dbAirlineMaps.get(airlineID).getName();
-                    String airlineLogoFromMap = dbAirlineMaps.get(airlineID).getLogo();
-                    route.setAirlineName(airlineNameFromMap);
-                    route.setAirlineLogo(airlineLogoFromMap);
-                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, airlineNameFromMap, airlineLogoFromMap));
-                } else {
-                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, "",""));
-                }
-
-                String depAirportID = route.getDepartureAirport();
-                if (dbAirportMaps.containsKey(depAirportID)){
-                    String name = dbAirportMaps.get(depAirportID).getAirportName();
-                    String city = dbAirportMaps.get(depAirportID).getCityName();
-                    route.setDepartureAirportName(name);
-                    route.setDepartureAirportCity(city);
-                }
-                String arrAirportID = route.getArrivalAirport();
-                if (dbAirportMaps.containsKey(arrAirportID)){
-                    String name = dbAirportMaps.get(arrAirportID).getAirportName();
-                    String city = dbAirportMaps.get(arrAirportID).getCityName();
-                    route.setArrivalAirportName(name);
-                    route.setArrivalAirportCity(city);
-                }
-            }
-            flightSearchViewModel.setAirlineDataList(airlineDBArrayList);
-
-            String depAirport = flightSearchViewModel.getDepartureAirport();
-            if (dbAirportMaps.containsKey(depAirport)){
-                String name = dbAirportMaps.get(depAirport).getAirportName();
-                String city = dbAirportMaps.get(depAirport).getCityName();
-                flightSearchViewModel.setDepartureAirportName(name);
-                flightSearchViewModel.setDepartureAirportCity(city);
-            }
-
-            String arrAirport = flightSearchViewModel.getArrivalAirport();
-            if (dbAirportMaps.containsKey(arrAirport)){
-                String name = dbAirportMaps.get(arrAirport).getAirportName();
-                String city = dbAirportMaps.get(arrAirport).getCityName();
-                flightSearchViewModel.setArrivalAirportName(name);
-                flightSearchViewModel.setArrivalAirportCity(city);
-            }
+            flightSearchViewModel.mergeWithAirportAndAirlines(dbAirlineMaps, dbAirportMaps);
         }
         return flightSearchViewModelList;
     }

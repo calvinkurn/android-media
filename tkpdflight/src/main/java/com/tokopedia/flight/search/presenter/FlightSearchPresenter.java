@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchWithSortUseCase;
+import com.tokopedia.flight.search.domain.FlightSortUseCase;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
@@ -22,10 +23,13 @@ import rx.Subscriber;
 public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView> {
 
     private FlightSearchWithSortUseCase flightSearchWithSortUseCase;
+    private FlightSortUseCase flightSortUseCase;
 
     @Inject
-    public FlightSearchPresenter(FlightSearchWithSortUseCase flightSearchWithSortUseCase) {
+    public FlightSearchPresenter(FlightSearchWithSortUseCase flightSearchWithSortUseCase,
+                                 FlightSortUseCase flightSortUseCase) {
         this.flightSearchWithSortUseCase = flightSearchWithSortUseCase;
+        this.flightSortUseCase = flightSortUseCase;
     }
 
     public void searchAndSortFlight(FlightSearchPassDataViewModel flightSearchPassDataViewModel,
@@ -35,6 +39,12 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                 flightSearchPassDataViewModel,
                 isReturning, isFromCache, flightFilterModel,
                 sortOptionId),
+                getSubscriberSearchFlight(sortOptionId));
+    }
+
+    public void sortFlight(List<FlightSearchViewModel> flightSearchViewModelList,
+                           @FlightSortOption int sortOptionId) {
+        flightSortUseCase.withList(flightSearchViewModelList).execute(null,
                 getSubscriberSearchFlight(sortOptionId));
     }
 
