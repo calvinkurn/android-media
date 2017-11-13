@@ -263,7 +263,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
             ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
                     .getData().setDrawerTokoCash(tokoCash);
-        Intent intent = new Intent(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
+        Intent intent = new Intent();
+        intent.setAction(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
         intent.putExtra(TokoCashBroadcastReceiver.EXTRA_RESULT_TOKOCASH_DATA,
                 tokoCash);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
