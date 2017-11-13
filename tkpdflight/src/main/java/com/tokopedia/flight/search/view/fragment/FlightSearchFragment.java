@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -109,8 +110,8 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     }
 
     @Override
-    public BaseListRecyclerView getRecyclerView(View view) {
-        return (BaseListRecyclerView) view.findViewById(R.id.recycler_view);
+    public RecyclerView getRecyclerView(View view) {
+        return (RecyclerView) view.findViewById(R.id.recycler_view);
     }
 
     @Nullable
