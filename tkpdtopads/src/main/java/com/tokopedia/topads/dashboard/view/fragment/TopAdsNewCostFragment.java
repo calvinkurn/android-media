@@ -183,12 +183,8 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
                 if (suggestionBidRaw == null)
                     return;
 
-                if (number >= Double.valueOf(suggestionBidRaw)) {
-                    setDefaultSuggestionBidText();
-                } else {
-                    setSuggestionBidText(suggestionBidText);
-                    titleSuggestionBidUse.setVisibility(View.VISIBLE);
-                }
+                setSuggestionBidText(suggestionBidText);
+                titleSuggestionBidUse.setVisibility(View.VISIBLE);
             }
         });
         budgetPerDayEditText.addTextChangedListener(new CurrencyIdrTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
