@@ -387,8 +387,6 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                 .build();
         ws = client.newWebSocket(request, listener);
         attempt++;
-
-        client.dispatcher().executorService().shutdown();
 //        }
     }
 
@@ -399,6 +397,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     @Override
     public void closeWebsocket() {
+        client.dispatcher().executorService().shutdown();
         ws.close(1000, "Goodbye !");
     }
 
