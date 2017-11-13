@@ -126,7 +126,6 @@ public interface Constants {
             String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
             String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
             String BROWSER = "sellerapp://browser";
-            String CREATE_SHOP = "sellerapp://buka-toko-online-gratis";
         }
     }
 

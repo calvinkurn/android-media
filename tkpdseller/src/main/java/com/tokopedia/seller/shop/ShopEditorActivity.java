@@ -29,7 +29,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -69,20 +68,6 @@ public class ShopEditorActivity extends TActivity implements
 
     @DeepLink(Constants.Applinks.CREATE_SHOP)
     public static Intent getCallingApplinkCreateShopIntent(Context context, Bundle extras) {
-        if (SessionHandler.isV4Login(context)
-                && (SessionHandler.getShopID(context).isEmpty()
-                || SessionHandler.getShopID(context).equals("0"))) {
-            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-            return new Intent(context, ShopEditorActivity.class)
-                    .setData(uri.build())
-                    .putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
-        } else {
-            return HomeRouter.getHomeActivityInterfaceRouter(context);
-        }
-    }
-
-    @DeepLink(Constants.Applinks.SellerApp.CREATE_SHOP)
-    public static Intent getCallingApplinkSellerAppCreateShopIntent(Context context, Bundle extras) {
         if (SessionHandler.isV4Login(context)
                 && (SessionHandler.getShopID(context).isEmpty()
                 || SessionHandler.getShopID(context).equals("0"))) {
