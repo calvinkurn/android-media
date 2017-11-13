@@ -101,9 +101,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 .build();
         ws = client.newWebSocket(request, listener);
         attempt++;
-//        }
-
-        client.dispatcher().executorService().shutdown();
     }
 
 
@@ -296,7 +293,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void closeWebSocket() {
-//        client.dispatcher().executorService().shutdown();
+        client.dispatcher().executorService().shutdown();
         ws.close(1000, "Goodbye !");
     }
 }
