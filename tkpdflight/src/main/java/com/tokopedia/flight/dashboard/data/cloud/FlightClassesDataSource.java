@@ -1,6 +1,5 @@
 package com.tokopedia.flight.dashboard.data.cloud;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 
@@ -9,9 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * @author  by alvarisi on 10/30/17.
@@ -29,7 +26,7 @@ public class FlightClassesDataSource {
 
     public Observable<List<FlightClassEntity>> getClasses() {
         List<FlightClassEntity> flightClassEntities = new ArrayList<>();
-        flightClassEntities.add(new FlightClassEntity("1",TYPE, "Semua"));
+//        flightClassEntities.add(new FlightClassEntity("1",TYPE, "Semua"));
         flightClassEntities.add(new FlightClassEntity("2",TYPE, "Ekonomi"));
         flightClassEntities.add(new FlightClassEntity("3",TYPE, "Bisnis"));
         flightClassEntities.add(new FlightClassEntity("4",TYPE, "Utama"));
