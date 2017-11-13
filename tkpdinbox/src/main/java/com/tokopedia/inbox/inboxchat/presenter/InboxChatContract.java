@@ -96,6 +96,8 @@ public class InboxChatContract {
         void showErrorWarningDelete();
 
         void showErrorFull();
+
+        void dropKeyboard();
     }
 
     interface Presenter extends CustomerPresenter<View>{

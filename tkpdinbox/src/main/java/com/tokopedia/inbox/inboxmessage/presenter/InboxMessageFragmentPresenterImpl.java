@@ -39,6 +39,7 @@ import rx.Subscriber;
 /**
  * Created by Nisie on 5/9/16.
  */
+@Deprecated
 public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPresenter,
         InboxMessageConstant {
 

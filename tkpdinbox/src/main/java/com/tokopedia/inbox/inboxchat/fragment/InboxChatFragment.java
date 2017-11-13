@@ -300,6 +300,7 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToTimeMachine(String url) {
+        dropKeyboard();
         startActivity(TimeMachineActivity.getCallingIntent(getActivity(), url));
     }
 
@@ -415,6 +416,11 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void dropKeyboard() {
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+    }
+
+    @Override
     public void moveViewToTop() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -498,7 +504,7 @@ public class InboxChatFragment extends BaseDaggerFragment
             onSearchReset();
 
         }
-        KeyboardHandler.DropKeyboard(getActivity(), getView());
+        dropKeyboard();
     }
 
     @Override
