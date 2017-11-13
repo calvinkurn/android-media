@@ -132,6 +132,7 @@ public interface Constants {
         String HTTP = "http";
         String HTTPS = HTTP + "s";
         String APPLINKS = "tokopedia";
+        String APPLINKS_SELLER = "sellerapp";
     }
 
     interface Settings {
