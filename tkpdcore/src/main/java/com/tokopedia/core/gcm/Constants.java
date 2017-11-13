@@ -82,6 +82,7 @@ public interface Constants {
         String SELLER_SHIPMENT = "tokopedia://seller/shipment";
         String SELLER_STATUS = "tokopedia://seller/status";
         String SELLER_HISTORY = "tokopedia://seller/history";
+        String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
         String REPUTATION = "tokopedia://review";
         String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
         String WEBVIEW = "tokopedia://webview";
@@ -125,6 +126,7 @@ public interface Constants {
             String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
             String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
             String BROWSER = "sellerapp://browser";
+            String CREATE_SHOP = "sellerapp://buka-toko-online-gratis";
         }
     }
 
