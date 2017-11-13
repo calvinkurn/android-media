@@ -136,10 +136,13 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
             if (routeList.get(i).getRefundable()) {
                 refundableCount++;
             }
-            if (!TextUtils.isEmpty(airline)) {
-                airline += "-";
+            String airlineID = routeList.get(i).getAirline();
+            if (!TextUtils.isEmpty(airlineID) && !airline.contains(airlineID)) {
+                if (!TextUtils.isEmpty(airline)) {
+                    airline += "-";
+                }
+                airline += routeList.get(i).getAirline();
             }
-            airline += routeList.get(i).getAirline();
         }
         if (refundableCount == routeList.size()) {
             this.isRefundable = RefundableEnum.REFUNDABLE.getId();
