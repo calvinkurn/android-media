@@ -96,8 +96,10 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     @SuppressWarnings("unused")
     @DeepLink(Constants.Applinks.WALLET_HOME)
     public static Intent getcallingIntent(Context context, Bundle extras) {
-        boolean topUpVisible = extras.getBoolean(
-                Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY, true
+        boolean topUpVisible = Boolean.parseBoolean(
+                extras.getString(
+                        Constants.AppLinkQueryParameter.WALLET_TOP_UP_VISIBILITY, "false"
+                )
         );
         return TopUpTokoCashActivity.newInstance(context, topUpVisible);
     }
