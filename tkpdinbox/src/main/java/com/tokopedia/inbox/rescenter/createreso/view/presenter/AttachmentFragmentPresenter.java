@@ -165,6 +165,15 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
             return false;
         }
 
+        if (item.isImage()) {
+            File file = new File(item.getRealPath());
+            long length = file.length() / 1024;
+            if (length >= 15000) {
+                mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_reach_max_size_image));
+                return false;
+            }
+        }
+
         int countVideoAlreadyAdded = 0;
         if (item.isVideo()) {
             for (AttachmentViewModel model : mainView.getAttachmentListFromAdapter()) {
@@ -182,7 +191,7 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
             File file = new File(item.getRealPath());
             long length = file.length() / 1024;
             if (length >= 20000) {
-                mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_reach_max_size));
+                mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_reach_max_size_video));
                 return false;
             }
         }

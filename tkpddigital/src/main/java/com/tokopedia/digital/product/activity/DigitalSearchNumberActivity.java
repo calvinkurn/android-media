@@ -35,6 +35,11 @@ public class DigitalSearchNumberActivity extends BasePresenterActivity implement
     private String number;
     private List<OrderClientNumber> numberList;
 
+    @Override
+    public String getScreenName() {
+        return DigitalSearchNumberActivity.class.getSimpleName();
+    }
+
     public static Intent newInstance(Activity activity, String categoryId, ClientNumber clientNumber,
                                      String number, List<OrderClientNumber> numberList) {
         Intent intent = new Intent(activity, DigitalSearchNumberActivity.class);

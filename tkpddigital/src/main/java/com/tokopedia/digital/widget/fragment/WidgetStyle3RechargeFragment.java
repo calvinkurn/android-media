@@ -214,6 +214,8 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
+                UnifyTracking.eventSelectNumberOnUserProfileWidget(category.getAttributes().getName());
+
                 LastOrder lastOrder = new LastOrder();
                 Attributes attributes = new Attributes();
                 attributes.setClientNumber(orderClientNumber.getClientNumber());

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.discovery.model.Breadcrumb;
@@ -279,12 +280,11 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                             getOfficialStoreBanner(p.q);
                         }
                     }
+
                     if (view.checkHasFilterAttrIsNull(PAGER_THREE_TAB_PRODUCT_POSITION)) {
-                        discoveryInteractor.getDynamicAttribute(view.getContext(),
-                                BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT,
-                                browseProductActivityModel.getDepartmentId(),
-                                browseProductActivityModel.getQ());
+                        fetchDynamicAttribute(source, p.q, p.sc);
                     }
+
                     if(source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)){
                         view.showTabLayout();
                     }
@@ -297,6 +297,26 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 view.setOfficialStoreBanner((BannerOfficialStoreModel) data.getModel2().body());
                 break;
         }
+    }
+
+    private void fetchDynamicAttribute(String source, String query, String depId) {
+
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY.equals(source)) {
+            query = "";
+        }
+
+        String sourceKey = source;
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP.equals(sourceKey)
+                || BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG.equals(sourceKey)) {
+            sourceKey = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
+        }
+
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT.equals(source)
+                && TextUtils.isEmpty(depId)) {
+            depId = "0";
+        }
+
+        discoveryInteractor.getDynamicAttribute(view.getContext(), sourceKey, depId, query);
     }
 
     private boolean isSearchResultNotEmpty() {

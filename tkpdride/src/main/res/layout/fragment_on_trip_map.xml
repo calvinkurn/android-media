@@ -262,4 +262,24 @@
         </LinearLayout>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/layout_receipt_pending"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#88000000"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/shape_bg_rounded_white_rectangle"
+            android:gravity="center"
+            android:padding="24dp"
+            android:text="@string/message_uber_waiting_receipt"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_small" />
+
+    </RelativeLayout>
+
 </FrameLayout>

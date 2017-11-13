@@ -1,13 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.data.mapper;
 
-import android.content.Context;
-import android.support.v4.content.ContextCompat;
-
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateResoWithoutAttachmentResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.ResolutionResponse;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoWithoutAttachmentDomain;
