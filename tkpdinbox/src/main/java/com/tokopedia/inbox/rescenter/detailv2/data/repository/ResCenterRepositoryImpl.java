@@ -64,6 +64,13 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
     }
 
     @Override
+    public Observable<HistoryActionData> getHistoryActionV2(String resolutionID, TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory
+                .createCloudResCenterDataSource()
+                .getHistoryActionV2(resolutionID, parameters);
+    }
+
+    @Override
     public Observable<ListProductDomainData> getListProduct(String resolutionID, TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()

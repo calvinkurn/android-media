@@ -143,6 +143,7 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
             AttachmentData attachmentData = new AttachmentData();
             attachmentData.setImageThumbUrl(dataDomain.getThumbnail());
             attachmentData.setImageUrl(dataDomain.getFullUrl());
+            attachmentDataList.add(attachmentData);
         }
         return attachmentDataList;
     }

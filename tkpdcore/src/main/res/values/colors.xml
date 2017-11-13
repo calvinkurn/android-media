@@ -65,6 +65,7 @@
 
     <color name="black_seventy_percent_">#B3000000</color>
     <color name="tkpd_main_green">#42b549</color>
+    <color name="tkpd_main_green_70">#b342b549</color>
     <color name="accent">#ff33b5e5</color>
     <color name="dark_selectable_recycler">#CCCCCC</color>
 

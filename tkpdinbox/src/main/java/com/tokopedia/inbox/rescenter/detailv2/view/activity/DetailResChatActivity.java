@@ -30,6 +30,7 @@ public class DetailResChatActivity
     public static final String PARAM_USER_NAME = "user_name";
     public static final String PARAM_IS_SELLER = "is_seller";
 
+    public static final int REQUEST_GO_DETAIL = 8888;
     private String resolutionId;
     private String shopName;
     private String userName;
@@ -119,11 +120,13 @@ public class DetailResChatActivity
         detailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent;
                 if (isSeller) {
-                    startActivity(DetailResCenterActivity.newSellerInstance(DetailResChatActivity.this, resolutionId, userName));
+                    intent = DetailResCenterActivity.newSellerInstance(DetailResChatActivity.this, resolutionId, userName);
                 } else {
-                    startActivity(DetailResCenterActivity.newBuyerInstance(DetailResChatActivity.this, resolutionId, shopName));
+                    intent = DetailResCenterActivity.newBuyerInstance(DetailResChatActivity.this, resolutionId, shopName);
                 }
+                startActivityForResult(intent, REQUEST_GO_DETAIL);
             }
         });
         detailButton.setGravity(Gravity.RIGHT | Gravity.CENTER);

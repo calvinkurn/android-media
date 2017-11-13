@@ -1017,6 +1017,9 @@ public class DetailResChatFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
+            case DetailResChatActivity.REQUEST_GO_DETAIL:
+                initView(true);
+                break;
             case ImageUploadHandler.REQUEST_CODE:
                 presenter.handleDefaultOldUploadImageHandlerResult(resultCode, data);
                 break;

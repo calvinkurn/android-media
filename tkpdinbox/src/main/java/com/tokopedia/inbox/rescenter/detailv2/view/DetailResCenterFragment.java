@@ -75,7 +75,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     View loading;
     View mainView;
     ButtonView buttonView;
-    CardView cvNextStep;
+    CardView cvNextStep, cvDiscussion;
     AwbReturView awbReturView;
     AddressReturView addressReturView;
     DetailView detailView;
@@ -195,6 +195,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         solutionView = (SolutionView) view.findViewById(R.id.solution_view);
         proveView = (ProveView) view.findViewById(R.id.prove_view);
         historyView = (HistoryView) view.findViewById(R.id.history_view);
+        cvDiscussion = (CardView) view.findViewById(R.id.cv_discussion);
 
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         cvNextStep.setVisibility(View.GONE);
@@ -220,6 +221,14 @@ public class DetailResCenterFragment extends BaseDaggerFragment
                         getActivity(),
                         resolutionID,
                         getViewData().getNextActionDomain()));
+            }
+        });
+
+        cvDiscussion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
             }
         });
     }
@@ -290,6 +299,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     private void renderData() {
         cvNextStep.setVisibility(View.VISIBLE);
+        cvDiscussion.setVisibility(View.VISIBLE);
         for (NextActionDetailStepDomain nextStep : getViewData().getNextActionDomain().getDetail().getStep()) {
             if (nextStep.getStatus() == NEXT_STATUS_CURRENT) {
                 tvNextStep.setText(nextStep.getName());

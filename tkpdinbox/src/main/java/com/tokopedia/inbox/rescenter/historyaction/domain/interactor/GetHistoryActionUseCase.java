@@ -29,6 +29,6 @@ public class GetHistoryActionUseCase extends UseCase<HistoryActionData> {
     @Override
     public Observable<HistoryActionData> createObservable(RequestParams requestParams) {
         String resolutionID = requestParams.getString(PARAM_RESOLUTION_ID, "");
-        return resCenterRepository.getHistoryAction(resolutionID, requestParams.getParameters());
+        return resCenterRepository.getHistoryActionV2(resolutionID, requestParams.getParameters());
     }
 }

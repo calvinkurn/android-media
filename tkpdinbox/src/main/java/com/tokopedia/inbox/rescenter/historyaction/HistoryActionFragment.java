@@ -124,7 +124,12 @@ public class HistoryActionFragment extends BaseDaggerFragment
     @Override
     public void onGetHistoryAwbFailed(String messageError) {
         setLoadingView(false);
-        setErrorMessage(messageError);
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.onFirstTimeLaunch();
+            }
+        });
     }
 
     @Override

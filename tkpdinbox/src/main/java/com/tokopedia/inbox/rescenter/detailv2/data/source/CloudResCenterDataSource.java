@@ -125,6 +125,14 @@ public class CloudResCenterDataSource {
         ).map(historyActionMapper);
     }
 
+    public Observable<HistoryActionData> getHistoryActionV2(String resolutionID,
+                                                           TKPDMapParam<String, Object> parameters) {
+        return resolutionApi.getHistoryActionV2(
+                resolutionID,
+                AuthUtil.generateParamsNetwork2(context, parameters)
+        ).map(historyActionMapper);
+    }
+
     public Observable<HistoryAddressData> getHistoryAddress(String resolutionID,
                                                             TKPDMapParam<String, Object> parameters) {
         return resolutionApi.getHistoryAddress(

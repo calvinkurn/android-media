@@ -118,6 +118,10 @@ public interface ResolutionApi {
     Observable<Response<TkpdResponse>> getHistoryAction(@Path("resolution_id") String resolutionID,
                                                         @QueryMap TKPDMapParam<String, Object> params);
 
+    @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_HISTORY_ACTION_V2)
+    Observable<Response<TkpdResponse>> getHistoryActionV2(@Path("resolution_id") String resolutionID,
+                                                        @QueryMap TKPDMapParam<String, Object> params);
+
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_LIST_PRODUCT)
     Observable<Response<TkpdResponse>> getListProduct(@Path("resolution_id") String resolutionID,
                                                       @QueryMap TKPDMapParam<String, Object> params);

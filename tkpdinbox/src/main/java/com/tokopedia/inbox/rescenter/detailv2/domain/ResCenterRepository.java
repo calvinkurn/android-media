@@ -39,6 +39,8 @@ public interface ResCenterRepository {
 
     Observable<HistoryActionData> getHistoryAction(String resolutionID, TKPDMapParam<String, Object> parameters);
 
+    Observable<HistoryActionData> getHistoryActionV2(String resolutionID, TKPDMapParam<String, Object> parameters);
+
     Observable<ListProductDomainData> getListProduct(String resolutionID, TKPDMapParam<String, Object> parameters);
 
     Observable<ProductDetailData> getDetailProduct(String resolutionID, String troubleID, TKPDMapParam<String, Object> parameters);
