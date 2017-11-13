@@ -8,7 +8,7 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.SendKolCommentDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolCommentUserDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
+import com.tokopedia.core.util.TimeConverter;
 
 import rx.functions.Func1;
 
@@ -40,7 +40,7 @@ public class KolSendCommentMapper implements Func1<CreateKolComment.Data, SendKo
         return new SendKolCommentDomain(data.id() == null ? 0 : data.id(),
                 data.comment() == null ? "" : data.comment(),
                 TimeConverter.generateTime(data.create_time() == null ? "" : data
-                        .create_time()),
+                        .create_time(), TimeConverter.DEFAULT_KOL_FORMAT),
                 createDomainUser(data.user()),
                 true);
     }

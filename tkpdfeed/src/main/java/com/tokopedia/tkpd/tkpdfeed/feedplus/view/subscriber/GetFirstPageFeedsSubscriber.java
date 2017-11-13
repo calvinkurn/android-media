@@ -19,7 +19,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialS
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
+import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.LabelsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
@@ -314,7 +314,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 kolPostDomain.getUserUrl(),
                 kolPostDomain.getItemId(),
                 kolPostDomain.getId(),
-                TimeConverter.generateTime(kolPostDomain.getCreateTime()),
+                TimeConverter.generateTime(kolPostDomain.getCreateTime(), TimeConverter.DEFAULT_KOL_FORMAT),
                 "",
                 kolPostDomain.getProductPrice(),
                 false,
