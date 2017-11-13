@@ -286,12 +286,13 @@ public class WalletToDepositFragment extends BasePresenterFragment<IWalletToDepo
 
     @Override
     public void wrappingDataSuccess(long amount) {
+        String amountFormatted = CurrencyFormatHelper.ConvertToRupiah(String.valueOf(amount));
         WalletToDepositThanksData successWalletDepositThanksPage =
                 new WalletToDepositThanksData.Builder()
                         .title(getString(R.string.tokocash_success_title_move_saldo))
                         .subTitle(getString(R.string.tokocash_success_subtitle_move_saldo))
                         .description(String.format(getString(R.string.tokocash_success_amount),
-                                CurrencyFormatHelper.ConvertToRupiah(String.valueOf(amount))))
+                                amountFormatted.replace(",", ".")))
                         .titleButtonPositive(getString(R.string.tokocash_move_page))
                         .typeResult(WalletToDepositThanksData.TypeResult.SUCCESS)
                         .iconResId(R.drawable.ic_wallet_to_deposit_thanks_success)
