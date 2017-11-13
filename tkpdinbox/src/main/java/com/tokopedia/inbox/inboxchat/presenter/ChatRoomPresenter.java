@@ -11,7 +11,6 @@ import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
-import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
@@ -31,10 +30,8 @@ import javax.inject.Inject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
-import rx.Subscriber;
 
 import static com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel.GET_CHAT_MODE;
-import static com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel.SEARCH_CHAT_MODE;
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_MESSAGE_ID;
 
 /**
@@ -84,7 +81,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
         listener = new ChatWebSocketListenerImpl(getView().getInterface());
         isFirstTime = true;
-        recreateWebSocket();
+        createWebSocket();
     }
 
     @Override
@@ -92,15 +89,19 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         super.detachView();
     }
 
-    public void recreateWebSocket() {
+    public void createWebSocket() {
 //        if(attempt > 5) {
-        getView().notifyConnectionWebSocket();
+//        getView().notifyConnectionWebSocket();
 //        }else {
-        Request request = new Request.Builder().url(magicString)
-                .header("Origin", "https://staging.tokopedia.com")
-                .build();
-        ws = client.newWebSocket(request, listener);
-        attempt++;
+        try {
+            Request request = new Request.Builder().url(magicString)
+                    .header("Origin", "https://staging.tokopedia.com")
+                    .build();
+            ws = client.newWebSocket(request, listener);
+            attempt++;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -293,7 +294,11 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void closeWebSocket() {
-        client.dispatcher().executorService().shutdown();
-        ws.close(1000, "Goodbye !");
+        try {
+            client.dispatcher().executorService().shutdown();
+            ws.close(1000, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

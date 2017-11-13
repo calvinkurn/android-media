@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -499,13 +498,6 @@ public class InboxChatFragment extends BaseDaggerFragment
 //        NetworkErrorHelper.hideEmptyState(getView());
     }
 
-    public void restackList(Bundle data) {
-        Log.i("restackList: ", data.toString());
-        String senderId = data.getString("sender_id");
-        String lastReply = data.getString("summary");
-        adapter.moveToTop(senderId, lastReply, true);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -515,7 +507,7 @@ public class InboxChatFragment extends BaseDaggerFragment
             else {
                 Bundle bundle = data.getExtras();
                 ReplyParcelableModel model = bundle.getParcelable("parcel");
-                adapter.moveToTop(model.getSenderId(), model.getMsg(), false);
+                adapter.moveToTop(model.getMessageId(), model.getMsg(), false);
             }
         }
     }
@@ -566,7 +558,8 @@ public class InboxChatFragment extends BaseDaggerFragment
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.moveToTop(String.valueOf(response.getData().getFromUid()), response.getData().getMessage().getCensoredReply(), true);
+                        adapter.moveToTop(String.valueOf(response.getData().getMsgId()),
+                                response.getData().getMessage().getCensoredReply(), true);
                     }
                 });
             default:
@@ -575,7 +568,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void newWebSocket() {
+    public void onErrorWebSocket() {
         if (getActivity() != null) {
             notifyConnectionWebSocket();
             presenter.recreateWebSocket();
@@ -621,7 +614,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                         @Override
                         public void onClick(View view) {
 //                        presenter.resetAttempt();
-//                        presenter.recreateWebSocket();
+//                        presenter.createWebSocket();
                             notifier.setVisibility(View.GONE);
                         }
                     });

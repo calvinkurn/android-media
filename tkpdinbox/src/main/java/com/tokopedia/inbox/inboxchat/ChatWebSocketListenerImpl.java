@@ -3,11 +3,7 @@ package com.tokopedia.inbox.inboxchat;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.inbox.inboxchat.domain.model.reply.ReplyData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
-import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponseData;
-import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageDetailFragmentPresenterImpl;
 
 import okhttp3.Response;
 import okhttp3.WebSocket;
@@ -57,6 +53,6 @@ public class ChatWebSocketListenerImpl extends WebSocketListener{
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
         Log.i("Error : " , "");
-        listener.newWebSocket();
+        listener.onErrorWebSocket();
     }
 }
