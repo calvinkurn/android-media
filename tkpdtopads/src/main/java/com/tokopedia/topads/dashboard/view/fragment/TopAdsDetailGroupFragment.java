@@ -11,9 +11,9 @@ import android.view.View;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -37,20 +37,13 @@ import javax.inject.Inject;
 
 public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<TopAdsDetailGroupPresenter, GroupAd> {
 
-    public interface OnTopAdsDetailGroupListener {
-        void startShowCase();
-    }
-
     public static final String GROUP_AD_PARCELABLE = "GROUP_AD_PARCELABLE";
-    private LabelView items;
-
-    private OnTopAdsDetailGroupListener listener;
-
     @Inject
     TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
-
     @Inject
     TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
+    private LabelView items;
+    private OnTopAdsDetailGroupListener listener;
 
     public static Fragment createInstance(GroupAd groupAd, String adId, boolean forceRefresh) {
         Fragment fragment = new TopAdsDetailGroupFragment();
@@ -124,7 +117,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     @Override
     protected void editAd() {
-        Intent intent = TopAdsEditGroupMainPageActivity.createIntent(getActivity(), ad, ad.getId(), isForceRefresh);
+        Intent intent = TopAdsEditGroupMainPageActivity.createIntent(getActivity(), null, ad.getId(), isForceRefresh);
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
@@ -256,5 +249,9 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     public View getProductView() {
         return items;
+    }
+
+    public interface OnTopAdsDetailGroupListener {
+        void startShowCase();
     }
 }
