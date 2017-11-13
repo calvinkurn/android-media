@@ -3,6 +3,7 @@ package com.tokopedia.posapp.view.widget;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.posapp.R;
@@ -113,12 +115,15 @@ public class DialogPasswordFragment extends DialogFragment implements DialogPass
     public void onCheckPasswordError(Throwable e) {
         progressDialog.dismiss();
         e.printStackTrace();
+        SnackbarManager.make(getActivity(), getActivity().getString(R.string.error_password_wrong), Snackbar.LENGTH_LONG).show();
+        listener.onError(getActivity().getString(R.string.error_password_wrong));
     }
 
     @Override
     public void onCheckPasswordError(String message) {
         progressDialog.dismiss();
-        listener.onError(message);
+        SnackbarManager.make(getActivity(), getActivity().getString(R.string.error_password_wrong), Snackbar.LENGTH_LONG).show();
+        listener.onError(getActivity().getString(R.string.error_password_wrong));
     }
 
     @Override

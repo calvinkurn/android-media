@@ -128,4 +128,9 @@ public class InvoiceActivity extends BasePresenterActivity {
         }
         return super.onKeyUp(keyCode, event);
     }
+
+    @Override
+    public void onBackPressed() {
+        // no-op
+    }
 }

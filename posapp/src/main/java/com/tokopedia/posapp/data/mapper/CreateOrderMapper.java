@@ -37,8 +37,9 @@ public class CreateOrderMapper implements Func1<Response<TkpdResponse>, CreateOr
                     new TypeToken<GeneralResponse<PaymentAction>>(){}.getType()
             );
 
-            if(paymentAction != null && paymentAction.getData() != null) {
-                CreateOrderDomain createOrderDomain = new CreateOrderDomain();
+            CreateOrderDomain createOrderDomain = new CreateOrderDomain();
+            if(paymentAction != null
+                    && paymentAction.getData() != null) {
                 createOrderDomain.setOrderId(paymentAction.getData().getOrderId());
                 createOrderDomain.setInvoiceRef(paymentAction.getData().getInvoiceRef());
                 createOrderDomain.setStatus(true);

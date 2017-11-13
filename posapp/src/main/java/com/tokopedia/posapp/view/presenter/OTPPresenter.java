@@ -102,13 +102,8 @@ public class OTPPresenter implements OTP.Presenter {
             try {
                 JSONObject response = new JSONObject(jsonData);
                 if (!response.isNull(PARAM_ERRORS)) {
-                    JSONArray errors = response.getJSONArray(PARAM_ERRORS);
-                    List<String> errorList = new ArrayList<>();
-                    for (int i = 0; i < errors.length(); i++) {
-                        JSONObject error = errors.getJSONObject(i);
-                        errorList.add(error.getString(PARAM_DETAIL));
-                    }
-                    viewListener.onLoadDataError(errorList);
+                    viewListener.onLoadDataError(response.optJSONArray(PARAM_ERRORS)
+                            .getJSONObject(0).optString(PARAM_DETAIL));
                     return;
                 }
 
@@ -132,10 +127,10 @@ public class OTPPresenter implements OTP.Presenter {
                         viewListener.getOTPWebview(otpData);
                     }
                 } else {
-                    viewListener.onLoadDataError(new Exception(EMPTY_URL));
+                    viewListener.onLoadDataError(EMPTY_URL);
                 }
             } catch (Exception e) {
-                viewListener.onLoadDataError(e);
+                viewListener.onLoadDataError(e.getMessage());
             }
         }
     }
@@ -206,7 +201,7 @@ public class OTPPresenter implements OTP.Presenter {
                         }
                     });
         } else {
-            viewListener.onLoadDataError(new Exception("Data error"));
+            viewListener.onPaymentError(new Exception("Data error"));
         }
     }
 

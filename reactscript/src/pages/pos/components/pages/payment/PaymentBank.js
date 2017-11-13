@@ -227,8 +227,6 @@ class PaymentBank extends Component {
             }], ...rowData.installment_list]);
       }
 
-      this.props.dispatch(selectBank(rowData.bank_id));
-
       this.setState({
         selectedBank: rowData.bank_name,
         selectIdBank: rowData.bank_id,
@@ -237,6 +235,8 @@ class PaymentBank extends Component {
         selectedBankData:rowData,
         emiList: emiList
       });
+
+      this.props.dispatch(selectBank(rowData.bank_id));
     }
   }
 

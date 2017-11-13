@@ -31,7 +31,7 @@ class CartItem extends Component {
         <View style={styles.container}>
           <PopUp
             visible={this.state.show}
-            animationType='fade'
+            animationType='none'
             onBackPress={() => { this.togglePopUp(false) }}
             title='Konfirmasi Pembatalan'
             subTitle={`${item.product.product_name} - senilai ${item.product.product_price}`}

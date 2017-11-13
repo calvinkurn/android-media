@@ -24,6 +24,8 @@ export const historyTransaction = (state = {
           ...state,
           items: [...state.items, ...action.payload.data.data.list],
           page: action.payload.page,
+          outlet_name: action.payload.outlet_name,
+          shop_name: action.payload.shop_name,
           isFetching: false,
           isSuccess: true
         }

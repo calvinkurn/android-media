@@ -64,10 +64,15 @@ public class DrawerPosHelper extends DrawerHelper
                 R.drawable.icon_home,
                 TkpdState.DrawerPosition.INDEX_HOME,
                 true));
-        data.add(new DrawerItem(context.getString(R.string.drawer_title_pos_riwayat_tx),
-                R.drawable.ic_hourglass,
-                TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY,
-                true));
+
+        if(PosSessionHandler.getOutletId(context) != null
+                && !PosSessionHandler.getOutletId(context).isEmpty()) {
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_pos_riwayat_tx),
+                    R.drawable.ic_hourglass,
+                    TkpdState.DrawerPosition.POS_TRANSACTION_HISTORY,
+                    true));
+        }
+
         data.add(new DrawerItem(context.getString(R.string.drawer_title_pos_choose_outlet),
                 R.drawable.ic_store,
                 TkpdState.DrawerPosition.POS_OUTLET,
@@ -144,7 +149,7 @@ public class DrawerPosHelper extends DrawerHelper
 
                                 @Override
                                 public void onError(String message) {
-                                    SnackbarManager.make(context, message, Snackbar.LENGTH_LONG).show();
+
                                 }
                             }
                     );
@@ -162,7 +167,7 @@ public class DrawerPosHelper extends DrawerHelper
 
                                 @Override
                                 public void onError(String message) {
-                                    SnackbarManager.make(context, message, Snackbar.LENGTH_LONG).show();
+
                                 }
                             }
                     );

@@ -23,9 +23,7 @@ public interface OTP {
 
         void postOTPWebview(OTPData data);
 
-        void onLoadDataError(Throwable e);
-
-        void onLoadDataError(List<String> errorList);
+        void onLoadDataError(String errorMessage);
 
         void onPaymentError(Throwable e);
 

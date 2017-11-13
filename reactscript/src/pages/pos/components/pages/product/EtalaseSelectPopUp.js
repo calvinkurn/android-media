@@ -32,7 +32,7 @@ class EtalaseSelectPopUp extends Component {
     const selectedEtalase = this.props.options.map(o => o.id == value)
     return (
       < Modal
-        animationType='fade'
+        animationType='none'
         transparent={true}
         hardwareAccelerated={true}
         visible={visible}

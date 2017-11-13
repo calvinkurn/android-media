@@ -33,7 +33,6 @@ class payment extends Component {
     };
   }
 
-
   _handleButtonPress = () => {
     const { 
       selectedBankData, 
@@ -132,8 +131,6 @@ class payment extends Component {
     }
     // headerMode: 'none'
   }
-
-
 
   render() {
     const { dataPaymentBank, total_payment_with_rates_or_fees } = this.props

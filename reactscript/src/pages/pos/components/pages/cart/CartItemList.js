@@ -92,7 +92,7 @@ class CartItemList extends Component {
                   <View>
                     <PopUp
                       visible={this.state.showPopUp}
-                      animationType='fade'
+                      animationType='none'
                       onBackPress={() => { this.toggleScreen(false) }}
                       title='Konfirmasi Pembatalan'
                       subTitle='Apakah Anda yakin untuk menghapus semua daftar belanjaan?'

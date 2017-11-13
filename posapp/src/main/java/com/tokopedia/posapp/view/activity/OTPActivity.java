@@ -72,6 +72,11 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public Object getComponent() {
         return getApplicationComponent();
     }
@@ -146,16 +151,9 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
     }
 
     @Override
-    public void onLoadDataError(Throwable e) {
-        e.printStackTrace();
-        CommonUtils.UniversalToast(this, e.getMessage());
-        goToErrorPage("Error", e.getMessage());
-    }
-
-    @Override
-    public void onLoadDataError(List<String> errorList) {
-        if(errorList.get(0) != null) CommonUtils.UniversalToast(this, errorList.get(0));
-        goToErrorPage("Error", errorList.get(0));
+    public void onLoadDataError(String errorMessage) {
+        tkpdProgressDialog.dismiss();
+        goToErrorPage(getString(R.string.transaction_error_title), getString(R.string.transaction_error_message));
     }
 
     @Override

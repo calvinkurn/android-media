@@ -34,7 +34,7 @@ public class CheckPasswordSubscriber extends Subscriber<CheckPasswordDomain> {
         if(result.isStatus()) {
             view.onCheckPasswordSuccess();
         } else {
-            view.onCheckPasswordError(result.getMessage());
+            view.onCheckPasswordError("Password yang anda masukkan salah");
         }
     }
 }

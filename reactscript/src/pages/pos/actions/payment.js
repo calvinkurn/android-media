@@ -5,6 +5,8 @@ import {
   getShopId,
   getBaseAPI,
   getEnv,
+  getAddrName,
+  getShopName,
 } from '../lib/utility'
 
 
@@ -63,9 +65,7 @@ const makePaymentV2 = (api_url, data, gateway_code) => {
 
   return NetworkModule.getResponseJson(`${api_url.api_url_pcidss}`, `POST`, JSON.stringify(data_params), true)
     .then(res => {
-      // console.log(res)
       const jsonResponse = JSON.parse(res)
-      // console.log(jsonResponse)
       return jsonResponse
       // if (jsonResponse.status === '200 Ok'){
       //   if (jsonResponse.data.errors === null){
@@ -124,6 +124,9 @@ const fetchTransactionHistory = async (page) => {
   const api_url = await getBaseAPI(env)
   const user_id = await getUserId()
   const addr_id = await getAddrId()
+  const outlet_name = await getAddrName()
+  const shop_name = await getShopName()
+
   const data = {
     user_id: parseInt(user_id),
     addr_id: parseInt(addr_id),
@@ -132,7 +135,7 @@ const fetchTransactionHistory = async (page) => {
     os_type: '1'
   }
   const txHistory = await apiGetTransactionHistory(`${api_url.base_api_url}o2o/v1/order/get_history`, data)
-  const data_response = { ...txHistory, page }
+  const data_response = { ...txHistory, page, outlet_name, shop_name }
   return data_response
 }
 
