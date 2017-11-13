@@ -123,6 +123,16 @@
     <string name="activity_label_flight_booking_phone_code">Kode Telepon Negara</string>
     <string name="activity_label_flight_nationality">Kewarganegaraan</string>
     <string name="activity_label_flight_issuing_country">Negara Penerbit</string>
+    <string name="flight_label_adult">Dewasa</string>
+    <string name="flight_label_child">Anak</string>
+    <string name="flight_label_infant">Bayi</string>
+    <string name="flight_label_finish_review_time">Selesaikan Pesanan Anda Dalam</string>
+    <string name="flight_label_departure_flight">Penerbangan Pergi</string>
+    <string name="flight_label_passenger_data">Data Penumpang</string>
+    <string name="flight_label_warn_to_check_again">Periksa kembali rincian pesanan sebelum lanjut ke halaman pembayaran.</string>
+    <string name="flight_label_detail_price">Rincian Harga</string>
+    <string name="flight_label_continued_payment">Lanjut Pembayaran</string>
+    <string name="flight_label_return_flight">Penerbangan Pulang</string>
     <string name="flight_booking_toolbar_title">Isi data pemesan</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
     <string name="flight_select_passenger_toolbar_title">Penumpang</string>

@@ -18,6 +18,8 @@ import com.tokopedia.flight.search.data.cloud.model.response.Route;
 public class FlightDetailViewHolder extends BaseViewHolder<Route> {
 
     public static final String FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String FORMAT_TIME = "HH:mm";
+    public static final String FORMAT_DATE = "EEEE, dd LLLL yyyy";
     private ImageView imageAirline;
     private TextView airlineName;
     private TextView airlineCode;
@@ -60,16 +62,16 @@ public class FlightDetailViewHolder extends BaseViewHolder<Route> {
         airlineName.setText(route.getAirlineName());
         airlineCode.setText(route.getFlightNumber());
         setRefundableInfo(route);
-        departureTime.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, "HH:mm", route.getDepartureTimestamp()));
-        departureDate.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, "EEEE, dd LLLL yyyy", route.getDepartureTimestamp()));
+        departureTime.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_TIME, route.getDepartureTimestamp()));
+        departureDate.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_DATE, route.getDepartureTimestamp()));
         setColorCircle(route);
-        departureAirportName.setText(route.getDepartureAirport());
-        departureAirportDesc.setText(route.getDepartureAirport());
+        departureAirportName.setText(String.format("%s (%s)", route.getDepartureAirportCity(), route.getDepartureAirport()));
+        departureAirportDesc.setText(route.getDepartureAirportName());
         flightTime.setText(route.getDuration());
-        arrivalTime.setText(DateFormatUtils.formatDate("yyyy-MM-dd'T'HH:mm:ss'Z'", "HH:mm", route.getArrivalTimestamp()));
-        arrivalDate.setText(DateFormatUtils.formatDate("yyyy-MM-dd'T'HH:mm:ss'Z'", "EEEE, dd LLLL yyyy", route.getArrivalTimestamp()));
-        arrivalAirportName.setText(route.getArrivalAirport());
-        arrivalAirportDesc.setText(route.getArrivalAirport());
+        arrivalTime.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_TIME, route.getArrivalTimestamp()));
+        arrivalDate.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_DATE, route.getArrivalTimestamp()));
+        arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirport()));
+        arrivalAirportDesc.setText(route.getArrivalAirportName());
         transitInfo.setText(route.getLayover());
         imageAirline.setImageResource(FlightAirlineIconUtil.getImageResource(route.getAirline()));
     }

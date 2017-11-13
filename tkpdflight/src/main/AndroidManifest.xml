@@ -56,9 +56,10 @@
             android:label="@string/activity_label_flight_nationality"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".booking.view.activity.FlightBookingIssuingCountry"
+            android:name=".booking.view.activity.FlightBookingIssuingCountryActivity"
             android:label="@string/activity_label_flight_issuing_country"
             android:screenOrientation="portrait"/>
+        <activity android:name=".review.FlightBookingReviewActivity" />
     </application>
 
 </manifest>
