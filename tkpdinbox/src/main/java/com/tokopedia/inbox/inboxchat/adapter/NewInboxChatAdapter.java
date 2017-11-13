@@ -114,14 +114,15 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void addChecked(int position) {
-        if(listMove.size()<= MAX_MESSAGE_DELETE){
+        if(listMove.size()+1<= MAX_MESSAGE_DELETE){
             ChatListViewModel item = (ChatListViewModel) list.get(position);
             item.setChecked(true);
             Pair<ChatListViewModel, Integer> pair = new Pair<>(item, position);
             listMove.add(pair);
             notifyItemChanged(position);
         }else{
-            presenter.getView().showErrorWarningDelete();
+            removeChecked(position);
+            presenter.getView().showErrorWarningDelete(MAX_MESSAGE_DELETE);
         }
     }
 
@@ -226,27 +227,33 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     public void moveToTop(String senderId, String lastReply, boolean showNotif) {
         String currentId;
         for (int i = 0; i < list.size(); i++) {
-            ChatListViewModel temp = (ChatListViewModel) list.get(i);
-            currentId = String.valueOf(temp.getSenderId());
-            if (currentId.equals(senderId)) {
-                if (showNotif) {
-                    int unread = temp.getUnreadCounter();
-                    unread++;
-                    temp.setMessage(lastReply);
-                    temp.setUnreadCounter(unread);
-                    temp.setReadStatus(STATE_CHAT_UNREAD);
-                }else{
-                    temp.setMessage(lastReply);
-                    temp.setUnreadCounter(0);
-                    temp.setReadStatus(STATE_CHAT_READ);
-                    temp.setTime(String.valueOf(new Date().getTime()));
+            try {
+                ChatListViewModel temp = (ChatListViewModel) list.get(i);
+                currentId = String.valueOf(temp.getSenderId());
+                if (currentId.equals(senderId)) {
+                    if (showNotif) {
+                        int unread = temp.getUnreadCounter();
+                        unread++;
+                        temp.setMessage(lastReply);
+                        temp.setUnreadCounter(unread);
+                        temp.setReadStatus(STATE_CHAT_UNREAD);
+                    }else{
+                        temp.setMessage(lastReply);
+                        temp.setUnreadCounter(0);
+                        temp.setReadStatus(STATE_CHAT_READ);
+                        temp.setTime(String.valueOf(new Date().getTime()));
+                    }
+                    list.remove(i);
+                    notifyItemRemoved(i);
+                    list.add(0, temp);
+                    notifyItemInserted(0);
+                    notifyItemRangeChanged(0, i);
+                    presenter.moveViewToTop();
+                    break;
                 }
-                list.remove(i);
-                notifyItemRemoved(i);
-                list.add(0, temp);
-                notifyItemInserted(0);
-                notifyItemRangeChanged(0, i);
-                presenter.moveViewToTop();
+
+            }catch (ClassCastException e){
+                e.printStackTrace();
                 break;
             }
         }
@@ -287,24 +294,28 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     public void showTyping(int msgId) {
         for (int i = 0; i < list.size(); i++) {
-            ChatListViewModel tempModel = ((ChatListViewModel) list.get(i));
-            String temp = tempModel.getId();
-            if(msgId == Integer.valueOf(temp)){
-                tempModel.setTyping(true);
-                notifyItemChanged(i);
-                break;
+            if(list.get(i) instanceof ChatListViewModel){
+                ChatListViewModel tempModel = ((ChatListViewModel) list.get(i));
+                String temp = tempModel.getId();
+                if(msgId == Integer.valueOf(temp)){
+                    tempModel.setTyping(true);
+                    notifyItemChanged(i);
+                    break;
+                }
             }
         }
     }
 
     public void removeTyping(int msgId) {
         for (int i = 0; i < list.size(); i++) {
-            ChatListViewModel tempModel = ((ChatListViewModel) list.get(i));
-            String temp = tempModel.getId();
-            if(msgId == Integer.valueOf(temp)){
-                tempModel.setTyping(false);
-                notifyItemChanged(i);
-                break;
+            if(list.get(i) instanceof ChatListViewModel) {
+                ChatListViewModel tempModel = ((ChatListViewModel) list.get(i));
+                String temp = tempModel.getId();
+                if (msgId == Integer.valueOf(temp)) {
+                    tempModel.setTyping(false);
+                    notifyItemChanged(i);
+                    break;
+                }
             }
         }
     }

@@ -181,8 +181,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     public void call(Boolean aBoolean) {
                         Log.i("call: ", "stopTyping");
                         try {
-                            presenter.stopTyping(getArguments().getString(ChatRoomActivity
-                                    .PARAM_MESSAGE_ID));
+                            if(aBoolean) {
+                                presenter.stopTyping(getArguments().getString(ChatRoomActivity
+                                        .PARAM_MESSAGE_ID));
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -374,8 +376,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     action.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            presenter.onOpenWebSocket();
-                            presenter.recreateWebSocket();
+//                            presenter.onOpenWebSocket();
+//                            presenter.recreateWebSocket();
+                            notifier.setVisibility(View.GONE);
                         }
                     });
                 }
@@ -606,8 +609,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void newWebSocket() {
-        if (getActivity() != null && presenter != null)
+        if (getActivity() != null && presenter != null) {
+            notifyConnectionWebSocket();
             presenter.recreateWebSocket();
+        }
     }
 
     @Override
@@ -617,9 +622,18 @@ public class ChatRoomFragment extends BaseDaggerFragment
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    notifier.setVisibility(View.GONE);
+                    TextView title = (TextView) notifier.findViewById(R.id.title);
+                    title.setText("Terhubung!");
+                    TextView action = (TextView) notifier.findViewById(R.id.action);
+                    action.setVisibility(View.GONE);
                 }
             });
+            notifier.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    notifier.setVisibility(View.GONE);
+                }
+            }, 1500);
             presenter.onOpenWebSocket();
         }
     }

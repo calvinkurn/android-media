@@ -206,7 +206,7 @@
                 android:background="@drawable/button_selector"
                 android:gravity="center"
                 android:padding="@dimen/margin_2"
-                android:text="Kirim Pesan"
+                android:text="Chat Penjual"
                 android:textAllCaps="false"
                 android:textSize="@dimen/text_size_small"
                 tools:ignore="HardcodedText" />

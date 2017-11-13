@@ -1,15 +1,18 @@
 package com.tokopedia.inbox.inboxchat.fragment;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,9 +23,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
@@ -50,6 +51,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -189,7 +191,9 @@ public class InboxChatFragment extends BaseDaggerFragment
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
                 if (item.getItemId() == R.id.action_delete){
-                    presenter.deleteMessage();
+                    List<Pair> temp = new ArrayList<>();
+                    temp.addAll(adapter.getListMove());
+                    askOption(presenter.getSelected(), temp).show();
                     mode.finish();
                     return true;
                 }
@@ -205,6 +209,37 @@ public class InboxChatFragment extends BaseDaggerFragment
             }
         };
     }
+
+
+    private AlertDialog askOption(int selected, final List<Pair> listMove)
+    {
+        AlertDialog myQuittingDialogBox =new AlertDialog.Builder(getActivity())
+                //set message, title, and icon
+                .setTitle("Delete")
+                .setMessage("Apakah anda yakin menghapus "+selected+ " pesan?")
+                .setIcon(R.drawable.ic_trash)
+
+                .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        presenter.deleteMessage(listMove);
+                        dialog.dismiss();
+                    }
+
+                })
+                .setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+
+                    }
+                })
+                .create();
+        return myQuittingDialogBox;
+
+    }
+
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -401,8 +436,8 @@ public class InboxChatFragment extends BaseDaggerFragment
 
 
     @Override
-    public void showErrorWarningDelete() {
-        NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.delete_message_warn));
+    public void showErrorWarningDelete(int maxMessageDelete) {
+        NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.delete_message_warn) + " " + maxMessageDelete);
     }
 
     @Override
@@ -519,7 +554,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onIncomingEvent(WebSocketResponse response) {
+    public void onIncomingEvent(final WebSocketResponse response) {
         switch (response.getCode()) {
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
                 adapter.showTyping(response.getData().getMsgId());
@@ -527,6 +562,13 @@ public class InboxChatFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
                 adapter.removeTyping(response.getData().getMsgId());
                 break;
+            case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.moveToTop(String.valueOf(response.getData().getFromUid()), response.getData().getMessage().getCensoredReply(), true);
+                    }
+                });
             default:
                 break;
         }
@@ -534,8 +576,10 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void newWebSocket() {
-        if (getActivity() != null)
+        if (getActivity() != null) {
+            notifyConnectionWebSocket();
             presenter.recreateWebSocket();
+        }
     }
 
     @Override
@@ -544,7 +588,9 @@ public class InboxChatFragment extends BaseDaggerFragment
             @Override
             public void run() {
                 TextView title = (TextView) notifier.findViewById(R.id.title);
-                title.setText("Terhubung !!!");
+                title.setText("Terhubung!");
+                TextView action = (TextView) notifier.findViewById(R.id.action);
+                action.setVisibility(View.GONE);
             }
         });
 
@@ -560,25 +606,28 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void notifyConnectionWebSocket() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                notifier.setVisibility(View.VISIBLE);
-                TextView title = (TextView) notifier.findViewById(R.id.title);
+        if (getActivity() != null && presenter != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    notifier.setVisibility(View.VISIBLE);
+                    TextView title = (TextView) notifier.findViewById(R.id.title);
 
-                TextView action = (TextView) notifier.findViewById(R.id.action);
+                    TextView action = (TextView) notifier.findViewById(R.id.action);
 
-                title.setText("Terjadi gangguan pada koneksi. Mencpba menghubungkan");
-                action.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                    title.setText(R.string.error_no_connection_retrying);
+                    action.setVisibility(View.VISIBLE);
+                    action.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 //                        presenter.resetAttempt();
 //                        presenter.recreateWebSocket();
-                        notifier.setVisibility(View.GONE);
-                    }
-                });
-            }
-        });
+                            notifier.setVisibility(View.GONE);
+                        }
+                    });
+                }
+            });
+        }
     }
 
     @Override

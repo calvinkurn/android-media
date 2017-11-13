@@ -50,8 +50,10 @@
         <LinearLayout
             android:id="@+id/notifier"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/red_500"
+            android:layout_height="wrap_content"
+            android:minHeight="56dp"
+            android:background="#333333"
+            android:alpha="0.5"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp"
@@ -66,11 +68,13 @@
                 tools:text="JJJJ"
                 android:textColor="@color/white"/>
 
-            <ImageView
+            <TextView
                 android:id="@+id/action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_close_24dp"/>
+                android:src="@drawable/ic_close_24dp"
+                android:text="@string/title_try_again"
+                android:textColor="@color/white"/>
 
         </LinearLayout>
     </RelativeLayout>
