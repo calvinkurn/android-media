@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -60,8 +62,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private FlightDashboardViewModel viewModel;
 
     AppCompatImageView reverseAirportImageView;
-    TextInputView airportDepartureTextInputView;
-    TextInputView airportArrivalTextInputView;
+    LinearLayout airportDepartureLayout;
+    AppCompatTextView airportDepartureTextInputView;
+    AppCompatTextView airportArrivalTextInputView;
+    LinearLayout airportArrivalLayout;
     TextInputView passengerTextInputView;
     TextInputView classTextInputView;
     TextInputView departureDateTextInputView;
@@ -95,8 +99,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         oneWayTripAppCompatButton = (AppCompatButton) view.findViewById(R.id.button_one_way_trip);
         roundTripAppCompatButton = (AppCompatButton) view.findViewById(R.id.button_round_trip);
         reverseAirportImageView = (AppCompatImageView) view.findViewById(R.id.image_reverse_airport);
-        airportDepartureTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_departure_airport);
-        airportArrivalTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_arrival_airport);
+        airportDepartureLayout = (LinearLayout) view.findViewById(R.id.departure_airport_layout);
+        airportArrivalLayout = (LinearLayout) view.findViewById(R.id.arrival_airport_layout);
+        airportDepartureTextInputView = (AppCompatTextView) view.findViewById(R.id.tv_departure_airport_label);
+        airportArrivalTextInputView = (AppCompatTextView) view.findViewById(R.id.tv_arrival_airport_label);
         passengerTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_passenger);
         classTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_class);
         departureDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_departure);
@@ -113,10 +119,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         roundTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                oneWayTripAppCompatButton.setTextColor(getResources().getColor(R.color.white));
                 presenter.onRoundTripChecked();
-                roundTripAppCompatButton.setSelected(true);
-                oneWayTripAppCompatButton.setSelected(false);
             }
         });
 
@@ -126,14 +129,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 presenter.onSearchTicketButtonClicked();
             }
         });
-        airportDepartureTextInputView.setOnClickListener(new View.OnClickListener() {
+        airportDepartureLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = FlightAirportPickerActivity.createInstance(getActivity());
                 startActivityForResult(intent, REQUEST_CODE_AIRPORT_DEPARTURE);
             }
         });
-        airportArrivalTextInputView.setOnClickListener(new View.OnClickListener() {
+        airportArrivalLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = FlightAirportPickerActivity.createInstance(getActivity());
@@ -224,12 +227,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             airportDepartureTextInputView.setText(viewModel.getDepartureAirportFmt());
         } else {
             airportDepartureTextInputView.setText(null);
+            airportDepartureTextInputView.setHint(getString(R.string.flight_dashboard_departure_airport_hint));
         }
-
         if (viewModel.getArrivalAirport() != null) {
             airportArrivalTextInputView.setText(viewModel.getArrivalAirportFmt());
         } else {
             airportArrivalTextInputView.setText(null);
+            airportArrivalTextInputView.setHint(getString(R.string.flight_dashboard_arrival_airport_hint));
         }
         if (viewModel.getFlightClass() != null) {
             classTextInputView.setText(viewModel.getFlightClass().getTitle());
@@ -262,11 +266,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             airportDepartureTextInputView.setText(viewModel.getDepartureAirportFmt());
         } else {
             airportDepartureTextInputView.setText(null);
+            airportDepartureTextInputView.setHint(getString(R.string.flight_dashboard_departure_airport_hint));
         }
         if (viewModel.getArrivalAirport() != null) {
             airportArrivalTextInputView.setText(viewModel.getArrivalAirportFmt());
         } else {
             airportArrivalTextInputView.setText(null);
+            airportArrivalTextInputView.setHint(getString(R.string.flight_dashboard_arrival_airport_hint));
         }
         if (viewModel.getFlightClass() != null) {
             classTextInputView.setText(viewModel.getFlightClass().getTitle());

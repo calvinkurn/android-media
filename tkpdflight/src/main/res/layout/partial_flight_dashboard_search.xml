@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/margin_sm">
+    android:paddingTop="@dimen/padding_small">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,53 +27,84 @@
             android:text="@string/flight_search_return" />
     </LinearLayout>
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:background="@drawable/bg_flight_dashboard_destination_arrival"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="65dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/departure_airport_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:descendantFocusability="beforeDescendants"
+                android:orientation="vertical"
+                android:paddingEnd="@dimen/padding_med"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_med"
+                android:paddingStart="@dimen/padding_small">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/font_caption"
-                    android:text="@string/flight_search_airport_departure_title" />
+                    android:layout_marginBottom="@dimen/margin_vvs"
+                    android:text="@string/flight_search_airport_departure_title"
+                    android:textSize="@dimen/font_caption" />
 
                 <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_departure_airport_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Penerbangan Asal"
+                    android:hint="@string/flight_dashboard_departure_airport_hint"
+                    android:textColorHint="@color/grey_400"
                     android:textSize="@dimen/font_body2" />
 
             </LinearLayout>
-
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_line_separator" />
 
-            <com.tokopedia.flight.dashboard.view.widget.TextInputView
-                android:id="@+id/text_input_view_arrival_airport"
+            <LinearLayout
+                android:id="@+id/arrival_airport_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_vs"
                 android:layout_weight="1"
-                app:tiv_hint_text="@string/flight_search_airport_arrival_title"
-                app:tiv_title_text="@string/flight_search_airport_arrival_title" />
+                android:descendantFocusability="beforeDescendants"
+                android:orientation="vertical"
+                android:paddingEnd="@dimen/padding_small"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_small"
+                android:paddingStart="@dimen/padding_med">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_vvs"
+                    android:gravity="end"
+                    android:text="@string/flight_search_airport_arrival_title"
+                    android:textSize="@dimen/font_caption" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_arrival_airport_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:hint="@string/flight_dashboard_arrival_airport_hint"
+                    android:textColorHint="@color/grey_400"
+                    android:textSize="@dimen/font_body2" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <android.support.v7.widget.AppCompatImageView
@@ -84,36 +115,42 @@
             android:src="@drawable/ic_flight_reverse_horizontal" />
     </FrameLayout>
 
-
-    <com.tokopedia.flight.dashboard.view.widget.TextInputView
-        android:id="@+id/text_input_view_date_departure"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_ms"
-        app:tiv_icon="@drawable/ic_flight_calendar"
-        app:tiv_title_text="@string/flight_search_date_departure_title" />
+        android:orientation="vertical"
+        android:padding="@dimen/margin_sm">
 
-    <com.tokopedia.flight.dashboard.view.widget.TextInputView
-        android:id="@+id/text_input_view_date_return"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_ms"
-        app:tiv_icon="@drawable/ic_flight_calendar"
-        app:tiv_title_text="@string/flight_search_date_arrival_title" />
+        <com.tokopedia.flight.dashboard.view.widget.TextInputView
+            android:id="@+id/text_input_view_date_departure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_ms"
+            app:tiv_icon="@drawable/ic_flight_calendar"
+            app:tiv_title_text="@string/flight_search_date_departure_title" />
 
-    <com.tokopedia.flight.dashboard.view.widget.TextInputView
-        android:id="@+id/text_input_view_passenger"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_ms"
-        app:tiv_icon="@drawable/ic_flight_passenger"
-        app:tiv_title_text="@string/flight_search_passenger_title" />
+        <com.tokopedia.flight.dashboard.view.widget.TextInputView
+            android:id="@+id/text_input_view_date_return"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_ms"
+            app:tiv_icon="@drawable/ic_flight_calendar"
+            app:tiv_title_text="@string/flight_search_date_arrival_title" />
 
-    <com.tokopedia.flight.dashboard.view.widget.TextInputView
-        android:id="@+id/text_input_view_class"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_ms"
-        app:tiv_icon="@drawable/ic_flight_class"
-        app:tiv_title_text="@string/flight_search_passenger_class_title" />
+        <com.tokopedia.flight.dashboard.view.widget.TextInputView
+            android:id="@+id/text_input_view_passenger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_ms"
+            app:tiv_icon="@drawable/ic_flight_passenger"
+            app:tiv_title_text="@string/flight_search_passenger_title" />
+
+        <com.tokopedia.flight.dashboard.view.widget.TextInputView
+            android:id="@+id/text_input_view_class"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_ms"
+            app:tiv_icon="@drawable/ic_flight_class"
+            app:tiv_title_text="@string/flight_search_passenger_class_title" />
+    </LinearLayout>
 </LinearLayout>
