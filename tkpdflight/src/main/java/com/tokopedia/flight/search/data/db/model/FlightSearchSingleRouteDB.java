@@ -14,6 +14,7 @@ import com.tokopedia.flight.search.data.cloud.model.response.Attributes;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
+import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
 import java.util.List;
 
@@ -89,7 +90,7 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
     String airline;
 
     @Column(name = IS_REFUNDABLE)
-    boolean isRefundable;
+    int isRefundable;
 
     @Override
     public int getType() {
@@ -130,15 +131,22 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         this.fare = gson.toJson(fare);
 
         this.airline = "";
-        this.isRefundable = true;
+        int refundableCount = 0;
         for (int i = 0, sizei = routeList.size(); i < sizei; i++) {
-            if (!routeList.get(i).getRefundable()) {
-                isRefundable = false;
+            if (routeList.get(i).getRefundable()) {
+                refundableCount++;
             }
             if (!TextUtils.isEmpty(airline)) {
                 airline += "-";
             }
             airline += routeList.get(i).getAirline();
+        }
+        if (refundableCount == routeList.size()) {
+            this.isRefundable = RefundableEnum.REFUNDABLE.getId();
+        } else if (refundableCount == 0){
+            this.isRefundable = RefundableEnum.NOT_REFUNDABLE.getId();
+        } else {
+            this.isRefundable = RefundableEnum.PARTIAL_REFUNDABLE.getId();
         }
     }
 
@@ -218,7 +226,13 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         return airline;
     }
 
-    public boolean isRefundable() {
-        return isRefundable;
+    public RefundableEnum getIsRefundable(){
+        if (isRefundable == RefundableEnum.REFUNDABLE.getId()) {
+            return RefundableEnum.REFUNDABLE;
+        } else if (isRefundable == RefundableEnum.NOT_REFUNDABLE.getId()) {
+            return RefundableEnum.NOT_REFUNDABLE;
+        } else {
+            return RefundableEnum.PARTIAL_REFUNDABLE;
+        }
     }
 }

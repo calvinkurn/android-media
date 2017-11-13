@@ -70,6 +70,7 @@
     <string name="more_than_2_transit">Lebih dari 2 transit</string>
     <string name="refundable">Refundable</string>
     <string name="non_refundable">Non-Refundable</string>
+    <string name="partial_refundable">Partial Refundable</string>
     <string name="flight_search_filter_label">Filter</string>
     <string name="flight_search_sort_label">Sort</string>
     <string name="flight_search_sort_title">Urutkan</string>

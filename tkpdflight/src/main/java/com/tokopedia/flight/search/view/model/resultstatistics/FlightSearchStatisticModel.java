@@ -136,11 +136,9 @@ public class FlightSearchStatisticModel implements Parcelable {
             }
 
             // populate distinct refundable
-            boolean refundable = flightSearchViewModel.isRefundable();
-            RefundableEnum refundableTypeDef = refundable? RefundableEnum.REFUNDABLE : RefundableEnum.NOT_REFUNDABLE;
-
-            if (!refundableTypeList.contains(refundableTypeDef)) {
-                refundableTypeList.add(refundableTypeDef);
+            RefundableEnum refundable = flightSearchViewModel.isRefundable();
+            if (!refundableTypeList.contains(refundable)) {
+                refundableTypeList.add(refundable);
             }
 
         }
