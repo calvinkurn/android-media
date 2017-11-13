@@ -53,7 +53,6 @@
             android:layout_height="wrap_content"
             android:minHeight="56dp"
             android:background="#333333"
-            android:alpha="0.5"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp"
@@ -74,6 +73,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_close_24dp"
                 android:text="@string/title_try_again"
+                android:textStyle="bold"
                 android:textColor="@color/white"/>
 
         </LinearLayout>

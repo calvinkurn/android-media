@@ -614,7 +614,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                         @Override
                         public void onClick(View view) {
 //                        presenter.resetAttempt();
-//                        presenter.recreateWebSocket();
+//                        presenter.createWebSocket();
                             notifier.setVisibility(View.GONE);
                         }
                     });
