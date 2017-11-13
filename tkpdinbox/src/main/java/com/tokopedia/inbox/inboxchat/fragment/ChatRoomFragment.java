@@ -421,6 +421,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         finishLoading();
         replyColumn.setText("");
         scrollToBottom();
+
+        getActivity().setResult(Activity.RESULT_OK);
     }
 
     public void onSuccessSendReply(final WebSocketResponse response) {

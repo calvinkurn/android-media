@@ -11,6 +11,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.EmptyChatModel;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
@@ -18,6 +19,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TimeMachineListViewModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -237,6 +239,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
                     temp.setMessage(lastReply);
                     temp.setUnreadCounter(0);
                     temp.setReadStatus(STATE_CHAT_READ);
+                    temp.setTime(String.valueOf(new Date().getTime()));
                 }
                 list.remove(i);
                 notifyItemRemoved(i);
