@@ -4,31 +4,25 @@ package com.tokopedia.inbox.inboxchat.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
-import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
-
-import java.util.Calendar;
-
 public class ReplyParcelableModel implements Parcelable{
 
-    public ReplyParcelableModel(String senderId, String msg, String replyTime) {
-        this.senderId = senderId;
+    public ReplyParcelableModel(String messageId, String msg, String replyTime) {
+        this.messageId = messageId;
         this.msg = msg;
         this.replyTime = replyTime;
     }
 
-    private String senderId;
+    private String messageId;
     private String msg;
     private String replyTime;
 
 
-    public String getSenderId() {
-        return senderId;
+    public String getMessageId() {
+        return messageId;
     }
 
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     public String getMsg() {
@@ -51,13 +45,13 @@ public class ReplyParcelableModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.senderId);
+        dest.writeString(this.messageId);
         dest.writeString(this.msg);
         dest.writeString(this.replyTime);
     }
 
     protected ReplyParcelableModel(Parcel in) {
-        this.senderId = in.readString();
+        this.messageId = in.readString();
         this.msg = in.readString();
         this.replyTime = in.readString();
     }

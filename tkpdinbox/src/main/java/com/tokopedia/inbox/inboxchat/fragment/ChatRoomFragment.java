@@ -526,7 +526,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 //        if (senderId.equals(getArguments().get("sender_id"))) {
 //            OppositeChatViewModel item = new OppositeChatViewModel();
 //            item.setMsg(data.getString("summary"));
-//            item.setSenderId(senderId);
+//            item.setMessageId(senderId);
 //            item.setSenderName(data.getString("full_name"));
 //            item.setReplyTime(data.getString("create_time"));
 //            addDummyMessage(item);
