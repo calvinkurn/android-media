@@ -81,7 +81,6 @@ public class WalletAccountSettingActivity extends BasePresenterActivity implemen
         Intent returnIntent = new Intent();
         returnIntent.putExtra(KEY_INTENT_RESULT,VALUE_INTENT_RESULT);
         setResult(Activity.RESULT_OK,returnIntent);
-        setResult(RESULT_OK);
         finish();
     }
 }

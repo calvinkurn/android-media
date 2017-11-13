@@ -306,7 +306,8 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                 }
                 break;
             case REQUEST_CODE_ACCOUNT_SETTING:
-                if (data != null && data.hasExtra(WalletAccountSettingActivity.KEY_INTENT_RESULT)) {
+                if (resultCode == Activity.RESULT_OK && data != null &&
+                        data.hasExtra(WalletAccountSettingActivity.KEY_INTENT_RESULT)) {
                     setResult(RESULT_OK);
                     finish();
                 }
