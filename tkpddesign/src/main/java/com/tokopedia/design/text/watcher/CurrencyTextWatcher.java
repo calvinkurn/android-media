@@ -56,9 +56,13 @@ public class CurrencyTextWatcher extends AfterTextWatcher {
             editText.setText(defaultValue);
             editText.setSelection(defaultValue.length());
         } else {
+            int selectionStart = editText.getSelectionStart() - prefixLength;
+            if (selectionStart < 0) {
+                selectionStart = 0;
+            }
             CurrencyFormatUtil.ThousandString thousandString =
                     CurrencyFormatUtil.getThousandSeparatorString(
-                            doubleString, useCommaForThousand, editText.getSelectionStart());
+                            doubleString, useCommaForThousand, selectionStart);
             editText.removeTextChangedListener(this);
             editText.setText(String.format(format, thousandString.getFormattedString()));
             editText.setSelection(Math.min(editText.length(), thousandString.getSelection() + prefixLength));

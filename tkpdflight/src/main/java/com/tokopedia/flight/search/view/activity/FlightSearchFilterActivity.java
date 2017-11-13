@@ -206,11 +206,11 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     }
 
     private void updateButtonFilter(int count) {
-        if (currentTag.equals(getTagFragment())) {
-            buttonFilter.setText(getString(R.string.flight_there_has_x_flights, count));
-        } else {
-            buttonFilter.setText(getString(R.string.flight_save));
-        }
+//        if (currentTag.equals(getTagFragment())) {
+        buttonFilter.setText(getString(R.string.flight_there_has_x_flights, count));
+//        } else {
+//            buttonFilter.setText(getString(R.string.flight_save));
+//        }
     }
 
     @Override
