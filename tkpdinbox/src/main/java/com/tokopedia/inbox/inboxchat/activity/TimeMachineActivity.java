@@ -62,4 +62,8 @@ public class TimeMachineActivity extends TActivity
         return intent;
     }
 
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }
