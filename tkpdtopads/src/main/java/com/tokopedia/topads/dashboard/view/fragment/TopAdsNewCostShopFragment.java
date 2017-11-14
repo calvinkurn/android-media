@@ -1,20 +1,11 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
-import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoNewGroupModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoShopModel;
-import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailShopViewModel;
-import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 
 /**
  * Created by zulfikarrahman on 8/8/17.
@@ -41,6 +32,7 @@ public class TopAdsNewCostShopFragment extends TopAdsNewCostFragment<TopAdsCreat
 
     @Override
     protected void onClickedNext() {
+        if (firstTimeCheck()) return;
         if(!isError()) {
             super.onClickedNext();
             trackerBudgetShop();
