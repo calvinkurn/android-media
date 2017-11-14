@@ -11,13 +11,7 @@ import java.util.List;
 
 public interface TokoCashHistoryListener {
 
-    void showLoading();
-
     void hideLoading();
-
-    void showLoadingHistory();
-
-    void hideLoadingHistory();
 
     void setHasNextPage(boolean hasNextPage);
 

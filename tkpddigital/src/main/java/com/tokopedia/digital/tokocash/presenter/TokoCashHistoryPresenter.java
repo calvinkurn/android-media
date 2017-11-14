@@ -34,7 +34,6 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
 
     @Override
     public void getInitHistoryTokoCash(String type, String startDate, String endDate) {
-        view.showLoadingHistory();
         page = 1;
         interactor.getHistoryTokoCash(getTokoCashHistorySubscriber(), type, startDate, endDate, page);
     }
@@ -49,7 +48,6 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideLoading();
-                view.hideLoadingHistory();
                 if (e instanceof ResponseDataNullException) {
                     view.renderEmptyPage("Empty data list");
                 } else {
@@ -60,7 +58,6 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
             @Override
             public void onNext(TokoCashHistoryData tokoCashHistoryData) {
                 view.hideLoading();
-                view.hideLoadingHistory();
                 if (tokoCashHistoryData.getItemHistoryList().size() == 0 && !tokoCashHistoryData.isNext_uri()) {
                     view.renderDataTokoCashHistory(tokoCashHistoryData, true);
                     view.renderEmptyTokoCashHistory(tokoCashHistoryData.getHeaderHistory());
@@ -79,7 +76,6 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
 
     @Override
     public void getHistoryLoadMore(String type, String startDate, String endDate) {
-        view.showLoadingHistory();
         interactor.getHistoryTokoCash(getTokoCashHistoryLoadMore(), type, startDate, endDate, page);
     }
 
@@ -92,13 +88,11 @@ public class TokoCashHistoryPresenter implements ITokoCashHistoryPresenter {
 
             @Override
             public void onError(Throwable e) {
-                view.hideLoadingHistory();
                 errorNetworkHandler(e);
             }
 
             @Override
             public void onNext(TokoCashHistoryData tokoCashHistoryData) {
-                view.hideLoadingHistory();
                 if (tokoCashHistoryData.getItemHistoryList().size() > 0) {
                     view.renderDataTokoCashHistory(tokoCashHistoryData, false);
                 }

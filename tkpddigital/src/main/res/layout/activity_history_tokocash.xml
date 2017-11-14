@@ -48,7 +48,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <include
                     layout="@layout/view_tokocash_no_history_category"

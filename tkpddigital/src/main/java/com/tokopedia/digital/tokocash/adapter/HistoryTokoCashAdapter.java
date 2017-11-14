@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,11 +28,13 @@ import butterknife.ButterKnife;
 
 public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
 
+    private final int VIEW_TYPE_ITEM = 0;
+    private final int VIEW_TYPE_LOADING = 1;
+
     private List<ItemHistory> itemHistoryList;
-
     private Context context;
-
     private ItemHistoryListener listener;
+    private boolean showLoader;
 
     public HistoryTokoCashAdapter(List<ItemHistory> itemHistoryList) {
         this.itemHistoryList = itemHistoryList;
@@ -44,19 +47,35 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.item_list_history_tokocash, parent, false);
-        return new ItemViewHolderHistory(view);
+        if (viewType == VIEW_TYPE_ITEM) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.item_list_history_tokocash, parent, false);
+            return new ItemViewHolderHistory(view);
+        } else if (viewType == VIEW_TYPE_LOADING) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.layout_loading_view, parent, false);
+            return new ItemLoadingViewHolder(view);
+        }
+        return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ItemViewHolderHistory) holder).bindView(itemHistoryList.get(position));
+        if (holder instanceof ItemViewHolderHistory) {
+            ((ItemViewHolderHistory) holder).bindView(itemHistoryList.get(position));
+        } else if (holder instanceof ItemLoadingViewHolder) {
+            ItemLoadingViewHolder loadingViewHolder = (ItemLoadingViewHolder) holder;
+            if (showLoader) {
+                loadingViewHolder.progressBarHistory.setVisibility(View.VISIBLE);
+            } else {
+                loadingViewHolder.progressBarHistory.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
     public int getItemCount() {
-        return itemHistoryList.size();
+        return itemHistoryList == null || itemHistoryList.size() == 0 ? 0 : itemHistoryList.size() + 1;
     }
 
     public void addItemHistoryList(List<ItemHistory> itemHistoryList) {
@@ -106,6 +125,26 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
                 }
             });
         }
+    }
+
+    class ItemLoadingViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R2.id.progress_bar_history)
+        ProgressBar progressBarHistory;
+
+        public ItemLoadingViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position != 0 && position == getItemCount() - 1 ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+    }
+
+    public void showLoading(boolean show) {
+        this.showLoader = show;
     }
 
     public interface ItemHistoryListener {

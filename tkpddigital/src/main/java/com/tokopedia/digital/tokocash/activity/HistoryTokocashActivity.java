@@ -157,7 +157,6 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         initialRangeDateFilter();
         initialFilterRecyclerView();
         initialHistoryRecyclerView();
-        showLoading();
         refreshHandler = new RefreshHandler(this, getWindow().getDecorView().getRootView(),
                 getRefreshHandlerListener());
         refreshHandler.startRefresh();
@@ -197,6 +196,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
         endlessRecyclerviewListener = new EndlessRecyclerviewListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                adapterHistory.showLoading(true);
                 if (isLoadMore) {
                     presenter.getHistoryLoadMore(typeFilterSelected, startDateFormatted, endDateFormatted);
                 }
@@ -335,6 +335,7 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     public void renderDataTokoCashHistory(TokoCashHistoryData tokoCashHistoryData, boolean firstTimeLoad) {
         historyListRecyclerView.setVisibility(View.VISIBLE);
         viewEmptyNoHistory.setVisibility(View.GONE);
+        adapterHistory.showLoading(false);
         refreshHandler.finishRefresh();
         mainContent.setVisibility(View.VISIBLE);
         adapterFilter.setListener(getFilterTokoCashListener());
@@ -395,25 +396,9 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
     }
 
     @Override
-    public void showLoading() {
-        mainContent.setVisibility(View.GONE);
-    }
-
-    @Override
     public void hideLoading() {
         if (refreshHandler != null && refreshHandler.isRefreshing())
             refreshHandler.finishRefresh();
-    }
-
-    @Override
-    public void showLoadingHistory() {
-        loadingHistory.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideLoadingHistory() {
-        if (loadingHistory.getVisibility() == View.VISIBLE)
-            loadingHistory.setVisibility(View.GONE);
     }
 
     @Override
