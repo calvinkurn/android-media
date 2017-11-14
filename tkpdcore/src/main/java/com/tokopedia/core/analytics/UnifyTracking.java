@@ -703,6 +703,18 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
+    public static void eventOfficialStoreBrandSeeAll(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.FEED,
+                AppEventTracking.Category.HOMEPAGE.toLowerCase(),
+                AppEventTracking.EventLabel.HOME.toLowerCase() +" - "+ label + " "+AppEventTracking.Action.CLICK_VIEW_ALL,
+                "")
+                .setUserId()
+                .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
+                .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
+                .getEvent());
+    }
 
     public static void eventFeedClickProduct(String productId, String label) {
         sendGTMEvent(new EventTracking(
