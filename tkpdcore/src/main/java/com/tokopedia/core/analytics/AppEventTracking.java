@@ -137,6 +137,8 @@ public interface AppEventTracking {
         String EVENT_MANAGE_PRODUCT = "eventManageProduct";
 
         String EVENT_CLICK_USER_PROFILE = "clickUserProfile";
+        String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
+        String EVENT_ADD_TO_CART_DIGITAL = "addToCartDigital";
     }
 
     interface Category {
@@ -293,8 +295,6 @@ public interface AppEventTracking {
         String OPEN = "Open";
         String OTP_SUCCESS = "OTP Success";
         String RECEIVED = "received";
-        String SELECT_PRODUCT_FROM_WIDGET = "Select Product from Widget";
-        String SELECT_OPERATOR_FROM_WIDGET = "Select Operator from Widget";
         String SELECT_PRODUCT = "Select Product";
         String SELECT_OPERATOR = "Select Operator";
         String CLICK_SEARCH_BAR = "Click Search Bar";
@@ -308,6 +308,7 @@ public interface AppEventTracking {
         String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
         String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
         String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
+
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
         String CLICK_PHONEBOOK_ICON = "Click Phonebook Icon";
         String CLICK_DAFTAR_TX = "Click Daftar Transaksi";
@@ -331,10 +332,19 @@ public interface AppEventTracking {
         String CLICK_FILTER_PRODUCT = "click filter product";
         String CLICK_OVERFLOW_MENU = "click overflow menu";
 
+        String CLICK_WIDGET_BAR = "click widget";
+        String CLICK_BELI = "Click Beli";
+        String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
+        String CHECK_INSTANT_SALDO_WIDGET = "Check Instant Saldo from Widget";
+        String UNCHECK_INSTANT_SALDO_WIDGET = "Uncheck Instant Saldo from Widget";
+        String CHECK_INSTANT_SALDO = "Check Instant Saldo";
+        String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
         String SELECT_NUMBER_ON_USER_PROFILE = "select number on user profile";
         String CLICK_REMOVE_WISHLIST = "wishlist - remove item";
         String CLICK_SHOP_FAVORITE = "favorite - click shop";
         String CLICK_EMPTY_SEARCH_WISHLIST = "wishlist - click empty cari product";
+        String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
+        String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
     }
 
     interface EventLabel {
@@ -650,6 +660,9 @@ public interface AppEventTracking {
         String PICTURE_STATUS = "picture status";
         String CHECKOUT_INSTANT = "instant";
         String CHECKOUT_NO_INSTANT = "no "+CHECKOUT_INSTANT;
+
+        String SELECT_PRODUCT_FROM_WIDGET = "select Product - ";
+        String CLICK_WIDGET_BAR = "click ";
     }
 
     interface SOCIAL_MEDIA {

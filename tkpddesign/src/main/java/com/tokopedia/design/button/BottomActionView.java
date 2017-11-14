@@ -38,6 +38,7 @@ public class BottomActionView extends BaseCustomView {
     private String label2;
     @DrawableRes
     private int icon2Res;
+    private boolean isBav1Display, isBav2Display;
 
     public BottomActionView(Context context) {
         super(context);
@@ -59,9 +60,11 @@ public class BottomActionView extends BaseCustomView {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.BottomActionView);
         try {
             icon1Res = styledAttributes.getResourceId(R.styleable.BottomActionView_bav_icon_1, DEFAULT_ICON);
+            isBav1Display = styledAttributes.getBoolean(R.styleable.BottomActionView_bav_1_display, false);
             label1 = styledAttributes.getString(R.styleable.BottomActionView_bav_label_1);
             icon2Res = styledAttributes.getResourceId(R.styleable.BottomActionView_bav_icon_2, DEFAULT_ICON);
             label2 = styledAttributes.getString(R.styleable.BottomActionView_bav_label_2);
+            isBav2Display = styledAttributes.getBoolean(R.styleable.BottomActionView_bav_2_display, false);
         } finally {
             styledAttributes.recycle();
         }
@@ -95,6 +98,20 @@ public class BottomActionView extends BaseCustomView {
         } else {
             separatorView.setVisibility(View.GONE);
             linearLayoutButton2.setVisibility(View.VISIBLE);
+        }
+        if(isBav2Display){
+            linearLayoutButton2.setVisibility(VISIBLE);
+        }else{
+            linearLayoutButton2.setVisibility(GONE);
+        }
+
+        if(isBav1Display){
+            linearLayoutButton1.setVisibility(VISIBLE);
+        }else{
+            linearLayoutButton1.setVisibility(GONE);
+        }
+        if((isBav1Display ? 1 : 0) + (isBav2Display? 1 : 0) == 1){
+            separatorView.setVisibility(View.GONE);
         }
         invalidate();
         requestLayout();

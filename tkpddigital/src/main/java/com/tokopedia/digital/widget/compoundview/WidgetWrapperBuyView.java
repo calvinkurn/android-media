@@ -43,6 +43,8 @@ public class WidgetWrapperBuyView extends LinearLayout {
     private static final String ARG_UTM_SOURCE_VALUE = "android";
     private static final String ARG_UTM_MEDIUM_VALUE = "widget";
 
+    private boolean isInsant;
+
     @BindView(R2.id.buy_with_credit_checkbox)
     CheckBox creditCheckbox;
     @BindView(R2.id.btn_buy)
@@ -86,6 +88,7 @@ public class WidgetWrapperBuyView extends LinearLayout {
         return new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isInsant = isChecked;
                 buyButton.setText(
                         isChecked ? getResources().getString(R.string.title_button_pay)
                                 : getResources().getString(R.string.title_buy));
@@ -129,7 +132,10 @@ public class WidgetWrapperBuyView extends LinearLayout {
     }
 
     private void sendGTMClickBeli() {
-        UnifyTracking.eventRechargeBuy(isCreditCheckboxChecked());
+        CommonUtils.dumper("GAv4 category clicked " + category.getId());
+        CommonUtils.dumper("GAv4 clicked beli Pulsa");
+
+        UnifyTracking.eventRechargeBuy(category.getAttributes().getName(), isInsant ? "instant" : "no instant");
     }
 
     private String generateATokenRechargeCheckout() {
