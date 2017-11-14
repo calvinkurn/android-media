@@ -143,6 +143,7 @@ public interface AppEventTracking {
         String HOMEPAGE = "Homepage";
         String HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
         String HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget";
+        String HOMEPAGE_OFFICIAL_STORE_WIDGET = "homepage official store widget";
         String HOMEPAGE_BANNER = "homepage banner";
         String PRODUCT_DETAIL = "Product Detail Page";
         String ADD_TO_CART = "Add to Cart";

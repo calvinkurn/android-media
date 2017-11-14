@@ -1675,9 +1675,9 @@ public class UnifyTracking extends TrackingUtils {
     public static void eventViewAllOSLogin() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_VIEW_ALL_OS,
-                AppEventTracking.Category.HOMEPAGE,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.OS_MICROSITE_LOGIN
+                AppEventTracking.Category.HOMEPAGE_OFFICIAL_STORE_WIDGET,
+                AppEventTracking.Action.CLICK_VIEW_ALL,
+                ""
         ).getEvent());
     }
 
