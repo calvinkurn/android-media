@@ -43,6 +43,7 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
@@ -88,6 +89,9 @@ import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
+import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
@@ -110,7 +114,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication,
-        TkpdInboxRouter, RemoteConfigRouter {
+        TkpdInboxRouter, RemoteConfigRouter, TopAdsModuleRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -122,6 +126,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
+
+    private DaggerTopAdsComponent.Builder daggerTopAdsBuilder;
+    private TopAdsComponent topAdsComponent;
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
 
@@ -141,6 +148,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                 .appComponent(getApplicationComponent())
         .reactNativeModule(new ReactNativeModule(this));
+        daggerTopAdsBuilder = DaggerTopAdsComponent.builder().topAdsModule(new TopAdsModule());
     }
 
     @Override
@@ -149,6 +157,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
         }
         return productComponent;
+    }
+
+    @Override
+    public TopAdsComponent getTopAdsComponent() {
+        if (topAdsComponent == null) {
+            topAdsComponent = daggerTopAdsBuilder.appComponent(getApplicationComponent()).build();
+        }
+        return topAdsComponent;
     }
 
     @Override
