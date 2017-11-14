@@ -26,7 +26,7 @@ public class WalletTokenRefresh {
 
         SessionHandler sessionHandler = new SessionHandler(context);
 
-        Call<String> responseCall = getRetrofit(sessionHandler.getAccessToken())
+        Call<String> responseCall = getRetrofit("BEARER " + sessionHandler.getAccessToken())
                 .create(TokoCashApi.class).getTokenWalletSynchronous();
 
         String tokenResponse = null;

@@ -86,7 +86,7 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader) {
         Map<String, String> header = new HashMap<>();
-        header.put(AuthUtil.HEADER_AUTHORIZATION, BEARER + " " + authKey);
+        header.put(AuthUtil.HEADER_AUTHORIZATION, authKey);
         header.put(AuthUtil.HEADER_DEVICE, DEVICE + GlobalConfig.VERSION_NAME);
         return header;
     }
