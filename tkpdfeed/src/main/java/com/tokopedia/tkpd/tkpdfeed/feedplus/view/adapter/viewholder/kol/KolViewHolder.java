@@ -153,9 +153,11 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             public void onClick(View v) {
                 if (followText.getText().equals(MainApplication.getAppContext().getString(R.string
                         .action_follow_english))) {
-                    viewListener.onFollowKolClicked(element.getPage(), getAdapterPosition(), element.getId());
+                    viewListener.onFollowKolClicked(element.getPage(), getAdapterPosition(),
+                            element.getUserId());
                 } else {
-                    viewListener.onUnfollowKolClicked(element.getPage(), getAdapterPosition(), element.getId());
+                    viewListener.onUnfollowKolClicked(element.getPage(), getAdapterPosition(),
+                            element.getUserId());
                 }
             }
         });

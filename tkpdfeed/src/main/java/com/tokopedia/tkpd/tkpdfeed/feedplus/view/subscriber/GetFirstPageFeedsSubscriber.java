@@ -319,7 +319,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 kolPostDomain.getProductPrice(),
                 false,
                 kolPostDomain.getTagsType(),
-                kolPostDomain.getContentLink()
+                kolPostDomain.getContentLink(),
+                kolPostDomain.getUserId()
         );
     }
 

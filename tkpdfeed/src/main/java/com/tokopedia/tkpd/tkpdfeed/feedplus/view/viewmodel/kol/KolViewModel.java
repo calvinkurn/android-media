@@ -10,6 +10,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPl
 public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
     private final String tagsType;
     private final String contentLink;
+    private final int userId;
     private String title;
     private String name;
     private String avatar;
@@ -37,7 +38,7 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
                         String review, boolean liked, int totalLike, int totalComment,
                         int page, String kolProfileUrl, int contentId, int id, String time,
                         String contentName, String productPrice, boolean wishlisted, String tagsType,
-                        String contentLink) {
+                        String contentLink, int userId) {
         this.title = title;
         this.name = name;
         this.avatar = avatar;
@@ -59,6 +60,7 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
         this.wishlisted = wishlisted;
         this.tagsType = tagsType;
         this.contentLink = contentLink;
+        this.userId = userId;
     }
 
     public String getTitle() {
@@ -198,6 +200,10 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public String getContentLink() {
         return contentLink;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 }
 

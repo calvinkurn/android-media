@@ -155,6 +155,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                          userPhoto
                          userInfo
                          userUrl
+                         userId
                          headerTitle
                          content {
                             imageurl
@@ -180,6 +181,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                           userPhoto
                           userInfo
                           userUrl
+                          userId
                           content {
                              imageurl
                              tags {
