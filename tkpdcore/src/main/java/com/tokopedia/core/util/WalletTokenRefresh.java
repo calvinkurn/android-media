@@ -9,6 +9,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.entity.tokocash.WalletTokenEntity;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
+import com.tokopedia.core.network.retrofit.interceptors.WalletAuthInterceptor;
 
 import java.io.IOException;
 
@@ -26,7 +27,7 @@ public class WalletTokenRefresh {
 
         SessionHandler sessionHandler = new SessionHandler(context);
 
-        Call<String> responseCall = getRetrofit(sessionHandler.getAccessToken())
+        Call<String> responseCall = getRetrofit(WalletAuthInterceptor.BEARER + " " + sessionHandler.getAccessToken())
                 .create(TokoCashApi.class).getTokenWalletSynchronous();
 
         String tokenResponse = null;
