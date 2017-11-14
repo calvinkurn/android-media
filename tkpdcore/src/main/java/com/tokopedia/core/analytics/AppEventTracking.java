@@ -143,6 +143,7 @@ public interface AppEventTracking {
         String HOMEPAGE = "Homepage";
         String HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
         String HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget";
+        String HOMEPAGE_BANNER = "homepage banner";
         String PRODUCT_DETAIL = "Product Detail Page";
         String ADD_TO_CART = "Add to Cart";
         String CHECKOUT = "Checkout";
@@ -233,6 +234,7 @@ public interface AppEventTracking {
         String CLICK = "Click";
         String CLICK_ACTIVATE   = "click activate";
         String CLICK_SALDO     = "click saldo";
+        String CLICK_VIEW_ALL    = "click view all";
         String CLICK_CHANNEL = "Click Channel";
         String SEARCH = "Search";
         String VOICE_SEARCH = "Voice Search";
