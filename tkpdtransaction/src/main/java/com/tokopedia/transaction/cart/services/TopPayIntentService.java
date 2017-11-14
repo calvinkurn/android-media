@@ -172,6 +172,7 @@ public class TopPayIntentService extends IntentService {
         for (CheckoutDropShipperData data : checkoutData.getDropShipperDataList()) {
             params.put(data.getKey(), data.getValue());
         }
+        params.put("is_thankyou_native", "1");
 
         if (cartDataInteractor == null) cartDataInteractor = new CartDataInteractor();
         Intent intent = new Intent(TopPayBroadcastReceiver.ACTION_TOP_PAY);
