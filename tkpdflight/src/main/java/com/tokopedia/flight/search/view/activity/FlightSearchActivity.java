@@ -73,14 +73,18 @@ public class FlightSearchActivity extends BaseSimpleActivity
     private void setupFlightToolbar() {
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.tkpd_dark_gray));
-        String title = departureLocation + " ➝ " + arrivalLocation;
         String subtitle = dateString + " | " + passengerString + " | " + classString;
-        updateTitle(title, subtitle);
+        updateTitle(getString(R.string.activity_label_flight_search_departure), subtitle);
     }
 
     @Override
     protected boolean isToolbarWhite() {
         return true;
+    }
+
+    @Override
+    protected boolean isShadowDisplayed() {
+        return false;
     }
 
     @Override

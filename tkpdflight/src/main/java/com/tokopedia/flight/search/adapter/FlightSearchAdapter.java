@@ -1,14 +1,19 @@
 package com.tokopedia.flight.search.adapter;
 
+import android.media.Image;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
+import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 import java.util.List;
@@ -18,6 +23,16 @@ import java.util.List;
  */
 
 public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel> {
+
+    public interface ListenerOnDetailClicked{
+        void onDetailClicked(FlightSearchViewModel flightSearchViewModel);
+    }
+
+    ListenerOnDetailClicked listenerOnDetailClicked;
+
+    public void setListenerOnDetailClicked(ListenerOnDetailClicked listenerOnDetailClicked) {
+        this.listenerOnDetailClicked = listenerOnDetailClicked;
+    }
 
     public FlightSearchAdapter(OnBaseListV2AdapterListener<FlightSearchViewModel> onBaseListV2AdapterListener) {
         super(onBaseListV2AdapterListener);
@@ -32,25 +47,54 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
         TextView tvDeparture;
         TextView tvArrival;
         TextView tvAirline;
-        AppCompatTextView tvPrice;
-        AppCompatTextView tvDuration;
+        ImageView logoAirline;
+        TextView tvPrice;
+        TextView tvDuration;
+        TextView detailView;
+        TextView airlineRefundableInfo;
 
         public FlightSearchViewHolder(View itemView) {
             super(itemView);
-            tvDeparture = (TextView) itemView.findViewById(R.id.tv_departure);
-            tvArrival = (TextView) itemView.findViewById(R.id.tv_arrival);
+            tvDeparture = (TextView) itemView.findViewById(R.id.departure_time);
+            tvArrival = (TextView) itemView.findViewById(R.id.arrival_time);
             tvAirline = (TextView) itemView.findViewById(R.id.tv_airline);
-            tvPrice = (AppCompatTextView) itemView.findViewById(R.id.tv_total_price);
-            tvDuration = (AppCompatTextView) itemView.findViewById(R.id.tv_duration);
+            logoAirline = (ImageView) itemView.findViewById(R.id.image_airline);
+            airlineRefundableInfo = (TextView) itemView.findViewById(R.id.airline_refundable_info);
+            tvPrice = (TextView) itemView.findViewById(R.id.total_price);
+            tvDuration = (TextView) itemView.findViewById(R.id.flight_time);
+            detailView = (TextView) itemView.findViewById(R.id.detail_view);
         }
 
         @Override
-        public void bindObject(FlightSearchViewModel flightSearchViewModel) {
-            tvDeparture.setText(flightSearchViewModel.getDepartureAirport());
-            tvArrival.setText(flightSearchViewModel.getArrivalAirport());
+        public void bindObject(final FlightSearchViewModel flightSearchViewModel) {
+            tvDeparture.setText(String.format("%s %s", flightSearchViewModel.getDepartureTime(), flightSearchViewModel.getDepartureAirport()));
+            tvArrival.setText(String.format("%s %s", flightSearchViewModel.getArrivalTime(), flightSearchViewModel.getArrivalAirport()));
             tvPrice.setText(flightSearchViewModel.getTotal());
             tvDuration.setText(flightSearchViewModel.getDuration());
-            //tvAirline.setText(flightSearchViewModel.getAirline());
+            setAirline(flightSearchViewModel);
+            detailView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listenerOnDetailClicked != null){
+                        listenerOnDetailClicked.onDetailClicked(flightSearchViewModel);
+                    }
+                }
+            });
+            setRefundableInfo(flightSearchViewModel);
+        }
+
+        private void setAirline(FlightSearchViewModel flightSearchViewModel) {
+            if(flightSearchViewModel.getAirlineList().size() > 1) {
+                logoAirline.setImageResource(R.drawable.ic_plane_flight);
+                tvAirline.setText(R.string.flight_label_multi_maskapai);
+            }else if(flightSearchViewModel.getAirlineList().size() == 1){
+                logoAirline.setImageResource(FlightAirlineIconUtil.getImageResource(flightSearchViewModel.getAirlineList().get(0).getId()));
+                tvAirline.setText(flightSearchViewModel.getAirlineList().get(0).getName());
+            }
+        }
+
+        private void setRefundableInfo(FlightSearchViewModel flightSearchViewModel) {
+
         }
     }
 

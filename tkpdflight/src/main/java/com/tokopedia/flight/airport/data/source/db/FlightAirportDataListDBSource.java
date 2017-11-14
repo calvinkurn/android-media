@@ -44,19 +44,23 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                 .flatMap(new Func1<FlightAirportCountry, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(FlightAirportCountry flightAirportCountry) {
-                        for (FlightAirportCity flightAirportCity: flightAirportCountry.getAttributes().getCities()) {
-                            if(flightAirportCity.getFlightAirportDetails() != null && flightAirportCity.getFlightAirportDetails().size() > 1){
-                                List<String> airportIds = new ArrayList<>();
-                                for(FlightAirportDetail flightAirportDetail :flightAirportCity.getFlightAirportDetails()){
-                                    airportIds.add(flightAirportDetail.getId());
+                        if(flightAirportCountry.getId().equals("ID")) {
+                            for (FlightAirportCity flightAirportCity : flightAirportCountry.getAttributes().getCities()) {
+                                if (flightAirportCity.getFlightAirportDetails() != null && flightAirportCity.getFlightAirportDetails().size() > 1) {
+                                    List<String> airportIds = new ArrayList<>();
+                                    for (FlightAirportDetail flightAirportDetail : flightAirportCity.getFlightAirportDetails()) {
+                                        airportIds.add(flightAirportDetail.getId());
+                                    }
+                                    insertFlight(flightAirportCountry, flightAirportCity, new FlightAirportDetail("", "", new ArrayList<String>()), TextUtils.join(",", airportIds));
                                 }
-                                insertFlight(flightAirportCountry, flightAirportCity, new FlightAirportDetail("", "", new ArrayList<String>()), TextUtils.join(",", airportIds));
+                                for (FlightAirportDetail flightAirportDetail : flightAirportCity.getFlightAirportDetails()) {
+                                    insertFlight(flightAirportCountry, flightAirportCity, flightAirportDetail, "");
+                                }
                             }
-                            for (FlightAirportDetail flightAirportDetail : flightAirportCity.getFlightAirportDetails()) {
-                                insertFlight(flightAirportCountry, flightAirportCity, flightAirportDetail, "");
-                            }
+                            return Observable.just(true);
+                        }else{
+                            return Observable.just(false);
                         }
-                        return Observable.just(true);
                     }
 
                     private void insertFlight(FlightAirportCountry flightAirportCountry, FlightAirportCity flightAirportCity, FlightAirportDetail flightAirportDetail, String airportIds) {

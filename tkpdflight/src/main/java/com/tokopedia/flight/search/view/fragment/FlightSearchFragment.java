@@ -47,7 +47,7 @@ import javax.inject.Inject;
  */
 
 public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewModel> implements FlightSearchView,
-        BaseListV2Adapter.OnBaseListV2AdapterListener<FlightSearchViewModel> {
+        BaseListV2Adapter.OnBaseListV2AdapterListener<FlightSearchViewModel>,FlightSearchAdapter.ListenerOnDetailClicked {
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
@@ -63,6 +63,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     int selectedSortOption = FlightSortOption.NO_PREFERENCE;
 
     private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
+
     public interface OnFlightSearchFragmentListener{
         void selectFlight(String selectedFlightID);
     }
@@ -96,6 +97,12 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     }
 
     @Override
+    public void onDetailClicked(FlightSearchViewModel flightSearchViewModel) {
+        this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightSearchViewModel),
+                REQUEST_CODE_SEE_DETAIL_FLIGHT);
+    }
+
+    @Override
     protected final void initInjector() {
         DaggerFlightSearchComponent.builder()
                 .flightComponent(((FlightModuleRouter) getActivity().getApplication()).getFlightComponent())
@@ -106,7 +113,9 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     @Override
     protected final BaseListV2Adapter<FlightSearchViewModel> getNewAdapter() {
-        return new FlightSearchAdapter(this);
+        FlightSearchAdapter flightSearchAdapter = new FlightSearchAdapter(this);
+        flightSearchAdapter.setListenerOnDetailClicked(this);
+        return flightSearchAdapter;
     }
 
     @Override
@@ -155,8 +164,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
-        this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightSearchViewModel),
-                REQUEST_CODE_SEE_DETAIL_FLIGHT);
+
     }
 
     @Override

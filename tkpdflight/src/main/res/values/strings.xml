@@ -138,4 +138,6 @@
     <string name="flight_select_passenger_toolbar_title">Penumpang</string>
     <string name="duration_flight_dd_hh_mm">%1$d Hari %2$d j %3$d m</string>
     <string name="duration_flight_hh_mm">%1$d Jam %2$d Menit</string>
+    <string name="flight_label_multi_maskapai">Multi Maskapai</string>
+    <string name="activity_label_flight_search_departure">Pencarian Pergi</string>
 </resources>
