@@ -1,9 +1,6 @@
-package com.tokopedia.flight.search.adapter;
+package com.tokopedia.flight.search.view.adapter;
 
-import android.media.Image;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,7 +10,6 @@ import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
-import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 import java.util.List;

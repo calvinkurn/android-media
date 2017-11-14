@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.adapter.FlightFilterAirlineAdapter;
+import com.tokopedia.flight.search.view.adapter.FlightFilterAirlineAdapter;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightResettableListener;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;

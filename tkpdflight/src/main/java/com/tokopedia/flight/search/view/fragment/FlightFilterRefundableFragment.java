@@ -16,10 +16,9 @@ import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.adapter.FlightFilterRefundableAdapter;
+import com.tokopedia.flight.search.view.adapter.FlightFilterRefundableAdapter;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightResettableListener;
-import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 

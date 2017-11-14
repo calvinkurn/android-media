@@ -15,10 +15,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
-import com.tokopedia.abstraction.base.view.recyclerview.BaseListRecyclerView;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
 import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
@@ -27,7 +27,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
-import com.tokopedia.flight.search.adapter.FlightSearchAdapter;
+import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
@@ -56,6 +56,10 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     private static final String SAVED_SORT_OPTION = "svd_sort_option";
 
     BottomActionView filterAndSortBottomAction;
+    private TextView departureAirportCode;
+    private TextView departureAirportName;
+    private TextView arrivalAirportCode;
+    private TextView arrivalAirportName;
 
     private FlightFilterModel flightFilterModel;
     private FlightSearchPassDataViewModel flightSearchPassDataViewModel;
@@ -178,6 +182,19 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         filterAndSortBottomAction = (BottomActionView) view.findViewById(R.id.bottom_action_filter_sort);
+        departureAirportCode = (TextView) view.findViewById(R.id.departure_airport_code);
+        departureAirportName = (TextView) view.findViewById(R.id.departure_airport_name);
+        arrivalAirportCode = (TextView) view.findViewById(R.id.arrival_airport_code);
+        arrivalAirportName = (TextView) view.findViewById(R.id.arrival_airport_name);
+
+        String departureAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getDepartureAirport().getAirportId()) ?
+                flightSearchPassDataViewModel.getDepartureAirport().getCityId() : flightSearchPassDataViewModel.getDepartureAirport().getAirportId();
+        departureAirportCode.setText(departureAirportId);
+        departureAirportName.setText(flightSearchPassDataViewModel.getDepartureAirport().getCityName());
+        String arrivalAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getArrivalAirport().getAirportId()) ?
+                flightSearchPassDataViewModel.getArrivalAirport().getCityId() : flightSearchPassDataViewModel.getArrivalAirport().getAirportId();
+        arrivalAirportCode.setText(arrivalAirportId);
+        arrivalAirportName.setText(flightSearchPassDataViewModel.getArrivalAirport().getCityName());
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
