@@ -24,6 +24,7 @@ public class WalletToDepositPresenter implements IWalletToDepositPresenter {
     @Override
     public void processMoveToSaldo(String url, ParamsActionHistory paramsActionHistory) {
         interactor.postMoveToSaldo(getWithdrawSaldoSubscriber(), url, paramsActionHistory);
+        view.showProgressLoading();
     }
 
     private Subscriber<WithdrawSaldo> getWithdrawSaldoSubscriber() {
@@ -36,11 +37,13 @@ public class WalletToDepositPresenter implements IWalletToDepositPresenter {
             @Override
             public void onError(Throwable e) {
                 view.wrappingDataFailed();
+                view.hideProgressLoading();
             }
 
             @Override
             public void onNext(WithdrawSaldo withdrawSaldo) {
                 view.wrappingDataSuccess(withdrawSaldo.getAmount());
+                view.hideProgressLoading();
             }
         };
     }
