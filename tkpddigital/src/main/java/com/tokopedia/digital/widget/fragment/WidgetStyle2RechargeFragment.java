@@ -151,7 +151,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     @Override
     protected void setViewListener() {
-        setRechargeEditTextCallback(widgetClientNumberView);
         setRechargeEditTextTouchCallback(widgetClientNumberView);
 
         widgetClientNumberView.setButtonPickerListener(getButtonPickerListener());
@@ -305,7 +304,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
             public void trackingProduct() {
                 if (selectedProduct != null)
                     UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
-                            selectedProduct.getAttributes().getPrice());
+                            selectedProduct.getAttributes().getDesc());
             }
         };
     }
@@ -317,6 +316,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
             public void onCheckChange(Operator rechargeOperatorModel) {
                 selectedProduct = null;
                 selectedOperator = rechargeOperatorModel;
+
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.getId());
                 minLengthDefaultOperator = rechargeOperatorModel.getAttributes().getMinimumLength();
                 widgetClientNumberView.setInputType(rechargeOperatorModel.getAttributes().getRule().isAllowAphanumericNumber());
@@ -337,7 +337,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void onTrackingOperator() {
-                UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
                         selectedOperator == null ? "" : selectedOperator.getAttributes().getName());
             }
         };
@@ -357,12 +357,6 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     public void saveAndDisplayPhoneNumber(String phoneNumber) {
         widgetClientNumberView.setText(phoneNumber);
         //save to last input key
-    }
-
-    @Override
-    protected void trackingOnClientNumberFocusListener() {
-        UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
-                selectedOperator == null ? "" : selectedOperator.getAttributes().getName());
     }
 
     @Override
