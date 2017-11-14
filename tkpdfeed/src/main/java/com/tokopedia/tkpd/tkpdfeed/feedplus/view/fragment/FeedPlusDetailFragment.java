@@ -430,16 +430,18 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     private void updateWishlistFromPDP(int position, boolean isWishlist) {
-        if (adapter.getList().get(position) instanceof FeedDetailViewModel
+        if (adapter != null
+                && adapter.getList() != null
                 && !adapter.getList().isEmpty()
                 && position < adapter.getList().size()
-                && adapter.getList().get(position) != null) {
+                && adapter.getList().get(position) != null
+                && adapter.getList().get(position) instanceof FeedDetailViewModel) {
             ((FeedDetailViewModel) adapter.getList().get(position)).setWishlist(isWishlist);
             adapter.notifyItemChanged(position);
         }
     }
 
     private void onProductShareClicked(@NonNull ShareData data) {
-        startActivity(ShareActivity.createIntent(getActivity(),data));
+        startActivity(ShareActivity.createIntent(getActivity(), data));
     }
 }

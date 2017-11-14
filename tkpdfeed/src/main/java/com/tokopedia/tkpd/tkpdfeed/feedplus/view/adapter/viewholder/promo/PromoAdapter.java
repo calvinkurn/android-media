@@ -152,7 +152,8 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        if (promoCardViewModel.getListPromo() != null
+        if (promoCardViewModel != null
+                && promoCardViewModel.getListPromo() != null
                 && !promoCardViewModel.getListPromo().isEmpty())
             return promoCardViewModel.getListPromo().size();
         else
