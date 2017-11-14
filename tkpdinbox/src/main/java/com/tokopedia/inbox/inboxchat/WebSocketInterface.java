@@ -9,7 +9,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 public interface WebSocketInterface {
     void onIncomingEvent(WebSocketResponse response);
 
-    void newWebSocket();
+    void onErrorWebSocket();
 
     void onOpenWebSocket();
 }

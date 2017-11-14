@@ -371,11 +371,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     TextView title = (TextView) notifier.findViewById(R.id.title);
                     View action = notifier.findViewById(R.id.action);
                     title.setText(R.string.error_no_connection_retrying);
+                    action.setVisibility(View.VISIBLE);
                     action.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
 //                            presenter.onOpenWebSocket();
-//                            presenter.recreateWebSocket();
+//                            presenter.createWebSocket();
                             notifier.setVisibility(View.GONE);
                         }
                     });
@@ -524,7 +525,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 //        if (senderId.equals(getArguments().get("sender_id"))) {
 //            OppositeChatViewModel item = new OppositeChatViewModel();
 //            item.setMsg(data.getString("summary"));
-//            item.setSenderId(senderId);
+//            item.setMessageId(senderId);
 //            item.setSenderName(data.getString("full_name"));
 //            item.setReplyTime(data.getString("create_time"));
 //            addDummyMessage(item);
@@ -606,10 +607,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void newWebSocket() {
+    public void onErrorWebSocket() {
         if (getActivity() != null && presenter != null) {
             notifyConnectionWebSocket();
-            presenter.recreateWebSocket();
+            presenter.createWebSocket();
         }
     }
 

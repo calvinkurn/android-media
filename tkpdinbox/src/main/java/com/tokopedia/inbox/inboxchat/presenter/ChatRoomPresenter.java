@@ -89,7 +89,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
         listener = new ChatWebSocketListenerImpl(getView().getInterface());
         isFirstTime = true;
-        recreateWebSocket();
+        createWebSocket();
     }
 
     @Override
@@ -97,15 +97,19 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         super.detachView();
     }
 
-    public void recreateWebSocket() {
+    public void createWebSocket() {
 //        if(attempt > 5) {
-        getView().notifyConnectionWebSocket();
+//        getView().notifyConnectionWebSocket();
 //        }else {
-        Request request = new Request.Builder().url(magicString)
-                .header("Origin", "https://staging.tokopedia.com")
-                .build();
-        ws = client.newWebSocket(request, listener);
-        attempt++;
+        try {
+            Request request = new Request.Builder().url(magicString)
+                    .header("Origin", "https://staging.tokopedia.com")
+                    .build();
+            ws = client.newWebSocket(request, listener);
+            attempt++;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -312,8 +316,12 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void closeWebSocket() {
-        client.dispatcher().executorService().shutdown();
-        ws.close(1000, "Goodbye !");
+        try {
+            client.dispatcher().executorService().shutdown();
+            ws.close(1000, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

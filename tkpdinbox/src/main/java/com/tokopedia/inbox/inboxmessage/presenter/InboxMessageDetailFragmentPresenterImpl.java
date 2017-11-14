@@ -528,7 +528,7 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
     }
 
     @Override
-    public void newWebSocket() {
+    public void onErrorWebSocket() {
 
     }
 

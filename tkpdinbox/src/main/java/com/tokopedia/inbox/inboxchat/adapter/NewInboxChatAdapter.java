@@ -224,13 +224,13 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
         return false;
     }
 
-    public void moveToTop(String senderId, String lastReply, boolean showNotif) {
+    public void moveToTop(String messageId, String lastReply, boolean showNotif) {
         String currentId;
         for (int i = 0; i < list.size(); i++) {
             try {
                 ChatListViewModel temp = (ChatListViewModel) list.get(i);
-                currentId = String.valueOf(temp.getSenderId());
-                if (currentId.equals(senderId)) {
+                currentId = String.valueOf(temp.getId());
+                if (currentId.equals(messageId)) {
                     if (showNotif) {
                         int unread = temp.getUnreadCounter();
                         unread++;

@@ -182,7 +182,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public ReplyParcelableModel getLastItem() {
         ListReplyViewModel item = (ListReplyViewModel) list.get(list.size() - 1);
-        return new ReplyParcelableModel(item.getSenderId(), item.getMsg(), item.getReplyTime());
+        return new ReplyParcelableModel(String.valueOf(item.getMsgId()), item.getMsg(), item
+                .getReplyTime
+                ());
     }
 
     public void showTimeMachine() {
