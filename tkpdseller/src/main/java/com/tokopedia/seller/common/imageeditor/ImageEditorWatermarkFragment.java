@@ -34,6 +34,7 @@ import javax.inject.Inject;
 
 public class ImageEditorWatermarkFragment extends ImageEditorFragment implements GetShopInfoView, CropImageView.OnSetCropOverlayReleasedListener, CropImageView.OnSetCropOverlayMovedListener, CropImageView.OnSetCropWindowChangeListener {
 
+    public static final int ROTATE_DEGREE = 90;
     private WatermarkView watermarkView;
 
     private String watermarkText;
@@ -195,7 +196,7 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
             setUIByWatermark(isUseWatermark);
             return true;
         } else if (item.getItemId() == R.id.main_action_rotate) {
-            mCropImageView.rotateImage(90);
+            mCropImageView.rotateImage(ROTATE_DEGREE);
             onCropWindowChanged();
             return true;
         }
