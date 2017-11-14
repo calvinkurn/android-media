@@ -199,6 +199,8 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
                 adapterHistory.showLoading(true);
                 if (isLoadMore) {
                     presenter.getHistoryLoadMore(typeFilterSelected, startDateFormatted, endDateFormatted);
+                } else {
+                    adapterHistory.showLoading(false);
                 }
             }
         };
