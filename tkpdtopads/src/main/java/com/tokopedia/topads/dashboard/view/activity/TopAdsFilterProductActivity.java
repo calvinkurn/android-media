@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.base.view.activity.BaseFilterActivity;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsFilterGroupNameFragment;
@@ -57,5 +58,10 @@ public class TopAdsFilterProductActivity extends BaseFilterActivity {
     @Override
     public String getScreenName() {
         return null;
+    }
+
+    @Override
+    protected int closeButtonDrawable() {
+        return R.drawable.ic_close_top_ads ;
     }
 }

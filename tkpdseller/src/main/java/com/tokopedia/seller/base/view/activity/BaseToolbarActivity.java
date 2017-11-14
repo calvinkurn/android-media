@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -56,8 +57,12 @@ public abstract class BaseToolbarActivity extends BaseActivity {
             setToolbarColorWhite();
         }
         if (getSupportActionBar() != null && isShowCloseButton()) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close));
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, closeButtonDrawable()));
         }
+    }
+
+    @DrawableRes protected int closeButtonDrawable(){
+        return R.drawable.ic_close;
     }
 
     protected int getThemeActivity() {

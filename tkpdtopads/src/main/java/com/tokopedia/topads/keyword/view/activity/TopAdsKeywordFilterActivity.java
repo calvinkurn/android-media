@@ -8,6 +8,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseFilterActivity;
 import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef;
@@ -86,5 +87,10 @@ public class TopAdsKeywordFilterActivity extends BaseFilterActivity
     public void resetSelection(int position) {
         getCurrentFragment(position, TopAdsKeywordGroupsFragment.class).setActive(false);
         topAdsFilterListFragment.setActive(position, false);
+    }
+
+    @Override
+    protected int closeButtonDrawable() {
+        return R.drawable.ic_close_top_ads ;
     }
 }

@@ -25,6 +25,8 @@
 
         <include layout="@layout/partial_base_tab_white_indicator" />
 
+        <include layout="@layout/partial_separator_horizontal" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
