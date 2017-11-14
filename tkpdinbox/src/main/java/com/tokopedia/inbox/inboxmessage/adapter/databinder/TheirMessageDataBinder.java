@@ -16,7 +16,6 @@ import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDetailItem;
-import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageDetailFragmentPresenter;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;

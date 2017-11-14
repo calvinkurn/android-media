@@ -25,7 +25,7 @@ import com.tokopedia.inbox.inboxchat.presenter.subscriber.SearchMessageSubscribe
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessage.activity.ChatRoomActivity;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxmessage.model.InboxMessagePass;
 
 import java.util.ArrayList;

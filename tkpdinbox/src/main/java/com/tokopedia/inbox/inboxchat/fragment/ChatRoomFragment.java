@@ -49,7 +49,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessage.activity.ChatRoomActivity;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 
 import org.json.JSONException;
 
@@ -62,7 +62,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.tokopedia.inbox.inboxmessage.activity.ChatRoomActivity.PARAM_SENDER_ROLE;
+import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_SENDER_ROLE;
 
 /**
  * Created by stevenfredian on 9/19/17.
@@ -440,7 +440,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         item.setReplyId(response.getData().getMsgId());
                         item.setSenderId(String.valueOf(response.getData().getFromUid()));
                         item.setMsg(response.getData().getMessage().getCensoredReply());
-                        item.setReplyTime(response.getData().getMessage().getTimestamp());
+                        item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
                         adapter.addReply(item);
                         finishLoading();
                         replyColumn.setText("");
@@ -451,7 +451,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         item.setReplyId(response.getData().getMsgId());
                         item.setSenderId(String.valueOf(response.getData().getFromUid()));
                         item.setMsg(response.getData().getMessage().getCensoredReply());
-                        item.setReplyTime(response.getData().getMessage().getTimestamp());
+                        item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
                         if (adapter.isTyping()) {
                             adapter.removeTyping();
                         }

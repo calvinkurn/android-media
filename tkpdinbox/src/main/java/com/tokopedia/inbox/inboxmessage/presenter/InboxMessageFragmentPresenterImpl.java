@@ -18,7 +18,7 @@ import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ListenWebSocketUseCase;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessage.activity.ChatRoomActivity;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.inbox.inboxmessage.interactor.InboxMessageCacheInteractor;
 import com.tokopedia.inbox.inboxmessage.interactor.InboxMessageCacheInteractorImpl;

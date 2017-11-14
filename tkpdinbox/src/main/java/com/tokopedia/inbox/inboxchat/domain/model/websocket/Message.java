@@ -21,6 +21,9 @@ public class Message {
     @SerializedName("timestamp_fmt")
     @Expose
     private String timestampFmt;
+    @SerializedName("timestamp_unix")
+    @Expose
+    private String timeStampUnix;
 
     public String getCensoredReply() {
         return censoredReply;
@@ -52,5 +55,13 @@ public class Message {
 
     public void setTimestampFmt(String timestampFmt) {
         this.timestampFmt = timestampFmt;
+    }
+
+    public String getTimeStampUnix() {
+        return timeStampUnix;
+    }
+
+    public void setTimeStampUnix(String timeStampUnix) {
+        this.timeStampUnix = timeStampUnix;
     }
 }
