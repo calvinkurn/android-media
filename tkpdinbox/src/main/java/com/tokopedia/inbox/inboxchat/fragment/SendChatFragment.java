@@ -193,6 +193,8 @@ public class SendChatFragment extends BaseDaggerFragment
             avatar = (ImageView) toolbar.findViewById(R.id.user_avatar);
             user = (TextView) toolbar.findViewById(R.id.title);
             label = (TextView) toolbar.findViewById(R.id.label);
+            TextView subtitle = (TextView) toolbar.findViewById(R.id.subtitle);
+            subtitle.setVisibility(View.GONE);
             String url = getArguments().getString(SendMessageActivity.PARAM_AVATAR, "");
             if (!TextUtils.isEmpty(url))
                 ImageHandler.loadImageCircle2(getActivity(), avatar, url, R.drawable
