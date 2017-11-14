@@ -1,4 +1,4 @@
-include ':customerapp', ':react-native-codepush'
+include ':customerapp'
 include ':tkpdreactnative'
 include ':tkpdride'
 include ':tkpdfeed'
