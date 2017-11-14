@@ -510,6 +510,8 @@ public class InboxChatFragment extends BaseDaggerFragment
                 adapter.moveToTop(model.getMessageId(), model.getMsg(), false);
             }
         }
+
+        presenter.recreateWebSocket();
     }
 
 

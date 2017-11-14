@@ -53,7 +53,7 @@ public class DeleteMessageListUseCase extends UseCase<DeleteChatListViewModel>{
     }
 
     public static RequestParams generateParam(List<Pair> listMove) {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         JsonObject object = new JsonObject();
         JsonArray array = new JsonArray();
         for(Pair item : listMove){

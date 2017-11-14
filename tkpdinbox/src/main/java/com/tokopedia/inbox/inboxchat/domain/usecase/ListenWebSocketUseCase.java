@@ -33,7 +33,7 @@ public class ListenWebSocketUseCase extends UseCase<ChatSocketData>{
 
     public static RequestParams generateParam(String messageId, String messageReply)
     {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         return requestParams;
     }
 }
