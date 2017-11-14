@@ -332,6 +332,8 @@ public interface AppEventTracking {
         String CLICK_OVERFLOW_MENU = "click overflow menu";
 
         String SELECT_NUMBER_ON_USER_PROFILE = "select number on user profile";
+        String CLICK_REMOVE_WISHLIST = "wishlist - remove item";
+        String CLICK_EMPTY_SEARCH_WISHLIST = "wishlist - click empty cari product";
     }
 
     interface EventLabel {
