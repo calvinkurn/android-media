@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AttachmentData;
 
@@ -44,15 +45,12 @@ public class ProveAdapter extends RecyclerView.Adapter<ProveAdapter.Holder> {
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         AttachmentData attachmentData = attachmentDataList.get(position);
-        Glide.with(context).load(attachmentData.getImageThumbUrl()).into(holder.ivImage);
+        ImageHandler.LoadImage(holder.ivImage, attachmentData.getImageThumbUrl());
     }
 
     @Override
     public int getItemCount() {
-        if (attachmentDataList != null) {
-            return attachmentDataList.size();
-        }
-        return 0;
+        return attachmentDataList.size();
     }
 
     public class Holder extends RecyclerView.ViewHolder {

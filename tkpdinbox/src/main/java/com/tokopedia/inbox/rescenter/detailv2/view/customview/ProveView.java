@@ -49,7 +49,7 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
 
     @Override
     public void setListener(DetailResCenterFragmentView detailResCenterFragmentView) {
-
+        this.listener = detailResCenterFragmentView;
     }
 
     @Override
@@ -70,9 +70,9 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
     @Override
     public void renderData(@NonNull ProveData proveData) {
         setVisibility(VISIBLE);
+        rvAttachment.setVisibility(VISIBLE);
         tvRemark.setText(proveData.getRemark());
-        if (proveData.getAttachment() != null) {
-            adapter.setAttachmentDataList(proveData.getAttachment());
-        }
+        adapter.setAttachmentDataList(proveData.getAttachment());
+        adapter.notifyDataSetChanged();
     }
 }

@@ -93,6 +93,11 @@ public interface ResolutionApi {
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_DETAIL_V2)
     Observable<Response<TkpdResponse>> getResCenterDetailV2(@Path("resolution_id") String resoId);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenterV2.ACTION_CANCEL_RESOLUTION)
+    Observable<Response<TkpdResponse>> cancelResolution(@Path("resolution_id") String resolutionID,
+                                                        @FieldMap TKPDMapParam<String, Object> params);
+
     //Version 1
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_DETAIL)
     Observable<Response<TkpdResponse>> getResCenterDetail(@Path("resolution_id") String resolutionID,

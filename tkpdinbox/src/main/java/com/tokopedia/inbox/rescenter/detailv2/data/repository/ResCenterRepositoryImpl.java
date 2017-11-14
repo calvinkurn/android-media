@@ -198,6 +198,13 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
     }
 
     @Override
+    public Observable<ResolutionActionDomainData> cancelResolutionV2(RequestParams params) {
+        return resCenterDataSourceFactory
+                .createCloudActionResCenterDataStore()
+                .cancelResolution(params);
+    }
+
+    @Override
     public Observable<ResolutionActionDomainData> askHelpResolutionV2(RequestParams requestParams) {
         return resCenterDataSourceFactory
                 .createCloudActionResCenterDataStore()

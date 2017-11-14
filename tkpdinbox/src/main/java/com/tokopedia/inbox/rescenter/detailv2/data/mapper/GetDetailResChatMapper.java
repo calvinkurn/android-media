@@ -250,7 +250,7 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
     }
 
     private ConversationActionDomain mappingConversationActionDomain(ConversationActionResponse response) {
-        return new ConversationActionDomain(response.getType(), response.getBy());
+        return new ConversationActionDomain(response.getType(), response.getBy(), response.getTitle());
     }
 
     private ConversationCreateTimeDomain mappingConversationCreateTimeDomain(

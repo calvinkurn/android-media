@@ -94,6 +94,12 @@ public class CloudActionResCenterDataStore {
                 params.getParameters()).map(resolutionCenterActionMapper);
     }
 
+    public Observable<ResolutionActionDomainData> cancelResolution(RequestParams params) {
+        return resolutionApi.cancelResolution(
+                params.getString(FinishResolutionUseCase.RESO_ID, ""),
+                params.getParameters()).map(resolutionCenterActionMapper);
+    }
+
     public Observable<ResolutionActionDomainData> askHelpResolutionV2(RequestParams params) {
         return resolutionApi.askHelpResolution(
                 params.getString(FinishResolutionUseCase.RESO_ID, ""),

@@ -14,6 +14,17 @@ public class ConversationActionResponse {
     @SerializedName("by")
     private int by;
 
+    @SerializedName("title")
+    private String title;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getType() {
         return type;
     }

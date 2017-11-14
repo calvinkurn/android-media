@@ -11,10 +11,20 @@ public class ConversationActionDomain implements Parcelable {
 
     private String type;
     private int by;
+    private String title;
 
-    public ConversationActionDomain(String type, int by) {
+    public ConversationActionDomain(String type, int by, String title) {
         this.type = type;
         this.by = by;
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getType() {
@@ -42,14 +52,16 @@ public class ConversationActionDomain implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.type);
         dest.writeInt(this.by);
+        dest.writeString(this.title);
     }
 
     protected ConversationActionDomain(Parcel in) {
         this.type = in.readString();
         this.by = in.readInt();
+        this.title = in.readString();
     }
 
-    public static final Parcelable.Creator<ConversationActionDomain> CREATOR = new Parcelable.Creator<ConversationActionDomain>() {
+    public static final Creator<ConversationActionDomain> CREATOR = new Creator<ConversationActionDomain>() {
         @Override
         public ConversationActionDomain createFromParcel(Parcel source) {
             return new ConversationActionDomain(source);

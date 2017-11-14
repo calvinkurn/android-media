@@ -75,6 +75,8 @@ public interface ResCenterRepository {
 
     Observable<ResolutionActionDomainData> finishResolution(RequestParams requestParams);
 
+    Observable<ResolutionActionDomainData> cancelResolutionV2(RequestParams requestParams);
+
     Observable<ResolutionActionDomainData> askHelpResolutionV2(RequestParams requestParams);
 
     Observable<NextActionDomain> getNextAction(RequestParams requestParams);

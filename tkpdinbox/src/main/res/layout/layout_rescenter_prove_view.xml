@@ -4,26 +4,11 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/action_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/margin_vs"
-            android:layout_centerInParent="true"
-            android:padding="@dimen/padding_small"
-            android:layout_alignParentRight="true"
-            android:text="@string/action_edit"
-            android:textColor="@color/tkpd_main_green"
-            android:textSize="@dimen/fontvs"
-            android:textStyle="bold"
-            android:visibility="gone"
-            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,7 +58,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_attachment"
             android:layout_width="match_parent"
-            android:layout_height="50dp"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"/>
 
         <TextView
             android:layout_marginTop="@dimen/margin_sm"
@@ -86,9 +72,8 @@
             android:id="@+id/tv_remark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            context:text="Pembeli meminta tukar produk"
+            context:text="keluhan pelanggan"
             android:textSize="@dimen/font_small"
-            android:textColor="@color/black_87"
-            />\
-    </LinearLayout>\
+            android:textColor="@color/black_87" />
+    </LinearLayout>
 </LinearLayout>

@@ -505,6 +505,7 @@ public class DetailResChatFragment
 
     private void initActionButton(final ButtonDomain buttonDomain) {
         actionButtonLayout.setVisibility(View.GONE);
+        boolean isAcceptShown = false;
         if (buttonDomain.getReport() == 1
                 || buttonDomain.getCancel() == 1
                 || buttonDomain.getEdit() == 1
@@ -599,7 +600,7 @@ public class DetailResChatFragment
                 Button button = getChatActionButton(buttonDomain.getAcceptLabel());
                 llActionButton.addView(button);
                 llActionButton.addView(addButtonSeparator());
-
+                isAcceptShown = true;
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -607,53 +608,18 @@ public class DetailResChatFragment
                     }
                 });
             }
-
-            if (buttonDomain.getAcceptReturn() == 1) {
-                Button button = getChatActionButton(buttonDomain.getAcceptReturnLabel());
-                llActionButton.addView(button);
-                llActionButton.addView(addButtonSeparator());
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showAcceptSolutionDialog(buttonDomain.getAcceptReturnText());
-                    }
-                });
-            }
-
-            if (buttonDomain.getAcceptByAdmin() == 1) {
-                Button button = getChatActionButton(buttonDomain.getAcceptByAdminLabel());
-                llActionButton.addView(button);
-                llActionButton.addView(addButtonSeparator());
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showAcceptSolutionDialog(buttonDomain.getAcceptByAdminText());
-                    }
-                });
-            }
-
-            if (buttonDomain.getAcceptByAdminReturn() == 1) {
-                Button button = getChatActionButton(buttonDomain.getAcceptByAdminReturnLabel());
-                llActionButton.addView(button);
-                llActionButton.addView(addButtonSeparator());
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showAcceptSolutionDialog(buttonDomain.getAcceptByAdminReturnText());
-                    }
-                });
-            }
-
-            if (buttonDomain.getFinish() == 1) {
-                final Button button = getChatActionButton(buttonDomain.getFinishLabel());
-                llActionButton.addView(button);
-                llActionButton.addView(addButtonSeparator());
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showFinishDialog(buttonDomain.getFinishText());
-                    }
-                });
+            if (!isAcceptShown) {
+                if (buttonDomain.getFinish() == 1) {
+                    final Button button = getChatActionButton(buttonDomain.getFinishLabel());
+                    llActionButton.addView(button);
+                    llActionButton.addView(addButtonSeparator());
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            showFinishDialog(buttonDomain.getFinishText());
+                        }
+                    });
+                }
             }
 
             if (buttonDomain.getRecomplaint() == 1) {
