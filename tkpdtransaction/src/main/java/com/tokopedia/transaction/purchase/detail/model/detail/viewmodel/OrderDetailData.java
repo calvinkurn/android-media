@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.purchase.detail.model;
+package com.tokopedia.transaction.purchase.detail.model.detail.viewmodel;
 
 import java.util.List;
 
@@ -9,6 +9,8 @@ import java.util.List;
 public class OrderDetailData {
 
     private String orderStatus;
+
+    private String orderImage;
 
     private String purchaseDate;
 
@@ -24,6 +26,8 @@ public class OrderDetailData {
 
     private String invoiceNumber;
 
+    private String invoiceUrl;
+
     private List<OrderDetailItemData> itemList;
 
     private String totalItemQuantity;
@@ -38,7 +42,7 @@ public class OrderDetailData {
 
     private String totalPayment;
 
-    private List<ButtonAttribute> buttonList;
+    private ButtonData buttonData;
 
     public String getOrderStatus() {
         return orderStatus;
@@ -46,6 +50,18 @@ public class OrderDetailData {
 
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public String getOrderImage() {
+        return orderImage;
+    }
+
+    public void setOrderImage(String orderImage) {
+        this.orderImage = orderImage;
+    }
+
+    public String getBuyerName() {
+        return buyerName;
     }
 
     public String getPurchaseDate() {
@@ -104,6 +120,14 @@ public class OrderDetailData {
         this.invoiceNumber = invoiceNumber;
     }
 
+    public String getInvoiceUrl() {
+        return invoiceUrl;
+    }
+
+    public void setInvoiceUrl(String invoiceUrl) {
+        this.invoiceUrl = invoiceUrl;
+    }
+
     public List<OrderDetailItemData> getItemList() {
         return itemList;
     }
@@ -160,11 +184,11 @@ public class OrderDetailData {
         this.totalPayment = totalPayment;
     }
 
-    public List<ButtonAttribute> getButtonList() {
-        return buttonList;
+    public ButtonData getButtonData() {
+        return buttonData;
     }
 
-    public void setButtonList(List<ButtonAttribute> buttonList) {
-        this.buttonList = buttonList;
+    public void setButtonData(ButtonData buttonData) {
+        this.buttonData = buttonData;
     }
 }

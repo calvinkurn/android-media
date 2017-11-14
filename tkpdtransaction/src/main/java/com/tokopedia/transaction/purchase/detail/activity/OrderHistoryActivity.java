@@ -8,8 +8,8 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderHistoryAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderHistoryStepperLayout;
-import com.tokopedia.transaction.purchase.detail.model.OrderHistoryData;
-import com.tokopedia.transaction.purchase.detail.model.OrderHistoryListData;
+import com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData;
+import com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryListData;
 
 import java.util.ArrayList;
 import java.util.List;

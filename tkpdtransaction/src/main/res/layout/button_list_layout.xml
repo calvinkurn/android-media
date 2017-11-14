@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/accept_order"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Accept Order"/>
+
+    <Button
+        android:id="@+id/change_courier"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Change Courier"/>
+
+    <Button
+        android:id="@+id/request_pickup"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Request Pickup"/>
+
+    <Button
+        android:id="@+id/confirm_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Confirm"/>
+
+    <Button
+        android:id="@+id/finish_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Finish Order"/>
+
+    <Button
+        android:id="@+id/change_awb"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Change Awb"/>
+
+    <Button
+        android:id="@+id/view_complaint_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="View Complaint"/>
+
+    <Button
+        android:id="@+id/confirm_shipping"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Confirm Shipping"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Track"/>
+
+    <Button
+        android:id="@+id/track_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/white_button_rounded"
+        android:text="Track"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Ask Seller"/>
+
+    <Button
+        android:id="@+id/ask_seller_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/white_button_rounded"
+        android:text="Ask Seller"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Ask Buyer"/>
+
+    <Button
+        android:id="@+id/ask_buyer_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/white_button_rounded"
+        android:text="Ask Buyer"/>
+
+    <Button
+        android:id="@+id/reject_order_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/white_button_rounded"
+        android:text="Reject Order"/>
+
+    <Button
+        android:id="@+id/request_cancel_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/white_button_rounded"
+        android:textColor="@color/white"
+        android:text="Request Cancel"/>
+
+    <Button
+        android:id="@+id/complaint"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Complaint"/>
+
+    <Button
+        android:id="@+id/order_detail_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Order Detail"/>
+
+    <Button
+        android:id="@+id/cancel_chance"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:background="@drawable/green_button_rounded_unify"
+        android:textColor="@color/white"
+        android:text="Cancel Peluang"/>
+
+</LinearLayout>

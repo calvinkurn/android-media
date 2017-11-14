@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.purchase.detail.model.OrderDetailItemData;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
 
 import java.util.List;
 

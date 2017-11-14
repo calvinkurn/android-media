@@ -3,45 +3,61 @@ package com.tokopedia.transaction.purchase.detail.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.purchase.detail.adapter.ButtonAdapter;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
-import com.tokopedia.transaction.purchase.detail.model.ButtonAttribute;
-import com.tokopedia.transaction.purchase.detail.model.OrderDetailData;
-import com.tokopedia.transaction.purchase.detail.model.OrderDetailItemData;
+import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
+import com.tokopedia.transaction.purchase.detail.di.DaggerOrderDetailComponent;
+import com.tokopedia.transaction.purchase.detail.di.OrderDetailComponent;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by kris on 11/2/17. Tokopedia
  */
 
-public class OrderDetailActivity extends TActivity {
+public class OrderDetailActivity extends TActivity implements OrderDetailView {
+    private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
+
+    @Inject
+    OrderDetailPresenterImpl presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.order_detail_page);
-        //TODO delete after fetching data from WS
-        initView(dummyOrderDetailData());
+        initInjector();
+        presenter.setMainViewListener(this);
+        presenter.fetchData(this, getIntent().getStringExtra(EXTRA_ORDER_ID));
     }
 
-    public static Intent createInstance(Context context) {
-        return new Intent(context, OrderDetailActivity.class);
+    private void initInjector() {
+        OrderDetailComponent component = DaggerOrderDetailComponent
+                .builder()
+                .appComponent(getApplicationComponent())
+                .build();
+        component.inject(this);
+    }
+
+    public static Intent createInstance(Context context, String orderId) {
+        Intent intent = new Intent(context, OrderDetailActivity.class);
+        intent.putExtra(EXTRA_ORDER_ID, orderId);
+        return intent;
+
     }
 
     private void initView(OrderDetailData data) {
-        setMainScrollProperty();
         setStatusView(data);
         setItemListView(data);
         setInvoiceView(data);
@@ -51,15 +67,13 @@ public class OrderDetailActivity extends TActivity {
 
     }
 
-    private void setMainScrollProperty() {
-        NestedScrollView mainScrollView = (NestedScrollView) findViewById(R.id.main_scroll_view);
-    }
-
     private void setStatusView(OrderDetailData data) {
         ViewGroup statusLayout = (ViewGroup) findViewById(R.id.order_detail_status_layout);
         TextView statusTextView = (TextView) findViewById(R.id.text_view_status);
+        ImageView imageView = (ImageView) findViewById(R.id.order_detail_status_image);
         statusLayout.setOnClickListener(onStatusLayoutClickedListener());
         statusTextView.setText(data.getOrderStatus());
+        ImageHandler.LoadImage(imageView, data.getOrderImage());
     }
 
     private void setPriceView(OrderDetailData data) {
@@ -72,16 +86,15 @@ public class OrderDetailActivity extends TActivity {
         itemAmount.setText(data.getTotalItemQuantity());
         productPrice.setText(data.getProductPrice());
         deliveryPrice.setText(data.getDeliveryPrice());
-        insurancePrice.setText(data.getAdditionalFee());
-        additionalFee.setText(data.getTotalPayment());
+        insurancePrice.setText(data.getInsurancePrice());
+        additionalFee.setText(data.getAdditionalFee());
         totalPayment.setText(data.getTotalPayment());
     }
 
     private void setButtonView(OrderDetailData data) {
-        RecyclerView buttonListRecyclerView = (RecyclerView) findViewById(R.id.button_list);
-        buttonListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        buttonListRecyclerView.setAdapter(new ButtonAdapter(data.getButtonList()));
-        buttonListRecyclerView.setNestedScrollingEnabled(false);
+        OrderDetailButtonLayout buttonLayout = (OrderDetailButtonLayout)
+                findViewById(R.id.button_layout);
+        buttonLayout.initButton(this, presenter, data);
     }
 
     private void setItemListView(OrderDetailData data) {
@@ -115,60 +128,6 @@ public class OrderDetailActivity extends TActivity {
         descriptionPartialOrderStatus.setText(data.getPartialOrderStatus());
     }
 
-
-    private OrderDetailData dummyOrderDetailData() {
-        OrderDetailData data = new OrderDetailData();
-        data.setOrderStatus("Pesanan Sedang diproses");
-        data.setPurchaseDate("1 Sep 2017");
-        data.setResponseTimeLimit("3 hari lagi");
-        data.setBuyerName("Ryan Handy");
-        data.setCourierName("Wahana Express");
-        data.setShippingAddress("Ryan handy \n 08113400775 \n Wisma 77 Tower 2 \n Jl.Letjen s parman kav.77 \n Slipi, Jakarta Barat 14410");
-        data.setInvoiceNumber("INV/20161025/XVI/X/5506957");
-        data.setItemList(dummyItemList());
-        data.setTotalItemQuantity("3 barang (3,75kg)");
-        data.setProductPrice("Rp 75.000");
-        data.setDeliveryPrice("Rp 15.000");
-        data.setInsurancePrice("Rp 15.500");
-        data.setAdditionalFee("Rp 1.000");
-        data.setTotalPayment("Rp 2.000.000");
-        data.setButtonList(dummyButtonAttributes());
-        return data;
-    }
-
-    private List<OrderDetailItemData> dummyItemList() {
-        List<OrderDetailItemData> list = new ArrayList<>();
-        OrderDetailItemData item1 = new OrderDetailItemData();
-        item1.setItemName("Earpads Audio Technica ATH M50x");
-        item1.setPrice("Rp 75.000");
-        item1.setItemQuantity("1 Barang");
-        item1.setDescription("Barangnya tolong dikirim segera dan earpadsnya saya pesan yang warna Hitam! yah");
-        OrderDetailItemData item2 = new OrderDetailItemData();
-        item2.setItemName("KRK Rockit Speaker Monitor 7 inch New 100% lalalalallala");
-        item2.setPrice("Rp 2.275.000");
-        item2.setItemQuantity("1 Barang");
-        item2.setDescription("");
-        OrderDetailItemData item3 = new OrderDetailItemData();
-        item3.setItemName("Native instrument Traktor Sratch MK II - Timberland Extended Version");
-        item3.setPrice("Rp 545.000");
-        item3.setItemQuantity("1 Barang");
-        item3.setDescription("Barangnya tolong dikirim segera dan earpadsnya saya pesan yang warna Hitam! yah");
-        list.add(item1);
-        list.add(item2);
-        list.add(item3);
-        return list;
-    }
-
-    private List<ButtonAttribute> dummyButtonAttributes() {
-        List<ButtonAttribute> buttonAttributes = new ArrayList<>();
-        ButtonAttribute dummyButton = new ButtonAttribute();
-        dummyButton.setButtonColorMode(ButtonAttribute.WHITE_COLOR_MODE);
-        dummyButton.setButtonText("Tanya Penjual");
-        dummyButton.setId(ButtonAttribute.ASK_SELLER_ID);
-        buttonAttributes.add(dummyButton);
-        return buttonAttributes;
-    }
-
     private View.OnClickListener onStatusLayoutClickedListener() {
         return new View.OnClickListener() {
             @Override
@@ -179,4 +138,13 @@ public class OrderDetailActivity extends TActivity {
         };
     }
 
+    @Override
+    public void onReceiveDetailData(OrderDetailData data) {
+        initView(data);
+    }
+
+    @Override
+    public void onError(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
 }

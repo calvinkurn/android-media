@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.purchase.detail.model;
+package com.tokopedia.transaction.purchase.detail.model.detail.viewmodel;
 
 /**
  * Created by kris on 11/2/17. Tokopedia

@@ -224,7 +224,8 @@ public class TxListPresenterImpl implements TxListPresenter {
 
     @Override
     public void processToDetailOrder(Context context, OrderData data, int typeInstance) {
-        viewListener.navigateToActivity(OrderDetailActivity.createInstance(context));
+        viewListener.navigateToActivity(OrderDetailActivity.createInstance(context,
+                data.getOrderDetail().getDetailOrderId()));
         //viewListener.navigateToActivity(TxDetailActivity.createInstance(context, data));
     }
 

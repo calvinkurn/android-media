@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.purchase.detail.model;
+package com.tokopedia.transaction.purchase.detail.model.history.viewmodel;
 
 import java.util.List;
 

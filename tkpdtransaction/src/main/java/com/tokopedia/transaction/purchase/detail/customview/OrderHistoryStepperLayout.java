@@ -9,14 +9,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.purchase.detail.model.OrderHistoryData;
+import com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData;
 
-import static com.tokopedia.transaction.purchase.detail.model.OrderHistoryData.ORDER_ARRIVED;
-import static com.tokopedia.transaction.purchase.detail.model.OrderHistoryData.ORDER_CHECKED_OUT;
-import static com.tokopedia.transaction.purchase.detail.model.OrderHistoryData.ORDER_FINISHED;
-import static com.tokopedia.transaction.purchase.detail.model.OrderHistoryData.ORDER_PROCESSED;
-import static com.tokopedia.transaction.purchase.detail.model.OrderHistoryData.ORDER_SENT;
-import static com.tokopedia.transaction.purchase.detail.model.OrderHistoryData.ORDER_VERIFIED;
+import static com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData.ORDER_ARRIVED;
+import static com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData.ORDER_CHECKED_OUT;
+import static com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData.ORDER_FINISHED;
+import static com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData.ORDER_PROCESSED;
+import static com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData.ORDER_SENT;
+import static com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData.ORDER_VERIFIED;
 
 /**
  * Created by kris on 11/7/17. Tokopedia

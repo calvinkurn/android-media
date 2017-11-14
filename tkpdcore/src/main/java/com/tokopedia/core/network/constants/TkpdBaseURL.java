@@ -57,6 +57,8 @@ public class TkpdBaseURL {
     public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
+    public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
+
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
         public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
@@ -868,5 +870,10 @@ public class TkpdBaseURL {
     public class Maps {
         public static final String PATH_MAPS_PLACES = "maps/places/autocomplete";
         public static final String PATH_MAPS_PLACES_DETAIL = "maps/places/place-details";
+    }
+
+    public class Purchase {
+        public static final String PATH_ORDER_DETAIL = "/api/order/i/v1/detail";
+        public static final String PATH_ORDER_HISTORY = "/api/order/i/v1/history";
     }
 }

@@ -70,11 +70,10 @@
 
         <include layout="@layout/order_detail_price" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/button_list"
+        <com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout
+            android:id="@+id/button_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:visibility="gone" />
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

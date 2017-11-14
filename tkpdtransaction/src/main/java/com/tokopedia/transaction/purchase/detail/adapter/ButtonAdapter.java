@@ -9,19 +9,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.purchase.detail.model.ButtonAttribute;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonAttribute;
 
 import java.util.List;
 
-import static com.tokopedia.transaction.purchase.detail.model.ButtonAttribute.ASK_BUYER_ID;
-import static com.tokopedia.transaction.purchase.detail.model.ButtonAttribute.ASK_SELLER_ID;
-import static com.tokopedia.transaction.purchase.detail.model.ButtonAttribute.CANCEL_SEARCH_ID;
-import static com.tokopedia.transaction.purchase.detail.model.ButtonAttribute.COMPLAINT_ID;
-import static com.tokopedia.transaction.purchase.detail.model.ButtonAttribute.FINISH_ID;
-import static com.tokopedia.transaction.purchase.detail.model.ButtonAttribute.RECEIVED_PACKAGE_ID;
-import static com.tokopedia.transaction.purchase.detail.model.ButtonAttribute.REQUEST_CANCEL_ID;
-import static com.tokopedia.transaction.purchase.detail.model.ButtonAttribute.TRACK_ID;
-import static com.tokopedia.transaction.purchase.detail.model.ButtonAttribute.VIEW_COMPLAINT_ID;
+import static com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonAttribute.ASK_BUYER_ID;
+import static com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonAttribute.ASK_SELLER_ID;
+import static com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonAttribute.CANCEL_SEARCH_ID;
+import static com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonAttribute.COMPLAINT_ID;
+import static com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonAttribute.FINISH_ID;
+import static com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonAttribute.RECEIVED_PACKAGE_ID;
+import static com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonAttribute.REQUEST_CANCEL_ID;
+import static com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonAttribute.TRACK_ID;
+import static com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonAttribute.VIEW_COMPLAINT_ID;
 
 /**
  * Created by kris on 11/3/17. Tokopedia
