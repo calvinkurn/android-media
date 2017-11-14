@@ -121,7 +121,7 @@ class PaymentBank extends Component {
   _renderPopRow(rowData, sectionID, rowID) {
     if (rowID > 10) {
       return (
-        <TouchableWithoutFeedback onPress={this._onPressPopupRow.bind(this, rowID, rowData)}>
+        <TouchableOpacity onPress={this._onPressPopupRow.bind(this, rowID, rowData)}>
           <View style={styles.popupRow}>
             <View style={styles.popupCol}>
               <Image style={styles.popupImage} source={{uri: rowData.bank_logo}} />
@@ -130,7 +130,7 @@ class PaymentBank extends Component {
               <Text style={styles.popupText}> {rowData.bank_name} </Text>
             </View>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
       );
     }
 
@@ -141,33 +141,34 @@ class PaymentBank extends Component {
   _renderEmiRow(rowData, sectionID, rowID) {
     if (rowData.available === false) {
       return (
-        <TouchableWithoutFeedback onPress={this._onPressEmiRow.bind(this, rowID, rowData)}>
+        <TouchableOpacity onPress={this._onPressEmiRow.bind(this, rowID, rowData)}>
           <View style={[styles.emiBox, { marginRight: 10, height: 80 }, this.state.selectedEmiId === rowData.term ? styles.selectedBorder : {}]}>
             <Text style={styles.emiText}>{rowData.text}</Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
       );
     }
 
     return (
-      <TouchableWithoutFeedback onPress={this._onPressEmiRow.bind(this, rowID, rowData)}>
+      <TouchableOpacity onPress={this._onPressEmiRow.bind(this, rowID, rowData)}>
         <View style={[styles.emiBox, { marginRight: 10, height: 80 }, this.state.selectedEmiId === rowData.term ? styles.selectedBorder : {}]}>
           <Text style={styles.emiText}>{rowData.term} Bulan</Text>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
 
 
   _renderBankLogo(rowData, sectionID, rowID) {
+    // console.log(rowData,sectionID, rowID)
     if (rowID <= 10) {
       return (
-        <TouchableWithoutFeedback onPress={this._onPressLogo.bind(this, rowID, rowData)}>
+        <TouchableOpacity onPress={this._onPressLogo.bind(this, rowID, rowData)}>
           <View style={[styles.logoBox, { marginTop: 10, height: 80 }, (rowData.isSelected ? styles.selectedBorder : '')]}>
             <Image source={{ uri: rowData.bank_logo || 'http://via.placeholder.com/50x27' }}
               style={styles.cardLogo} />
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
       );
     } else if (rowID <= 11) {
       return (

@@ -52,7 +52,7 @@ class VisibleProductList extends Component {
     dispatch(fetchProducts(shopId, 0, 25, 0, null, queryText))
 
     this.paymentSuccessReloadState = DeviceEventEmitter.addListener("clearState", (res) => {
-      console.log(res)
+      // console.log(res)
       if (res) {
         dispatch(resetProductList())
         dispatch(fetchShopId())
@@ -145,7 +145,7 @@ class VisibleProductList extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state)
+  // console.log(state)
   const products = state.products
   const etalases = state.etalase
   const queryText = state.search.query

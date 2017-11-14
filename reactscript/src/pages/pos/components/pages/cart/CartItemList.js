@@ -243,7 +243,7 @@ const styles = {
 
 
 const mapStateToProps = (state) => {
-    console.log(state)
+    // console.log(state)
     return {
       checkout_isFetchingParamsCheckout: state.checkout.isFetchingParamsCheckout,
       checkout_showLoadingPage: state.checkout.showLoadingPage,
