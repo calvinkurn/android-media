@@ -1790,6 +1790,24 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventActivateTokocash() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
+                AppEventTracking.Action.CLICK_ACTIVATE,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventClickSaldoTokocash() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
+                AppEventTracking.Action.CLICK_SALDO,
+                ""
+        ).getEvent());
+    }
+
     public static void eventSelectOperatorWidget(String ec, String el) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,

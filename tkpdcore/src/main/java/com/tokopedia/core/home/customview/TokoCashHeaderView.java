@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction;
@@ -114,6 +115,7 @@ public class TokoCashHeaderView extends RelativeLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventActivateTokocash();
                 actionListener.onActivationTokoCashClicked();
             }
         };
@@ -155,6 +157,7 @@ public class TokoCashHeaderView extends RelativeLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventClickSaldoTokocash();
                 openTokoCashWebView(redirectUrl);
             }
         };
