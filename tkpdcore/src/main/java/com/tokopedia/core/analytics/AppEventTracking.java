@@ -297,7 +297,7 @@ public interface AppEventTracking {
         String SELECT_PRODUCT = "Select Product";
         String SELECT_OPERATOR = "Select Operator";
         String CLICK_SEARCH_BAR = "Click Search Bar";
-        String CLICK_WIDGET_BAR = "Click Widget Bar";
+        String CLICK_WIDGET_BAR = "click widget";
         String CHECK_INSTANT_SALDO_WIDGET = "Check Instant Saldo from Widget";
         String UNCHECK_INSTANT_SALDO_WIDGET = "Uncheck Instant Saldo from Widget";
         String CHECK_INSTANT_SALDO = "Check Instant Saldo";
