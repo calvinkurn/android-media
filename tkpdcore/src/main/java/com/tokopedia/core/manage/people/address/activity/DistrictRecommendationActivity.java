@@ -15,8 +15,6 @@ import com.tokopedia.core.manage.people.address.model.districtrecomendation.Toke
 
 public class DistrictRecommendationActivity extends BasePresenterActivity {
 
-    private static final String TAG = "DISTRICT_RECOMMENDATION_FRAGMENT";
-
     public static Intent createInstance(Activity activity, Token token) {
         Intent intent = new Intent(activity, DistrictRecommendationActivity.class);
         intent.putExtra(DistrictRecomendationFragmentView.Constant.ARGUMENT_DATA_TOKEN, token);
@@ -58,7 +56,8 @@ public class DistrictRecommendationActivity extends BasePresenterActivity {
                         ARGUMENT_DATA_TOKEN));
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.container, fragment, TAG);
+        fragmentTransaction.add(R.id.container, fragment,
+                DistrictRecommendationFragment.class.getSimpleName());
         fragmentTransaction.commit();
     }
 

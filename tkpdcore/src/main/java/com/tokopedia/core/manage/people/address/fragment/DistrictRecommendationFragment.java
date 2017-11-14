@@ -92,7 +92,7 @@ public class DistrictRecommendationFragment
 
     @Override
     protected void initialPresenter() {
-        presenter = new DistrictRecomendationFragmentPresenterImpl(this,
+        presenter = new DistrictRecomendationFragmentPresenterImpl(getActivity(), this,
                 (Token) getArguments().getParcelable(Constant.ARGUMENT_DATA_TOKEN));
     }
 
@@ -283,6 +283,12 @@ public class DistrictRecommendationFragment
         resultIntent.putExtra(DistrictRecomendationFragmentView.Constant.INTENT_DATA_ADDRESS, address);
         getActivity().setResult(Activity.RESULT_OK, resultIntent);
         getActivity().finish();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.unsubscribe();
     }
 
     private interface OnQueryListener {

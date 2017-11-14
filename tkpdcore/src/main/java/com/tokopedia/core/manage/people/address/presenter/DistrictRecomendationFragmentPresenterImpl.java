@@ -1,5 +1,7 @@
 package com.tokopedia.core.manage.people.address.presenter;
 
+import android.content.Context;
+
 import com.tokopedia.core.manage.people.address.interactor.DistrictRecommendationRetrofitInteractor;
 import com.tokopedia.core.manage.people.address.interactor.DistrictRecommendationRetrofitInteractorImpl;
 import com.tokopedia.core.manage.people.address.listener.DistrictRecomendationFragmentView;
@@ -23,11 +25,11 @@ public class DistrictRecomendationFragmentPresenterImpl implements DistrictRecom
     private boolean hasNext;
     private Token token;
 
-    public DistrictRecomendationFragmentPresenterImpl(DistrictRecomendationFragmentView view,
+    public DistrictRecomendationFragmentPresenterImpl(Context context, DistrictRecomendationFragmentView view,
                                                       Token token) {
         this.view = view;
         this.token = token;
-        retrofitInteractor = new DistrictRecommendationRetrofitInteractorImpl();
+        retrofitInteractor = new DistrictRecommendationRetrofitInteractorImpl(context);
     }
 
     @Override
@@ -39,7 +41,8 @@ public class DistrictRecomendationFragmentPresenterImpl implements DistrictRecom
 
     private void query(String query) {
         view.showLoading();
-        retrofitInteractor.getDistrictRecommendation(getParams(query),
+        retrofitInteractor.getDistrictRecommendation(
+                DistrictRecommendationRetrofitInteractorImpl.getParams(query, token, ++lastPage),
                 new DistrictRecommendationRetrofitInteractor.DistrictRecommendationListener() {
                     @Override
                     public void onSuccess(AddressResponse model) {
@@ -85,17 +88,6 @@ public class DistrictRecomendationFragmentPresenterImpl implements DistrictRecom
     public void clearData() {
         addresses.clear();
         view.updateRecommendation();
-    }
-
-    private TKPDMapParam<String, String> getParams(String query) {
-        TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put(DistrictRecommendationRetrofitInteractor.Params.PAGE, String.valueOf(++lastPage));
-        params.put(DistrictRecommendationRetrofitInteractor.Params.TOKEN,
-                token.getDistrictRecommendation());
-        params.put(DistrictRecommendationRetrofitInteractor.Params.UT,
-                String.valueOf(token.getUnixTime()));
-        params.put(DistrictRecommendationRetrofitInteractor.Params.QUERY, query);
-        return params;
     }
 
 }

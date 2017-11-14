@@ -1,8 +1,12 @@
 package com.tokopedia.core.manage.people.address.interactor;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
+import com.tokopedia.core.R;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.manage.people.address.model.districtrecomendation.AddressResponse;
+import com.tokopedia.core.manage.people.address.model.districtrecomendation.Token;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
@@ -19,10 +23,13 @@ import rx.schedulers.Schedulers;
 public class DistrictRecommendationRetrofitInteractorImpl implements
         DistrictRecommendationRetrofitInteractor {
 
+    private static final int NUMBER_OF_RETRY = 3;
     private KeroAuthService keroAuthService;
+    private Context context;
 
-    public DistrictRecommendationRetrofitInteractorImpl() {
-        keroAuthService = new KeroAuthService(3);
+    public DistrictRecommendationRetrofitInteractorImpl(Context context) {
+        this.context = context;
+        keroAuthService = new KeroAuthService(NUMBER_OF_RETRY);
     }
 
     @Override
@@ -53,27 +60,42 @@ public class DistrictRecommendationRetrofitInteractorImpl implements
 
                                 @Override
                                 public void onTimeout() {
-                                    listener.onTimeout("Mohon ulangi beberapa saat lagi");
+                                    listener.onTimeout(context.getString(
+                                            R.string.default_request_error_timeout));
                                 }
 
                                 @Override
                                 public void onServerError() {
-                                    listener.onTimeout("Mohon ulangi beberapa saat lagi");
+                                    listener.onTimeout(context.getString(
+                                            R.string.default_request_error_internal_server));
                                 }
 
                                 @Override
                                 public void onBadRequest() {
-                                    listener.onTimeout("Mohon ulangi beberapa saat lagi");
+                                    listener.onTimeout(context.getString(
+                                            R.string.default_request_error_bad_request));
                                 }
 
                                 @Override
                                 public void onForbidden() {
-                                    listener.onTimeout("Mohon ulangi beberapa saat lagi");
+                                    listener.onTimeout(context.getString(
+                                            R.string.default_request_error_forbidden_auth));
                                 }
                             }, stringResponse.code());
                         }
                     }
                 });
+    }
+
+    public static TKPDMapParam<String, String> getParams(String query, Token token, int page) {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put(DistrictRecommendationRetrofitInteractor.Params.PAGE, String.valueOf(page));
+        params.put(DistrictRecommendationRetrofitInteractor.Params.TOKEN,
+                token.getDistrictRecommendation());
+        params.put(DistrictRecommendationRetrofitInteractor.Params.UT,
+                String.valueOf(token.getUnixTime()));
+        params.put(DistrictRecommendationRetrofitInteractor.Params.QUERY, query);
+        return params;
     }
 
 }
