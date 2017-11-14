@@ -23,33 +23,33 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
 
     private RecyclerView rvAttachment;
     private TextView tvRemark;
-    ProveAdapter adapter;
+    private Context context;
 
+    ProveAdapter adapter;
     public ProveView(Context context) {
         super(context);
-    }
-
-    @Override
-    protected void initView(Context context) {
-        super.initView(context);
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(getLayoutView(), this, true);
-        rvAttachment = (RecyclerView) view.findViewById(R.id.rv_attachment);
-        tvRemark = (TextView) view.findViewById(R.id.tv_remark);
-
-        rvAttachment.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        adapter = new ProveAdapter(context);
-        rvAttachment.setAdapter(adapter);
     }
 
     public ProveView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
+
     @Override
-    public void setListener(DetailResCenterFragmentView detailResCenterFragmentView) {
-        this.listener = detailResCenterFragmentView;
+    protected void initView(Context context) {
+        super.initView(context);
+        this.context = context;
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        rvAttachment = (RecyclerView) view.findViewById(R.id.rv_attachment);
+        tvRemark = (TextView) view.findViewById(R.id.tv_remark);
+        adapter = new ProveAdapter(context);
+    }
+
+    @Override
+    public void setListener(DetailResCenterFragmentView listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -64,15 +64,21 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
 
     @Override
     protected void setViewListener() {
-
+        setVisibility(GONE);
     }
 
     @Override
     public void renderData(@NonNull ProveData proveData) {
         setVisibility(VISIBLE);
-        rvAttachment.setVisibility(VISIBLE);
         tvRemark.setText(proveData.getRemark());
-        adapter.setAttachmentDataList(proveData.getAttachment());
+        initRecyclerView(proveData);
+    }
+
+    private void initRecyclerView(ProveData data) {
+        rvAttachment.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        rvAttachment.setHasFixedSize(true);
+        rvAttachment.setAdapter(adapter);
+        adapter.setAttachmentDataList(data.getAttachment());
         adapter.notifyDataSetChanged();
     }
 }

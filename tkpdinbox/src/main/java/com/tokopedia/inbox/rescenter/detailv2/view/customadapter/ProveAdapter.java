@@ -21,25 +21,19 @@ import java.util.List;
 
 public class ProveAdapter extends RecyclerView.Adapter<ProveAdapter.Holder> {
 
-    Context context;
+    private Context context;
     private List<AttachmentData> attachmentDataList = new ArrayList<>();
 
     public ProveAdapter(Context context) {
         this.context = context;
     }
 
-    public List<AttachmentData> getAttachmentDataList() {
-        return attachmentDataList;
-    }
-
-    public void setAttachmentDataList(List<AttachmentData> attachmentDataList) {
-        this.attachmentDataList = attachmentDataList;
-        notifyDataSetChanged();
-    }
-
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new Holder(LayoutInflater.from(context).inflate(R.layout.item_detail_prove, parent, false));
+        return new Holder(LayoutInflater.from(context)
+                .inflate(R.layout.item_detail_prove,
+                        parent,
+                        false));
     }
 
     @Override
@@ -51,6 +45,15 @@ public class ProveAdapter extends RecyclerView.Adapter<ProveAdapter.Holder> {
     @Override
     public int getItemCount() {
         return attachmentDataList.size();
+    }
+
+    public List<AttachmentData> getAttachmentDataList() {
+        return attachmentDataList;
+    }
+
+    public void setAttachmentDataList(List<AttachmentData> attachmentDataList) {
+        this.attachmentDataList = attachmentDataList;
+        notifyDataSetChanged();
     }
 
     public class Holder extends RecyclerView.ViewHolder {

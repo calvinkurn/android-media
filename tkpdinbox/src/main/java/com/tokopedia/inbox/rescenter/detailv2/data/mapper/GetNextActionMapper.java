@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.retrofit.response.Error;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.LastResponse;
@@ -25,9 +26,6 @@ import rx.functions.Func1;
  */
 
 public class GetNextActionMapper implements Func1<Response<TkpdResponse>, NextActionDomain> {
-    private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
-    private static final String ERROR_MESSAGE = "message_error";
-
 
     @Override
     public NextActionDomain call(Response<TkpdResponse> response) {
@@ -44,7 +42,7 @@ public class GetNextActionMapper implements Func1<Response<TkpdResponse>, NextAc
                     if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
                         throw new ErrorMessageException(response.body().getErrorMessageJoined());
                     } else {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
+                        throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
                     }
                 } else {
                     model.setSuccess(true);

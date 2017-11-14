@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -18,6 +19,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProductAdap
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ChatProveAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
+import com.tokopedia.inbox.rescenter.product.ListProductActivity;
 
 import org.w3c.dom.Text;
 
@@ -39,6 +41,7 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
     Button btnSeeAllProduct;
     ChatProveAdapter proveAdapter;
     ChatProductAdapter productAdapter;
+    FrameLayout flSeeAllProducts;
 
     public ChatCreateLeftViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
         super(itemView);
@@ -50,6 +53,8 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
         rvProve = (RecyclerView) itemView.findViewById(R.id.rv_prove);
         rvProduct = (RecyclerView) itemView.findViewById(R.id.rv_complained_product);
         btnSeeAllProduct = (Button) itemView.findViewById(R.id.btn_see_all_product);
+        flSeeAllProducts = (FrameLayout) itemView.findViewById(R.id.fl_see_all_product);
+
         layoutTitle = itemView.findViewById(R.id.layout_title);
         layoutDate1 = itemView.findViewById(R.id.layout_date_1);
         layoutDate2 = itemView.findViewById(R.id.layout_date_2);
@@ -63,8 +68,8 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
     }
 
     @Override
-    public void bind(ChatCreateLeftViewModel element) {
-        Context context = itemView.getContext();
+    public void bind(final ChatCreateLeftViewModel element) {
+        final Context context = itemView.getContext();
         tvTitle.setText(context.getResources().getString(R.string.string_complaint_title)
                 .replace(
                         context.getResources().getString(R.string.string_complaint_title_identifier),
@@ -72,19 +77,34 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
         tvBuyerSolution.setText(element.getConversationDomain().getSolution().getName());
         tvBuyerText.setText(MethodChecker.fromHtml(element.getConversationDomain().getMessage()));
 
-        tvUserTitle.setText("Sistem Tokopedia");
-        tvUsername.setText("Toped");
-        String date = DateFormatUtils.formatDateForResoChatV2(element.getConversationDomain().getCreateTime().getTimestamp());
+        tvUserTitle.setText(context.getResources().getString(R.string.string_tokopedia_system));
+        tvUsername.setText(context.getResources().getString(R.string.string_tokopedia));
+        String date = DateFormatUtils.formatDateForResoChatV2(
+                element.getConversationDomain().getCreateTime().getTimestamp());
         tvDate1.setText(date);
         tvDate2.setText(date);
         tvDate3.setText(date);
+
+        flSeeAllProducts.setVisibility(
+                element.getConversationDomain().getAttachment().size() < 2 ?
+                        View.GONE :
+                        View.VISIBLE);
+
+        btnSeeAllProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mainView.intentToSeeAllProducts();
+            }
+        });
 
         rvProve.setLayoutManager(new LinearLayoutManager(context));
         proveAdapter = new ChatProveAdapter(context, element.getConversationDomain().getAttachment());
         rvProve.setAdapter(proveAdapter);
 
         rvProduct.setLayoutManager(new GridLayoutManager(context, COUNT_MAX_PRODUCT));
-        productAdapter = new ChatProductAdapter(context, element.getConversationDomain().getProduct(), COUNT_MAX_PRODUCT);
+        productAdapter = new ChatProductAdapter(context,
+                element.getConversationDomain().getProduct(),
+                COUNT_MAX_PRODUCT);
         rvProduct.setAdapter(productAdapter);
     }
 }

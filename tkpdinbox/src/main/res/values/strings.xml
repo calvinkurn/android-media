@@ -163,4 +163,6 @@
     <string name="string_seller_choice">Penjual dapat memilih untuk:</string>
     <string name="string_complaint_title">Komplain untuk <b>$store_name</b> telah dibuat.</string>
     <string name="string_complaint_title_identifier">$store_name</string>
+    <string name="string_tokopedia_system">Sistem Tokopedia</string>
+    <string name="string_tokopedia">Toped</string>
 </resources>

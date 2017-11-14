@@ -56,14 +56,13 @@ import java.util.List;
 import retrofit2.Response;
 import rx.functions.Func1;
 
+import static com.tokopedia.core.network.ErrorMessageException.DEFAULT_ERROR;
+
 /**
  * Created by yoasfs on 10/10/17.
  */
 
 public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, DetailResChatDomain> {
-    private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
-    private static final String ERROR_MESSAGE = "message_error";
-
 
     @Override
     public DetailResChatDomain call(Response<TkpdResponse> response) {

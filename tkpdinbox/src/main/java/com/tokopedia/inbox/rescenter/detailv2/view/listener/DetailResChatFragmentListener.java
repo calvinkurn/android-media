@@ -64,6 +64,8 @@ public interface DetailResChatFragmentListener {
 
         void errorFinishResolution(String error);
 
+        void intentToSeeAllProducts();
+
     }
 
     interface Presenter extends CustomerPresenter<DetailResChatFragmentListener.View> {

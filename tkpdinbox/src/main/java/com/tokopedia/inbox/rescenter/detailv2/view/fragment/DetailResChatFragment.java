@@ -61,6 +61,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextA
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.product.ListProductActivity;
 import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
 
 import java.text.SimpleDateFormat;
@@ -978,6 +979,11 @@ public class DetailResChatFragment
     public void errorFinishResolution(String error) {
         dismissProgressBar();
         NetworkErrorHelper.showSnackbar(getActivity(), error);
+    }
+
+    @Override
+    public void intentToSeeAllProducts() {
+        startActivity(ListProductActivity.newInstance(getActivity(), resolutionId));
     }
 
     @Override

@@ -127,6 +127,7 @@
 
 
             <FrameLayout
+                android:id="@+id/fl_see_all_product"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/bg_bubble_button">

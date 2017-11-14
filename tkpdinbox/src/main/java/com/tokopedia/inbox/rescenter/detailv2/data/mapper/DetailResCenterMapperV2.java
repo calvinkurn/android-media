@@ -76,8 +76,6 @@ import rx.functions.Func1;
  */
 
 public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, DetailResponseData> {
-    private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
-    private static final String ERROR_MESSAGE = "message_error";
 
     @Override
     public DetailResponseData call(Response<TkpdResponse> response) {
@@ -90,7 +88,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                     if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
                         throw new ErrorMessageException(response.body().getErrorMessageJoined());
                     } else {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
+                        throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
                     }
                 } else {
                     model.setSuccess(true);
