@@ -43,7 +43,7 @@ public class DigitalProductActivity extends BasePresenterActivity
     }
 
     @SuppressWarnings("unused")
-    @DeepLink({Constants.Applinks.DIGITAL, Constants.Applinks.DIGITAL_PRODUCT})
+    @DeepLink({Constants.Applinks.DIGITAL_PRODUCT})
     public static Intent getcallingIntent(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
