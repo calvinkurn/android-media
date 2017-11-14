@@ -27,12 +27,6 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
     private final FeedPlus.View.Kol kolViewListener;
     private KolRecommendationViewModel data;
 
-    private ImageView avatar;
-    private TextView name;
-    private TextView label;
-    private TextView followButton;
-    private View mainView;
-
     public KolRecommendationAdapter(FeedPlus.View.Kol kolViewListener) {
         this.kolViewListener = kolViewListener;
         ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
@@ -40,6 +34,12 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private ImageView avatar;
+        private TextView name;
+        private TextView label;
+        private TextView followButton;
+        private View mainView;
+
         public ViewHolder(View itemView) {
             super(itemView);
             avatar = (ImageView) itemView.findViewById(R.id.avatar);
@@ -78,20 +78,19 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
             followButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (followButton.getText().equals(MainApplication.getAppContext().getString(R.string
-                            .action_follow_english))) {
-                        kolViewListener.onFollowKolFromRecommendationClicked(data.getPage(),
-                                data.getRowNumber(),
-                                data.getListRecommend().get(getAdapterPosition()).getId(),
-                                getAdapterPosition());
-                        data.getListRecommend().get(getAdapterPosition()).setFollowed(true);
-                        notifyItemChanged(getAdapterPosition());
-                    } else {
+                    if (data.getListRecommend().get(getAdapterPosition()).isFollowed()) {
                         kolViewListener.onUnfollowKolFromRecommendationClicked(data.getPage(),
                                 data.getRowNumber(),
                                 data.getListRecommend().get(getAdapterPosition()).getId(),
                                 getAdapterPosition());
                         data.getListRecommend().get(getAdapterPosition()).setFollowed(false);
+                        notifyItemChanged(getAdapterPosition());
+                    } else {
+                        kolViewListener.onFollowKolFromRecommendationClicked(data.getPage(),
+                                data.getRowNumber(),
+                                data.getListRecommend().get(getAdapterPosition()).getId(),
+                                getAdapterPosition());
+                        data.getListRecommend().get(getAdapterPosition()).setFollowed(true);
                         notifyItemChanged(getAdapterPosition());
                     }
                 }
@@ -109,26 +108,26 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageHandler.LoadImage(avatar, data.getListRecommend().get(position).getImageUrl());
-        name.setText(MethodChecker.fromHtml(data.getListRecommend().get(position).getName()));
-        label.setText(data.getListRecommend().get(position).getLabel());
+        ImageHandler.LoadImage(holder.avatar, data.getListRecommend().get(position).getImageUrl());
+        holder.name.setText(MethodChecker.fromHtml(data.getListRecommend().get(position).getName()));
+        holder.label.setText(data.getListRecommend().get(position).getLabel());
 
-        setFollowing(position);
+        setFollowing(holder,position);
 
     }
 
-    private void setFollowing(int position) {
+    private void setFollowing(ViewHolder holder, int position) {
         if (data.getListRecommend().get(position).isFollowed()) {
-            followButton.setText(MainApplication.getAppContext().getString(R.string.following));
-            MethodChecker.setBackground(followButton, MethodChecker.getDrawable(MainApplication
+            holder.followButton.setText(MainApplication.getAppContext().getString(R.string.following));
+            MethodChecker.setBackground(holder.followButton, MethodChecker.getDrawable(MainApplication
                     .getAppContext(), R.drawable.btn_share_transaparent));
-            followButton.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R
+            holder.followButton.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R
                     .color.tkpd_main_green));
         } else {
-            followButton.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R
+            holder.followButton.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R
                     .color.white));
-            followButton.setText(MainApplication.getAppContext().getString(R.string.action_follow_english));
-            MethodChecker.setBackground(followButton, MethodChecker.getDrawable(MainApplication
+            holder.followButton.setText(MainApplication.getAppContext().getString(R.string.action_follow_english));
+            MethodChecker.setBackground(holder.followButton, MethodChecker.getDrawable(MainApplication
                     .getAppContext(), R.drawable.green_button_rounded_unify));
         }
     }
