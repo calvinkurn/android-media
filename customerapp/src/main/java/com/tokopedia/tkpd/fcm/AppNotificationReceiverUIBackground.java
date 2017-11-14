@@ -24,7 +24,7 @@ import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
-import com.tokopedia.inbox.inboxmessage.activity.ChatRoomActivity;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;

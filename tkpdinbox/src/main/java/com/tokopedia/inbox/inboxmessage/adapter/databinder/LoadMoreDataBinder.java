@@ -10,7 +10,6 @@ import android.widget.ProgressBar;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
-import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageDetailFragmentPresenter;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 

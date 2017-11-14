@@ -52,12 +52,6 @@
             android:label="@string/title_activity_send_message"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateVisible"/>
-        <activity
-            android:name=".inboxmessage.activity.InboxMessageActivity"
-            android:label="@string/title_inbox_message"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            tools:ignore="UnusedAttribute"/>
 
         <activity
             android:name=".inboxchat.activity.InboxChatActivity"
@@ -66,7 +60,7 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
-            android:name=".inboxmessage.activity.ChatRoomActivity"
+            android:name=".inboxchat.activity.ChatRoomActivity"
             android:label="@string/title_inbox_message"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
@@ -154,9 +148,6 @@
             android:exported="false"/>
         <service
             android:name=".rescenter.create.service.CreateResCenterService"
-            android:exported="false"/>
-        <service
-            android:name=".inboxmessage.intentservice.InboxMessageIntentService"
             android:exported="false"/>
         <service
             android:name="com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService"

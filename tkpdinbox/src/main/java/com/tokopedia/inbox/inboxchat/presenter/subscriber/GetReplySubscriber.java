@@ -37,32 +37,18 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
 
     @Override
     public void onError(Throwable e) {
-
-//        if (view.getAdapter().getList().size() == 0) {
-//            view.finishLoading();
-//            view.showEmptyState(error);
-//        } else {
-//            view.setRetry(error,
-//                    new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            getMessageDetail();
-//                        }
-//                    });
-//        }
-        view.showError("Gagal");
+        view.setViewEnabled(true);
+        view.showError(e.getLocalizedMessage());
+        view.finishLoading();
+        presenter.finishRequest();
     }
 
     @Override
     public void onNext(ChatRoomViewModel model) {
         view.setViewEnabled(true);
-//
-//                if (pagingHandler.getPage() == 1) {
-//                    viewListener.getAdapter().clearData();
-//                    cacheInteractor.setInboxMessageDetailCache(viewListener.getArguments().getString(PARAM_MESSAGE_ID), result);
-//                }
-//
-        view.setTextAreaReply(model.getTextAreaReply() == 1);
+        if(model!=null) {
+            view.setTextAreaReply(model.getTextAreaReply() == 1);
+        }
         view.setResult(model);
         view.finishLoading();
         presenter.finishRequest();
