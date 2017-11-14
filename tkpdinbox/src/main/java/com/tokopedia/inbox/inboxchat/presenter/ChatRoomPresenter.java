@@ -144,6 +144,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getReply(GET_CHAT_MODE);
     }
 
+    @Override
     public void getReply(int mode) {
         RequestParams requestParam;
         if (mode == GET_CHAT_MODE) {
