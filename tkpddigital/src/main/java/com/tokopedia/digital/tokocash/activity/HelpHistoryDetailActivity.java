@@ -14,10 +14,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.tokocash.WalletService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -26,7 +28,6 @@ import com.tokopedia.digital.tokocash.domain.HistoryTokoCashRepository;
 import com.tokopedia.digital.tokocash.interactor.TokoCashHistoryInteractor;
 import com.tokopedia.digital.tokocash.listener.HelpHistoryListener;
 import com.tokopedia.digital.tokocash.model.HelpHistoryTokoCash;
-import com.tokopedia.core.network.apiservices.tokocash.WalletService;
 import com.tokopedia.digital.tokocash.presenter.HelpHistoryPresenter;
 
 import java.util.List;
@@ -56,6 +57,7 @@ public class HelpHistoryDetailActivity extends BasePresenterActivity<HelpHistory
     private String transactionId;
     private int positionCategorySelected;
     private HelpHistoryAdapter adapter;
+    private TkpdProgressDialog progressDialogNormal;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -85,6 +87,7 @@ public class HelpHistoryDetailActivity extends BasePresenterActivity<HelpHistory
 
     @Override
     protected void initView() {
+        progressDialogNormal = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
     @Override
@@ -186,5 +189,15 @@ public class HelpHistoryDetailActivity extends BasePresenterActivity<HelpHistory
     @Override
     public void showErrorHelpHistory(String errorMessage) {
         NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void showProgressLoading() {
+        if (!progressDialogNormal.isProgress()) progressDialogNormal.showDialog();
+    }
+
+    @Override
+    public void hideProgressLoading() {
+        if (progressDialogNormal.isProgress()) progressDialogNormal.dismiss();
     }
 }

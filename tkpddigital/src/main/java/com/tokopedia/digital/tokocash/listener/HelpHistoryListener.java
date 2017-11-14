@@ -15,4 +15,8 @@ public interface HelpHistoryListener {
     void successSubmitHelpHistory();
 
     void showErrorHelpHistory(String errorMessage);
+
+    void showProgressLoading();
+
+    void hideProgressLoading();
 }

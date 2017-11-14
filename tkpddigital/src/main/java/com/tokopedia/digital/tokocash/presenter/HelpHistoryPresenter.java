@@ -64,6 +64,7 @@ public class HelpHistoryPresenter implements IHelpHistoryPresenter {
     @Override
     public void submitHelpHistory(String subject, String message, String category, String transactionId) {
         historyInteractor.postHelpHistory(getSubmitHelpHistotorySubscriber(), subject, message, category, transactionId);
+        view.showProgressLoading();
     }
 
     private Subscriber<Boolean> getSubmitHelpHistotorySubscriber() {
@@ -76,11 +77,13 @@ public class HelpHistoryPresenter implements IHelpHistoryPresenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                view.hideProgressLoading();
                 handleError(e, context.getString(R.string.error_message_send_help));
             }
 
             @Override
             public void onNext(Boolean isSubmitted) {
+                view.hideProgressLoading();
                 view.successSubmitHelpHistory();
             }
         };
