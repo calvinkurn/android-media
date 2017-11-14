@@ -4,12 +4,24 @@ import SuccessPage from './SuccessPage'
 import TransferPage from './TransferPage'
 
 class Root extends Component {
+  componentDidMount(){
+    console.log(this.props)
+  }
+
+
   render() {
-      if (this.props.data.template === 'transfer'){
-            return <TransferPage data={this.props.data}/>
-       } else if (this.props.data.template === 'instant') {
-            return <SuccessPage data={this.props.data}/>
-       }
+    const { template } = this.props.data
+    
+    if (template === 'transfer'){
+      return <TransferPage data={this.props.data}/>
+    } else if (template === 'instant') {
+      return <SuccessPage data={this.props.data}/>
+    }
+    // if (template === 'transfer'){
+    //   return <SuccessPage data={this.props.data} />
+    // } else {
+    //   return <TransferPage data={this.props.data} />
+    // }
   }
 }
 

@@ -14,16 +14,8 @@ class SuccessScreen extends React.Component {
 
     return (
       <View style={{ alignItems: 'center' }}>
-        <Text
-          style={{
-            fontSize: 17,
-            marginTop: 30,
-            fontWeight: 'bold',
-            color: 'rgba(0,0,0,0.54)',
-          }}
-        >
-          {' '}
-          Pembayaran Berhasil{' '}
+        <Text style={{ fontSize: 17, marginTop: 30, fontWeight: 'bold', color: 'rgba(0,0,0,0.54)', }}>
+          Pembayaran Berhasil
         </Text>
 
         <Text
@@ -64,7 +56,7 @@ class SuccessScreen extends React.Component {
         </Text>
 
         <Text style={{ fontSize: 14, marginTop: 5, color: 'rgba(0,0,0,0.54)' }}>
-          Metode : {this.props.data.method}
+          Metode : {this.props.data.template}
         </Text>
 
         <TouchableOpacity
