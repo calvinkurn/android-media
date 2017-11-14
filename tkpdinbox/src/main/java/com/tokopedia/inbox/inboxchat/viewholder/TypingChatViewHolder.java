@@ -6,6 +6,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.viewmodel.EmptyChatModel;
@@ -29,6 +31,6 @@ public class TypingChatViewHolder extends AbstractViewHolder<TypingChatModel> {
 
     @Override
     public void bind(TypingChatModel element) {
-        Glide.with(logo.getContext()).load(R.raw.typing).asGif().into(logo);
+        ImageHandler.loadGif(logo, R.raw.typing, R.raw.typing);
     }
 }
