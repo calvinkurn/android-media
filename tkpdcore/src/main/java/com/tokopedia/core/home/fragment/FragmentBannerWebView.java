@@ -103,7 +103,6 @@ public class FragmentBannerWebView extends Fragment {
 
     }
 
-
     public FragmentBannerWebView() {
     }
 
@@ -236,7 +235,6 @@ public class FragmentBannerWebView extends Fragment {
         }
     }
 
-
     public WebView getWebview() {
         return webview;
     }
@@ -252,4 +250,5 @@ public class FragmentBannerWebView extends Fragment {
             webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
+
 }
