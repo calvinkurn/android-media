@@ -374,7 +374,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     public void deleteMessage(List<Pair> listMove) {
         deleteMessageListUseCase.execute(DeleteMessageListUseCase.generateParam(listMove)
-                , new DeleteMessageSubscriber(getView(), this));
+                , new DeleteMessageSubscriber(listMove, getView(), this));
     }
 
 

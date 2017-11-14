@@ -339,8 +339,8 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void removeList(List<DeleteChatViewModel> list) {
-        adapter.removeList(list);
+    public void removeList(List<Pair> originList, List<DeleteChatViewModel> list) {
+        adapter.removeList(originList, list);
     }
 
     @Override

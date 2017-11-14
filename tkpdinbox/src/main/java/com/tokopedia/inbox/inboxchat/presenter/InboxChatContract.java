@@ -11,6 +11,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 
 import java.util.List;
 
@@ -70,7 +71,7 @@ public class InboxChatContract {
 
         void onGoToTimeMachine(String url);
 
-        void removeList(List<DeleteChatViewModel> list);
+        void removeList(List<Pair> originList, List<DeleteChatViewModel> list);
 
         void setResultSearch(InboxChatViewModel inboxChatViewModel);
 

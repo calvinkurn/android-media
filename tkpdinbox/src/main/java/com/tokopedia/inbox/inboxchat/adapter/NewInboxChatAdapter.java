@@ -277,8 +277,8 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
         notifyItemInserted(list.size() - 1);
     }
 
-    public void removeList(List<DeleteChatViewModel> list) {
-        for (Pair pair: listMove) {
+    public void removeList(List<Pair> originList, List<DeleteChatViewModel> list) {
+        for (Pair pair: originList) {
             ChatListViewModel first = (ChatListViewModel) pair.first;
             int position = (int) pair.second;
             for(DeleteChatViewModel model : list){

@@ -57,7 +57,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
 
     String[] array;
 
-    final static String USER = "Pengguna";
+    public final static String USER = "Pengguna";
     final static String ADMIN = "Administrator";
     final static String SELLER = "Penjual";
 

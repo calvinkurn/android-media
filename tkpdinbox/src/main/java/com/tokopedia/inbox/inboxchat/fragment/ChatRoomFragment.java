@@ -44,6 +44,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
 import com.tokopedia.inbox.inboxchat.util.Events;
+import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
@@ -112,7 +113,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_room, container, false);
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initVar();
         toolbar = (Toolbar) getActivity().findViewById(R.id.app_bar);
         mainHeader = toolbar.findViewById(R.id.main_header);
@@ -122,6 +123,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyView = rootView.findViewById(R.id.add_comment_area);
         sendButton = (ImageView) rootView.findViewById(R.id.send_but);
         replyColumn = (EditText) rootView.findViewById(R.id.new_comment);
+        sendButton.requestFocus();
         attachButton = (ImageView) rootView.findViewById(R.id.add_url);
         notifier = rootView.findViewById(R.id.notifier);
         replyWatcher = Events.text(replyColumn);
@@ -203,8 +205,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
         UnifyTracking.eventSendAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
                 TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACHMENT,
                 TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+        int temp = replyColumn.getSelectionEnd();
         replyColumn.setText(replyColumn.getText() + "\n" + url);
-        replyColumn.setSelection(replyColumn.length());
+        replyColumn.setSelection(temp);
     }
 
     private void initVar() {
@@ -289,7 +292,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
             onlineStatus = (ImageView) toolbar.findViewById(R.id.online_status);
             ImageHandler.loadImageCircle2(getActivity(), avatar, getArguments().getString(PARAM_SENDER_IMAGE), R.drawable.ic_image_avatar_boy);
             user.setText(getArguments().getString(PARAM_SENDER_NAME));
-            label.setText(getArguments().getString(PARAM_SENDER_TAG));
+            if(!getArguments().getString(PARAM_SENDER_TAG).equals(ListChatViewHolder.USER)){
+                label.setText(getArguments().getString(PARAM_SENDER_TAG));
+                label.setVisibility(View.VISIBLE);
+            }else {
+                label.setVisibility(View.GONE);
+            }
             setOnlineDesc("baru saja");
             toolbar.setOnClickListener(new View.OnClickListener() {
                 @Override

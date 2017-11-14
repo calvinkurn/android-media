@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.inboxchat.presenter.subscriber;
 
+import android.util.Pair;
+
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
 import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatListViewModel;
@@ -18,8 +20,10 @@ public class DeleteMessageSubscriber extends Subscriber<DeleteChatListViewModel>
 
     private InboxChatPresenter presenter;
     private InboxChatContract.View view;
+    private List<Pair> originList;
 
-    public DeleteMessageSubscriber(InboxChatContract.View view, InboxChatPresenter presenter) {
+    public DeleteMessageSubscriber(List<Pair> listMove, InboxChatContract.View view, InboxChatPresenter presenter) {
+        originList = listMove;
         this.view = view;
         this.presenter = presenter;
     }
@@ -37,7 +41,7 @@ public class DeleteMessageSubscriber extends Subscriber<DeleteChatListViewModel>
     @Override
     public void onNext(DeleteChatListViewModel listViewModel) {
         List<DeleteChatViewModel> list = listViewModel.getList();
-        view.removeList(list);
+        view.removeList(originList, list);
     }
 
 }
