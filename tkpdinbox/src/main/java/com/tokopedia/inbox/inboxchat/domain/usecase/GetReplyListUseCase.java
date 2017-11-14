@@ -32,7 +32,7 @@ public class GetReplyListUseCase extends UseCase<ChatRoomViewModel> {
 
     public static RequestParams generateParam(String messageId, int page)
     {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         requestParams.putString("msg_id", messageId);
         requestParams.putString("page", String.valueOf(page));
         requestParams.putString("platform","android");
@@ -42,7 +42,7 @@ public class GetReplyListUseCase extends UseCase<ChatRoomViewModel> {
 
     public static RequestParams generateParamSearch(String messageId)
     {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         requestParams.putString("msg_id", messageId);
         requestParams.putString("page", "0");
         requestParams.putString("platform","android");

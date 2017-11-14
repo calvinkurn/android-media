@@ -16,6 +16,7 @@ public class EmptyChatModel implements Visitable<InboxChatTypeFactory> {
     String logo;
     String titleText;
     String subtitleText;
+    private boolean hasTimeMachine;
 
     public EmptyChatModel() {
     }
@@ -57,4 +58,12 @@ public class EmptyChatModel implements Visitable<InboxChatTypeFactory> {
         return favoriteTypeFactory.type(this);
     }
 
+
+    public void setHasTimeMachine(boolean hasTimeMachine) {
+        this.hasTimeMachine = hasTimeMachine;
+    }
+
+    public boolean isHasTimeMachine() {
+        return hasTimeMachine;
+    }
 }

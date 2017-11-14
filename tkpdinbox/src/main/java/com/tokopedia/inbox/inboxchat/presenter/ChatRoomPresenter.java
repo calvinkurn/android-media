@@ -144,6 +144,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getReply(GET_CHAT_MODE);
     }
 
+    @Override
     public void getReply(int mode) {
         RequestParams requestParam;
         if (mode == GET_CHAT_MODE) {
@@ -247,6 +248,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         data.put("start_time", date.format(Calendar.getInstance().getTime()));
         json.put("data", data);
         ws.send(json.toString());
+        flagTyping = false;
+
     }
 
     public void readMessage(String messageId) throws JSONException {

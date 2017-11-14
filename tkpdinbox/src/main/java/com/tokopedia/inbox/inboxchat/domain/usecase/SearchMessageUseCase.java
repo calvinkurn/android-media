@@ -31,7 +31,7 @@ public class SearchMessageUseCase extends UseCase<InboxChatViewModel> {
 
     public static RequestParams generateParam(String keyword, int page, String by)
     {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         requestParams.putString("keyword", keyword);
         requestParams.putInt("page", page);
         if(page==1) by = "";
@@ -41,7 +41,7 @@ public class SearchMessageUseCase extends UseCase<InboxChatViewModel> {
 
     public static RequestParams generateParam(String keyword)
     {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         requestParams.putString("keyword", keyword);
         requestParams.putString("by", "");
         return requestParams;

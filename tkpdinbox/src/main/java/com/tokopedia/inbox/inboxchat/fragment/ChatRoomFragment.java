@@ -33,6 +33,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
@@ -50,7 +51,6 @@ import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 
 import org.json.JSONException;
 
@@ -175,7 +175,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     public void call(Boolean aBoolean) {
                         Log.i("call: ", "stopTyping");
                         try {
-                            if(aBoolean) {
+                            if (aBoolean) {
                                 presenter.stopTyping(getArguments().getString(ChatRoomActivity
                                         .PARAM_MESSAGE_ID));
                             }
@@ -410,10 +410,21 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void showError(String error) {
-        if (error.equals("")) {
-            NetworkErrorHelper.showSnackbar(getActivity());
+        if (adapter.getItemCount() == 0) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    mode = getArguments().getInt(PARAM_MODE, InboxChatViewModel.GET_CHAT_MODE);
+                    presenter.getReply(mode);
+                }
+            });
         } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), error);
+            if (error.equals("")) {
+                NetworkErrorHelper.showSnackbar(getActivity());
+            } else {
+                NetworkErrorHelper.showSnackbar(getActivity(), error);
+
+            }
         }
     }
 
@@ -453,8 +464,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         finishLoading();
                         replyColumn.setText("");
                         scrollToBottom();
-                    }
-                    else if (isCurrentThread(response.getData().getMsgId())) {
+                    } else if (isCurrentThread(response.getData().getMsgId())) {
                         OppositeChatViewModel item = new OppositeChatViewModel();
                         item.setReplyId(response.getData().getMsgId());
                         item.setSenderId(String.valueOf(response.getData().getFromUid()));
@@ -648,6 +658,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        try {
+            presenter.stopTyping(getArguments().getString(ChatRoomActivity
+                    .PARAM_MESSAGE_ID));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         presenter.closeWebSocket();
     }
 }

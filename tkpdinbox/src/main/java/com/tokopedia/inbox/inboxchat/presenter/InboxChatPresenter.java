@@ -231,7 +231,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void goToDetailMessage(int position, ChatListViewModel listMessage) {
-
+        ws.close(1000, "");
         getView().dropKeyboard();
 
         UnifyTracking.eventOpenTopChat(TopChatTrackingEventLabel.Category.INBOX_CHAT,
