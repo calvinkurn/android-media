@@ -157,16 +157,15 @@ public class ImageGalleryFragment extends Fragment implements ImageGalleryAdapte
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null && savedInstanceState == null) {
+        if (getArguments() != null) {
             if (getArguments().getString(FRAGMENT_FOLDER_PATH, null) != null) {
                 folderPath = getArguments().getString(FRAGMENT_FOLDER_PATH, null);
             }
 
             if(getArguments().getParcelable(FRAGMENT_DATA)!=null){
                 datas = Parcels.unwrap(getArguments().getParcelable(FRAGMENT_DATA));
-                maxSelection = getArguments().getInt(GalleryActivity.MAX_IMAGE_SELECTION);
             }
-            getArguments().clear();
+            maxSelection = getArguments().getInt(GalleryActivity.MAX_IMAGE_SELECTION);
         }
 
         setHasOptionsMenu(true);
