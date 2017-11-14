@@ -302,6 +302,7 @@ public interface AppEventTracking {
         String UNCHECK_INSTANT_SALDO_WIDGET = "Uncheck Instant Saldo from Widget";
         String CHECK_INSTANT_SALDO = "Check Instant Saldo";
         String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
+        String CLICK_BELI_LOWER = "click beli ";
         String CLICK_BELI = "Click Beli";
         String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
         String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
@@ -643,6 +644,8 @@ public interface AppEventTracking {
         String CATEGORY = "category";
         String CONDITION = "condition";
         String PICTURE_STATUS = "picture status";
+        String CHECKOUT_INSTANT = "instant";
+        String CHECKOUT_NO_INSTANT = "no "+CHECKOUT_INSTANT;
     }
 
     interface SOCIAL_MEDIA {

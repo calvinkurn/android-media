@@ -891,12 +891,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventRechargeBuy(String label) {
+    public static void eventRechargeBuy(Boolean bool) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.PULSA,
-                AppEventTracking.Category.ANDROID_WIDGET,
-                AppEventTracking.Action.CLICK,
-                label
+                AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                AppEventTracking.Action.CLICK_BELI_LOWER,
+                bool ? AppEventTracking.EventLabel.CHECKOUT_INSTANT : AppEventTracking.EventLabel.CHECKOUT_NO_INSTANT
         ).getEvent());
     }
 

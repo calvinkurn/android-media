@@ -129,23 +129,7 @@ public class WidgetWrapperBuyView extends LinearLayout {
     }
 
     private void sendGTMClickBeli() {
-        CommonUtils.dumper("GAv4 category clicked " + category.getId());
-        CommonUtils.dumper("GAv4 clicked beli Pulsa");
-        String labelBeli;
-        switch (category.getId()) {
-            case 1:
-                labelBeli = AppEventTracking.EventLabel.PULSA_WIDGET;
-                break;
-            case 2:
-                labelBeli = AppEventTracking.EventLabel.PAKET_DATA_WIDGET;
-                break;
-            case 3:
-                labelBeli = AppEventTracking.EventLabel.PLN_WIDGET;
-                break;
-            default:
-                labelBeli = AppEventTracking.EventLabel.PULSA_BELI;
-        }
-        UnifyTracking.eventRechargeBuy(labelBeli);
+        UnifyTracking.eventRechargeBuy(isCreditCheckboxChecked());
     }
 
     private String generateATokenRechargeCheckout() {
