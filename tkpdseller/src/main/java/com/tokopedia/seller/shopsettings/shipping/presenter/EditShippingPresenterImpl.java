@@ -105,9 +105,14 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     public void bindDataToView(EditShippingCouriers model) {
         this.model = model;
         if (selectedAddress == null) {
-            view.setLocationProvinceCityDistrict(shopInformation.provinceName
-                    , shopInformation.cityName
-                    , shopInformation.districtName);
+            if (shopInformation.provinceName == null || shopInformation.cityName == null ||
+                    shopInformation.districtName == null) {
+                view.setLocationProvinceCityDistrict();
+            } else {
+                view.setLocationProvinceCityDistrict(shopInformation.provinceName
+                        , shopInformation.cityName
+                        , shopInformation.districtName);
+            }
         }
         view.onShowViewAfterLoading();
         displayCourierList(model);
