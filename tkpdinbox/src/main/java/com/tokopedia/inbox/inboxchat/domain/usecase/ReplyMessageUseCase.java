@@ -30,7 +30,7 @@ public class ReplyMessageUseCase extends UseCase<ReplyActionData>{
 
     public static RequestParams generateParam(String messageId, String messageReply)
     {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         requestParams.putString("msg_id", messageId);
         requestParams.putString("message_reply", messageReply);
         return requestParams;
