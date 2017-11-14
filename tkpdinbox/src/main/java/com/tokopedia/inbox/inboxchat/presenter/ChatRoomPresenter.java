@@ -248,6 +248,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         data.put("start_time", date.format(Calendar.getInstance().getTime()));
         json.put("data", data);
         ws.send(json.toString());
+        flagTyping = false;
+
     }
 
     public void readMessage(String messageId) throws JSONException {

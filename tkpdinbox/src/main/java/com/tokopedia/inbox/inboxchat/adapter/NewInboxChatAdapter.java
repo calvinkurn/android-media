@@ -237,11 +237,13 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
                         temp.setMessage(lastReply);
                         temp.setUnreadCounter(unread);
                         temp.setReadStatus(STATE_CHAT_UNREAD);
+                        temp.setTyping(false);
                     }else{
                         temp.setMessage(lastReply);
                         temp.setUnreadCounter(0);
                         temp.setReadStatus(STATE_CHAT_READ);
                         temp.setTime(String.valueOf(new Date().getTime()));
+                        temp.setTyping(false);
                     }
                     list.remove(i);
                     notifyItemRemoved(i);

@@ -78,7 +78,7 @@ public class ChatRoomContract {
     }
 
     interface Presenter extends CustomerPresenter<View>{
-        void getReply(int mode)
+        void getReply(int mode);
 
         void getAttachProductDialog(String shopId, String senderRole);
 
