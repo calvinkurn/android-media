@@ -14,8 +14,7 @@ public class TimeConverter {
     private static final long SECONDS_IN_MINUTE = 60;
     private static final long MINUTES_IN_HOUR = 60 * 60;
     private static final long HOUR_IN_DAY = 60 * 60 * 24;
-    private static final String DEFAULT_FEED_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
-    public static final String DEFAULT_KOL_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String DEFAULT_FEED_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 
     public static String generateTime(String postTime) {
         return generateTime(postTime, DEFAULT_FEED_FORMAT);

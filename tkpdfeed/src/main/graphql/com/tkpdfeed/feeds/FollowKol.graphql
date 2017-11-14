@@ -1,5 +1,5 @@
-mutation FollowKol($userID: Int!, $status: Int!){
-	do_follow_kol(userID: $userID, status: $status) {
+mutation FollowKol($userID: Int!, $action: Int!){
+	do_follow_kol(userID: $userID, action: $action) {
 		error
 		data {
 			status

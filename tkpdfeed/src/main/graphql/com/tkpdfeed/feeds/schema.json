@@ -46967,7 +46967,7 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "status",
+                  "name": "action",
                   "description": null,
                   "type": {
                     "kind": "SCALAR",

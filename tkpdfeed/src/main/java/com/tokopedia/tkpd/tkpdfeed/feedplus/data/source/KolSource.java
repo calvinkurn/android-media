@@ -46,7 +46,7 @@ public class KolSource {
         ApolloWatcher<FollowKol.Data> apolloWatcher = apolloClient.newCall(
                 FollowKol.builder()
                         .userID(requestParams.getInt(FollowKolPostUseCase.PARAM_USER_ID, 0))
-                        .status(requestParams.getInt(FollowKolPostUseCase.PARAM_STATUS, 0))
+                        .action(requestParams.getInt(FollowKolPostUseCase.PARAM_ACTION, 0))
                         .build()).watcher();
 
         return RxApollo.from(apolloWatcher).map(followKolMapper);

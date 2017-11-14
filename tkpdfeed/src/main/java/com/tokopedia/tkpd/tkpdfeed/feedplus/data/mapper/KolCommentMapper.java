@@ -57,7 +57,7 @@ public class KolCommentMapper implements Func1<GetKolComments.Data, KolComments>
                         comment.userName() == null ? "" : comment.userName(),
                         comment.comment() == null ? "" : comment.comment(),
                         TimeConverter.generateTime(comment.create_time() == null ? "" : comment
-                                .create_time(), TimeConverter.DEFAULT_KOL_FORMAT),
+                                .create_time(), TimeConverter.DEFAULT_FEED_FORMAT),
                         comment.isKol() == null ? false : comment.isKol(),
                         comment.isCommentOwner() == null ? false : comment.isCommentOwner()));
             }
