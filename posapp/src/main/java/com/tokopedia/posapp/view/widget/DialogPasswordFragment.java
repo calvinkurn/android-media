@@ -115,8 +115,8 @@ public class DialogPasswordFragment extends DialogFragment implements DialogPass
     public void onCheckPasswordError(Throwable e) {
         progressDialog.dismiss();
         e.printStackTrace();
-        SnackbarManager.make(getActivity(), getActivity().getString(R.string.error_password_wrong), Snackbar.LENGTH_LONG).show();
-        listener.onError(getActivity().getString(R.string.error_password_wrong));
+        SnackbarManager.make(getActivity(), getActivity().getString(R.string.error_password_unknown), Snackbar.LENGTH_LONG).show();
+        listener.onError(getActivity().getString(R.string.error_password_unknown));
     }
 
     @Override

@@ -71,7 +71,8 @@ const doPayment = async () => {
   }
   const paymentToNative_getParams = await makePaymentToNativeStepOne(data_payment)
   const paymentToNative_secondStep = await makePaymentToNativeStepTwo(paymentToNative_getParams, data_payment, local_cart)
-  return paymentToNative_secondStep
+  if(paymentToNative_secondStep) return paymentToNative_secondStep
+  else throw 'Checkout Error'
 }
 
 
@@ -173,7 +174,11 @@ const makePaymentToNativeStepTwo = (paymentToNative_getParams, data_payment, loc
   
   return NetworkModule.getResponseJson(`${data_payment.base_api_url_scrooge}`, `POST`, payloadString, true)
     .then(res => {
-      const jsonResponse = Object.assign({}, JSON.parse(res), {payment_param: payloads})
+      const response = JSON.parse(res)
+      const jsonResponse =  {
+        ...response,
+        payment_param: payloads
+      }
       if (jsonResponse.status === '200 Ok'){
         if (jsonResponse.data.code === 200 && jsonResponse.data.message === 'Success'){
           // insertPaymentParams(dataParams)
