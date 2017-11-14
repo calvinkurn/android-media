@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.digital.R;
@@ -88,7 +88,7 @@ public class FilterTokoCashAdapter extends RecyclerView.Adapter {
     class ItemViewFilter extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.layout_filter_tokocash)
-        RelativeLayout layoutFilterTokocash;
+        LinearLayout layoutFilterTokocash;
         @BindView(R2.id.filter_name)
         TextView filterName;
         @BindView(R2.id.clear_filter)
