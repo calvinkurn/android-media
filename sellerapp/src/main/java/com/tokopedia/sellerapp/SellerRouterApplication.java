@@ -51,10 +51,8 @@ import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
-import com.tokopedia.seller.common.cashback.DataCashbackModel;
-import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.gm.common.logout.GMLogout;
+import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -64,6 +62,8 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.cashback.DataCashbackModel;
+import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.instoped.InstopedActivity;
@@ -82,6 +82,7 @@ import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
+import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsModuleRouter;
@@ -231,6 +232,11 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void actionApplink(Activity activity, String linkUrl) {
+
+    }
+
+    @Override
+    public void actionApplink(Activity activity, String linkUrl, String extra) {
 
     }
 
@@ -574,6 +580,10 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public String getFlavor() {
+        return BuildConfig.FLAVOR;
+    }
+
     public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
         if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
                 || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {
@@ -596,8 +606,8 @@ public abstract class SellerRouterApplication extends MainApplication
         return getCashbackUseCase.getExecuteObservable(GetCashbackUseCase.createRequestParams(productIds));
     }
 
-    public void goToAddProduct(Activity activity){
-        if(activity != null) {
+    public void goToAddProduct(Activity activity) {
+        if (activity != null) {
             ProductAddActivity.start(activity);
         }
     }
@@ -606,5 +616,15 @@ public abstract class SellerRouterApplication extends MainApplication
     public void goToUserPaymentList(Activity activity) {
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);
+    }
+
+    @Override
+    public boolean isInMyShop(Context context, String shopId) {
+        return context != null && new SessionHandler(context).getShopID().trim().equalsIgnoreCase(shopId.trim());
+    }
+
+    @Override
+    public Intent getForgotPasswordIntent(Context context, String email) {
+        return ForgotPasswordActivity.getCallingIntent(context, email);
     }
 }

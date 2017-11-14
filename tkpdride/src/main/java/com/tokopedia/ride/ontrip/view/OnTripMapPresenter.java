@@ -414,6 +414,15 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     getView().hideFindingUberNotification();
                     getView().hideAcceptedNotification();
                     getView().renderCompletedRequest(result);
+                }else{
+                    getView().saveActiveRequestId(result.getRequestId());
+                    getView().hideBlockTranslucentLayout();
+                    getView().hideFindingUberNotification();
+                    getView().hideAcceptedNotification();
+                    getView().hideCancelRequestButton();
+                    getView().hideLoadingWaitingResponse();
+                    getView().showBottomSection();
+                    getView().renderCompletedRequestWithoutReceipt(result);
                 }
                 break;
             default:

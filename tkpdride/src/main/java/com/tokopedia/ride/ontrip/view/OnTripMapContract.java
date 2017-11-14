@@ -205,6 +205,8 @@ public interface OnTripMapContract {
         void hideUpdateDestinationLoading();
 
         void startTopupTokoCashChangeDestinationActivity(PendingPayment pendingPayment, String requestId);
+
+        void renderCompletedRequestWithoutReceipt(RideRequest result);
     }
 
     interface Presenter extends CustomerPresenter<View> {

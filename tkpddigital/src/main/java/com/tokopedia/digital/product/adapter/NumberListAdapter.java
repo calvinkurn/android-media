@@ -67,7 +67,12 @@ public class NumberListAdapter extends RecyclerView.Adapter<NumberListAdapter.It
         public void bind(OrderClientNumber orderClientNumber) {
             this.orderClientNumber = orderClientNumber;
             number.setText(orderClientNumber.getClientNumber());
-            name.setText(orderClientNumber.getName());
+            if (orderClientNumber.getName() != null) {
+                name.setText(orderClientNumber.getName());
+                name.setVisibility(View.VISIBLE);
+            } else {
+                name.setVisibility(View.GONE);
+            }
         }
 
         @Override

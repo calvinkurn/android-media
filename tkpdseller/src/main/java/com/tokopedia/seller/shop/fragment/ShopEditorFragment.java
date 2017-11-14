@@ -294,7 +294,7 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
 
     @Override
     public void loadImageAva(String url) {
-        ImageHandler.LoadImage(mShopAva, url);
+        ImageHandler.loadImageFit2(getContext(), mShopAva, url);
     }
 
     @Override

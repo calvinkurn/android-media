@@ -104,7 +104,7 @@ class App extends Component {
             }>
             <OfficialStoreIntro />
             <BannerContainer />
-            <AllBrand />
+            {/* <AllBrand /> */}
             <GridContainer />
             <CampaignContainer />
             <BrandContainer />

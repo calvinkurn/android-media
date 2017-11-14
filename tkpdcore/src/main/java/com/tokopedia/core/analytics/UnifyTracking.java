@@ -1,12 +1,11 @@
 package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventType;
+import com.moe.pushlibrary.PayloadBuilder;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
@@ -829,15 +828,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventHomeRechargeTab(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.RECHARGE + label,
-                AppEventTracking.Action.CLICK_WIDGET_BAR,
-                AppEventTracking.EventLabel.PRODUCT + label
-        ).getEvent());
-    }
-
     public static void eventWishlistView(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.WISHLIST,
@@ -888,15 +878,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.FAVORITE,
                 AppEventTracking.Category.FAVORITE,
                 AppEventTracking.Action.VIEW_RECOMMENDATION,
-                label
-        ).getEvent());
-    }
-
-    public static void eventRechargeBuy(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.PULSA,
-                AppEventTracking.Category.ANDROID_WIDGET,
-                AppEventTracking.Action.CLICK,
                 label
         ).getEvent());
     }
@@ -1291,9 +1272,15 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventLocaGoodReview(Integer accuracy, Integer quality) {
-        if (accuracy > 3 && quality > 3) {
-
-        }
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrInt(
+                AppEventTracking.MOENGAGE.QUALITY_SCORE,
+                quality
+        );
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.SUBMIT_ULASAN_REVIEW
+        );
     }
 
     public static void sendAFCompleteRegistrationEvent() {
@@ -1772,24 +1759,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.PRODUCT + el
-        ).getEvent());
-    }
-
-    public static void eventSelectProductWidget(String ec, String el) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.RECHARGE + ec,
-                AppEventTracking.Action.SELECT_PRODUCT_FROM_WIDGET,
-                AppEventTracking.EventLabel.PRODUCT + el
-        ).getEvent());
-    }
-
-    public static void eventSelectOperatorWidget(String ec, String el) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.RECHARGE + ec,
-                AppEventTracking.Action.SELECT_OPERATOR_FROM_WIDGET,
                 AppEventTracking.EventLabel.PRODUCT + el
         ).getEvent());
     }
@@ -2513,11 +2482,69 @@ public class UnifyTracking extends TrackingUtils {
         eventProductManage(AppEventTracking.Action.CLICK_SORT_PRODUCT,label);
     }
 
-    public static void eventProductManageFilterProduct(String label){
+    public static void eventProductManageFilterProduct(String label) {
         eventProductManage(AppEventTracking.Action.CLICK_FILTER_PRODUCT,label);
     }
 
     public static void eventProductManageOverflowMenu(String label){
         eventProductManage(AppEventTracking.Action.CLICK_OVERFLOW_MENU,label);
+    }
+
+    // digital widget
+
+    public static void eventHomeRechargeTab(String categoryItem) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                AppEventTracking.Action.CLICK_WIDGET_BAR,
+                categoryItem
+        ).getEvent());
+    }
+
+    public static void eventSelectProductWidget(String categoryItem, String product) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                AppEventTracking.Action.SELECT_PRODUCT,
+                categoryItem + " - " + product
+        ).getEvent());
+    }
+
+    public static void eventSelectOperatorWidget(String categoryItem, String operator) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                AppEventTracking.Action.SELECT_OPERATOR,
+                categoryItem + " - " + operator
+        ).getEvent());
+    }
+
+    public static void eventRechargeBuy(String categoryItem, String instant) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                AppEventTracking.Action.CLICK_BELI + " - " + categoryItem,
+                instant
+        ).getEvent());
+    }
+
+    // digital user profile
+
+    public static void eventSelectNumberOnUserProfileNative(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.RECHARGE + label,
+                AppEventTracking.Action.SELECT_NUMBER_ON_USER_PROFILE,
+                label
+        ).getEvent());
+    }
+
+    public static void eventSelectNumberOnUserProfileWidget(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                AppEventTracking.Action.SELECT_NUMBER_ON_USER_PROFILE,
+                label
+        ).getEvent());
     }
 }
