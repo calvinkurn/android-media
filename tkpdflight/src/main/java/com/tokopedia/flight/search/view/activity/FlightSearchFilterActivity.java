@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
@@ -20,8 +21,11 @@ import com.tokopedia.flight.search.view.fragment.FlightFilterDepartureFragment;
 import com.tokopedia.flight.search.view.fragment.FlightFilterRefundableFragment;
 import com.tokopedia.flight.search.view.fragment.FlightFilterTransitFragment;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFilterFragment;
+import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightResettableListener;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -50,6 +54,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     private String currentTag;
     private int count;
+    private View vReset;
 
     public static Intent createInstance(Context context,
                                         boolean isReturning,
@@ -88,6 +93,17 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
             }
         });
 
+        vReset = findViewById(R.id.tv_reset);
+        vReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment f = getCurrentFragment();
+                if (f!=null && f instanceof OnFlightResettableListener) {
+                    ((OnFlightResettableListener) f).reset();
+                }
+            }
+        });
+
         DaggerFlightSearchComponent.builder()
                 .flightComponent(((FlightModuleRouter) getApplication()).getFlightComponent())
                 .build()
@@ -97,7 +113,23 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     }
 
     private void onButtonFilterClicked() {
-        onBackPressed();
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_FILTER_MODEL, flightFilterModel);
+            setResult(Activity.RESULT_OK, intent);
+        }
+        this.onBackPressed();
+    }
+
+    private Fragment getCurrentFragment(){
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        for (int i = 0, sizei = fragmentList.size(); i<sizei; i++) {
+            Fragment fragment = fragmentList.get(i);
+            if (fragment.isAdded() && fragment.isVisible()) {
+                return fragment;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -113,9 +145,6 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
             }
             getSupportFragmentManager().popBackStack();
         } else {
-            Intent intent = new Intent();
-            intent.putExtra(EXTRA_FILTER_MODEL, flightFilterModel);
-            setResult(Activity.RESULT_OK, intent);
             super.onBackPressed();
         }
     }
@@ -125,6 +154,11 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
                 .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
         setUpTitleByTag(tag);
+        if (fragment instanceof OnFlightResettableListener) {
+            vReset.setVisibility(View.VISIBLE);
+        } else {
+            vReset.setVisibility(View.GONE);
+        }
     }
 
     public void setUpTitleByTag(String tag) {
@@ -206,11 +240,11 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     }
 
     private void updateButtonFilter(int count) {
-        if (currentTag.equals(getTagFragment())) {
-            buttonFilter.setText(getString(R.string.flight_there_has_x_flights, count));
-        } else {
-            buttonFilter.setText(getString(R.string.flight_save));
-        }
+//        if (currentTag.equals(getTagFragment())) {
+        buttonFilter.setText(getString(R.string.flight_there_has_x_flights, count));
+//        } else {
+//            buttonFilter.setText(getString(R.string.flight_save));
+//        }
     }
 
     @Override

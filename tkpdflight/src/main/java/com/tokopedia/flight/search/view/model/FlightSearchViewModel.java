@@ -95,18 +95,23 @@ public class FlightSearchViewModel implements ItemType, Parcelable {
                                             HashMap<String, FlightAirportDB> dbAirportMaps) {
         List<Route> routeList = getRouteList();
         List<FlightAirlineDB> airlineDBArrayList = new ArrayList<>();
+        List<String>addedAirlineIDList = new ArrayList<>();
         for (int j = 0, sizej = routeList.size(); j < sizej; j++) {
             Route route = routeList.get(j);
             String airlineID = route.getAirline();
-            if (dbAirlineMaps.containsKey(airlineID)) {
-                String airlineNameFromMap = dbAirlineMaps.get(airlineID).getFullName();
-                String airlineShortNameFromMap = dbAirlineMaps.get(airlineID).getShortName();
-                String airlineLogoFromMap = dbAirlineMaps.get(airlineID).getLogo();
-                route.setAirlineName(airlineNameFromMap);
-                route.setAirlineLogo(airlineLogoFromMap);
-                airlineDBArrayList.add(new FlightAirlineDB(airlineID, airlineNameFromMap, airlineShortNameFromMap, airlineLogoFromMap));
-            } else {
-                airlineDBArrayList.add(new FlightAirlineDB(airlineID, "","", ""));
+            // to set the airline in route to the summary
+            if (!addedAirlineIDList.contains(airlineID)) {
+                if (dbAirlineMaps.containsKey(airlineID)) {
+                    String airlineNameFromMap = dbAirlineMaps.get(airlineID).getFullName();
+                    String airlineShortNameFromMap = dbAirlineMaps.get(airlineID).getShortName();
+                    String airlineLogoFromMap = dbAirlineMaps.get(airlineID).getLogo();
+                    route.setAirlineName(airlineNameFromMap);
+                    route.setAirlineLogo(airlineLogoFromMap);
+                    addedAirlineIDList.add(airlineID);
+                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, airlineNameFromMap, airlineShortNameFromMap, airlineLogoFromMap));
+                } else {
+                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, "", "", ""));
+                }
             }
 
             String depAirportID = route.getDepartureAirport();
