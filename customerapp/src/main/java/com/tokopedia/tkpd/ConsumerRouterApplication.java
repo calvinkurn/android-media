@@ -46,7 +46,6 @@ import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
@@ -76,10 +75,8 @@ import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
-import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
@@ -93,6 +90,7 @@ import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
@@ -738,7 +736,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private FirebaseRemoteConfig getFirebaseRemoteConfig() {
-        if(firebaseRemoteConfig == null) firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        if (firebaseRemoteConfig == null) firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         return firebaseRemoteConfig;
     }
 
@@ -752,9 +750,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getForgotPasswordIntent(Context context, String email) {
-        return ForgotPasswordActivity.getCallingIntent(context,email);
+        return ForgotPasswordActivity.getCallingIntent(context, email);
     }
-}
 
     public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
         List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
