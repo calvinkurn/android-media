@@ -19,8 +19,8 @@ import okhttp3.Response;
 
 public class WalletAuthInterceptor extends TkpdAuthInterceptor {
 
+    public final static String BEARER = "Bearer";
     private final static String AUTHORIZATION = "authorization";
-    private final static String BEARER = "Bearer";
     private final static String DEVICE = "android-";
 
     public WalletAuthInterceptor(String authKey) {
