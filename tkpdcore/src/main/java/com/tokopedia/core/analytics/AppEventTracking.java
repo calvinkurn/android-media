@@ -298,16 +298,7 @@ public interface AppEventTracking {
         String SELECT_PRODUCT = "Select Product";
         String SELECT_OPERATOR = "Select Operator";
         String CLICK_SEARCH_BAR = "Click Search Bar";
-        String CLICK_WIDGET_BAR = "click widget";
-        String CHECK_INSTANT_SALDO_WIDGET = "Check Instant Saldo from Widget";
-        String UNCHECK_INSTANT_SALDO_WIDGET = "Uncheck Instant Saldo from Widget";
-        String CHECK_INSTANT_SALDO = "Check Instant Saldo";
-        String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
         String CLICK_BELI_LOWER = "click beli ";
-        String CLICK_BELI = "Click Beli";
-        String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
-        String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
-        String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
 
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
         String CLICK_PHONEBOOK_ICON = "Click Phonebook Icon";

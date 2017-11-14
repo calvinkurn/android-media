@@ -2580,7 +2580,7 @@ public class UnifyTracking extends TrackingUtils {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
-                AppEventTracking.Action.CLICK_BELI + " - " + categoryItem,
+                AppEventTracking.Action.CLICK_BELI_LOWER + " - " + categoryItem,
                 instant
         ).getEvent());
     }
