@@ -181,10 +181,13 @@ public abstract class AbsFlightSearchDataListDBSource extends BaseDataListDBSour
             RefundableEnum refundableEnum = refundableEnumList.get(i);
             switch (refundableEnum) {
                 case REFUNDABLE:
-                    refundableContionGroup.or(getRefundableColumn().eq(true));
+                    refundableContionGroup.or(getRefundableColumn().eq(RefundableEnum.REFUNDABLE.getId()));
                     break;
                 case NOT_REFUNDABLE:
-                    refundableContionGroup.or(getRefundableColumn().eq(false));
+                    refundableContionGroup.or(getRefundableColumn().eq(RefundableEnum.NOT_REFUNDABLE.getId()));
+                    break;
+                case PARTIAL_REFUNDABLE:
+                    refundableContionGroup.or(getRefundableColumn().eq(RefundableEnum.PARTIAL_REFUNDABLE.getId()));
                     break;
             }
         }
@@ -221,8 +224,8 @@ public abstract class AbsFlightSearchDataListDBSource extends BaseDataListDBSour
         return new IntProperty(getDBClass(), FlightSearchSingleRouteDB.DEPARTURE_TIME_INT);
     }
 
-    private Property<Boolean> getRefundableColumn() {
-        return new Property<>(getDBClass(), FlightSearchSingleRouteDB.IS_REFUNDABLE);
+    private IntProperty getRefundableColumn() {
+        return new IntProperty(getDBClass(), FlightSearchSingleRouteDB.IS_REFUNDABLE);
     }
 
     private Property<String> getPrimaryColumn() {

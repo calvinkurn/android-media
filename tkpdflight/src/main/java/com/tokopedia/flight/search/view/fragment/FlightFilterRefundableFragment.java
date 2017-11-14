@@ -15,18 +15,23 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
-import com.tokopedia.abstraction.base.view.recyclerview.BaseListRecyclerView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.adapter.FlightFilterRefundableAdapter;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
+import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightResettableListener;
+import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 
-public class FlightFilterRefundableFragment extends BaseListV2Fragment<RefundableEnum> implements BaseListV2Adapter.OnBaseListV2AdapterListener<RefundableEnum>,BaseListCheckableV2Adapter.OnCheckableAdapterListener<RefundableEnum> {
+public class FlightFilterRefundableFragment extends BaseListV2Fragment<RefundableEnum>
+        implements BaseListV2Adapter.OnBaseListV2AdapterListener<RefundableEnum>,
+        BaseListCheckableV2Adapter.OnCheckableAdapterListener<RefundableEnum>,
+        OnFlightResettableListener {
     public static final String TAG = FlightFilterRefundableFragment.class.getSimpleName();
 
     private OnFlightFilterListener listener;
@@ -136,6 +141,15 @@ public class FlightFilterRefundableFragment extends BaseListV2Fragment<Refundabl
         FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
         List<RefundableEnum> refundableEnumList = flightFilterRefundableAdapter.getCheckedDataList();
         flightFilterModel.setRefundableTypeList(refundableEnumList);
+        listener.onFilterModelChanged(flightFilterModel);
+    }
+
+    @Override
+    public void reset() {
+        FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
+        flightFilterModel.setRefundableTypeList(new ArrayList<RefundableEnum>());
+        flightFilterRefundableAdapter.resetCheckedItemSet();
+        flightFilterRefundableAdapter.notifyDataSetChanged();
         listener.onFilterModelChanged(flightFilterModel);
     }
 }

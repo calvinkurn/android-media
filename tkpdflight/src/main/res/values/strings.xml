@@ -29,7 +29,7 @@
     <string name="select_passenger_children_title">Anak</string>
     <string name="select_passenger_infant_subtitle">(Kurang dari 2 tahun)</string>
     <string name="select_passenger_infant_title">Bayi</string>
-    <string name="select_passenger_total_passenger_error_message">Total Penumpang maksimal 7 penumpang</string>
+    <string name="select_passenger_total_passenger_error_message">Total Penumpang maksimal 7 penumpang (Dewasa dan Anak)</string>
     <string name="select_passenger_infant_greater_than_adult_error_message">Jumlah penumpang bayi tidak boleh melebihi jumlah penumpang dewasa</string>
     <string name="select_passenger_adult_atleast_one_error_message">Penumpang dewasa harus ada</string>
     <string name="select_passenger_submit_button">Simpan</string>
@@ -70,6 +70,7 @@
     <string name="more_than_2_transit">Lebih dari 2 transit</string>
     <string name="refundable">Refundable</string>
     <string name="non_refundable">Non-Refundable</string>
+    <string name="partial_refundable">Partial Refundable</string>
     <string name="flight_search_filter_label">Filter</string>
     <string name="flight_search_sort_label">Sort</string>
     <string name="flight_search_sort_title">Urutkan</string>
@@ -140,4 +141,8 @@
     <string name="duration_flight_hh_mm">%1$d Jam %2$d Menit</string>
     <string name="flight_label_multi_maskapai">Multi Maskapai</string>
     <string name="activity_label_flight_search_departure">Pencarian Pergi</string>
+    <string name="flight_dashboard_departure_airport_hint">Penerbangan Asal</string>
+    <string name="flight_dashboard_arrival_airport_hint">Penerbangan Tujuan</string>
+    <string name="flight_airportpicker_departure_title">Penerbangan Asal</string>
+    <string name="flight_airportpicker_arrival_title">Penerbangan Tujuan</string>
 </resources>

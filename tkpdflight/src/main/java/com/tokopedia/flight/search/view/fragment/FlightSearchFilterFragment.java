@@ -18,6 +18,7 @@ import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
+import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightResettableListener;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
@@ -28,7 +29,12 @@ import com.tokopedia.flight.search.view.textwatcher.DurationTextWatcher;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlightSearchFilterFragment extends BaseDaggerFragment {
+public class FlightSearchFilterFragment extends BaseDaggerFragment implements OnFlightResettableListener {
+
+    private DurationTextWatcher minValueDurationTextWatcher;
+    private DurationTextWatcher maxValueDurationTextWatcher;
+    private CurrencyTextWatcher minValueCurrencyTextWatcher;
+    private CurrencyTextWatcher maxValueCurrencyTextWatcher;
 
     public static FlightSearchFilterFragment newInstance() {
 
@@ -59,6 +65,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -68,15 +75,30 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         FlightFilterModel filterModel = onFilterFragmentListener.getFlightFilterModel();
         FlightSearchStatisticModel statModel = onFilterFragmentListener.getFlightSearchStatisticModel();
 
+        populateViews(view, filterModel, statModel);
+
+        view.requestFocus();
+        return view;
+    }
+
+    private void populateViews(View view, FlightFilterModel filterModel, FlightSearchStatisticModel statModel){
         populatePrice(view, filterModel, statModel);
         populateDuration(view, filterModel, statModel);
         populateTransitLabel(view, filterModel);
         populateAirlineLabel(view, filterModel, statModel);
         populateDepartureLabel(view, filterModel);
         populateRefundLabel(view, filterModel);
+    }
 
-        view.requestFocus();
-        return view;
+    public void reset() {
+        View view = getView();
+        if (view == null) {
+            return;
+        }
+        FlightFilterModel filterModel = new FlightFilterModel();
+        FlightSearchStatisticModel statModel = onFilterFragmentListener.getFlightSearchStatisticModel();
+        populateViews(view, filterModel, statModel);
+        onFilterFragmentListener.onFilterModelChanged(filterModel);
     }
 
     private void populateDuration(View view, FlightFilterModel filterModel, FlightSearchStatisticModel statModel) {
@@ -94,9 +116,15 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
             filterModel.setDurationMax(statMaxDur);
         }
         EditText minValueEditText = durationDecimalRangeInputView.getMinValueEditText();
-        minValueEditText.addTextChangedListener(new DurationTextWatcher(minValueEditText));
+        if (minValueDurationTextWatcher == null) {
+            minValueDurationTextWatcher = new DurationTextWatcher(minValueEditText);
+            minValueEditText.addTextChangedListener(minValueDurationTextWatcher);
+        }
         EditText maxValueEditText = durationDecimalRangeInputView.getMaxValueEditText();
-        maxValueEditText.addTextChangedListener(new DurationTextWatcher(maxValueEditText));
+        if (maxValueDurationTextWatcher == null) {
+            maxValueDurationTextWatcher = new DurationTextWatcher(maxValueEditText);
+            maxValueEditText.addTextChangedListener(maxValueDurationTextWatcher);
+        }
 
         durationDecimalRangeInputView.setPower(1);
         durationDecimalRangeInputView.setData(statMinDur, statMaxDur, filterMinDur, filterMaxDur);
@@ -127,9 +155,15 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment {
         }
 
         EditText minValueEditText = priceRangeInputView.getMinValueEditText();
-        minValueEditText.addTextChangedListener(new CurrencyTextWatcher(minValueEditText, CurrencyEnum.RP));
+        if (minValueCurrencyTextWatcher == null) {
+            minValueCurrencyTextWatcher = new CurrencyTextWatcher(minValueEditText, CurrencyEnum.RP);
+            minValueEditText.addTextChangedListener(minValueCurrencyTextWatcher);
+        }
         EditText maxValueEditText = priceRangeInputView.getMaxValueEditText();
-        maxValueEditText.addTextChangedListener(new CurrencyTextWatcher(maxValueEditText, CurrencyEnum.RP));
+        if (maxValueCurrencyTextWatcher == null) {
+            maxValueCurrencyTextWatcher = new CurrencyTextWatcher(maxValueEditText, CurrencyEnum.RP);
+            maxValueEditText.addTextChangedListener(maxValueCurrencyTextWatcher);
+        }
 
         priceRangeInputView.setPower(1);
         priceRangeInputView.setData(statMinPrice, statMaxPrice, filterMinPrice, filterMaxPrice);

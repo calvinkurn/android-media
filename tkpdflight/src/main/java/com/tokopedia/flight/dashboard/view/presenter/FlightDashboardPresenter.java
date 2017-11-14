@@ -9,14 +9,19 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.mapper.FlightClassViewModelMapper;
 import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
@@ -31,11 +36,18 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private FlightDashboardValidator validator;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
+    private GetFlightClassesUseCase getFlightClassesUseCase;
+    private FlightClassViewModelMapper flightClassViewModelMapper;
 
     @Inject
-    public FlightDashboardPresenter(FlightDashboardValidator validator, DeleteFlightCacheUseCase deleteFlightCacheUseCase) {
+    public FlightDashboardPresenter(FlightDashboardValidator validator,
+                                    DeleteFlightCacheUseCase deleteFlightCacheUseCase,
+                                    GetFlightClassesUseCase getFlightClassesUseCase,
+                                    FlightClassViewModelMapper flightClassViewModelMapper) {
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
+        this.getFlightClassesUseCase = getFlightClassesUseCase;
+        this.flightClassViewModelMapper = flightClassViewModelMapper;
     }
 
     @Override
@@ -52,8 +64,36 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void initialize() {
+        actionGetClassesAndSetDefaultClass();
         setupViewModel();
         getView().renderSingleTripView();
+    }
+
+    private void actionGetClassesAndSetDefaultClass() {
+        getFlightClassesUseCase.execute(RequestParams.EMPTY, new Subscriber<List<FlightClassEntity>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+
+            }
+
+            @Override
+            public void onNext(List<FlightClassEntity> entities) {
+                if (isViewAttached()) {
+                    if (entities != null && entities.size() > 0) {
+                        FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
+                        flightDashboardViewModel.setFlightClass(flightClassViewModelMapper.transform(entities.get(0)));
+                        getView().setDashBoardViewModel(flightDashboardViewModel);
+                        renderUi();
+                    }
+                }
+            }
+        });
     }
 
     private void setupViewModel() {
@@ -202,7 +242,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setDepartureAirport(departureAirport);
         String code = departureAirport.getAirportId();
-        if (TextUtils.isEmpty(code)){
+        if (TextUtils.isEmpty(code)) {
             code = departureAirport.getCityCode();
         }
         flightDashboardViewModel.setDepartureAirportFmt(departureAirport.getCityName() + " (" + code + ")");
@@ -215,7 +255,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setArrivalAirport(arrivalAirport);
         String code = arrivalAirport.getAirportId();
-        if (TextUtils.isEmpty(code)){
+        if (TextUtils.isEmpty(code)) {
             code = arrivalAirport.getCityCode();
         }
         flightDashboardViewModel.setArrivalAirportFmt(arrivalAirport.getCityName() + " (" + code + ")");
@@ -225,7 +265,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onSearchTicketButtonClicked() {
-        if (validateSearchParam(getView().getCurrentDashboardViewModel())){
+        if (validateSearchParam(getView().getCurrentDashboardViewModel())) {
             deleteFlightCacheUseCase.execute(DeleteFlightCacheUseCase.createRequestParam(), new Subscriber<Boolean>() {
                 @Override
                 public void onCompleted() {
@@ -247,25 +287,25 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private boolean validateSearchParam(FlightDashboardViewModel currentDashboardViewModel) {
         boolean isValid = true;
-        if (!validator.validateDepartureNotEmtpty(currentDashboardViewModel)){
+        if (!validator.validateDepartureNotEmtpty(currentDashboardViewModel)) {
             isValid = false;
             getView().showDepartureEmptyErrorMessage(R.string.flight_dashboard_departure_empty_error);
         } else if (!validator.validateArrivalNotEmpty(currentDashboardViewModel)) {
             isValid = false;
             getView().showArrivalEmptyErrorMessage(R.string.flight_dashboard_arrival_empty_error);
-        } else if (!validator.validateArrivalAndDestinationNotSame(currentDashboardViewModel)){
+        } else if (!validator.validateArrivalAndDestinationNotSame(currentDashboardViewModel)) {
             isValid = false;
             getView().showArrivalAndDestinationAreSameError(R.string.flight_dashboard_arrival_departure_same_error);
-        } else if (!validator.validateDepartureDateAtLeastToday(currentDashboardViewModel)){
+        } else if (!validator.validateDepartureDateAtLeastToday(currentDashboardViewModel)) {
             isValid = false;
             getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
-        } else if (!validator.validateArrivalDateShouldGreaterOrEqualDeparture(currentDashboardViewModel)){
+        } else if (!validator.validateArrivalDateShouldGreaterOrEqualDeparture(currentDashboardViewModel)) {
             isValid = false;
             getView().showArrivalDateShouldGreaterOrEqual(R.string.flight_dashboard_arrival_should_greater_equal_error);
-        } else if (!validator.validatePassengerAtLeastOneAdult(currentDashboardViewModel)){
+        } else if (!validator.validatePassengerAtLeastOneAdult(currentDashboardViewModel)) {
             isValid = false;
             getView().showPassengerAtLeastOneAdult(R.string.flight_dashboard_at_least_one_adult_error);
-        } else if (!validator.validateFlightClassNotEmpty(currentDashboardViewModel)){
+        } else if (!validator.validateFlightClassNotEmpty(currentDashboardViewModel)) {
             isValid = false;
             getView().showFlightClassPassengerIsEmpty(R.string.flight_dashboard_fligh_class_is_empty);
         }
