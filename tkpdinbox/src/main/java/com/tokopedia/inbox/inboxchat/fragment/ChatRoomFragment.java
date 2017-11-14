@@ -402,10 +402,21 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void showError(String error) {
-        if (error.equals("")) {
-            NetworkErrorHelper.showSnackbar(getActivity());
+        if (adapter.getItemCount() == 0) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    mode = getArguments().getInt(PARAM_MODE, InboxChatViewModel.GET_CHAT_MODE);
+                    presenter.getReply(mode);
+                }
+            });
         } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), error);
+            if (error.equals("")) {
+                NetworkErrorHelper.showSnackbar(getActivity());
+            } else {
+                NetworkErrorHelper.showSnackbar(getActivity(), error);
+
+            }
         }
     }
 

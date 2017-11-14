@@ -67,7 +67,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        if(list.get(position) instanceof ChatListViewModel){
+        if (list.get(position) instanceof ChatListViewModel) {
             showTitle(holder.itemView.getContext(), holder.getAdapterPosition());
         }
         holder.bind(list.get(holder.getAdapterPosition()));
@@ -75,16 +75,16 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     private void showTitle(Context context, int position) {
         ChatListViewModel now = (ChatListViewModel) list.get(position);
-        if(position > 0){
+        if (position > 0) {
 
-            ChatListViewModel prev = (ChatListViewModel) list.get(position-1);
+            ChatListViewModel prev = (ChatListViewModel) list.get(position - 1);
 
-            if(now.getSectionSize()>0 && !compareType(now.getSpanMode(),prev.getSpanMode()) ){
+            if (now.getSectionSize() > 0 && !compareType(now.getSpanMode(), prev.getSpanMode())) {
                 now.setHaveTitle(true);
             }
 
-        }else {
-            if(now.getSectionSize()>0){
+        } else {
+            if (now.getSectionSize() > 0) {
                 now.setHaveTitle(true);
             }
         }
@@ -114,13 +114,13 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void addChecked(int position) {
-        if(listMove.size()+1<= MAX_MESSAGE_DELETE){
+        if (listMove.size() + 1 <= MAX_MESSAGE_DELETE) {
             ChatListViewModel item = (ChatListViewModel) list.get(position);
             item.setChecked(true);
             Pair<ChatListViewModel, Integer> pair = new Pair<>(item, position);
             listMove.add(pair);
             notifyItemChanged(position);
-        }else{
+        } else {
             removeChecked(position);
             presenter.getView().showErrorWarningDelete(MAX_MESSAGE_DELETE);
         }
@@ -129,8 +129,8 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     public void removeChecked(int position) {
         ChatListViewModel item = (ChatListViewModel) list.get(position);
         item.setChecked(false);
-        for (Pair pair: listMove) {
-            if(position == (int)pair.second) {
+        for (Pair pair : listMove) {
+            if (position == (int) pair.second) {
                 listMove.remove(pair);
                 break;
             }
@@ -153,7 +153,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void setList(List<Visitable> newList) {
-        if(newList !=null) {
+        if (newList != null) {
             List<Visitable> temp = newList;
             int size = this.list.size();
             this.list.clear();
@@ -164,7 +164,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void addList(ArrayList<Visitable> newList) {
-        if(newList !=null) {
+        if (newList != null) {
             int index = this.list.size();
             this.list.addAll(newList);
             notifyItemRangeInserted(index, newList.size());
@@ -173,7 +173,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
 
     public void addList(int index, ArrayList<Visitable> newList) {
-        if(newList !=null) {
+        if (newList != null) {
             this.list.addAll(index, newList);
             notifyItemRangeInserted(index, newList.size());
         }
@@ -190,11 +190,11 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void showEmptyFull(boolean b) {
-        if(b){
+        if (b) {
             this.list.add(emptyChatModel);
             notifyItemInserted(0);
-        }else {
-            if(list.contains(emptyChatModel)) {
+        } else {
+            if (list.contains(emptyChatModel)) {
                 this.list.remove(emptyChatModel);
                 notifyItemRemoved(0);
             }
@@ -202,11 +202,11 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void showEmptySearch(boolean b) {
-        if(b){
+        if (b) {
             this.list.add(emptySearchModel);
             notifyItemInserted(0);
-        }else {
-            if(list.contains(emptySearchModel)) {
+        } else {
+            if (list.contains(emptySearchModel)) {
                 this.list.remove(emptySearchModel);
                 notifyItemRemoved(0);
             }
@@ -237,8 +237,9 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
                         temp.setMessage(lastReply);
                         temp.setUnreadCounter(unread);
                         temp.setReadStatus(STATE_CHAT_UNREAD);
+                        temp.setTime(String.valueOf(new Date().getTime()));
                         temp.setTyping(false);
-                    }else{
+                    } else {
                         temp.setMessage(lastReply);
                         temp.setUnreadCounter(0);
                         temp.setReadStatus(STATE_CHAT_READ);
@@ -254,7 +255,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
                     break;
                 }
 
-            }catch (ClassCastException e){
+            } catch (ClassCastException e) {
                 e.printStackTrace();
                 break;
             }
@@ -263,8 +264,8 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     public void clearSelection() {
         for (Visitable message : list) {
-            if(message instanceof ChatListViewModel)
-                ((ChatListViewModel)message).setChecked(false);
+            if (message instanceof ChatListViewModel)
+                ((ChatListViewModel) message).setChecked(false);
         }
         listMove.clear();
         notifyDataSetChanged();
@@ -275,16 +276,21 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void showTimeMachine() {
-        this.list.add(timeMachineChatModel);
-        notifyItemInserted(list.size() - 1);
+        if (list.size() == 1
+                && list.get(0) instanceof EmptyChatModel) {
+            ((EmptyChatModel) this.list.get(0)).setHasTimeMachine(true);
+        } else if (list.size() > 0) {
+            this.list.add(timeMachineChatModel);
+            notifyItemInserted(list.size() - 1);
+        }
     }
 
     public void removeList(List<DeleteChatViewModel> list) {
-        for (Pair pair: listMove) {
+        for (Pair pair : listMove) {
             ChatListViewModel first = (ChatListViewModel) pair.first;
             int position = (int) pair.second;
-            for(DeleteChatViewModel model : list){
-                if(model.getMsgId() == Integer.valueOf(first.getId())){
+            for (DeleteChatViewModel model : list) {
+                if (model.getMsgId() == Integer.valueOf(first.getId())) {
                     this.list.remove(position);
                     notifyItemRemoved(position);
                     break;
@@ -296,10 +302,10 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     public void showTyping(int msgId) {
         for (int i = 0; i < list.size(); i++) {
-            if(list.get(i) instanceof ChatListViewModel){
+            if (list.get(i) instanceof ChatListViewModel) {
                 ChatListViewModel tempModel = ((ChatListViewModel) list.get(i));
                 String temp = tempModel.getId();
-                if(msgId == Integer.valueOf(temp)){
+                if (msgId == Integer.valueOf(temp)) {
                     tempModel.setTyping(true);
                     notifyItemChanged(i);
                     break;
@@ -310,7 +316,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     public void removeTyping(int msgId) {
         for (int i = 0; i < list.size(); i++) {
-            if(list.get(i) instanceof ChatListViewModel) {
+            if (list.get(i) instanceof ChatListViewModel) {
                 ChatListViewModel tempModel = ((ChatListViewModel) list.get(i));
                 String temp = tempModel.getId();
                 if (msgId == Integer.valueOf(temp)) {
