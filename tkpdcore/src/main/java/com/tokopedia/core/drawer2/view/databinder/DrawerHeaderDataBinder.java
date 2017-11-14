@@ -48,6 +48,10 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton);
     }
 
+    public interface RetryTokoCashListener {
+        void onRetryTokoCash();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView percentText;
@@ -99,6 +103,9 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         @BindView(R2.id.toko_cash_label)
         TextView tokoCashLabel;
 
+        @BindView(R2.id.retry_top_cash)
+        ImageView retryTopCash;
+
         @BindView(R2.id.toko_cash_activation_button)
         TextView tokoCashActivationButton;
 
@@ -123,6 +130,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     private Context context;
     private DrawerData data;
     private DrawerHeaderListener listener;
+    private RetryTokoCashListener tokoCashListener;
 
     public DrawerHeaderDataBinder(DataBindAdapter dataBindAdapter,
                                   Context context,
@@ -132,6 +140,9 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         this.context = context;
         this.data = createDataFromCache(drawerCache);
         this.listener = listener;
+        if (context instanceof RetryTokoCashListener) {
+            this.tokoCashListener = (RetryTokoCashListener) context;
+        }
     }
 
     private DrawerData createDataFromCache(LocalCacheHandler drawerCache) {
@@ -242,8 +253,9 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkActionButton()
                         );
                     }
+                } else {
+                    tokoCashListener.onRetryTokoCash();
                 }
-
             }
         });
         holder.name.setOnClickListener(new View.OnClickListener() {
@@ -269,8 +281,10 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     }
 
     private void setTopCash(ViewHolder holder) {
+        holder.loadingTokoCash.setVisibility(View.VISIBLE);
         if (isTokoCashDisabled(data.getDrawerTokoCash())) {
-            holder.loadingTokoCash.setVisibility(View.VISIBLE);
+            holder.loadingTokoCash.setVisibility(View.GONE);
+            holder.retryTopCash.setVisibility(View.VISIBLE);
         } else {
             if (data.getDrawerTokoCash().getDrawerWalletAction().getTypeAction()
                     == DrawerWalletAction.TYPE_ACTION_BALANCE) {
@@ -283,6 +297,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                         .getDrawerWalletAction().getLabelActionButton());
             }
             holder.loadingTokoCash.setVisibility(View.GONE);
+            holder.retryTopCash.setVisibility(View.GONE);
         }
     }
 
