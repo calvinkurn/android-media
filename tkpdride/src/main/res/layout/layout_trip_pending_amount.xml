@@ -31,8 +31,8 @@
             android:layout_below="@id/pending_sep1"
             android:gravity="center"
             android:text="@string/complete_trip_pending_fare"
-            android:textColor="@color/red_600"
-            android:textSize="@dimen/fontvs" />
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_small" />
 
         <TextView
             android:id="@+id/tv_total_pending"
@@ -43,7 +43,7 @@
             android:layout_below="@id/pending_sep1"
             android:text="-"
             android:textColor="@color/red_600"
-            android:textSize="@dimen/fontvs"
+            android:textSize="@dimen/font_small"
             tools:text="Rp. 15.000" />
     </RelativeLayout>
 

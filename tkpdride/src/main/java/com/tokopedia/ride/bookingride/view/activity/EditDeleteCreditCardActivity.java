@@ -38,7 +38,7 @@ public class EditDeleteCreditCardActivity extends BaseActivity implements HasCom
         initInjector();
 
         PaymentMethodViewModel paymentMethodViewModel = (PaymentMethodViewModel) getIntent().getParcelableExtra(KEY_PAYMENT_METHOD_VIEW_MODEL);
-        setupToolbar(paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_WALLET) ? getString(R.string.title_tokocash) : paymentMethodViewModel.getCardType());
+        setupToolbar(paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_WALLET) ? getString(R.string.title_tokocash) : getString(R.string.credit_card));
         EditDeleteCreditCardFragment fragment = EditDeleteCreditCardFragment.newInstance(paymentMethodViewModel);
         replaceFragment(R.id.fl_container, fragment);
     }

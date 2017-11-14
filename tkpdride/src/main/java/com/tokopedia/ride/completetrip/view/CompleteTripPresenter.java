@@ -1,6 +1,5 @@
 package com.tokopedia.ride.completetrip.view;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.R;
@@ -234,13 +233,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
             @Override
             public void onNext(PayPending payPending) {
                 getView().hideProgressbar();
-
-                //we have to show onNext
-                CommonUtils.dumper("Vishal :: " + payPending.getUrl());
-                CommonUtils.dumper("Vishal :: " + payPending.getPostData());
-
-                getView().opeScroogePage(payPending.getUrl() , payPending.getPostData());
-                //
+                getView().opeScroogePage(payPending.getUrl(), payPending.getPostData());
             }
         });
     }

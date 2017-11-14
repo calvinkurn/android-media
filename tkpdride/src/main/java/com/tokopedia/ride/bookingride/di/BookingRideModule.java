@@ -12,6 +12,7 @@ import com.tokopedia.ride.bookingride.domain.GetNearbyCarsUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPayPendingDataUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPendingAmountUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPlaceDetailUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPriceEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
@@ -167,5 +168,13 @@ public class BookingRideModule {
                                                              PostExecutionThread postExecutionThread,
                                                              BookingRideRepository bookingRideRepository) {
         return new GetPayPendingDataUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
+    }
+
+    @Provides
+    @BookingRideScope
+    GetPendingAmountUseCase provideGetPendingAmountUseCase(ThreadExecutor threadExecutor,
+                                                           PostExecutionThread postExecutionThread,
+                                                           BookingRideRepository bookingRideRepository) {
+        return new GetPendingAmountUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
     }
 }

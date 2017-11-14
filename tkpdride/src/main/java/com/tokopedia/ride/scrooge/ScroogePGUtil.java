@@ -24,6 +24,8 @@ public class ScroogePGUtil {
     public static final int RESULT_CODE_DELETE_CC_FAIL = 203;
     public static final int RESULT_CODE_DELETE_CC_SUCCESS = 204;
     public static final int RESULT_CODE_RECIEVED_ERROR = 205;
+    public static final int RESULT_CODE_SUCCESS = 206;
+    public static final int RESULT_CODE_FAIL = 207;
     public static final String RESULT_EXTRA_MSG = "RESULT_EXTRA_MSG";
 
     /**
@@ -33,8 +35,8 @@ public class ScroogePGUtil {
      * @param url
      * @param postparams
      */
-    public static void openScroogePage(Activity activity, String url, boolean isPostRequest, String postparams) {
-        activity.startActivityForResult(ScroogeActivity.getCallingIntent(activity, url, isPostRequest, postparams), REQUEST_CODE_OPEN_SCROOGE_PAGE);
+    public static void openScroogePage(Activity activity, String url, boolean isPostRequest, String postparams, String title) {
+        activity.startActivityForResult(ScroogeActivity.getCallingIntent(activity, url, isPostRequest, postparams, title), REQUEST_CODE_OPEN_SCROOGE_PAGE);
     }
 
     /**
@@ -44,8 +46,8 @@ public class ScroogePGUtil {
      * @param url
      * @param postparams
      */
-    public static void openScroogePage(Fragment fragment, String url, boolean isPostRequest, String postparams) {
-        fragment.startActivityForResult(ScroogeActivity.getCallingIntent(fragment.getActivity(), url, isPostRequest, postparams), REQUEST_CODE_OPEN_SCROOGE_PAGE);
+    public static void openScroogePage(Fragment fragment, String url, boolean isPostRequest, String postparams, String title) {
+        fragment.startActivityForResult(ScroogeActivity.getCallingIntent(fragment.getActivity(), url, isPostRequest, postparams, title), REQUEST_CODE_OPEN_SCROOGE_PAGE);
     }
 
     /**
@@ -55,8 +57,8 @@ public class ScroogePGUtil {
      * @param url
      * @param postparams
      */
-    public static void openScroogePage(Fragment fragment, String url, boolean isPostRequest, Bundle postparams) {
-        fragment.startActivityForResult(ScroogeActivity.getCallingIntent(fragment.getActivity(), url, isPostRequest, getPostData(postparams)), REQUEST_CODE_OPEN_SCROOGE_PAGE);
+    public static void openScroogePage(Fragment fragment, String url, boolean isPostRequest, Bundle postparams, String title) {
+        fragment.startActivityForResult(ScroogeActivity.getCallingIntent(fragment.getActivity(), url, isPostRequest, getPostData(postparams), title), REQUEST_CODE_OPEN_SCROOGE_PAGE);
     }
 
     private static String getPostData(Bundle mPostParams) {

@@ -77,6 +77,9 @@
         <activity
             android:name=".scrooge.ScroogeActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".bookingride.view.activity.PayPendingFareActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar"></activity>
     </application>
 
 </manifest>

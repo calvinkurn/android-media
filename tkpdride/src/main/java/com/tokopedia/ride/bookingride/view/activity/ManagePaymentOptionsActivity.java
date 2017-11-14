@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -13,9 +14,6 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.fragment.ManagePaymentOptionsFragment;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
-
-import static com.tokopedia.ride.scrooge.ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE;
-import static com.tokopedia.ride.scrooge.ScroogePGUtil.RESULT_CODE_ADD_CC_SUCCESS;
 
 public class ManagePaymentOptionsActivity extends BaseActivity implements HasComponent<RideComponent> {
     private static final String KEY_TYPE = "KEY_TYPE";
@@ -47,6 +45,15 @@ public class ManagePaymentOptionsActivity extends BaseActivity implements HasCom
         setupToolbar();
         ManagePaymentOptionsFragment fragment = ManagePaymentOptionsFragment.newInstance(type);
         replaceFragment(R.id.fl_container, fragment);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            onBackPressed();
+        }
+        return true;
     }
 
     private void replaceFragment(int containerViewId, Fragment fragment) {

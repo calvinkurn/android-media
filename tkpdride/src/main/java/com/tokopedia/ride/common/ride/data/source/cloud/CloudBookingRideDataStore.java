@@ -6,7 +6,7 @@ import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStore;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
-import com.tokopedia.ride.common.ride.data.entity.PayPendingEntity;
+import com.tokopedia.ride.common.ride.data.entity.GetPendingEntity;
 import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceResponseEntity;
@@ -175,5 +175,10 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     @Override
     public Observable<JsonObject> payPendingAmount() {
         return mRideApi.payPendingAmount();
+    }
+
+    @Override
+    public Observable<GetPendingEntity> getPendingAmount() {
+        return mRideApi.getPendingAmount();
     }
 }

@@ -60,6 +60,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         int code = response.code();
         switch (code) {
             case 409:
+            case 417:
                 response.body().close();
                 throw new InterruptConfirmationHttpException(bodyResponse);
             default:

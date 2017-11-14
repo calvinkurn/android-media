@@ -160,7 +160,7 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
 
     @Override
     public void opeScroogePage(String saveUrl, boolean isPostReq, Bundle saveBody) {
-        ScroogePGUtil.openScroogePage(this, saveUrl, isPostReq, saveBody);
+        ScroogePGUtil.openScroogePage(this, saveUrl, isPostReq, saveBody, getString(R.string.toolbar_title_add_credit_card));
     }
 
     @Override

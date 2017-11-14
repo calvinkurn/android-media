@@ -9,6 +9,7 @@ import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.GetPendingEntity;
 import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
@@ -23,6 +24,7 @@ import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.UpdateDestinationEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
+import com.tokopedia.ride.common.ride.domain.model.GetPending;
 import com.tokopedia.ride.common.ride.domain.model.PayPending;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethodList;
 import com.tokopedia.ride.common.ride.domain.model.PriceEstimate;
@@ -65,6 +67,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final PaymentMethodListMapper paymentMethodListMapper;
     private final NearbyRidesDestinationMapper nearbyRidesDestinationMapper;
     private final PayPendingEntityMapper payPendingEntityMapper;
+    private final GetPendingEntityMapper getPendingEntityMapper;
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory) {
         mBookingRideDataStoreFactory = bookingRideDataStoreFactory;
@@ -83,6 +86,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         paymentMethodListMapper = new PaymentMethodListMapper();
         nearbyRidesDestinationMapper = new NearbyRidesDestinationMapper();
         payPendingEntityMapper = new PayPendingEntityMapper();
+        getPendingEntityMapper = new GetPendingEntityMapper();
     }
 
     @Override
@@ -416,5 +420,15 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                         return payPendingEntityMapper.transform(payPendingEntity);
                     }
                 });
+    }
+
+    @Override
+    public Observable<GetPending> getPendingAmount() {
+        return mBookingRideDataStoreFactory.createCloudDataStore().getPendingAmount().map(new Func1<GetPendingEntity, GetPending>() {
+            @Override
+            public GetPending call(GetPendingEntity getPendingEntity) {
+                return getPendingEntityMapper.transform(getPendingEntity);
+            }
+        });
     }
 }

@@ -24,6 +24,7 @@ public class InterruptConfirmationHttpException extends IOException {
     public static final String SURGE_CONFIRMATION_INTERRUPT = "surge_confirmation";
     public static final String WALLET_ACTIVATION_INTERRUPT = "wallet_activation";
     public static final String WALLET_TOPUP_INTERRUPT = "wallet_topup";
+    public static final String PENDING_FARE = "pending_fare";
     public static final String GENERAL_INTERRUPT = "interrupt";
 
     private static final String TOS_TOKOPEDIA_KEY = "tos_tokopedia_id";
@@ -85,6 +86,10 @@ public class InterruptConfirmationHttpException extends IOException {
                         break;
                     case WALLET_TOPUP_INTERRUPT:
                         this.entity.setHref(entity.getMeta().getWalletTopupEntity().getHref());
+                        this.entity.setId("");
+                        break;
+                    case PENDING_FARE:
+                        this.entity.setHref(entity.getMeta().getPendingFareEntity().getHref());
                         this.entity.setId("");
                         break;
                     case GENERAL_INTERRUPT:

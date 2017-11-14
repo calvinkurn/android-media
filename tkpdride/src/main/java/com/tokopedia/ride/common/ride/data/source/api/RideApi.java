@@ -3,8 +3,10 @@ package com.tokopedia.ride.common.ride.data.source.api;
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
+import com.tokopedia.ride.bookingride.domain.GetPayPendingDataUseCase;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.GetPendingEntity;
 import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
@@ -115,4 +117,7 @@ public interface RideApi {
 
     @POST(RideUrl.PAY_PENDING_AMOUNT)
     Observable<JsonObject> payPendingAmount();
+
+    @POST(RideUrl.GET_PENDING_AMOUNT)
+    Observable<GetPendingEntity> getPendingAmount();
 }

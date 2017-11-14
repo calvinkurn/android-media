@@ -18,7 +18,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -104,10 +103,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     TextView totalChargedTextView;
     @BindView(R2.id.tv_sign_up_uber)
     TextView signUpUberTextView;
-    @BindView(R2.id.tv_source)
-    AppCompatTextView sourceTextView;
-    @BindView(R2.id.tv_destination)
-    AppCompatTextView destinationTextView;
     @BindView(R2.id.uber_signup_layout)
     LinearLayout uberSingupLayout;
     @BindView(R2.id.tv_signup_tnc)
@@ -234,8 +229,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                 driverVehicleAddressViewModel.getVehicle().getMake(),
                 driverVehicleAddressViewModel.getVehicle().getVehicleModel())
         );
-        sourceTextView.setText(driverVehicleAddressViewModel.getAddress() != null ? driverVehicleAddressViewModel.getAddress().getStartAddressName() : "");
-        destinationTextView.setText(driverVehicleAddressViewModel.getAddress() != null ? driverVehicleAddressViewModel.getAddress().getEndAddressName() : "");
 
         Glide.with(getActivity()).load(driverVehicleAddressViewModel.getDriver().getPictureUrl())
                 .asBitmap()
@@ -738,7 +731,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @Override
     public void opeScroogePage(String url, String postData) {
         if (getActivity() != null) {
-            ScroogePGUtil.openScroogePage(getActivity(), url, true, postData);
+            ScroogePGUtil.openScroogePage(getActivity(), url, true, postData , getString(R.string.title_pay_pending_fare));
         }
     }
 

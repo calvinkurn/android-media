@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.GetPendingEntity;
 import com.tokopedia.ride.common.ride.data.entity.PayPendingEntity;
 import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceEntity;
@@ -75,4 +76,6 @@ public interface BookingRideDataStore {
     Observable<String> requestApi(String url, TKPDMapParam<String, Object> parameters);
 
     Observable<JsonObject> payPendingAmount();
+
+    Observable<GetPendingEntity> getPendingAmount();
 }

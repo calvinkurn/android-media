@@ -77,6 +77,7 @@ import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.common.ride.domain.model.GetPending;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.history.view.RideHistoryActivity;
@@ -377,6 +378,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     @Override
     public void showMainLayout() {
         mainLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showPendingFareInterrupt(GetPending getPending) {
+        startActivity(PayPendingFareActivity.getCallingIntent(this, getPending));
     }
 
     @Override

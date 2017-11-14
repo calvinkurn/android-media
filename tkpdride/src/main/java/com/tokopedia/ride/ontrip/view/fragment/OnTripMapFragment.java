@@ -66,6 +66,7 @@ import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
+import com.tokopedia.ride.bookingride.view.activity.PayPendingFareActivity;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
@@ -74,6 +75,7 @@ import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.common.ride.domain.model.GetPending;
 import com.tokopedia.ride.common.ride.domain.model.Location;
 import com.tokopedia.ride.common.ride.domain.model.PendingPayment;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
@@ -1420,5 +1422,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void startTopupTokoCashChangeDestinationActivity(PendingPayment pendingPayment, String requestId) {
         Intent topupIntent = TopupTokoCashChangeDestination.getCallingIntent(getActivity(), pendingPayment, requestId);
         startActivityForResult(topupIntent, REQUEST_CODE_TOPUP_PENDING_PAYMENT_CHANGE_DESTINATION);
+    }
+
+    @Override
+    public void showPendingFareInterrupt(GetPending getPending) {
+        if (getActivity() != null) {
+            startActivity(PayPendingFareActivity.getCallingIntent(getActivity(), getPending));
+            getActivity().finish();
+        }
     }
 }

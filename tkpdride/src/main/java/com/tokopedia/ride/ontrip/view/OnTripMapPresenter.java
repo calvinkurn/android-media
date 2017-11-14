@@ -43,12 +43,14 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPendingAmountUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
+import com.tokopedia.ride.common.ride.domain.model.GetPending;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.UpdateDestination;
@@ -105,6 +107,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private GetFareEstimateUseCase getFareEstimateUseCase;
     private GetRideProductUseCase getRideProductUseCase;
     private UpdateRideRequestUseCase updateRideRequestUseCase;
+    private GetPendingAmountUseCase getPendingAmountUseCase;
     private RideRequest activeRideRequest;
 
     private GoogleApiClient googleApiClient;
@@ -123,7 +126,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                               GetRideRequestDetailUseCase getRideRequestUseCase,
                               GetFareEstimateUseCase getFareEstimateUseCase,
                               GetRideProductUseCase getRideProductUseCase,
-                              UpdateRideRequestUseCase updateRideRequestUseCase) {
+                              UpdateRideRequestUseCase updateRideRequestUseCase,
+                              GetPendingAmountUseCase getPendingAmountUseCase) {
         this.createRideRequestUseCase = createRideRequestUseCase;
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
         this.getRideRequestMapUseCase = getRideRequestMapUseCase;
@@ -131,6 +135,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         this.getFareEstimateUseCase = getFareEstimateUseCase;
         this.getRideProductUseCase = getRideProductUseCase;
         this.updateRideRequestUseCase = updateRideRequestUseCase;
+        this.getPendingAmountUseCase = getPendingAmountUseCase;
         this.subscription = new CompositeSubscription();
     }
 
@@ -261,6 +266,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                                 ((InterruptConfirmationHttpException) e).getKey(),
                                 ((InterruptConfirmationHttpException) e).getId()
                         );
+                    }
+                    if (!(e.getCause() instanceof JsonSyntaxException) && ((InterruptConfirmationHttpException) e).getType().equalsIgnoreCase(InterruptConfirmationHttpException.PENDING_FARE)) {
+                        getView().showBlockTranslucentLayout();
+                        showPendingFareInterrupt();
                     } else if (!(e.getCause() instanceof JsonSyntaxException)) {
                         getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
                     } else {
@@ -294,6 +303,35 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     getView().onSuccessCreateRideRequest(rideRequest);
                     getView().startPeriodicService(rideRequest.getRequestId());
                     proccessGetCurrentRideRequest(rideRequest);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get Pending amount data and show pending fare interrupt to user
+     */
+    private void showPendingFareInterrupt() {
+        getPendingAmountUseCase.execute(RequestParams.EMPTY, new Subscriber<GetPending>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(GetPending getPending) {
+                if (getPending != null) {
+                    if (getPending.getPendingAmount() > 0) {
+                        //show pending fare screen
+                        if (getView() != null) {
+                            getView().showPendingFareInterrupt(getPending);
+                        }
+                    }
                 }
             }
         });
@@ -414,7 +452,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     getView().hideFindingUberNotification();
                     getView().hideAcceptedNotification();
                     getView().renderCompletedRequest(result);
-                }else{
+                } else {
                     getView().saveActiveRequestId(result.getRequestId());
                     getView().hideBlockTranslucentLayout();
                     getView().hideFindingUberNotification();

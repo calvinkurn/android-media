@@ -14,6 +14,8 @@ import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -25,8 +27,6 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.ride.R;
 
-import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,10 +36,12 @@ public class ScroogeActivity extends AppCompatActivity {
     private static String ADD_CC_FAIL_CALLBACK = "tokopedia://action_add_cc_fail";
     private static String DELETE_CC_SUCESS_CALLBACK = "tokopedia://action_delete_cc_success";
     private static String DELETE_CC_FAIL_CALLBACK = "tokopedia://action_delete_cc_fail";
+    private static String SUCCESS_CALLBACK = "tokopedia://thanks";
 
     private static final String EXTRA_KEY_POST_PARAMS = "EXTRA_KEY_POST_PARAMS";
     private static final String EXTRA_KEY_URL = "URL";
     private static final String EXTRA_IS_POST_REQUEST = "EXTRA_IS_POST_REQUEST";
+    private static final String EXTRA_TITLE = "EXTRA_TITLE";
 
     private WebView mWebView;
     private ProgressBar mProgress;
@@ -49,12 +51,14 @@ public class ScroogeActivity extends AppCompatActivity {
 
     private int requestCode;
     private boolean isPostRequest;
+    private String title;
 
-    public static Intent getCallingIntent(Context context, String url, boolean isPostRequest, String postParams) {
+    public static Intent getCallingIntent(Context context, String url, boolean isPostRequest, String postParams, String title) {
         Intent intent = new Intent(context, ScroogeActivity.class);
         intent.putExtra(EXTRA_KEY_POST_PARAMS, postParams);
         intent.putExtra(EXTRA_KEY_URL, url);
         intent.putExtra(EXTRA_IS_POST_REQUEST, isPostRequest);
+        intent.putExtra(EXTRA_TITLE, title);
         return intent;
     }
 
@@ -64,11 +68,21 @@ public class ScroogeActivity extends AppCompatActivity {
         mPostParams = getIntent().getStringExtra(EXTRA_KEY_POST_PARAMS);
         mURl = getIntent().getStringExtra(EXTRA_KEY_URL);
         isPostRequest = getIntent().getBooleanExtra(EXTRA_IS_POST_REQUEST, false);
+        title = getIntent().getStringExtra(EXTRA_TITLE);
 
         initUI();
 
         if (mPostParams == null) mPostParams = "";
         this.mWebView.postUrl(mURl, mPostParams.getBytes());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            onBackPressed();
+        }
+        return true;
     }
 
     private Map<String, String> getHeaders(Bundle mPostParams) {
@@ -82,7 +96,6 @@ public class ScroogeActivity extends AppCompatActivity {
     }
 
 
-
     private void initUI() {
         //create main layout
         LinearLayout mainLayout = new LinearLayout(this);
@@ -94,7 +107,7 @@ public class ScroogeActivity extends AppCompatActivity {
         //create and add toolbar
         mToolbar = new Toolbar(this);
         if (mToolbar != null) {
-            mToolbar.setTitle(R.string.toolbar_title_add_credit_card);
+            mToolbar.setTitle(title);
             setSupportActionBar(mToolbar);
             setToolbarColorWhite(mToolbar);
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -117,8 +130,9 @@ public class ScroogeActivity extends AppCompatActivity {
         mProgress = new ProgressBar(this, null, android.R.style.Widget_ProgressBar_Horizontal);
         RelativeLayout.LayoutParams progressbarParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         progressbarParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        mProgress.setLayoutParams(progressbarParams);
+        //mProgress.setLayoutParams(progressbarParams);
         mProgress.setIndeterminate(true);
+        mProgress.setVisibility(View.VISIBLE);
 
         webviewLayout.addView(this.mWebView);
         webviewLayout.addView(mProgress);
@@ -158,24 +172,13 @@ public class ScroogeActivity extends AppCompatActivity {
             public synchronized void onPageStarted(WebView inView, String inUrl, Bitmap inFavicon) {
                 super.onPageStarted(inView, inUrl, inFavicon);
                 CommonUtils.dumper("ScroogeActivity :: onPageStarted url " + inUrl);
-                Intent responseIntent = new Intent();
-                if (inUrl.equalsIgnoreCase(ADD_CC_SUCESS_CALLBACK)) {
-                    responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
-                    setResult(ScroogePGUtil.RESULT_CODE_ADD_CC_SUCCESS, responseIntent);
-                    finish();
-                } else if (inUrl.equalsIgnoreCase(ADD_CC_FAIL_CALLBACK)) {
-                    responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Fail");
-                    setResult(ScroogePGUtil.RESULT_CODE_ADD_CC_FAIL, responseIntent);
-                    finish();
-                } else if (inUrl.equalsIgnoreCase(DELETE_CC_FAIL_CALLBACK)) {
-                    responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
-                    setResult(ScroogePGUtil.RESULT_CODE_DELETE_CC_FAIL, responseIntent);
-                    finish();
-                } else if (inUrl.equalsIgnoreCase(DELETE_CC_SUCESS_CALLBACK)) {
-                    responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "FAIL");
-                    setResult(ScroogePGUtil.RESULT_CODE_DELETE_CC_SUCCESS, responseIntent);
-                    finish();
+
+                try {
+                    setProgressBarIndeterminateVisibility(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                mProgress.setVisibility(View.VISIBLE);
             }
 
             public synchronized void onPageFinished(WebView inView, String inUrl) {
@@ -199,9 +202,52 @@ public class ScroogeActivity extends AppCompatActivity {
                     inHandler.proceed();
                 }
             }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                super.shouldOverrideUrlLoading(view, url);
+                Intent responseIntent = new Intent();
+
+                if (url.equalsIgnoreCase(ADD_CC_SUCESS_CALLBACK)) {
+                    responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
+                    setResult(ScroogePGUtil.RESULT_CODE_ADD_CC_SUCCESS, responseIntent);
+                    finish();
+                } else if (url.equalsIgnoreCase(ADD_CC_FAIL_CALLBACK)) {
+                    responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Fail");
+                    setResult(ScroogePGUtil.RESULT_CODE_ADD_CC_FAIL, responseIntent);
+                    finish();
+                } else if (url.equalsIgnoreCase(DELETE_CC_FAIL_CALLBACK)) {
+                    responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
+                    setResult(ScroogePGUtil.RESULT_CODE_DELETE_CC_FAIL, responseIntent);
+                    finish();
+                } else if (url.equalsIgnoreCase(DELETE_CC_SUCESS_CALLBACK)) {
+                    responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "FAIL");
+                    setResult(ScroogePGUtil.RESULT_CODE_DELETE_CC_SUCCESS, responseIntent);
+                    finish();
+                } else if (url.startsWith(SUCCESS_CALLBACK)) {
+                    responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, "Success");
+                    setResult(ScroogePGUtil.RESULT_CODE_SUCCESS, responseIntent);
+                    finish();
+                }
+
+                return false;
+            }
         });
 
-        webview.setWebChromeClient(new WebChromeClient());
+        webview.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                try {
+                    if (newProgress == 100) {
+                        view.setVisibility(View.VISIBLE);
+                        mProgress.setVisibility(View.GONE);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                super.onProgressChanged(view, newProgress);
+            }
+        });
         webview.getSettings().setJavaScriptEnabled(true);
     }
 }

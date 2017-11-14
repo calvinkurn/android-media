@@ -141,7 +141,7 @@
     <string name="complete_trip_choose_tokocash_amount">Choose TokoCash Amount :</string>
     <string name="complete_trip_tip_top_up_more_tokocash_than_your_pending_fare_to_ease_your_booking_experience"><b>Tip</b>: Top up more TokoCash than your pending fare to ease your booking experience!</string>
     <string name="complete_trip_top_up_tokocash">Top Up TokoCash</string>
-    <string name="complete_trip_pending_fare">Pending Fare</string>
+    <string name="complete_trip_pending_fare">Your Pending Fare</string>
     <string name="pending_fare_choose_nominal">Choose Nominal Amount</string>
     <string name="complete_trip_payment_failed">Payment failed</string>
     <string name="please_wait_message">Please wait...</string>
@@ -179,4 +179,9 @@
     <string name="change_payment_toolbar_title">Change Payment Method</string>
     <string name="title_tokocash">TokoCash</string>
     <string name="complete_pay_pending_fare">Pay Pending Fare</string>
+    <string name="toolbar_title_pending_fare">Your Last Pending Fare</string>
+    <string name="title_pay_pending_fare">Pay Pending Fare</string>
+    <string name="label_charged">Charged</string>
+    <string name="error_fail_pay_pending">Please try again</string>
+    <string name="credit_card">Credit Card</string>
 </resources>

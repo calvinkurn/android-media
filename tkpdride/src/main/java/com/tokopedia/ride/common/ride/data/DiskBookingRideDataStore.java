@@ -7,6 +7,7 @@ import com.tokopedia.ride.bookingride.data.RideAddressCacheImpl;
 import com.tokopedia.ride.bookingride.data.entity.NearbyRidesEntity;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.GetPendingEntity;
 import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
@@ -166,6 +167,11 @@ public class DiskBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<JsonObject> payPendingAmount() {
+        return null;
+    }
+
+    @Override
+    public Observable<GetPendingEntity> getPendingAmount() {
         return null;
     }
 }

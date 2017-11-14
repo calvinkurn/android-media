@@ -9,6 +9,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.ride.domain.model.GetPending;
 import com.tokopedia.ride.common.ride.domain.model.PendingPayment;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 
@@ -207,6 +208,8 @@ public interface OnTripMapContract {
         void startTopupTokoCashChangeDestinationActivity(PendingPayment pendingPayment, String requestId);
 
         void renderCompletedRequestWithoutReceipt(RideRequest result);
+
+        void showPendingFareInterrupt(GetPending getPending);
     }
 
     interface Presenter extends CustomerPresenter<View> {
