@@ -314,7 +314,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 kolPostDomain.getUserUrl(),
                 kolPostDomain.getItemId(),
                 kolPostDomain.getId(),
-                TimeConverter.generateTime(kolPostDomain.getCreateTime(), TimeConverter.DEFAULT_FEED_FORMAT),
+                TimeConverter.generateTime(kolPostDomain.getCreateTime(), TimeConverter.DEFAULT_KOL_FORMAT),
                 "",
                 kolPostDomain.getProductPrice(),
                 false,

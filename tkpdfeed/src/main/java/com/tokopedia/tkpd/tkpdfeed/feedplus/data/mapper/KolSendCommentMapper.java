@@ -40,7 +40,7 @@ public class KolSendCommentMapper implements Func1<CreateKolComment.Data, SendKo
         return new SendKolCommentDomain(data.id() == null ? 0 : data.id(),
                 data.comment() == null ? "" : data.comment(),
                 TimeConverter.generateTime(data.create_time() == null ? "" : data
-                        .create_time(), TimeConverter.DEFAULT_FEED_FORMAT),
+                        .create_time(), TimeConverter.DEFAULT_KOL_FORMAT),
                 createDomainUser(data.user()),
                 true);
     }
