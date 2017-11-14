@@ -180,13 +180,14 @@ public class TheirMessageDataBinder extends DataBinder<TheirMessageDataBinder.Vi
     }
 
     private View.OnClickListener onGoToProfile(final InboxMessageDetailItem messageDetailItem) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(messageDetailItem.getUserLabelId() != IS_ADMIN)
-                presenter.onGoToProfile(String.valueOf(messageDetailItem.getUserId()));
-            }
-        };
+//        return new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(messageDetailItem.getUserLabelId() != IS_ADMIN)
+//                presenter.onGoToProfile(String.valueOf(messageDetailItem.getUserId()));
+//            }
+//        };
+        return null;
     }
 
     @Override

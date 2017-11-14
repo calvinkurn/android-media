@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.inboxchat.presenter;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
@@ -71,6 +71,10 @@ public class ChatRoomContract {
         void setResult(ChatRoomViewModel model);
 
         void notifyConnectionWebSocket();
+
+        void startActivity(Intent instance);
+
+        Context getActivity();
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -79,5 +83,7 @@ public class ChatRoomContract {
         void onOpenWebSocket();
 
         void closeWebSocket();
+
+        void onGoToDetail(String userId, String role);
     }
 }

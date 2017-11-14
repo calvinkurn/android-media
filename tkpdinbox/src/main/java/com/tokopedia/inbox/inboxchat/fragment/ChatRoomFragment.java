@@ -62,6 +62,8 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.tokopedia.inbox.inboxmessage.activity.ChatRoomActivity.PARAM_SENDER_ROLE;
+
 /**
  * Created by stevenfredian on 9/19/17.
  */
@@ -122,7 +124,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyColumn = (EditText) rootView.findViewById(R.id.new_comment);
         attachButton = (ImageView) rootView.findViewById(R.id.add_url);
         notifier = rootView.findViewById(R.id.notifier);
-//        refreshHandler = new RefreshHandler(getActivity(), rootView, onRefresh());
         replyWatcher = Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
         presenter.attachView(this);
@@ -130,15 +131,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return rootView;
     }
 
-//
-//    private RefreshHandler.OnRefreshHandlerListener onRefresh() {
-//        return new RefreshHandler.OnRefreshHandlerListener() {
-//            @Override
-//            public void onRefresh(View view) {
-//                presenter.onRefresh();
-//            }
-//        };
-//    }
 
     private void initListener() {
 
@@ -200,7 +192,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 presenter.getAttachProductDialog(
                         getArguments().getString(ChatRoomActivity
                                 .PARAM_SENDER_ID, ""),
-                        getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE, "")
+                        getArguments().getString(PARAM_SENDER_ROLE, "")
                 );
             }
         });
@@ -299,6 +291,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
             user.setText(getArguments().getString(PARAM_SENDER_NAME));
             label.setText(getArguments().getString(PARAM_SENDER_TAG));
             setOnlineDesc("baru saja");
+            toolbar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    presenter.onGoToDetail(getArguments().getString(PARAM_SENDER_ID), getArguments().getString(PARAM_SENDER_ROLE));
+                }
+            });
         }
     }
 

@@ -128,7 +128,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         setReadStatus(element);
 
 
-        avatar.setOnClickListener(onGoToProfile(element));
+        avatar.setOnClickListener(onGoToProfile(element, getAdapterPosition()));
 
         mainView.setOnClickListener(onMessageClicked(element, viewListener, getAdapterPosition()));
 
@@ -232,17 +232,26 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         };
     }
 
-    private View.OnClickListener onGoToProfile(final ChatListViewModel messageItem) {
+    private View.OnClickListener onGoToProfile(final ChatListViewModel messageItem, final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!messageItem.getLabel().equals(ADMIN)) {
-                    if(messageItem.getLabel().equals(SELLER)){
-                        presenter.goToShop(Integer.parseInt(messageItem.getSenderId()));
-                    }else {
-                        presenter.goToProfile(Integer.parseInt(messageItem.getSenderId()));
+                if (presenter.isInActionMode()){
+                    if (messageItem.isChecked()) {
+                        setReadState();
+                        presenter.onDeselect(position);
+                    } else {
+                        setSelectedState();
+                        presenter.onSelected(position);
                     }
-
+                }else {
+                    if (!messageItem.getLabel().equals(ADMIN)) {
+                        if (messageItem.getLabel().equals(SELLER)) {
+                            presenter.goToShop(Integer.parseInt(messageItem.getSenderId()));
+                        } else {
+                            presenter.goToProfile(Integer.parseInt(messageItem.getSenderId()));
+                        }
+                    }
                 }
             }
         };
