@@ -10,6 +10,9 @@
         <activity
             android:name=".common.imageeditor.GalleryCropActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".common.imageeditor.GalleryCropWatermarkActivity"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
@@ -49,6 +52,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".instoped.InstopedSellerCropperActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".instoped.InstopedSellerCropWatermarkActivity"
             android:screenOrientation="portrait" />
 
         <activity
