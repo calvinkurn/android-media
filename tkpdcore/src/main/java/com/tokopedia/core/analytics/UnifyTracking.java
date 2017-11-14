@@ -912,12 +912,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventFavoriteViewRecommendation(String label) {
+    public static void eventFavoriteViewRecommendation() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.FAVORITE,
-                AppEventTracking.Category.FAVORITE,
-                AppEventTracking.Action.VIEW_RECOMMENDATION,
-                label
+                AppEventTracking.Category.HOMEPAGE.toLowerCase(),
+                AppEventTracking.Action.CLICK_SHOP_FAVORITE,
+                ""
         ).getEvent());
     }
 
@@ -1092,12 +1092,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventFavoriteShop(String label) {
+    public static void eventFavoriteShop() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.FAVORITE,
-                AppEventTracking.Category.FAVORITE,
-                AppEventTracking.Action.VIEW_RECOMMENDATION,
-                label
+                AppEventTracking.Category.HOMEPAGE.toLowerCase(),
+                AppEventTracking.Action.CLICK_SHOP_FAVORITE,
+                ""
         ).getEvent());
     }
 
