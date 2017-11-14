@@ -98,7 +98,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                 userName.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
                 message.setText(element.getMessage().trim());
             } else {
-                message.setText(element.getMessage().trim());
+                message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
                 userName.setText(element.getName());
             }
             message.setTypeface(null, Typeface.NORMAL);
