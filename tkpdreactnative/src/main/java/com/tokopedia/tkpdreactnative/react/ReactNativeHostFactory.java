@@ -83,7 +83,7 @@ public class ReactNativeHostFactory {
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
                 new CoreReactPackage(),
-                new CodePushTkpd(getCodePushDeploymentKey(), application, GlobalConfig.isAllowDebuggingTools())
+                new CodePush(getCodePushDeploymentKey(), application, GlobalConfig.isAllowDebuggingTools())
         );
     }
 
