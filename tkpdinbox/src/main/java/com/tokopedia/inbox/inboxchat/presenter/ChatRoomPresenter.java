@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -131,6 +132,11 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
+    @Override
+    public void sendMessageWithApi() {
+        CommonUtils.dumper("WAWAWAAWAWANNNNNIIS");
+    }
+
     public void onLoadMore() {
         if (!isRequesting) {
             pagingHandler.nextPage();
@@ -192,7 +198,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         return isValid;
     }
 
-    public void sendMessage() {
+    public void sendMessageWithWebsocket() {
         if (isValidReply()) {
             getView().addDummyMessage();
             getView().setViewEnabled(false);

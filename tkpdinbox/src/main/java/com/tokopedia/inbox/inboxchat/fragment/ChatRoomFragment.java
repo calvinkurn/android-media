@@ -28,7 +28,6 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
@@ -40,7 +39,6 @@ import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
-import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
@@ -54,7 +52,6 @@ import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
 import org.json.JSONException;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -133,16 +130,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     private void initListener() {
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.sendMessage();
-                UnifyTracking.sendChat(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
-                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_SEND,
-                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
-
-            }
-        });
+        sendButton.setOnClickListener(getSendWithWebSocketListener());
 
         replyIsTyping = replyWatcher.map(new Func1<String, Boolean>() {
             @Override
@@ -154,7 +142,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyIsTyping.subscribe(new Action1<Boolean>() {
             @Override
             public void call(Boolean aBoolean) {
-                Log.i("call: ", "isTyping");
                 if (aBoolean) {
                     try {
                         presenter.setIsTyping(getArguments().getString(ChatRoomActivity
@@ -170,7 +157,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-                        Log.i("call: ", "stopTyping");
                         try {
                             if (aBoolean) {
                                 presenter.stopTyping(getArguments().getString(ChatRoomActivity
@@ -586,8 +572,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onErrorWebSocket() {
         if (getActivity() != null && presenter != null) {
-            notifyConnectionWebSocket();
-            presenter.createWebSocket();
+            sendButton.setOnClickListener(getSendWithApiListener());
+//            notifyConnectionWebSocket();
+//            presenter.createWebSocket();
         }
     }
 
@@ -602,6 +589,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     title.setText("Terhubung!");
                     TextView action = (TextView) notifier.findViewById(R.id.action);
                     action.setVisibility(View.GONE);
+
+                    sendButton.setOnClickListener(getSendWithWebSocketListener());
+
                 }
             });
             notifier.postDelayed(new Runnable() {
@@ -624,5 +614,29 @@ public class ChatRoomFragment extends BaseDaggerFragment
             e.printStackTrace();
         }
         presenter.closeWebSocket();
+    }
+
+    public View.OnClickListener getSendWithApiListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.sendMessageWithApi();
+                UnifyTracking.sendChat(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
+                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_SEND,
+                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+            }
+        };
+    }
+
+    public View.OnClickListener getSendWithWebSocketListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.sendMessageWithWebsocket();
+                UnifyTracking.sendChat(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
+                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_SEND,
+                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+            }
+        };
     }
 }

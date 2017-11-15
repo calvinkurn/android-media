@@ -43,7 +43,7 @@ public class SendMessageRetrofitInteractorImpl implements SendMessageRetrofitInt
     @Override
     public void sendMessage(@NonNull final Context context, @NonNull Map<String, String> params, @NonNull final SendMessageListener listener) {
 //        Observable<Response<TkpdResponse>> observable = kunyitService.getApi()
-//                .sendMessage(AuthUtil.generateParams(context, params));
+//                .sendMessageWithWebsocket(AuthUtil.generateParams(context, params));
 //
 //        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
 //            @Override
