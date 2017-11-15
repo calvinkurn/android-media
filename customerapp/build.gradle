@@ -73,7 +73,7 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 212001301111;
+        defaultVersionCode = 212001999;
         defaultVersionName = "2.13";
     }
 
