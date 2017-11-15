@@ -74,6 +74,12 @@ class PaymentInvoice extends Component {
   }
 
 
+  emailOkHandler = () => {
+    this.popupDialog.dismiss()
+    this._skipButton()
+  }
+
+
 
   _renderProductList = ({item}) => {
     return (
@@ -193,13 +199,9 @@ class PaymentInvoice extends Component {
             height={232}
             ref={(popupDialog) => { this.popupDialog = popupDialog; }}>
             <View style={{ padding: 30, paddingTop: 0, flex: 1, flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Text style={{ fontSize: 20, color: '#000000b3' }}>
-                Bukti Pembayaran
-                  </Text>
-              <Text style={{ fontSize: 14, color: '#000000b3' }}>
-                Bukti pembayaran sudah terkirim ke email Anda
-                  </Text>
-              <TouchableNativeFeedback onPress={() => { this.popupDialog.dismiss() }}>
+              <Text style={{ fontSize: 20, color: '#000000b3' }}>Bukti Pembayaran</Text>
+              <Text style={{ fontSize: 14, color: '#000000b3' }}>Bukti pembayaran sudah terkirim ke email Anda</Text>
+              <TouchableNativeFeedback onPress={() => { this.emailOkHandler() }}>
                 <View style={[styles.popupButton]}>
                   <Text style={styles.buttonText}> Ok </Text>
                 </View>
