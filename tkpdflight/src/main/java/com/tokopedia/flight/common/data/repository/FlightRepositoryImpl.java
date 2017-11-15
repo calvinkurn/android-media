@@ -4,6 +4,9 @@ import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
+import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
+import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -28,20 +31,22 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightAirportDataListSource flightAirportDataListSource;
     private FlightAirlineDataListSource flightAirlineDataListSource;
     private FlightClassesDataSource flightClassesDataSource;
-
     private FlightSearchSingleDataListSource flightSearchSingleDataListSource;
     private FlightSearchReturnDataListSource flightSearchReturnDataListSource;
+    private FlightCartDataSource flightCartDataSource;
 
     public FlightRepositoryImpl(FlightAirportDataListSource flightAirportDataListSource,
                                 FlightAirlineDataListSource flightAirlineDataListSource,
                                 FlightSearchSingleDataListSource flightSearchSingleDataListSource,
                                 FlightSearchReturnDataListSource flightSearchReturnDataListSource,
-                                FlightClassesDataSource flightClassesDataSource) {
+                                FlightClassesDataSource flightClassesDataSource,
+                                FlightCartDataSource flightCartDataSource) {
         this.flightAirportDataListSource = flightAirportDataListSource;
         this.flightAirlineDataListSource = flightAirlineDataListSource;
         this.flightSearchSingleDataListSource = flightSearchSingleDataListSource;
         this.flightSearchReturnDataListSource = flightSearchReturnDataListSource;
         this.flightClassesDataSource = flightClassesDataSource;
+        this.flightCartDataSource = flightCartDataSource;
     }
 
     @Override
@@ -162,5 +167,10 @@ public class FlightRepositoryImpl implements FlightRepository {
         } else {
             return flightSearchSingleDataListSource.getSingleFlight(id);
         }
+    }
+
+    @Override
+    public Observable<CartEntity> addCart(FlightCartRequest request, String idEmpotencyKey) {
+        return flightCartDataSource.addCart(request, idEmpotencyKey);
     }
 }

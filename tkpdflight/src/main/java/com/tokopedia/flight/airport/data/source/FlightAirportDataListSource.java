@@ -2,7 +2,7 @@ package com.tokopedia.flight.airport.data.source;
 
 import com.tokopedia.abstraction.base.data.source.DataListSource;
 import com.tokopedia.flight.airport.data.source.cache.FlightAirportDataCacheSource;
-import com.tokopedia.flight.airport.data.source.cloud.FlightAirportDataListCloudSource;
+import com.tokopedia.flight.airport.data.source.cloud.FlightAirportDataListFileSource;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
@@ -23,7 +23,7 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
     @Inject
     public FlightAirportDataListSource(FlightAirportDataCacheSource dataListCacheManager,
                                        FlightAirportDataListDBSource dataListDBManager,
-                                       FlightAirportDataListCloudSource dataListCloudManager) {
+                                       FlightAirportDataListFileSource dataListCloudManager) {
         super(dataListCacheManager, dataListDBManager, dataListCloudManager);
     }
 
@@ -34,7 +34,7 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
 
     public static HashMap<String, Object> generateGetParam(String query){
         HashMap<String, Object> map = new HashMap<>();
-        map.put(FlightAirportDataListCloudSource.KEYWORD, query);
+        map.put(FlightAirportDataListFileSource.KEYWORD, query);
         return map;
     }
 
@@ -48,7 +48,7 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
         if (params == null) {
             return "";
         }
-        return (String) params.get(FlightAirportDataListCloudSource.KEYWORD);
+        return (String) params.get(FlightAirportDataListFileSource.KEYWORD);
     }
 
     public static String getIDFromMap(HashMap<String, Object> params){

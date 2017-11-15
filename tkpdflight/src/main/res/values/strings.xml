@@ -145,4 +145,5 @@
     <string name="flight_dashboard_arrival_airport_hint">Penerbangan Tujuan</string>
     <string name="flight_airportpicker_departure_title">Penerbangan Asal</string>
     <string name="flight_airportpicker_arrival_title">Penerbangan Tujuan</string>
+    <string name="flight_title_return">Pencarian Pulang</string>
 </resources>

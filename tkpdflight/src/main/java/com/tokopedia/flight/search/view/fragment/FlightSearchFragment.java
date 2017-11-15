@@ -56,13 +56,13 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     private static final String SAVED_SORT_OPTION = "svd_sort_option";
 
     BottomActionView filterAndSortBottomAction;
-    private TextView departureAirportCode;
-    private TextView departureAirportName;
-    private TextView arrivalAirportCode;
-    private TextView arrivalAirportName;
+    protected TextView departureAirportCode;
+    protected TextView departureAirportName;
+    protected TextView arrivalAirportCode;
+    protected TextView arrivalAirportName;
 
     private FlightFilterModel flightFilterModel;
-    private FlightSearchPassDataViewModel flightSearchPassDataViewModel;
+    protected FlightSearchPassDataViewModel flightSearchPassDataViewModel;
 
     int selectedSortOption = FlightSortOption.NO_PREFERENCE;
 
@@ -262,6 +262,16 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     }
 
     @Override
+    public void onErrorGetDetailFlightDeparture(Throwable e) {
+        // do nothing
+    }
+
+    @Override
+    public void onSuccessGetDetailFlightDeparture(FlightSearchViewModel flightSearchViewModel) {
+        // do nothing
+    }
+
+    @Override
     public void onSearchLoaded(@NonNull List<FlightSearchViewModel> list, int totalItem) {
         super.onSearchLoaded(list, totalItem);
         if (filterAndSortBottomAction.getVisibility() == View.GONE) {
@@ -300,7 +310,6 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
             NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
         }
     }
-
 
     @Override
     public void onDestroy() {

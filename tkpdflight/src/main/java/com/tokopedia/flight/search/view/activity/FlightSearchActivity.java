@@ -3,6 +3,7 @@ package com.tokopedia.flight.search.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -74,7 +75,12 @@ public class FlightSearchActivity extends BaseSimpleActivity
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.tkpd_dark_gray));
         String subtitle = dateString + " | " + passengerString + " | " + classString;
-        updateTitle(getString(R.string.activity_label_flight_search_departure), subtitle);
+        updateTitle(getFlightTitle(), subtitle);
+    }
+
+    @NonNull
+    protected String getFlightTitle() {
+        return getString(R.string.activity_label_flight_search_departure);
     }
 
     @Override

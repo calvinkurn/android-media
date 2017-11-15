@@ -33,8 +33,6 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         passengerBirthdate = in.readString();
         departureLugage = in.readParcelable(FlightBookingLuggageViewModel.class.getClassLoader());
         returnLugage = in.readParcelable(FlightBookingLuggageViewModel.class.getClassLoader());
-        departureMeals = in.createTypedArrayList(FlightBookingMealViewModel.CREATOR);
-        returnMeals = in.createTypedArrayList(FlightBookingMealViewModel.CREATOR);
     }
 
     public static final Creator<FlightBookingPassengerViewModel> CREATOR = new Creator<FlightBookingPassengerViewModel>() {
@@ -157,7 +155,5 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         dest.writeString(passengerBirthdate);
         dest.writeParcelable(departureLugage, flags);
         dest.writeParcelable(returnLugage, flags);
-        dest.writeTypedList(departureMeals);
-        dest.writeTypedList(returnMeals);
     }
 }

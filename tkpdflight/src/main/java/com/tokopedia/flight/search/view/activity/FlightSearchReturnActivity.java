@@ -3,9 +3,11 @@ package com.tokopedia.flight.search.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
@@ -18,7 +20,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 public class FlightSearchReturnActivity extends FlightSearchActivity implements FlightSearchFragment.OnFlightSearchFragmentListener {
 
-    private static final String EXTRA_SEL_DEPARTURE_ID = "EXTRA_DEPARTURE_ID";
+    public static final String EXTRA_SEL_DEPARTURE_ID = "EXTRA_DEPARTURE_ID";
 
     private String selectedDepartureID;
 
@@ -66,11 +68,17 @@ public class FlightSearchReturnActivity extends FlightSearchActivity implements 
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightSearchReturnFragment.newInstance(passDataViewModel);
+        return FlightSearchReturnFragment.newInstance(passDataViewModel, selectedDepartureID);
     }
 
     @Override
     public void selectFlight(String selectedFlightID) {
         startActivity(FlightBookingActivity.getCallingIntent(this, passDataViewModel, selectedDepartureID, selectedFlightID));
+    }
+
+    @NonNull
+    @Override
+    protected String getFlightTitle() {
+        return getString(R.string.flight_title_return);
     }
 }

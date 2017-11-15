@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 
 public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdType{
     public static final int TYPE = 532;
-    private int id;
+    private String id;
     private String title;
     private String price;
 
@@ -20,7 +20,7 @@ public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdT
     }
 
     protected FlightBookingMealViewModel(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         title = in.readString();
         price = in.readString();
     }
@@ -37,11 +37,11 @@ public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdT
         }
     };
 
-    public int getIdBooking() {
+    public String getIdBooking() {
         return id;
     }
 
-    public void setIdBooking(int id) {
+    public void setIdBooking(String id) {
         this.id = id;
     }
 
@@ -67,18 +67,6 @@ public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdT
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(title);
-        dest.writeString(price);
-    }
-
-    @Override
     public String toString() {
         return title;
     }
@@ -86,5 +74,17 @@ public class FlightBookingMealViewModel implements Parcelable, ItemType, ItemIdT
     @Override
     public int getType() {
         return TYPE;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(price);
     }
 }
