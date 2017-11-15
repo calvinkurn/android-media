@@ -629,6 +629,10 @@ public class SessionHandler {
         return sharedPrefs.getString(ACCESS_TOKEN, "");
     }
 
+    public Context getActiveContext() {
+        return this.context;
+    }
+
     public String getWalletRefreshToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(WALLET_REFRESH_TOKEN, "");
