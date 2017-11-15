@@ -23,24 +23,24 @@ public class ChatSystemRightViewHolder extends AbstractViewHolder<ChatSystemRigh
 
     DetailResChatFragmentListener.View mainView;
     View layoutDate;
-    TextView tvMessage, tvDate, tvtitle;
+    TextView tvMessage, tvDate, tvTitle;
     ChatProveAdapter adapter;
 
     public ChatSystemRightViewHolder(View itemView, DetailResChatFragmentListener.View mainView) {
         super(itemView);
         this.mainView = mainView;
         tvMessage = (TextView) itemView.findViewById(R.id.tv_message);
-        tvtitle = (TextView) itemView.findViewById(R.id.tv_title);
+        tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
         layoutDate = itemView.findViewById(R.id.layout_date);
         tvDate = (TextView) layoutDate.findViewById(R.id.tv_date);
     }
 
     @Override
     public void bind(ChatSystemRightViewModel element) {
-        if (!element.getConversation().getMessage().isEmpty()) {
-            tvtitle.setText(MethodChecker.fromHtml(element.getConversation().getMessage()));
-        }
-        tvMessage.setText(MethodChecker.fromHtml(element.getConversation().getAction().getTitle()));
+        if (element.getConversation().getAction().getTitle() != null)
+            tvTitle.setText(MethodChecker.fromHtml(element.getConversation().getAction().getTitle()));
+        if (element.getConversation().getSolution().getName() != null)
+            tvMessage.setText(MethodChecker.fromHtml(element.getConversation().getSolution().getName()));
         String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
         tvDate.setText(date);
     }

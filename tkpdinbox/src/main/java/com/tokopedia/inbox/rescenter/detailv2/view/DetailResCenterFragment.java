@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -337,6 +340,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         }
     }
 
+
     @Override
     public void doOnInitFailed() {
         showLoading(false);
@@ -589,6 +593,30 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     public void setOnActionInvoiceClick(String invoice, String url) {
         AppUtils.InvoiceDialog(getActivity(), url, invoice);
+    }
+
+    private RelativeLayout.LayoutParams getButtonInitParams() {
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,130, getResources().getDisplayMetrics()),
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,60, getResources().getDisplayMetrics()));
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        params.setMargins(
+                0,
+                0,
+                (int) getResources().getDimension(R.dimen.margin_small),
+                (int) getResources().getDimension(R.dimen.margin_small));
+        return params;
+    }
+
+    @Override
+    public void setOnDiscussionButtonPosition(boolean isButtonAvailable) {
+        RelativeLayout.LayoutParams params = getButtonInitParams();
+        if (isButtonAvailable) {
+            params.addRule(RelativeLayout.ABOVE, R.id.button_view);
+        } else {
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }
+        cvDiscussion.setLayoutParams(params);
     }
 
     @Override

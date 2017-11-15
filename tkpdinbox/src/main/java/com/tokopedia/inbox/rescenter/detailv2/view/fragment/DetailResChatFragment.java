@@ -711,8 +711,8 @@ public class DetailResChatFragment
 
         }
         chatAdapter.notifyDataSetChanged();
-        if (!isFirstInit)
-            rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+//        if (!isFirstInit)
+        rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
     }
 
     private void showAcceptSolutionDialog(String acceptText) {

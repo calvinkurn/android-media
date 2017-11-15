@@ -219,17 +219,17 @@ public class GetResCenterDetailV2Subscriber extends rx.Subscriber<DetailResponse
     private HistoryData mappingHistoryData(List<LogData> logDataList) {
         HistoryData historyData = new HistoryData();
         List<HistoryItem> historyItems = new ArrayList<>();
-        boolean latest = true;
+        int pos = 0;
         for (LogData logData : logDataList) {
             HistoryItem item = new HistoryItem();
-            item.setLatest(latest);
+            item.setLatest(pos == logDataList.size() - 1);
             item.setDate(logData.getCreateTimeStr());
             item.setHistoryText(logData.getAction());
             item.setProvider(logData.getActionBy().getName());
             item.setDateTimestamp(logData.getCreateTime());
             item.setProviderId(logData.getActionBy().getId());
-            latest = false;
             historyItems.add(item);
+            pos++;
         }
         historyData.setHistoryList(historyItems);
         return historyData;

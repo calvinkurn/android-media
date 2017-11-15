@@ -51,6 +51,7 @@ public class DetailResChatFragmentPresenter
 
     public static final int PARAM_MIN_REPLY_CHAR_COUNT = 7;
     public static final int PARAM_MAX_REPLY_CHAR_COUNT = 5000;
+    public static final int PARAM_LIMIT_CONVERSATION= 20;
     private static final int MAXIMAL_VIDEO_CONTENT_ALLOW = 1;
     private String[] extensions = {
             "jpg", "jpeg", "png", "mp4", "m4v", "mov", "ogv"
@@ -125,7 +126,9 @@ public class DetailResChatFragmentPresenter
     public void loadConversation(String resolutionId, boolean isFirstInit) {
         mainView.showProgressBar();
         getResChatUseCase.execute(
-                GetResChatUseCase.getResChatUseCaseParam(String.valueOf(resolutionId)),
+                GetResChatUseCase.getResChatUseCaseParam(
+                        String.valueOf(resolutionId),
+                        PARAM_LIMIT_CONVERSATION),
                 new GetDetailResChatSubscriber(mainView, isFirstInit));
     }
 

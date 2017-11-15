@@ -72,6 +72,8 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionInputAwbNumberClick();
 
+    void setOnDiscussionButtonPosition(boolean isButtonAvailable);
+
     void doOnInitTimeOut();
 
     void doOnInitSuccess();

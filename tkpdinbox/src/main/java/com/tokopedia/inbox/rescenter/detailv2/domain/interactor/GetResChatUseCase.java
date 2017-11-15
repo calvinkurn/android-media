@@ -15,7 +15,8 @@ import rx.Observable;
 
 public class GetResChatUseCase extends UseCase<DetailResChatDomain> {
 
-    public static final String RESO_ID = "resolution_id";
+    public static final String PARAMS_RESO_ID = "resolution_id";
+    public static final String PARAMS_LIMIT = "limit_count";
 
     private ResCenterRepository resCenterRepository;
 
@@ -31,9 +32,10 @@ public class GetResChatUseCase extends UseCase<DetailResChatDomain> {
         return resCenterRepository.getConversation(requestParams);
     }
 
-    public static RequestParams getResChatUseCaseParam(String resolutionId) {
+    public static RequestParams getResChatUseCaseParam(String resolutionId, int limit) {
         RequestParams params = RequestParams.create();
-        params.putString(RESO_ID, resolutionId);
+        params.putString(PARAMS_RESO_ID, resolutionId);
+        params.putInt(PARAMS_LIMIT, limit);
         return params;
     }
 }

@@ -23,7 +23,9 @@ public class ResChatCloudSource {
     }
 
     public Observable<DetailResChatDomain> getDetailResChatCloud(RequestParams params) {
-        return resolutionApi.getConversation(params.getString(GetResChatUseCase.RESO_ID, ""))
+        return resolutionApi.getConversation(
+                params.getString(GetResChatUseCase.PARAMS_RESO_ID, ""),
+                params.getParameters())
                 .map(getDetailResChatMapper);
     }
 }

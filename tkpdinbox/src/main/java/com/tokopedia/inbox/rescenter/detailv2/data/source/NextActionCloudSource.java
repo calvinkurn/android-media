@@ -2,10 +2,8 @@ package com.tokopedia.inbox.rescenter.detailv2.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
-import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetDetailResChatMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.GetNextActionMapper;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResChatUseCase;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 
 import rx.Observable;
@@ -25,7 +23,7 @@ public class NextActionCloudSource {
     }
 
     public Observable<NextActionDomain> getNextAction(RequestParams params) {
-        return resolutionApi.getNextAction(params.getString(GetResChatUseCase.RESO_ID, ""))
+        return resolutionApi.getNextAction(params.getString(GetResChatUseCase.PARAMS_RESO_ID, ""))
                 .map(getNextActionMapper);
     }
 }

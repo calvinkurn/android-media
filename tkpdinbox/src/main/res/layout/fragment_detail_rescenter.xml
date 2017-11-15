@@ -28,7 +28,7 @@
         android:layout_marginRight="@dimen/margin_small"
         android:layout_marginBottom="@dimen/margin_med"
         android:layout_alignParentRight="true"
-        android:layout_above="@id/button_view"
+        android:layout_alignParentBottom="true"
         android:visibility="gone"
         app:cardCornerRadius="30dp"
         app:cardBackgroundColor="@color/tkpd_main_green_70"
