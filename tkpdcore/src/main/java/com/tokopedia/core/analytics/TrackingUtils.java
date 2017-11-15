@@ -1,7 +1,6 @@
 package com.tokopedia.core.analytics;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -23,7 +22,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
-import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -80,7 +78,7 @@ public class TrackingUtils extends TrackingConfig {
                     .setFirstName(getFirstName(profileData.getUserInfo().getUserName()))
                     .build();
 
-            getMoEngine().setUserData(customerWrapper);
+            getMoEngine().setUserData(customerWrapper, "APP OLD");
         }
         if (!TextUtils.isEmpty(FCMCacheManager.getRegistrationId(MainApplication.getAppContext())))
             PushManager.getInstance().refreshToken(MainApplication.getAppContext(), FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
@@ -107,7 +105,7 @@ public class TrackingUtils extends TrackingConfig {
                         .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MM_YYYY, extractFirstSegment(profileData.profile().bday() != null ? profileData.profile().bday() : "", "T")))
                         .build();
 
-                getMoEngine().setUserData(customerWrapper);
+                getMoEngine().setUserData(customerWrapper, "GRAPHQL");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -142,7 +140,7 @@ public class TrackingUtils extends TrackingConfig {
                     .setMethod(label)
                     .build();
 
-            getMoEngine().setUserData(wrapper);
+            getMoEngine().setUserData(wrapper, "LOGIN");
             sendMoEngageLoginEvent(wrapper);
         }
     }
