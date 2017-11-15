@@ -44,5 +44,8 @@ public interface FlightApi {
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CART_PATH)
-    Observable<Response<DataResponse<CartEntity>>> addCart(@Body DataRequest<FlightCartRequest> request, @Header("Idempotency-Key") String idemPotencyKeyHeader);
+    Observable<Response<DataResponse<CartEntity>>> addCart(@Body DataRequest<FlightCartRequest> request,
+                                                           @Header("Idempotency-Key") String idemPotencyKeyHeader,
+                                                           @Header("x-tkpd-userid") String userId
+    );
 }
