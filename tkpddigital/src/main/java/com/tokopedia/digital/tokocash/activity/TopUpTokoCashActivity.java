@@ -54,7 +54,7 @@ import com.tokopedia.digital.tokocash.domain.TokoCashRepository;
 import com.tokopedia.digital.tokocash.interactor.ITokoCashBalanceInteractor;
 import com.tokopedia.digital.tokocash.interactor.TokoCashBalanceInteractor;
 import com.tokopedia.digital.tokocash.listener.TopUpTokoCashListener;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.tokocash.presenter.TopUpTokocashPresenter;
 import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
@@ -157,7 +157,6 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
 
     @Override
     protected void initView() {
-        toolbar.setTitle(getString(R.string.title_tokocash_topup));
         topUpTokoCashView = new TopUpTokoCashView(this);
         balanceTokoCashView = new BalanceTokoCashView(this);
         receivedTokoCashView = new ReceivedTokoCashView(this);
@@ -212,12 +211,13 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     }
 
     @Override
-    public void renderBalanceTokoCash(TokoCashData tokoCashData) {
+    public void renderBalanceTokoCash(TokoCashBalanceData tokoCashBalanceData) {
+        toolbar.setTitle(tokoCashBalanceData.getTitleText());
         clearHolder(balanceTokoCashViewLayout);
         clearHolder(receivedTokoCashViewLayout);
-        balanceTokoCashView.renderDataBalance(tokoCashData);
+        balanceTokoCashView.renderDataBalance(tokoCashBalanceData);
         balanceTokoCashView.setListener(getBalanceListener());
-        receivedTokoCashView.renderReceivedView(tokoCashData);
+        receivedTokoCashView.renderReceivedView(tokoCashBalanceData);
         receivedTokoCashViewLayout.addView(receivedTokoCashView);
         balanceTokoCashViewLayout.addView(balanceTokoCashView);
         bottomSheetTokoCashView.renderBottomSheet(new BottomSheetView

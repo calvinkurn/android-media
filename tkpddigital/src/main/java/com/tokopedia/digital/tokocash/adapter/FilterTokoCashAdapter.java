@@ -60,8 +60,39 @@ public class FilterTokoCashAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ItemViewFilter) holder).bindView(headerHistoryList.get(position), position);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        final ItemViewFilter itemViewFilter = (ItemViewFilter) holder;
+        final HeaderItemColor headerHistory = headerHistoryList.get(position);
+
+        itemViewFilter.filterName.setText(headerHistory.getHeaderHistory().getName());
+        handleViewFilter(itemViewFilter, headerHistory.getHeaderHistory().isSelected(), headerHistory.getHeaderColor());
+        itemViewFilter.layoutFilterTokocash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (headerHistory.getHeaderHistory().isSelected()) {
+                    listener.clearFilter();
+                    headerHistory.getHeaderHistory().setSelected(false);
+                } else {
+                    listener.selectFilter(headerHistory.getHeaderHistory().getType());
+                    headerHistory.getHeaderHistory().setSelected(true);
+                    if (lastHeaderItemColor != null) {
+                        headerItemColorList.get(pos).getHeaderHistory().setSelected(false);
+                        notifyItemChanged(pos);
+                    }
+                    lastHeaderItemColor = headerHistory;
+                    pos = position;
+                }
+                handleViewFilter(itemViewFilter, headerHistory.getHeaderHistory().isSelected(), headerHistory.getHeaderColor());
+            }
+        });
+    }
+
+    private void handleViewFilter(ItemViewFilter itemViewFilter, boolean selected, HeaderColor headerColor) {
+        itemViewFilter.layoutFilterTokocash.setBackground(ContextCompat.getDrawable(context, selected ?
+                headerColor.getColor() : headerColor.getBackground()));
+        itemViewFilter.filterName.setTextColor(ContextCompat.getColor(context, selected ? R.color.white :
+                R.color.black_70));
+        itemViewFilter.clearFilter.setVisibility(selected ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -85,7 +116,15 @@ public class FilterTokoCashAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    class ItemViewFilter extends RecyclerView.ViewHolder {
+    private void addColorFilter() {
+        headerColorList = new ArrayList<>();
+        headerColorList.add(new HeaderColor(R.color.filter_inside_blue, R.drawable.digital_white_filter_blue));
+        headerColorList.add(new HeaderColor(R.color.filter_inside_green, R.drawable.digital_white_filter_green));
+        headerColorList.add(new HeaderColor(R.color.filter_inside_orange, R.drawable.digital_white_filter_orange));
+        headerColorList.add(new HeaderColor(R.color.filter_inside_green_medium, R.drawable.digital_white_filter_green_medium));
+    }
+
+    static class ItemViewFilter extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.layout_filter_tokocash)
         LinearLayout layoutFilterTokocash;
@@ -98,46 +137,6 @@ public class FilterTokoCashAdapter extends RecyclerView.Adapter {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
-        private void bindView(final HeaderItemColor headerHistory, final int position) {
-            filterName.setText(headerHistory.getHeaderHistory().getName());
-            handleViewFilter(headerHistory.getHeaderHistory().isSelected(), headerHistory.getHeaderColor());
-            layoutFilterTokocash.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (headerHistory.getHeaderHistory().isSelected()) {
-                        listener.clearFilter();
-                        headerHistory.getHeaderHistory().setSelected(false);
-                    } else {
-                        listener.selectFilter(headerHistory.getHeaderHistory().getType());
-                        headerHistory.getHeaderHistory().setSelected(true);
-                        if (lastHeaderItemColor != null) {
-                            headerItemColorList.get(pos).getHeaderHistory().setSelected(false);
-                            notifyItemChanged(pos);
-                        }
-                        lastHeaderItemColor = headerHistory;
-                        pos = position;
-                    }
-                    handleViewFilter(headerHistory.getHeaderHistory().isSelected(), headerHistory.getHeaderColor());
-                }
-            });
-        }
-
-        private void handleViewFilter(boolean selected, HeaderColor headerColor) {
-            layoutFilterTokocash.setBackground(ContextCompat.getDrawable(context, selected ?
-                    headerColor.getColor() : headerColor.getBackground()));
-            filterName.setTextColor(ContextCompat.getColor(context, selected ? R.color.white :
-                    R.color.black_70));
-            clearFilter.setVisibility(selected ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    private void addColorFilter() {
-        headerColorList = new ArrayList<>();
-        headerColorList.add(new HeaderColor(R.color.filter_inside_blue, R.drawable.digital_white_filter_blue));
-        headerColorList.add(new HeaderColor(R.color.filter_inside_green, R.drawable.digital_white_filter_green));
-        headerColorList.add(new HeaderColor(R.color.filter_inside_orange, R.drawable.digital_white_filter_orange));
-        headerColorList.add(new HeaderColor(R.color.filter_inside_green_medium, R.drawable.digital_white_filter_green_medium));
     }
 
     public interface FilterTokoCashListener {

@@ -7,6 +7,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.var.TokoCashTypeDef;
 
 /**
  * Created by nabillasabbaha on 11/13/17.
@@ -43,7 +44,7 @@ public class TokoCashUtil {
         data.setLabelActionButton(tokoCashData.getAction().getmText());
         data.setVisibleActionButton(tokoCashData.getAction().getmVisibility() != null
                 && tokoCashData.getAction().getmVisibility().equals("1"));
-        data.setTypeAction(tokoCashData.getLink() == 1 ? HomeHeaderWalletAction.TYPE_ACTION_TOP_UP
+        data.setTypeAction(tokoCashData.getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE ? HomeHeaderWalletAction.TYPE_ACTION_TOP_UP
                 : HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION);
         data.setAppLinkActionButton(tokoCashData.getAction().getmAppLinks() == null ? ""
                 : tokoCashData.getAction().getmAppLinks());
@@ -73,7 +74,7 @@ public class TokoCashUtil {
         data.setLabelActionButton(tokoCashData.getAction().getmText());
         data.setVisibleActionButton(tokoCashData.getAction().getmVisibility() != null
                 && tokoCashData.getAction().getmVisibility().equals("1"));
-        data.setTypeAction(tokoCashData.getLink() == 1 ? DrawerWalletAction.TYPE_ACTION_BALANCE
+        data.setTypeAction(tokoCashData.getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE ? DrawerWalletAction.TYPE_ACTION_BALANCE
                 : DrawerWalletAction.TYPE_ACTION_ACTIVATION);
         data.setAppLinkActionButton(tokoCashData.getAction().getmAppLinks() == null ? ""
                 : tokoCashData.getAction().getmAppLinks());

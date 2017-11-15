@@ -2,7 +2,7 @@ package com.tokopedia.digital.tokocash.domain;
 
 import com.tokopedia.digital.tokocash.entity.WalletTokenEntity;
 import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 
 import rx.Observable;
 
@@ -16,7 +16,7 @@ public interface ITokoCashRepository {
 
     Observable<ActivateTokoCashData> linkedWalletToTokoCash(String otpCode);
 
-    Observable<TokoCashData> getBalanceTokoCash();
+    Observable<TokoCashBalanceData> getBalanceTokoCash();
 
     Observable<WalletTokenEntity> getWalletToken();
 }

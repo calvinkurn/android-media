@@ -6,7 +6,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.digital.tokocash.domain.ITokoCashRepository;
 import com.tokopedia.digital.tokocash.entity.WalletTokenEntity;
 import com.tokopedia.digital.tokocash.model.WalletToken;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -38,7 +38,7 @@ public class TokoCashBalanceInteractor implements ITokoCashBalanceInteractor {
     }
 
     @Override
-    public void getBalanceTokoCash(Subscriber<TokoCashData> subscriber) {
+    public void getBalanceTokoCash(Subscriber<TokoCashBalanceData> subscriber) {
         compositeSubscription.add(
                 repository.getBalanceTokoCash()
                         .unsubscribeOn(Schedulers.from(threadExecutor))

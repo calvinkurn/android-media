@@ -27,6 +27,7 @@ public class LinkedAccountAdapter extends RecyclerView.Adapter {
     private List<AccountWalletItem> accountTokoCashList;
 
     private ActionListener actionListener;
+    private Context context;
 
     public LinkedAccountAdapter(List<AccountWalletItem> accountTokoCashList) {
         this.accountTokoCashList = accountTokoCashList;
@@ -38,14 +39,28 @@ public class LinkedAccountAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.view_holder_wallet_connected_account_item_digital_module, parent, false);
-        return new ItemAccountViewHolder(view, parent.getContext());
+        return new ItemAccountViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((ItemAccountViewHolder) holder).bindView(accountTokoCashList.get(position));
+        ItemAccountViewHolder itemViewHolder = (ItemAccountViewHolder) holder;
+        final AccountWalletItem accountWalletItem = accountTokoCashList.get(position);
+
+        ImageHandler.loadImageThumbs(context, itemViewHolder.ivIcon, accountWalletItem.getImgUrl());
+        itemViewHolder.tvEmail.setText(accountWalletItem.getIdentifier());
+        itemViewHolder.tvRegisteredDate.setText(String.format(
+                context.getString(R.string.tokocash_linked_account_date),
+                accountWalletItem.getAuthDateFmt()));
+        itemViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onDeleteAccessClicked(accountWalletItem);
+            }
+        });
     }
 
     @Override
@@ -59,7 +74,7 @@ public class LinkedAccountAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    class ItemAccountViewHolder extends RecyclerView.ViewHolder {
+    static class ItemAccountViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.iv_icon)
         ImageView ivIcon;
@@ -70,26 +85,9 @@ public class LinkedAccountAdapter extends RecyclerView.Adapter {
         @BindView(R2.id.btn_delete)
         TextView btnDelete;
 
-        private Context context;
-
-        public ItemAccountViewHolder(View itemView, Context context) {
+        public ItemAccountViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            this.context = context;
-        }
-
-        private void bindView(final AccountWalletItem accountTokoCash) {
-            ImageHandler.loadImageThumbs(context, ivIcon, accountTokoCash.getImgUrl());
-            tvEmail.setText(accountTokoCash.getIdentifier());
-            tvRegisteredDate.setText(String.format(
-                    context.getString(R.string.tokocash_linked_account_date),
-                    accountTokoCash.getAuthDateFmt()));
-            btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    actionListener.onDeleteAccessClicked(accountTokoCash);
-                }
-            });
         }
     }
 

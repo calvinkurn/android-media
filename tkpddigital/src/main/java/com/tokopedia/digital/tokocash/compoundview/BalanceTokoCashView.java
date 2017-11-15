@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,16 +58,16 @@ public class BalanceTokoCashView extends LinearLayout {
         ButterKnife.bind(this);
     }
 
-    public void renderDataBalance(TokoCashData tokoCashData) {
-        balance.setText(tokoCashData.getBalance());
-        holdBalance.setText(tokoCashData.getHoldBalance());
+    public void renderDataBalance(TokoCashBalanceData tokoCashBalanceData) {
+        balance.setText(tokoCashBalanceData.getBalance());
+        holdBalance.setText(tokoCashBalanceData.getHoldBalance());
         tooltip.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.showTooltipHoldBalance();
             }
         });
-        layoutHoldBalance.setVisibility(tokoCashData.getRawHoldBalance() > 0 ? VISIBLE : GONE);
+        layoutHoldBalance.setVisibility(tokoCashBalanceData.getRawHoldBalance() > 0 ? VISIBLE : GONE);
     }
 
     public interface ActionListener {

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,21 +57,21 @@ public class ReceivedTokoCashView extends LinearLayout {
         ButterKnife.bind(this);
     }
 
-    public void renderReceivedView(TokoCashData tokoCashData) {
-        incomeTokocash.setText(tokoCashData.getTotalBalance());
-        renderLimitTokoCash(tokoCashData);
+    public void renderReceivedView(TokoCashBalanceData tokoCashBalanceData) {
+        incomeTokocash.setText(tokoCashBalanceData.getTotalBalance());
+        renderLimitTokoCash(tokoCashBalanceData);
     }
 
-    private void renderLimitTokoCash(TokoCashData tokoCashData) {
-        if (tokoCashData.getThreshold() != null) {
-            rawThreshold = tokoCashData.getRawThreshold();
-            threshold = tokoCashData.getThreshold();
+    private void renderLimitTokoCash(TokoCashBalanceData tokoCashBalanceData) {
+        if (tokoCashBalanceData.getThreshold() != null) {
+            rawThreshold = tokoCashBalanceData.getRawThreshold();
+            threshold = tokoCashBalanceData.getThreshold();
         } else {
             rawThreshold = MAX_TOTAL_BALANCE;
             threshold = THRESHOLD_DEFAULT;
         }
         limitTokocash.setText(String.format(getContext().getString(R.string.limit_balance_tokocash), threshold));
-        renderProgressBarTokoCash(tokoCashData.getRawTotalBalance());
+        renderProgressBarTokoCash(tokoCashBalanceData.getRawTotalBalance());
     }
 
     private void renderProgressBarTokoCash(long totalBalance) {

@@ -6,7 +6,7 @@ import com.tokopedia.digital.tokocash.entity.WalletTokenEntity;
 import com.tokopedia.digital.tokocash.mapper.ActivateTokoCashMapper;
 import com.tokopedia.digital.tokocash.mapper.TokenTokoCashMapper;
 import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -43,13 +43,13 @@ public class TokoCashRepository implements ITokoCashRepository {
     }
 
     @Override
-    public Observable<TokoCashData> getBalanceTokoCash() {
+    public Observable<TokoCashBalanceData> getBalanceTokoCash() {
         return tokoCashService.getApi().getTokoCash()
-                .flatMap(new Func1<Response<TkpdResponse>, Observable<TokoCashData>>() {
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<TokoCashBalanceData>>() {
                     @Override
-                    public Observable<TokoCashData> call(Response<TkpdResponse> topCashItemResponse) {
+                    public Observable<TokoCashBalanceData> call(Response<TkpdResponse> topCashItemResponse) {
                         return Observable
-                                .just(topCashItemResponse.body().convertDataObj(TokoCashData.class));
+                                .just(topCashItemResponse.body().convertDataObj(TokoCashBalanceData.class));
                     }
                 });
     }

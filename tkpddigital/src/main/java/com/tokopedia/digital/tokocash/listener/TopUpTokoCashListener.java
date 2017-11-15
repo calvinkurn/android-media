@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.product.model.CategoryData;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 
 /**
  * Created by nabillasabbaha on 8/21/17.
@@ -19,7 +19,7 @@ public interface TopUpTokoCashListener {
 
     void showToastMessage(String message);
 
-    void renderBalanceTokoCash(TokoCashData tokoCashData);
+    void renderBalanceTokoCash(TokoCashBalanceData tokoCashBalanceData);
 
     void showEmptyPage();
 

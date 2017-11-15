@@ -27,6 +27,23 @@ import rx.functions.Func1;
 
 public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
 
+    private static final String TYPE = "type";
+    private static final String START_DATE = "start_date";
+    private static final String END_DATE = "end_date";
+    private static final String PAGE = "page";
+
+    private static final String SUBJECT = "subject";
+    private static final String MESSAGE = "message";
+    private static final String CATEGORY = "category";
+    private static final String TRANSACTION_ID = "transaction_id";
+
+    private static final String REFUND_ID = "refund_id";
+    private static final String REFUND_TYPE = "refund_type";
+
+    private static final String REVOKE_TOKEN = "revoke_token";
+    private static final String IDENTIFIER = "identifier";
+    private static final String IDENTIFIER_TYPE = "identifier_type";
+
     private final WalletService walletService;
 
     private Gson gson;
@@ -40,10 +57,10 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
     public Observable<TokoCashHistoryEntity> getTokoCashHistoryData(String type, String startDate,
                                                                     String endDate, int page) {
         Map<String, String> mapHistoryData = new HashMap<>();
-        mapHistoryData.put("type", type);
-        mapHistoryData.put("start_date", startDate);
-        mapHistoryData.put("end_date", endDate);
-        mapHistoryData.put("page", String.valueOf(page));
+        mapHistoryData.put(TYPE, type);
+        mapHistoryData.put(START_DATE, startDate);
+        mapHistoryData.put(END_DATE, endDate);
+        mapHistoryData.put(PAGE, String.valueOf(page));
         return walletService.getApi().getHistoryTokocash(mapHistoryData)
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<TokoCashHistoryEntity>>() {
                     @Override
@@ -64,10 +81,10 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
     @Override
     public Observable<ResponseHelpHistoryEntity> submitHelpHistory(String subject, String message, String category, String transactionId) {
         TKPDMapParam tkpdMapParam = new TKPDMapParam();
-        tkpdMapParam.put("subject", subject);
-        tkpdMapParam.put("message", message);
-        tkpdMapParam.put("category", category);
-        tkpdMapParam.put("transaction_id", transactionId);
+        tkpdMapParam.put(SUBJECT, subject);
+        tkpdMapParam.put(MESSAGE, message);
+        tkpdMapParam.put(CATEGORY, category);
+        tkpdMapParam.put(TRANSACTION_ID, transactionId);
         return walletService.getApi().postHelpHistory(tkpdMapParam)
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<ResponseHelpHistoryEntity>>() {
                     @Override
@@ -81,8 +98,8 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
     @Override
     public Observable<WithdrawSaldoEntity> moveToSaldo(String url, ParamsActionHistory paramsActionHistory) {
         TKPDMapParam tkpdMapParam = new TKPDMapParam();
-        tkpdMapParam.put("refund_id", paramsActionHistory.getRefundId());
-        tkpdMapParam.put("refund_type", paramsActionHistory.getRefundType());
+        tkpdMapParam.put(REFUND_ID, paramsActionHistory.getRefundId());
+        tkpdMapParam.put(REFUND_TYPE, paramsActionHistory.getRefundType());
         return walletService.getApi().withdrawSaldoFromTokocash(url, tkpdMapParam)
                 .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<WithdrawSaldoEntity>>() {
                     @Override
@@ -106,9 +123,9 @@ public class HistoryTokoCashRepository implements IHistoryTokoCashRepository {
     @Override
     public Observable<Boolean> unlinkAccountTokoCash(String refreshToken, String identifier, String identifierType) {
         TKPDMapParam tkpdMapParam = new TKPDMapParam();
-        tkpdMapParam.put("revoke_token", refreshToken);
-        tkpdMapParam.put("identifier", identifier);
-        tkpdMapParam.put("identifier_type", identifierType);
+        tkpdMapParam.put(REVOKE_TOKEN, refreshToken);
+        tkpdMapParam.put(IDENTIFIER, identifier);
+        tkpdMapParam.put(IDENTIFIER_TYPE, identifierType);
         return walletService.getApi().revokeAccessAccountTokoCash(tkpdMapParam)
                 .map(new Func1<Response<String>, Boolean>() {
                     @Override

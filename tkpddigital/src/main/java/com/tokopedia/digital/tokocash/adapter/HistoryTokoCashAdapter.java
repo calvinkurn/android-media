@@ -62,7 +62,23 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolderHistory) {
-            ((ItemViewHolderHistory) holder).bindView(itemHistoryList.get(position));
+            ItemViewHolderHistory itemViewHolder = (ItemViewHolderHistory) holder;
+            final ItemHistory itemHistory = itemHistoryList.get(position);
+
+            ImageHandler.loadImageThumbs(context, itemViewHolder.iconItem, itemHistory.getUrlImage());
+            itemViewHolder.descItem.setText(!TextUtils.isEmpty(itemHistory.getNotes()) ? itemHistory.getNotes() :
+                    itemHistory.getDescription());
+            itemViewHolder.titleItem.setText(itemHistory.getTitle());
+            itemViewHolder.priceItem.setText(itemHistory.getAmountChanges());
+            itemViewHolder.priceItem.setTextColor(ContextCompat.getColor(context,
+                    itemHistory.getAmountChangesSymbol().equals("+") ? R.color.green_500 : R.color.red_500));
+            itemViewHolder.dateItem.setText(itemHistory.getTransactionInfoDate());
+            itemViewHolder.layoutItemHistory.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onClickItemHistory(itemHistory);
+                }
+            });
         } else if (holder instanceof ItemLoadingViewHolder) {
             ItemLoadingViewHolder loadingViewHolder = (ItemLoadingViewHolder) holder;
             if (showLoader) {
@@ -89,7 +105,7 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    class ItemViewHolderHistory extends RecyclerView.ViewHolder {
+    static class ItemViewHolderHistory extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.layout_item_history)
         RelativeLayout layoutItemHistory;
@@ -108,26 +124,9 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
-        public void bindView(final ItemHistory itemHistory) {
-            ImageHandler.loadImageThumbs(context, iconItem, itemHistory.getUrlImage());
-            descItem.setText(!TextUtils.isEmpty(itemHistory.getNotes()) ? itemHistory.getNotes() :
-                    itemHistory.getDescription());
-            titleItem.setText(itemHistory.getTitle());
-            priceItem.setText(itemHistory.getAmountChanges());
-            priceItem.setTextColor(ContextCompat.getColor(context,
-                    itemHistory.getAmountChangesSymbol().equals("+") ? R.color.green_500 : R.color.red_500));
-            dateItem.setText(itemHistory.getTransactionInfoDate());
-            layoutItemHistory.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onClickItemHistory(itemHistory);
-                }
-            });
-        }
     }
 
-    class ItemLoadingViewHolder extends RecyclerView.ViewHolder {
+    static class ItemLoadingViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.progress_bar_history)
         ProgressBar progressBarHistory;

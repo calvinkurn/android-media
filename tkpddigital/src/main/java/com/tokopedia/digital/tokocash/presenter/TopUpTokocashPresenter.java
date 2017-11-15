@@ -12,7 +12,6 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
@@ -22,7 +21,7 @@ import com.tokopedia.digital.tokocash.errorhandle.ResponseTokoCashRuntimeExcepti
 import com.tokopedia.digital.tokocash.interactor.ITokoCashBalanceInteractor;
 import com.tokopedia.digital.tokocash.listener.TopUpTokoCashListener;
 import com.tokopedia.digital.tokocash.model.WalletToken;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
 
 import java.net.ConnectException;
@@ -138,8 +137,8 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
         balanceInteractor.getBalanceTokoCash(getBalanceSubscriber());
     }
 
-    private Subscriber<TokoCashData> getBalanceSubscriber() {
-        return new Subscriber<TokoCashData>() {
+    private Subscriber<TokoCashBalanceData> getBalanceSubscriber() {
+        return new Subscriber<TokoCashBalanceData>() {
             @Override
             public void onCompleted() {
 
@@ -153,9 +152,9 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
             }
 
             @Override
-            public void onNext(TokoCashData tokoCashData) {
+            public void onNext(TokoCashBalanceData tokoCashBalanceData) {
                 view.hideProgressLoading();
-                view.renderBalanceTokoCash(tokoCashData);
+                view.renderBalanceTokoCash(tokoCashBalanceData);
             }
         };
     }
