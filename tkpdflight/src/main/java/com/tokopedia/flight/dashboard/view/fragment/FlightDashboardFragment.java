@@ -74,6 +74,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     TextInputView returnDateTextInputView;
     AppCompatButton oneWayTripAppCompatButton;
     AppCompatButton roundTripAppCompatButton;
+    View returnDateSeparatorView;
 
     @Inject
     FlightDashboardPresenter presenter;
@@ -109,6 +110,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         classTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_class);
         departureDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_departure);
         returnDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_return);
+        returnDateSeparatorView = (View) view.findViewById(R.id.view_return_date_separator);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -237,6 +239,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         oneWayTripAppCompatButton.setSelected(true);
         roundTripAppCompatButton.setSelected(false);
         returnDateTextInputView.setVisibility(View.GONE);
+        returnDateSeparatorView.setVisibility(View.GONE);
 
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         passengerTextInputView.setText(viewModel.getPassengerFmt());
@@ -266,6 +269,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         oneWayTripAppCompatButton.setSelected(false);
         roundTripAppCompatButton.setSelected(true);
         returnDateTextInputView.setVisibility(View.VISIBLE);
+        returnDateSeparatorView.setVisibility(View.VISIBLE);
 
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         returnDateTextInputView.setText(viewModel.getReturnDateFmt());
