@@ -12,14 +12,14 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.app.TkpdFragment;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.data.model.data.DataCredit;
 
-public class TopAdsPaymentCreditFragment extends TkpdFragment {
+public class TopAdsPaymentCreditFragment extends TkpdBaseV4Fragment {
 
     TkpdWebView webView;
     ProgressBar progressBar;

@@ -28,6 +28,9 @@ public class OpportunityItemViewModel implements Parcelable{
     private List<OrderHistoryViewModel> orderHistory;
     private OrderDestinationViewModel orderDestination;
     private int position;
+    private int replacementMultiplierValue;
+    private String replacementMultiplierColor;
+    private String replacementMultiplierText;
 
     public OpportunityItemViewModel() {
     }
@@ -50,6 +53,9 @@ public class OpportunityItemViewModel implements Parcelable{
         orderHistory = in.createTypedArrayList(OrderHistoryViewModel.CREATOR);
         orderDestination = in.readParcelable(OrderDestinationViewModel.class.getClassLoader());
         position = in.readInt();
+        replacementMultiplierValue = in.readInt();
+        replacementMultiplierColor = in.readString();
+        replacementMultiplierText = in.readString();
     }
 
     public static final Creator<OpportunityItemViewModel> CREATOR = new Creator<OpportunityItemViewModel>() {
@@ -192,6 +198,39 @@ public class OpportunityItemViewModel implements Parcelable{
         this.orderDestination = orderDestination;
     }
 
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public int getReplacementMultiplierValue() {
+        return replacementMultiplierValue;
+    }
+
+    public void setReplacementMultiplierValue(int replacementMultiplierValue) {
+        this.replacementMultiplierValue = replacementMultiplierValue;
+    }
+
+    public String getReplacementMultiplierColor() {
+        return replacementMultiplierColor;
+    }
+
+    public void setReplacementMultiplierColor(String replacementMultiplierColor) {
+        this.replacementMultiplierColor = replacementMultiplierColor;
+    }
+
+
+    public String getReplacementMultiplierText() {
+        return replacementMultiplierText;
+    }
+
+    public void setReplacementMultiplierText(String replacementMultiplierText) {
+        this.replacementMultiplierText = replacementMultiplierText;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -216,13 +255,8 @@ public class OpportunityItemViewModel implements Parcelable{
         dest.writeTypedList(orderHistory);
         dest.writeParcelable(orderDestination, flags);
         dest.writeInt(position);
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public int getPosition() {
-        return position;
+        dest.writeInt(replacementMultiplierValue);
+        dest.writeString(replacementMultiplierColor);
+        dest.writeString(replacementMultiplierText);
     }
 }
