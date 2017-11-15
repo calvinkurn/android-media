@@ -81,5 +81,7 @@ public class ChatRoomContract {
         void closeWebSocket();
 
         void onGoToDetail(String userId, String role);
+
+        void sendMessageWithApi();
     }
 }
