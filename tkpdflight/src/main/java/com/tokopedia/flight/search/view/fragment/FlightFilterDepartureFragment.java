@@ -15,21 +15,25 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
-import com.tokopedia.abstraction.base.view.recyclerview.BaseListRecyclerView;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.adapter.FlightFilterDepartureAdapter;
+import com.tokopedia.flight.search.view.adapter.FlightFilterDepartureAdapter;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
+import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightResettableListener;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.DepartureStat;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
 
-public class FlightFilterDepartureFragment extends BaseListV2Fragment<DepartureStat> implements BaseListV2Adapter.OnBaseListV2AdapterListener<DepartureStat>,BaseListCheckableV2Adapter.OnCheckableAdapterListener<DepartureStat> {
+public class FlightFilterDepartureFragment extends BaseListV2Fragment<DepartureStat>
+        implements BaseListV2Adapter.OnBaseListV2AdapterListener<DepartureStat>,
+        BaseListCheckableV2Adapter.OnCheckableAdapterListener<DepartureStat>,
+        OnFlightResettableListener {
     public static final String TAG = FlightFilterDepartureFragment.class.getSimpleName();
 
     private OnFlightFilterListener listener;
@@ -145,6 +149,15 @@ public class FlightFilterDepartureFragment extends BaseListV2Fragment<DepartureS
                     }
                 }).toList().toBlocking().first();
         flightFilterModel.setDepartureTimeList(departureTimeEnumList);
+        listener.onFilterModelChanged(flightFilterModel);
+    }
+
+    @Override
+    public void reset() {
+        FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
+        flightFilterModel.setDepartureTimeList(new ArrayList<DepartureTimeEnum>());
+        flightFilterDepartureAdapter.resetCheckedItemSet();
+        flightFilterDepartureAdapter.notifyDataSetChanged();
         listener.onFilterModelChanged(flightFilterModel);
     }
 }

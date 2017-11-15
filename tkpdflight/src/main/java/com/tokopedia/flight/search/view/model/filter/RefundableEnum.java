@@ -10,7 +10,8 @@ import com.tokopedia.flight.R;
 public enum RefundableEnum implements ItemType {
 
     REFUNDABLE(1,R.string.refundable),
-    NOT_REFUNDABLE(2,R.string.non_refundable);
+    PARTIAL_REFUNDABLE(2,R.string.partial_refundable),
+    NOT_REFUNDABLE(3,R.string.non_refundable);
 
     private int id;
     private int valueRes;

@@ -57,7 +57,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
     }
 
     protected void setToolbarColorWhite() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (isShadowDisplayed() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(TOOLBAR_ELEVATION);
         }
         int textColor = ContextCompat.getColor(this, TEXT_COLOR_BACKGROUND_WHITE);
@@ -137,5 +137,9 @@ abstract class BaseToolbarActivity extends BaseActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected boolean isShadowDisplayed() {
+        return true;
     }
 }

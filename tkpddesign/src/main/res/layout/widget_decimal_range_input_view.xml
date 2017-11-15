@@ -48,8 +48,8 @@
             android:inputType="number"
             android:maxLines="1"
             android:nextFocusDown="@+id/max_value"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
+            android:layout_marginLeft="-4dp"
+            android:layout_marginRight="-4dp"
             tools:text="pmin" />
 
         <TextView
@@ -69,8 +69,8 @@
             android:gravity="end"
             android:inputType="number"
             android:maxLines="1"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
+            android:layout_marginLeft="-4dp"
+            android:layout_marginRight="-4dp"
             tools:text="pmax" />
 
     </LinearLayout>

@@ -15,14 +15,15 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
-import com.tokopedia.abstraction.base.view.recyclerview.BaseListRecyclerView;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.adapter.FlightFilterTransitAdapter;
+import com.tokopedia.flight.search.view.adapter.FlightFilterTransitAdapter;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
+import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightResettableListener;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.TransitEnum;
 import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -30,7 +31,9 @@ import rx.Observable;
 import rx.functions.Func1;
 
 public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
-        implements BaseListV2Adapter.OnBaseListV2AdapterListener<TransitStat>, BaseListCheckableV2Adapter.OnCheckableAdapterListener<TransitStat> {
+        implements BaseListV2Adapter.OnBaseListV2AdapterListener<TransitStat>,
+        BaseListCheckableV2Adapter.OnCheckableAdapterListener<TransitStat>,
+        OnFlightResettableListener {
     public static final String TAG = FlightFilterTransitFragment.class.getSimpleName();
 
     private OnFlightFilterListener listener;
@@ -150,4 +153,12 @@ public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
     }
 
 
+    @Override
+    public void reset() {
+        FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
+        flightFilterModel.setTransitTypeList(new ArrayList<TransitEnum>());
+        flightFilterTransitAdapter.resetCheckedItemSet();
+        flightFilterTransitAdapter.notifyDataSetChanged();
+        listener.onFilterModelChanged(flightFilterModel);
+    }
 }

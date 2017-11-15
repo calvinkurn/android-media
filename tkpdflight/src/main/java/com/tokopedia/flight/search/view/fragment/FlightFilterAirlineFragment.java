@@ -15,13 +15,14 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
-import com.tokopedia.abstraction.base.view.recyclerview.BaseListRecyclerView;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.adapter.FlightFilterAirlineAdapter;
+import com.tokopedia.flight.search.view.adapter.FlightFilterAirlineAdapter;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
+import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightResettableListener;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -29,7 +30,10 @@ import rx.Observable;
 import rx.functions.Func1;
 
 
-public class FlightFilterAirlineFragment extends BaseListV2Fragment<AirlineStat> implements BaseListV2Adapter.OnBaseListV2AdapterListener<AirlineStat>,BaseListCheckableV2Adapter.OnCheckableAdapterListener<AirlineStat> {
+public class FlightFilterAirlineFragment extends BaseListV2Fragment<AirlineStat>
+        implements BaseListV2Adapter.OnBaseListV2AdapterListener<AirlineStat>,
+        BaseListCheckableV2Adapter.OnCheckableAdapterListener<AirlineStat>,
+        OnFlightResettableListener {
     public static final String TAG = FlightFilterAirlineFragment.class.getSimpleName();
 
     private OnFlightFilterListener listener;
@@ -148,4 +152,12 @@ public class FlightFilterAirlineFragment extends BaseListV2Fragment<AirlineStat>
         listener.onFilterModelChanged(flightFilterModel);
     }
 
+    @Override
+    public void reset() {
+        FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
+        flightFilterModel.setAirlineList(new ArrayList<String>());
+        adapter.resetCheckedItemSet();
+        adapter.notifyDataSetChanged();
+        listener.onFilterModelChanged(flightFilterModel);
+    }
 }

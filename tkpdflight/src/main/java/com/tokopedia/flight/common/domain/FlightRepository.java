@@ -17,17 +17,16 @@ import rx.Observable;
  */
 
 public interface FlightRepository {
-    Observable<List<FlightAirportDB>> getAirportList(List<String> airlineIDFromResult);
-
     Observable<List<FlightAirportDB>> getAirportList(String query);
+    Observable<List<FlightAirportDB>> getAirportCacheList();
+    Observable<List<FlightAirportDB>> getAirportCacheList(String airportID);
 
     Observable<List<FlightClassEntity>> getFlightClasses();
 
     Observable<List<FlightAirlineDB>> getAirlineList();
-
-    Observable<List<FlightAirlineDB>> getAirlineList(List<String> airlineIDFromResult);
-
+    Observable<List<FlightAirlineDB>> getAirlineCacheList();
     Observable<List<FlightAirlineDB>> getAirlineList(String airlineId);
+    Observable<List<FlightAirlineDB>> getAirlineCacheList(String airlineID);
 
     Observable<Boolean> deleteFlightCacheSearch();
 

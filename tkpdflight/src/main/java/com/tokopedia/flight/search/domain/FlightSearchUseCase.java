@@ -42,8 +42,6 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
         return flightRepository.getFlightSearch(requestParams).flatMap(new Func1<List<FlightSearchSingleRouteDB>, Observable<List<FlightSearchViewModel>>>() {
             @Override
             public Observable<List<FlightSearchViewModel>> call(List<FlightSearchSingleRouteDB> flightSearchSingleRouteDBs) {
-                final List<String> searchResDistinctAirlineIds = new ArrayList<>();
-                final List<String> searchResDistinctAirportIds = new ArrayList<>();
 
                 // convert from List of DBModel to List of ViewModel
                 final List<FlightSearchViewModel> flightSearchViewModelList = new ArrayList<>();
@@ -51,32 +49,10 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
                     flightSearchViewModelList.add(new FlightSearchViewModel(flightSearchSingleRouteDBs.get(i)));
                 }
 
-                // select distinct all airline and airports in routes
-                for (int i = 0, sizei = flightSearchViewModelList.size(); i < sizei; i++) {
-                    FlightSearchViewModel flightSearchViewModel = flightSearchViewModelList.get(i);
-                    List<Route> routeList = flightSearchViewModel.getRouteList();
-                    for (int j = 0, sizej = routeList.size(); j < sizej; j++) {
-                        Route route = routeList.get(j);
-                        String airline = route.getAirline();
-                        String departureAirport = route.getDepartureAirport();
-                        String arrivalAirport = route.getArrivalAirport();
-
-                        if (!TextUtils.isEmpty(airline) && !searchResDistinctAirlineIds.contains(airline)) {
-                            searchResDistinctAirlineIds.add(airline);
-                        }
-                        if (!TextUtils.isEmpty(departureAirport) && !searchResDistinctAirportIds.contains(departureAirport)) {
-                            searchResDistinctAirportIds.add(departureAirport);
-                        }
-                        if (!TextUtils.isEmpty(arrivalAirport) && !searchResDistinctAirportIds.contains(arrivalAirport)) {
-                            searchResDistinctAirportIds.add(arrivalAirport);
-                        }
-                    }
-                }
-
-                //get airlines info to merge with the view model
+                //get airlines info *from cache first* to merge with the view model
                 return Observable.zip(
-                        flightRepository.getAirportList(searchResDistinctAirportIds),
-                        flightRepository.getAirlineList(searchResDistinctAirlineIds),
+                        flightRepository.getAirportCacheList(),
+                        flightRepository.getAirlineCacheList(),
                         new Func2<List<FlightAirportDB>, List<FlightAirlineDB>, List<FlightSearchViewModel>>() {
                             @Override
                             public List<FlightSearchViewModel> call(List<FlightAirportDB> flightAirportDBs, List<FlightAirlineDB> flightAirlineDBs) {
@@ -89,7 +65,7 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
 
     private List<FlightSearchViewModel> mergeViewModel(List<FlightSearchViewModel> flightSearchViewModelList,
                                                        List<FlightAirportDB> airportDBList,
-                                                       List<FlightAirlineDB> airlineDBList){
+                                                       List<FlightAirlineDB> airlineDBList) {
         HashMap<String, FlightAirlineDB> dbAirlineMaps = new HashMap<>();
         HashMap<String, FlightAirportDB> dbAirportMaps = new HashMap<>();
         for (int i = 0, sizei = airlineDBList.size(); i < sizei; i++) {
@@ -98,7 +74,7 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
         for (int i = 0, sizei = airportDBList.size(); i < sizei; i++) {
             dbAirportMaps.put(airportDBList.get(i).getAirportId(), airportDBList.get(i));
         }
-        for (int i = 0, sizei = flightSearchViewModelList.size(); i<sizei; i++) {
+        for (int i = 0, sizei = flightSearchViewModelList.size(); i < sizei; i++) {
             FlightSearchViewModel flightSearchViewModel = flightSearchViewModelList.get(i);
             flightSearchViewModel.mergeWithAirportAndAirlines(dbAirlineMaps, dbAirportMaps);
         }
