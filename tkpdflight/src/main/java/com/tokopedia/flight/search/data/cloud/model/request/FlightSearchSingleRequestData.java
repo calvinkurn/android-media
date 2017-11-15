@@ -1,6 +1,5 @@
 package com.tokopedia.flight.search.data.cloud.model.request;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
@@ -20,7 +19,7 @@ public class FlightSearchSingleRequestData {
                                          boolean isReturning) {
         type = SEARCH_SINGLE;
         FlightPassengerViewModel flightPassengerViewModel = flightSearchPassDataViewModel.getFlightPassengerViewModel();
-        attributes = new Attributes(Integer.parseInt(flightSearchPassDataViewModel.getFlightClass().getId()), flightPassengerViewModel.getAdult(),
+        attributes = new Attributes(flightSearchPassDataViewModel.getFlightClass().getId(), flightPassengerViewModel.getAdult(),
                 flightPassengerViewModel.getChildren(), flightPassengerViewModel.getInfant());
         if (isReturning) {
             attributes.setDeparture(flightSearchPassDataViewModel.getArrivalAirport().getAirportId());

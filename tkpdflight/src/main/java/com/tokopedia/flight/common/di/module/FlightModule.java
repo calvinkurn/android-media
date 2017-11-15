@@ -2,6 +2,7 @@ package com.tokopedia.flight.common.di.module;
 
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
+import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
@@ -54,9 +55,10 @@ public class FlightModule {
                                                     FlightAirlineDataListSource flightAirlineDataListSource,
                                                     FlightSearchSingleDataListSource flightSearchSingleDataListSource,
                                                     FlightSearchReturnDataListSource flightSearchReturnDataListSource,
-                                                    FlightClassesDataSource getFlightClassesUseCase) {
+                                                    FlightClassesDataSource getFlightClassesUseCase,
+                                                    FlightCartDataSource flightCartDataSource) {
         return new FlightRepositoryImpl(flightAirportDataListSource,flightAirlineDataListSource,
-                flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase);
+                flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase, flightCartDataSource);
     }
 
     @FlightScope

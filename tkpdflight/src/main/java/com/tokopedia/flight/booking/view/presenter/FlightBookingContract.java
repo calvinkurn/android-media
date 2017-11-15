@@ -4,6 +4,8 @@ import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.flight.booking.data.cloud.entity.Amenity;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
@@ -43,8 +45,6 @@ public interface FlightBookingContract {
 
         void renderPassengersList(List<FlightBookingPassengerViewModel> passengerViewModels);
 
-        FlightBookingParamViewModel getCurrentBookingParam();
-
         void renderPhoneCodeView(String countryPhoneCode);
 
         String getDepartureTripId();
@@ -52,6 +52,18 @@ public interface FlightBookingContract {
         String getReturnTripId();
 
         void navigateToDetailTrip(FlightSearchViewModel departureTrip);
+
+        String getIdEmpotencyKey(String departureTripId);
+
+        void renderLuggageList(List<Amenity> amenities);
+
+        void showFullPageLoading();
+
+        void hideFullPageLoading();
+
+        void renderCartData(FlightBookingCartData flightBookingCartData);
+
+        FlightBookingCartData getCurrentCartPassData();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -68,5 +80,8 @@ public interface FlightBookingContract {
 
         void onReturnInfoClicked();
 
+        void processGetCartData();
+
+        void onResume();
     }
 }

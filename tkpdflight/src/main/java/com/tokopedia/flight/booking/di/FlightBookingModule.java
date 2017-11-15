@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.di;
 
+import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.common.domain.FlightRepository;
 
@@ -14,5 +15,11 @@ public class FlightBookingModule {
     @Provides
     FlightBookingGetSingleResultUseCase getSingleResultUseCase(FlightRepository flightRepository) {
         return new FlightBookingGetSingleResultUseCase(flightRepository);
+    }
+
+    @Provides
+    FlightAddToCartUseCase flightAddToCartUseCase(FlightRepository flightRepository,
+                                                  FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase) {
+        return new FlightAddToCartUseCase(flightRepository, flightBookingGetSingleResultUseCase);
     }
 }

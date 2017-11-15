@@ -34,7 +34,8 @@ public class FlightAirportDataListCloudSource extends DataListCloudSource<Flight
     public Observable<List<FlightAirportCountry>> getData(HashMap<String, Object> params) {
         HashMap<String, String> paramsString = new HashMap<>();
         paramsString.put(KEYWORD, String.valueOf(params.get(KEYWORD)));
-        return flightApi.getFlightAirportList(paramsString).flatMap(new Func1<Response<DataResponse<List<FlightAirportCountry>>>, Observable<List<FlightAirportCountry>>>() {
+        return flightApi.getFlightAirportList(paramsString)
+                .flatMap(new Func1<Response<DataResponse<List<FlightAirportCountry>>>, Observable<List<FlightAirportCountry>>>() {
             @Override
             public Observable<List<FlightAirportCountry>> call(Response<DataResponse<List<FlightAirportCountry>>> dataResponseResponse) {
                 return Observable.just(dataResponseResponse.body().getData());
