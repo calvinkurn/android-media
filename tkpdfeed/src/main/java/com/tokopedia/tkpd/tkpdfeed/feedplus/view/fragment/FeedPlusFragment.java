@@ -1007,7 +1007,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onSuccessFollowUnfollowKol(int rowNumber) {
         int originalPos = topAdsRecyclerAdapter.getPlacer().getItem(rowNumber).originalPos();
 
-        if (originalPos > 0
+        if (originalPos != TopAdsViewModel.TOP_ADS_POSITION_TYPE
                 && rowNumber <= topAdsRecyclerAdapter.getItemCount()
                 && adapter.getlist().get(originalPos) != null
                 && adapter.getlist().get(originalPos) instanceof KolViewModel) {
@@ -1029,7 +1029,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onSuccessLikeDislikeKolPost(int rowNumber) {
         int originalPos = topAdsRecyclerAdapter.getPlacer().getItem(rowNumber).originalPos();
 
-        if (originalPos > 0
+        if (originalPos != TopAdsViewModel.TOP_ADS_POSITION_TYPE
                 && rowNumber <= topAdsRecyclerAdapter.getItemCount()
                 && adapter.getlist().get(originalPos) != null
                 && adapter.getlist().get(originalPos) instanceof KolViewModel) {
@@ -1058,27 +1058,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessFollowUnfollowKolFromRecommendation(int rowNumber, int position) {
-//        int originalPos = topAdsRecyclerAdapter.getPlacer().getItem(rowNumber).originalPos();
-//        if (originalPos > 0
-//                && rowNumber <= topAdsRecyclerAdapter.getItemCount()
-//                && adapter.getlist().get(originalPos) != null
-//                && adapter.getlist().get(originalPos) instanceof KolRecommendationViewModel) {
-//            ((KolRecommendationViewModel) adapter.getlist().get(originalPos)).getListRecommend()
-//                    .get(position).setFollowed(!((KolRecommendationViewModel) adapter.getlist()
-//                    .get(originalPos)).getListRecommend().get(position).isFollowed());
-//            ((KolRecommendationViewModel) adapter.getlist().get(originalPos)).setSwapAdapter(true);
-//            topAdsRecyclerAdapter.notifyItemChanged(rowNumber);
-//
-//        }
-        NetworkErrorHelper.showSnackbar(getActivity(), "Sukses following");
+    public void onSuccessFollowKolFromRecommendation(int rowNumber, int position) {
+    }
 
+    @Override
+    public void onSuccessUnfollowKolFromRecommendation(int rowNumber, int position) {
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
         if (rowNumber != -1) {
             int originalPos = topAdsRecyclerAdapter.getPlacer().getItem(rowNumber).originalPos();
-            if (originalPos > 0
+            if (originalPos != TopAdsViewModel.TOP_ADS_POSITION_TYPE
                     && rowNumber <= topAdsRecyclerAdapter.getItemCount()
                     && adapter.getlist().get(originalPos) != null
                     && adapter.getlist().get(originalPos) instanceof KolViewModel) {

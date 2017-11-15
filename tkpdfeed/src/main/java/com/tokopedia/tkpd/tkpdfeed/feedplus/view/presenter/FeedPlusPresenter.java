@@ -175,7 +175,6 @@ public class FeedPlusPresenter
 
     @Override
     public void followKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
-        getView().showLoadingProgress();
         followKolPostUseCase.execute(
                 FollowKolPostUseCase.getParam(id,
                         FollowKolPostUseCase.PARAM_FOLLOW),
@@ -184,7 +183,6 @@ public class FeedPlusPresenter
 
     @Override
     public void unfollowKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
-        getView().showLoadingProgress();
         followKolPostUseCase.execute(
                 FollowKolPostUseCase.getParam(id,
                         FollowKolPostUseCase.PARAM_UNFOLLOW),
@@ -194,7 +192,6 @@ public class FeedPlusPresenter
 
     @Override
     public void likeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
-        getView().showLoadingProgress();
         likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
                 new LikeKolPostSubscriber
                 (rowNumber, getView(), kolListener));
@@ -203,7 +200,6 @@ public class FeedPlusPresenter
 
     @Override
     public void unlikeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
-        getView().showLoadingProgress();
         likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase
                 .ACTION_UNLIKE), new LikeKolPostSubscriber
                 (rowNumber, getView(), kolListener));
@@ -211,7 +207,6 @@ public class FeedPlusPresenter
 
     @Override
     public void followKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol kolListener) {
-        getView().showLoadingProgress();
         followKolPostUseCase.execute(
                 FollowKolPostUseCase.getParam(id,
                         FollowKolPostUseCase.PARAM_FOLLOW),
@@ -224,7 +219,6 @@ public class FeedPlusPresenter
 
     @Override
     public void unfollowKolFromRecommendation(int id, int rowNumber, int position, FeedPlus.View.Kol kolListener) {
-        getView().showLoadingProgress();
         followKolPostUseCase.execute(
                 FollowKolPostUseCase.getParam(id,
                         FollowKolPostUseCase.PARAM_UNFOLLOW),

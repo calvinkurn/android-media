@@ -26,8 +26,13 @@ public class FollowUnfollowKolRecommendationSubscriber extends FollowUnfollowKol
     @Override
     public void onNext(FollowKolDomain followKolDomain) {
         view.finishLoadingProgress();
-        if (followKolDomain.getStatus() == FollowKolPostUseCase.SUCCESS_STATUS)
-            kolListener.onSuccessFollowUnfollowKolFromRecommendation(rowNumber, position);
+        if (followKolDomain.getStatus() == FollowKolPostUseCase.SUCCESS_STATUS
+                && status == FollowKolPostUseCase.PARAM_FOLLOW)
+            kolListener.onSuccessFollowKolFromRecommendation(rowNumber, position);
+        else if (followKolDomain.getStatus() == FollowKolPostUseCase.SUCCESS_STATUS
+                && status == FollowKolPostUseCase.PARAM_UNFOLLOW){
+            kolListener.onSuccessUnfollowKolFromRecommendation(rowNumber, position);
+        }
         else if(status == FollowKolPostUseCase.PARAM_FOLLOW){
             kolListener.onErrorFollowKol(MainApplication.getAppContext().getString(R.string
                             .failed_to_follow), id, status, rowNumber);
