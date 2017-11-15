@@ -37,9 +37,9 @@ public interface FeedRepository {
 
     Observable<SendKolCommentDomain> sendKolComment(RequestParams requestParams);
 
-    Observable<LikeKolDomain> likeKolPost(RequestParams requestParams);
+    Observable<LikeKolDomain> likeUnlikeKolPost(RequestParams requestParams);
 
-    Observable<FollowKolDomain> followKol(RequestParams requestParams);
+    Observable<FollowKolDomain> followUnfollowKol(RequestParams requestParams);
 
     Observable<DeleteKolCommentDomain> deleteKolComment(RequestParams requestParams);
 }

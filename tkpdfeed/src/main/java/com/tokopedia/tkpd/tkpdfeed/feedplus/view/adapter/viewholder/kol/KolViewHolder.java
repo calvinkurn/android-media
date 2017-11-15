@@ -151,12 +151,11 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         followButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (followText.getText().equals(MainApplication.getAppContext().getString(R.string
-                        .action_follow_english))) {
-                    viewListener.onFollowKolClicked(element.getPage(), getAdapterPosition(),
+                if (element.isFollowed()) {
+                    viewListener.onUnfollowKolClicked(element.getPage(), getAdapterPosition(),
                             element.getUserId());
                 } else {
-                    viewListener.onUnfollowKolClicked(element.getPage(), getAdapterPosition(),
+                    viewListener.onFollowKolClicked(element.getPage(), getAdapterPosition(),
                             element.getUserId());
                 }
             }
@@ -176,7 +175,12 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onLikeClicked(element);
+                if (element.isLiked()) {
+                    viewListener.onUnlikeKolClicked(element.getPage(), getAdapterPosition(),
+                            element.getId());
+                } else {
+                    viewListener.onLikeKolClicked(element.getPage(), getAdapterPosition(), element.getId());
+                }
             }
         });
 
@@ -195,10 +199,6 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             }
         });
 
-    }
-
-    private void onLikeClicked(KolViewModel element) {
-        viewListener.onLikeUnlikeKol(element.getPage(), getAdapterPosition(), element.getId());
     }
 
     private Spanned getKolText(KolViewModel element) {

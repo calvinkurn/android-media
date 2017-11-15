@@ -34,7 +34,9 @@ public interface FeedPlus {
 
             void onUnfollowKolClicked(int page, int rowNumber, int id);
 
-            void onLikeUnlikeKol(int page, int rowNumber, int id);
+            void onLikeKolClicked(int page, int rowNumber, int id);
+
+            void onUnlikeKolClicked(int page, int adapterPosition, int id);
 
             void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel);
 
@@ -53,6 +55,7 @@ public interface FeedPlus {
             void onUnfollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position);
 
             void onSuccessFollowUnfollowKolFromRecommendation(int rowNumber, int position);
+
         }
 
         void setFirstCursor(String firstCursor);
@@ -185,12 +188,16 @@ public interface FeedPlus {
 
         void unfollowKol(int id, int rowNumber, View.Kol kolListener);
 
-        void likeUnlikeKol(int id, int rowNumber, View.Kol kolListener);
+        void likeKol(int id, int rowNumber, View.Kol kolListener);
+
+        void unlikeKol(int id, int rowNumber, View.Kol kolListener);
+
 
         void followKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);
 
         void unfollowKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);
+
     }
 }

@@ -959,8 +959,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeUnlikeKol(int page, int rowNumber, int id) {
-        presenter.likeUnlikeKol(id, rowNumber, this);
+    public void onLikeKolClicked(int page, int rowNumber, int id) {
+        presenter.likeKol(id, rowNumber, this);
+    }
+
+    @Override
+    public void onUnlikeKolClicked(int page, int rowNumber, int id) {
+        presenter.unlikeKol(id, rowNumber, this);
 
     }
 

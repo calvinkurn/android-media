@@ -33,7 +33,7 @@ public class FollowKolPostUseCase extends UseCase<FollowKolDomain> {
 
     @Override
     public Observable<FollowKolDomain> createObservable(RequestParams requestParams) {
-        return feedRepository.followKol(requestParams);
+        return feedRepository.followUnfollowKol(requestParams);
     }
 
     public static RequestParams getParam(int userId, int status) {

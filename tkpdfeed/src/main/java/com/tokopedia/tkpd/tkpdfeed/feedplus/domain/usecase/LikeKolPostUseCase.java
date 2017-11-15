@@ -16,6 +16,10 @@ import rx.Observable;
 public class LikeKolPostUseCase  extends UseCase<LikeKolDomain> {
 
     public static final String PARAM_ID = "PARAM_ID";
+    public static final String PARAM_ACTION = "PARAM_ACTION";
+
+    public static final int ACTION_LIKE = 1;
+    public static final int ACTION_UNLIKE = 0;
 
     FeedRepository feedRepository;
 
@@ -28,13 +32,14 @@ public class LikeKolPostUseCase  extends UseCase<LikeKolDomain> {
 
     @Override
     public Observable<LikeKolDomain> createObservable(RequestParams requestParams) {
-        return feedRepository.likeKolPost(requestParams);
+        return feedRepository.likeUnlikeKolPost(requestParams);
     }
 
 
-    public static RequestParams getParam(int id) {
+    public static RequestParams getParam(int id, int action) {
         RequestParams params = RequestParams.create();
         params.putInt(PARAM_ID, id);
+        params.putInt(PARAM_ACTION, action);
         return params;
     }
 }

@@ -77,12 +77,12 @@ public class FeedRepositoryImpl implements FeedRepository {
     }
 
     @Override
-    public Observable<LikeKolDomain> likeKolPost(RequestParams requestParams) {
+    public Observable<LikeKolDomain> likeUnlikeKolPost(RequestParams requestParams) {
         return kolSource.likeKolPost(requestParams);
     }
 
     @Override
-    public Observable<FollowKolDomain> followKol(RequestParams requestParams) {
+    public Observable<FollowKolDomain> followUnfollowKol(RequestParams requestParams) {
         return kolSource.followKolPost(requestParams);
     }
 

@@ -193,11 +193,20 @@ public class FeedPlusPresenter
     }
 
     @Override
-    public void likeUnlikeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
+    public void likeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
         getView().showLoadingProgress();
-        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id), new LikeKolPostSubscriber
+        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
+                new LikeKolPostSubscriber
                 (rowNumber, getView(), kolListener));
 
+    }
+
+    @Override
+    public void unlikeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
+        getView().showLoadingProgress();
+        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase
+                .ACTION_UNLIKE), new LikeKolPostSubscriber
+                (rowNumber, getView(), kolListener));
     }
 
     @Override
