@@ -43,6 +43,9 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
         return flightRepository.getFlightSearch(requestParams).flatMap(new Func1<List<FlightSearchSingleRouteDB>, Observable<List<FlightSearchViewModel>>>() {
             @Override
             public Observable<List<FlightSearchViewModel>> call(List<FlightSearchSingleRouteDB> flightSearchSingleRouteDBs) {
+                if (flightSearchSingleRouteDBs == null) {
+                    return Observable.just((List<FlightSearchViewModel>)new ArrayList<FlightSearchViewModel>());
+                }
                 final List<String> searchResDistinctAirlineIds = new ArrayList<>();
 
                 // convert from List of DBModel to List of ViewModel

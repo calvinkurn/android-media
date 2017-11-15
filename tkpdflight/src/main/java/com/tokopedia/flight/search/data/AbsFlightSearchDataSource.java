@@ -20,12 +20,12 @@ import rx.functions.Func1;
  * @author normansyahputa on 5/18/17.
  */
 
-public class AbsFlightSearchDataListSource extends DataSource<FlightDataResponse<List<FlightSearchData>>, List<FlightSearchSingleRouteDB>> {
+public class AbsFlightSearchDataSource extends DataSource<FlightDataResponse<List<FlightSearchData>>, List<FlightSearchSingleRouteDB>> {
     private AbsFlightSearchDataDBSource absFlightSearchDataDBSource;
 
-    public AbsFlightSearchDataListSource(DataCacheSource dataListCacheManager,
-                                         AbsFlightSearchDataDBSource absFlightSearchDataDBSource,
-                                         DataCloudSource<FlightDataResponse<List<FlightSearchData>>> dataCloudManager) {
+    public AbsFlightSearchDataSource(DataCacheSource dataListCacheManager,
+                                     AbsFlightSearchDataDBSource absFlightSearchDataDBSource,
+                                     DataCloudSource<FlightDataResponse<List<FlightSearchData>>> dataCloudManager) {
         super(dataListCacheManager, absFlightSearchDataDBSource, dataCloudManager);
         this.absFlightSearchDataDBSource = absFlightSearchDataDBSource;
     }
@@ -37,7 +37,7 @@ public class AbsFlightSearchDataListSource extends DataSource<FlightDataResponse
             return super.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightSearchSingleRouteDB>>>() {
                 @Override
                 public Observable<List<FlightSearchSingleRouteDB>> call(Boolean aBoolean) {
-                    return AbsFlightSearchDataListSource.super.getData(FlightSearchParamUtil.toHashMap(requestParams));
+                    return AbsFlightSearchDataSource.super.getData(FlightSearchParamUtil.toHashMap(requestParams));
                 }
             });
         }

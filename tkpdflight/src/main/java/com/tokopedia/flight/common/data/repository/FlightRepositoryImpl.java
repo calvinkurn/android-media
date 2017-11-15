@@ -10,8 +10,8 @@ import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
-import com.tokopedia.flight.search.data.FlightSearchReturnDataListSource;
-import com.tokopedia.flight.search.data.FlightSearchSingleDataListSource;
+import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
+import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.usecase.RequestParams;
@@ -31,14 +31,14 @@ public class FlightRepositoryImpl implements FlightRepository {
     private FlightAirportDataListSource flightAirportDataListSource;
     private FlightAirlineDataListSource flightAirlineDataListSource;
     private FlightClassesDataSource flightClassesDataSource;
-    private FlightSearchSingleDataListSource flightSearchSingleDataListSource;
-    private FlightSearchReturnDataListSource flightSearchReturnDataListSource;
+    private FlightSearchSingleDataSource flightSearchSingleDataListSource;
+    private FlightSearchReturnDataSource flightSearchReturnDataListSource;
     private FlightCartDataSource flightCartDataSource;
 
     public FlightRepositoryImpl(FlightAirportDataListSource flightAirportDataListSource,
                                 FlightAirlineDataListSource flightAirlineDataListSource,
-                                FlightSearchSingleDataListSource flightSearchSingleDataListSource,
-                                FlightSearchReturnDataListSource flightSearchReturnDataListSource,
+                                FlightSearchSingleDataSource flightSearchSingleDataListSource,
+                                FlightSearchReturnDataSource flightSearchReturnDataListSource,
                                 FlightClassesDataSource flightClassesDataSource,
                                 FlightCartDataSource flightCartDataSource) {
         this.flightAirportDataListSource = flightAirportDataListSource;

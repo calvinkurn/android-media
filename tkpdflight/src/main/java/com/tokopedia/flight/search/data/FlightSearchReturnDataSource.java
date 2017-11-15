@@ -10,12 +10,12 @@ import javax.inject.Inject;
  * @author normansyahputa on 5/18/17.
  */
 
-public class FlightSearchReturnDataListSource extends AbsFlightSearchDataListSource {
+public class FlightSearchReturnDataSource extends AbsFlightSearchDataSource {
 
     @Inject
-    public FlightSearchReturnDataListSource(FlightSearchReturnDataCacheSource dataListCacheManager,
-                                            FlightSearchReturnDataDBSource flightSearchReturnDataListDBSource,
-                                            FlightSearchDataCloudSource dataListCloudManager) {
+    public FlightSearchReturnDataSource(FlightSearchReturnDataCacheSource dataListCacheManager,
+                                        FlightSearchReturnDataDBSource flightSearchReturnDataListDBSource,
+                                        FlightSearchDataCloudSource dataListCloudManager) {
         super(dataListCacheManager, flightSearchReturnDataListDBSource, dataListCloudManager);
     }
 }

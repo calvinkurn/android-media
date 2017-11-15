@@ -85,6 +85,7 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
         if (emptyView == null) {
             emptyView = new NoResultDataBinder(this);
         }
+        emptyView.setIsFullScreen(true);
         super.setEmptyView(emptyView);
     }
 
