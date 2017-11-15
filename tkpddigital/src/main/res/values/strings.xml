@@ -158,4 +158,9 @@
     <string name="tokocash_title_account_setting">Pengaturan Akun</string>
     <string name="tokocash_dialog_delete_access">Apakah Anda yakin ingin menghapus akses %1$s? \n\n
         Untuk menghubungkan %2$s dengan TokoCash kembali, Anda harus melakukan pengaturan akun pada halaman aplikasi.</string>
+    <string name="tokocash_label_received">Penerimaan TokoCash</string>
+    <string name="tokocash_label_amount_received">Dana Masuk</string>
+    <string name="tokocash_label_top_up">Top Up TokoCash</string>
+    <string name="tokocash_label_balance">TokoCash Balance</string>
+    <string name="tokocash_label_hold_balance">Dana Tertahan</string>
 </resources>

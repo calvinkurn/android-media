@@ -32,7 +32,7 @@
                 android:gravity="center_vertical"
                 android:paddingBottom="@dimen/margin_vs"
                 android:paddingTop="@dimen/margin_small"
-                android:text="TokoCash Balance"/>
+                android:text="@string/tokocash_label_balance"/>
 
             <TextView
                 android:id="@+id/balance_tokocash"
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:paddingBottom="@dimen/margin_small"
-                android:text="Rp. 0"
+                tools:text="Rp. 0"
                 android:textSize="30sp"/>
 
 
@@ -66,7 +66,7 @@
                     android:layout_below="@+id/separator1"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/margin_vs"
-                    android:text="Dana Tertahan"
+                    android:text="@string/tokocash_label_hold_balance"
                     android:textSize="@dimen/fontvs"/>
 
                 <ImageView
@@ -89,7 +89,7 @@
                     android:layout_below="@+id/title_hold_balance"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/margin_vs"
-                    android:text="Rp 0"
+                    tools:text="Rp 0"
                     android:textSize="@dimen/font_medium"/>
 
             </RelativeLayout>

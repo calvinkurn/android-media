@@ -13,7 +13,7 @@
         android:paddingBottom="@dimen/padding_ms"
         android:paddingLeft="@dimen/padding_detail"
         android:paddingRight="@dimen/padding_detail"
-        android:text="Penerimaan TokoCash"
+        android:text="@string/tokocash_label_received"
         android:textSize="@dimen/fontm"
         android:textStyle="bold" />
 
@@ -39,7 +39,7 @@
             android:layout_alignTop="@+id/income_tokocash"
             android:layout_alignBottom="@+id/income_tokocash"
             android:gravity="center_vertical"
-            android:text="Dana Masuk" />
+            android:text="@string/tokocash_label_amount_received" />
 
         <TextView
             android:id="@+id/income_tokocash"
@@ -49,7 +49,7 @@
             android:paddingBottom="@dimen/padding_ms"
             android:paddingLeft="@dimen/padding_detail"
             android:paddingRight="@dimen/padding_detail"
-            android:text="Rp 12.500.000"
+            tools:text="Rp 12.500.000"
             android:textSize="@dimen/fontm"
             android:layout_alignParentRight="true"/>
 

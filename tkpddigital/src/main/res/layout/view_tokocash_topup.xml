@@ -14,7 +14,7 @@
         android:paddingBottom="@dimen/padding_ms"
         android:paddingLeft="@dimen/padding_detail"
         android:paddingRight="@dimen/padding_detail"
-        android:text="Top Up TokoCash"
+        android:text="@string/tokocash_label_top_up"
         android:textSize="@dimen/fontm"
         android:textStyle="bold" />
 
