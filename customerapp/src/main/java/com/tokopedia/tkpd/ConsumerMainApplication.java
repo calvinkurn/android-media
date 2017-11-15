@@ -92,6 +92,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.PAYMENT_DOMAIN = ConsumerAppBaseUrl.PAYMENT_DOMAIN;
         TkpdBaseURL.GALADRIEL = ConsumerAppBaseUrl.GALADRIEL;
         TkpdBaseURL.CHAT_DOMAIN = ConsumerAppBaseUrl.CHAT_DOMAIN;
+        TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = ConsumerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
         TkpdBaseURL.MAPS_DOMAIN = ConsumerAppBaseUrl.MAPS_DOMAIN;
     }
 

@@ -89,8 +89,8 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         attempt = 0;
 
         client = new OkHttpClient();
-        magicString = "wss://chat-staging.tokopedia.com/connect?" +
-                "os_type=1" +
+        magicString = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN+ TkpdBaseURL.Chat.CHAT_WEBSOCKET +
+                "?os_type=1" +
                 "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
         listener = new ChatWebSocketListenerImpl(getView().getInterface());
