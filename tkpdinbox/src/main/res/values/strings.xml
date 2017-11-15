@@ -78,6 +78,7 @@ yang ditemukan</string>
     <string name="connected_websocket">"Terhubung!"</string>
     <string name="is_typing">"sedang mengetik"</string>
     <string name="just_now">"baru saja"</string>
+    <string name="delete_error">"Gagal mengirim pesan."</string>
 
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
 

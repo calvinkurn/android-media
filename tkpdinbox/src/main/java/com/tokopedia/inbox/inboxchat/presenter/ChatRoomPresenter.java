@@ -151,7 +151,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
                 @Override
                 public void onError(Throwable e) {
-
+                    getView().onErrorSendReply();
                 }
 
                 @Override

@@ -465,6 +465,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
         setResult();
     }
 
+    @Override
+    public void onErrorSendReply() {
+        adapter.removeLast();
+        setViewEnabled(true);
+        finishLoading();
+        replyColumn.setText("");
+        showError(getString(R.string.delete_error).concat("\n").concat(getString(R.string.string_general_error)));
+    }
+
     private boolean isMyMessage(int fromUid) {
         return String.valueOf(fromUid).equals(sessionHandler.getLoginID(MainApplication.getAppContext()));
     }

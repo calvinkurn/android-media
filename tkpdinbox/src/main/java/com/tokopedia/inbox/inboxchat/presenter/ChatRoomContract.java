@@ -71,6 +71,8 @@ public class ChatRoomContract {
         Context getActivity();
 
         void onSuccessSendReply(ReplyActionData data, String reply);
+
+        void onErrorSendReply();
     }
 
     interface Presenter extends CustomerPresenter<View>{
