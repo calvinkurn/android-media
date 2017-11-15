@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -15,6 +16,7 @@ import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
+import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
@@ -34,6 +36,7 @@ import javax.inject.Inject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
+import rx.Subscriber;
 
 import static com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel.GET_CHAT_MODE;
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_MESSAGE_ID;
@@ -131,6 +134,34 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
+    @Override
+    public void sendMessageWithApi() {
+        if(isValidReply()){
+            getView().addDummyMessage();
+            getView().setViewEnabled(false);
+            final String reply = (getView().getReplyMessage());
+            String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
+            RequestParams params = ReplyMessageUseCase.generateParam(messageId, reply);
+            isRequesting = true;
+            replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
+                @Override
+                public void onCompleted() {
+                    isRequesting = false;
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(ReplyActionData data) {
+                    getView().onSuccessSendReply(data, reply);
+                }
+            });
+        }
+    }
+
     public void onLoadMore() {
         if (!isRequesting) {
             pagingHandler.nextPage();
@@ -192,7 +223,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         return isValid;
     }
 
-    public void sendMessage() {
+    public void sendMessageWithWebsocket() {
         if (isValidReply()) {
             getView().addDummyMessage();
             getView().setViewEnabled(false);
@@ -200,26 +231,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             final String reply = (getView().getReplyMessage());
             String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
 
-//            RequestParams params = ReplyMessageUseCase.generateParam(messageId, reply);
-//            isRequesting = true;
-//            replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
-//                @Override
-//                public void onCompleted() {
-//                    isRequesting = false;
-//                }
-//
-//                @Override
-//                public void onError(Throwable e) {
-//
-//                }
-//
-//                @Override
-//                public void onNext(ReplyActionData data) {
-//                    getView().onSuccessSendReply(data, reply);
-//                }
-//            });
             try {
-
                 sendReply(messageId, reply);
             } catch (JSONException e) {
                 e.printStackTrace();
