@@ -115,6 +115,11 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             likeText.setText(String.valueOf(element.getTotalLike()));
             likeText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R.color
                     .tkpd_main_green));
+        } else if (element.getTotalLike() > 0) {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
+            likeText.setText(String.valueOf(element.getTotalLike()));
+            likeText.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(), R.color
+                    .black_54));
         } else {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
             likeText.setText(R.string.action_like);

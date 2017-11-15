@@ -1,10 +1,12 @@
 package com.tokopedia.core.util;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * @author by nisie on 5/17/17.
@@ -26,12 +28,21 @@ public class TimeConverter {
             Locale localeID = new Locale("in", "ID");
 
             SimpleDateFormat sdf = new SimpleDateFormat(format, localeID);
+            sdf.setTimeZone(TimeZone.getDefault());
             Date postDate = sdf.parse(postTime);
             return getFormattedTime(postDate);
 
         } catch (ParseException e) {
             e.printStackTrace();
             return postTime;
+        }
+    }
+
+    private static TimeZone getTimezone(String postTime) {
+        if (postTime.endsWith("Z"))
+            return TimeZone.getTimeZone("UTC");
+        else {
+            return TimeZone.getDefault();
         }
     }
 
