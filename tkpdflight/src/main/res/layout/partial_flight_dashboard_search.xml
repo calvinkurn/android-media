@@ -44,14 +44,16 @@
             <LinearLayout
                 android:id="@+id/departure_airport_layout"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
                 android:descendantFocusability="beforeDescendants"
                 android:orientation="vertical"
                 android:paddingEnd="@dimen/padding_med"
-                android:paddingLeft="@dimen/padding_small"
+                android:paddingLeft="@dimen/padding_med"
                 android:paddingRight="@dimen/padding_med"
-                android:paddingStart="@dimen/padding_small">
+                android:paddingStart="@dimen/padding_med"
+                android:paddingTop="@dimen/padding_ms">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
@@ -78,14 +80,16 @@
             <LinearLayout
                 android:id="@+id/arrival_airport_layout"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
                 android:descendantFocusability="beforeDescendants"
                 android:orientation="vertical"
-                android:paddingEnd="@dimen/padding_small"
+                android:paddingEnd="@dimen/padding_med"
                 android:paddingLeft="@dimen/padding_med"
-                android:paddingRight="@dimen/padding_small"
-                android:paddingStart="@dimen/padding_med">
+                android:paddingRight="@dimen/padding_med"
+                android:paddingStart="@dimen/padding_med"
+                android:paddingTop="@dimen/padding_ms">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="match_parent"
@@ -112,10 +116,12 @@
             android:layout_width="@dimen/image_width_m"
             android:layout_height="@dimen/image_width_m"
             android:layout_gravity="center"
+            android:elevation="10dp"
             android:src="@drawable/ic_flight_reverse_horizontal" />
     </FrameLayout>
 
     <LinearLayout
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

@@ -1,7 +1,5 @@
 package com.tokopedia.flight.dashboard.view.fragment;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -18,6 +16,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -178,6 +180,29 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             @Override
             public void onClick(View v) {
                 presenter.onReverseAirportButtonClicked();
+                AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
+                Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);
+                shake.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                RotateAnimation rotate = new RotateAnimation(180, 360, Animation.RELATIVE_TO_SELF,
+                        0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                rotate.setDuration(500);
+                reverseAirportImageView.startAnimation(shake);
             }
         });
         return view;
@@ -211,16 +236,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         roundTripAppCompatButton.setTextColor(getResources().getColor(R.color.grey_400));
         oneWayTripAppCompatButton.setSelected(true);
         roundTripAppCompatButton.setSelected(false);
-        returnDateTextInputView.animate()
-                .alpha(0.0f)
-                .setDuration(300)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        returnDateTextInputView.setVisibility(View.GONE);
-                    }
-                });
+        returnDateTextInputView.setVisibility(View.GONE);
+
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         passengerTextInputView.setText(viewModel.getPassengerFmt());
         if (viewModel.getDepartureAirport() != null) {
@@ -248,17 +265,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         roundTripAppCompatButton.setTextColor(getResources().getColor(R.color.white));
         oneWayTripAppCompatButton.setSelected(false);
         roundTripAppCompatButton.setSelected(true);
+        returnDateTextInputView.setVisibility(View.VISIBLE);
 
-        returnDateTextInputView.animate()
-                .alpha(1.0f)
-                .setDuration(300)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        returnDateTextInputView.setVisibility(View.VISIBLE);
-                    }
-                });
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         returnDateTextInputView.setText(viewModel.getReturnDateFmt());
         passengerTextInputView.setText(viewModel.getPassengerFmt());
