@@ -54,8 +54,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
     backgroundColor: '#fff',
     alignItems: 'center',
-    marginTop: 20,
-    width: '90%'
+    width: '100%'
   },
   textContainer: {
     flexDirection: 'column',

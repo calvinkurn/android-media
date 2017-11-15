@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderColor: '#fff',
     borderWidth: 1,
-    fontSize: 18,
+    fontSize: 16,
     backgroundColor: '#fff',
   },
   closeIconWrapper: {

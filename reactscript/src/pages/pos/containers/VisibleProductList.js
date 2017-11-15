@@ -109,14 +109,14 @@ class VisibleProductList extends Component {
           value={selectedEtalaseId}
           options={etalases} />
         <View style={styles.productListHeader}>
-          <View style={{ width: '55%', }}>
+          <View style={{ width: '50%', }}>
             <SearchContainer shopId={shopId} />
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', width: '45%', justifyContent: 'flex-end' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', width: '50%', justifyContent: 'flex-end' }}>
             <Text style={styles.etalaseText}>Etalase: </Text>
             <TouchableNativeFeedback onPress={() => { this.setState({ showEtalasePicker: true }) }}>
               <View style={styles.etalasePicker}>
-                <Text style={{ fontSize: 14, paddingRight: 50 }}>{selectedEtalase[0].name}</Text>
+                <Text style={{ fontSize: 16, paddingRight: 50 }}>{selectedEtalase[0].name}</Text>
                 <Image source={{ uri: icons.arrow_down_grey }} style={{ width: 10, height: 10, resizeMode: 'contain' }} />
               </View>
             </TouchableNativeFeedback>
@@ -161,19 +161,16 @@ const mapStateToProps = state => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '90%',
-    paddingBottom: 30,
+    width: '100%'
   },
   productListHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 14,
-    marginBottom: 14,
-    paddingRight: 5
+    marginTop: 24,
+    marginBottom: 24,
   },
   etalaseText: {
-    fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
   },
   etalasePicker: {
     flexDirection: 'row',
@@ -183,6 +180,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     marginLeft: 20,
+    height: 50,
   },
 })
 

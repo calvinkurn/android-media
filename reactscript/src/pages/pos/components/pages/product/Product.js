@@ -41,7 +41,8 @@ const styles = StyleSheet.create({
     width: '32%',
     backgroundColor: 'white',
     borderRadius: 3,
-    margin: 3,
+    marginRight: '2%',
+    marginBottom: 16,
   },
   productImageWrapper: {
     alignItems: 'center',
@@ -51,8 +52,8 @@ const styles = StyleSheet.create({
   },
   productImage: {
     borderRadius: 3,
-    width: 211,
-    height: 209,
+    width: 230,
+    height: 230,
     resizeMode: 'cover'
   },
   productName: {
