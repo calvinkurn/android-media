@@ -85,6 +85,7 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
         if (emptyView == null) {
             emptyView = new NoResultDataBinder(this);
         }
+        emptyView.setIsFullScreen(true);
         super.setEmptyView(emptyView);
     }
 
@@ -151,7 +152,7 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
     }
 
     public void clearData() {
-        this.data.clear();
+        this.data = new ArrayList<>();
         this.totalItem = 0;
     }
 
@@ -181,6 +182,10 @@ public abstract class BaseListV2Adapter<T extends ItemType> extends BaseLinearRe
 
     public boolean isLoadInitialPage() {
         return pageToLoad == 1;
+    }
+
+    public void setInitialPageToLoad() {
+        this.pageToLoad = 1;
     }
 
     @Override

@@ -2,17 +2,14 @@ package com.tokopedia.flight.airline.data.db;
 
 import android.text.TextUtils;
 
-import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
-import com.tokopedia.abstraction.base.data.source.database.DataListDBSource;
 import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB_Table;
 import com.tokopedia.flight.airline.util.FlightAirlineParamUtil;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
-import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 
 import java.util.HashMap;
 import java.util.List;

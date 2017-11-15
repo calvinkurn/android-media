@@ -10,8 +10,8 @@ import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
-import com.tokopedia.flight.search.data.FlightSearchReturnDataListSource;
-import com.tokopedia.flight.search.data.FlightSearchSingleDataListSource;
+import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
+import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
 
 import dagger.Module;
 import dagger.Provides;
@@ -53,8 +53,8 @@ public class FlightModule {
     @Provides
     public FlightRepository provideFlightRepository(FlightAirportDataListSource flightAirportDataListSource,
                                                     FlightAirlineDataListSource flightAirlineDataListSource,
-                                                    FlightSearchSingleDataListSource flightSearchSingleDataListSource,
-                                                    FlightSearchReturnDataListSource flightSearchReturnDataListSource,
+                                                    FlightSearchSingleDataSource flightSearchSingleDataListSource,
+                                                    FlightSearchReturnDataSource flightSearchReturnDataListSource,
                                                     FlightClassesDataSource getFlightClassesUseCase,
                                                     FlightCartDataSource flightCartDataSource) {
         return new FlightRepositoryImpl(flightAirportDataListSource,flightAirlineDataListSource,

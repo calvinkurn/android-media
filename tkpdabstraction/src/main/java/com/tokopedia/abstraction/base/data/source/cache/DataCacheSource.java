@@ -15,7 +15,7 @@ import rx.Subscriber;
  * Created by nathan on 10/23/17.
  */
 
-public abstract class DataListCacheSource {
+public abstract class DataCacheSource {
 
     private static final String PREF_NAME = "CACHE_DATA_LIST";
 
@@ -25,7 +25,7 @@ public abstract class DataListCacheSource {
 
     protected abstract long getExpiredTimeInSec();
 
-    public DataListCacheSource(@ApplicationContext Context context) {
+    public DataCacheSource(@ApplicationContext Context context) {
         sharedPrefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
