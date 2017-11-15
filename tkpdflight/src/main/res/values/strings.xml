@@ -146,4 +146,8 @@
     <string name="flight_airportpicker_departure_title">Penerbangan Asal</string>
     <string name="flight_airportpicker_arrival_title">Penerbangan Tujuan</string>
     <string name="flight_title_return">Pencarian Pulang</string>
+    <string name="flight_label_saving_price_html"><![CDATA[<strike>%1$s</strike>]]></string>
+    <string name="flight_label_duration_transit">%1$s (%2$s transit)</string>
+    <string name="flight_label_duration_add_day">(+%1$d Hari)</string>
+    <string name="flight_label_see_detail">Lihat Detail</string>
 </resources>

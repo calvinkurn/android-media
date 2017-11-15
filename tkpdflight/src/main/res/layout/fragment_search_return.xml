@@ -45,6 +45,7 @@
 
                         <TextView
                             android:id="@+id/airline_name"
+                            android:layout_marginRight="@dimen/margin_vs"
                             style="@style/TextView.Body1" />
 
                         <TextView

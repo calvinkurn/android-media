@@ -173,7 +173,9 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
-
+        if(onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
+        }
     }
 
     @Override
