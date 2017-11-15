@@ -256,7 +256,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                     case TYPE_KOL_RECOMMENDATION:
                         if (domain.getContent() != null
-                                && domain.getContent().getKolRecommendations() != null) {
+                                && domain.getContent().getKolRecommendations() != null
+                                && domain.getContent().getKolRecommendations()
+                                .getListRecommendation() != null
+                                && !domain.getContent().getKolRecommendations()
+                                .getListRecommendation().isEmpty()) {
                             KolRecommendationViewModel kolRecommendationViewModel =
                                     convertToKolRecommendationViewModel(domain.getContent().getKolRecommendations());
                             listFeedView.add(kolRecommendationViewModel);
