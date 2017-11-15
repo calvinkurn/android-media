@@ -76,6 +76,8 @@ public interface PlaceAutoCompleteContract {
 
         void showErrorNoInternetConnectionMessage(String message);
 
+        void sendAutoDetectGAEvent(PlacePassViewModel placePassViewModel);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

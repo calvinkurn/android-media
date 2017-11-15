@@ -54,7 +54,7 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
                 isContain = true;
             }
         }
-        if(isContain) {
+        if (isContain) {
             deleteProblemResult(productProblemViewModel);
         } else {
             addProblemResult(productProblemViewModel);
@@ -89,7 +89,7 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
             if (problemResult.id == productProblemViewModel.getOrder().getDetail().getId()) {
                 return problemResult;
             }
-         }
+        }
         return null;
     }
 
@@ -140,7 +140,7 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
 
     public void updateResultList(ProblemResult problemResult) {
         List<ProblemResult> tempList = new ArrayList<>();
-        for(ProblemResult problemObject : problemResultList) {
+        for (ProblemResult problemObject : problemResultList) {
             tempList.add((problemObject.id == problemResult.id) ? problemResult : problemObject);
         }
         problemResultList = tempList;

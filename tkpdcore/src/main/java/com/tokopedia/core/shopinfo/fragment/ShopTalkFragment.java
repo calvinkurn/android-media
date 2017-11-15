@@ -45,6 +45,7 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     private static final String PARAM_FROM = "from";
     private static final String PARAM_MODEL = "talk";
     private static final String PARAM_POSITION = "position";
+    private boolean isViewShown;
 
     public static Fragment createInstance() {
         return new ShopTalkFragment();
@@ -109,6 +110,10 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
         list.setLayoutManager(layoutManager);
         list.setAdapter(adapter);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        if(!isViewShown) {
+            fetchData();
+        }
     }
 
     @Override
@@ -255,11 +260,7 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && presenter != null && adapter != null) {
-            if (adapter.getList().isEmpty() && !adapter.isEmpty() && !presenter.isRequesting()) {
-                presenter.getShopTalk();
-            }
-        }
+        isViewShown = getView() != null;
     }
 
     @Override
@@ -404,5 +405,15 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
                 break;
         }
 
+    }
+
+    private void fetchData() {
+        if (presenter != null
+                && adapter != null
+                && !adapter.isEmpty()
+                && adapter.getList().isEmpty()
+                && !presenter.isRequesting()) {
+            presenter.getShopTalk();
+        }
     }
 }
