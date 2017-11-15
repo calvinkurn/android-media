@@ -47,7 +47,7 @@ import javax.inject.Inject;
  */
 
 public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewModel> implements FlightSearchView,
-        BaseListV2Adapter.OnBaseListV2AdapterListener<FlightSearchViewModel>,FlightSearchAdapter.ListenerOnDetailClicked {
+        BaseListV2Adapter.OnBaseListV2AdapterListener<FlightSearchViewModel>, FlightSearchAdapter.ListenerOnDetailClicked {
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
@@ -68,7 +68,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
 
-    public interface OnFlightSearchFragmentListener{
+    public interface OnFlightSearchFragmentListener {
         void selectFlight(String selectedFlightID);
     }
 

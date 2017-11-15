@@ -12,14 +12,14 @@ import com.tokopedia.flight.dashboard.view.adapter.viewholder.FlightClassViewHol
 
 public class FlightClassViewModel implements ItemType, Parcelable {
     private String title;
-    private String id;
+    private int id;
 
     public FlightClassViewModel() {
     }
 
     protected FlightClassViewModel(Parcel in) {
         title = in.readString();
-        id = in.readString();
+        id = in.readInt();
     }
 
     public static final Creator<FlightClassViewModel> CREATOR = new Creator<FlightClassViewModel>() {
@@ -47,11 +47,11 @@ public class FlightClassViewModel implements ItemType, Parcelable {
         this.title = title;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -63,6 +63,6 @@ public class FlightClassViewModel implements ItemType, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
-        dest.writeString(id);
+        dest.writeInt(id);
     }
 }

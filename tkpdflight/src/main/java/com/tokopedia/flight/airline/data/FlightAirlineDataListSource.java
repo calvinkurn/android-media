@@ -29,7 +29,7 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
     }
 
     public Observable<List<FlightAirlineDB>> getAirlineList(final String idToSearch) {
-        final HashMap<String, Object> map =generateGetParam(idToSearch);
+        final HashMap<String, Object> map = generateGetParam(idToSearch);
         return getDataList(map);
     }
 
@@ -37,7 +37,16 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
         return getDataList(null);
     }
 
-    public static HashMap<String, Object> generateGetParam(String idToSearch){
+    public Observable<List<FlightAirlineDB>> getAirlineCacheList() {
+        return getCacheDataList(null);
+    }
+
+    public Observable<List<FlightAirlineDB>> getAirlineCacheList(String airlineID) {
+        final HashMap<String, Object> map = generateGetParam(airlineID);
+        return getCacheDataList(map);
+    }
+
+    public static HashMap<String, Object> generateGetParam(String idToSearch) {
         return FlightAirlineParamUtil.generateMap(idToSearch);
     }
 }

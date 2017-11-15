@@ -53,28 +53,8 @@ public class FlightBookingGetSingleResultUseCase extends UseCase<FlightSearchVie
                 .flatMap(new Func1<FlightSearchViewModel, Observable<FlightSearchViewModel>>() {
                     @Override
                     public Observable<FlightSearchViewModel> call(FlightSearchViewModel flightSearchViewModel) {
-                        final List<String> searchResDistinctAirlineIds = new ArrayList<>();
-                        final List<String> searchResDistinctAirportIds = new ArrayList<>();
-                        List<Route> routeList = flightSearchViewModel.getRouteList();
-                        for (int j = 0, sizej = routeList.size(); j < sizej; j++) {
-                            Route route = routeList.get(j);
-                            String airline = route.getAirline();
-                            String departureAirport = route.getDepartureAirport();
-                            String arrivalAirport = route.getArrivalAirport();
-
-                            if (!TextUtils.isEmpty(airline) && !searchResDistinctAirlineIds.contains(airline)) {
-                                searchResDistinctAirlineIds.add(airline);
-                            }
-                            if (!TextUtils.isEmpty(departureAirport) && !searchResDistinctAirportIds.contains(departureAirport)) {
-                                searchResDistinctAirportIds.add(departureAirport);
-                            }
-                            if (!TextUtils.isEmpty(arrivalAirport) && !searchResDistinctAirportIds.contains(arrivalAirport)) {
-                                searchResDistinctAirportIds.add(arrivalAirport);
-                            }
-                        }
-
-                        return Observable.zip(flightRepository.getAirlineList(searchResDistinctAirlineIds),
-                                flightRepository.getAirportList(searchResDistinctAirportIds),
+                        return Observable.zip(flightRepository.getAirlineCacheList(),
+                                flightRepository.getAirportCacheList(),
                                 Observable.just(flightSearchViewModel),
                                 new Func3<List<FlightAirlineDB>, List<FlightAirportDB>,
                                         FlightSearchViewModel, FlightSearchViewModel>() {

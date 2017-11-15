@@ -1,8 +1,11 @@
 package com.tokopedia.flight.search.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchWithSortUseCase;
@@ -54,14 +57,14 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     public void getFlightStatistic(boolean isReturning) {
         flightSearchStatisticUseCase.execute(FlightSearchUseCase.generateRequestParams(
                 null,
-                isReturning, true, null,FlightSortOption.NO_PREFERENCE),
+                isReturning, true, null, FlightSortOption.NO_PREFERENCE),
                 getSubscriberSearchStatisticFlight());
     }
 
     public void sortFlight(List<FlightSearchViewModel> flightSearchViewModelList,
                            @FlightSortOption int sortOptionId) {
         flightSortUseCase.withList(flightSearchViewModelList).execute(null,
-                getSubscriberSearchFlight(sortOptionId));
+                getSubscriberSortFlight(sortOptionId));
     }
 
     public void getDetailDepartureFlight(String selectedFlightDeparture) {
@@ -97,6 +100,29 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     }
 
     private Subscriber<List<FlightSearchViewModel>> getSubscriberSearchFlight(final int sortOptionId) {
+        return new Subscriber<List<FlightSearchViewModel>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideSortRouteLoading();
+                getView().onLoadSearchError(e);
+            }
+
+            @Override
+            public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
+                getView().hideSortRouteLoading();
+                getView().onSearchLoaded(flightSearchViewModels, flightSearchViewModels.size());
+                getView().setSelectedSortItem(sortOptionId);
+
+            }
+        };
+    }
+
+    private Subscriber<List<FlightSearchViewModel>> getSubscriberSortFlight(final int sortOptionId) {
         return new Subscriber<List<FlightSearchViewModel>>() {
             @Override
             public void onCompleted() {

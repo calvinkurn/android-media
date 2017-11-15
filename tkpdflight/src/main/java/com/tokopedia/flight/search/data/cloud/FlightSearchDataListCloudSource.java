@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.search.data.cloud.model.request.FlightSearchSingleRequestData;
+import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
@@ -44,10 +45,10 @@ public class FlightSearchDataListCloudSource extends DataListCloudSource<FlightS
         DataRequest<FlightSearchSingleRequestData> dataRequest = new DataRequest<>(flightSearchSingleRequestData);
 
         return flightApi.searchFlightSingle(dataRequest).flatMap(
-                new Func1<Response<DataResponse<List<FlightSearchData>>>,
+                new Func1<Response<FlightDataResponse<List<FlightSearchData>>>,
                                         Observable<List<FlightSearchData>>>() {
                     @Override
-                    public Observable<List<FlightSearchData>> call(Response<DataResponse<List<FlightSearchData>>> dataResponseResponse) {
+                    public Observable<List<FlightSearchData>> call(Response<FlightDataResponse<List<FlightSearchData>>> dataResponseResponse) {
                         return Observable.just(dataResponseResponse.body().getData());
                     }
                 });
