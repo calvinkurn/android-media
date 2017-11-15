@@ -34,21 +34,15 @@ public class ChatRoomContract {
 
         Context getContext();
 
-        void scrollTo(int i);
-
         String getReplyMessage();
 
         String  getString(int error_empty_report);
 
         void showError(String string);
 
-        void onSuccessSendReply(ReplyActionData data, String reply);
-
         void setViewEnabled(boolean b);
 
         void addDummyMessage();
-
-        RefreshHandler getRefreshHandler();
 
         void setCanLoadMore(boolean hasNext);
 

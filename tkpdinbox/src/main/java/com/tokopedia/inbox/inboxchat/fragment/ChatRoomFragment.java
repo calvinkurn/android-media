@@ -82,12 +82,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private ProgressBar progressBar;
     private View replyView;
 
-    private ArrayList<Integer> list;
     private ImageView avatar;
     private TextView user;
     private TextView onlineDesc;
     private TextView label;
-    private ImageView onlineStatus;
 
     ChatRoomAdapter adapter;
     private ChatRoomTypeFactory typeFactory;
@@ -95,7 +93,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private ImageView sendButton;
     private EditText replyColumn;
     private ImageView attachButton;
-    RefreshHandler refreshHandler;
     private View mainHeader;
     private Toolbar toolbar;
     private Observable<String> replyWatcher;
@@ -289,7 +286,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
             user = (TextView) toolbar.findViewById(R.id.title);
             onlineDesc = (TextView) toolbar.findViewById(R.id.subtitle);
             label = (TextView) toolbar.findViewById(R.id.label);
-            onlineStatus = (ImageView) toolbar.findViewById(R.id.online_status);
             ImageHandler.loadImageCircle2(getActivity(), avatar, getArguments().getString(PARAM_SENDER_IMAGE), R.drawable.ic_image_avatar_boy);
             user.setText(getArguments().getString(PARAM_SENDER_NAME));
             if(!getArguments().getString(PARAM_SENDER_TAG).equals(ListChatViewHolder.USER)){
@@ -383,19 +379,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     action.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-//                            presenter.onOpenWebSocket();
-//                            presenter.createWebSocket();
                             notifier.setVisibility(View.GONE);
                         }
                     });
                 }
             });
         }
-    }
-
-    @Override
-    public void scrollTo(int i) {
-        layoutManager.scrollToPosition(i);
     }
 
     @Override
@@ -428,24 +417,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
     }
 
-    @Override
-    public void onSuccessSendReply(ReplyActionData replyData, String reply) {
-        adapter.removeLast();
-        setViewEnabled(true);
-        MyChatViewModel item = new MyChatViewModel();
-        item.setReplyId(replyData.getChat().getMsgId());
-        item.setSenderId(replyData.getChat().getSenderId());
-        item.setMsg(replyData.getChat().getMsg());
-        item.setReplyTime(replyData.getChat().getReplyTime());
-
-        adapter.addReply(item);
-        finishLoading();
-        replyColumn.setText("");
-        scrollToBottom();
-
-        getActivity().setResult(Activity.RESULT_OK);
-    }
-
     public void onSuccessSendReply(final WebSocketResponse response) {
         if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
@@ -457,6 +428,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         adapter.removeLast();
                         MyChatViewModel item = new MyChatViewModel();
                         item.setReplyId(response.getData().getMsgId());
+                        item.setMsgId(response.getData().getMsgId());
                         item.setSenderId(String.valueOf(response.getData().getFromUid()));
                         item.setMsg(response.getData().getMessage().getCensoredReply());
                         item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
@@ -467,6 +439,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     } else if (isCurrentThread(response.getData().getMsgId())) {
                         OppositeChatViewModel item = new OppositeChatViewModel();
                         item.setReplyId(response.getData().getMsgId());
+                        item.setMsgId(response.getData().getMsgId());
                         item.setSenderId(String.valueOf(response.getData().getFromUid()));
                         item.setMsg(response.getData().getMessage().getCensoredReply());
                         item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
@@ -478,6 +451,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         replyColumn.setText("");
                         scrollToBottom();
                     }
+                    setResult();
                 }
             });
         }
@@ -508,12 +482,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void addDummyMessage() {
         MyChatViewModel item = new MyChatViewModel();
         item.setMsg(getReplyMessage());
+        item.setMsgId(Integer.parseInt(getArguments().getString(InboxMessageConstant.PARAM_MESSAGE_ID)));
         item.setReplyTime(MyChatViewModel.SENDING_TEXT);
         item.setDummy(true);
-        item.setSenderId(getArguments().getString("sender_id"));
+        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(item);
         scrollToBottom();
-        setResult();
     }
 
     private void setResult() {
@@ -522,11 +496,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         bundle.putParcelable("parcel", adapter.getLastItem());
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
-    }
-
-    @Override
-    public RefreshHandler getRefreshHandler() {
-        return refreshHandler;
     }
 
     @Override
@@ -539,15 +508,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     public void restackList(Bundle data) {
-//        String senderId = data.getString("sender_id");
-//        if (senderId.equals(getArguments().get("sender_id"))) {
-//            OppositeChatViewModel item = new OppositeChatViewModel();
-//            item.setMsg(data.getString("summary"));
-//            item.setMessageId(senderId);
-//            item.setSenderName(data.getString("full_name"));
-//            item.setReplyTime(data.getString("create_time"));
-//            addDummyMessage(item);
-//        }
 
         if (toolbar != null) {
             mainHeader.setVisibility(View.VISIBLE);
@@ -555,7 +515,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
             user = (TextView) toolbar.findViewById(R.id.title);
             onlineDesc = (TextView) toolbar.findViewById(R.id.subtitle);
             label = (TextView) toolbar.findViewById(R.id.label);
-            onlineStatus = (ImageView) toolbar.findViewById(R.id.online_status);
             ImageHandler.loadImageCircle2(getActivity(), avatar, null, R.drawable.ic_image_avatar_boy);
             user.setText(getArguments().getString(PARAM_SENDER_NAME));
             label.setText(getArguments().getString(PARAM_SENDER_TAG));
