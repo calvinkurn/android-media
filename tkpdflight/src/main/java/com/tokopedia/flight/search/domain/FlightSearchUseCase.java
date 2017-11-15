@@ -49,7 +49,7 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
                     flightSearchViewModelList.add(new FlightSearchViewModel(flightSearchSingleRouteDBs.get(i)));
                 }
 
-                //get airlines info to merge with the view model
+                //get airlines info *from cache first* to merge with the view model
                 return Observable.zip(
                         flightRepository.getAirportCacheList(),
                         flightRepository.getAirlineCacheList(),
