@@ -34,6 +34,7 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
+import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
@@ -60,7 +61,7 @@ import javax.inject.Inject;
  */
 
 public class InboxChatFragment extends BaseDaggerFragment
-        implements InboxChatContract.View, InboxMessageConstant
+        implements InboxChatContract.View, InboxMessageConstant, InboxChatConstant
         , SearchInputView.Listener, SearchInputView.ResetListener
         , WebSocketInterface{
 
@@ -212,13 +213,15 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     private AlertDialog askOption(int selected, final List<Pair> listMove)
     {
+
         AlertDialog myQuittingDialogBox =new AlertDialog.Builder(getActivity())
                 //set message, title, and icon
-                .setTitle("Delete")
-                .setMessage("Apakah anda yakin menghapus "+selected+ " pesan?")
+                .setTitle(R.string.title_delete)
+                .setMessage(String.format(getResources().getString(R.string.delete_confirmation)
+                        , selected))
                 .setIcon(R.drawable.ic_trash)
 
-                .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         presenter.deleteMessage(listMove);
@@ -226,11 +229,9 @@ public class InboxChatFragment extends BaseDaggerFragment
                     }
 
                 })
-                .setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-
                         dialog.dismiss();
-
                     }
                 })
                 .create();
@@ -313,7 +314,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                 finishContextMode();
                 ((InboxChatActivity) getActivity()).showTabLayout(true);
             }
-            contextMenu.setTitle(String.valueOf(presenter.getSelected()) + " " + getString(R.string.title_inbox_chat));
+            contextMenu.setTitle(String.format("%s %s", String.valueOf(presenter.getSelected()), getString(R.string.title_inbox_chat)));
         }
     }
 
@@ -323,7 +324,7 @@ public class InboxChatFragment extends BaseDaggerFragment
         }
         if (contextMenu != null) {
             contextMenu.invalidate();
-            contextMenu.setTitle("Pilih chat yang dihapus");
+            contextMenu.setTitle(R.string.delete_choose);
         }
     }
 
@@ -506,8 +507,8 @@ public class InboxChatFragment extends BaseDaggerFragment
                 presenter.refreshData();
             else {
                 Bundle bundle = data.getExtras();
-                ReplyParcelableModel model = bundle.getParcelable("parcel");
-                adapter.moveToTop(model.getMessageId(), model.getMsg(), false);
+                ReplyParcelableModel model = bundle.getParcelable(PARCEL);
+                adapter.moveToTop(model.getMessageId(), model.getMsg(), null, false);
             }
         }
 
@@ -561,7 +562,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                     @Override
                     public void run() {
                         adapter.moveToTop(String.valueOf(response.getData().getMsgId()),
-                                response.getData().getMessage().getCensoredReply(), true);
+                                response.getData().getMessage().getCensoredReply(), response, true);
                     }
                 });
             default:
@@ -583,7 +584,7 @@ public class InboxChatFragment extends BaseDaggerFragment
             @Override
             public void run() {
                 TextView title = (TextView) notifier.findViewById(R.id.title);
-                title.setText("Terhubung!");
+                title.setText(getString(R.string.connected_websocket));
                 TextView action = (TextView) notifier.findViewById(R.id.action);
                 action.setVisibility(View.GONE);
             }

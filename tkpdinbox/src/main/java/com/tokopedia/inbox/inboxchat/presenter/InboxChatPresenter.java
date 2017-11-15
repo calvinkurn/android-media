@@ -37,6 +37,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
 
+import static com.tokopedia.inbox.inboxchat.domain.usecase.SearchMessageUseCase.PARAM_BY_REPLY;
+
 /**
  * Created by stevenfredian on 9/14/17.
  */
@@ -329,7 +331,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     private void searchReplies(String keyword) {
-        search(keyword, "reply");
+        search(keyword, PARAM_BY_REPLY);
     }
 
     public void search(String keyword, String by) {

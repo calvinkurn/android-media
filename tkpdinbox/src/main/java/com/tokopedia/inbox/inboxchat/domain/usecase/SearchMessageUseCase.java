@@ -17,6 +17,8 @@ import rx.Observable;
 
 public class SearchMessageUseCase extends UseCase<InboxChatViewModel> {
 
+    public final static String PARAM_BY_REPLY = "reply";
+
     private final SearchRepository searchRepository;
 
     public SearchMessageUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, SearchRepository searchRepository) {

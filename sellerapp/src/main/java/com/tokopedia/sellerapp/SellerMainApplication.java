@@ -146,6 +146,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.TOME_DOMAIN = SellerAppBaseUrl.BASE_TOME_DOMAIN;
         TkpdBaseURL.SCROOGE_DOMAIN = SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
         TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = SellerAppBaseUrl.BASE_SCROOGE_CREDIT_CARD_DOMAIN;
+        TkpdBaseURL.CHAT_DOMAIN = SellerAppBaseUrl.CHAT_DOMAIN;
     }
 
     private void generateSellerAppNetworkKeys() {

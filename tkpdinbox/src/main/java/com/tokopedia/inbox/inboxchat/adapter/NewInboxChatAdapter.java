@@ -11,7 +11,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.EmptyChatModel;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
@@ -20,7 +20,6 @@ import com.tokopedia.inbox.inboxchat.viewmodel.TimeMachineListViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.STATE_CHAT_READ;
@@ -39,7 +38,6 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     private List<Pair> listMove;
     private EmptyModel emptyModel;
     private LoadingModel loadingModel;
-    private int selected = 0;
     private InboxChatPresenter presenter;
     private TimeMachineListViewModel timeMachineChatModel;
     private EmptyChatModel emptyChatModel;
@@ -138,20 +136,6 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
         notifyItemChanged(position);
     }
 
-    public void removeAllChecked() {
-//        for (ChatListViewModel moveItem : listMove) {
-//            for (ChatListViewModel inboxMessageItem : list) {
-//                if (moveItem.getId() == inboxMessageItem.getId()) {
-//                    list.remove(inboxMessageItem);
-//                    break;
-//                }
-//            }
-//        }
-//
-//        listMove.clear();
-//        notifyDataSetChanged();
-    }
-
     public void setList(List<Visitable> newList) {
         if (newList != null) {
             List<Visitable> temp = newList;
@@ -224,7 +208,8 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
         return false;
     }
 
-    public void moveToTop(String messageId, String lastReply, boolean showNotif) {
+    public void moveToTop(String messageId, String lastReply, WebSocketResponse response, boolean showNotif) {
+        boolean isNew = true;
         String currentId;
         for (int i = 0; i < list.size(); i++) {
             try {
@@ -252,6 +237,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
                     notifyItemInserted(0);
                     notifyItemRangeChanged(0, i);
                     presenter.moveViewToTop();
+                    isNew = false;
                     break;
                 }
 
@@ -259,6 +245,20 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
                 e.printStackTrace();
                 break;
             }
+        }
+        if(isNew && response!=null){
+            ChatListViewModel temp = new ChatListViewModel();
+            temp.setId(messageId);
+            temp.setUnreadCounter(1);
+            temp.setMessage(lastReply);
+            temp.setReadStatus(STATE_CHAT_UNREAD);
+            temp.setTime(response.getData().getMessage().getTimeStampUnix());
+            temp.setName(response.getData().getFrom());
+            list.add(0, temp);
+            notifyItemInserted(0);
+            notifyItemRangeChanged(0, 1);
+            presenter.moveViewToTop();
+
         }
     }
 
@@ -269,10 +269,6 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
         }
         listMove.clear();
         notifyDataSetChanged();
-    }
-
-    public void setSelected(int selected) {
-        this.selected = selected;
     }
 
     public void showTimeMachine() {

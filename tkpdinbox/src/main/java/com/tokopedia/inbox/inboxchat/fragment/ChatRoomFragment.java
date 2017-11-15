@@ -32,6 +32,7 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
+import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
@@ -70,7 +71,8 @@ import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_SEND
  */
 
 public class ChatRoomFragment extends BaseDaggerFragment
-        implements ChatRoomContract.View, InboxMessageConstant, WebSocketInterface {
+        implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant
+        , WebSocketInterface {
 
     @Inject
     ChatRoomPresenter presenter;
@@ -298,7 +300,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             }else {
                 label.setVisibility(View.GONE);
             }
-            setOnlineDesc("baru saja");
+            setOnlineDesc(getString(R.string.just_now));
             toolbar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -510,7 +512,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setMsg(getReplyMessage());
         item.setReplyTime(MyChatViewModel.SENDING_TEXT);
         item.setDummy(true);
-        item.setSenderId(getArguments().getString("sender_id"));
+        item.setSenderId(getArguments().getString(PARAM_SENDER_ID));
         adapter.addReply(item);
         scrollToBottom();
         setResult();
@@ -519,7 +521,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private void setResult() {
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("parcel", adapter.getLastItem());
+        bundle.putParcelable(PARCEL, adapter.getLastItem());
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
@@ -559,7 +561,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             ImageHandler.loadImageCircle2(getActivity(), avatar, null, R.drawable.ic_image_avatar_boy);
             user.setText(getArguments().getString(PARAM_SENDER_NAME));
             label.setText(getArguments().getString(PARAM_SENDER_TAG));
-            setOnlineDesc("baru saja");
+            setOnlineDesc(getString(R.string.just_now));
         }
     }
 
@@ -582,7 +584,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
                 if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
                         (PARAM_MESSAGE_ID))) {
-                    setOnlineDesc("sedang mengetik");
+                    setOnlineDesc(getString(R.string.is_typing));
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -598,7 +600,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
                 if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
                         (PARAM_MESSAGE_ID))) {
-                    setOnlineDesc("baru saja");
+                    setOnlineDesc(getString(R.string.just_now));
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -640,7 +642,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 @Override
                 public void run() {
                     TextView title = (TextView) notifier.findViewById(R.id.title);
-                    title.setText("Terhubung!");
+                    title.setText(R.string.connected_websocket);
                     TextView action = (TextView) notifier.findViewById(R.id.action);
                     action.setVisibility(View.GONE);
                 }

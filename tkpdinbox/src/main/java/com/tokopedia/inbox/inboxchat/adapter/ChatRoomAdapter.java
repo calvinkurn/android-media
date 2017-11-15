@@ -92,9 +92,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private boolean compareTime(Context context, long calCurrent, long calBefore) {
         return DateFormat.getLongDateFormat(context).format(new Date(calCurrent))
                 .equals(DateFormat.getLongDateFormat(context).format(new Date(calBefore)));
-//        return calCurrent.get(Calendar.DAY_OF_YEAR) == calBefore.get(Calendar.DAY_OF_YEAR)
-//                && calCurrent.get(Calendar.MONTH) == calBefore.get(Calendar.MONTH)
-//                && calCurrent.get(Calendar.YEAR) == calBefore.get(Calendar.YEAR);
     }
 
     @Override
@@ -147,6 +144,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void addReply(Visitable item) {
         this.list.add(item);
         notifyItemInserted(this.list.size() - 1);
+        notifyItemRangeChanged(list.size()-2, 2);
     }
 
     public void showLoading() {
