@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -13,6 +14,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFragment;
@@ -23,7 +25,7 @@ import static com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupNewPromoFr
  * Created by Nathaniel on 11/22/2016.
  */
 
-public class TopAdsGroupNewPromoActivity extends TActivity {
+public class TopAdsGroupNewPromoActivity extends BaseSimpleActivity {
 
     public static final String PARAM_ITEM_ID = "item_id";
     public static final String PARAM_USER_ID = "user_id";
@@ -65,16 +67,6 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
 
     // from deeplink
     String itemId;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_top_ads_new_promo);
-        initFromIntent();
-        getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsGroupNewPromoFragment.createInstance(itemId), TopAdsGroupNewPromoFragment.class.getSimpleName())
-                .commit();
-    }
 
     private void initFromIntent() {
         Intent intent = getIntent();
@@ -120,5 +112,21 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        initFromIntent();
+        return TopAdsGroupNewPromoFragment.createInstance(itemId);
+    }
+
+    @Override
+    protected String getTagFragment() {
+        return TopAdsGroupNewPromoFragment.class.getSimpleName();
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 }

@@ -16,6 +16,7 @@ import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseDatePickerFragment;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailListener;
 import com.tokopedia.topads.dashboard.view.model.Ad;
@@ -37,6 +38,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
     protected V ad;
     protected String adId;
     protected V adFromIntent;
+    protected boolean isForceRefresh;
 
     protected abstract void refreshAd();
 
@@ -44,7 +46,8 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
 
     @Override
     protected BaseDatePickerPresenter getDatePickerPresenter() {
-        return new BaseDatePickerPresenterImpl(getActivity());
+        BaseDatePickerPresenterImpl baseDatePickerPresenter = new BaseDatePickerPresenterImpl(getActivity());
+        return baseDatePickerPresenter;
     }
 
     @Override
@@ -68,6 +71,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
         super.setupArguments(bundle);
         adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
         adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+        isForceRefresh = bundle.getBoolean(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, false);
     }
 
     @Override
@@ -100,6 +104,11 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
     @Override
     protected void loadData() {
         showLoading();
+        if(isForceRefresh){
+            refreshAd();
+            isForceRefresh = false;
+            return;
+        }
         if (adFromIntent != null) {
             onAdLoaded(adFromIntent);
             adId = adFromIntent.getId();
@@ -121,9 +130,14 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
             onLoadAdError();
             return;
         }
-        this.ad = ad;
+        this.ad = fillFromPrevious(ad, this.adFromIntent);
+
         hideLoading();
         loadAdDetail(ad);
+    }
+
+    protected V fillFromPrevious(V current, V previous){
+        return current;
     }
 
     protected void hideLoading() {

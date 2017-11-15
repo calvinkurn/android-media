@@ -50,20 +50,17 @@ public class TopAdsStatisticProductActivity extends TopAdsStatisticActivity {
 
         showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar.getHeight() > 0) {
             final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
-            int height = toolbar.getHeight();
-            int width = toolbar.getWidth();
 
             showCaseList.add(
                     new ShowCaseObject(
-                            findViewById(android.R.id.content),
+                            getDateLabelView(),
                             getString(R.string.topads_showcase_statistics_title_1),
                             getString(R.string.topads_showcase_statistics_desc_1),
                             ShowCaseContentPosition.UNDEFINED,
-                            Color.WHITE)
-                            .withCustomTarget(new int[]{width -(int) (height * 0.9), 0,width, height}));
+                            Color.WHITE));
 
             showCaseList.add(new ShowCaseObject(
                     tabLayout,

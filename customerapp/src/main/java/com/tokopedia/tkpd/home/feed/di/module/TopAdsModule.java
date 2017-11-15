@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.home.feed.di.module;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.TopAdsService;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.topads.dashboard.di.scope.TopAdsQualifier;
 import com.tokopedia.tkpd.home.feed.data.factory.TopAdsDataSourceFactory;
 import com.tokopedia.tkpd.home.feed.data.mapper.TopAdsMapper;
 import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
