@@ -939,7 +939,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToKolProfile(int page, int rowNumber, String url) {
-        startActivity(KolProfileWebViewActivity.getCallingIntent(getActivity(), url));
+        if (!TextUtils.isEmpty(url)) {
+            ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
+                    , url);
+        }
     }
 
     @Override
