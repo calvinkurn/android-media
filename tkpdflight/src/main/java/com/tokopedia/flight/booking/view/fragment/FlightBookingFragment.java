@@ -2,6 +2,7 @@ package com.tokopedia.flight.booking.view.fragment;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,16 +25,19 @@ import android.widget.RelativeLayout;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.data.cloud.entity.Amenity;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPhoneCodeActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPresenter;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.widget.CardWithActionView;
+import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
@@ -69,11 +73,13 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     private String departureTripId, returnTripId;
     private FlightBookingParamViewModel paramViewModel;
+    private FlightBookingCartData flightBookingCartData;
 
     @Inject
     FlightBookingPresenter presenter;
 
     private FlightBookingPassengerAdapter adapter;
+    private ProgressDialog progressDialog;
 
 
     public static Fragment newInstance(FlightSearchPassDataViewModel searchPassDataViewModel, String departureId, String returnId) {
@@ -98,6 +104,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         returnTripId = getArguments().getString(EXTRA_FLIGHT_ARRIVAL_ID);
         paramViewModel = new FlightBookingParamViewModel();
         paramViewModel.setSearchParam((FlightSearchPassDataViewModel) getArguments().getParcelable(EXTRA_SEARCH_PASS_DATA));
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
     }
 
     @Override
@@ -159,7 +167,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        presenter.initialize();
+        presenter.processGetCartData();
     }
 
     @Override
@@ -290,11 +298,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public FlightBookingParamViewModel getCurrentBookingParam() {
-        return paramViewModel;
-    }
-
-    @Override
     public void renderPhoneCodeView(String countryPhoneCode) {
         etPhoneCountryCode.setText(countryPhoneCode);
     }
@@ -314,6 +317,42 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         startActivity(FlightDetailActivity.createIntent(getActivity(), departureTrip));
     }
 
+    @Override
+    public String getIdEmpotencyKey(String tokenId) {
+        return generateIdEmpotency(tokenId);
+    }
+
+    @Override
+    public void renderLuggageList(List<Amenity> amenities) {
+
+    }
+
+    @Override
+    public void showFullPageLoading() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideFullPageLoading() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void renderCartData(FlightBookingCartData flightBookingCartData) {
+        this.flightBookingCartData = flightBookingCartData;
+    }
+
+    @Override
+    public FlightBookingCartData getCurrentCartPassData() {
+        return flightBookingCartData;
+    }
+
+    private String generateIdEmpotency(String requestId) {
+        String timeMillis = String.valueOf(System.currentTimeMillis());
+        String token = FlightRequestUtil.md5(timeMillis);
+        return String.format("%s_%s", requestId, token.isEmpty() ? timeMillis : token);
+    }
+
     private void showMessageErrorInSnackBar(int resId) {
         Snackbar snackBar = SnackbarManager.make(getActivity(),
                 getString(resId), Snackbar.LENGTH_LONG)
@@ -324,4 +363,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         snackBar.show();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
 }
