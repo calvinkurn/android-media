@@ -10,7 +10,7 @@ import android.os.Parcelable;
 public class Payment implements Parcelable {
     private String currency;
     private String totalAmount;
-    private String pendingAmount;
+    private int pendingAmount;
     private String paidAmount;
     private boolean receiptReady;
 
@@ -38,11 +38,11 @@ public class Payment implements Parcelable {
         this.receiptReady = receiptReady;
     }
 
-    public String getPendingAmount() {
+    public int getPendingAmount() {
         return pendingAmount;
     }
 
-    public void setPendingAmount(String pendingAmount) {
+    public void setPendingAmount(int pendingAmount) {
         this.pendingAmount = pendingAmount;
     }
 
@@ -62,7 +62,7 @@ public class Payment implements Parcelable {
         currency = in.readString();
         totalAmount = in.readString();
         receiptReady = in.readByte() != 0;
-        pendingAmount = in.readString();
+        pendingAmount = in.readInt();
         paidAmount = in.readString();
     }
 
@@ -76,7 +76,7 @@ public class Payment implements Parcelable {
         dest.writeString(currency);
         dest.writeString(totalAmount);
         dest.writeByte((byte) (receiptReady ? 1 : 0));
-        dest.writeString(pendingAmount);
+        dest.writeInt(pendingAmount);
         dest.writeString(paidAmount);
     }
 

@@ -26,7 +26,7 @@ public class PaymentEntity {
 
     @SerializedName("pending_amount")
     @Expose
-    private String pendingAmount;
+    private int pendingAmount;
 
     @SerializedName("paid_amount")
     @Expose
@@ -51,7 +51,7 @@ public class PaymentEntity {
         return receiptReady;
     }
 
-    public String getPendingAmount() {
+    public int getPendingAmount() {
         return pendingAmount;
     }
 

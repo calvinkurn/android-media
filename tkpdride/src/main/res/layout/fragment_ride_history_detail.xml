@@ -321,26 +321,15 @@
                         android:paddingTop="8dp"
                         android:textColor="@color/black_full"
                         android:textSize="14sp"
+                        android:visibility="visible"
                         tools:text="-" />
-
-
-                    <View
-                        android:id="@+id/fare_sep"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@id/tv_label_discount"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@color/grey_300" />
 
                     <TextView
                         android:id="@+id/label_total_charged"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/fare_sep"
-                        android:drawableLeft="@drawable/ic_tokocash_icon"
-                        android:drawablePadding="10dp"
-                        android:drawableTint="@color/grey_800"
+                        android:layout_below="@id/tv_label_discount"
+                        android:layout_marginTop="8dp"
                         android:gravity="center"
                         android:text="@string/complete_trip_amount_charged"
                         android:textColor="@color/grey_800"
@@ -351,7 +340,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_below="@id/fare_sep"
+                        android:layout_below="@id/tv_label_discount"
+                        android:layout_marginTop="8dp"
                         android:textColor="@color/black_full"
                         android:textSize="14sp"
                         tools:text="-" />
@@ -375,6 +365,36 @@
                         android:layout_below="@id/label_total_charged"
                         android:paddingTop="8dp"
                         android:textColor="@color/black_full"
+                        android:textSize="14sp"
+                        tools:text="-" />
+
+                    <View
+                        android:id="@+id/fare_sep"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@id/tv_label_cashback"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/grey_300" />
+
+                    <TextView
+                        android:id="@+id/tv_label_pending_fare"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/fare_sep"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/complete_trip_pending_fare"
+                        android:textColor="@color/grey_800"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tv_pending_fare"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/fare_sep"
+                        android:paddingTop="8dp"
+                        android:textColor="@color/red_500"
                         android:textSize="14sp"
                         tools:text="-" />
 

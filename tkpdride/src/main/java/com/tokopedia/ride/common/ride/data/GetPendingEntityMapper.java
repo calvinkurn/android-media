@@ -46,7 +46,7 @@ public class GetPendingEntityMapper {
             return "TokoCash";
         }
 
-        return "CC";
+        return "Credit Card";
     }
 
     private String formatNumber(float number, String currency) {

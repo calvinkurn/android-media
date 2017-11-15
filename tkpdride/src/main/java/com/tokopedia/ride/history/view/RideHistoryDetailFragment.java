@@ -106,6 +106,12 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     ProgressBar progressBar;
     @BindView(R2.id.rb_rating_result)
     RatingBar ratingResult;
+    @BindView(R2.id.tv_label_pending_fare)
+    TextView pendingFareLabelTextView;
+    @BindView(R2.id.tv_pending_fare)
+    TextView pendingFareValueTextView;
+    @BindView(R2.id.fare_sep)
+    View seperator;
 
     ProgressDialog mProgressDialog;
 
@@ -259,6 +265,17 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         } else {
             discountValueTextView.setVisibility(View.GONE);
             discountLabelTextView.setVisibility(View.GONE);
+        }
+
+        if (rideHistory.getPendingAmount() > 0) {
+            pendingFareValueTextView.setText(rideHistory.getPendingAmountDisplayFormat());
+            pendingFareValueTextView.setVisibility(View.VISIBLE);
+            pendingFareLabelTextView.setVisibility(View.VISIBLE);
+            seperator.setVisibility(View.VISIBLE);
+        } else {
+            pendingFareValueTextView.setVisibility(View.GONE);
+            pendingFareLabelTextView.setVisibility(View.GONE);
+            seperator.setVisibility(View.GONE);
         }
 
 
@@ -430,7 +447,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     @OnClick(R2.id.layout_need_help)
     public void actionNeedHelpClicked() {
-        RideGATracking.eventClickHelpTrip(getScreenName(),rideHistory.getRequestTime(),rideHistory.getTotalFare(),rideHistory.getStatus());//17
+        RideGATracking.eventClickHelpTrip(getScreenName(), rideHistory.getRequestTime(), rideHistory.getTotalFare(), rideHistory.getStatus());//17
         startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
     }
 

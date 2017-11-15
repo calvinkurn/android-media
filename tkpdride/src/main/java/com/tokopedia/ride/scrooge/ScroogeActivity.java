@@ -36,7 +36,7 @@ public class ScroogeActivity extends AppCompatActivity {
     private static String ADD_CC_FAIL_CALLBACK = "tokopedia://action_add_cc_fail";
     private static String DELETE_CC_SUCESS_CALLBACK = "tokopedia://action_delete_cc_success";
     private static String DELETE_CC_FAIL_CALLBACK = "tokopedia://action_delete_cc_fail";
-    private static String SUCCESS_CALLBACK = "tokopedia://thanks";
+    private static String SUCCESS_CALLBACK = "tokopedia://orderid";
 
     private static final String EXTRA_KEY_POST_PARAMS = "EXTRA_KEY_POST_PARAMS";
     private static final String EXTRA_KEY_URL = "URL";

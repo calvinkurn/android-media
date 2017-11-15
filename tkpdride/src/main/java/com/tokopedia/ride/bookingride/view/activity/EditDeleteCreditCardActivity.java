@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -41,6 +42,15 @@ public class EditDeleteCreditCardActivity extends BaseActivity implements HasCom
         setupToolbar(paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_WALLET) ? getString(R.string.title_tokocash) : getString(R.string.credit_card));
         EditDeleteCreditCardFragment fragment = EditDeleteCreditCardFragment.newInstance(paymentMethodViewModel);
         replaceFragment(R.id.fl_container, fragment);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            onBackPressed();
+        }
+        return true;
     }
 
     private void replaceFragment(int containerViewId, Fragment fragment) {

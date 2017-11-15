@@ -369,17 +369,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
-//    @OnClick(R2.id.tv_topup_tokocash)
-//    public void actionTopupButtonClicked() {
-//        String seamlessURL = URLGenerator.generateURLSessionLogin(
-//                (Uri.encode("https://wallet-staging.tokopedia.id/")),
-//                getActivity()
-//        );
-//        Intent intent = TokoCashWebViewActivity.getCallingIntent(getActivity(), seamlessURL);
-//        startActivityForResult(intent, WALLET_WEB_VIEW_REQUEST_CODE);
-//
-//    }
-
     @OnClick(R2.id.tv_promo_edit)
     public void actionEditPromo() {
         startActivityForResult(
