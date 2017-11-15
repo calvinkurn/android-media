@@ -627,4 +627,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getForgotPasswordIntent(Context context, String email) {
         return ForgotPasswordActivity.getCallingIntent(context, email);
     }
+
+    @Override
+    public void invalidateCategoryMenuData() {
+
+    }
 }

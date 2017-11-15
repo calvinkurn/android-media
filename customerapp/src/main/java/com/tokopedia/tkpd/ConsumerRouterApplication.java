@@ -83,6 +83,7 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
+import com.tokopedia.tkpd.home.database.HomeCategoryMenuDbManager;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
@@ -683,4 +684,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getForgotPasswordIntent(Context context, String email) {
         return ForgotPasswordActivity.getCallingIntent(context,email);
     }
+
+    @Override
+    public void invalidateCategoryMenuData() {
+        HomeCategoryMenuDbManager dbManager = new HomeCategoryMenuDbManager();
+        dbManager.deleteAll();
+    }
+
 }
