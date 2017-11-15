@@ -2,14 +2,13 @@ package com.tokopedia.flight.common.di.component;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.di.scope.ApplicationScope;
 import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
-import com.tokopedia.flight.search.data.FlightSearchSingleDataListSource;
 
 import dagger.Component;
 import retrofit2.Retrofit;
@@ -28,4 +27,5 @@ public interface FlightComponent {
 
     FlightRepository flightRepository();
 
+    Gson gson();
 }
