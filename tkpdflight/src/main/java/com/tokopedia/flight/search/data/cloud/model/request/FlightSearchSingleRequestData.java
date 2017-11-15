@@ -32,4 +32,8 @@ public class FlightSearchSingleRequestData {
             attributes.setDate(flightSearchPassDataViewModel.getDepartureDate());
         }
     }
+
+    public Attributes getAttributes() {
+        return attributes;
+    }
 }

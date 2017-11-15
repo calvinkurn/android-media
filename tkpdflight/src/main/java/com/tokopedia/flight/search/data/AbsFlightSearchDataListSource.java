@@ -1,14 +1,16 @@
 package com.tokopedia.flight.search.data;
 
-import com.tokopedia.abstraction.base.data.source.DataListSource;
-import com.tokopedia.abstraction.base.data.source.cache.DataListCacheSource;
-import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
+import com.tokopedia.abstraction.base.data.source.DataSource;
+import com.tokopedia.abstraction.base.data.source.cache.DataCacheSource;
+import com.tokopedia.abstraction.base.data.source.cloud.DataCloudSource;
+import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
-import com.tokopedia.flight.search.data.db.AbsFlightSearchDataListDBSource;
+import com.tokopedia.flight.search.data.db.AbsFlightSearchDataDBSource;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
@@ -18,24 +20,24 @@ import rx.functions.Func1;
  * @author normansyahputa on 5/18/17.
  */
 
-public class AbsFlightSearchDataListSource extends DataListSource<FlightSearchData, FlightSearchSingleRouteDB> {
-    private AbsFlightSearchDataListDBSource absFlightSearchDataListDBSource;
+public class AbsFlightSearchDataListSource extends DataSource<FlightDataResponse<List<FlightSearchData>>, List<FlightSearchSingleRouteDB>> {
+    private AbsFlightSearchDataDBSource absFlightSearchDataDBSource;
 
-    public AbsFlightSearchDataListSource(DataListCacheSource dataListCacheManager,
-                                         AbsFlightSearchDataListDBSource absFlightSearchDataListDBSource,
-                                         DataListCloudSource<FlightSearchData> dataListCloudManager) {
-        super(dataListCacheManager, absFlightSearchDataListDBSource, dataListCloudManager);
-        this.absFlightSearchDataListDBSource = absFlightSearchDataListDBSource;
+    public AbsFlightSearchDataListSource(DataCacheSource dataListCacheManager,
+                                         AbsFlightSearchDataDBSource absFlightSearchDataDBSource,
+                                         DataCloudSource<FlightDataResponse<List<FlightSearchData>>> dataCloudManager) {
+        super(dataListCacheManager, absFlightSearchDataDBSource, dataCloudManager);
+        this.absFlightSearchDataDBSource = absFlightSearchDataDBSource;
     }
 
     public Observable<List<FlightSearchSingleRouteDB>> getDataList(final RequestParams requestParams) {
         if (FlightSearchParamUtil.isFromCache(requestParams)) {
-            return super.getCacheDataList(FlightSearchParamUtil.toHashMap(requestParams));
+            return super.getCacheData(FlightSearchParamUtil.toHashMap(requestParams));
         } else {
             return super.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightSearchSingleRouteDB>>>() {
                 @Override
                 public Observable<List<FlightSearchSingleRouteDB>> call(Boolean aBoolean) {
-                    return AbsFlightSearchDataListSource.super.getDataList(FlightSearchParamUtil.toHashMap(requestParams));
+                    return AbsFlightSearchDataListSource.super.getData(FlightSearchParamUtil.toHashMap(requestParams));
                 }
             });
         }
@@ -43,13 +45,17 @@ public class AbsFlightSearchDataListSource extends DataListSource<FlightSearchDa
 
     public Observable<List<FlightSearchSingleRouteDB>> getDataListCount(RequestParams requestParams) {
         if (FlightSearchParamUtil.isFromCache(requestParams)) {
-            return super.getCacheDataList(FlightSearchParamUtil.toHashMap(requestParams));
+            return super.getCacheData(FlightSearchParamUtil.toHashMap(requestParams));
         } else {
-            return super.getDataList(FlightSearchParamUtil.toHashMap(requestParams));
+            return super.getData(FlightSearchParamUtil.toHashMap(requestParams));
         }
     }
 
+    public Observable<Integer> getCacheDataListCount(final HashMap<String, Object> params) {
+        return absFlightSearchDataDBSource.getDataCount(params);
+    }
+
     public Observable<FlightSearchSingleRouteDB> getSingleFlight(String id) {
-        return absFlightSearchDataListDBSource.find(id);
+        return absFlightSearchDataDBSource.find(id);
     }
 }

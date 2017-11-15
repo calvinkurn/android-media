@@ -1,6 +1,6 @@
 package com.tokopedia.abstraction.base.data.source;
 
-import com.tokopedia.abstraction.base.data.source.cache.DataListCacheSource;
+import com.tokopedia.abstraction.base.data.source.cache.DataCacheSource;
 import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
 import com.tokopedia.abstraction.base.data.source.database.DataListDBSource;
 
@@ -15,86 +15,37 @@ import rx.functions.Func1;
  * Created by nathan on 10/23/17.
  */
 
-public abstract class DataListSource<T, U> {
+public abstract class DataListSource<T, U> extends DataSource<List<T>, List<U>>{
 
-    private DataListCacheSource dataListCacheManager;
+    private DataCacheSource dataListCacheManager;
     private DataListDBSource<T, U> dataListDBManager;
-    private DataListCloudSource<T> dataListCloudManager;
 
-    public DataListSource(DataListCacheSource dataListCacheManager, DataListDBSource<T, U> dataListDBManager, DataListCloudSource<T> dataListCloudManager) {
+    public DataListSource(DataCacheSource dataListCacheManager, DataListDBSource<T, U> dataListDBManager, DataListCloudSource<T> dataListCloudManager) {
+        super(dataListCacheManager, dataListDBManager, dataListCloudManager);
         this.dataListCacheManager = dataListCacheManager;
         this.dataListDBManager = dataListDBManager;
-        this.dataListCloudManager = dataListCloudManager;
-    }
-
-    private Observable<List<U>> getRefreshedData(final HashMap<String, Object> params) {
-        return dataListDBManager.deleteAll().flatMap(new Func1<Boolean, Observable<List<U>>>() {
-            @Override
-            public Observable<List<U>> call(Boolean aBoolean) {
-                return dataListCloudManager.getData(params).flatMap(new Func1<List<T>, Observable<List<U>>>() {
-                    @Override
-                    public Observable<List<U>> call(List<T> ts) {
-                        if (ts == null || ts.size() == 0) {
-                            return Observable.just((List<U>) new ArrayList<U>());
-                        }
-                        return dataListDBManager.insertAll(ts).flatMap(new Func1<Boolean, Observable<List<U>>>() {
-                            @Override
-                            public Observable<List<U>> call(Boolean isSuccessInsertData) {
-                                if (!isSuccessInsertData) {
-                                    return Observable.just((List<U>) new ArrayList<U>());
-                                } else {
-                                    return dataListCacheManager.updateExpiredTime().flatMap(new Func1<Boolean, Observable<List<U>>>() {
-                                        @Override
-                                        public Observable<List<U>> call(Boolean isSuccessUpdateExpiredTime) {
-                                            if (!isSuccessUpdateExpiredTime) {
-                                                return Observable.just((List<U>) new ArrayList<U>());
-                                            } else {
-                                                return dataListDBManager.getData(params);
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        });
     }
 
     protected Observable<List<U>> getDataList(final HashMap<String, Object> params) {
-        return dataListCacheManager.isExpired().flatMap(new Func1<Boolean, Observable<List<U>>>() {
-            @Override
-            public Observable<List<U>> call(Boolean isCacheExpired) {
-                if (isCacheExpired) {
-                    return getRefreshedData(params);
-                } else {
-                    return getCacheDataList(params);
-                }
-            }
-        });
+        return super.getData(params);
     }
 
     public Observable<List<U>> getCacheDataList(final HashMap<String, Object> params) {
-        return dataListDBManager.getData(params).flatMap(new Func1<List<U>, Observable<List<U>>>() {
-            @Override
-            public Observable<List<U>> call(List<U> cacheList) {
-                if (cacheList == null || cacheList.size() == 0) {
-                    return dataListDBManager.isDataAvailable().flatMap(new Func1<Boolean, Observable<List<U>>>() {
-                        @Override
-                        public Observable<List<U>> call(Boolean isDataAvalable) {
-                            if (isDataAvalable) {
-                                return Observable.just((List<U>) new ArrayList<U>());
-                            } else {
-                                return getRefreshedData(params);
-                            }
-                        }
-                    });
-                } else {
-                    return Observable.just(cacheList);
-                }
-            }
-        });
+        return super.getData(params);
+    }
+
+    @Override
+    protected boolean isCloudDataEmpty(List<T> data){
+        return data == null || data.size() == 0;
+    }
+    @Override
+    protected boolean isCacheDataEmpty(List<U> data){
+        return data == null || data.size() == 0;
+    }
+
+    @Override
+    protected Observable<List<U>> getEmptyObservable(){
+        return Observable.just((List<U>) new ArrayList<U>());
     }
 
     protected Observable<Integer> getDataListCount(final HashMap<String, Object> params) {
@@ -117,19 +68,6 @@ public abstract class DataListSource<T, U> {
 
     public Observable<Integer> getCacheDataListCount(final HashMap<String, Object> params) {
         return dataListDBManager.getDataCount(params);
-    }
-
-    public Observable<Boolean> setCacheExpired() {
-        return dataListCacheManager.setExpired();
-    }
-
-    public Observable<Boolean> deleteCache() {
-        return dataListDBManager.deleteAll().flatMap(new Func1<Boolean, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(Boolean aBoolean) {
-                return setCacheExpired();
-            }
-        });
     }
 
 
