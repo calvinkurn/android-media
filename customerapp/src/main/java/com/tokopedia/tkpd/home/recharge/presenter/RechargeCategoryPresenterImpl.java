@@ -59,11 +59,13 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
             @Override
             public void onNext(Status status) {
-                if (status.isMaintenance() || !isVersionMatch(status)) {
-                    view.failedRenderDataRechargeCategory();
-                } else {
-                    rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber(status.isUseCache()),
-                            status.isUseCache());
+                if (status != null) {
+                    if (status.isMaintenance() || !isVersionMatch(status)) {
+                        view.failedRenderDataRechargeCategory();
+                    } else {
+                        rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber(status.isUseCache()),
+                                status.isUseCache());
+                    }
                 }
             }
         };
