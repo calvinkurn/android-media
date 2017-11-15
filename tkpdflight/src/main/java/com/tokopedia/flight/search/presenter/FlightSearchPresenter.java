@@ -1,6 +1,7 @@
 package com.tokopedia.flight.search.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
@@ -27,14 +28,17 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     private FlightSearchWithSortUseCase flightSearchWithSortUseCase;
     private FlightSortUseCase flightSortUseCase;
     private FlightSearchStatisticUseCase flightSearchStatisticUseCase;
+    private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
 
     @Inject
     public FlightSearchPresenter(FlightSearchWithSortUseCase flightSearchWithSortUseCase,
                                  FlightSortUseCase flightSortUseCase,
-                                 FlightSearchStatisticUseCase flightSearchStatisticUseCase) {
+                                 FlightSearchStatisticUseCase flightSearchStatisticUseCase,
+                                 FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase) {
         this.flightSearchWithSortUseCase = flightSearchWithSortUseCase;
         this.flightSortUseCase = flightSortUseCase;
         this.flightSearchStatisticUseCase = flightSearchStatisticUseCase;
+        this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
     }
 
     public void searchAndSortFlight(FlightSearchPassDataViewModel flightSearchPassDataViewModel,
@@ -60,11 +64,36 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                 getSubscriberSearchFlight(sortOptionId));
     }
 
+    public void getDetailDepartureFlight(String selectedFlightDeparture) {
+        flightBookingGetSingleResultUseCase.execute(flightBookingGetSingleResultUseCase.createRequestParam(false, selectedFlightDeparture), getSubscriberDetailDepartureFlight());
+    }
+
     @Override
     public void detachView() {
         super.detachView();
         flightSearchWithSortUseCase.unsubscribe();
         flightSearchStatisticUseCase.unsubscribe();
+    }
+
+    private Subscriber<FlightSearchViewModel> getSubscriberDetailDepartureFlight() {
+        return new Subscriber<FlightSearchViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()){
+                    getView().onErrorGetDetailFlightDeparture(e);
+                }
+            }
+
+            @Override
+            public void onNext(FlightSearchViewModel flightSearchViewModel) {
+                getView().onSuccessGetDetailFlightDeparture(flightSearchViewModel);
+            }
+        };
     }
 
     private Subscriber<List<FlightSearchViewModel>> getSubscriberSearchFlight(final int sortOptionId) {

@@ -20,4 +20,7 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
 
     void onErrorGetFlightStatistic(Throwable throwable);
 
+    void onErrorGetDetailFlightDeparture(Throwable e);
+
+    void onSuccessGetDetailFlightDeparture(FlightSearchViewModel flightSearchViewModel);
 }

@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.Func3;
@@ -29,6 +31,7 @@ public class FlightBookingGetSingleResultUseCase extends UseCase<FlightSearchVie
     private static final String PARAM_IS_RETURNING = "is_returning";
     private FlightRepository flightRepository;
 
+    @Inject
     public FlightBookingGetSingleResultUseCase(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;
     }

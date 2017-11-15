@@ -1,16 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/margin_sm"
-        android:text="TEST THIS IS RETURNING FLIGHT.\nPLACE PREVIOUS FLIGHT HERE" />
+        android:stateListAnimator="@drawable/appbar_always_elevated">
 
-    <include layout="@layout/fragment_search_flight" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            app:layout_scrollFlags="scroll|snap|enterAlways"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-</LinearLayout>
+            <LinearLayout
+                android:background="@color/light_green"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_small">
+
+                <ImageView
+                    android:src="@drawable/ic_flight_round"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_width="@dimen/image_width_xs"
+                    android:layout_height="@dimen/image_width_xs" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="@string/flight_label_departure_flight"
+                        style="@style/TextView.Caption.BlackSecondary"/>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/airline_name"
+                            style="@style/TextView.Body1" />
+
+                        <TextView
+                            android:id="@+id/duration"
+                            style="@style/TextView.Body1.BlackSecondary"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <include
+                layout="@layout/include_header_flight_detail"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                 />
+        </LinearLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <com.tokopedia.flight.search.view.adapter.FlightSearchRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:fitsSystemWindows="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <com.tokopedia.design.button.BottomActionView
+        android:id="@+id/bottom_action_filter_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_med"
+        app:bav_icon_1="@drawable/ic_flight_search_filter"
+        app:bav_icon_2="@drawable/ic_flight_search_sort"
+        app:bav_label_1="@string/flight_search_filter_label"
+        app:bav_label_2="@string/flight_search_sort_label"
+        app:layout_anchor="@id/recycler_view"
+        app:layout_anchorGravity="bottom|center_horizontal"
+        app:layout_behavior="com.tokopedia.design.behavior.QuickReturnFooterBehavior" />
+
+</android.support.design.widget.CoordinatorLayout>
