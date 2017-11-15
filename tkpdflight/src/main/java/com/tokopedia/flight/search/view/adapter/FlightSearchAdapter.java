@@ -1,6 +1,7 @@
 package com.tokopedia.flight.search.view.adapter;
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -8,9 +9,11 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
+import com.tokopedia.abstraction.utils.MethodChecker;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
 import java.util.List;
 
@@ -48,6 +51,8 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
         TextView tvDuration;
         TextView detailView;
         TextView airlineRefundableInfo;
+        TextView savingPrice;
+        TextView arrivalAddDay;
 
         public FlightSearchViewHolder(View itemView) {
             super(itemView);
@@ -59,6 +64,8 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
             tvPrice = (TextView) itemView.findViewById(R.id.total_price);
             tvDuration = (TextView) itemView.findViewById(R.id.flight_time);
             detailView = (TextView) itemView.findViewById(R.id.detail_view);
+            savingPrice = (TextView) itemView.findViewById(R.id.saving_price);
+            arrivalAddDay = (TextView) itemView.findViewById(R.id.arrival_add_day);
         }
 
         @Override
@@ -66,7 +73,7 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
             tvDeparture.setText(String.format("%s %s", flightSearchViewModel.getDepartureTime(), flightSearchViewModel.getDepartureAirport()));
             tvArrival.setText(String.format("%s %s", flightSearchViewModel.getArrivalTime(), flightSearchViewModel.getArrivalAirport()));
             tvPrice.setText(flightSearchViewModel.getTotal());
-            tvDuration.setText(flightSearchViewModel.getDuration());
+            setDuration(flightSearchViewModel);
             setAirline(flightSearchViewModel);
             detailView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,6 +84,35 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
                 }
             });
             setRefundableInfo(flightSearchViewModel);
+            setSavingPrice(flightSearchViewModel);
+            setArrivalAddDay(flightSearchViewModel);
+        }
+
+        private void setArrivalAddDay(FlightSearchViewModel flightSearchViewModel) {
+            if(flightSearchViewModel.getAddDayArrival() > 0) {
+                arrivalAddDay.setVisibility(View.VISIBLE);
+                arrivalAddDay.setText(itemView.getContext().getString(R.string.flight_label_duration_add_day, flightSearchViewModel.getAddDayArrival()));
+            }else{
+                arrivalAddDay.setVisibility(View.GONE);
+            }
+        }
+
+        void setDuration(FlightSearchViewModel flightSearchViewModel) {
+            if(flightSearchViewModel.getTotalTransit() > 0){
+                tvDuration.setText(itemView.getContext().getString(R.string.flight_label_duration_transit,
+                        flightSearchViewModel.getDuration(), String.valueOf(flightSearchViewModel.getTotalTransit())));
+            }else {
+                tvDuration.setText(flightSearchViewModel.getDuration());
+            }
+        }
+
+        private void setSavingPrice(FlightSearchViewModel flightSearchViewModel) {
+            if(TextUtils.isEmpty(flightSearchViewModel.getBeforeTotal())){
+                savingPrice.setVisibility(View.GONE);
+            }else{
+                savingPrice.setVisibility(View.VISIBLE);
+                savingPrice.setText(MethodChecker.fromHtml(getString(R.string.flight_label_saving_price_html, flightSearchViewModel.getBeforeTotal())));
+            }
         }
 
         private void setAirline(FlightSearchViewModel flightSearchViewModel) {
@@ -90,7 +126,12 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
         }
 
         private void setRefundableInfo(FlightSearchViewModel flightSearchViewModel) {
-
+            if(flightSearchViewModel.isRefundable() == RefundableEnum.NOT_REFUNDABLE){
+                airlineRefundableInfo.setVisibility(View.GONE);
+            }else{
+                airlineRefundableInfo.setVisibility(View.VISIBLE);
+                airlineRefundableInfo.setText(flightSearchViewModel.isRefundable().getValueRes());
+            }
         }
     }
 
