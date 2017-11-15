@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   searchTextBox: {
     height: 50,
-    borderColor: '#fff',
+    borderColor: '#e0e0e0',
     borderWidth: 1,
     fontSize: 16,
     backgroundColor: '#fff',

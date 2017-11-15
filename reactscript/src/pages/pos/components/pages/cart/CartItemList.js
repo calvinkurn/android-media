@@ -89,45 +89,45 @@ class CartItemList extends Component {
                     </TouchableWithoutFeedback>
                   </View>
                 </View>
-                  <View>
-                    <PopUp
-                      visible={this.state.showPopUp}
-                      animationType='none'
-                      onBackPress={() => { this.toggleScreen(false) }}
-                      title='Konfirmasi Pembatalan'
-                      subTitle='Apakah Anda yakin untuk menghapus semua daftar belanjaan?'
-                      onSecondOptionTap={this.remove}
-                      onFirstOptionTap={() => { this.toggleScreen(false) }}
-                      firstOptionText='Tidak'
-                      secondOptionText='Ya'
-                      onCloseIconTap={() => { this.toggleScreen(false) }}
-                    />
-                  </View>
-                  <View style={{ marginTop: 20, marginLeft: 20, marginRight: 20 }}>
-                    <ScrollView style={styles.itemListContainer}>
-                      {
-                        items.map(i => <CartItem
-                          item={i}
-                          key={i.id}
-                          onIncr={onIncrQty}
-                          onDecr={onDecrQty}
-                          onRemove={onRemoveFromCart}
-                        />)
-                      }
-                    </ScrollView>
-                  </View>
-                  <View style={styles.paymentContainer}>
-                    <Text style={styles.paymentText}>Total Pembayaran</Text>
-                    <Text style={styles.paymentText}>Rp {totalPriceWithCurrency}</Text>
-                  </View>
-                  <View style={{ marginTop: 20, marginLeft: 20, marginRight: 20 }}>
-                    <Button
-                      content='Checkout'
-                      type='big'
-                      onTap={() => { this.paymentCheckoutClicked() }}
-                    />
-                  </View>
-                </View>)
+                <View>
+                  <PopUp
+                    visible={this.state.showPopUp}
+                    animationType='none'
+                    onBackPress={() => { this.toggleScreen(false) }}
+                    title='Konfirmasi Pembatalan'
+                    subTitle='Apakah Anda yakin untuk menghapus semua daftar belanjaan?'
+                    onSecondOptionTap={this.remove}
+                    onFirstOptionTap={() => { this.toggleScreen(false) }}
+                    firstOptionText='Tidak'
+                    secondOptionText='Ya'
+                    onCloseIconTap={() => { this.toggleScreen(false) }}
+                  />
+                </View>
+                <View style={{ marginTop: 32, marginLeft: 32, marginRight: 32 }}>
+                  <ScrollView style={styles.itemListContainer}>
+                    {
+                      items.map(i => <CartItem
+                        item={i}
+                        key={i.id}
+                        onIncr={onIncrQty}
+                        onDecr={onDecrQty}
+                        onRemove={onRemoveFromCart}
+                      />)
+                    }
+                  </ScrollView>
+                </View>
+                <View style={styles.paymentContainer}>
+                  <Text style={styles.paymentText}>Total Pembayaran</Text>
+                  <Text style={styles.paymentText}>Rp {totalPriceWithCurrency}</Text>
+                </View>
+                <View style={{ marginTop: 16, marginLeft: 32, marginRight: 32 }}>
+                  <Button
+                    content='Checkout'
+                    type='extraBigNormal'
+                    onTap={() => { this.paymentCheckoutClicked() }}
+                  />
+                </View>
+              </View>)
             ) :
               <View>
                 <View style={styles.headerContainer}>
@@ -153,7 +153,7 @@ class CartItemList extends Component {
                     <Text style={{ marginBottom: 50 }}>Tidak Ada barang dalam keranjang</Text>
                   </View>
                 </View>
-                <View style={{ marginTop: 20, marginLeft: 20, marginRight: 20 }}>
+                <View style={{ marginTop: 20, marginLeft: 32, marginRight: 32 }}>
                     <Button
                       content='Mulai Belanja'
                       type='big'
@@ -172,7 +172,10 @@ class CartItemList extends Component {
 
 const styles = {
   paymentContainer: {
-    marginTop: 10, marginLeft: 20, marginRight: 20, borderRadius: 5,
+    marginTop: 16,
+    marginLeft: 32,
+    marginRight: 32,
+    borderRadius: 5,
     flexDirection: 'row',
     backgroundColor: '#fff',
     justifyContent: 'space-between',
@@ -183,14 +186,14 @@ const styles = {
   },
   itemListContainer: {
     backgroundColor: '#fff',
-    borderRadius: 50,
+    borderRadius: 5,
     borderWidth: 1,
     borderColor: '#e0e0e0'
   },
   emptyList: {
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 20,
+    marginLeft: 32,
+    marginRight: 32,
+    marginTop: 32,
     // paddingVertical: 10,
     // paddingHorizontal: 15,
     // backgroundColor: '#f1f1f1',
@@ -228,7 +231,7 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: '4%',
+    paddingHorizontal: 32,
   },
   headerTitleText: {
     fontSize: 24,

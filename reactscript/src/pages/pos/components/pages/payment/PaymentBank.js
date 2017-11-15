@@ -342,16 +342,16 @@ class PaymentBank extends Component {
             <ScrollView>
             <View style={styles.containers} >
               <View style={[styles.row, styles.row1]} >
-                <Text style={[styles.font16, styles.fontColor70]}>Total Pembayaran</Text>
-                <Text style={[styles.font16, styles.fontColor70]}>Rp {(totalPriceWithCurrency)}</Text>
+                <Text style={[styles.font20Bold, styles.fontColor70]}>Total Pembayaran</Text>
+                <Text style={[styles.font20Bold, styles.fontColor70]}>Rp {(totalPriceWithCurrency)}</Text>
               </View>
 
               <View style={[styles.row, styles.row2]} >
-                <Text style={[styles.font13, styles.fontColor70]}>Minimum Purchase Rp 500.000</Text>
+                <Text style={[styles.font16, styles.fontColor70]}>Minimum Purchase Rp 500.000</Text>
               </View>
 
               <View style={[styles.row, styles.row3]} >
-                <Text style={[styles.font14, styles.fontColor70]}>Pilih Bank</Text>
+                <Text style={[styles.font18Bold, styles.fontColor70]}>Pilih Bank</Text>
               </View>
 
               <ListView
@@ -376,7 +376,7 @@ class PaymentBank extends Component {
                 (this.state.selectedBank === null) ? null :
                   (
                     <View style={{ alignItems: 'flex-end', paddingHorizontal: 15, backgroundColor: '#fff' }}>
-                      <Text>
+                      <Text style={[styles.font16, styles.fontColor70]}>
                         Anda memilih {this.state.selectedBank}
                       </Text>
                     </View>
@@ -385,7 +385,7 @@ class PaymentBank extends Component {
 
 
               <View style={[styles.row, styles.row3]} >
-                <Text style={[styles.font14, styles.fontColor70]}>
+                <Text style={[styles.font18Bold, styles.fontColor70]}>
                   Cicilan Kartu Kredit Bunga 0%
                 </Text>
               </View>
@@ -397,7 +397,7 @@ class PaymentBank extends Component {
                 renderRow={this._renderEmiRow.bind(this)} />
 
               <View style={{ paddingTop: 10, backgroundColor: 'white', borderBottomWidth: 1, borderColor: '#F0F0F0' }}>
-                <Text style={[styles.font14, styles.fontColor70, { marginLeft: 15 }]}>Pilih Metode Pembayaran</Text>
+                <Text style={[styles.font18Bold, styles.fontColor70, { marginLeft: 15 }]}>Pilih Metode Pembayaran</Text>
                 <View style={{ paddingVertical: 20, flexDirection: 'row', marginLeft: 15 }}>
                   <TouchableWithoutFeedback 
                     disabled={true}
@@ -417,11 +417,11 @@ class PaymentBank extends Component {
 
               
               <View style={[styles.row, styles.row1]}>
-                <Text style={[styles.font20, styles.fontColor70]}>Nominal</Text>
+                <Text style={[styles.font20Bold, styles.fontColor70]}>Nominal</Text>
                 {payment_amount && this.state.selectedEmiId ?  
-                  (<Text style={[styles.font20, styles.fontColor70]}>
+                  (<Text style={[styles.font20Bold, styles.fontColor70]}>
                     Rp {installmentCalcWithCurrency}/ bulan</Text>): (
-                      <Text style={[styles.font20, styles.fontColor70]}>
+                      <Text style={[styles.font20Bold, styles.fontColor70]}>
                         Rp {noInstallmentCalcWithCurrency}</Text>)
                 }
               </View>
@@ -458,7 +458,7 @@ class PaymentBank extends Component {
                     backgroundColor: '#FF5722',
                     borderRadius: 3
                   }}>
-                    <Text style={{ color: '#fff', fontSize: 16 }}>Bayar</Text>
+                    <Text style={{ color: '#fff', fontSize: 20 }}>Bayar</Text>
                   </View>
                 </TouchableNativeFeedback>
               </View>
@@ -490,13 +490,13 @@ class PaymentBank extends Component {
 
 
         const styles = StyleSheet.create({
-          header: {
+        header: {
           height: 60,
           backgroundColor: '#42B549',
           flexDirection: 'row',
           justifyContent: 'flex-end'
         },
-          mainContainers: {
+        mainContainers: {
           flex: 1,
           alignItems: 'stretch',
           backgroundColor:'#F4F4F4'
@@ -647,6 +647,14 @@ class PaymentBank extends Component {
         },
         font20 : {
           fontSize: 20
+        },
+        font20Bold : {
+          fontSize: 20,
+          fontWeight: '600'
+        },
+        font18Bold : {
+          fontSize: 18,
+          fontWeight: '400'
         },
         fontColor70: {
           color: '#000000b3'

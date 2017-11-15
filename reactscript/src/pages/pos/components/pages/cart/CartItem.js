@@ -80,7 +80,7 @@ class CartItem extends Component {
           style={{
             borderBottomColor: '#e0e0e0',
             borderBottomWidth: 1,
-            marginHorizontal: '2.5%'
+            marginHorizontal: 32
           }}
         />
       </View>
@@ -91,8 +91,7 @@ class CartItem extends Component {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    paddingHorizontal: 5,
+    paddingHorizontal: 32,
     paddingVertical: 30,
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -103,7 +102,7 @@ const styles = StyleSheet.create({
   },
   price: {
     color: '#ff5722',
-    fontSize: 14,
+    fontSize: 16,
     lineHeight: 20,
     paddingVertical: 5,
   },
@@ -137,7 +136,8 @@ const styles = StyleSheet.create({
     height: 38
   },
   qtyLabel: {
-    fontSize: 12,
+    fontSize: 16,
+    fontWeight: '600',
   },
   qtyText: {
     fontSize: 14,
@@ -151,8 +151,9 @@ const styles = StyleSheet.create({
     left: 10,
   },
   productName: {
-    fontSize: 14,
-    height: 38,
+    fontSize: 16,
+    fontWeight: '600',
+    height: 48,
   }
 })
 
