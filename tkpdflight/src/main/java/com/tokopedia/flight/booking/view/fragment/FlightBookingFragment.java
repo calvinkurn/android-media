@@ -141,6 +141,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         });
 
         adapter = new FlightBookingPassengerAdapter();
+        adapter.setListener(this);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         passengerRecyclerView.setLayoutManager(layoutManager);
