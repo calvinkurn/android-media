@@ -7,13 +7,11 @@
     android:clickable="true"
     android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical"
-    android:layout_marginBottom="@dimen/margin_small"
     android:padding="@dimen/padding_ms">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
 
         <TextView
             android:id="@+id/tv_airline"
@@ -21,7 +19,6 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/margin_small"
             tools:text="Garuda" />
-
 
         <ImageView
             android:id="@+id/image_airline"
