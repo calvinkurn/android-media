@@ -29,6 +29,8 @@ import rx.functions.Func1;
 
 public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAirportCountry,FlightAirportDB> {
 
+    public static final String ID = "id";
+
     @Inject
     public FlightAirportDataListDBSource() {
     }
@@ -94,23 +96,36 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
 
     @Override
     public Observable<List<FlightAirportDB>> getData(HashMap<String, Object> params) {
-        final String queryText = FlightAirportDataListSource.getQueryFromMap(params);
-        return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightAirportDB>>() {
-            @Override
-            public void call(Subscriber<? super List<FlightAirportDB>> subscriber) {
-                String queryLike = "%" + queryText + "%";
-                List<FlightAirportDB> flightAirportDBList = new Select().from(FlightAirportDB.class)
-                        .where(FlightAirportDB_Table.country_id.like(queryLike))
-                        .or(FlightAirportDB_Table.country_name.like(queryLike))
-                        .or(FlightAirportDB_Table.city_name.like(queryLike))
-                        .or(FlightAirportDB_Table.city_code.like(queryLike))
-                        .or(FlightAirportDB_Table.airport_id.like(queryLike))
-                        .or(FlightAirportDB_Table.airport_name.like(queryLike))
-                        .or(FlightAirportDB_Table.aliases.like(queryLike))
-                        .queryList();
-                subscriber.onNext(flightAirportDBList);
-            }
-        });
+        final String id = FlightAirportDataListSource.getIDFromMap(params);
+        if (TextUtils.isEmpty(id)) {
+            final String queryText = FlightAirportDataListSource.getQueryFromMap(params);
+            return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightAirportDB>>() {
+                @Override
+                public void call(Subscriber<? super List<FlightAirportDB>> subscriber) {
+                    String queryLike = "%" + queryText + "%";
+                    List<FlightAirportDB> flightAirportDBList = new Select().from(FlightAirportDB.class)
+                            .where(FlightAirportDB_Table.country_id.like(queryLike))
+                            .or(FlightAirportDB_Table.country_name.like(queryLike))
+                            .or(FlightAirportDB_Table.city_name.like(queryLike))
+                            .or(FlightAirportDB_Table.city_code.like(queryLike))
+                            .or(FlightAirportDB_Table.airport_id.like(queryLike))
+                            .or(FlightAirportDB_Table.airport_name.like(queryLike))
+                            .or(FlightAirportDB_Table.aliases.like(queryLike))
+                            .queryList();
+                    subscriber.onNext(flightAirportDBList);
+                }
+            });
+        } else {
+            return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightAirportDB>>() {
+                @Override
+                public void call(Subscriber<? super List<FlightAirportDB>> subscriber) {
+                    List<FlightAirportDB> flightAirportDBList = new Select().from(FlightAirportDB.class)
+                            .where(FlightAirportDB_Table.airport_id.like(id))
+                            .queryList();
+                    subscriber.onNext(flightAirportDBList);
+                }
+            });
+        }
     }
 
     @Override

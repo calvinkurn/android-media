@@ -50,35 +50,45 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightAirportDB>> getAirportList(final List<String> airportIDFromResult) {
-        return flightAirportDataListSource.getCacheDataList(null).flatMap(new Func1<List<FlightAirportDB>, Observable<List<FlightAirportDB>>>() {
-            @Override
-            public Observable<List<FlightAirportDB>> call(final List<FlightAirportDB> flightAirportDBs) {
-                boolean isAirportInCache = true;
-
-                HashMap<String, FlightAirportDB> dbAirportMaps = new HashMap<>();
-                for (int i = 0, sizei = flightAirportDBs.size(); i < sizei; i++) {
-                    dbAirportMaps.put(flightAirportDBs.get(i).getAirportId(), flightAirportDBs.get(i));
-                }
-                for (int i = 0, sizei = airportIDFromResult.size(); i < sizei; i++) {
-                    if (!dbAirportMaps.containsKey(airportIDFromResult.get(i))) {
-                        isAirportInCache = false;
-                        break;
-                    }
-                }
-                if (isAirportInCache) {
-                    return Observable.just(flightAirportDBs);
-                } else {
-                    return flightAirportDataListSource.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightAirportDB>>>() {
-                        @Override
-                        public Observable<List<FlightAirportDB>> call(Boolean aBoolean) {
-                            return flightAirportDataListSource.getAirportList("");
-                        }
-                    });
-                }
-            }
-        });
+    public Observable<List<FlightAirportDB>> getAirportCacheList() {
+        return flightAirportDataListSource.getCacheDataList(FlightAirportDataListSource.generateGetParam(""));
     }
+
+    @Override
+    public Observable<List<FlightAirportDB>> getAirportCacheList(String airportID) {
+        return flightAirportDataListSource.getCacheDataList(FlightAirportDataListSource.generateGetCacheParam(airportID));
+    }
+
+//    @Override
+//    public Observable<List<FlightAirportDB>> getAirportList(final List<String> airportIDFromResult) {
+//        return flightAirportDataListSource.getCacheDataList(null).flatMap(new Func1<List<FlightAirportDB>, Observable<List<FlightAirportDB>>>() {
+//            @Override
+//            public Observable<List<FlightAirportDB>> call(final List<FlightAirportDB> flightAirportDBs) {
+//                boolean isAirportInCache = true;
+//
+//                HashMap<String, FlightAirportDB> dbAirportMaps = new HashMap<>();
+//                for (int i = 0, sizei = flightAirportDBs.size(); i < sizei; i++) {
+//                    dbAirportMaps.put(flightAirportDBs.get(i).getAirportId(), flightAirportDBs.get(i));
+//                }
+//                for (int i = 0, sizei = airportIDFromResult.size(); i < sizei; i++) {
+//                    if (!dbAirportMaps.containsKey(airportIDFromResult.get(i))) {
+//                        isAirportInCache = false;
+//                        break;
+//                    }
+//                }
+//                if (isAirportInCache) {
+//                    return Observable.just(flightAirportDBs);
+//                } else {
+//                    return flightAirportDataListSource.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightAirportDB>>>() {
+//                        @Override
+//                        public Observable<List<FlightAirportDB>> call(Boolean aBoolean) {
+//                            return flightAirportDataListSource.getAirportList("");
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//    }
 
     @Override
     public Observable<List<FlightAirlineDB>> getAirlineList() {
@@ -86,35 +96,40 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightAirlineDB>> getAirlineList(final List<String> airlineIDFromResult) {
-        return flightAirlineDataListSource.getCacheDataList(null).flatMap(new Func1<List<FlightAirlineDB>, Observable<List<FlightAirlineDB>>>() {
-            @Override
-            public Observable<List<FlightAirlineDB>> call(final List<FlightAirlineDB> flightAirlineDBs) {
-                boolean isAirlineInCache = true;
-
-                HashMap<String, FlightAirlineDB> dbAirlineMaps = new HashMap<>();
-                for (int i = 0, sizei = flightAirlineDBs.size(); i < sizei; i++) {
-                    dbAirlineMaps.put(flightAirlineDBs.get(i).getId(), flightAirlineDBs.get(i));
-                }
-                for (int i = 0, sizei = airlineIDFromResult.size(); i < sizei; i++) {
-                    if (!dbAirlineMaps.containsKey(airlineIDFromResult.get(i))) {
-                        isAirlineInCache = false;
-                        break;
-                    }
-                }
-                if (isAirlineInCache) {
-                    return Observable.just(flightAirlineDBs);
-                } else {
-                    return flightAirlineDataListSource.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightAirlineDB>>>() {
-                        @Override
-                        public Observable<List<FlightAirlineDB>> call(Boolean aBoolean) {
-                            return flightAirlineDataListSource.getAirlineList();
-                        }
-                    });
-                }
-            }
-        });
+    public Observable<List<FlightAirlineDB>> getAirlineCacheList() {
+        return flightAirlineDataListSource.getAirlineCacheList();
     }
+
+//    @Override
+//    public Observable<List<FlightAirlineDB>> getAirlineList(final List<String> airlineIDFromResult) {
+//        return flightAirlineDataListSource.getCacheDataList(null).flatMap(new Func1<List<FlightAirlineDB>, Observable<List<FlightAirlineDB>>>() {
+//            @Override
+//            public Observable<List<FlightAirlineDB>> call(final List<FlightAirlineDB> flightAirlineDBs) {
+//                boolean isAirlineInCache = true;
+//
+//                HashMap<String, FlightAirlineDB> dbAirlineMaps = new HashMap<>();
+//                for (int i = 0, sizei = flightAirlineDBs.size(); i < sizei; i++) {
+//                    dbAirlineMaps.put(flightAirlineDBs.get(i).getId(), flightAirlineDBs.get(i));
+//                }
+//                for (int i = 0, sizei = airlineIDFromResult.size(); i < sizei; i++) {
+//                    if (!dbAirlineMaps.containsKey(airlineIDFromResult.get(i))) {
+//                        isAirlineInCache = false;
+//                        break;
+//                    }
+//                }
+//                if (isAirlineInCache) {
+//                    return Observable.just(flightAirlineDBs);
+//                } else {
+//                    return flightAirlineDataListSource.setCacheExpired().flatMap(new Func1<Boolean, Observable<List<FlightAirlineDB>>>() {
+//                        @Override
+//                        public Observable<List<FlightAirlineDB>> call(Boolean aBoolean) {
+//                            return flightAirlineDataListSource.getAirlineList();
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//    }
 
     @Override
     public Observable<Boolean> deleteFlightCacheSearch() {
@@ -129,6 +144,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<List<FlightAirlineDB>> getAirlineList(String airlineId) {
         return flightAirlineDataListSource.getAirlineList(airlineId);
+    }
+
+    @Override
+    public Observable<List<FlightAirlineDB>> getAirlineCacheList(String airlineId) {
+        return flightAirlineDataListSource.getAirlineCacheList(airlineId);
     }
 
     @Override

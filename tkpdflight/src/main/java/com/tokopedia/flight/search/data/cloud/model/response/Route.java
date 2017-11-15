@@ -49,14 +49,14 @@ public class Route implements ItemType, Parcelable {
     @Expose
     private List<Amenity> amenities = null;
 
-    private String airlineName;
-    private String airlineLogo;
+    private String airlineName; // mergeResult
+    private String airlineLogo; // mergeResult
 
-    private String departureAirportName;
-    private String departureAirportCity;
+    private String departureAirportName; // mergeResult
+    private String departureAirportCity; // mergeResult
 
-    private String arrivalAirportName;
-    private String arrivalAirportCity;
+    private String arrivalAirportName; // mergeResult
+    private String arrivalAirportCity; // mergeResult
 
     public String getAirline() {
         return airline;
