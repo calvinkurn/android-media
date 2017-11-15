@@ -1,22 +1,21 @@
 
 package com.tokopedia.events.data.entity;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONObject;
-
-public class HomeEntity {
+public class HomeResponseEntity {
 
     @SerializedName("layout")
     @Expose
-    private JSONObject layout;
+    private JsonObject layout;
 
-    public JSONObject getLayout() {
+    public JsonObject getLayout() {
         return layout;
     }
 
-    public void setLayout(JSONObject layout) {
+    public void setLayout(JsonObject layout) {
         this.layout = layout;
     }
 

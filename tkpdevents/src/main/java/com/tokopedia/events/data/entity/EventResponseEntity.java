@@ -10,24 +10,24 @@ public class EventResponseEntity {
 
     @SerializedName("filters")
     @Expose
-    private List<FilterEntity> filters = null;
+    private List<FilterResponseEntity> filters = null;
     @SerializedName("home")
     @Expose
-    private HomeEntity home;
+    private HomeResponseEntity home;
 
-    public List<FilterEntity> getFilters() {
+    public List<FilterResponseEntity> getFilters() {
         return filters;
     }
 
-    public void setFilters(List<FilterEntity> filters) {
+    public void setFilters(List<FilterResponseEntity> filters) {
         this.filters = filters;
     }
 
-    public HomeEntity getHome() {
+    public HomeResponseEntity getHome() {
         return home;
     }
 
-    public void setHome(HomeEntity home) {
+    public void setHome(HomeResponseEntity home) {
         this.home = home;
     }
 

@@ -21,9 +21,7 @@ public class CloudEventsDataStore implements EventDataStore{
 
     @Override
     public Observable<EventResponseEntity> getEvents(TKPDMapParam<String, Object> params) {
-        return eventsApi.getEvents(params);
+        return eventsApi.getEvents();
     }
-
-
 
 }

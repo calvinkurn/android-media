@@ -4,7 +4,9 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.EventResponseEntity;
 import com.tokopedia.events.domain.EventRepository;
-import com.tokopedia.events.domain.model.Event;
+import com.tokopedia.events.domain.model.CategoryEntity;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -22,15 +24,17 @@ public class EventRepositoryData implements EventRepository {
 
     }
     @Override
-    public Observable<Event> getEvents(TKPDMapParam<String, Object> params) {
+    public Observable<List<CategoryEntity>> getEvents(TKPDMapParam<String, Object> params) {
 
         return eventsDataStoreFactory
                 .createCloudDataStore()
-                .getEvents(params).map(new Func1<EventResponseEntity, Event>() {
+                .getEvents(params).map(new Func1<EventResponseEntity, List<CategoryEntity>>() {
                     @Override
-                    public Event call(EventResponseEntity eventResponseEntity) {
+                    public List<CategoryEntity> call(EventResponseEntity eventResponseEntity) {
                         CommonUtils.dumper("inside EventResponseEntity = "+eventResponseEntity);
-                        return null;
+                        EventEntityMaper eventEntityMaper=new EventEntityMaper();
+
+                        return eventEntityMaper.tranform(eventResponseEntity);
                     }
                 });
 

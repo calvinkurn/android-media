@@ -3,8 +3,10 @@ package com.tokopedia.events.view.presenter;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
-import com.tokopedia.events.domain.model.Event;
+import com.tokopedia.events.domain.model.CategoryEntity;
 import com.tokopedia.events.view.contractor.EventsContract;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -35,7 +37,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
 
     public void getEventsList(){
 
-        getEventsListRequestUsecase.execute(getView().getParams(), new Subscriber<Event>() {
+        getEventsListRequestUsecase.execute(getView().getParams(), new Subscriber<List<CategoryEntity>>() {
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");
@@ -47,7 +49,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             }
 
             @Override
-            public void onNext(Event event) {
+            public void onNext(List<CategoryEntity> event) {
                 CommonUtils.dumper("enter onNext");
             }
         });

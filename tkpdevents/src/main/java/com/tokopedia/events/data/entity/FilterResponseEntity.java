@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class FilterEntity {
+public class FilterResponseEntity {
 
     @SerializedName("id")
     @Expose
@@ -34,7 +34,7 @@ public class FilterEntity {
     private Integer status;
     @SerializedName("values")
     @Expose
-    private List<ValueEntity> values = null;
+    private List<ValueResponseEntity> values = null;
     @SerializedName("applied")
     @Expose
     private Object applied;
@@ -106,11 +106,11 @@ public class FilterEntity {
         this.status = status;
     }
 
-    public List<ValueEntity> getValues() {
+    public List<ValueResponseEntity> getValues() {
         return values;
     }
 
-    public void setValues(List<ValueEntity> values) {
+    public void setValues(List<ValueResponseEntity> values) {
         this.values = values;
     }
 

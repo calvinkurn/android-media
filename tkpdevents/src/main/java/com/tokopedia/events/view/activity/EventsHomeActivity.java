@@ -10,11 +10,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.events.R;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.DaggerEventComponent;
-import com.tokopedia.events.domain.model.Event;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -78,8 +75,7 @@ public class EventsHomeActivity extends BaseActivity  implements HasComponent<Ev
 
     @Override
     public RequestParams getParams() {
-        RequestParams requestParams = RequestParams.create();
-        return requestParams;
+        return RequestParams.EMPTY;
     }
 
     @Override

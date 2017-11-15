@@ -4,7 +4,7 @@ package com.tokopedia.events.data.entity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ValueEntity {
+public class ValueResponseEntity {
 
     @SerializedName("id")
     @Expose
