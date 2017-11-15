@@ -46,7 +46,7 @@ class TransactionHistory extends Component {
       <View>
         <View style={styles.row}>
           <View style={styles.subRow1}>
-            <Text style={styles.orderName}>{this.props.shop_name} - {this.props.outlet_name}</Text>
+            <Text style={styles.orderName}>{this.props.outlet_name}</Text>
             <Text style={styles.orderId}>{rowItem.order_detail.detail_invoice}</Text>
           </View>
           <View style={styles.subRow2}>
@@ -344,7 +344,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     ...state.transactionHistory,
-    shop_name: state.historyTransaction.shop_name,
     outlet_name: state.historyTransaction.outlet_name,
     data_history: state.historyTransaction.items,
     page: state.historyTransaction.page,
