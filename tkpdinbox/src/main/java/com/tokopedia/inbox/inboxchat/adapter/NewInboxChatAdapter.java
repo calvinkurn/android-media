@@ -12,6 +12,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
@@ -221,13 +222,13 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
                     if (showNotif) {
                         int unread = temp.getUnreadCounter();
                         unread++;
-                        temp.setMessage(Html.fromHtml(lastReply.trim()).toString());
+                        temp.setMessage(MethodChecker.fromHtml(lastReply.trim()).toString());
                         temp.setUnreadCounter(unread);
                         temp.setReadStatus(STATE_CHAT_UNREAD);
                         temp.setTime(String.valueOf(new Date().getTime()));
                         temp.setTyping(false);
                     } else {
-                        temp.setMessage(Html.fromHtml(lastReply.trim()).toString());
+                        temp.setMessage(MethodChecker.fromHtml(lastReply.trim()).toString());
                         temp.setUnreadCounter(0);
                         temp.setReadStatus(STATE_CHAT_READ);
                         temp.setTime(String.valueOf(new Date().getTime()));
@@ -252,7 +253,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
             ChatListViewModel temp = new ChatListViewModel();
             temp.setId(messageId);
             temp.setUnreadCounter(1);
-            temp.setMessage(lastReply);
+            temp.setMessage(MethodChecker.fromHtml(lastReply.trim()).toString());
             temp.setReadStatus(STATE_CHAT_UNREAD);
             temp.setTime(response.getData().getMessage().getTimeStampUnix());
             temp.setName(response.getData().getFrom());

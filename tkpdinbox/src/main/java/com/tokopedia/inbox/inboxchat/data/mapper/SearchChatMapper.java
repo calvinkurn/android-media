@@ -1,8 +1,14 @@
 package com.tokopedia.inbox.inboxchat.data.mapper;
 
+import android.text.TextUtils;
+
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.domain.model.search.Datum;
 import com.tokopedia.inbox.inboxchat.domain.model.search.SearchedMessage;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
@@ -23,22 +29,42 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
     @Override
     public InboxChatViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {
-            SearchedMessage data = response.body().convertDataObj(SearchedMessage.class);
-
-            InboxChatViewModel inboxChatViewModel = new InboxChatViewModel();
-            inboxChatViewModel.setMode(InboxChatViewModel.SEARCH_CHAT_MODE);
-
-            inboxChatViewModel = prepareContact(inboxChatViewModel, data);
-            inboxChatViewModel = prepareReplies(inboxChatViewModel, data);
-
-            return inboxChatViewModel;
+            if ((!response.body().isNullData()
+                    && response.body().getErrorMessageJoined().equals(""))
+                    || !response.body().isNullData() && response.body().getErrorMessages() == null) {
+                SearchedMessage data = response.body().convertDataObj(SearchedMessage.class);
+                return convertToDomain(data);
+            } else {
+                if (response.body().getErrorMessages() != null
+                        && !response.body().getErrorMessages().isEmpty()) {
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                } else {
+                    throw new ErrorMessageException(MainApplication.getAppContext().getString
+                            (R.string.default_request_error_unknown));
+                }
+            }
         } else {
-            return new InboxChatViewModel();
+            String messageError = ErrorHandler.getErrorMessage(response);
+            if (!TextUtils.isEmpty(messageError)) {
+                throw new ErrorMessageException(messageError);
+            } else {
+                throw new RuntimeException(String.valueOf(response.code()));
+            }
         }
     }
 
-    private InboxChatViewModel prepareContact(InboxChatViewModel inboxChatViewModel, SearchedMessage data){
-        if(data.getContacts()!=null && data.getContacts().getData()!=null){
+    private InboxChatViewModel convertToDomain(SearchedMessage data) {
+        InboxChatViewModel inboxChatViewModel = new InboxChatViewModel();
+        inboxChatViewModel.setMode(InboxChatViewModel.SEARCH_CHAT_MODE);
+
+        inboxChatViewModel = prepareContact(inboxChatViewModel, data);
+        inboxChatViewModel = prepareReplies(inboxChatViewModel, data);
+
+        return inboxChatViewModel;
+    }
+
+    private InboxChatViewModel prepareContact(InboxChatViewModel inboxChatViewModel, SearchedMessage data) {
+        if (data.getContacts() != null && data.getContacts().getData() != null) {
             int index = 0;
 
             inboxChatViewModel.setHasNextContacts(data.getContacts().isHasNext());
@@ -70,8 +96,8 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
         return inboxChatViewModel;
     }
 
-    private InboxChatViewModel prepareReplies(InboxChatViewModel inboxChatViewModel, SearchedMessage data){
-        if(data.getReplies()!=null && data.getReplies().getData()!=null){
+    private InboxChatViewModel prepareReplies(InboxChatViewModel inboxChatViewModel, SearchedMessage data) {
+        if (data.getReplies() != null && data.getReplies().getData() != null) {
             int index = 0;
 
             inboxChatViewModel.setHasNextReplies(data.getReplies().isHasNext());
