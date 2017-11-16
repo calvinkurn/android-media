@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;

@@ -127,7 +127,7 @@ public class GetProductUrlUtil {
         adapter.setOnGetUrlListener(new OnGetUrlInterface() {
             @Override
             public void onGetUrl(String url) {
-                listener.onGetUrl(url);
+                listener.onGetUrl(getUrlWithoutParameters(url));
                 dialog.dismiss();
             }
         });
@@ -135,6 +135,14 @@ public class GetProductUrlUtil {
         holder.search2.setOnQuerySendListener(OnSearch());
         holder.openShop.setOnClickListener(OnOpenShop());
         holder.recyclerView.addOnScrollListener(onScrollListener());
+    }
+
+    private String getUrlWithoutParameters(String url) {
+        if (url.contains("?"))
+            return url.substring(0, url.lastIndexOf('?'));
+        else
+            return url;
+
     }
 
     private RetryDataBinder.OnRetryListener onRetry() {

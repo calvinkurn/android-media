@@ -69,11 +69,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     final static String SELLER = "shop";
 
     @Inject
-    ChatRoomPresenter(GetMessageListUseCase getMessageListUseCase,
-                      GetReplyListUseCase getReplyListUseCase,
+    ChatRoomPresenter(GetReplyListUseCase getReplyListUseCase,
                       ReplyMessageUseCase replyMessageUseCase,
                       SessionHandler sessionHandler) {
-        this.getMessageListUseCase = getMessageListUseCase;
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
         this.sessionHandler = sessionHandler;
@@ -312,17 +310,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getProd.getOwnShopProductUrl(new GetProductUrlUtil.OnGetUrlInterface() {
             @Override
             public void onGetUrl(String url) {
-                getView().addUrlToReply(getUrlWithoutParameters(url));
+                getView().addUrlToReply(url);
             }
         });
-    }
-
-    private String getUrlWithoutParameters(String url) {
-        if (url.contains("?"))
-            return url.substring(0, url.lastIndexOf('?'));
-        else
-            return url;
-
     }
 
     @Override
