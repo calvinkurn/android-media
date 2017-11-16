@@ -11,6 +11,7 @@ import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
+import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
@@ -38,16 +39,19 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
     private GetFlightClassesUseCase getFlightClassesUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
+    private FlightDashboardCache flightDashboardCache;
 
     @Inject
     public FlightDashboardPresenter(FlightDashboardValidator validator,
                                     DeleteFlightCacheUseCase deleteFlightCacheUseCase,
                                     GetFlightClassesUseCase getFlightClassesUseCase,
-                                    FlightClassViewModelMapper flightClassViewModelMapper) {
+                                    FlightClassViewModelMapper flightClassViewModelMapper,
+                                    FlightDashboardCache flightDashboardCache) {
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.getFlightClassesUseCase = getFlightClassesUseCase;
         this.flightClassViewModelMapper = flightClassViewModelMapper;
+        this.flightDashboardCache = flightDashboardCache;
     }
 
     @Override
@@ -64,9 +68,26 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void initialize() {
-        actionGetClassesAndSetDefaultClass();
         setupViewModel();
-        getView().renderSingleTripView();
+        actionLoadFromCache();
+        actionGetClassesAndSetDefaultClass();
+    }
+
+    private void actionLoadFromCache() {
+        boolean isChanged = false;
+        if (flightDashboardCache.getDepartureAirport() != null) {
+            getView().getCurrentDashboardViewModel().setDepartureAirport(flightDashboardCache.getDepartureAirport());
+            getView().getCurrentDashboardViewModel().setDepartureAirportFmt(buildAirportFmt(flightDashboardCache.getDepartureAirport()));
+            isChanged = true;
+        }
+        if (flightDashboardCache.getArrivalAirport() != null) {
+            getView().getCurrentDashboardViewModel().setArrivalAirport(flightDashboardCache.getArrivalAirport());
+            getView().getCurrentDashboardViewModel().setArrivalAirportFmt(buildAirportFmt(flightDashboardCache.getArrivalAirport()));
+            isChanged = true;
+        }
+        if (isChanged) {
+            renderUi();
+        }
     }
 
     private void actionGetClassesAndSetDefaultClass() {
@@ -241,13 +262,21 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public void onDepartureAirportChange(FlightAirportDB departureAirport) {
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setDepartureAirport(departureAirport);
+        String code = buildAirportFmt(departureAirport);
+        flightDashboardViewModel.setDepartureAirportFmt(code);
+        getView().setDashBoardViewModel(flightDashboardViewModel);
+        flightDashboardCache.putDepartureAirport(departureAirport);
+        renderUi();
+    }
+
+    @NonNull
+    private String buildAirportFmt(FlightAirportDB departureAirport) {
         String code = departureAirport.getAirportId();
         if (TextUtils.isEmpty(code)) {
             code = departureAirport.getCityCode();
         }
-        flightDashboardViewModel.setDepartureAirportFmt(departureAirport.getCityName() + " (" + code + ")");
-        getView().setDashBoardViewModel(flightDashboardViewModel);
-        renderUi();
+        code = departureAirport.getCityName() + " (" + code + ")";
+        return code;
     }
 
     @Override
@@ -260,6 +289,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         }
         flightDashboardViewModel.setArrivalAirportFmt(arrivalAirport.getCityName() + " (" + code + ")");
         getView().setDashBoardViewModel(flightDashboardViewModel);
+        flightDashboardCache.putArrivalAirport(arrivalAirport);
         renderUi();
     }
 
