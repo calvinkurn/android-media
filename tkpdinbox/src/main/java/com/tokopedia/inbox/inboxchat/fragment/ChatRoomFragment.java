@@ -365,12 +365,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     View action = notifier.findViewById(R.id.action);
                     title.setText(R.string.error_no_connection_retrying);
                     action.setVisibility(View.VISIBLE);
-                    action.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            notifier.setVisibility(View.GONE);
-                        }
-                    });
                 }
             });
         }
@@ -508,11 +502,13 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void setResult() {
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(PARCEL, adapter.getLastItem());
-        intent.putExtras(bundle);
-        getActivity().setResult(Activity.RESULT_OK, intent);
+        if(adapter!=null && getActivity() != null) {
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(PARCEL, adapter.getLastItem());
+            intent.putExtras(bundle);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+        }
     }
 
     @Override
@@ -617,7 +613,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 public void run() {
                     TextView title = (TextView) notifier.findViewById(R.id.title);
                     title.setText(R.string.connected_websocket);
-                    TextView action = (TextView) notifier.findViewById(R.id.action);
+                    View action = notifier.findViewById(R.id.action);
                     action.setVisibility(View.GONE);
 
                     sendButton.setOnClickListener(getSendWithWebSocketListener());

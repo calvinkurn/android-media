@@ -73,7 +73,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_marginTop="@dimen/margin_vs"
-            android:background="@drawable/cards_ui"
+            android:background="@drawable/cards_ui_chat"
             android:paddingBottom="@dimen/padding_vs"
             android:paddingTop="@dimen/padding_vs"
             android:visibility="visible">
@@ -170,13 +170,10 @@
                 tools:text="JJJJ"
                 android:textColor="@color/white"/>
 
-            <TextView
+            <ProgressBar
                 android:id="@+id/action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_close_24dp"
-                android:text="@string/title_try_again"
-                android:textStyle="bold"
                 android:textColor="@color/white"/>
 
         </LinearLayout>

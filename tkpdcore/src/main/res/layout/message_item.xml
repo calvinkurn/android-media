@@ -40,8 +40,8 @@
 
         <ImageView
             android:id="@+id/checked"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_check_circle_48dp"
@@ -58,6 +58,7 @@
             android:layout_alignParentTop="true"
             android:textSize="@dimen/text_size_xsmall"
             tools:text="12:30"
+            android:textColor="@color/black_38"
             android:layout_marginRight="@dimen/new_margin_med"/>
 
 
@@ -76,20 +77,24 @@
             android:layout_toEndOf="@+id/user_ava"
             android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
-            android:scrollbars="horizontal"/>
+            android:scrollbars="horizontal"
+            android:layout_marginBottom="3dp"/>
 
         <TextView
             android:id="@+id/label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="4dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:ellipsize="end"
             android:background="@drawable/label_user_chat"
             android:textColor="@color/medium_green"
             android:textSize="9sp"
             tools:text="Penjual"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginLeft="7dp"
+            android:layout_marginStart="7dp"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/user_name"
             android:layout_toEndOf="@+id/user_name" />
@@ -132,7 +137,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@id/user_ava"
-            android:background="@color/grey_300"
+            android:background="@color/black_54"
+            android:alpha="0.5"
             android:layout_marginTop="@dimen/new_margin_med"
             android:minHeight="1dp"
             android:layout_alignLeft="@+id/message"

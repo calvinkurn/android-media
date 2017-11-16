@@ -90,7 +90,7 @@
         android:layout_marginBottom="@dimen/margin_vs"
         android:layout_toRightOf="@id/user_ava"
         android:background="@drawable/left_bubble"
-        android:maxWidth="@dimen/message_width"
+        android:maxWidth="270dp"
         android:layout_below="@id/name"
         android:gravity="left"
         android:orientation="vertical"

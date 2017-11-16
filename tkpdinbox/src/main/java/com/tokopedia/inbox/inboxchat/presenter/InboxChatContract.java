@@ -88,6 +88,8 @@ public class InboxChatContract {
         void showErrorFull();
 
         void dropKeyboard();
+
+        void setMenuEnabled(boolean b);
     }
 
     interface Presenter extends CustomerPresenter<View>{
