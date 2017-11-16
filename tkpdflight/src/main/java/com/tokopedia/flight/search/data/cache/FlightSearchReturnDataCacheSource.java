@@ -2,7 +2,7 @@ package com.tokopedia.flight.search.data.cache;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.base.data.source.cache.DataListCacheSource;
+import com.tokopedia.abstraction.base.data.source.cache.DataCacheSource;
 import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
 
 import java.util.concurrent.TimeUnit;
@@ -13,13 +13,13 @@ import javax.inject.Inject;
  * Created by hendry on 7/14/2017.
  */
 
-public class FlightSearchReturnDataListCacheSource extends DataListCacheSource{
+public class FlightSearchReturnDataCacheSource extends DataCacheSource {
 
     private static final String PREF_KEY_NAME = "FLIGHT_SEARCH_RETURN";
     private static final long ONE_HOUR = TimeUnit.HOURS.toSeconds(1);
 
     @Inject
-    public FlightSearchReturnDataListCacheSource(@ApplicationContext Context context) {
+    public FlightSearchReturnDataCacheSource(@ApplicationContext Context context) {
         super(context);
     }
 

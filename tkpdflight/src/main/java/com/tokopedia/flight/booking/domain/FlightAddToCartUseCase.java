@@ -64,7 +64,7 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
         FlightCartRequest request = new FlightCartRequest();
         request.setType(PARAM_CART_TYPE);
         CartAttributesRequest attributesRequest = new CartAttributesRequest();
-        attributesRequest.setDid(5);
+        attributesRequest.setDid(4);
         attributesRequest.setIpAddress(FlightRequestUtil.getLocalIpAddress());
         attributesRequest.setUserAgent(FlightRequestUtil.getUserAgentForApiCall());
         FlightRequest flightRequest = new FlightRequest();

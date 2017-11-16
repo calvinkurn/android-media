@@ -24,7 +24,7 @@ public class FlightBookingPhoneCodeViewHolder extends BaseViewHolder<FlightBooki
 
     @Override
     public void bindObject(FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
-        countryPhonCode.setText(flightBookingPhoneCodeViewModel.getCountryPhoneCode());
-        countryName.setText(itemView.getContext().getString(R.string.flight_booking_phone_code_label ,flightBookingPhoneCodeViewModel.getCountryName()));
+        countryPhonCode.setText(itemView.getContext().getString(R.string.flight_booking_phone_code_label, flightBookingPhoneCodeViewModel.getCountryPhoneCode()));
+        countryName.setText(flightBookingPhoneCodeViewModel.getCountryName());
     }
 }

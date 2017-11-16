@@ -1,12 +1,16 @@
 package com.tokopedia.flight.search.data.db;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.property.IntProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
-import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
+import com.tokopedia.flight.common.data.db.BaseDataDBSource;
+import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
+import com.tokopedia.flight.search.data.cloud.model.response.Meta;
+import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
@@ -25,13 +29,14 @@ import rx.functions.Func1;
  * Created by normansyahputa on 5/18/17.
  */
 
-public abstract class AbsFlightSearchDataListDBSource extends BaseDataListDBSource<FlightSearchData, FlightSearchSingleRouteDB> {
+public abstract class AbsFlightSearchDataDBSource
+        extends BaseDataDBSource<FlightDataResponse<List<FlightSearchData>>, List<FlightSearchSingleRouteDB>> {
 
     protected abstract Class<? extends FlightSearchSingleRouteDB> getDBClass();
 
     @Override
-    public Observable<Boolean> insertAll(final List<FlightSearchData> flightSearchDataList) {
-        return Observable.from(flightSearchDataList)
+    public Observable<Boolean> insertAll(final FlightDataResponse<List<FlightSearchData>> flightSearchData) {
+        return Observable.from(flightSearchData.getData())
                 .flatMap(new Func1<FlightSearchData, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(FlightSearchData flightSearchData) {
@@ -49,16 +54,40 @@ public abstract class AbsFlightSearchDataListDBSource extends BaseDataListDBSour
                 .flatMap(new Func1<List<Boolean>, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(List<Boolean> booleen) {
+                        insertFlightMetaData(flightSearchData.getMeta());
+                        return Observable.just(true);
+                    }
+                })
+                .flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Boolean booleen) {
                         return Observable.just(new Select(Method.count()).from(getDBClass()).hasData());
                     }
                 });
 
     }
 
+    @Override
+    public Observable<Boolean> deleteAll() {
+        return super.deleteAll().flatMap(new Func1<Boolean, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(Boolean aBoolean) {
+                new Delete().from(FlightMetaDataDB.class).execute();
+                return Observable.just(true);
+            }
+        });
+    }
+
     protected abstract void insertSingleFlightData(FlightSearchData flightSearchData);
+
+    protected void insertFlightMetaData(Meta meta){
+        FlightMetaDataDB flightMetaDataDB = new FlightMetaDataDB(meta);
+        flightMetaDataDB.insert();
+    }
 
     @Override
     public Observable<List<FlightSearchSingleRouteDB>> getData(HashMap<String, Object> params) {
+        //TODO get the meta from db
         final FlightFilterModel flightFilterModel = FlightSearchParamUtil.getFilterModel(params);
         return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightSearchSingleRouteDB>>() {
             @Override

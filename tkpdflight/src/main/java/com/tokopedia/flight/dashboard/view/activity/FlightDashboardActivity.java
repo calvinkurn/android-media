@@ -29,6 +29,7 @@ public class FlightDashboardActivity extends BaseSimpleActivity implements HasCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        toolbar.setContentInsetStartWithNavigation(0);
     }
 
     @Override

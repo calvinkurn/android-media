@@ -8,9 +8,9 @@
 
     <ImageView
         android:id="@+id/image_view"
-        android:layout_marginTop="@dimen/margin_vs"
         android:layout_width="@dimen/image_width_s"
         android:layout_height="@dimen/image_width_s"
+        android:layout_marginTop="@dimen/margin_vs"
         android:scaleType="fitCenter"
         tools:src="@drawable/ic_smiley_positive" />
 
@@ -22,8 +22,8 @@
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/edit_text"
-            android:textColor="@color/font_black_primary_70"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/font_black_primary_70" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 </LinearLayout>

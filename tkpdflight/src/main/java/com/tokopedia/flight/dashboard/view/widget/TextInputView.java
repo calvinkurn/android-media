@@ -3,7 +3,6 @@ package com.tokopedia.flight.dashboard.view.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -27,6 +26,7 @@ public class TextInputView extends BaseCustomView {
     private String titleText;
     private String hintText;
     private boolean allowInputManually;
+    private boolean removeBackground;
 
     public TextInputView(Context context) {
         super(context);
@@ -50,6 +50,7 @@ public class TextInputView extends BaseCustomView {
             hintText = styledAttributes.getString(R.styleable.TextInputView_tiv_hint_text);
             titleText = styledAttributes.getString(R.styleable.TextInputView_tiv_title_text);
             allowInputManually = styledAttributes.getBoolean(R.styleable.TextInputView_allow_input_manually, false);
+            removeBackground = styledAttributes.getBoolean(R.styleable.TextInputView_tiv_remove_background, false);
         } finally {
             styledAttributes.recycle();
         }
@@ -61,6 +62,10 @@ public class TextInputView extends BaseCustomView {
         ImageView imageView = (ImageView) view.findViewById(R.id.image_view);
         textInputLayout = (TkpdHintTextInputLayout) view.findViewById(R.id.text_input_layout);
         EditText etText = textInputLayout.getEditText();
+
+        if (removeBackground) {
+            etText.setBackground(null);
+        }
 
         if (iconDrawable == null) {
             imageView.setVisibility(View.GONE);
@@ -96,7 +101,7 @@ public class TextInputView extends BaseCustomView {
         }
     }
 
-    public CharSequence getText(){
+    public CharSequence getText() {
         return textInputLayout.getEditText().getText();
     }
 

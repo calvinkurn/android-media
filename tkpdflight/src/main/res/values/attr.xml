@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="TextInputView">
+        <attr name="tiv_remove_background" format="boolean" />
         <attr name="tiv_title_text" format="string" />
         <attr name="tiv_hint_text" format="string" />
         <attr name="tiv_icon" format="reference" />
