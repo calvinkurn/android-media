@@ -56,6 +56,7 @@ public class FlightDetailActivity extends BaseTabActivity {
         super.setupLayout(savedInstanceState);
         buttonSubmit = (Button) findViewById(R.id.button_submit);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setTitle(" ");
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
         departureAirportCode = (TextView) findViewById(R.id.departure_airport_code);
         departureAirportName = (TextView) findViewById(R.id.departure_airport_name);
@@ -136,7 +137,7 @@ public class FlightDetailActivity extends BaseTabActivity {
                     collapsingToolbarLayout.setTitle(getString(R.string.flight_label_detail));
                     isShow = true;
                 } else if (isShow) {
-                    collapsingToolbarLayout.setTitle("");
+                    collapsingToolbarLayout.setTitle(" ");
                     isShow = false;
                 }
             }
