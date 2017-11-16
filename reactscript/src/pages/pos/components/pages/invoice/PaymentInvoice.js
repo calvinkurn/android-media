@@ -83,15 +83,15 @@ class PaymentInvoice extends Component {
 
   _renderProductList = ({item}) => {
     return (
-      <View style={{ marginLeft: 20, marginRight: 20, flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginTop: '1%', backgroundColor: 'white' }}>
+      <View style={{ marginLeft: 32, marginRight: 32, flex: 1, flexDirection: 'row', justifyContent: 'space-between', margin: 16, backgroundColor: 'white' }}>
         <View style={{ width: "12%", height: '20%' }}>
           <Image source={{ uri: item.imageUrl }} style={styles.productImage} ></Image>
         </View>
         <View style={{ width: '76%', height: '20%', flexDirection: 'column', justifyContent: 'flex-start' }}>
-          <Text style={[styles.font14, styles.fontcolor71, { width: '80%' }]}>{item.name} </Text>
-          <Text style={[styles.font13, styles.fontcolor61, { marginTop: 10 }]}>Jumlah Barang: {item.quantity}</Text>
+          <Text style={[styles.font16, styles.fontcolor70, { width: '80%' }]}>{item.name} </Text>
+          <Text style={[styles.font16, styles.fontcolor70, { marginTop: 10 }]}>Jumlah Barang: {item.quantity}</Text>
         </View>
-        <Text style={[styles.font14, styles.fontcolor71]}>Rp {(item.price).toLocaleString("id")}</Text>
+        <Text style={[styles.font16, styles.fontcolor70]}>Rp {(item.price).toLocaleString("id")}</Text>
       </View>
     )
   }
@@ -116,6 +116,7 @@ class PaymentInvoice extends Component {
               <Text style={styles.text2}> Terima kasih telah berbelanja di toko kami</Text>
               <Text style={styles.text3}>{data.invoiceRef}</Text>
             </View>
+            <View style={{borderColor: '#e0e0e0', borderWidth: 1}}></View>
 
             <View style={{ backgroundColor: 'white' }}>
               <FlatList 
@@ -126,21 +127,21 @@ class PaymentInvoice extends Component {
                 style={{ backgroundColor: 'white' }} />
             </View>
             
-            <View style={{paddingRight: '2%', paddingLeft: '3%', backgroundColor: '#FFFFFF'}}>
+            <View style={{backgroundColor: '#FFFFFF'}}>
               <Dash style={{width:"100%", height:2}} dashColor="#F0F0F0"/>
             </View>
 
             <View style={[styles.row, styles.row4]} >
               <View style={{ flexDirection: 'column' }}>
-                <Text style={{ fontSize: 13, color: '#00000061' }}>Metode Pembayaran</Text>
+                <Text style={{ fontSize: 16, color: '#000000b3', fontWeight: 'bold' }}>Metode Pembayaran</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Image source={{ uri: this.props.bankLogo }} style={{ height: 48, width: 70, resizeMode: 'contain' }} >
                   </Image>
-                  <Text style={{ fontSize: 15, color: '#0000008a', marginLeft: 10 }}>{this.props.bankName}</Text>
+                  <Text style={{ fontSize: 16, color: '#000000b3', marginLeft: 16 }}>{this.props.bankName}</Text>
                 </View>
               </View>
               <View style={{ flexDirection: 'row' }}>
-                <Text style={{ fontSize: 16, color: '#0000008a' }}>Total Pembayaran</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#000000b3' }}>Total Pembayaran : </Text>
                 <Text style={{ fontSize: 16, color: '#000000b3' }}> Rp {(paymentDetails[0].amount).toLocaleString("id")}</Text>
               </View>
             </View>
@@ -229,13 +230,14 @@ const styles = StyleSheet.create({
   row: {
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderColor: '#F0F0F0'
+    borderColor: '#e0e0e0',
+    borderRadius: 3
   },
   row1: {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: "center",
-    padding: "3%"
+    padding: 32
   },
   row2: {
     flexDirection: 'column',
@@ -257,33 +259,36 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: "3%",
-    paddingRight: "2%"
+    paddingRight: 32
   },
   text1: {
-    fontSize: 16,
+    fontSize: 20,
+    fontWeight: 'bold',
     color: '#000000b3',
-    marginTop: 10
+    marginTop: 16
   },
   text2: {
     fontSize: 16,
-    color: "#00000061"
+    color: "#0000008a"
   },
   text3: {
-    marginTop: 10,
-    fontSize: 14,
+    marginTop: 8,
+    fontWeight: '400',
+    fontSize: 16,
     color: "#000000b3"
   },
   row3text1: {
-    fontSize: 12,
+    fontSize: 20,
+    fontWeight: 'bold',
     color: '#000000b3',
     marginTop: 10
   },
   row3text2: {
-    fontSize: 12,
-    color: "#00000061"
+    fontSize: 14,
+    color: "#00000087"
   },
   button: {
-    height: 40,
+    height: 58,
     width: 252,
     backgroundColor: '#42b549',
     alignItems: 'center',
@@ -291,6 +296,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     borderWidth: 3,
     borderColor: '#42b549',
+    padding: 16
   },
   popupButton: {
     height: 40,
@@ -304,7 +310,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#FFFFFF',
-    fontSize: 13,
+    fontSize: 20,
   },
   errorText: {
     color: '#D50000'

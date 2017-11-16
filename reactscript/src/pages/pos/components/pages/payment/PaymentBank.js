@@ -403,13 +403,13 @@ class PaymentBank extends Component {
                     disabled={true}
                     onPress={this._choosePaymentMethod.bind(this, 'SCAN')}>
                     <View style={[styles.paymentMethod, { marginRight: 10 }, (this.state.paymentMethod === 'SCAN') ? styles.paymentSelected : {}]}>
-                      <Text style={[styles.emiText, {fontSize: 14}]}>Scan Kartu Kredit</Text>
+                      <Text style={[styles.emiText]}>Scan Kartu Kredit</Text>
                     </View>
                   </TouchableWithoutFeedback>
 
                   <TouchableWithoutFeedback onPress={this._choosePaymentMethod.bind(this, 'ONLINE')}>
                     <View style={[styles.paymentMethod, (this.state.paymentMethod === 'ONLINE') ? styles.paymentSelected : {}]}>
-                      <Text style={[styles.emiText, {fontSize: 14}]}>Pembayaran Online</Text>
+                      <Text style={[styles.emiText]}>Pembayaran Online</Text>
                     </View>
                   </TouchableWithoutFeedback>
                 </View>
@@ -508,8 +508,8 @@ class PaymentBank extends Component {
         },
         paymentMethod:{
           borderRadius:3,
-          width:150,
-          height:80,
+          width:170,
+          height:52,
           borderWidth:1,
           borderColor:'#F0F0F0',
           alignItems:'center',
@@ -525,26 +525,26 @@ class PaymentBank extends Component {
           borderBottomWidth: 1,
           borderColor: '#F0F0F0',
         },
-          row1:{
+        row1:{
           padding:15,
         },
-          row2:{
+        row2:{
           paddingRight:15,
           borderBottomWidth:0,
           justifyContent:'flex-end',
           paddingTop:7,
           height:30
         },
-          row3:{
+        row3:{
           paddingLeft:15,
           borderBottomWidth:0,
           paddingTop:0,
-          height:20
+          height:24
         },
-          row2Text: {
+        row2Text: {
           fontSize: 10
         },
-          row4: {
+        row4: {
           flexDirection:'row',
           justifyContent:'space-between',
           padding:10,
@@ -553,7 +553,7 @@ class PaymentBank extends Component {
           minHeight: 60,
           flexWrap: 'wrap',
         },
-         selectedBankRow: {
+        selectedBankRow: {
           flexDirection:'row',
           justifyContent:'space-between',
           padding:10,
@@ -562,7 +562,7 @@ class PaymentBank extends Component {
           minHeight: 60,
           flexWrap: 'wrap',
         },
-          row5: {
+        row5: {
           height:60,
           flexDirection:'row',
           justifyContent:'space-between',
@@ -571,17 +571,17 @@ class PaymentBank extends Component {
           flexWrap: 'wrap'
 
         },
-          cardLogo: {
+        cardLogo: {
           flex:1,
           resizeMode: 'contain',
           height: width * .1,
           width: width * .1
         },
-          buttonContainer: {
+        buttonContainer: {
           marginTop: 20,
           borderRadius: 5
         },
-          row7: {
+        row7: {
           height: 50,
           flexDirection:'row', justifyContent:'center'
         },
@@ -603,40 +603,41 @@ class PaymentBank extends Component {
           justifyContent: 'center',
           borderColor:'#F0F0F0',
         },
-          emiText : {
-          fontSize:13,
-          color: '#0000008a',
+        emiText : {
+          fontSize: 16,
+          padding: 16,
+          color: '#000000b3',
           textAlign:'center'
         },
-          noBorder : {
+        noBorder : {
           borderWidth:0,
           borderRadius:0,
           marginTop: 0,
           height:0
         },
-          disabledText: {
+        disabledText: {
           backgroundColor: '#E9E9E9'
         },
-          selectedBorder: {
+        selectedBorder: {
           borderColor: '#42B549'
         },
-          popupRow: {
+        popupRow: {
           justifyContent: 'flex-start',
           flexDirection: 'row',
           flex: 0.1
         },
-          popupCol : {
+        popupCol : {
           marginLeft: width*.03,
           marginTop: width*.03
         },
-          popupImage : {
+        popupImage : {
           width: 100,
           height: 30
         },
-          popupText : {
+        popupText : {
           marginTop: width*.015, fontSize:15
         },
-          fon13 : {
+        fon13 : {
           fontSize: 13
         },
         fon14 : {
@@ -654,7 +655,7 @@ class PaymentBank extends Component {
         },
         font18Bold : {
           fontSize: 18,
-          fontWeight: '400'
+          fontWeight: 'bold'
         },
         fontColor70: {
           color: '#000000b3'

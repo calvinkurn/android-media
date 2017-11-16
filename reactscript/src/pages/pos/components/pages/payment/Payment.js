@@ -173,7 +173,7 @@ class payment extends Component {
 
             <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#fff', paddingBottom: 0, paddingHorizontal: 20 }} >
               <View style={{ flex: 0.5, justifyContent: 'flex-end', borderBottomWidth: 2, borderBottomColor: '#F0F0F0' }}>
-                <Text style={[styles.row4Text]}>Nomor kartu kredit</Text>
+                <Text style={[styles.row4Text, {marginBottom: 8}]}>Nomor kartu kredit</Text>
                 <TextInput
                   underlineColorAndroid={'transparent'}
                   style={{ fontSize: 16, paddingLeft: 0, paddingVertical: 0 }}
@@ -355,7 +355,7 @@ class payment extends Component {
                 backgroundColor: '#FF5722',
                 borderRadius: 3
               }}>
-                <Text style={{ color: '#fff', fontSize: 16 }}>Bayar</Text>
+                <Text style={{ color: '#fff', fontSize: 20 }}>Bayar</Text>
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -398,11 +398,12 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   row1Text: {
-    fontSize: 16,
+    fontSize: 20,
+    fontWeight: 'bold',
     color: '#000000b3',
   },
   row2Text: {
-    fontSize: 14,
+    fontSize: 20,
     color: '#000000b3'
   },
   row2: {
@@ -447,8 +448,8 @@ const styles = StyleSheet.create({
     flex: 0.6
   },
   row4Text: {
-    fontSize: 12,
-    color: '#0000008a'
+    fontSize: 16,
+    color: '#000000b3'
   },
   cardLogo: {
     height: 55,
