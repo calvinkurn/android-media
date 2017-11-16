@@ -297,10 +297,11 @@ public class HistoryTokocashActivity extends BasePresenterActivity<ITokoCashHist
                 endCalendar.getTimeInMillis(), getString(R.string.range_date_this_month)));
         startCalendar = Calendar.getInstance();
         startCalendar.setTimeInMillis(endCalendar.getTimeInMillis());
-        startCalendar.add(Calendar.DATE, -59);
+        startCalendar.add(Calendar.MONTH, -1);
+        startCalendar.set(Calendar.DATE, 1);
         endCalendar = Calendar.getInstance();
-        endCalendar.setTimeInMillis(endCalendar.getTimeInMillis());
-        endCalendar.add(Calendar.DATE, -29);
+        endCalendar.add(Calendar.MONTH, -1);
+        endCalendar.set(Calendar.DAY_OF_MONTH, endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
         periodRangeModelCoreList.add(convert(startCalendar.getTimeInMillis(),
                 endCalendar.getTimeInMillis(), getString(R.string.range_date_last_month)));
         return periodRangeModelCoreList;
