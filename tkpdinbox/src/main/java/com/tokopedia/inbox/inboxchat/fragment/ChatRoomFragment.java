@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -145,13 +144,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyIsTyping.subscribe(new Action1<Boolean>() {
             @Override
             public void call(Boolean aBoolean) {
-                if (aBoolean) {
-                    try {
-                        presenter.setIsTyping(getArguments().getString(ChatRoomActivity
-                                .PARAM_MESSAGE_ID));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    if(aBoolean)
+                    presenter.setIsTyping(getArguments().getString(ChatRoomActivity
+                            .PARAM_MESSAGE_ID));
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -161,10 +159,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     @Override
                     public void call(Boolean aBoolean) {
                         try {
-                            if (aBoolean) {
-                                presenter.stopTyping(getArguments().getString(ChatRoomActivity
-                                        .PARAM_MESSAGE_ID));
-                            }
+                            presenter.stopTyping(getArguments().getString(ChatRoomActivity
+                                    .PARAM_MESSAGE_ID));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -277,10 +273,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
             label = (TextView) toolbar.findViewById(R.id.label);
             ImageHandler.loadImageCircle2(getActivity(), avatar, getArguments().getString(PARAM_SENDER_IMAGE), R.drawable.ic_image_avatar_boy);
             user.setText(getArguments().getString(PARAM_SENDER_NAME));
-            if(!getArguments().getString(PARAM_SENDER_TAG).equals(ListChatViewHolder.USER)){
+            if (!getArguments().getString(PARAM_SENDER_TAG).equals(ListChatViewHolder.USER)) {
                 label.setText(getArguments().getString(PARAM_SENDER_TAG));
                 label.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 label.setVisibility(View.GONE);
             }
             setOnlineDesc(getString(R.string.just_now));

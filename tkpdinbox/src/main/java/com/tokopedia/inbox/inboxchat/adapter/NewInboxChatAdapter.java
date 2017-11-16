@@ -2,6 +2,7 @@ package com.tokopedia.inbox.inboxchat.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +13,12 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
-import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.EmptyChatModel;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.EmptyChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TimeMachineListViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +33,7 @@ import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.STATE_CHAT_U
 
 public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
-    private static final int MAX_MESSAGE_DELETE = 3;
+    private static final int MAX_MESSAGE_DELETE = 10;
     private final InboxChatTypeFactory typeFactory;
     private List<Visitable> list;
     private List<Visitable> listSearch;
@@ -219,13 +221,13 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
                     if (showNotif) {
                         int unread = temp.getUnreadCounter();
                         unread++;
-                        temp.setMessage(lastReply);
+                        temp.setMessage(Html.fromHtml(lastReply.trim()).toString());
                         temp.setUnreadCounter(unread);
                         temp.setReadStatus(STATE_CHAT_UNREAD);
                         temp.setTime(String.valueOf(new Date().getTime()));
                         temp.setTyping(false);
                     } else {
-                        temp.setMessage(lastReply);
+                        temp.setMessage(Html.fromHtml(lastReply.trim()).toString());
                         temp.setUnreadCounter(0);
                         temp.setReadStatus(STATE_CHAT_READ);
                         temp.setTime(String.valueOf(new Date().getTime()));
@@ -246,7 +248,7 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
                 break;
             }
         }
-        if(isNew && response!=null){
+        if (isNew && response != null) {
             ChatListViewModel temp = new ChatListViewModel();
             temp.setId(messageId);
             temp.setUnreadCounter(1);
@@ -282,14 +284,26 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void removeList(List<Pair> originList, List<DeleteChatViewModel> list) {
-        for (Pair pair: originList) {
-            ChatListViewModel first = (ChatListViewModel) pair.first;
-            int position = (int) pair.second;
-            for (DeleteChatViewModel model : list) {
-                if (model.getMsgId() == Integer.valueOf(first.getId())) {
-                    this.list.remove(position);
-                    notifyItemRemoved(position);
-                    break;
+        if (originList.size() == list.size()
+                && this.list.get(1) instanceof TimeMachineListViewModel) {
+            this.list.clear();
+            this.list.add(emptyChatModel);
+            showTimeMachine();
+            notifyDataSetChanged();
+        } else if (originList.size() == list.size()) {
+            this.list.clear();
+            this.list.add(emptyChatModel);
+            notifyDataSetChanged();
+        } else {
+            for (Pair pair : originList) {
+                ChatListViewModel first = (ChatListViewModel) pair.first;
+                int position = (int) pair.second;
+                for (DeleteChatViewModel model : list) {
+                    if (model.getMsgId() == Integer.valueOf(first.getId())) {
+                        this.list.remove(position);
+                        notifyItemRemoved(position);
+                        break;
+                    }
                 }
             }
         }

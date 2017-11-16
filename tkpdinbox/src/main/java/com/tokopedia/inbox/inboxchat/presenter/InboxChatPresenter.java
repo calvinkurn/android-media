@@ -414,11 +414,11 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         this.inActionMode = inActionMode;
     }
 
-    public void setError() {
+    public void setError(String errorMessage) {
         if (pagingHandler.getPage() == 1) {
-            getView().showErrorFull();
+            getView().showErrorFull(errorMessage);
         } else {
-            getView().showError("Pencarian Gagal");
+            getView().showError(errorMessage);
         }
     }
 }

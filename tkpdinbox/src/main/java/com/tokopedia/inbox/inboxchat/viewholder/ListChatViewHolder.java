@@ -96,7 +96,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                 userName.setText(element.getName());
             } else if (element.getSpanMode() == ChatListViewModel.SPANNED_CONTACT) {
                 userName.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
-                message.setText(element.getMessage().trim());
+                message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
             } else {
                 message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
                 userName.setText(element.getName());

@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxchat.presenter.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxchat.domain.model.GetReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.ListReply;
@@ -38,7 +39,7 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
     @Override
     public void onError(Throwable e) {
         view.setViewEnabled(true);
-        view.showError(e.getLocalizedMessage());
+        view.showError(ErrorHandler.getErrorMessage(e));
         view.finishLoading();
         presenter.finishRequest();
     }

@@ -64,7 +64,7 @@ import javax.inject.Inject;
 public class InboxChatFragment extends BaseDaggerFragment
         implements InboxChatContract.View, InboxMessageConstant, InboxChatConstant
         , SearchInputView.Listener, SearchInputView.ResetListener
-        , WebSocketInterface{
+        , WebSocketInterface {
 
     RecyclerView mainList;
 
@@ -170,7 +170,6 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
 
-
     private ActionMode.Callback initCallbackActionMode() {
         return new ActionMode.Callback() {
             @Override
@@ -191,10 +190,10 @@ public class InboxChatFragment extends BaseDaggerFragment
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
-                if (item.getItemId() == R.id.action_delete){
+                if (item.getItemId() == R.id.action_delete && presenter.getSelected() > 0) {
                     List<Pair> temp = new ArrayList<>();
                     temp.addAll(adapter.getListMove());
-                    askOption(presenter.getSelected(), temp).show();
+                    createDeleteDialog(presenter.getSelected(), temp).show();
                     mode.finish();
                     return true;
                 }
@@ -212,11 +211,9 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
 
-    private AlertDialog askOption(int selected, final List<Pair> listMove)
-    {
+    private AlertDialog createDeleteDialog(int selected, final List<Pair> listMove) {
 
-        AlertDialog myQuittingDialogBox =new AlertDialog.Builder(getActivity())
-                //set message, title, and icon
+        return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.title_delete)
                 .setMessage(String.format(getResources().getString(R.string.delete_confirmation)
                         , selected))
@@ -234,10 +231,8 @@ public class InboxChatFragment extends BaseDaggerFragment
                     }
                 })
                 .create();
-        return myQuittingDialogBox;
 
     }
-
 
 
     @Override
@@ -276,7 +271,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                 .build();
         DaggerInboxChatComponent daggerInboxChatComponent =
                 (DaggerInboxChatComponent) DaggerInboxChatComponent.builder()
-                .appComponent(daggerAppComponent).build();
+                        .appComponent(daggerAppComponent).build();
         daggerInboxChatComponent.inject(this);
     }
 
@@ -398,7 +393,7 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void finishContextMode() {
-        if(contextMenu!=null){
+        if (contextMenu != null) {
             contextMenu.finish();
         }
     }
@@ -440,8 +435,8 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showErrorFull() {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+    public void showErrorFull(String errorMessage) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 presenter.getMessage();
@@ -460,11 +455,16 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onErrorDeleteMessage(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
     public void moveViewToTop() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(layoutManager.findFirstVisibleItemPosition() < 2){
+                if (layoutManager.findFirstVisibleItemPosition() < 2) {
                     layoutManager.scrollToPosition(0);
                 }
             }
@@ -528,13 +528,13 @@ public class InboxChatFragment extends BaseDaggerFragment
     @Override
     public void onSearchSubmitted(String text) {
         refreshHandler.setPullEnabled(false);
-        if(text.length()>0) {
+        if (text.length() > 0) {
             presenter.initSearch(text);
             searchLoading.setVisibility(View.VISIBLE);
             UnifyTracking.eventTopChatSearch(TopChatTrackingEventLabel.Category.INBOX_CHAT,
                     TopChatTrackingEventLabel.Action.INBOX_CHAT_SEARCH,
                     TopChatTrackingEventLabel.Name.INBOX_CHAT);
-        }else {
+        } else {
             onSearchReset();
 
         }
