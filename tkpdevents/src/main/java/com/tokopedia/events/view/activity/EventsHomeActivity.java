@@ -104,9 +104,7 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
 
     @Override
     protected void initialPresenter() {
-        mPresenter.attachView(this);
-        mPresenter.initialize();
-        mPresenter.getEventsList();
+
     }
 
     @Override
@@ -125,7 +123,10 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
         unbinder = ButterKnife.bind(this);
         initInjector();
         executeInjector();
+        mPresenter.attachView(this);
+        mPresenter.initialize();
         ButterKnife.bind(this);
+        mPresenter.getEventsList();
     }
 
     @Override
