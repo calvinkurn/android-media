@@ -19,6 +19,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AwbData;
 public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView> {
 
     private View actionTrack;
+    private View actionAdd;
     private View actionMoreAwb;
     private TextView informationText;
     private TextView awbText;
@@ -52,6 +53,7 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(getLayoutView(), this, true);
         actionTrack = view.findViewById(R.id.action_track);
+        actionAdd = view.findViewById(R.id.action_add);
         actionMoreAwb = view.findViewById(R.id.action_awb_more);
         informationText = (TextView) view.findViewById(R.id.tv_last_awb_date);
         awbText = (TextView) view.findViewById(R.id.tv_awb_number);
@@ -69,6 +71,7 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
         awbText.setText(data.getShipmentRef());
         actionTrack.setOnClickListener(new AwbViewOnClickListener(data.getShipmentRef(), data.getShipmentID()));
         actionMoreAwb.setOnClickListener(new AwbViewOnClickListener(data.getShipmentRef(), data.getShipmentID()));
+        actionAdd.setOnClickListener(new AwbViewOnClickListener(data.getShipmentRef(), data.getShipmentID()));
     }
 
     private String generateInformationText(AwbData data) {
@@ -90,6 +93,8 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
                 listener.setOnActionTrackAwbClick(shipmentID, shipmentRef);
             } else if (view.getId() == R.id.action_awb_more) {
                 listener.setOnActionAwbHistoryClick();
+            } else if(view.getId() == R.id.action_add) {
+
             }
         }
     }

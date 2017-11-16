@@ -24,6 +24,7 @@
     <string name="title_section_prove_status">Keterangan</string>
 
     <string name="action_track">Lacak</string>
+    <string name="action_add">Tambah</string>
     <string name="action_see_more_awb">Lihat Riwayat No. Resi</string>
     <string name="action_see_more_address">Lihat Riwayat Alamat Pengembalian</string>
     <string name="action_edit_solution">Ubah Solusi</string>

@@ -214,11 +214,12 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
     @Override
     public void setOnDestroyView() {
-        unSubscibeObservable();
+        unsubscribeObservable();
     }
 
-    private void unSubscibeObservable() {
+    private void unsubscribeObservable() {
         getResCenterDetailUseCase.unsubscribe();
+        getResCenterDetailV2UseCase.unsubscribe();
         trackAwbReturProductUseCase.unsubscribe();
         cancelResolutionUseCase.unsubscribe();
         askHelpResolutionUseCase.unsubscribe();
@@ -226,6 +227,8 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
         acceptAdminSolutionUseCase.unsubscribe();
         acceptSolutionUseCase.unsubscribe();
         inputAddressUseCase.unsubscribe();
+        editAddressUseCase.unsubscribe();
+
     }
 
 }
