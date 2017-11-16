@@ -60,21 +60,21 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '200',
     color: 'rgba(0,0,0,.7)',
-    paddingHorizontal: 10,
-    paddingTop: 3,
+    paddingHorizontal: 16,
+    paddingTop: 8,
   },
   priceWrapper: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
-    height: 34
+    alignItems: 'center'
   },
   price: {
     color: '#ff5722',
     fontSize: 14,
     fontWeight: '600',
     lineHeight: 20,
-    paddingHorizontal: 10
+    paddingHorizontal: 16,
+    marginBottom: 24
   },
 })
 

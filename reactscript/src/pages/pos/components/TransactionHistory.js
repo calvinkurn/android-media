@@ -51,23 +51,23 @@ class TransactionHistory extends Component {
           </View>
           <View style={styles.subRow2}>
             <View style={{ width: "22%" }}>
-              <Text style={[styles.font13, styles.fontcolor61]}>Waktu Transaksi</Text>
-              <Text style={[styles.font15, styles.fontcolor54]}>{rowItem.order_detail.detail_order_date}</Text>
+              <Text style={[styles.font16, styles.fontbold, styles.fontcolor70]}>Waktu Transaksi</Text>
+              <Text style={[styles.font16, styles.fontcolor70]}>{rowItem.order_detail.detail_order_date}</Text>
             </View>
             <View style={{ width: "40%" }}>
-              <Text style={[styles.font13, styles.fontcolor61]}>Barang</Text>
-              <Text style={[styles.font15, styles.fontcolor54]}>{rowItem.order_products[0].product_name.slice(0, 35)}...</Text>
+              <Text style={[styles.font16, styles.fontbold, styles.fontcolor70]}>Barang</Text>
+              <Text style={[styles.font16, styles.fontcolor70]}>{rowItem.order_products[0].product_name.slice(0, 35)}...</Text>
             </View>
             <View style={{ width: "25%" }}>
-              <Text style={[styles.font13, styles.fontcolor61]}>Total Pembayaran</Text>
-              <Text style={[styles.font15, styles.fontcolor70]}>{rowItem.order_payment.payment_komisi}</Text>
+              <Text style={[styles.font16, styles.fontbold, styles.fontcolor70]}>Total Pembayaran</Text>
+              <Text style={[styles.font16, styles.fontcolor70]}>{rowItem.order_payment.payment_komisi}</Text>
             </View>
           </View>
           
           <View style={styles.subRow3}>
             <View>
-              <Text style={[styles.font13, styles.fontcolor61]}>Status</Text>
-              <Text style={[styles.font15, styles.fontcolor54]}>Status {rowItem.order_deadline.deadline_shipping}</Text>
+              <Text style={[styles.font16, styles.fontbold, styles.fontcolor70]}>Status</Text>
+              <Text style={[styles.font16, styles.fontcolor70]}>{rowItem.order_history[0].history_buyer_status}</Text>
             </View>
             <View style={{ marginTop: 25, flexDirection: 'row' }}>
               {this.state.selectedOrder !== rowData.index && !this.state.openSelected &&
@@ -116,10 +116,10 @@ class TransactionHistory extends Component {
                       <Image source={{ uri: res.product_picture }} style={styles.productImage} ></Image>
                     </View>
                     <View style={{ width: '70%', height: '20%', flexDirection: 'column', justifyContent: 'flex-start' }}>
-                      <Text style={[styles.font14, styles.fontcolor71, { width: '80%' }]}>{res.product_name} </Text>
-                      <Text style={[styles.font13, styles.fontcolor61, { marginTop: 10 }]}>Jumlah Barang: {res.product_quantity}</Text>
+                      <Text style={[styles.font16, styles.fontcolor70, { width: '80%' }]}>{res.product_name} </Text>
+                      <Text style={[styles.font16, styles.fontcolor70, { marginTop: 10 }]}>Jumlah Barang: {res.product_quantity}</Text>
                     </View>
-                    <Text style={[styles.font14, styles.fontcolor71]}>{res.product_price}</Text>
+                    <Text style={[styles.font16, styles.fontcolor70]}>{res.product_price}</Text>
                   </View>
                 )}
               </View>
@@ -133,7 +133,7 @@ class TransactionHistory extends Component {
                   </View> */}
                 </View>
                 <View style={{ flexDirection: 'row' }}>
-                  <Text style={[styles.font16, styles.fontcolor70]}>Total Pembayaran: </Text>
+                  <Text style={[styles.font16, styles.fontbold, styles.fontcolor70]}>Total Pembayaran: </Text>
                   <Text style={[styles.font16, styles.fontcolor70]}> {rowItem.order_payment.payment_komisi}</Text>
                 </View>
               </View>
@@ -156,7 +156,7 @@ class TransactionHistory extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.pageContainers}>
           <View style={[styles.containers]}>
             {this.props.data_history.length !== 0 &&
               <FlatList
@@ -215,18 +215,21 @@ class TransactionHistory extends Component {
 
 
 const styles = StyleSheet.create({
+  pageContainers: {
+    flex: 1,
+    marginLeft: 32,
+    marginRight: 32
+  },
   containers: {
     flex: 1,
     alignItems: 'stretch',
-    margin: 20,
-    marginTop: 0
   },
   row: {
     backgroundColor: '#FFFFFF',
     borderRadius: 6,
     flex: 1,
     flexDirection: 'column',
-    marginTop: 30
+    marginTop: 32
   },
   subRow1: {
     borderBottomWidth: 1,
@@ -299,12 +302,13 @@ const styles = StyleSheet.create({
     borderColor: '#42b549',
   },
   orderName: {
-    fontSize: 15,
+    fontSize: 20,
+    fontWeight: 'bold',
     color: '#000000b3'
   },
   orderId: {
-    fontSize: 13,
-    color: '#00000061'
+    fontSize: 20,
+    color: '#000000b3'
   },
   font20: {
     fontSize: 20

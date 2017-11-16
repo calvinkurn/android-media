@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">O2O POS</string>
+    <string name="app_name">Tokopedia PayPoint</string>
 
     <string name="outlet_page_title">Pilih Outlet</string>
     <string name="outlet_store_name_label">Toko :</string>
