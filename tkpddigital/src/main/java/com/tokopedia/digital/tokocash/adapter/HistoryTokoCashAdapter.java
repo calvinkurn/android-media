@@ -35,6 +35,7 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
     private Context context;
     private ItemHistoryListener listener;
     private boolean showLoader;
+    private ItemHistory itemHistory;
 
     public HistoryTokoCashAdapter(List<ItemHistory> itemHistoryList) {
         this.itemHistoryList = itemHistoryList;
@@ -63,7 +64,7 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolderHistory) {
             ItemViewHolderHistory itemViewHolder = (ItemViewHolderHistory) holder;
-            final ItemHistory itemHistory = itemHistoryList.get(position);
+            itemHistory = itemHistoryList.get(position);
 
             ImageHandler.loadImageThumbs(context, itemViewHolder.iconItem, itemHistory.getUrlImage());
             itemViewHolder.descItem.setText(!TextUtils.isEmpty(itemHistory.getNotes()) ? itemHistory.getNotes() :

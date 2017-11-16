@@ -39,6 +39,9 @@ public class FilterTokoCashAdapter extends RecyclerView.Adapter {
     private Context context;
     private HeaderItemColor lastHeaderItemColor;
     private int pos;
+    private ItemViewFilter itemViewFilter;
+    private HeaderItemColor headerHistory;
+
 
     public FilterTokoCashAdapter() {
         this.headerHistoryList = new ArrayList<>();
@@ -61,8 +64,8 @@ public class FilterTokoCashAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        final ItemViewFilter itemViewFilter = (ItemViewFilter) holder;
-        final HeaderItemColor headerHistory = headerHistoryList.get(position);
+        itemViewFilter = (ItemViewFilter) holder;
+        headerHistory = headerHistoryList.get(position);
 
         itemViewFilter.filterName.setText(headerHistory.getHeaderHistory().getName());
         handleViewFilter(itemViewFilter, headerHistory.getHeaderHistory().isSelected(), headerHistory.getHeaderColor());

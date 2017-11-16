@@ -27,6 +27,7 @@ public class TokoCashHeaderView extends RelativeLayout {
     private LinearLayout normalLayout;
     private TextView pendingAmount;
     private TextView pendingCashBackInfo;
+    private HomeHeaderWalletAction homeHeaderWalletAction;
 
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
@@ -50,7 +51,7 @@ public class TokoCashHeaderView extends RelativeLayout {
     public void renderData(final DrawerTokoCash tokoCashData,
                            boolean showTopUpButton,
                            String tokoCashLabel) {
-        final HomeHeaderWalletAction homeHeaderWalletAction = tokoCashData.getHomeHeaderWalletAction();
+        homeHeaderWalletAction = tokoCashData.getHomeHeaderWalletAction();
         headerTokoCashLabel.setText(homeHeaderWalletAction.getLabelTitle());
         tokoCashAmount.setText(homeHeaderWalletAction.getBalance());
         tokoCashButton.setText(homeHeaderWalletAction.getLabelActionButton());
@@ -65,7 +66,8 @@ public class TokoCashHeaderView extends RelativeLayout {
             normalLayout.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!homeHeaderWalletAction.getAppLinkBalance().contains("webview") &&
+                    if (!homeHeaderWalletAction.getAppLinkBalance().equals("") &&
+                            !homeHeaderWalletAction.getAppLinkBalance().contains("webview") &&
                             homeHeaderWalletAction.getTypeAction() == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
                         UnifyTracking.eventTokoCashCheckSaldoClick();
 
