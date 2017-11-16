@@ -42,10 +42,10 @@
 
                     <ImageView
                         android:id="@+id/img_pending"
-                        android:layout_width="145dp"
-                        android:layout_height="80dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        app:srcCompat="@drawable/ic_pending_fare" />
+                        app:srcCompat="@drawable/ic_pending_fare_screen" />
 
                     <TextView
                         android:id="@+id/tv_id"

@@ -86,6 +86,9 @@ public class ReceiptEntity {
     @SerializedName("tip_list")
     @Expose
     TipListEntity tipList;
+    @SerializedName("payment_method")
+    @Expose
+    String paymentMethod;
 
     public ReceiptEntity() {
     }
@@ -156,5 +159,9 @@ public class ReceiptEntity {
 
     public TipListEntity getTipList() {
         return tipList;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
     }
 }

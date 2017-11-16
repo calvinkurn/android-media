@@ -146,6 +146,8 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     RelativeLayout tokocashOptionRelativeLayout;
     @BindView(R2.id.tv_tokocash_selected_product)
     TextView tokocashSelectedProductTextView;
+    @BindView(R2.id.label_total_charged)
+    TextView labelAmountChargedTextView;
 
     @Inject
     CompleteTripPresenter presenter;
@@ -314,6 +316,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         totalChargedTextView.setText(receipt.getTotalCharged());
         totalChargedTopTextView.setText(receipt.getTotalFare());
         totalFareValueTextView.setText(receipt.getTotalFare());
+        labelAmountChargedTextView.setText(receipt.getPaymentMethod() + " " + getString(R.string.label_charged));
 
         if (receipt.getUberSignupText() != null) {
             uberSingupLayout.setVisibility(View.VISIBLE);
@@ -731,7 +734,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @Override
     public void opeScroogePage(String url, String postData) {
         if (getActivity() != null) {
-            ScroogePGUtil.openScroogePage(getActivity(), url, true, postData , getString(R.string.title_pay_pending_fare));
+            ScroogePGUtil.openScroogePage(getActivity(), url, true, postData, getString(R.string.title_pay_pending_fare));
         }
     }
 

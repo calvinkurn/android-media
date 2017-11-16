@@ -27,6 +27,7 @@ public class Receipt implements Parcelable {
     private String cashbackDisplayFormat;
     private String discountDisplayFormat;
     private TipList tipList;
+    private String paymentMethod;
 
     public Receipt() {
     }
@@ -51,6 +52,7 @@ public class Receipt implements Parcelable {
         cashbackDisplayFormat = in.readString();
         discountDisplayFormat = in.readString();
         tipList = in.readParcelable(TipList.class.getClassLoader());
+        paymentMethod = in.readString();
     }
 
     public static final Creator<Receipt> CREATOR = new Creator<Receipt>() {
@@ -209,6 +211,14 @@ public class Receipt implements Parcelable {
         this.discountDisplayFormat = discountDisplayFormat;
     }
 
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
     public TipList getTipList() {
         return tipList;
     }
@@ -243,5 +253,6 @@ public class Receipt implements Parcelable {
         parcel.writeString(cashbackDisplayFormat);
         parcel.writeString(discountDisplayFormat);
         parcel.writeParcelable(tipList, i);
+        parcel.writeString(paymentMethod);
     }
 }

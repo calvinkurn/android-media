@@ -119,7 +119,7 @@ public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragme
                 (Uri.encode(url)),
                 this
         );
-        Intent intent = TokoCashWebViewActivity.getCallingIntent(this, seamlessURL);
+        Intent intent = RideWebViewActivity.getCallingIntent(this, seamlessURL);
         startActivity(intent);
     }
 

@@ -47,6 +47,7 @@ public class ReceiptEntityMapper {
             receipt.setCashbackDisplayFormat(formatNumber(entity.getCashbackAmount(), entity.getCurrencyCode()));
             receipt.setDiscountDisplayFormat(formatNumber(entity.getDiscountAmount(), entity.getCurrencyCode()));
             receipt.setTipList(transformTipList(entity.getTipList()));
+            receipt.setPaymentMethod(transformPaymentMethod(entity.getPaymentMethod()));
 
             if (entity.getRideOffer() != null) {
                 receipt.setUberSignupUrl(entity.getRideOffer().getUrl());
@@ -142,5 +143,13 @@ public class ReceiptEntityMapper {
         }
 
         return currencyCode;
+    }
+
+    private String transformPaymentMethod(String paymentMethod) {
+        if (paymentMethod != null && paymentMethod.equalsIgnoreCase("wallet")) {
+            return "TokoCash";
+        }
+
+        return "Credit Card";
     }
 }
