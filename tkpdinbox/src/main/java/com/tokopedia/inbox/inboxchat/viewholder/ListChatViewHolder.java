@@ -135,7 +135,9 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
 
         mainView.setOnClickListener(onMessageClicked(element, viewListener, getAdapterPosition()));
 
+
         mainView.setOnLongClickListener(onLongClickListener(element));
+        avatar.setOnLongClickListener(onLongClickListener(element));
     }
 
 
