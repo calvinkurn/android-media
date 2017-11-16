@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gallery.GalleryActivity;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
@@ -102,26 +103,6 @@ public class DetailResChatFragment
     public static final int ACTION_BY_SELLER = 2;
     public static final int ACTION_BY_ADMIN = 3;
     public static final int ACTION_BY_SYSTEM = 4;
-
-    public static final String CREATE = "create";
-    public static final String EDIT_SOLUTION = "edit_solution";
-    public static final String REPLY_CONVERSATION = "reply_conversation";
-    public static final String ACCEPT_ADMIN_SOLUTION = "accept_admin_resolution";
-    public static final String ACTION_EARLY = "action_early";
-    public static final String ACTION_FINAL = "action_final";
-    public static final String APPEAL_RESOLUTION = "appeal_resolution";
-    public static final String CANCEL = "cancel";
-    public static final String EDIT_ADDRESS = "edit_address";
-    public static final String EDIT_RESI = "edit_resi";
-    public static final String FINISH = "finish";
-    public static final String HANDLE_RESOLUTION = "handle_resolution";
-    public static final String INPUT_ADDRESS = "input_address";
-    public static final String INPUT_RESI = "input_resi";
-    public static final String REJECT_ADMIN_RESOLUTION = "reject_admin_resolution";
-    public static final String REPORT_RESOLUTION = "report_resolution";
-    public static final String ENTER_RETUR_SESSION_RESOLUTION = "enter_retur_session_resolution";
-    public static final String ACTION_RESET = "action_reset";
-
 
     private TextView tvNextStep;
     private RecyclerView rvChat, rvAttachment;
@@ -477,7 +458,6 @@ public class DetailResChatFragment
     public void successGetConversation(DetailResChatDomain detailResChatDomain, boolean isFirstInit) {
         this.detailResChatDomain = detailResChatDomain;
         mainView.setVisibility(View.VISIBLE);
-        initAllData(detailResChatDomain, isFirstInit);
     }
 
     @Override
@@ -490,13 +470,8 @@ public class DetailResChatFragment
         });
     }
 
-    private void initAllData(DetailResChatDomain detailResChatDomain, boolean isFirstInit) {
-        initNextStep(detailResChatDomain.getNextAction());
-        initActionButton(detailResChatDomain.getButton());
-        initChatData(detailResChatDomain, isFirstInit);
-    }
-
-    private void initNextStep(NextActionDomain nextActionDomain) {
+    @Override
+    public void initNextStep(NextActionDomain nextActionDomain) {
         for (NextActionDetailStepDomain nextStep : nextActionDomain.getDetail().getStep()) {
             if (nextStep.getStatus() == NEXT_STATUS_CURRENT) {
                 tvNextStep.setText(nextStep.getName());
@@ -504,7 +479,8 @@ public class DetailResChatFragment
         }
     }
 
-    private void initActionButton(final ButtonDomain buttonDomain) {
+    @Override
+    public void initActionButton(final ButtonDomain buttonDomain) {
         actionButtonLayout.setVisibility(View.GONE);
         boolean isAcceptShown = false;
         if (buttonDomain.getReport() == 1
@@ -650,70 +626,6 @@ public class DetailResChatFragment
         return spaceView;
     }
 
-    private void initChatData(DetailResChatDomain detailResChatDomain, boolean isFirstInit) {
-        int lastAction = 0;
-        for (ConversationDomain conversationDomain : detailResChatDomain.getConversationList().getConversationDomains()) {
-            String actionType = conversationDomain.getAction().getType();
-            if (actionType.equals(CREATE)) {
-                chatAdapter.addItem(new ChatCreateLeftViewModel
-                        (detailResChatDomain.getShop(),
-                                detailResChatDomain.getLast(),
-                                conversationDomain));
-            } else if (actionType.equals(REPLY_CONVERSATION)) {
-                boolean isShowTitle;
-                if (lastAction == conversationDomain.getAction().getBy()) {
-                    isShowTitle = false;
-                } else {
-                    lastAction = conversationDomain.getAction().getBy();
-                    isShowTitle = true;
-                }
-                if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
-                    chatAdapter.addItem(new ChatRightViewModel(
-                            detailResChatDomain.getShop(),
-                            detailResChatDomain.getCustomer(),
-                            conversationDomain));
-                } else {
-                    chatAdapter.addItem(new ChatLeftViewModel(
-                            detailResChatDomain.getShop(),
-                            detailResChatDomain.getCustomer(),
-                            conversationDomain,
-                            isShowTitle));
-                }
-            } else if (actionType.equals(EDIT_SOLUTION)) {
-                boolean isShowTitle;
-                if (lastAction == conversationDomain.getAction().getBy()) {
-                    isShowTitle = false;
-                } else {
-                    lastAction = conversationDomain.getAction().getBy();
-                    isShowTitle = true;
-                }
-                if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
-                    chatAdapter.addItem(new ChatSystemRightViewModel(
-                            detailResChatDomain.getShop(),
-                            detailResChatDomain.getCustomer(),
-                            conversationDomain));
-                } else {
-                    chatAdapter.addItem(new ChatSystemLeftViewModel(
-                            detailResChatDomain.getShop(),
-                            detailResChatDomain.getCustomer(),
-                            conversationDomain,
-                            isShowTitle));
-                }
-            } else {
-                if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
-                    chatAdapter.addItem(new ChatNotSupportedRightViewModel(
-                            conversationDomain));
-                } else {
-                    chatAdapter.addItem(new ChatNotSupportedLeftViewModel(
-                            conversationDomain));
-                }
-            }
-
-        }
-        chatAdapter.notifyDataSetChanged();
-//        if (!isFirstInit)
-        rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
-    }
 
     private void showAcceptSolutionDialog(String acceptText) {
         final Dialog dialog = new Dialog(getActivity());
@@ -1044,6 +956,19 @@ public class DetailResChatFragment
 //                }
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onAddItemAdapter(List<Visitable> items) {
+        chatAdapter.addAllItems(items);
+    }
+
+    @Override
+    public void onRefreshChatAdapter(boolean isFirstInit) {
+        chatAdapter.notifyDataSetChanged();
+        if (!isFirstInit) {
+            rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
         }
     }
 

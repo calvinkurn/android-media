@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
-    private List<Visitable> list;
+    private List<Visitable> list = new ArrayList<>();
     private DetailChatTypeFactory typeFactory;
 
     public ChatAdapter(DetailChatTypeFactory typeFactory) {
@@ -47,6 +47,10 @@ public class ChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public void addAllItems(List<Visitable> items) {
+        this.list.addAll(items);
     }
 
     public void addItem(Visitable item) {

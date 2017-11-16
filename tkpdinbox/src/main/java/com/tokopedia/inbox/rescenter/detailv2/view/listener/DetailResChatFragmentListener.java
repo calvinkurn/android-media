@@ -3,10 +3,13 @@ package com.tokopedia.inbox.rescenter.detailv2.view.listener;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.ButtonDomain;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.DetailResChatDomain;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
@@ -65,6 +68,15 @@ public interface DetailResChatFragmentListener {
         void errorFinishResolution(String error);
 
         void intentToSeeAllProducts();
+
+        void initNextStep(NextActionDomain nextActionDomain);
+
+        void initActionButton(ButtonDomain buttonDomain);
+
+        void onRefreshChatAdapter(boolean isFirstInit);
+
+        void onAddItemAdapter(List<Visitable> items);
+
 
     }
 
