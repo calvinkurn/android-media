@@ -68,11 +68,12 @@ public class TokoCashHeaderView extends RelativeLayout {
                     if (!homeHeaderWalletAction.getAppLinkActionButton().contains("webview") &&
                             homeHeaderWalletAction.getTypeAction() == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
                         UnifyTracking.eventTokoCashCheckSaldoClick();
+
+                        actionListener.actionAppLinkWalletHeader(
+                                homeHeaderWalletAction.getRedirectUrlBalance(),
+                                homeHeaderWalletAction.getAppLinkBalance()
+                        );
                     }
-                    actionListener.actionAppLinkWalletHeader(
-                            homeHeaderWalletAction.getRedirectUrlBalance(),
-                            homeHeaderWalletAction.getAppLinkBalance()
-                    );
                 }
             });
         } else {
