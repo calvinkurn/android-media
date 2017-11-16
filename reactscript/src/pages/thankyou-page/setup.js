@@ -1,28 +1,15 @@
 import React, { Component } from 'react'
-
-import SuccessPage from './pages/SuccessPage'
-import TransferPage from './pages/TransferPage'
-
-class Root extends Component {
-  componentDidMount(){
-    console.log(this.props)
-  }
+import { Provider } from 'react-redux'
+import App from './App'
+import Store from './store/Store'
 
 
+export default class Root extends Component {
   render() {
-    const { template } = this.props.data
-    
-    if (template === 'transfer'){
-      return <TransferPage data={this.props.data}/>
-    } else if (template === 'instant') {
-      return <SuccessPage data={this.props.data}/>
-    }
-    // if (template === 'transfer'){
-    //   return <SuccessPage data={this.props.data} />
-    // } else {
-    //   return <TransferPage data={this.props.data} />
-    // }
+    return(
+      <Provider store={Store}>
+        <App data={this.props.data} />
+      </Provider>
+    )
   }
 }
-
-export default Root

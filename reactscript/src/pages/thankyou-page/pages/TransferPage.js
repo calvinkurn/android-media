@@ -7,36 +7,20 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native'
+import { connect } from 'react-redux'
 import { NetworkModule } from 'NativeModules'
+import { fetchDataDigital } from '../actions'
 
 
 class SuccessScreen extends React.Component {
     componentDidMount(){
-        console.log(this.props.data)
-        this.fetchDataDigital(this.props.data.order_id)
+        const { order_id } = this.props.data
+        this.props.dispatch(fetchDataDigital(order_id))
     }
-
-    fetchDataDigital = async (order_id) => {
-        console.log(order_id)
-        const url_digital = 'https://pulsa-api-staging.tokopedia.com/v1.4/track/thankyou'
-        const payloads = {
-            secret_key: 'Tok0p3di4123',
-            order_id: order_id
-        }
-
-        NetworkModule.getResponse(url_digital, 'POST', JSON.stringify(payloads), true)
-            .then(res => {
-                const jsonResponse = JSON.parse(res)
-                console.log(jsonResponse)
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
-
-
+ 
 
   render() {
+      console.log(this.props)
     return (
       <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
         <View style={{ alignItems: 'center', marginTop: 35 }}>
@@ -114,4 +98,12 @@ const styles = StyleSheet.create({
     },
 })
 
-export default SuccessScreen
+
+const mapStateToProps = (state) => {
+    console.log(state)
+    return {
+        dataDigital: state.dataDigital
+    }
+}
+
+export default connect(mapStateToProps)(SuccessScreen)
