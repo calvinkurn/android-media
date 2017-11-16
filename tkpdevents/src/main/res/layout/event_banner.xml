@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="@dimen/promo_image_height">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/promo_image_height"
+    android:orientation="vertical">
 
+    <com.tkpd.library.ui.widget.TouchViewPager
+        android:id="@+id/event_bannerpager"
+        android:layout_width="match_parent"
+        android:layout_height="165dp" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_img_jne"
-            android:layout_margin="20dp" />
-        <com.tkpd.library.ui.widget.TouchViewPager
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/event_bannerpager"/>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        app:tabBackground="@drawable/tab_selector"
+        app:tabGravity="center"
+        app:tabIndicatorHeight="0dp"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end|right"
-            android:layout_margin="20dp"
-            android:src="@drawable/ic_img_jne"
-            />
-</FrameLayout>
+</LinearLayout>

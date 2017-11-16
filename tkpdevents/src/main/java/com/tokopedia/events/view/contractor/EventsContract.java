@@ -5,6 +5,9 @@ import android.app.Activity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.events.view.viewmodel.CategoryViewModel;
+
+import java.util.List;
 
 /**
  * Created by ashwanityagi on 03/11/17.
@@ -18,7 +21,7 @@ public class EventsContract {
 
        // List<Event> getEvents();
 
-       // void renderEvents(List<Event> events);
+        void renderCategoryList(List<CategoryViewModel> categoryList);
 
         RequestParams getParams();
 
