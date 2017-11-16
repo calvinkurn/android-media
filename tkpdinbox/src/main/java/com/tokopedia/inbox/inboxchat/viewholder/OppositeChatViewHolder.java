@@ -34,6 +34,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
     private TextView name;
     private TextView label;
     private TextView oldMessage;
+    private View oldMessageView;
 
     ChatRoomContract.View viewListener;
 
@@ -49,6 +50,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
         name = (TextView) itemView.findViewById(R.id.name);
         label = (TextView) itemView.findViewById(R.id.label);
         oldMessage = (TextView) itemView.findViewById(R.id.old_message);
+        oldMessageView = itemView.findViewById(R.id.old_message_container);
         position = getAdapterPosition();
         this.viewListener = viewListener;
     }
@@ -107,10 +109,10 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
         label.setText(element.getRole());
 
         if (element.getOldMessageTitle() != null && element.getOldMessageTitle().length() > 0) {
-            oldMessage.setVisibility(View.VISIBLE);
+            oldMessageView.setVisibility(View.VISIBLE);
             oldMessage.setText(getOldMessageText(element));
         } else {
-            oldMessage.setVisibility(View.GONE);
+            oldMessageView.setVisibility(View.GONE);
         }
     }
 
