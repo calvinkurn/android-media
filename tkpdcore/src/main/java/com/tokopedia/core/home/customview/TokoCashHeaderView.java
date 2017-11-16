@@ -65,7 +65,7 @@ public class TokoCashHeaderView extends RelativeLayout {
             normalLayout.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!homeHeaderWalletAction.getAppLinkActionButton().contains("webview") &&
+                    if (!homeHeaderWalletAction.getAppLinkBalance().contains("webview") &&
                             homeHeaderWalletAction.getTypeAction() == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
                         UnifyTracking.eventTokoCashCheckSaldoClick();
 
