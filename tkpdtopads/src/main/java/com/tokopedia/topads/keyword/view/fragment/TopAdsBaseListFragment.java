@@ -29,7 +29,8 @@ public abstract class TopAdsBaseListFragment<T, U extends ItemType> extends Base
     protected BaseDatePickerPresenter datePickerPresenter;
 
     protected BaseDatePickerPresenter getDatePickerPresenter() {
-        return new BaseDatePickerPresenterImpl(getActivity());
+        BaseDatePickerPresenterImpl baseDatePickerPresenter = new BaseDatePickerPresenterImpl(getActivity());
+        return baseDatePickerPresenter;
     }
 
     @Override

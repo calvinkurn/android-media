@@ -124,7 +124,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         generateHeader(authHeaders, originRequest, newRequest);
     }
 
-    Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
+    protected Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
 
         String contentTypeHeader = null;
         if (!"GET".equals(originRequest.method())
@@ -355,6 +355,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         String freshAccessToken = SessionHandler.getAccessToken();
         return chain.request().newBuilder()
                 .header("authorization", "Bearer " + freshAccessToken)
+                .header("accounts-authorization", "Bearer " + freshAccessToken)
                 .build();
     }
 }

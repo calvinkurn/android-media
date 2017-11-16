@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
@@ -100,7 +99,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     private boolean isAllowedNotification(Bundle data) {
         return mFCMCacheManager.isAllowToHandleNotif(data)
                 && mFCMCacheManager.checkLocalNotificationAppSettings(
-                Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)
+                Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0")
                 )
         );
     }
@@ -121,7 +120,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                             (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
                     if (listener != null) {
                         listener.onGetNotif();
-                        if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
+                        if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))
                                 == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
                             listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
                         } else {
@@ -224,7 +223,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                         (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
                 if (listener != null) {
                     listener.onGetNotif();
-                    if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
+                    if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))
                             == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
                         listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
                     } else {
