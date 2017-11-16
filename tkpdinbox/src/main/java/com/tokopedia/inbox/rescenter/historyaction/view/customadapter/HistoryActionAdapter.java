@@ -30,10 +30,13 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
     private final HistoryActionFragmentView fragmentView;
     private List<HistoryActionViewItem> arraylist;
     private Context context;
+    private String lastMonth, lastDay;
 
     public HistoryActionAdapter(HistoryActionFragmentView fragmentView) {
         this.fragmentView = fragmentView;
         this.arraylist = new ArrayList<>();
+        this.lastMonth = "";
+        this.lastDay = "";
     }
 
     public void setArraylist(List<HistoryActionViewItem> arraylist) {
@@ -96,24 +99,27 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void renderData(ActionViewHolder holder, HistoryActionViewItem item) {
         holder.tvUsername.setText(item.getActionByText());
-        holder.tvMonth.setText(DateFormatUtils.get3LettersMonth(item.getDate()));
-        holder.tvDateNumber.setText(DateFormatUtils.getDayNumber(item.getDate()));
-        holder.tvTime.setText(DateFormatUtils.getTimeWithWIB(item.getDate()));
+        holder.tvMonth.setText(DateFormatUtils.get3LettersMonth(item.getDateTimestamp()));
+        holder.tvDateNumber.setText(DateFormatUtils.getDayNumber(item.getDateTimestamp()));
+        holder.tvTime.setText(DateFormatUtils.getTimeWithWIB(item.getDateTimestamp()));
         holder.history.setText(item.getHistoryText());
+        holder.tvDateNumber.setVisibility(View.VISIBLE);
+        holder.tvMonth.setVisibility(View.VISIBLE);
+        if (lastDay.equals(holder.tvDateNumber.getText().toString()) && lastMonth.equals(holder.tvMonth.getText().toString())) {
+            holder.tvDateNumber.setVisibility(View.GONE);
+            holder.tvMonth.setVisibility(View.GONE);
+        }
+        lastDay = holder.tvDateNumber.getText().toString();
+        lastMonth = holder.tvMonth.getText().toString();
     }
 
     private void renderView(ActionViewHolder holder, HistoryActionViewItem item) {
-        setPadding(holder);
         setIndicator(holder, item);
         if (item.isLatest()) {
-            holder.tvUsername.setTypeface(Typeface.DEFAULT_BOLD);
-            holder.tvTime.setTypeface(Typeface.DEFAULT_BOLD);
-            holder.history.setTypeface(Typeface.DEFAULT_BOLD);
-            holder.history.setTextColor(ContextCompat.getColor(context, R.color.black));
+            holder.tvUsername.setTextColor(ContextCompat.getColor(context, R.color.tkpd_main_green));
+            holder.history.setTextColor(ContextCompat.getColor(context, R.color.black_70));
         } else {
-            holder.tvUsername.setTypeface(null, Typeface.NORMAL);
-            holder.tvTime.setTypeface(null, Typeface.NORMAL);
-            holder.history.setTypeface(null, Typeface.NORMAL);
+            holder.tvUsername.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
             holder.history.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
         }
     }
@@ -125,19 +131,8 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         );
 
         holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.bg_circle_green : R.drawable.ic_dot_grey_24dp
+                item.isLatest() ? R.drawable.bg_circle_green : R.drawable.bg_circle_grey
         );
-    }
-
-    private void setPadding(ActionViewHolder holder) {
-        if (holder.getAdapterPosition() == 0) {
-            holder.itemView.setPadding(
-                    context.getResources().getDimensionPixelSize(R.dimen.padding_small),
-                    context.getResources().getDimensionPixelSize(R.dimen.padding_small),
-                    context.getResources().getDimensionPixelSize(R.dimen.padding_small),
-                    0
-            );
-        }
     }
 
     @Override

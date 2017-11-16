@@ -57,7 +57,7 @@ public class HistoryActionSubsriber extends Subscriber<HistoryActionData> {
             data.setConversationID(item.getConversationID());
             data.setDate(item.getDate());
             data.setDateTimestamp(item.getDateTimestamp());
-            data.setLatest(i == 0);
+            data.setLatest(i == domainData.getListHistoryAddress().size() - 1);
             data.setHistoryText(item.getHistoryStr());
             historyActionViewItems.add(data);
             i++;

@@ -14,6 +14,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.HistoryAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryData;
 
+import java.util.Collections;
+
 /**
  * Created by hangnadi on 3/9/17.
  */
@@ -66,6 +68,7 @@ public class HistoryView extends BaseView<HistoryData, DetailResCenterFragmentVi
             return;
         }
         setVisibility(VISIBLE);
+        Collections.reverse(data.getHistoryList());
         initRecyclerView(data);
         actionSeeMore.setOnClickListener(new OnClickListener() {
             @Override

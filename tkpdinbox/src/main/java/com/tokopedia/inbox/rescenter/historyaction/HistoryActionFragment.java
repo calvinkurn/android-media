@@ -21,6 +21,8 @@ import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionF
 import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionFragmentView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -153,7 +155,9 @@ public class HistoryActionFragment extends BaseDaggerFragment
 
     @Override
     public void renderData() {
-        adapter.setArraylist(getViewData());
+        ArrayList<HistoryActionViewItem> dataList = getViewData();
+        Collections.reverse(dataList);
+        adapter.setArraylist(dataList );
         adapter.notifyDataSetChanged();
     }
 
