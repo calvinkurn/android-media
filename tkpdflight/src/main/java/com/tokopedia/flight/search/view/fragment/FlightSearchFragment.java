@@ -26,6 +26,7 @@ import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.view.DepartureArrivalHeaderView;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.constant.FlightSortOption;
@@ -56,11 +57,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     private static final String SAVED_SORT_OPTION = "svd_sort_option";
     private static final String SAVED_STAT_MODEL = "svd_stat_model";
 
-    BottomActionView filterAndSortBottomAction;
-    protected TextView departureAirportCode;
-    protected TextView departureAirportName;
-    protected TextView arrivalAirportCode;
-    protected TextView arrivalAirportName;
+    private BottomActionView filterAndSortBottomAction;
 
     private FlightFilterModel flightFilterModel;
     private FlightSearchStatisticModel flightSearchStatisticModel;
@@ -194,20 +191,14 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        filterAndSortBottomAction = (BottomActionView) view.findViewById(R.id.bottom_action_filter_sort);
-        departureAirportCode = (TextView) view.findViewById(R.id.departure_airport_code);
-        departureAirportName = (TextView) view.findViewById(R.id.departure_airport_name);
-        arrivalAirportCode = (TextView) view.findViewById(R.id.arrival_airport_code);
-        arrivalAirportName = (TextView) view.findViewById(R.id.arrival_airport_name);
 
-        String departureAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getDepartureAirport().getAirportId()) ?
-                flightSearchPassDataViewModel.getDepartureAirport().getCityId() : flightSearchPassDataViewModel.getDepartureAirport().getAirportId();
-        departureAirportCode.setText(departureAirportId);
-        departureAirportName.setText(flightSearchPassDataViewModel.getDepartureAirport().getCityName());
-        String arrivalAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getArrivalAirport().getAirportId()) ?
-                flightSearchPassDataViewModel.getArrivalAirport().getCityId() : flightSearchPassDataViewModel.getArrivalAirport().getAirportId();
-        arrivalAirportCode.setText(arrivalAirportId);
-        arrivalAirportName.setText(flightSearchPassDataViewModel.getArrivalAirport().getCityName());
+        setUpDepArrHeader(view);
+        setUpBottomAction(view);
+
+    }
+
+    protected void setUpBottomAction(View view){
+        filterAndSortBottomAction = (BottomActionView) view.findViewById(R.id.bottom_action_filter_sort);
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -254,6 +245,18 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
             }
         });
         filterAndSortBottomAction.setVisibility(View.GONE);
+    }
+
+    protected void setUpDepArrHeader(View view){
+        DepartureArrivalHeaderView departureArrivalHeaderView = (DepartureArrivalHeaderView) view.findViewById(R.id.dep_arr_header_view);
+
+        String departureAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getDepartureAirport().getAirportId()) ?
+                flightSearchPassDataViewModel.getDepartureAirport().getCityId() : flightSearchPassDataViewModel.getDepartureAirport().getAirportId();
+        departureArrivalHeaderView.setDeparture (departureAirportId, flightSearchPassDataViewModel.getDepartureAirport().getCityName());
+
+        String arrivalAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getArrivalAirport().getAirportId()) ?
+                flightSearchPassDataViewModel.getArrivalAirport().getCityId() : flightSearchPassDataViewModel.getArrivalAirport().getAirportId();
+        departureArrivalHeaderView.setArrival (arrivalAirportId, flightSearchPassDataViewModel.getArrivalAirport().getCityName());
     }
 
     private void setUIMarkFilter(){

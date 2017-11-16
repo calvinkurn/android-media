@@ -49,10 +49,11 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
         ImageView logoAirline;
         TextView tvPrice;
         TextView tvDuration;
-        TextView detailView;
         TextView airlineRefundableInfo;
         TextView savingPrice;
         TextView arrivalAddDay;
+
+        View detailView;
 
         public FlightSearchViewHolder(View itemView) {
             super(itemView);
@@ -63,7 +64,7 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
             airlineRefundableInfo = (TextView) itemView.findViewById(R.id.airline_refundable_info);
             tvPrice = (TextView) itemView.findViewById(R.id.total_price);
             tvDuration = (TextView) itemView.findViewById(R.id.flight_time);
-            detailView = (TextView) itemView.findViewById(R.id.detail_view);
+            detailView = itemView.findViewById(R.id.detail_view);
             savingPrice = (TextView) itemView.findViewById(R.id.saving_price);
             arrivalAddDay = (TextView) itemView.findViewById(R.id.arrival_add_day);
         }

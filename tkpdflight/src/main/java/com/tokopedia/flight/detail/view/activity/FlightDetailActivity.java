@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.view.DepartureArrivalHeaderView;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailFacilityFragment;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailFragment;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailPriceFragment;
@@ -31,13 +32,7 @@ public class FlightDetailActivity extends BaseTabActivity {
     public static final String EXTRA_FLIGHT_SELECTED = "EXTRA_FLIGHT_SELECTED";
 
     private FlightSearchViewModel flightSearchViewModel;
-    private Button buttonSubmit;
     private CollapsingToolbarLayout collapsingToolbarLayout;
-    private AppBarLayout appBarLayout;
-    private TextView departureAirportCode;
-    private TextView departureAirportName;
-    private TextView arrivalAirportCode;
-    private TextView arrivalAirportName;
 
     public static Intent createIntent(Context context, FlightSearchViewModel flightSearchViewModel){
         Intent intent = new Intent(context, FlightDetailActivity.class);
@@ -54,18 +49,16 @@ public class FlightDetailActivity extends BaseTabActivity {
     protected void setupLayout(Bundle savedInstanceState) {
         flightSearchViewModel = getIntent().getParcelableExtra(EXTRA_FLIGHT_SEARCH_MODEL);
         super.setupLayout(savedInstanceState);
-        buttonSubmit = (Button) findViewById(R.id.button_submit);
+        Button buttonSubmit = (Button) findViewById(R.id.button_submit);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
-        departureAirportCode = (TextView) findViewById(R.id.departure_airport_code);
-        departureAirportName = (TextView) findViewById(R.id.departure_airport_name);
-        arrivalAirportCode = (TextView) findViewById(R.id.arrival_airport_code);
-        arrivalAirportName = (TextView) findViewById(R.id.arrival_airport_name);
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+        DepartureArrivalHeaderView departureArrivalHeaderView = (DepartureArrivalHeaderView) findViewById(R.id.dep_arr_header_view);
 
-        departureAirportCode.setText(flightSearchViewModel.getDepartureAirport());
-        departureAirportName.setText(flightSearchViewModel.getDepartureAirportCity());
-        arrivalAirportCode.setText(flightSearchViewModel.getArrivalAirport());
-        arrivalAirportName.setText(flightSearchViewModel.getArrivalAirportCity());
+        departureArrivalHeaderView.setDeparture(flightSearchViewModel.getDepartureAirport(),
+                flightSearchViewModel.getDepartureAirportCity());
+        departureArrivalHeaderView.setArrival(flightSearchViewModel.getArrivalAirport(),
+                flightSearchViewModel.getArrivalAirportCity());
+
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
