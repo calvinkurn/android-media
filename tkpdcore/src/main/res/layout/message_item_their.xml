@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_vvvs"
         android:background="@drawable/border_button_rounded"
         android:orientation="horizontal"
         android:padding="@dimen/padding_small">
@@ -19,8 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_vs"
-            android:layout_marginTop="@dimen/margin_vvvs"
-            android:src="@drawable/info_icon"
+            android:src="@drawable/ic_info_green"
             />
 
         <TextView
