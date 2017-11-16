@@ -9,10 +9,11 @@ import {
   AppState,
   UIManager,
   View
-} from 'react-native';
-// import { HotList_ } from './src/configs/router';
+} from 'react-native'
 import OfficialStore from './src/pages/official-store/setup'
 import ThankYou from './src/pages/thankyou-page/setup'
+
+
 
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 

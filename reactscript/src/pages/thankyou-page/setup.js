@@ -1,16 +1,15 @@
 import React, { Component } from 'react'
+import { Provider } from 'react-redux'
+import App from './App'
+import Store from './store/Store'
 
-import SuccessPage from './SuccessPage'
-import TransferPage from './TransferPage'
 
-class Root extends Component {
+export default class Root extends Component {
   render() {
-      if (this.props.data.template === 'transfer'){
-            return <TransferPage data={this.props.data}/>
-       } else if (this.props.data.template === 'instant') {
-            return <SuccessPage data={this.props.data}/>
-       }
+    return(
+      <Provider store={Store}>
+        <App data={this.props.data} />
+      </Provider>
+    )
   }
 }
-
-export default Root
