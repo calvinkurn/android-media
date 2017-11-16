@@ -59,7 +59,7 @@
             <include
                 layout="@layout/include_header_flight_detail"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="60dp"
                  />
         </LinearLayout>
 

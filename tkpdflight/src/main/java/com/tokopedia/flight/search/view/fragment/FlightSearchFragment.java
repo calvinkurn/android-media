@@ -190,11 +190,11 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         arrivalAirportName = (TextView) view.findViewById(R.id.arrival_airport_name);
 
         String departureAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getDepartureAirport().getAirportId()) ?
-                flightSearchPassDataViewModel.getDepartureAirport().getCityId() : flightSearchPassDataViewModel.getDepartureAirport().getAirportId();
+                flightSearchPassDataViewModel.getDepartureAirport().getCityCode() : flightSearchPassDataViewModel.getDepartureAirport().getAirportId();
         departureAirportCode.setText(departureAirportId);
         departureAirportName.setText(flightSearchPassDataViewModel.getDepartureAirport().getCityName());
         String arrivalAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getArrivalAirport().getAirportId()) ?
-                flightSearchPassDataViewModel.getArrivalAirport().getCityId() : flightSearchPassDataViewModel.getArrivalAirport().getAirportId();
+                flightSearchPassDataViewModel.getArrivalAirport().getCityCode() : flightSearchPassDataViewModel.getArrivalAirport().getAirportId();
         arrivalAirportCode.setText(arrivalAirportId);
         arrivalAirportName.setText(flightSearchPassDataViewModel.getArrivalAirport().getCityName());
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
