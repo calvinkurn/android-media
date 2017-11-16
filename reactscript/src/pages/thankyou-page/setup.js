@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
-import SuccessPage from './SuccessPage'
-import TransferPage from './TransferPage'
+import SuccessPage from './pages/SuccessPage'
+import TransferPage from './pages/TransferPage'
 
 class Root extends Component {
   componentDidMount(){
