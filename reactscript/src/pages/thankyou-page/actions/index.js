@@ -1,5 +1,5 @@
 import { NetworkModule } from 'NativeModules'
-
+import { getEnv, getBaseAPI } from '../lib/util'
 
 
 export const FETCH_DATA_DIGITAL = 'FETCH_DATA_DIGITAL'
@@ -13,11 +13,14 @@ export const fetchDataDigital = (order_id) => {
 
 
 const getData = async (order_id) => {
-    const dataDigital = await getDataDigital(order_id)
+    const env = await getEnv()
+    const base_api_url = await getBaseAPI(env)
+    const dataDigital = await getDataDigital(order_id, base_api_url)
     return dataDigital
 }
 
-const getDataDigital = async (order_id) => {
+const getDataDigital = async (order_id, base_api_url) => {
+    console.log(base_api_url)
     console.log(order_id)
     const url_digital = 'https://pulsa-api-staging.tokopedia.com/v1.4/track/thankyou'
     const payloads = {
