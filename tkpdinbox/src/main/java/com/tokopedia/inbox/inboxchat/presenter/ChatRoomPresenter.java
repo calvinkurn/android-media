@@ -102,7 +102,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         super.detachView();
     }
 
-    public void createWebSocket() {
+    public void
+    createWebSocket() {
 //        if(attempt > 5) {
 //        getView().notifyConnectionWebSocket();
 //        }else {

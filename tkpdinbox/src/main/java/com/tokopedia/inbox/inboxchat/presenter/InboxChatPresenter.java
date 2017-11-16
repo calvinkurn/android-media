@@ -387,12 +387,16 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 //        if(attempt > 5) {
 //            getView().notifyConnectionWebSocket();
 //        }else {
-        Request request = new Request.Builder().url(magicString)
-                .header("Origin", TkpdBaseURL.WEB_DOMAIN)
-                .build();
-        ws = client.newWebSocket(request, listener);
-        attempt++;
+        try {
+            Request request = new Request.Builder().url(magicString)
+                    .header("Origin", TkpdBaseURL.WEB_DOMAIN)
+                    .build();
+            ws = client.newWebSocket(request, listener);
+            attempt++;
 //        }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
