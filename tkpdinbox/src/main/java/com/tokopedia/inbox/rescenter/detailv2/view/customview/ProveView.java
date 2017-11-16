@@ -37,7 +37,6 @@ public class ProveView extends BaseView<ProveData, DetailResCenterFragmentView> 
 
     @Override
     protected void initView(Context context) {
-        super.initView(context);
         this.context = context;
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);

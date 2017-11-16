@@ -4,7 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.customview.BaseView;
@@ -23,6 +26,9 @@ import java.util.Date;
 public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> {
 
     TimeTickerUtil timeTickerUtil;
+    View timeTickerView;
+    TextView tvTitle;
+    Button btnGetHelp;
 
     public TimeView(Context context) {
         super(context);
@@ -34,12 +40,13 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
 
     @Override
     protected void initView(Context context) {
-        super.initView(context);
-        View timeTickerView = findViewById(R.id.time_ticker);
-        if (timeTickerUtil == null) {
-            timeTickerUtil = TimeTickerUtil.createInstance(timeTickerView,
-                    getTimeTickerListener());
-        }
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        tvTitle = (TextView) view.findViewById(R.id.tv_title);
+        timeTickerView = findViewById(R.id.time_ticker);
+        btnGetHelp = (Button) view.findViewById(R.id.btn_get_help);
+
     }
 
     @Override
@@ -59,17 +66,32 @@ public class TimeView extends BaseView<DetailData, DetailResCenterFragmentView> 
 
     @Override
     protected void setViewListener() {
-
+        setVisibility(GONE);
     }
 
     @Override
     public void renderData(@NonNull DetailData detailData) {
         long duration = getDuration(detailData.getResponseDeadline());
         if (duration > 0) {
+            timeTickerView.setVisibility(VISIBLE);
+            if (timeTickerUtil == null) {
+                timeTickerUtil = TimeTickerUtil.createInstance(timeTickerView,
+                        getTimeTickerListener());
+            }
             timeTickerUtil.startTimer(duration);
+        } else if(detailData.isCanAskHelp()) {
+            btnGetHelp.setVisibility(VISIBLE);
+            tvTitle.setText(getResources().getString(R.string.string_help_info_2));
+            btnGetHelp.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.setOnActionHelpClick();
+                }
+            });
         } else {
             refreshMainPage();
         }
+        setVisibility(VISIBLE);
     }
 
     private void refreshMainPage() {

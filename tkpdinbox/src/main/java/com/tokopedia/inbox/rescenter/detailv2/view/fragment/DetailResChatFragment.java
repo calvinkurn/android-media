@@ -531,7 +531,7 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        startActivityForResult(getIntentEditResCenter(), REQUEST_EDIT_SOLUTION);
+                        doEditSolution();
                     }
                 });
             }
@@ -556,7 +556,7 @@ public class DetailResChatFragment
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        startActivityForResult(getAppealResCenter(), REQUEST_APPEAL_SOLUTION);
+                        doAppealSolution();
                     }
                 });
             }
@@ -970,6 +970,16 @@ public class DetailResChatFragment
         if (!isFirstInit) {
             rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
         }
+    }
+
+    @Override
+    public void doAppealSolution() {
+        startActivityForResult(getAppealResCenter(), REQUEST_APPEAL_SOLUTION);
+    }
+
+    @Override
+    public void doEditSolution() {
+        startActivityForResult(getIntentEditResCenter(), REQUEST_EDIT_SOLUTION);
     }
 
     @Override

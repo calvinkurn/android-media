@@ -77,6 +77,10 @@ public interface DetailResChatFragmentListener {
 
         void onAddItemAdapter(List<Visitable> items);
 
+        void doAppealSolution();
+
+        void doEditSolution();
+
 
     }
 

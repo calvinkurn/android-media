@@ -1,12 +1,15 @@
 package com.tokopedia.inbox.rescenter.detailv2.view;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,6 +23,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
@@ -325,6 +329,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
             } else {
                 timeView.setVisibility(View.GONE);
             }
+            timeView.invalidate();
         }
         if (getViewData().getProductData() != null) {
             listProductView.renderData(getViewData().getProductData());
@@ -334,6 +339,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         }
         if (getViewData().getProveData() != null) {
             proveView.renderData(getViewData().getProveData());
+            proveView.invalidate();
         }
         if (getViewData().getHistoryData() != null) {
             historyView.renderData(getViewData().getHistoryData());
@@ -419,13 +425,33 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionCancelResolutionClick() {
-        showConfirmationDialog(getActivity().getString(R.string.msg_rescen_cancel),
-                new ConfirmationDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        presenter.cancelResolution();
-                    }
-                });
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.layout_dialog_cancel_complain);
+        TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
+        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
+        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
+        Button btnAccept = (Button) dialog.findViewById(R.id.btn_cancel_solution);
+        tvSolution.setText(MethodChecker.fromHtml(getViewData().getButtonData().getCancelDialogText()));
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.cancelResolution();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override
@@ -441,19 +467,33 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionAcceptSolutionClick() {
-        showConfirmationDialog(getActivity().getString(R.string.msg_accept_sol),
-                new ConfirmationDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        if (getViewData().getButtonData().isAcceptReturSolution()) {
-                            Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
-                            intent.putExtra("resolution_center", true);
-                            startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS);
-                        } else {
-                            presenter.acceptSolution();
-                        }
-                    }
-                });
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.layout_dialog_accept_solution);
+        TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
+        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
+        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
+        Button btnAccept = (Button) dialog.findViewById(R.id.btn_accept_solution);
+        tvSolution.setText(MethodChecker.fromHtml(getViewData().getButtonData().getAskHelpDialogText()));
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.acceptSolution();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override
@@ -482,13 +522,33 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionHelpClick() {
-        showConfirmationDialog(getActivity().getString(R.string.msg_rescen_help),
-                new ConfirmationDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        presenter.askHelpResolution();
-                    }
-                });
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.layout_dialog_ask_help);
+        TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
+        ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
+        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
+        Button btnAccept = (Button) dialog.findViewById(R.id.btn_yes);
+        tvSolution.setText(MethodChecker.fromHtml(getViewData().getButtonData().getAskHelpDialogText()));
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.askHelpResolution();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override

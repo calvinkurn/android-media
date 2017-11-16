@@ -57,6 +57,16 @@
                 />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/string_change"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_small"
+            android:textColor="@color/tkpd_main_green"/>
+
     </RelativeLayout>
 
     <View

@@ -12,7 +12,9 @@
         android:layout_centerInParent="true" />
 
     <include layout="@layout/layout_next_step"
-        android:id="@+id/cv_next_step"/>
+        android:id="@+id/cv_next_step"
+        android:visibility="gone"
+        context:visibility="visible"/>
 
     <com.tokopedia.inbox.rescenter.detailv2.view.customview.ButtonView
         android:id="@+id/button_view"
@@ -82,7 +84,6 @@
                 android:id="@+id/time_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
                 android:layout_marginBottom="@dimen/margin_small"/>
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView

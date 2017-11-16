@@ -14,7 +14,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragm
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.SolutionData;
 
 /**
- * Created by hangnadi on 3/9/17.
+ * Created by yfsx on 3/9/17.
  */
 
 public class SolutionView extends BaseView<SolutionData, DetailResCenterFragmentView> {
@@ -23,6 +23,7 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
     private TextView informationText;
     private TextView solutionText;
     private TextView problemText;
+    private TextView tvChange;
 
     public SolutionView(Context context) {
         super(context);
@@ -56,6 +57,7 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
         informationText = (TextView) view.findViewById(R.id.tv_last_solution_date);
         solutionText = (TextView) view.findViewById(R.id.tv_last_solution);
         problemText = (TextView) view.findViewById(R.id.tv_last_problem);
+        tvChange = (TextView) view.findViewById(R.id.tv_change);
     }
 
     @Override
@@ -70,6 +72,13 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
         solutionText.setText(data.getSolutionText());
         actionEdit.setVisibility(GONE);
         problemText.setText(data.getSolutionProblem());
+        tvChange.setVisibility(data.isEditAble() ? VISIBLE : GONE);
+        tvChange.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.setOnActionEditSolutionClick();
+            }
+        });
     }
 
     private String generateInformationText(SolutionData data) {
