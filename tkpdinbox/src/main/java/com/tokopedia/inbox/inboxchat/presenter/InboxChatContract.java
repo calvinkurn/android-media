@@ -90,6 +90,8 @@ public class InboxChatContract {
         void dropKeyboard();
 
         void onErrorDeleteMessage(String errorMessage);
+
+        void setMenuEnabled(boolean b);
     }
 
     interface Presenter extends CustomerPresenter<View>{

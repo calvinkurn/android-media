@@ -67,10 +67,10 @@
                 tools:text="JJJJ"
                 android:textColor="@color/white"/>
 
-            <TextView
+            <ProgressBar
                 android:id="@+id/action"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@drawable/ic_close_24dp"
                 android:text="@string/title_try_again"
                 android:textStyle="bold"

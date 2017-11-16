@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -216,8 +217,6 @@ public class InboxChatFragment extends BaseDaggerFragment
                 .setTitle(R.string.title_delete)
                 .setMessage(String.format(getResources().getString(R.string.delete_confirmation)
                         , selected))
-                .setIcon(R.drawable.ic_trash)
-
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -451,6 +450,11 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void setMenuEnabled(boolean b) {
+        setHasOptionsMenu(b);
+    }
+
+    @Override
     public void onErrorDeleteMessage(String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
@@ -546,6 +550,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void onSearchReset() {
         refreshHandler.setPullEnabled(true);
         presenter.resetSearch();
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -565,6 +570,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                                 response.getData().getMessage().getCensoredReply(), response, true);
                     }
                 });
+                break;
             default:
                 break;
         }
@@ -585,7 +591,7 @@ public class InboxChatFragment extends BaseDaggerFragment
             public void run() {
                 TextView title = (TextView) notifier.findViewById(R.id.title);
                 title.setText(getString(R.string.connected_websocket));
-                TextView action = (TextView) notifier.findViewById(R.id.action);
+                View action = notifier.findViewById(R.id.action);
                 action.setVisibility(View.GONE);
             }
         });
@@ -609,18 +615,10 @@ public class InboxChatFragment extends BaseDaggerFragment
                     notifier.setVisibility(View.VISIBLE);
                     TextView title = (TextView) notifier.findViewById(R.id.title);
 
-                    TextView action = (TextView) notifier.findViewById(R.id.action);
+                    View action = notifier.findViewById(R.id.action);
 
                     title.setText(R.string.error_no_connection_retrying);
                     action.setVisibility(View.VISIBLE);
-                    action.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-//                        presenter.resetAttempt();
-//                        presenter.createWebSocket();
-                            notifier.setVisibility(View.GONE);
-                        }
-                    });
                 }
             });
         }

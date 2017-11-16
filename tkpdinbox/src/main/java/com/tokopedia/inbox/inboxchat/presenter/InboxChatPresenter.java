@@ -207,6 +207,8 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         if (!pagingHandler.CheckNextPage() && result.isHasTimeMachine()) {
             getView().addTimeMachine();
         }
+
+        getView().setMenuEnabled(false);
     }
 
 

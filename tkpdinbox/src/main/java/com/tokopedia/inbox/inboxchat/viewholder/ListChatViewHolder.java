@@ -115,12 +115,15 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
 
         ImageHandler.loadImageCircle2(avatar.getContext(), avatar, element.getImage());
 
-        long unixdate = Long.parseLong(element.getTime());
-        DateFormat formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(unixdate * 1000);
-        System.out.println("Formatted Date:" + formatter.format(calendar.getTime()));
-
+        try {
+            long unixdate = Long.parseLong(element.getTime());
+            DateFormat formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(unixdate * 1000);
+            System.out.println("Formatted Date:" + formatter.format(calendar.getTime()));
+        }catch (NumberFormatException e){
+            e.printStackTrace();
+        }
         setTime(element, getAdapterPosition());
         setLabel(element.getLabel());
 
@@ -137,17 +140,14 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
 
 
     private SpannableString highlight(Context context, Spanned span, String keyword) {
-        //Get the text from text view and create a spannable string
+
         SpannableString spannableString = new SpannableString(span);
 
-        //Search for all occurrences of the keyword in the string
         int indexOfKeyword = spannableString.toString().toLowerCase().indexOf(keyword);
 
         while (indexOfKeyword < span.length() && indexOfKeyword >= 0) {
-            //Create a background color span on the keyword
             spannableString.setSpan(new ForegroundColorSpan(MethodChecker.getColor(context, R.color.medium_green)), indexOfKeyword, indexOfKeyword + keyword.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            //Get the next index of the keyword
             indexOfKeyword = spannableString.toString().indexOf(keyword, indexOfKeyword + keyword.length());
         }
 
@@ -276,7 +276,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
 
     private void setNotReadState(int counter) {
         counterUnread.setVisibility(View.VISIBLE);
-        userName.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        userName.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
 
         if (counter > 0) {
             counterUnread.setText(String.valueOf(counter));
