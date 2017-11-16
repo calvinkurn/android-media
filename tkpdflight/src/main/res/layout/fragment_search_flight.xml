@@ -18,7 +18,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
     <com.tokopedia.flight.search.view.adapter.FlightSearchRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

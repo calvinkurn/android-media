@@ -9,9 +9,11 @@
     android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical"
     android:paddingBottom="@dimen/padding_small"
-    android:paddingLeft="@dimen/margin_sm"
-    android:paddingRight="@dimen/margin_sm"
-    android:paddingTop="@dimen/padding_small">
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/margin_small"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -61,11 +63,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/padding_vs"
+            android:layout_marginEnd="@dimen/padding_vs">
 
             <ImageView
                 android:id="@+id/departure_time_circle"
@@ -102,20 +108,23 @@
 
         <RelativeLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/departure_time"
-                style="@style/TextView.Body1"
-                android:layout_marginBottom="@dimen/margin_sm"
+                style="@style/TextView.Body1.Bold"
+                android:textSize="13sp"
+                android:layout_marginBottom="@dimen/margin_vs"
                 android:layout_marginEnd="@dimen/margin_vs"
                 android:layout_marginRight="@dimen/margin_vs"
                 tools:text="19:25" />
 
             <TextView
                 android:id="@+id/arrival_time"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Body1.Bold"
+                android:textSize="13sp"
                 android:layout_alignLeft="@+id/container_flight_time"
                 android:layout_alignStart="@+id/container_flight_time"
                 android:layout_below="@+id/container_flight_time"
@@ -126,12 +135,13 @@
             <TextView
                 android:id="@+id/arrival_add_day"
                 style="@style/TextView.Caption.BlackSecondary"
-                android:layout_toEndOf="@+id/arrival_time"
-                android:layout_toRightOf="@+id/arrival_time"
-                android:layout_alignBaseline="@id/arrival_time"
                 android:visibility="gone"
                 tools:text="(+1 Hari)"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:layout_below="@+id/container_flight_time"
+                android:layout_toRightOf="@+id/arrival_time"
+                android:layout_toEndOf="@+id/arrival_time"
+                android:layout_alignBaseline="@id/arrival_time"/>
 
             <LinearLayout
                 android:id="@+id/container_flight_time"
@@ -140,13 +150,14 @@
                 android:layout_alignLeft="@+id/departure_time"
                 android:layout_alignStart="@+id/departure_time"
                 android:layout_below="@+id/departure_time"
-                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginBottom="@dimen/margin_vs"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/flight_time"
                     style="@style/TextView.Caption.BlackDisabled"
+                    android:textSize="11sp"
                     tools:text="8j 20m" />
             </LinearLayout>
         </RelativeLayout>
@@ -160,8 +171,7 @@
 
             <TextView
                 android:id="@+id/saving_price"
-                style="@style/TextView.Body1.BlackDisabled"
-                android:layout_marginBottom="@dimen/margin_vs"
+                style="@style/TextView.Caption.BlackDisabled"
                 android:visibility="gone"
                 tools:text="Rp. 25000"
                 tools:visibility="visible" />
@@ -169,24 +179,29 @@
             <TextView
                 android:id="@+id/total_price"
                 style="@style/TextView.Subheading.Bold"
-                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginBottom="@dimen/margin_vvvs"
                 tools:text="Rp 25.000" />
 
             <LinearLayout
                 android:id="@+id/detail_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:clickable="true"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginBottom="-5dp"
+                android:layout_marginRight="-5dp"
+                android:layout_marginEnd="-5dp"
+                android:padding="@dimen/padding_vs"
+                android:foreground="?attr/selectableItemBackground">
 
                 <TextView
                     style="@style/TextView.Caption.Green"
                     android:text="@string/flight_label_see_detail" />
 
                 <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="@dimen/image_width_xxxs"
+                    android:layout_width="@dimen/image_width_xxs"
+                    android:layout_height="@dimen/image_width_xxs"
                     android:layout_marginLeft="@dimen/margin_vs"
                     android:layout_marginStart="@dimen/margin_vs"
                     android:src="@drawable/ic_arrow_down_detail_flight" />

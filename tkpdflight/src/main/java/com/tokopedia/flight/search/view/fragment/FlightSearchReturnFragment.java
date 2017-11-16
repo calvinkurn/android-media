@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.view.DepartureArrivalHeaderView;
 import com.tokopedia.flight.search.view.activity.FlightSearchReturnActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
@@ -55,17 +56,12 @@ public class FlightSearchReturnFragment extends FlightSearchFragment {
         flightSearchPresenter.getDetailDepartureFlight(selectedFlightDeparture);
     }
 
-    @Override
-    protected void setUpDepArrHeader(View view) {
-        DepartureArrivalHeaderView departureArrivalHeaderView = (DepartureArrivalHeaderView) view.findViewById(R.id.dep_arr_header_view);
+    protected FlightAirportDB getDepartureAirport(){
+        return flightSearchPassDataViewModel.getArrivalAirport();
+    }
 
-        String departureAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getArrivalAirport().getAirportId()) ?
-                flightSearchPassDataViewModel.getArrivalAirport().getCityId() : flightSearchPassDataViewModel.getArrivalAirport().getAirportId();
-        departureArrivalHeaderView.setDeparture(departureAirportId, flightSearchPassDataViewModel.getArrivalAirport().getCityName());
-
-        String arrivalAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getDepartureAirport().getAirportId()) ?
-                flightSearchPassDataViewModel.getDepartureAirport().getCityId() : flightSearchPassDataViewModel.getDepartureAirport().getAirportId();
-        departureArrivalHeaderView.setArrival(arrivalAirportId, flightSearchPassDataViewModel.getDepartureAirport().getCityName());
+    protected FlightAirportDB getArrivalAirport(){
+        return flightSearchPassDataViewModel.getDepartureAirport();
     }
 
     protected boolean isReturning(){
