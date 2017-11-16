@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.LabelView;
@@ -21,6 +23,7 @@ import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenterImpl;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailViewPresenter;
@@ -39,7 +42,8 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
 
     @Override
     protected BaseDatePickerPresenter getDatePickerPresenter() {
-        return new BaseDatePickerPresenterImpl(getActivity());
+        BaseDatePickerPresenterImpl baseDatePickerPresenter = new BaseDatePickerPresenterImpl(getActivity());
+        return baseDatePickerPresenter;
     }
 
     @Override
@@ -110,7 +114,7 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
     }
 
     @Override
-    public void onTurnOnAdSuccess() {
+    public void onTurnOnAdSuccess(BulkAction dataResponseActionAds) {
         loadData();
         setResultAdDetailChanged();
         snackbarRetry.hideRetrySnackbar();
@@ -131,7 +135,7 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
     }
 
     @Override
-    public void onTurnOffAdSuccess() {
+    public void onTurnOffAdSuccess(BulkAction dataResponseActionAds) {
         loadData();
         setResultAdDetailChanged();
         snackbarRetry.hideRetrySnackbar();
@@ -172,8 +176,13 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
         snackbarRetry.showRetrySnackbar();
     }
 
+    private static final String TAG = "TopAdsDetailViewFragmen";
+
     protected void updateMainView(V ad) {
         name.setContent(ad.getName());
+        Log.d(TAG, "status -> "+ad.getStatus());
+
+        CommonUtils.dumper("status -> "+ad.getStatus());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
             case TopAdsConstant.STATUS_AD_NOT_SENT:

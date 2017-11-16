@@ -51,7 +51,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     private static final String ROLE_SHOP = "shop";
 
-    private final GetMessageListUseCase getMessageListUseCase;
     private final GetReplyListUseCase getReplyListUseCase;
     private final ReplyMessageUseCase replyMessageUseCase;
     private SessionHandler sessionHandler;
@@ -70,11 +69,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     final static String SELLER = "shop";
 
     @Inject
-    ChatRoomPresenter(GetMessageListUseCase getMessageListUseCase,
-                      GetReplyListUseCase getReplyListUseCase,
+    ChatRoomPresenter(GetReplyListUseCase getReplyListUseCase,
                       ReplyMessageUseCase replyMessageUseCase,
                       SessionHandler sessionHandler) {
-        this.getMessageListUseCase = getMessageListUseCase;
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
         this.sessionHandler = sessionHandler;
@@ -100,6 +97,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void detachView() {
         super.detachView();
+        getReplyListUseCase.unsubscribe();
+        replyMessageUseCase.unsubscribe();
     }
 
     public void createWebSocket() {
@@ -311,16 +310,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getProd.getOwnShopProductUrl(new GetProductUrlUtil.OnGetUrlInterface() {
             @Override
             public void onGetUrl(String url) {
-                getView().addUrlToReply(getUrlWithoutParameters(url));
+                getView().addUrlToReply(url);
             }
         });
-    }
-
-    private String getUrlWithoutParameters(String url) {
-        if (url.contains("?"))
-            return url.substring(0, url.lastIndexOf('?'));
-        else
-            return url;
     }
 
     @Override

@@ -203,4 +203,10 @@ public class SendChatFragment extends BaseDaggerFragment
             label.setText(getArguments().getString(SendMessageActivity.PARAM_ROLE));
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 }
