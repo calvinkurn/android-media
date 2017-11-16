@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -16,8 +17,12 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
+import com.tokopedia.topads.TopAdsModuleRouter;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
@@ -49,7 +54,7 @@ public class TopAdsEditGroupNameFragment extends BasePresenterFragment implement
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         topAdsDetailEditGroupPresenter.attachView(this);
@@ -176,6 +181,16 @@ public class TopAdsEditGroupNameFragment extends BasePresenterFragment implement
     public void onSaveAdError(String errorMessage) {
         hideLoading();
         showSnackBarError(errorMessage);
+    }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        /* just deal with abstraction */
+    }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        /* just deal with abstraction */
     }
 
     @Override

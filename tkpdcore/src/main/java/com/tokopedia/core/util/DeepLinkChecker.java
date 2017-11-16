@@ -151,8 +151,13 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("bantuan"));
     }
 
+    private static boolean isEvents(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("events"));
+    }
+
     private static boolean isProduct(List<String> linkSegment) {
         return (linkSegment.size() == 2
+                && !isEvents(linkSegment)
                 && !isHelp(linkSegment)
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
