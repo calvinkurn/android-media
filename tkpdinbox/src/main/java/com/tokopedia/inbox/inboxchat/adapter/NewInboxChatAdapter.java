@@ -256,9 +256,15 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
             temp.setReadStatus(STATE_CHAT_UNREAD);
             temp.setTime(response.getData().getMessage().getTimeStampUnix());
             temp.setName(response.getData().getFrom());
-            list.add(0, temp);
-            notifyItemInserted(0);
-            notifyItemRangeChanged(0, 1);
+            if (this.list.size() == 1 && list.get(0) instanceof EmptyChatModel) {
+                this.list.clear();
+                this.list.add(0, temp);
+                notifyDataSetChanged();
+            } else {
+                list.add(0, temp);
+                notifyItemInserted(0);
+                notifyItemRangeChanged(0, 1);
+            }
             presenter.moveViewToTop();
 
         }
@@ -284,13 +290,13 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void removeList(List<Pair> originList, List<DeleteChatViewModel> list) {
-        if (originList.size() == list.size()
+        if (this.list.size() == list.size()
                 && this.list.get(1) instanceof TimeMachineListViewModel) {
             this.list.clear();
             this.list.add(emptyChatModel);
             showTimeMachine();
             notifyDataSetChanged();
-        } else if (originList.size() == list.size()) {
+        } else if (this.list.size() == list.size()) {
             this.list.clear();
             this.list.add(emptyChatModel);
             notifyDataSetChanged();

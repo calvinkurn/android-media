@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxchat.presenter;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -87,7 +88,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         this.pagingHandler = new PagingHandler();
 
         client = new OkHttpClient();
-        magicString = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN+ TkpdBaseURL.Chat.CHAT_WEBSOCKET +
+        magicString = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN + TkpdBaseURL.Chat.CHAT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
@@ -117,16 +118,15 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
 
-
     @Override
     public void onGoToDetail(String id, String role) {
         if (!role.equals(ADMIN.toLowerCase())) {
-            if(role.equals(SELLER.toLowerCase())){
+            if (role.equals(SELLER.toLowerCase())) {
                 Intent intent = new Intent(getView().getActivity(), ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(id), "");
                 intent.putExtras(bundle);
                 getView().startActivity(intent);
-            }else {
+            } else {
                 getView().startActivity(
                         PeopleInfoNoDrawerActivity.createInstance(getView().getActivity(), String.valueOf(id))
                 );
@@ -137,7 +137,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void sendMessageWithApi() {
-        if(isValidReply()){
+        if (isValidReply()) {
             getView().addDummyMessage();
             getView().setViewEnabled(false);
             final String reply = (getView().getReplyMessage());
@@ -311,9 +311,16 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getProd.getOwnShopProductUrl(new GetProductUrlUtil.OnGetUrlInterface() {
             @Override
             public void onGetUrl(String url) {
-                getView().addUrlToReply(url);
+                getView().addUrlToReply(getUrlWithoutParameters(url));
             }
         });
+    }
+
+    private String getUrlWithoutParameters(String url) {
+        if (url.contains("?"))
+            return url.substring(0, url.lastIndexOf('?'));
+        else
+            return url;
     }
 
     @Override
