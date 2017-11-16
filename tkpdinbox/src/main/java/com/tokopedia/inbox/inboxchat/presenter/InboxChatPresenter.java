@@ -217,6 +217,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         super.detachView();
         getMessageListUseCase.unsubscribe();
         searchMessageUseCase.unsubscribe();
+        deleteMessageListUseCase.unsubscribe();
     }
 
 

@@ -51,7 +51,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     private static final String ROLE_SHOP = "shop";
 
-    private final GetMessageListUseCase getMessageListUseCase;
     private final GetReplyListUseCase getReplyListUseCase;
     private final ReplyMessageUseCase replyMessageUseCase;
     private SessionHandler sessionHandler;
@@ -100,10 +99,11 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     @Override
     public void detachView() {
         super.detachView();
+        getReplyListUseCase.unsubscribe();
+        replyMessageUseCase.unsubscribe();
     }
 
-    public void
-    createWebSocket() {
+    public void createWebSocket() {
 //        if(attempt > 5) {
 //        getView().notifyConnectionWebSocket();
 //        }else {
@@ -322,6 +322,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             return url.substring(0, url.lastIndexOf('?'));
         else
             return url;
+
     }
 
     @Override

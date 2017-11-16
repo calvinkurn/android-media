@@ -32,6 +32,12 @@ public class SendChatPresenter extends BaseDaggerPresenter<SendChat.View>
     }
 
     @Override
+    public void detachView() {
+        super.detachView();
+        sendMessageUseCase.unsubscribe();
+    }
+
+    @Override
     public void sendMessage(String message, String source, String toShopId, String toUserId) {
         getView().removeError();
 
