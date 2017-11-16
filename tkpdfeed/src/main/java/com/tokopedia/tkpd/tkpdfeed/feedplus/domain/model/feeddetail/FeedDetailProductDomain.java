@@ -55,7 +55,7 @@ public class FeedDetailProductDomain {
 
     private final
     @Nullable
-    Double rating;
+    double rating;
 
     public FeedDetailProductDomain(Integer id,
                                    String name,
@@ -68,7 +68,7 @@ public class FeedDetailProductDomain {
                                    Object url,
                                    String productLink,
                                    Boolean wishlist,
-                                   Double rating) {
+                                   double rating) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -139,7 +139,7 @@ public class FeedDetailProductDomain {
     }
 
     @Nullable
-    public Double getRating() {
+    public double getRating() {
         return rating;
     }
 }
