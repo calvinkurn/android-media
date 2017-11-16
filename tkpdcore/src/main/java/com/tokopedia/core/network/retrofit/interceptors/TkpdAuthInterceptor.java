@@ -355,6 +355,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         String freshAccessToken = SessionHandler.getAccessToken();
         return chain.request().newBuilder()
                 .header("authorization", "Bearer " + freshAccessToken)
+                .header("accounts-authorization", "Bearer " + freshAccessToken)
                 .build();
     }
 }
