@@ -287,7 +287,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
         for (int i = 0, sizei = departureAirportList.size(); i<sizei; i++) {
             for (int j = 0, sizej = arrivalAirportList.size(); j<sizej; j++) {
-
+                //TODO do combination
             }
         }
     }
@@ -312,7 +312,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     @Override
     protected boolean needLoadDataAtStart() {
-        return false;
+        return true;
     }
 
     private void setUIMarkFilter() {
