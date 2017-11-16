@@ -183,7 +183,15 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void onChangePassengerData(FlightBookingPassengerViewModel viewModel) {
-        startActivityForResult(FlightBookingPassengerActivity.getCallingIntent(getActivity(), viewModel), REQUEST_CODE_PASSENGER);
+        startActivityForResult(
+                FlightBookingPassengerActivity.getCallingIntent(
+                        getActivity(),
+                        viewModel,
+                        flightBookingCartData.getLuggageViewModels(),
+                        flightBookingCartData.getMealViewModels()
+                ),
+                REQUEST_CODE_PASSENGER
+        );
     }
 
     @Override
