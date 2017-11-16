@@ -175,13 +175,6 @@ public class InboxChatActivity extends DrawerPresenterActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-//        getFragmentManager().findFragmentById(R.id.pager).onActivityResult(requestCode,
-//                resultCode, data);
-    }
-
-    @Override
     public void onBackPressed() {
         if (isTaskRoot() && GlobalConfig.isSellerApp()) {
             startActivity(SellerAppRouter.getSellerHomeActivity(this));
@@ -211,12 +204,5 @@ public class InboxChatActivity extends DrawerPresenterActivity
             toolbar.setTitleTextColor(getResources().getColor(R.color.black));
             indicator.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onGetNotificationDrawer(DrawerNotification notification) {
-        super.onGetNotificationDrawer(notification);
-        TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
-        titleTextView.setText("Chat (" + notification.getInboxMessage() + ")");
     }
 }

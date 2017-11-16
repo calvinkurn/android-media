@@ -2,6 +2,7 @@ package com.tokopedia.inbox.inboxchat.presenter.subscriber;
 
 import android.util.Pair;
 
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatPresenter;
 import com.tokopedia.inbox.inboxchat.viewmodel.DeleteChatListViewModel;
@@ -35,7 +36,7 @@ public class DeleteMessageSubscriber extends Subscriber<DeleteChatListViewModel>
 
     @Override
     public void onError(Throwable e) {
-        e.printStackTrace();
+        view.onErrorDeleteMessage(ErrorHandler.getErrorMessage(e));
     }
 
     @Override

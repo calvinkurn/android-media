@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxchat.presenter.subscriber;
 
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.inboxchat.domain.model.message.ListMessage;
 import com.tokopedia.inbox.inboxchat.domain.model.message.MessageData;
 import com.tokopedia.inbox.inboxchat.presenter.InboxChatContract;
@@ -33,7 +34,7 @@ public class GetMessageSubscriber extends Subscriber<InboxChatViewModel>{
     @Override
     public void onError(Throwable e) {
         presenter.setRequesting(false);
-        presenter.setError();
+        presenter.setError(ErrorHandler.getErrorMessage(e));
     }
 
     @Override

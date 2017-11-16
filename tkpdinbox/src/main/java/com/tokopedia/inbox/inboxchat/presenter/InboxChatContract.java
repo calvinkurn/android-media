@@ -85,9 +85,11 @@ public class InboxChatContract {
 
         void showErrorWarningDelete(int maxMessageDelete);
 
-        void showErrorFull();
+        void showErrorFull(String errorMessage);
 
         void dropKeyboard();
+
+        void onErrorDeleteMessage(String errorMessage);
     }
 
     interface Presenter extends CustomerPresenter<View>{
