@@ -37,7 +37,7 @@ public class FlightSelectPassengerActivity extends BaseSimpleActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateTitle(getString(R.string.select_passenger_toolbar_title));
+        toolbar.setContentInsetStartWithNavigation(0);
     }
 
     @Override
