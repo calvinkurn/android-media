@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -8,8 +9,12 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
+import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
@@ -20,6 +25,7 @@ import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -37,7 +43,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .appComponent(getComponent(AppComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         topAdsDetailNewProductPresenter.attachView(this);
@@ -47,6 +53,17 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     protected void initView(View view) {
         super.initView(view);
         submitButton.setText(getString(R.string.label_top_ads_save));
+    }
+
+    @Override
+    protected void loadSuggestionBid() {
+        // get id from view model
+        List<String> ids = new ArrayList<>();
+        for (TopAdsProductViewModel topAdsProductViewModel : stepperModel.getTopAdsProductViewModels()) {
+            ids.add(topAdsProductViewModel.getDepartmentId()+"");
+        }
+
+        topAdsDetailNewProductPresenter.getSuggestionBid(ids, TopAdsNetworkConstant.SOURCE_NEW_COST_WITHOUT_GROUP);
     }
 
     @Override
@@ -104,6 +121,21 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     public void onSaveAdError(String errorMessage) {
         hideLoading();
         showSnackBarError(errorMessage);
+    }
+
+    @Override
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        setSuggestionBidText(s);
+    }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        setDefaultSuggestionBidText();
+    }
+
+    @Override
+    protected void onSuggestionTitleUseClick() {
+
     }
 
     @Override

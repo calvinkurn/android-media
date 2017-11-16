@@ -18,6 +18,7 @@ public class TopAdsExtraConstant {
     public static final String EXTRA_AD_DELETED = "EXTRA_AD_DELETED";
     public static final String EXTRA_CHOOSEN_OPTION_GROUP = "EXTRA_CHOOSEN_OPTION_GROUP";
     public static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
+    public static final String EXTRA_FORCE_REFRESH = "EXTRA_FORCE_REFRESH";
 
     public static final String EXTRA_FILTER_SELECTED_POSITION_LIST = "EXTRA_FILTER_SELECTED_POSITION_LIST";
     public static final String EXTRA_FILTER_SELECTED_STATUS = "EXTRA_FILTER_SELECTED_STATUS";
