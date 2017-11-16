@@ -183,10 +183,10 @@
                 tools:text="Rp 25.000" />
 
             <LinearLayout
-                android:id="@+id/detail_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:id="@+id/container_detail"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:layout_marginBottom="-5dp"

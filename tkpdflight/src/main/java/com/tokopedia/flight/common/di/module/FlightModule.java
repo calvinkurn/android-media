@@ -5,6 +5,7 @@ import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
+import com.tokopedia.flight.common.data.source.FlightAuthInterceptor;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
@@ -37,8 +38,12 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder, HttpLoggingInterceptor httpLoggingInterceptor) {
-        return okHttpClientBuilder.addInterceptor(httpLoggingInterceptor).build();
+    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder,
+                                            HttpLoggingInterceptor httpLoggingInterceptor,
+                                            FlightAuthInterceptor flightAuthInterceptor) {
+        return okHttpClientBuilder.addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(flightAuthInterceptor)
+                .build();
     }
 
     @FlightScope

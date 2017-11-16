@@ -52,8 +52,7 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
         TextView airlineRefundableInfo;
         TextView savingPrice;
         TextView arrivalAddDay;
-
-        View detailView;
+        View containerDetail;
 
         public FlightSearchViewHolder(View itemView) {
             super(itemView);
@@ -64,9 +63,9 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
             airlineRefundableInfo = (TextView) itemView.findViewById(R.id.airline_refundable_info);
             tvPrice = (TextView) itemView.findViewById(R.id.total_price);
             tvDuration = (TextView) itemView.findViewById(R.id.flight_time);
-            detailView = itemView.findViewById(R.id.detail_view);
             savingPrice = (TextView) itemView.findViewById(R.id.saving_price);
             arrivalAddDay = (TextView) itemView.findViewById(R.id.arrival_add_day);
+            containerDetail = itemView.findViewById(R.id.container_detail);
         }
 
         @Override
@@ -76,7 +75,7 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
             tvPrice.setText(flightSearchViewModel.getTotal());
             setDuration(flightSearchViewModel);
             setAirline(flightSearchViewModel);
-            detailView.setOnClickListener(new View.OnClickListener() {
+            containerDetail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listenerOnDetailClicked != null){
