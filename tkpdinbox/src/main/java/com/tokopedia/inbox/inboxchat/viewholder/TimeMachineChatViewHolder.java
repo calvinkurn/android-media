@@ -34,7 +34,7 @@ public class TimeMachineChatViewHolder extends AbstractViewHolder<TimeMachineCha
         timeMachineText = (TextView) itemView.findViewById(R.id.time_machine_text);
 
         Spannable spannable = new SpannableString(MainApplication.getAppContext().getString(R.string
-                .time_machine));
+                .time_machine_chat));
 
         spannable.setSpan(new ClickableSpan() {
                               @Override
@@ -49,9 +49,9 @@ public class TimeMachineChatViewHolder extends AbstractViewHolder<TimeMachineCha
                                           .getAppContext(), R.color.medium_green));
                               }
                           }
-                , MainApplication.getAppContext().getString(R.string.time_machine).indexOf
+                , MainApplication.getAppContext().getString(R.string.time_machine_chat).indexOf
                         ("Riwayat")
-                , MainApplication.getAppContext().getString(R.string.time_machine).length()
+                , MainApplication.getAppContext().getString(R.string.time_machine_chat).length()
                 , 0);
 
         timeMachineText.setText(spannable, TextView.BufferType.SPANNABLE);
