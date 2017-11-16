@@ -2,7 +2,6 @@ package com.tokopedia.flight.search.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 public class FlightSearchReturnFragment extends FlightSearchFragment {
 
-    private TextView airportName;
+    private TextView airlineName;
     private TextView duration;
 
     private String selectedFlightDeparture;
@@ -49,7 +48,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        airportName = (TextView) view.findViewById(R.id.airline_name);
+        airlineName = (TextView) view.findViewById(R.id.airline_name);
         duration = (TextView) view.findViewById(R.id.duration);
 
         String departureAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getArrivalAirport().getAirportId()) ?
@@ -78,12 +77,18 @@ public class FlightSearchReturnFragment extends FlightSearchFragment {
     }
 
     @Override
-    public void onErrorGetDetailFlightDeparture(Throwable e) {
-        super.onErrorGetDetailFlightDeparture(e);
-    }
-
-    @Override
     public void onSuccessGetDetailFlightDeparture(FlightSearchViewModel flightSearchViewModel) {
-        super.onSuccessGetDetailFlightDeparture(flightSearchViewModel);
+        if(flightSearchViewModel.getAirlineList().size() > 1){
+            airlineName.setText(getString(R.string.flight_label_multi_maskapai));
+        }else if(flightSearchViewModel.getAirlineList().size() == 1){
+            airlineName.setText(flightSearchViewModel.getAirlineList().get(0).getName());
+        }
+        if(flightSearchViewModel.getAddDayArrival() > 0) {
+            duration.setText(String.format("| %s - %s (+%sh)", flightSearchViewModel.getDepartureTime(),
+                    flightSearchViewModel.getArrivalTime(), String.valueOf(flightSearchViewModel.getAddDayArrival())));
+        }else{
+            duration.setText(String.format("| %s - %s", flightSearchViewModel.getDepartureTime(),
+                    flightSearchViewModel.getArrivalTime()));
+        }
     }
 }

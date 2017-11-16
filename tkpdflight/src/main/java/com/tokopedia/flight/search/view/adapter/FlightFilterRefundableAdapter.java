@@ -65,28 +65,4 @@ public class FlightFilterRefundableAdapter extends BaseListCheckableV2Adapter<Re
         }
     }
 
-    @Nullable
-    @Override
-    protected LoadingDataBinder createLoadingDataBinder() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    protected NoResultDataBinder createEmptyViewBinder() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    protected NoResultDataBinder createEmptyViewSearchBinder() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    protected RetryDataBinder createRetryDataBinder() {
-        return null;
-    }
-
 }

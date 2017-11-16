@@ -2,7 +2,7 @@ package com.tokopedia.flight.airport.data.source.cache;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.base.data.source.cache.DataListCacheSource;
+import com.tokopedia.abstraction.base.data.source.cache.DataCacheSource;
 import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
 
 import java.util.concurrent.TimeUnit;
@@ -13,13 +13,13 @@ import javax.inject.Inject;
  * Created by hendry on 7/14/2017.
  */
 
-public class FlightAirportDataListCacheSource extends DataListCacheSource{
+public class FlightAirportDataCacheSource extends DataCacheSource {
 
     private static final String PREF_KEY_NAME = "PREF_KEY_AIRPORT_LIST";
     private static final long ONE_WEEK = TimeUnit.DAYS.toSeconds(7);
 
     @Inject
-    public FlightAirportDataListCacheSource(@ApplicationContext Context context) {
+    public FlightAirportDataCacheSource(@ApplicationContext Context context) {
         super(context);
     }
 

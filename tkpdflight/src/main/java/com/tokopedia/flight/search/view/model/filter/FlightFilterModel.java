@@ -3,6 +3,8 @@ package com.tokopedia.flight.search.view.model.filter;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,6 +84,32 @@ public class FlightFilterModel implements Parcelable {
 
     public List<RefundableEnum> getRefundableTypeList() {
         return refundableTypeList;
+    }
+
+    public boolean hasFilter(FlightSearchStatisticModel flightSearchStatisticModel) {
+
+        int priceMinStat;
+        int priceMaxStat;
+        int durMinStat;
+        int durMaxStat;
+
+        if (flightSearchStatisticModel == null) {
+            priceMinStat = Integer.MIN_VALUE;
+            priceMaxStat = Integer.MAX_VALUE;
+            durMinStat = Integer.MIN_VALUE;
+            durMaxStat = Integer.MAX_VALUE;
+        } else {
+            priceMinStat = flightSearchStatisticModel.getMinPrice();
+            priceMaxStat = flightSearchStatisticModel.getMaxPrice();
+            durMinStat = flightSearchStatisticModel.getMinDuration();
+            durMaxStat = flightSearchStatisticModel.getMaxDuration();
+        }
+        return (this.priceMin != priceMinStat || this.priceMax != priceMaxStat ||
+                this.durationMin!= durMinStat || this.durationMax != durMaxStat ||
+                (this.transitTypeList!= null && this.transitTypeList.size() > 0) ||
+                (this.airlineList!= null && this.airlineList.size() > 0) ||
+                (this.departureTimeList!= null && this.departureTimeList.size() > 0) ||
+                (this.refundableTypeList!= null && this.refundableTypeList.size() > 0));
     }
 
     @Override

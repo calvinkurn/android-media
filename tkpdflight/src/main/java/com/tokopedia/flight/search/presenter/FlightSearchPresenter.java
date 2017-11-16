@@ -63,7 +63,10 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
     public void sortFlight(List<FlightSearchViewModel> flightSearchViewModelList,
                            @FlightSortOption int sortOptionId) {
-        flightSortUseCase.withList(flightSearchViewModelList).execute(null,
+        flightSortUseCase.withList(flightSearchViewModelList).execute(FlightSearchUseCase.generateRequestParams(
+                null,
+                false, true, null,
+                sortOptionId),
                 getSubscriberSortFlight(sortOptionId));
     }
 

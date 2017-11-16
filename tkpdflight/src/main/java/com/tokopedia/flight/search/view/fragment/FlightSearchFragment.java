@@ -54,6 +54,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
     private static final String SAVED_SORT_OPTION = "svd_sort_option";
+    private static final String SAVED_STAT_MODEL = "svd_stat_model";
 
     BottomActionView filterAndSortBottomAction;
     protected TextView departureAirportCode;
@@ -62,6 +63,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     protected TextView arrivalAirportName;
 
     private FlightFilterModel flightFilterModel;
+    private FlightSearchStatisticModel flightSearchStatisticModel;
     protected FlightSearchPassDataViewModel flightSearchPassDataViewModel;
 
     int selectedSortOption = FlightSortOption.NO_PREFERENCE;
@@ -94,9 +96,11 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         if (savedInstanceState == null) {
             flightFilterModel = new FlightFilterModel();
             selectedSortOption = FlightSortOption.NO_PREFERENCE;
+            flightSearchStatisticModel = null;
         } else {
             flightFilterModel = savedInstanceState.getParcelable(SAVED_FILTER_MODEL);
             selectedSortOption = savedInstanceState.getInt(SAVED_SORT_OPTION);
+            flightSearchStatisticModel = savedInstanceState.getParcelable(SAVED_STAT_MODEL);
         }
     }
 
@@ -149,7 +153,8 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         super.onResume();
         flightSearchPresenter.attachView(this);
         if (filterHasChanged) {
-            loadInitialData();
+            reloadDataFromCache();
+            setUIMarkFilter();
             filterHasChanged = false;
         }
     }
@@ -168,7 +173,9 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
-
+        if(onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
+        }
     }
 
     @Override
@@ -176,6 +183,12 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         showLoading();
         flightSearchPresenter.searchAndSortFlight(flightSearchPassDataViewModel,
                 isReturning(), false, flightFilterModel, selectedSortOption);
+    }
+
+    public void reloadDataFromCache() {
+        showLoading();
+        flightSearchPresenter.searchAndSortFlight(flightSearchPassDataViewModel,
+                isReturning(), true, flightFilterModel, selectedSortOption);
     }
 
     @Override
@@ -217,6 +230,8 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
                             @Override
                             public void onBottomSheetItemClick(MenuItem item) {
                                 if (getAdapter().getData() == null) {
+                                    showLoading();
+                                    getAdapter().setInitialPageToLoad();
                                     flightSearchPresenter.searchAndSortFlight(flightSearchPassDataViewModel,
                                             isReturning(), true, flightFilterModel, item.getItemId());
                                 } else {
@@ -229,6 +244,9 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
             }
         });
 
+        setUIMarkSort();
+        setUIMarkFilter();
+
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -236,6 +254,22 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
             }
         });
         filterAndSortBottomAction.setVisibility(View.GONE);
+    }
+
+    private void setUIMarkFilter(){
+        if (flightFilterModel.hasFilter(flightSearchStatisticModel)) {
+            filterAndSortBottomAction.setMarkLeft(true);
+        } else {
+            filterAndSortBottomAction.setMarkLeft(false);
+        }
+    }
+
+    private void setUIMarkSort(){
+        if (selectedSortOption== FlightSortOption.NO_PREFERENCE) {
+            filterAndSortBottomAction.setMarkRight(false);
+        } else {
+            filterAndSortBottomAction.setMarkRight(true);
+        }
     }
 
     @Override
@@ -274,7 +308,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     @Override
     public void onSearchLoaded(@NonNull List<FlightSearchViewModel> list, int totalItem) {
         super.onSearchLoaded(list, totalItem);
-        if (filterAndSortBottomAction.getVisibility() == View.GONE) {
+        if (getAdapter().getDataSize() > 0 && filterAndSortBottomAction.getVisibility() == View.GONE) {
             filterAndSortBottomAction.setVisibility(View.VISIBLE);
         }
     }
@@ -282,6 +316,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     @Override
     public void setSelectedSortItem(int itemId) {
         selectedSortOption = itemId;
+        setUIMarkSort();
     }
 
     @Override
@@ -296,6 +331,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     @Override
     public void onSuccessGetStatistic(FlightSearchStatisticModel flightSearchStatisticModel) {
+        this.flightSearchStatisticModel = flightSearchStatisticModel;
         startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
                 isReturning(),
                 flightSearchStatisticModel,
@@ -322,6 +358,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         super.onSaveInstanceState(outState);
         outState.putParcelable(SAVED_FILTER_MODEL, flightFilterModel);
         outState.putInt(SAVED_SORT_OPTION, selectedSortOption);
+        outState.putParcelable(SAVED_STAT_MODEL, flightSearchStatisticModel);
     }
 
     @Override

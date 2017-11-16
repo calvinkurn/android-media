@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.airport.domain.interactor.FlightAirportPickerUseCase;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
@@ -42,6 +43,10 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
         return flightRepository.getFlightSearch(requestParams).flatMap(new Func1<List<FlightSearchSingleRouteDB>, Observable<List<FlightSearchViewModel>>>() {
             @Override
             public Observable<List<FlightSearchViewModel>> call(List<FlightSearchSingleRouteDB> flightSearchSingleRouteDBs) {
+                if (flightSearchSingleRouteDBs == null) {
+                    return Observable.just((List<FlightSearchViewModel>)new ArrayList<FlightSearchViewModel>());
+                }
+                final List<String> searchResDistinctAirlineIds = new ArrayList<>();
 
                 // convert from List of DBModel to List of ViewModel
                 final List<FlightSearchViewModel> flightSearchViewModelList = new ArrayList<>();
@@ -49,10 +54,23 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
                     flightSearchViewModelList.add(new FlightSearchViewModel(flightSearchSingleRouteDBs.get(i)));
                 }
 
+                // select distinct all airline and airports in routes
+                for (int i = 0, sizei = flightSearchViewModelList.size(); i < sizei; i++) {
+                    FlightSearchViewModel flightSearchViewModel = flightSearchViewModelList.get(i);
+                    List<Route> routeList = flightSearchViewModel.getRouteList();
+                    for (int j = 0, sizej = routeList.size(); j < sizej; j++) {
+                        Route route = routeList.get(j);
+                        String airline = route.getAirline();
+                        if (!TextUtils.isEmpty(airline) && !searchResDistinctAirlineIds.contains(airline)) {
+                            searchResDistinctAirlineIds.add(airline);
+                        }
+                    }
+                }
+
                 //get airlines info *from cache first* to merge with the view model
                 return Observable.zip(
-                        flightRepository.getAirportCacheList(),
-                        flightRepository.getAirlineCacheList(),
+                        flightRepository.getAirportList(""),
+                        flightRepository.getAirlineList(searchResDistinctAirlineIds),
                         new Func2<List<FlightAirportDB>, List<FlightAirlineDB>, List<FlightSearchViewModel>>() {
                             @Override
                             public List<FlightSearchViewModel> call(List<FlightAirportDB> flightAirportDBs, List<FlightAirlineDB> flightAirlineDBs) {
