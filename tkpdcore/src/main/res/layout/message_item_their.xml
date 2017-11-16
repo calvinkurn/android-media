@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/padding_vs"
-    android:orientation="vertical">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_vs">
 
     <LinearLayout
         android:id="@+id/old_message_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_margin="@dimen/margin_med"
+        android:background="@drawable/border_button_rounded"
+        android:orientation="horizontal"
+        android:padding="@dimen/padding_small">
+
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_vvvs"
+            android:src="@drawable/info_icon"
+            />
+
         <TextView
             android:id="@+id/old_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:fontFamily="sans-serif"
-            android:textStyle="italic"
-            android:textColor="#61000000"
             android:lineSpacingExtra="4sp"
-            android:layout_margin="@dimen/margin_med"
+            android:textColor="@color/black_38"
+            android:textSize="12sp"
+            android:textStyle="italic"
             tools:text="Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: Wolverine Cap Toe Boot Warna Red Tua Ukurannya 42"
             />
     </LinearLayout>
@@ -32,51 +40,51 @@
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/fontvs"
-        android:padding="@dimen/padding_vs"
-        android:textColor="@color/grey_500"
-        android:textAllCaps="true"
-        tools:text="13:16 wib"
         android:layout_below="@+id/old_message_container"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:padding="@dimen/padding_vs"
+        android:textAllCaps="true"
+        android:textColor="@color/grey_500"
+        android:textSize="@dimen/fontvs"
+        tools:text="13:16 wib"/>
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="11sp"
-        android:fontFamily="sans-serif-medium"
-        android:textStyle="normal"
-        android:textColor="@color/black_54"
-        android:lineSpacingExtra="3sp"
-        tools:text="AHAJA"
-        android:layout_below="@+id/date"
         android:layout_alignLeft="@+id/view_user_box"
-        android:layout_alignStart="@+id/view_user_box" />
+        android:layout_alignStart="@+id/view_user_box"
+        android:layout_below="@+id/date"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="3sp"
+        android:textColor="@color/black_54"
+        android:textSize="11sp"
+        android:textStyle="normal"
+        tools:text="AHAJA"/>
 
     <TextView
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="11sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:textColor="@color/black_38"
-        android:lineSpacingExtra="3sp"
-        tools:text="Pengguna"
         android:layout_above="@+id/view_user_box"
-        android:layout_toRightOf="@+id/name"
-        android:layout_toEndOf="@+id/name"
         android:layout_marginLeft="11dp"
-        android:layout_marginStart="11dp" />
+        android:layout_marginStart="11dp"
+        android:layout_toEndOf="@+id/name"
+        android:layout_toRightOf="@+id/name"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="3sp"
+        android:textColor="@color/black_38"
+        android:textSize="11sp"
+        android:textStyle="normal"
+        tools:text="Pengguna"/>
 
     <ImageView
         android:id="@+id/user_ava"
-        android:layout_below="@id/name"
         android:layout_width="@dimen/img_thumb_m"
         android:layout_height="@dimen/img_thumb_m"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_below="@id/name"
         android:layout_marginRight="@dimen/margin_small"
         android:visibility="gone"/>
 
@@ -84,15 +92,15 @@
         android:id="@+id/view_user_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_below="@id/name"
         android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_vs"
         android:layout_toRightOf="@id/user_ava"
         android:background="@drawable/left_bubble"
-        android:maxWidth="270dp"
-        android:layout_below="@id/name"
         android:gravity="left"
+        android:maxWidth="270dp"
         android:orientation="vertical"
         android:padding="@dimen/padding_small">
 
@@ -102,9 +110,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:autoLink="web"
+            android:textColor="@color/black_70"
+            android:textColorLink="@color/black_70"
             android:textIsSelectable="true"
-            tools:text ="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"
-            android:textSize="@dimen/fonts" />
+            android:textSize="@dimen/fonts"
+            tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"/>
 
     </RelativeLayout>
 
@@ -114,12 +124,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/view_user_box"
         android:layout_gravity="left"
+        android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_vs"
+        android:layout_toRightOf="@id/user_ava"
         android:gravity="left"
         android:textColor="@color/time_color"
         android:textSize="@dimen/fontvvs"
-        android:layout_toRightOf="@id/user_ava"
-        android:layout_marginLeft="@dimen/margin_small"
         tools:text="testtest"
         />
 
