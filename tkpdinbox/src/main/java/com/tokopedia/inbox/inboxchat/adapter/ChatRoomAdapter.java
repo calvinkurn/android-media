@@ -113,7 +113,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void addList(List<Visitable> list) {
         this.list.addAll(0, list);
         notifyItemRangeInserted(0, list.size());
-        notifyItemRangeChanged(0, list.size()+1);
+        notifyItemRangeChanged(0, list.size() + 1);
     }
 
     public void showEmpty() {
@@ -137,14 +137,16 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void removeLast() {
-        list.remove(list.size() - 1);
-        notifyItemRemoved(list.size());
+        if (list != null && !list.isEmpty()) {
+            list.remove(list.size() - 1);
+            notifyItemRemoved(list.size());
+        }
     }
 
     public void addReply(Visitable item) {
         this.list.add(item);
         notifyItemInserted(this.list.size() - 1);
-        notifyItemRangeChanged(list.size()-2, 2);
+        notifyItemRangeChanged(list.size() - 2, 2);
     }
 
     public void showLoading() {
@@ -160,10 +162,10 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void showTyping() {
         this.isTyping = true;
         this.list.add(typingModel);
-        notifyItemInserted(list.size() -1);
+        notifyItemInserted(list.size() - 1);
     }
 
-    public void removeTyping(){
+    public void removeTyping() {
         this.isTyping = false;
         this.list.remove(typingModel);
         notifyItemRemoved(list.size());
@@ -177,12 +179,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
 
-
     public ReplyParcelableModel getLastItem() {
         ListReplyViewModel item = (ListReplyViewModel) list.get(list.size() - 1);
         return new ReplyParcelableModel(String.valueOf(item.getMsgId()), item.getMsg(), item
                 .getReplyTime
-                ());
+                        ());
     }
 
     public void showTimeMachine() {
@@ -191,11 +192,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void setReadStatus(WebSocketResponse response) {
-        for (int i = list.size()-1; i >=0; i--) {
-            if(list.get(i) instanceof MyChatViewModel){
-                if(((MyChatViewModel) list.get(i)).isMessageIsRead()){
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (list.get(i) instanceof MyChatViewModel) {
+                if (((MyChatViewModel) list.get(i)).isMessageIsRead()) {
                     break;
-                }else {
+                } else {
                     ((MyChatViewModel) list.get(i)).setMessageIsRead(true);
                     notifyItemRangeChanged(i, 1);
                 }
