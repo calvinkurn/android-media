@@ -93,5 +93,8 @@ public interface TkpdCoreRouter {
 
     Intent getForgotPasswordIntent(Context context, String email);
 
+    void invalidateCategoryMenuData();
+
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
+
 }
