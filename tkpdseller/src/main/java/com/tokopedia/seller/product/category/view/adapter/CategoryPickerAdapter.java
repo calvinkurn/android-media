@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.core.common.category.view.model.CategoryLevelViewModel;
@@ -28,7 +29,7 @@ public class CategoryPickerAdapter
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType){
+        switch (viewType) {
             case CATEGORY_PARENT:
                 return getParentViewHolder(parent);
             case CATEGORY_ITEM:
@@ -54,10 +55,10 @@ public class CategoryPickerAdapter
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (getItemViewType(position)){
+        switch (getItemViewType(position)) {
             case CATEGORY_PARENT:
                 int renderedPosition = getPositionRendered(position);
-                ((CategoryParentViewHolder)holder)
+                ((CategoryParentViewHolder) holder)
                         .renderData(
                                 data.getViewModels().get(renderedPosition),
                                 isCategorySelectedAndParent(),
@@ -66,7 +67,7 @@ public class CategoryPickerAdapter
                 break;
             case CATEGORY_ITEM:
                 boolean isSelected = data.getCategoryId() == data.getViewModels().get(position).getId();
-                ((CategoryItemViewHolder)holder)
+                ((CategoryItemViewHolder) holder)
                         .renderData(
                                 data.getViewModels().get(position), isSelected, data.getLevel()
                         );
@@ -83,7 +84,7 @@ public class CategoryPickerAdapter
         } else if (
                 data.getViewModels()
                         .get(getPositionRendered(position))
-                        .isHasChild()){
+                        .isHasChild()) {
             return CATEGORY_PARENT;
         } else {
             return CATEGORY_ITEM;
@@ -112,11 +113,14 @@ public class CategoryPickerAdapter
     }
 
     private boolean isSelectedParent() {
-        try {
-            return data.getSelectedModel().isHasChild();
-        } catch (RuntimeException e){
+        if (data == null) {
             return false;
         }
+        CategoryViewModel categoryViewModel = data.getSelectedModel();
+        if (categoryViewModel == null) {
+            return false;
+        }
+        return data.getSelectedModel().isHasChild();
     }
 
     public void renderItems(CategoryLevelViewModel map) {

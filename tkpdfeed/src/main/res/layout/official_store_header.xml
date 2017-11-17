@@ -26,6 +26,7 @@
         android:id="@+id/official_store_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/official_store_header_image_height"
+        android:scaleType="centerCrop"
         tools:background="@color/light_blue_300"/>
 
 </LinearLayout>

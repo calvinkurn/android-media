@@ -103,7 +103,7 @@ public class RecommendShopRecyclerViewAdapter extends RecyclerView.Adapter<Recom
 
     private void setShopCover(ViewHolder holder,ImageView shopCover, String coverUri) {
         if(coverUri == null ){
-            shopCover.setImageResource(R.drawable.ic_loading_toped);
+            shopCover.setImageResource(R.drawable.loading_page);
         }else {
 //            ImageHandler.LoadImageFit(shopCover, coverUri);
             ImageHandler.loadImageFit2(holder.getContext(),shopCover, coverUri);

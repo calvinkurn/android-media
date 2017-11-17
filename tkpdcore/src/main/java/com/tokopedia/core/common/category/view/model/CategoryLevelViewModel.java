@@ -9,7 +9,7 @@ import java.util.List;
 public class CategoryLevelViewModel {
     public static final int UNSELECTED = -1;
 
-    private final List<CategoryViewModel> viewModels;
+    private List<CategoryViewModel> viewModels;
     private final int level;
     private long categoryId;
 
@@ -25,6 +25,10 @@ public class CategoryLevelViewModel {
 
     public List<CategoryViewModel> getViewModels() {
         return viewModels;
+    }
+
+    public void setViewModels(List<CategoryViewModel> categoryViewModels){
+        viewModels = categoryViewModels;
     }
 
     public long getCategoryId() {
@@ -52,7 +56,7 @@ public class CategoryLevelViewModel {
                 return viewModel;
             }
         }
-        throw new RuntimeException("Selected item not found");
+        return null;
     }
 
 

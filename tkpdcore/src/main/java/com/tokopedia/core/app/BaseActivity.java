@@ -5,16 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.localytics.android.Localytics;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -97,7 +99,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
-        Localytics.registerPush(gcmHandler.getSenderID());
 
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
@@ -203,7 +204,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Localytics.onNewIntent(this, intent);
     }
 
     public void initGTM() {
@@ -388,4 +388,27 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            ApplicationInfo ai = null;
+            try {
+                ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+                Bundle bundle = ai.metaData;
+                String i = bundle.getString("APPS_HOME", "");
+                if (!TextUtils.isEmpty(i)) {
+                    Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
+                            (this);
+                    startActivity(intentHome);
+                } else {
+                    super.onBackPressed();
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                super.onBackPressed();
+            }
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

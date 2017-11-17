@@ -9,8 +9,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.referral.listner.ReferralView;
 import com.tokopedia.core.referral.presenter.IReferralPresenter;
 import com.tokopedia.core.referral.presenter.ReferralPresenter;
@@ -104,14 +102,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShareData shareData = ShareData.Builder.aShareData()
-                        .setType(ShareData.APP_SHARE_TYPE)
-                        .setName(getString(R.string.app_share_title))
-                       // .setTextContent(getString(R.string.app_share_contents))
-                        .setDescription(getString(R.string.app_share_contents) + " ")
-                        .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
-                        .build();
-                presenter.showShareSheet(shareData);
+                presenter.shareApp();
                 UnifyTracking.eventAppShare();
 
             }

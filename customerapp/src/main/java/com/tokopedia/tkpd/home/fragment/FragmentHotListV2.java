@@ -213,7 +213,6 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
 
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() !=null) {
-            hotList.setLocalyticFlow(getActivity());
             hotList.sendAppsFlyerData(getActivity());
             ScreenTracking.screen(getScreenName());
             TrackingUtils.sendMoEngageOpenHotListEvent();

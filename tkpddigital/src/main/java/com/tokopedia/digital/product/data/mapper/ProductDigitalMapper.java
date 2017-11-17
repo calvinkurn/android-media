@@ -150,6 +150,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                     productOperator.setDesc(product.getAttributes().getDesc());
                     productOperator.setDetail(product.getAttributes().getDetail());
                     productOperator.setDetailUrl(product.getAttributes().getDetailUrl());
+                    productOperator.setDetailUrlText(product.getAttributes().getDetailUrlText());
                     productOperator.setInfo(product.getAttributes().getInfo());
                     productOperator.setPrice(product.getAttributes().getPrice());
                     productOperator.setPricePlain(product.getAttributes().getPricePlain());
@@ -270,7 +271,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 .clientNumber(lastOrderData.getAttributes().getClientNumber())
                 .categoryId(lastOrderData.getAttributes().getCategoryId())
                 .operatorId(lastOrderData.getAttributes().getOperatorId())
-                .productId(lastOrderData.getAttributes().getProductId())
+                .lastProduct(lastOrderData.getAttributes().getProductId())
                 .build();
     }
 

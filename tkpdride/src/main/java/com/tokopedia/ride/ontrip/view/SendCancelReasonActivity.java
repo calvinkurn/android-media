@@ -17,11 +17,13 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
@@ -88,6 +90,11 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
         setupViewListener();
         presenter.attachView(this);
         presenter.initialize();
+    };
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_CANCEL_REASON;
     }
 
     private void setupViewListener() {
@@ -234,6 +241,7 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
 
     @Override
     public void onItemClicked(String reason) {
+        RideGATracking.eventClickCancelReason(getScreenName(),reason);  //23
         adapter.setSelectedReason(reason);
         adapter.setReasons(this.reasons);
         this.selectedReason = reason;
@@ -268,6 +276,12 @@ public class SendCancelReasonActivity extends BaseActivity implements SendCancel
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        RideGATracking.eventBackPress(getScreenName());
     }
 
     @Override

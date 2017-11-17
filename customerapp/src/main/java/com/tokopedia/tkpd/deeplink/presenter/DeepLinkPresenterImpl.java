@@ -27,7 +27,6 @@ import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.home.RechargeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.session.model.AccountsModel;
@@ -42,7 +41,6 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
-import com.tokopedia.tkpd.IConsumerModuleRouter;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 
@@ -361,31 +359,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         viewListener.inflateFragment(fragment, "DETAIL_PRODUCT");
         viewListener.hideActionBar();
     }
-
-    private void openRecharge(List<String> linkSegment, Uri uriData) {
-        Bundle bundle = new Bundle();
-        if (DeeplinkUTMUtils.isValidCampaignUrl(uriData)) {
-            Map<String, String> maps = DeeplinkUTMUtils.splitQuery(uriData);
-            if (maps.get("utm_source") != null) {
-                bundle.putString(RechargeRouter.ARG_UTM_SOURCE, maps.get("utm_source"));
-            }
-            if (maps.get("utm_medium") != null) {
-                bundle.putString(RechargeRouter.ARG_UTM_MEDIUM, maps.get("utm_medium"));
-            }
-            if (maps.get("utm_campaign") != null) {
-                bundle.putString(RechargeRouter.ARG_UTM_CAMPAIGN, maps.get("utm_campaign"));
-            }
-            if (maps.get("utm_content") != null) {
-                bundle.putString(RechargeRouter.ARG_UTM_CONTENT, maps.get("utm_content"));
-            }
-        }
-        bundle.putBoolean(RechargeRouter.EXTRA_ALLOW_ERROR, true);
-//        RechargeCategoryFragment fragment = RechargeCategoryFragment.newInstance(bundle);
-//        viewListener.inflateFragmentV4(RechargeRouter.getRechargeCategoryFragment(context), "RECHARGE");
-        viewListener.inflateFragmentV4(((IConsumerModuleRouter) this.context.getApplication()).getRechargeCategoryFragment(),
-                "RECHARGE");
-    }
-
 
     private void openCatalogProduct(List<String> linkSegment, Uri uriData) {
         viewListener.inflateFragment(DetailProductRouter

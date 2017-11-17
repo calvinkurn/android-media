@@ -34,7 +34,6 @@ public interface Session {
 
     void sendGTMEvent(Bundle bundle, int type);
 
-    void sendLocalyticsEvent(Bundle bundle, int type);
+    void sendAnalyticsEvent(Bundle bundle, int type);
 
-    void sendNotifLocalyticsCallback(Intent intent);
 }

@@ -14,7 +14,7 @@ import java.net.URI;
 
 public class ImageSelectModel implements Parcelable{
     // this is for url / path from sdcard
-    private String uri;
+    private String uriOrPath;
     private String description;
     private boolean isPrimary;
     private int width;
@@ -22,15 +22,15 @@ public class ImageSelectModel implements Parcelable{
     private boolean isValidURL;
     private boolean allowDelete;
 
-    public ImageSelectModel(String uri) {
-        this(uri, null, false, true);
+    public ImageSelectModel(String uriOrPath) {
+        this(uriOrPath, null, false, true);
     }
 
-    public ImageSelectModel(String uri,
+    public ImageSelectModel(String uriOrPath,
                             @Nullable String description,
                             boolean isPrimary,
                             boolean allowDelete) {
-        setUri(uri);
+        setUriOrPath(uriOrPath);
         this.description = description;
         this.isPrimary = isPrimary;
         this.allowDelete = allowDelete;
@@ -40,8 +40,8 @@ public class ImageSelectModel implements Parcelable{
         return allowDelete;
     }
 
-    public String getUri() {
-        return uri;
+    public String getUriOrPath() {
+        return uriOrPath;
     }
 
     public boolean isValidURL(String urlStr) {
@@ -53,11 +53,11 @@ public class ImageSelectModel implements Parcelable{
         }
     }
 
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setUriOrPath(String uriOrPath) {
+        this.uriOrPath = uriOrPath;
 
         // when uri change, recalculate its width/height
-        this.isValidURL = isValidURL(uri);
+        this.isValidURL = isValidURL(uriOrPath);
         calculateWidthAndHeight(isValidURL);
     }
 
@@ -105,7 +105,7 @@ public class ImageSelectModel implements Parcelable{
         if (! isValidURL) { // local URI
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(new File(uri).getAbsolutePath(), options);
+            BitmapFactory.decodeFile(new File(uriOrPath).getAbsolutePath(), options);
             this.width = options.outWidth;
             this.height = options.outHeight;
         }
@@ -118,7 +118,7 @@ public class ImageSelectModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.uri);
+        dest.writeString(this.uriOrPath);
         dest.writeString(this.description);
         dest.writeByte(this.isPrimary ? (byte) 1 : (byte) 0);
         dest.writeInt(this.width);
@@ -128,7 +128,7 @@ public class ImageSelectModel implements Parcelable{
     }
 
     protected ImageSelectModel(Parcel in) {
-        this.uri = in.readString();
+        this.uriOrPath = in.readString();
         this.description = in.readString();
         this.isPrimary = in.readByte() != 0;
         this.width = in.readInt();

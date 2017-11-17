@@ -3,7 +3,11 @@ package com.tokopedia.seller.shop;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,20 +15,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.myproduct.utils.FileUtils;
+import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
-import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
-import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.seller.shop.di.component.DaggerDeleteCacheComponent;
 import com.tokopedia.seller.shop.di.component.DeleteCacheComponent;
 import com.tokopedia.seller.shop.fragment.ShopCreateFragment;
@@ -36,7 +44,10 @@ import com.tokopedia.seller.shopsettings.shipping.OpenShopEditShipping;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -54,6 +65,20 @@ public class ShopEditorActivity extends TActivity implements
 
     FrameLayout container;
     private String onBack;
+
+    @DeepLink(Constants.Applinks.CREATE_SHOP)
+    public static Intent getCallingApplinkCreateShopIntent(Context context, Bundle extras) {
+        if (SessionHandler.isV4Login(context)
+                && (SessionHandler.getShopID(context).isEmpty()
+                || SessionHandler.getShopID(context).equals("0"))) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ShopEditorActivity.class)
+                    .setData(uri.build())
+                    .putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
+        } else {
+            return HomeRouter.getHomeActivityInterfaceRouter(context);
+        }
+    }
 
     @Inject
     DeleteShopInfoUseCase deleteShopInfoUseCase;
@@ -130,7 +155,7 @@ public class ShopEditorActivity extends TActivity implements
             SessionHandler session = new SessionHandler(this);
             session.Logout(this);
             UnifyTracking.eventDrawerClick((AppEventTracking.EventLabel.SIGN_OUT));
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
@@ -183,71 +208,124 @@ public class ShopEditorActivity extends TActivity implements
         if (activity instanceof AppCompatActivity) {
             activity.finish();
         }
-        TrackingUtils.eventLoca("event : open store");
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
-            @Override
-            public void onSuccess(ArrayList<String> imageUrls) {
-                File file = UploadPhotoTask.writeImageToTkpdPath(AddProductFragment.compressImage(imageUrls.get(0)));
-                Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
-                if (fragment != null) {
-                    ((ShopCreateView) fragment).setShopAvatar(file.getPath());
-                }
-                fragment = supportFragmentManager.findFragmentByTag(EDIT_SHOP_FRAGMENT_TAG);
-                if (fragment != null) {
-                    ((ShopEditorView) fragment).uploadImage(file.getPath());
-                }
-            }
-
-            @Override
-            public void onSuccess(String path, int position) {
-                File file = UploadPhotoTask.writeImageToTkpdPath(AddProductFragment.compressImage(path));
-                Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
-                if (fragment != null && file != null) {
-                    ((ShopCreateView) fragment).setShopAvatar(file.getPath());
-                }
-                fragment = supportFragmentManager.findFragmentByTag(EDIT_SHOP_FRAGMENT_TAG);
-                if (fragment != null && file != null) {
-                    ((ShopEditorView) fragment).uploadImage(file.getPath());
-                }
-            }
-
-            @Override
-            public void onFailed(String message) {
-                Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
-                if (fragment != null) {
-                    ((ShopCreateView) fragment).onMessageError(0, message);
-                }
-                fragment = supportFragmentManager.findFragmentByTag(EDIT_SHOP_FRAGMENT_TAG);
-                if (fragment != null) {
-                    ((ShopEditorView) fragment).onMessageError(0, message);
-                }
-
-            }
-
-            @Override
-            public Context getContext() {
-                return ShopEditorActivity.this;
-            }
-        }, requestCode, resultCode, data);
-
-        if (data != null) {
-            switch (requestCode) {
-                case ShopCreateView.REQUEST_EDIT_SHIPPING:
+        if ((requestCode == GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK) ||
+                requestCode == ImageGallery.TOKOPEDIA_GALLERY) {
+            ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
+                @Override
+                public void onSuccess(ArrayList<String> imageUrls) {
+                    File file = writeImageToTkpdPath(compressImage(imageUrls.get(0)));
                     Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
-                    OpenShopData shippingData = data.getParcelableExtra(EditShippingViewListener.EDIT_SHIPPING_DATA);
-
                     if (fragment != null) {
-                        ((ShopCreateView) fragment).saveShippingData(shippingData);
+                        ((ShopCreateView) fragment).setShopAvatar(file.getPath());
                     }
-                    break;
+                    fragment = supportFragmentManager.findFragmentByTag(EDIT_SHOP_FRAGMENT_TAG);
+                    if (fragment != null) {
+                        ((ShopEditorView) fragment).uploadImage(file.getPath());
+                    }
+                }
+
+                @Override
+                public void onSuccess(String path) {
+                    File file = writeImageToTkpdPath(compressImage(path));
+                    Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
+                    if (fragment != null && file != null) {
+                        ((ShopCreateView) fragment).setShopAvatar(file.getPath());
+                    }
+                    fragment = supportFragmentManager.findFragmentByTag(EDIT_SHOP_FRAGMENT_TAG);
+                    if (fragment != null && file != null) {
+                        ((ShopEditorView) fragment).uploadImage(file.getPath());
+                    }
+                }
+
+                @Override
+                public void onFailed(String message) {
+                    Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
+                    if (fragment != null) {
+                        ((ShopCreateView) fragment).onMessageError(0, message);
+                    }
+                    fragment = supportFragmentManager.findFragmentByTag(EDIT_SHOP_FRAGMENT_TAG);
+                    if (fragment != null) {
+                        ((ShopEditorView) fragment).onMessageError(0, message);
+                    }
+
+                }
+
+                @Override
+                public Context getContext() {
+                    return ShopEditorActivity.this;
+                }
+            }, requestCode, resultCode, data);
+
+        } else if (requestCode == ShopCreateView.REQUEST_EDIT_SHIPPING) {
+            if (data != null) {
+                Fragment fragment = supportFragmentManager.findFragmentByTag(CREATE_SHOP_FRAGMENT_TAG);
+                OpenShopData shippingData = data.getParcelableExtra(EditShippingViewListener.EDIT_SHIPPING_DATA);
+
+                if (fragment != null) {
+                    ((ShopCreateView) fragment).saveShippingData(shippingData);
+                }
             }
         }
 
+
+    }
+
+    public File writeImageToTkpdPath(byte[] buffer) {
+        if (buffer != null) {
+            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            File photo = new File(directory.getAbsolutePath() + "/image.jpg");
+
+            if (photo.exists()) {
+                photo.delete();
+            }
+
+            try {
+                FileOutputStream fos = new FileOutputStream(photo.getPath());
+
+                fos.write(buffer);
+                fos.close();
+            } catch (java.io.IOException e) {
+                return null;
+            }
+            return photo;
+        }
+        return null;
+    }
+
+    public byte[] compressImage(String path) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        BitmapFactory.Options checksize = new BitmapFactory.Options();
+        checksize.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        checksize.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, checksize);
+        options.inSampleSize = ImageHandler.calculateInSampleSize(checksize);
+        Bitmap tempPic = BitmapFactory.decodeFile(path, options);
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        Bitmap tempPicToUpload = null;
+        if (tempPic != null) {
+            try {
+                tempPic = new ImageHandler().RotatedBitmap(tempPic, path);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            if (tempPic.getWidth() > 2048 || tempPic.getHeight() > 2048) {
+                tempPicToUpload = new ImageHandler().ResizeBitmap(tempPic, 2048);
+            } else {
+                tempPicToUpload = tempPic;
+            }
+            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 70, bao);
+            return bao.toByteArray();
+        }
+        return null;
     }
 
     private void createCustomToolbar(String shopTitle) {
@@ -264,8 +342,8 @@ public class ShopEditorActivity extends TActivity implements
 
     @Override
     public void deleteCacheShopInfov2() {
-        if (deleteShopInfoUseCase!= null) {
-            deleteShopInfoUseCase.execute(RequestParams.EMPTY);
+        if (deleteShopInfoUseCase != null) {
+            deleteShopInfoUseCase.executeSync(RequestParams.EMPTY);
         }
     }
 }

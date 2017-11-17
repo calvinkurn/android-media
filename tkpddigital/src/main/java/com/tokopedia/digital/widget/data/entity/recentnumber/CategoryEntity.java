@@ -1,0 +1,23 @@
+package com.tokopedia.digital.widget.data.entity.recentnumber;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+/**
+ * Created by nabillasabbaha on 9/22/17.
+ */
+
+public class CategoryEntity {
+
+    @SerializedName("data")
+    @Expose
+    private DataEntity data;
+
+    public DataEntity getData() {
+        return data;
+    }
+
+    public void setData(DataEntity data) {
+        this.data = data;
+    }
+}

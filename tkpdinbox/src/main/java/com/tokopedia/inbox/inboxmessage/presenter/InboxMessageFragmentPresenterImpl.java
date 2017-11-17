@@ -452,8 +452,6 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
                     screenName = AppScreen.SCREEN_INBOX_MAIN;
                     break;
             }
-            ScreenTracking.screenLoca(screenName);
-            ScreenTracking.eventLoca(screenName);
             ScreenTracking.screen(screenName);
         } catch (NullPointerException e) {
             CommonUtils.dumper("LocalTag Inbox Message Err : " + e.toString());
