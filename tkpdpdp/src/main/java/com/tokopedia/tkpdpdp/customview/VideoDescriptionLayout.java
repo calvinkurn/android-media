@@ -100,8 +100,8 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
         setVisibility(VISIBLE);
     }
 
-    public void renderVideoData(VideoData data) {
-        productVideoHorizontalScroll.renderData(data);
+    public void renderVideoData(VideoData data,YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcess) {
+        productVideoHorizontalScroll.renderData(data,youTubeThumbnailLoadInProcess);
         videoData = data;
     }
 

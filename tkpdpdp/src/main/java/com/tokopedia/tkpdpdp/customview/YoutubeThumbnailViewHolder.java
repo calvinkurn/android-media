@@ -21,17 +21,19 @@ import com.tokopedia.tkpdpdp.R;
 
 public class YoutubeThumbnailViewHolder extends RelativeLayout{
 
+    private YouTubeThumbnailLoadInProcess youTubeThumbnailInLoadProcess;
     private RelativeLayout mainView;
     private ProgressBar loadingBar;
     private VideoData videoData;
     private int selectedVideo;
     private YouTubeThumbnailLoader youTubeThumbnailLoader;
 
-    public YoutubeThumbnailViewHolder(Context context, VideoData videoData, int selectedVideo) {
+    public YoutubeThumbnailViewHolder(Context context, VideoData videoData, int selectedVideo,YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcess) {
         super(context);
         this.videoData = videoData;
         this.selectedVideo = selectedVideo;
         initView(context, videoData.getVideo().get(selectedVideo).getUrl());
+        this.youTubeThumbnailInLoadProcess = youTubeThumbnailLoadInProcess;
     }
 
     public YoutubeThumbnailViewHolder(Context context) {
@@ -57,6 +59,8 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
         youTubeThumbnailView.initialize(getContext().getApplicationContext()
                 .getString(R.string.GOOGLE_API_KEY),
                 thumbnailInitializedListener(youtubeVideoId));
+        if(youTubeThumbnailInLoadProcess != null)
+            youTubeThumbnailInLoadProcess.onIntializationStart();
 
 
         //TODO Choose one of it
@@ -81,6 +85,8 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
                                                 final YouTubeThumbnailLoader loader) {
                 youTubeThumbnailLoader = loader;
                 loader.setVideo(youtubeVideoId);
+                if(youTubeThumbnailInLoadProcess != null)
+                    youTubeThumbnailInLoadProcess.onIntializationComplete();
                 mainView.setVisibility(VISIBLE);
                 loader.setOnThumbnailLoadedListener(new YouTubeThumbnailLoader
                         .OnThumbnailLoadedListener() {
@@ -103,6 +109,8 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
             public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView,
                                                 YouTubeInitializationResult result) {
                 loadingBar.setVisibility(GONE);
+                if(youTubeThumbnailInLoadProcess != null)
+                    youTubeThumbnailInLoadProcess.onIntializationComplete();
             }
         };
     }
@@ -121,5 +129,10 @@ public class YoutubeThumbnailViewHolder extends RelativeLayout{
 
     public void destroyReleaseProcess() {
         youTubeThumbnailLoader.release();
+    }
+
+    public interface YouTubeThumbnailLoadInProcess {
+        public void onIntializationStart();
+        public void onIntializationComplete();
     }
 }

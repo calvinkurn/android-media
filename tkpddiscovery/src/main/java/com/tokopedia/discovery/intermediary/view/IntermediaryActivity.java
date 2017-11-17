@@ -29,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener {
+public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener,YoutubeViewHolder.YouTubeThumbnailLoadInProcess{
 
     private FragmentManager fragmentManager;
     MenuItem searchItem;
@@ -212,4 +212,36 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     public FrameLayout getFrameLayout() {
         return frameLayout;
     }
+
+
+    // { Work Around IF your press back and
+    //      youtube thumbnail doesn't intalized yet
+
+        boolean isBackPressed;
+        @Override
+        public void onBackPressed() {
+            if(!thumbnailIntializing) {
+                super.onBackPressed();
+            } else {
+                isBackPressed = true;
+                return;
+            }
+
+        }
+
+        boolean thumbnailIntializing = false;
+        @Override
+        public void onIntializationStart() {
+            thumbnailIntializing = true;
+        }
+
+        @Override
+        public void onIntializationComplete() {
+            if(isBackPressed) {
+                super.onBackPressed();
+            }
+            thumbnailIntializing = false;
+        }
+
+    // Work Around IF your press back and youtube thumbnail doesn't intalized yet }
 }
