@@ -13,5 +13,7 @@ public interface ApplicationUpdate {
         void onNeedUpdate(DetailUpdate detail);
 
         void onError(Exception e);
+
+        void onNotNeedUpdate();
     }
 }

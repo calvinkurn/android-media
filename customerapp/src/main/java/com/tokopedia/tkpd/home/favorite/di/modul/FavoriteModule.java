@@ -11,7 +11,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.topads.dashboard.di.scope.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteDataRepository;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteFactory;

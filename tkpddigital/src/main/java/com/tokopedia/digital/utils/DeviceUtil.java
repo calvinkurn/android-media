@@ -14,6 +14,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -23,6 +24,8 @@ import com.tokopedia.digital.product.model.Validation;
 import com.tokopedia.digital.utils.data.RequestBodyAppsFlyer;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -257,5 +260,23 @@ public class DeviceUtil {
             return operatorName.split(" ")[0];
         }
         return null;
+    }
+
+    public static String loadJSONFromAsset(String nameJson) {
+        String json;
+
+        try {
+            InputStream is = MainApplication.getAppContext().getAssets().open("json/" + nameJson);
+
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 }

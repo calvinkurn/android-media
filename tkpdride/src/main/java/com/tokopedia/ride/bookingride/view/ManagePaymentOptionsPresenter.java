@@ -19,6 +19,7 @@ import com.tokopedia.core.drawer2.domain.TokoCashRepository;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListUseCase;
@@ -212,7 +213,7 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
         //first try to fetch from cache, if found then return
         try {
             GlobalCacheManager cacheManager = new GlobalCacheManager();
-            String cache = cacheManager.getValueString(TokoCashSourceFactory.KEY_TOKOCASH_DATA);
+            String cache = cacheManager.getValueString(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
 
             if (cache != null) {
                 TokoCashModel tokoCashModel = CacheUtil.convertStringToModel(cache, new TypeToken<TokoCashModel>() {

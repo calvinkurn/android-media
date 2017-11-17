@@ -2,9 +2,7 @@ package com.tokopedia.sellerapp.fcm;
 
 import android.app.Application;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.Constants;
@@ -89,7 +87,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                             (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
                     if (listener != null) {
                         listener.onGetNotif();
-                        if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
+                        if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))
                                 == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
                             listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
                         } else {
@@ -133,7 +131,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                         (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
                 if (listener != null) {
                     listener.onGetNotif();
-                    if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
+                    if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))
                             == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
                         listener.onRefreshCart(data.getInt("is_cart_exists", 0));
                     } else {

@@ -9,78 +9,41 @@ import android.os.Parcelable;
 
 public class DrawerTokoCash implements Parcelable {
 
+    @Deprecated
     private DrawerTokoCashAction drawerTokoCashAction;
 
-    private String balance;
-
-    private String redirectUrl;
-
-    private String text;
-
-    private int link;
+    private HomeHeaderWalletAction homeHeaderWalletAction;
+    private DrawerWalletAction drawerWalletAction;
 
     public DrawerTokoCash() {
     }
 
-    protected DrawerTokoCash(Parcel in) {
-        drawerTokoCashAction = in.readParcelable(DrawerTokoCashAction.class.getClassLoader());
-        balance = in.readString();
-        redirectUrl = in.readString();
-        text = in.readString();
-        link = in.readInt();
+    public DrawerWalletAction getDrawerWalletAction() {
+        return drawerWalletAction;
     }
 
-    public static final Creator<DrawerTokoCash> CREATOR = new Creator<DrawerTokoCash>() {
-        @Override
-        public DrawerTokoCash createFromParcel(Parcel in) {
-            return new DrawerTokoCash(in);
-        }
-
-        @Override
-        public DrawerTokoCash[] newArray(int size) {
-            return new DrawerTokoCash[size];
-        }
-    };
-
-    public String getBalance() {
-        return balance;
+    public void setDrawerWalletAction(DrawerWalletAction drawerWalletAction) {
+        this.drawerWalletAction = drawerWalletAction;
     }
 
-    public void setBalance(String balance) {
-        this.balance = balance;
-    }
-
-    public String getRedirectUrl() {
-        return redirectUrl;
-    }
-
-    public void setRedirectUrl(String redirectUrl) {
-        this.redirectUrl = redirectUrl;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public int getLink() {
-        return link;
-    }
-
-    public void setLink(int link) {
-        this.link = link;
-    }
-
+    @Deprecated
     public DrawerTokoCashAction getDrawerTokoCashAction() {
         return drawerTokoCashAction;
     }
 
+    @Deprecated
     public void setDrawerTokoCashAction(DrawerTokoCashAction drawerTokoCashAction) {
         this.drawerTokoCashAction = drawerTokoCashAction;
     }
+
+    public HomeHeaderWalletAction getHomeHeaderWalletAction() {
+        return homeHeaderWalletAction;
+    }
+
+    public void setHomeHeaderWalletAction(HomeHeaderWalletAction homeHeaderWalletAction) {
+        this.homeHeaderWalletAction = homeHeaderWalletAction;
+    }
+
 
     @Override
     public int describeContents() {
@@ -89,10 +52,26 @@ public class DrawerTokoCash implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(drawerTokoCashAction, flags);
-        dest.writeString(balance);
-        dest.writeString(redirectUrl);
-        dest.writeString(text);
-        dest.writeInt(link);
+        dest.writeParcelable(this.drawerTokoCashAction, flags);
+        dest.writeParcelable(this.homeHeaderWalletAction, flags);
+        dest.writeParcelable(this.drawerWalletAction, flags);
     }
+
+    protected DrawerTokoCash(Parcel in) {
+        this.drawerTokoCashAction = in.readParcelable(DrawerTokoCashAction.class.getClassLoader());
+        this.homeHeaderWalletAction = in.readParcelable(HomeHeaderWalletAction.class.getClassLoader());
+        this.drawerWalletAction = in.readParcelable(DrawerWalletAction.class.getClassLoader());
+    }
+
+    public static final Creator<DrawerTokoCash> CREATOR = new Creator<DrawerTokoCash>() {
+        @Override
+        public DrawerTokoCash createFromParcel(Parcel source) {
+            return new DrawerTokoCash(source);
+        }
+
+        @Override
+        public DrawerTokoCash[] newArray(int size) {
+            return new DrawerTokoCash[size];
+        }
+    };
 }

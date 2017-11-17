@@ -76,11 +76,12 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
     private List<Operator> operators;
 
-    public static WidgetStyle3RechargeFragment newInstance(Category category, int position) {
+    public static WidgetStyle3RechargeFragment newInstance(Category category, int position, boolean useCache) {
         WidgetStyle3RechargeFragment fragment = new WidgetStyle3RechargeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PARAM_CATEGORY, category);
         bundle.putInt(ARG_TAB_INDEX_POSITION, position);
+        bundle.putBoolean(ARG_USE_CACHE, useCache);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -112,7 +113,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
             widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
             holderWidgetClientNumber.addView(widgetClientNumberView);
 
-            setRechargeEditTextCallback(widgetClientNumberView);
             setRechargeEditTextTouchCallback(widgetClientNumberView);
         }
     }
@@ -132,7 +132,8 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 new ProductMapper(),
                 new OperatorMapper(),
                 new JobExecutor(),
-                new UIThread());
+                new UIThread(),
+                useCache);
 
         presenter = new DigitalWidgetStyle2Presenter(getActivity(), interactor, this);
     }
@@ -303,7 +304,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
             public void trackingProduct() {
                 if (selectedProduct != null)
                     UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
-                            selectedProduct.getAttributes().getPrice());
+                            selectedProduct.getAttributes().getDesc());
             }
         };
     }
@@ -340,7 +341,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void onTrackingOperator() {
-                UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                UnifyTracking.eventSelectOperator(category.getAttributes().getName(),
                         selectedOperator == null ? "" : selectedOperator.getAttributes().getName());
             }
         };
@@ -350,12 +351,6 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
     public void saveAndDisplayPhoneNumber(String phoneNumber) {
         widgetClientNumberView.setText(phoneNumber);
         //save to last input key
-    }
-
-    @Override
-    protected void trackingOnClientNumberFocusListener() {
-        UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
-                selectedOperator == null ? "" : selectedOperator.getAttributes().getName());
     }
 
     private PreCheckoutDigitalWidget getDataPreCheckout() {
@@ -428,6 +423,8 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
     @Override
     public void renderOperator(Operator rechargeOperatorModel) {
         selectedOperator = rechargeOperatorModel;
+        UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
+                selectedOperator.getAttributes().getName());
         selectedOperatorId = String.valueOf(selectedOperator.getId());
         widgetClientNumberView.setText(lastClientNumberTyped);
     }

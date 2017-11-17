@@ -25,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -69,6 +70,7 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
+import com.tokopedia.tkpdpdp.customview.FlingBehavior;
 import com.tokopedia.tkpdpdp.customview.HeaderInfoView;
 import com.tokopedia.tkpdpdp.customview.LastUpdateView;
 import com.tokopedia.tkpdpdp.customview.LatestTalkView;
@@ -115,8 +117,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final int STATUS_IN_WISHLIST = 1;
     public static final int STATUS_NOT_WISHLIST = 0;
 
+    private static final int FROM_COLLAPSED = 0;
+    private static final int FROM_EXPANDED = 1;
+
     public static final int INIT_REQUEST = 1;
     public static final int RE_REQUEST = 2;
+
+    private static final int SCROLL_ELEVATION = 324;
 
     private static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
     private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
@@ -149,6 +156,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     AppBarLayout appBarLayout;
     CollapsingToolbarLayout collapsingToolbarLayout;
     FloatingActionButton fabWishlist;
+    LinearLayout rootView;
 
     private TextView tvTickerGTM;
 
@@ -243,9 +251,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         priceSimulationView
                 = (PriceSimulationView) view.findViewById(R.id.view_price_simulation);
         fabWishlist = (FloatingActionButton) view.findViewById(R.id.fab_detail);
+        rootView = (LinearLayout) view.findViewById(R.id.root_view);
 
         collapsingToolbarLayout.setTitle("");
         toolbar.setTitle("");
+        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
@@ -264,7 +274,18 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             }
         });
         setHasOptionsMenu(true);
-        initToolbarTransparant();
+        rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int viewId = v.getId();
+            }
+        });
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP ) {
+            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+            params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
+        }
+
     }
 
     @Override
@@ -1019,6 +1040,32 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if (videoDescriptionLayout != null && videoDescriptionLayout.isShown()) {
             videoDescriptionLayout.destroyVideoLayoutProcess();
         }
+    }
+
+    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
+        return new AppBarLayout.OnOffsetChangedListener() {
+            int intColor = 0;
+            int stateCollapsing = FROM_COLLAPSED;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                intColor = - verticalOffset;
+                if (intColor>=SCROLL_ELEVATION+toolbar.getHeight() && isAdded() && stateCollapsing==FROM_EXPANDED) {
+                    initToolbarLight();
+                    initStatusBarLight();
+                    fabWishlist.hide();
+                    stateCollapsing = FROM_COLLAPSED;
+                } else if (intColor<SCROLL_ELEVATION+toolbar.getHeight() && isAdded() && stateCollapsing==FROM_COLLAPSED) {
+                    initStatusBarDark();
+                    initToolbarTransparant();
+                    if (productData != null && productData.getInfo().getProductAlreadyWishlist() != null) {
+                        fabWishlist.show();
+                    }
+                    stateCollapsing = FROM_EXPANDED;
+                }
+            }
+        };
     }
 
     private void initToolbarLight() {

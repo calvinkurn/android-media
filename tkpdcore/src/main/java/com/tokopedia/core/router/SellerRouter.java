@@ -132,5 +132,4 @@ public class SellerRouter {
         intent.putExtras(bundle);
         return intent;
     }
-
 }

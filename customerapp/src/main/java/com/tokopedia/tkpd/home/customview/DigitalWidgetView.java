@@ -79,7 +79,7 @@ public class DigitalWidgetView extends BaseCustomView {
         });
     }
 
-    public void renderDataWidget(List<Category> rechargeCategory, FragmentManager fragmentManager) {
+    public void renderDataWidget(List<Category> rechargeCategory, boolean useCache, FragmentManager fragmentManager) {
         List<Integer> newRechargePositions = new ArrayList<>();
 
         if (rechargeCategory.size() == 0) {
@@ -93,7 +93,7 @@ public class DigitalWidgetView extends BaseCustomView {
         setModeScrollerWidget(rechargeCategory.size());
 
         if (rechargeViewPagerAdapter == null) {
-            rechargeViewPagerAdapter = new RechargeViewPagerAdapter(fragmentManager, rechargeCategory);
+            rechargeViewPagerAdapter = new RechargeViewPagerAdapter(fragmentManager, rechargeCategory, useCache);
             viewPager.setAdapter(rechargeViewPagerAdapter);
         } else {
             rechargeViewPagerAdapter.addFragments(rechargeCategory);
