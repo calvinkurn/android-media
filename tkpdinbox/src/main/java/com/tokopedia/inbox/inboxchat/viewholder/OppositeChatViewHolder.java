@@ -7,11 +7,9 @@ import android.text.Spanned;
 import android.text.format.DateFormat;
 import android.text.style.BackgroundColorSpan;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
@@ -20,10 +18,7 @@ import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 
-import java.util.Calendar;
 import java.util.Date;
-
-import butterknife.BindView;
 
 /**
  * Created by stevenfredian on 9/27/17.
@@ -39,6 +34,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
     private TextView name;
     private TextView label;
     private TextView oldMessage;
+    private View oldMessageView;
 
     ChatRoomContract.View viewListener;
 
@@ -54,6 +50,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
         name = (TextView) itemView.findViewById(R.id.name);
         label = (TextView) itemView.findViewById(R.id.label);
         oldMessage = (TextView) itemView.findViewById(R.id.old_message);
+        oldMessageView = itemView.findViewById(R.id.old_message_container);
         position = getAdapterPosition();
         this.viewListener = viewListener;
     }
@@ -67,10 +64,10 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
             }
         });
 
-        if(!element.isHighlight()) {
+        if (!element.isHighlight()) {
             message.setText(MethodChecker.fromHtml(element.getMsg()));
-        }else {
-            if(element.getSpanned()!= null && viewListener.getKeyword()!=null) {
+        } else {
+            if (element.getSpanned() != null && viewListener.getKeyword() != null) {
                 message.setText(highlight(itemView.getContext(), element.getSpanned(), viewListener.getKeyword()));
             }
         }
@@ -83,24 +80,23 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
         try {
             long myTime = Long.parseLong(element.getReplyTime());
             time = DateFormat.getLongDateFormat(itemView.getContext()).format(new Date(myTime));
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             time = element.getReplyTime();
         }
         date.setText(time);
 
         if (element.isShowTime()) {
             date.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             date.setVisibility(View.GONE);
         }
-
 
 
         String hourTime;
 
         try {
             hourTime = ChatTimeConverter.formatTime(Long.parseLong(element.getReplyTime()));
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             hourTime = element.getReplyTime();
         }
 
@@ -119,12 +115,22 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
 
         label.setText(element.getRole());
 
-        if(element.getOldMessageTitle()!= null && element.getOldMessageTitle().length()>0){
-            oldMessage.setVisibility(View.VISIBLE);
-            oldMessage.setText(new StringBuilder().append(oldMessage.getContext().getResources().getString(R.string.old_message_warn)).append(" ").append(element.getOldMessageTitle()).toString());
-        }else {
-            oldMessage.setVisibility(View.GONE);
+        if (element.getOldMessageTitle() != null && element.getOldMessageTitle().length() > 0) {
+            oldMessageView.setVisibility(View.VISIBLE);
+            oldMessage.setText(getOldMessageText(element));
+        } else {
+            oldMessageView.setVisibility(View.GONE);
         }
+    }
+
+    private Spanned getOldMessageText(OppositeChatViewModel element) {
+        return MethodChecker.fromHtml(
+                oldMessage.getContext().getResources().getString(R.string.old_message_warn)
+                        + " <b>" +
+                        element.getOldMessageTitle()
+                        + "</b>"
+
+        );
     }
 
     private SpannableString highlight(Context context, Spanned span, String keyword) {
@@ -136,7 +142,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
 
         while (indexOfKeyword < span.length() && indexOfKeyword >= 0) {
             //Create a background color span on the keyword
-            spannableString.setSpan(new BackgroundColorSpan(MethodChecker.getColor(context,R.color.orange_300)), indexOfKeyword, indexOfKeyword + keyword.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new BackgroundColorSpan(MethodChecker.getColor(context, R.color.orange_300)), indexOfKeyword, indexOfKeyword + keyword.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             //Get the next index of the keyword
             indexOfKeyword = spannableString.toString().indexOf(keyword, indexOfKeyword + keyword.length());

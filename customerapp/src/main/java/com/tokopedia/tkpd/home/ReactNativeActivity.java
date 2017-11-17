@@ -42,6 +42,14 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
         ).putExtras(bundle);
     }
 
+    @DeepLink({Constants.Applinks.OFFICIAL_STORE_PROMO})
+    public static Intent getOfficialStorePromoApplinkCallingIntent(Context context, Bundle bundle) {
+        return ReactNativeActivity.createBannerReactNativeActivity(
+                context, ReactConst.Screen.PROMO,
+                bundle.getString("slug")
+        ).putExtras(bundle);
+    }
+
     @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO_TERMS})
     public static Intent getOffiicialStoreTermsIntent(Context context, Bundle bundle) {
         return ReactNativeActivity.createOfficialStoreTerms(

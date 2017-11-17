@@ -28,7 +28,7 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
     }
 
     @SuppressWarnings("unused")
-    @DeepLink({Constants.Applinks.DIGITAL_CATEGORY})
+    @DeepLink({Constants.Applinks.DIGITAL_CATEGORY, Constants.Applinks.DIGITAL})
     public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
