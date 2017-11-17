@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingRight="@dimen/padding_vs"
     android:paddingLeft="@dimen/padding_vs"
-    android:paddingTop="2.5dp"
-    android:paddingBottom="2.5dp"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -43,10 +43,10 @@
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/old_message_container"
+        android:layout_below="@id/old_message_container"
         android:layout_centerHorizontal="true"
-        android:padding="@dimen/padding_vs"
         android:textAllCaps="true"
+        android:layout_marginBottom="16dp"
         android:textColor="@color/grey_500"
         android:textSize="@dimen/fontvs"
         tools:text="13:16 wib"/>

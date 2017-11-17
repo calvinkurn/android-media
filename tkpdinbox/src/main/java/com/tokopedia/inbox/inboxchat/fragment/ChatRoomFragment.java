@@ -432,6 +432,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         adapter.addReply(item);
                         finishLoading();
                         replyColumn.setText("");
+                        try {
+                            presenter.readMessage(String.valueOf(response.getData().getMsgId()));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         scrollToBottom();
                     }
                     setResult();
