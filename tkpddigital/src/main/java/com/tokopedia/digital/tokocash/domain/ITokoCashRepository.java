@@ -1,15 +1,22 @@
 package com.tokopedia.digital.tokocash.domain;
 
-import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.digital.tokocash.entity.WalletTokenEntity;
+import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 
 import rx.Observable;
 
 /**
- * Created by kris on 6/16/17. Tokopedia
+ * Created by nabillasabbaha on 7/24/17.
  */
 
 public interface ITokoCashRepository {
 
-    public Observable<CashBackData> getTokoCashPending();
+    Observable<ActivateTokoCashData> requestOTPWallet();
 
+    Observable<ActivateTokoCashData> linkedWalletToTokoCash(String otpCode);
+
+    Observable<TokoCashBalanceData> getBalanceTokoCash();
+
+    Observable<WalletTokenEntity> getWalletToken();
 }

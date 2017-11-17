@@ -44,7 +44,6 @@ import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
-import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
@@ -473,11 +472,6 @@ public abstract class SellerRouterApplication extends MainApplication
         intent.putExtras(bundle);
         intent.setData(Uri.parse(applinks));
         deepLinkDelegate.dispatchFrom(activity, intent);
-    }
-
-    @Override
-    public Intent instanceIntentTokoCashActivation() {
-        return ActivateTokoCashActivity.newInstance(this);
     }
 
     @Override
