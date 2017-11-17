@@ -35,7 +35,6 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
     private Context context;
     private ItemHistoryListener listener;
     private boolean showLoader;
-    private ItemHistory itemHistory;
 
     public HistoryTokoCashAdapter(List<ItemHistory> itemHistoryList) {
         this.itemHistoryList = itemHistoryList;
@@ -63,23 +62,7 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolderHistory) {
-            ItemViewHolderHistory itemViewHolder = (ItemViewHolderHistory) holder;
-            itemHistory = itemHistoryList.get(position);
-
-            ImageHandler.loadImageThumbs(context, itemViewHolder.iconItem, itemHistory.getUrlImage());
-            itemViewHolder.descItem.setText(!TextUtils.isEmpty(itemHistory.getNotes()) ? itemHistory.getNotes() :
-                    itemHistory.getDescription());
-            itemViewHolder.titleItem.setText(itemHistory.getTitle());
-            itemViewHolder.priceItem.setText(itemHistory.getAmountChanges());
-            itemViewHolder.priceItem.setTextColor(ContextCompat.getColor(context,
-                    itemHistory.getAmountChangesSymbol().equals("+") ? R.color.green_500 : R.color.red_500));
-            itemViewHolder.dateItem.setText(itemHistory.getTransactionInfoDate());
-            itemViewHolder.layoutItemHistory.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onClickItemHistory(itemHistory);
-                }
-            });
+            renderItemView((ItemViewHolderHistory) holder, itemHistoryList.get(position));
         } else if (holder instanceof ItemLoadingViewHolder) {
             ItemLoadingViewHolder loadingViewHolder = (ItemLoadingViewHolder) holder;
             if (showLoader) {
@@ -88,6 +71,23 @@ public class HistoryTokoCashAdapter extends RecyclerView.Adapter {
                 loadingViewHolder.progressBarHistory.setVisibility(View.GONE);
             }
         }
+    }
+
+    private void renderItemView(ItemViewHolderHistory itemViewHolder, final ItemHistory itemHistory) {
+        ImageHandler.loadImageThumbs(context, itemViewHolder.iconItem, itemHistory.getUrlImage());
+        itemViewHolder.descItem.setText(!TextUtils.isEmpty(itemHistory.getNotes()) ? itemHistory.getNotes() :
+                itemHistory.getDescription());
+        itemViewHolder.titleItem.setText(itemHistory.getTitle());
+        itemViewHolder.priceItem.setText(itemHistory.getAmountChanges());
+        itemViewHolder.priceItem.setTextColor(ContextCompat.getColor(context,
+                itemHistory.getAmountChangesSymbol().equals("+") ? R.color.green_500 : R.color.red_500));
+        itemViewHolder.dateItem.setText(itemHistory.getTransactionInfoDate());
+        itemViewHolder.layoutItemHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onClickItemHistory(itemHistory);
+            }
+        });
     }
 
     @Override
