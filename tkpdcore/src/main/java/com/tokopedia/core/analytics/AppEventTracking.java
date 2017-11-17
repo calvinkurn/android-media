@@ -228,6 +228,7 @@ public interface AppEventTracking {
         String TOP_ADS_PRODUCT_SHOP = "TopAds - Product/Shop";
         String REFERRAL="Referral";
         String FEATURED_PRODUCT = "Featured Product";
+        String HOMEPAGE_TOKOCASH_WIDGET = "Homepage TokoCash Widget";
     }
 
     interface Action {
@@ -324,6 +325,8 @@ public interface AppEventTracking {
         String CHECK_INSTANT_SALDO = "Check Instant Saldo";
         String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
         String SELECT_NUMBER_ON_USER_PROFILE = "select number on user profile";
+        String CLICK_ACTIVATE = "click activate";
+        String CLICK_SALDO = "click saldo";
         String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
         String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
     }

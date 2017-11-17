@@ -9,6 +9,8 @@ import android.os.Parcelable;
 
 public class DigitalCategoryItemData implements Parcelable {
     public static final String DEFAULT_TYPE_DIGITAL = "Digital";
+    // TODO : next sprint will be discussed with mojito & wallet team
+    public static final int DEFAULT_TOKOCASH_CATEGORY_ID = 103;
 
     private String name;
     private String imageUrl;

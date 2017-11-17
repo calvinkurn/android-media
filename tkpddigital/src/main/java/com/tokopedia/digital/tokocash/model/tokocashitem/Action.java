@@ -7,61 +7,30 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @author kulomady on 11/08/16
+ * Created by nabillasabbaha on 11/15/17.
  */
+
 public class Action implements Parcelable {
 
     @SerializedName("redirect_url")
-    private String mRedirectUrl;
+    private String redirectUrl;
     @SerializedName("text")
-    private String mText;
-    @SerializedName("type")
-    private String mType;
+    private String labelAction;
+    @SerializedName("applinks")
+    private String applinks;
+    @SerializedName("visibility")
+    private String visibility;
 
-    public String getRedirectUrl() {
-        if (mRedirectUrl == null) return "";
-        else return mRedirectUrl;
-    }
-
-    public void setRedirectUrl(String redirect_url) {
-        mRedirectUrl = redirect_url;
-    }
-
-    public String getText() {
-        return mText;
-    }
-
-    public void setText(String text) {
-        mText = text;
-    }
-
-    public String getType() {
-        return mType;
-    }
-
-    public void setType(String type) {
-        mType = type;
+    public Action() {
     }
 
     protected Action(Parcel in) {
-        mRedirectUrl = in.readString();
-        mText = in.readString();
-        mType = in.readString();
+        redirectUrl = in.readString();
+        labelAction = in.readString();
+        applinks = in.readString();
+        visibility = in.readString();
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mRedirectUrl);
-        dest.writeString(mText);
-        dest.writeString(mType);
-    }
-
-    @SuppressWarnings("unused")
     public static final Creator<Action> CREATOR = new Creator<Action>() {
         @Override
         public Action createFromParcel(Parcel in) {
@@ -74,4 +43,48 @@ public class Action implements Parcelable {
         }
     };
 
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+    }
+
+    public String getLabelAction() {
+        return labelAction;
+    }
+
+    public void setLabelAction(String labelAction) {
+        this.labelAction = labelAction;
+    }
+
+    public String getApplinks() {
+        return applinks;
+    }
+
+    public void setApplinks(String applinks) {
+        this.applinks = applinks;
+    }
+
+    public String getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(redirectUrl);
+        parcel.writeString(labelAction);
+        parcel.writeString(applinks);
+        parcel.writeString(visibility);
+    }
 }
