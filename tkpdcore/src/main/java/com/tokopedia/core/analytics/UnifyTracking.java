@@ -876,6 +876,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickCariWishlist(String query) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.WISHLIST,
+                AppEventTracking.Category.HOMEPAGE.toLowerCase(),
+                AppEventTracking.Action.CLICK_SEARCH_ITEM_WISHLIST,
+                query
+        ).getEvent());
+    }
+
     public static void eventFeedRecent(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.FEED,

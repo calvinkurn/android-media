@@ -473,6 +473,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        UnifyTracking.eventClickCariWishlist(query);
         wishList.searchWishlist(query);
         return false;
     }
