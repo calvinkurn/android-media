@@ -18,7 +18,7 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/shop_cover_height"
             android:fitsSystemWindows="true"
             app:contentScrim="@color/tkpd_main_green"
             app:expandedTitleMarginEnd="12dp"
@@ -30,7 +30,7 @@
             <ImageView
                 android:id="@id/banner"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/shop_cover_height"
+                android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:fitsSystemWindows="true"
                 android:background="@color/tkpd_main_green"
@@ -43,10 +43,8 @@
                 android:id="@id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:gravity="top"
                 app:layout_collapseMode="pin"
-                app:contentInsetStart="0dp"
-                app:contentInsetLeft="0dp"
-                app:contentInsetStartWithNavigation="0dp"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
