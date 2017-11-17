@@ -34,4 +34,20 @@ public class OrderDetailInteractorImpl implements OrderDetailInteractor{
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber));
     }
+
+    @Override
+    public void confirmFinishConfirm(Subscriber<String> subscriber,
+                                     TKPDMapParam<String, String> params) {
+        compositeSubscription.add(orderDetailRepository.confirmFinishDeliver(params)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
+
+    @Override
+    public void onActivityClosed() {
+        compositeSubscription.unsubscribe();
+    }
 }

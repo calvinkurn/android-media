@@ -23,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
+            android:textColor="@color/label_text_color"
             tools:text="3 barang (3,75kg)" />
 
     </LinearLayout>
@@ -44,6 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
+            android:textColor="@color/label_text_color"
             tools:text="Rp 75.000" />
 
     </LinearLayout>
@@ -65,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
+            android:textColor="@color/label_text_color"
             tools:text="Rp 15.000" />
 
     </LinearLayout>
@@ -86,6 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
+            android:textColor="@color/label_text_color"
             tools:text="Rp 15.000" />
 
     </LinearLayout>
@@ -107,6 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
+            android:textColor="@color/label_text_color"
             tools:text="Rp 1.000" />
 
     </LinearLayout>

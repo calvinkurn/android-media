@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.detail.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
@@ -32,12 +33,15 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void fetchData(Context context, String orderId) {
+        TKPDMapParam<String, String> temporaryHash = new TKPDMapParam<>();
+        temporaryHash.put("order_id", orderId);
+        temporaryHash.put("user_id", SessionHandler.getLoginID(context));
+        temporaryHash.put("lang", "id");
+        temporaryHash = AuthUtil.generateParamsNetwork(context, temporaryHash);
         TKPDMapParam<String, Object> params = new TKPDMapParam<>();
-        params.put("order_id", orderId);
-        params.put("user_id", SessionHandler.getLoginID(context));
-        params.put("request_by", 1);
-        params.put("lang", "id");
+        params.putAll(temporaryHash);
         params.put("os_type", 1);
+        params.put("request_by", 1);
         orderDetailInteractor.requestDetailData(orderDetailDataSubscriber(), params);
     }
 
@@ -56,17 +60,17 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void processShowComplain(Context context, OrderDetailData data) {
-
+        mainView.showComplaintDialog(data.getShopName(), data.getOrderId());
     }
 
     @Override
     public void processConfirmDeliver(Context context, OrderDetailData data) {
-
+        mainView.showConfirmDialog(data.getOrderId());
     }
 
     @Override
     public void processTrackOrder(Context context, OrderDetailData data) {
-
+        mainView.trackShipment(data.getOrderId());
     }
 
     @Override
@@ -85,13 +89,21 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
-    public void processComplain(Context context, OrderDetailData data) {
+    public void processComplain(Context context, String orderId) {
 
     }
 
     @Override
-    public void processFinish(Context context, OrderDetailData data) {
+    public void processFinish(Context context, String orderId) {
+        TKPDMapParam<String, String> orderDetailParams = new TKPDMapParam<>();
+        orderDetailParams.put("order_id", orderId);
+        orderDetailInteractor.confirmFinishConfirm(confirmShipmentSubscriber(),
+                AuthUtil.generateParamsNetwork(context, orderDetailParams));
+    }
 
+    @Override
+    public void onDestroyed() {
+        orderDetailInteractor.onActivityClosed();
     }
 
     private Subscriber<OrderDetailData> orderDetailDataSubscriber() {
@@ -103,12 +115,31 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                mainView.onError(e.getMessage());
             }
 
             @Override
             public void onNext(OrderDetailData data) {
                 mainView.onReceiveDetailData(data);
+            }
+        };
+    }
+
+    private Subscriber<String> confirmShipmentSubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String s) {
+                mainView.onOrderFinished(s);
             }
         };
     }

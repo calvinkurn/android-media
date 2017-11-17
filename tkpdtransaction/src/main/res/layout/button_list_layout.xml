@@ -1,151 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/margin_vs"
+    android:paddingTop="@dimen/margin_vs"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/accept_order"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Accept Order"/>
+        android:text="Accept Order"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/change_courier"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Change Courier"/>
+        android:text="Change Courier"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/request_pickup"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Request Pickup"/>
+        android:text="Request Pickup"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/confirm_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Confirm"/>
+        android:text="Konfirmasi"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/finish_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Finish Order"/>
+        android:text="Finish Order"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/change_awb"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Change Awb"/>
+        android:text="Change Awb"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/view_complaint_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="View Complaint"/>
+        android:text="View Complaint"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/confirm_shipping"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Confirm Shipping"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Track"/>
+        android:text="Confirm Shipping"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/track_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
-        android:background="@drawable/white_button_rounded"
-        android:text="Track"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Ask Seller"/>
+        android:text="Track"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/ask_seller_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
-        android:background="@drawable/white_button_rounded"
-        android:text="Ask Seller"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Ask Buyer"/>
+        android:text="Ask Seller"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/ask_buyer_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
-        android:background="@drawable/white_button_rounded"
-        android:text="Ask Buyer"/>
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/green_button_rounded_unify"
+        android:text="Ask Buyer"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/reject_order_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/white_button_rounded"
-        android:text="Reject Order"/>
+        android:text="Reject Order" />
 
     <Button
         android:id="@+id/request_cancel_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/white_button_rounded"
-        android:textColor="@color/white"
-        android:text="Request Cancel"/>
+        android:text="Request Cancel"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/complaint"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Complaint"/>
+        android:text="Complaint"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/order_detail_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Order Detail"/>
+        android:text="Order Detail"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/cancel_chance"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:textColor="@color/white"
-        android:text="Cancel Peluang"/>
+        android:text="Cancel Peluang"
+        android:textColor="@color/white" />
 
 </LinearLayout>

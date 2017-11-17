@@ -8,6 +8,8 @@ import java.util.List;
 
 public class OrderDetailData {
 
+    private String orderId;
+
     private String orderStatus;
 
     private String orderImage;
@@ -15,6 +17,10 @@ public class OrderDetailData {
     private String purchaseDate;
 
     private String responseTimeLimit;
+
+    private String shopId;
+
+    private String shopName;
 
     private String buyerName;
 
@@ -44,6 +50,14 @@ public class OrderDetailData {
 
     private ButtonData buttonData;
 
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
     public String getOrderStatus() {
         return orderStatus;
     }
@@ -58,10 +72,6 @@ public class OrderDetailData {
 
     public void setOrderImage(String orderImage) {
         this.orderImage = orderImage;
-    }
-
-    public String getBuyerName() {
-        return buyerName;
     }
 
     public String getPurchaseDate() {
@@ -80,7 +90,23 @@ public class OrderDetailData {
         this.responseTimeLimit = responseTimeLimit;
     }
 
-    public String getDescriptionBuyerName() {
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getBuyerName() {
         return buyerName;
     }
 

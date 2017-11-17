@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <include layout="@layout/order_detail_page_header" />
@@ -21,16 +21,16 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:padding="@dimen/small_dp">
+            android:padding="@dimen/med_dp">
 
             <TextView
                 android:id="@+id/invoice_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/label_color"
+                android:textColor="@color/label_text_color"
                 tools:text="INV/20161025/XVI/X/55069657" />
 
             <LinearLayout
@@ -73,7 +73,7 @@
         <com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout
             android:id="@+id/button_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

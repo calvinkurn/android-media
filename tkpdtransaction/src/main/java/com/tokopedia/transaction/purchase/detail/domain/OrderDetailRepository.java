@@ -1,10 +1,10 @@
 package com.tokopedia.transaction.purchase.detail.domain;
 
-
-import android.view.View;
-
 import com.google.gson.Gson;
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
+import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
+import com.tokopedia.core.network.apiservices.transaction.TXOrderService;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Buttons;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Data;
@@ -29,8 +29,16 @@ public class OrderDetailRepository implements IOrderDetailRepository {
 
     private OrderDetailService service;
 
-    public OrderDetailRepository(OrderDetailService service) {
+    private TXOrderService orderService;
+
+    private TXOrderActService orderActService;
+
+    public OrderDetailRepository(OrderDetailService service,
+                                 TXOrderService orderService,
+                                 TXOrderActService orderActService) {
         this.service = service;
+        this.orderService = orderService;
+        this.orderActService = orderActService;
     }
 
     @Override
@@ -38,7 +46,7 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         return service.getApi().getOrderDetail(params).map(new Func1<Response<String>, OrderDetailData>() {
             @Override
             public OrderDetailData call(Response<String> stringResponse) {
-                return generateCreditCardModel(
+                return generateOrderDetailModel(
                         new Gson().fromJson(stringResponse.body(), OrderDetailResponse.class));
             }
         });
@@ -49,15 +57,34 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         return null;
     }
 
-    private OrderDetailData generateCreditCardModel(OrderDetailResponse response) {
+    @Override
+    public Observable<String> confirmFinishDeliver(TKPDMapParam<String, String> params) {
+        return orderActService.getApi().deliveryFinishOrder(params).map(new Func1<Response<TkpdResponse>, String>() {
+            @Override
+            public String call(Response<TkpdResponse> response) {
+                return getConfirmDeliverMessage(response);
+            }
+        });
+    }
+
+
+    private OrderDetailData generateOrderDetailModel(OrderDetailResponse response) {
         OrderDetailData viewData = new OrderDetailData();
         Data responseData = response.getData();
+        viewData.setOrderId(String.valueOf(responseData.getOrderId()));
         viewData.setOrderStatus(responseData.getStatus().getDetail());
         viewData.setOrderImage(responseData.getStatus().getImage());
 
         viewData.setBuyerName(responseData.getDetail().getReceiver().getName());
         viewData.setPurchaseDate(responseData.getDetail().getPaymentVerifiedDate());
-        viewData.setResponseTimeLimit(responseData.getDetail().getDeadline().getText());
+        if(responseData.getDetail().getDeadline() != null) {
+            viewData.setResponseTimeLimit(responseData.getDetail().getDeadline().getText());
+        }
+        if(responseData.getDetail().getShop() !=null) {
+            viewData.setShopId(String.valueOf(responseData.getDetail().getShop().getId()));
+            viewData.setShopName(responseData.getDetail().getShop().getName());
+
+        }
         viewData.setPartialOrderStatus(
                 getPartialOrderStatus(responseData.getDetail().getPartialOrder())
         );
@@ -73,7 +100,7 @@ public class OrderDetailRepository implements IOrderDetailRepository {
 
         viewData.setInvoiceNumber(responseData.getInvoice());
         viewData.setInvoiceUrl(responseData.getInvoiceUrl());
-        viewData.setCourierName(responseData.getDetail().getShipment().getName()
+        viewData.setCourierName(responseData.getDetail().getShipment().getName() + " "
                 + responseData.getDetail().getShipment().getProductName());
 
         viewData.setTotalItemQuantity(String.valueOf(responseData.getSummary().getTotalItem()));
@@ -86,36 +113,41 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         List<OrderDetailItemData> productList = new ArrayList<>();
         for (int i = 0; i < responseData.getProducts().size(); i++) {
             OrderDetailItemData product = new OrderDetailItemData();
+            product.setProductId(String.valueOf(responseData.getProducts().get(i).getId()));
             product.setItemName(responseData.getProducts().get(i).getName());
             product.setDescription(responseData.getProducts().get(i).getNote());
             product.setItemQuantity(String.valueOf(responseData.getProducts().get(i).getQuantity()));
             product.setPrice(responseData.getProducts().get(i).getPrice());
+            product.setImageUrl(responseData.getProducts().get(i).getThumbnail());
             productList.add(product);
         }
         viewData.setItemList(productList);
 
         ButtonData buttonData = new ButtonData();
         Buttons buttons = responseData.getButtons();
-        buttonData.setAcceptOrderVisibility(switchVisibilty(buttons.getAcceptOrder()));
-        buttonData.setAskBuyerVisibility(switchVisibilty(buttons.getAskBuyer()));
-        buttonData.setAskSellerVisibility(switchVisibilty(buttons.getAskSeller()));
-        buttonData.setCancelPeluangVisibility(switchVisibilty(buttons.getCancelPeluang()));
-        buttonData.setChangeAwbVisibility(switchVisibilty(buttons.getChangeAwb()));
-        buttonData.setChangeCourier(switchVisibilty(buttons.getChangeCourier()));
-        buttonData.setComplaintVisibility(switchVisibilty(buttons.getComplaint()));
-        buttonData.setViewComplaint(switchVisibilty(buttons.getViewComplaint()));
-        buttonData.setConfirmShippingVisibility(switchVisibilty(buttons.getConfirmShipping()));
-        buttonData.setFinishOrderVisibility(switchVisibilty(buttons.getFinishOrder()));
-        buttonData.setRejectOrderVisibility(switchVisibilty(buttons.getRejectOrder()));
-        buttonData.setRequestCancelVisibility(switchVisibilty(buttons.getRequestCancel()));
-        buttonData.setOrderDetailVisibility(switchVisibilty(buttons.getOrderDetail()));
-        buttonData.setReceiveConfirmationVisibility(switchVisibilty(buttons
-                .getReceiveConfirmation()));
-        buttonData.setTrackVisibility(switchVisibilty(buttons.getTrack()));
-        buttonData.setRequestPickupVisibility(switchVisibilty(buttons.getRequestPickup()));
+        buttonData.setAcceptOrderVisibility(buttons.getAcceptOrder());
+        buttonData.setAskBuyerVisibility(buttons.getAskBuyer());
+        buttonData.setAskSellerVisibility(buttons.getAskSeller());
+        buttonData.setCancelPeluangVisibility(buttons.getCancelPeluang());
+        buttonData.setChangeAwbVisibility(buttons.getChangeAwb());
+        buttonData.setChangeCourier(buttons.getChangeCourier());
+        buttonData.setComplaintVisibility(buttons.getComplaint());
+        buttonData.setViewComplaint(buttons.getViewComplaint());
+        buttonData.setConfirmShippingVisibility(buttons.getConfirmShipping());
+        buttonData.setFinishOrderVisibility(buttons.getFinishOrder());
+        buttonData.setRejectOrderVisibility(buttons.getRejectOrder());
+        buttonData.setRequestCancelVisibility(buttons.getRequestCancel());
+        buttonData.setOrderDetailVisibility(buttons.getOrderDetail());
+        buttonData.setReceiveConfirmationVisibility(buttons.getReceiveConfirmation());
+        buttonData.setTrackVisibility(buttons.getTrack());
+        buttonData.setRequestPickupVisibility(buttons.getRequestPickup());
         viewData.setButtonData(buttonData);
 
         return viewData;
+    }
+
+    private String getConfirmDeliverMessage(Response<TkpdResponse> response) {
+        return response.body().getStatusMessageJoined();
     }
 
     private String getPartialOrderStatus(int partialOrder) {
@@ -123,8 +155,4 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         else return "Tidak";
     }
 
-    private int switchVisibilty(int responseVisibility) {
-        if(responseVisibility == 1) return View.VISIBLE;
-        else return View.GONE;
-    }
 }

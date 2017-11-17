@@ -6,6 +6,8 @@ package com.tokopedia.transaction.purchase.detail.model.detail.viewmodel;
 
 public class OrderDetailItemData {
 
+    private String productId;
+
     private String itemName;
 
     private String itemQuantity;
@@ -13,6 +15,16 @@ public class OrderDetailItemData {
     private String price;
 
     private String description;
+
+    private String imageUrl;
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
 
     public String getItemName() {
         return itemName;
@@ -44,5 +56,13 @@ public class OrderDetailItemData {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

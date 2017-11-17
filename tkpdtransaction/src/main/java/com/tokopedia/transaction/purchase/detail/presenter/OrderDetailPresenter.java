@@ -31,8 +31,10 @@ public interface OrderDetailPresenter {
 
     void processRequestCancelOrder(Context context, OrderDetailData data);
 
-    void processComplain(Context context, OrderDetailData data);
+    void processComplain(Context context, String orderId);
 
-    void processFinish(Context context, OrderDetailData data);
+    void processFinish(Context context, String orderId);
+
+    void onDestroyed();
 
 }

@@ -873,7 +873,7 @@ public class TkpdBaseURL {
     }
 
     public class Purchase {
-        public static final String PATH_ORDER_DETAIL = "/api/order/i/v1/detail";
-        public static final String PATH_ORDER_HISTORY = "/api/order/i/v1/history";
+        public static final String PATH_ORDER_DETAIL = "/v4/order/detail";
+        public static final String PATH_ORDER_HISTORY = "/v4/order/history";
     }
 }

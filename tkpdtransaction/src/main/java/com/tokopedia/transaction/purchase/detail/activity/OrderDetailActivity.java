@@ -9,15 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderDetailComponent;
 import com.tokopedia.transaction.purchase.detail.di.OrderDetailComponent;
+import com.tokopedia.transaction.purchase.detail.dialog.ComplaintDialog;
+import com.tokopedia.transaction.purchase.detail.dialog.FinishOrderDialog;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 
@@ -27,11 +33,19 @@ import javax.inject.Inject;
  * Created by kris on 11/2/17. Tokopedia
  */
 
-public class OrderDetailActivity extends TActivity implements OrderDetailView {
+public class OrderDetailActivity extends TActivity
+        implements OrderDetailView,
+        FinishOrderDialog.FinishOrderDialogListener, ComplaintDialog.ComplaintDialogListener{
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
 
     @Inject
     OrderDetailPresenterImpl presenter;
+
+    public static Intent createInstance(Context context, String orderId) {
+        Intent intent = new Intent(context, OrderDetailActivity.class);
+        intent.putExtra(EXTRA_ORDER_ID, orderId);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +53,7 @@ public class OrderDetailActivity extends TActivity implements OrderDetailView {
         inflateView(R.layout.order_detail_page);
         initInjector();
         presenter.setMainViewListener(this);
-        presenter.fetchData(this, getIntent().getStringExtra(EXTRA_ORDER_ID));
+        presenter.fetchData(this, getExtraOrderId());
     }
 
     private void initInjector() {
@@ -48,13 +62,6 @@ public class OrderDetailActivity extends TActivity implements OrderDetailView {
                 .appComponent(getApplicationComponent())
                 .build();
         component.inject(this);
-    }
-
-    public static Intent createInstance(Context context, String orderId) {
-        Intent intent = new Intent(context, OrderDetailActivity.class);
-        intent.putExtra(EXTRA_ORDER_ID, orderId);
-        return intent;
-
     }
 
     private void initView(OrderDetailData data) {
@@ -71,7 +78,7 @@ public class OrderDetailActivity extends TActivity implements OrderDetailView {
         ViewGroup statusLayout = (ViewGroup) findViewById(R.id.order_detail_status_layout);
         TextView statusTextView = (TextView) findViewById(R.id.text_view_status);
         ImageView imageView = (ImageView) findViewById(R.id.order_detail_status_image);
-        statusLayout.setOnClickListener(onStatusLayoutClickedListener());
+        statusLayout.setOnClickListener(onStatusLayoutClickedListener(data.getOrderId()));
         statusTextView.setText(data.getOrderStatus());
         ImageHandler.LoadImage(imageView, data.getOrderImage());
     }
@@ -100,15 +107,15 @@ public class OrderDetailActivity extends TActivity implements OrderDetailView {
     private void setItemListView(OrderDetailData data) {
         RecyclerView itemListRecycleView = (RecyclerView) findViewById(R.id.item_list);
         itemListRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        itemListRecycleView.setAdapter(new OrderItemAdapter(data.getItemList()));
+        itemListRecycleView.setAdapter(new OrderItemAdapter(data.getItemList(), this));
         itemListRecycleView.setNestedScrollingEnabled(false);
     }
 
     private void setInvoiceView(OrderDetailData data) {
-        //TODO redirect once invoice page ready
-        //ViewGroup invoiceLayout = (ViewGroup) findViewById(R.id.invoice_layout);
+        ViewGroup invoiceLayout = (ViewGroup) findViewById(R.id.invoice_layout);
         TextView invoiceNumber = (TextView) findViewById(R.id.invoice_number);
         invoiceNumber.setText(data.getInvoiceNumber());
+        invoiceLayout.setOnClickListener(onInvoiceClickedListener(data));
     }
 
     private void setDescriptionView(OrderDetailData data) {
@@ -122,17 +129,18 @@ public class OrderDetailActivity extends TActivity implements OrderDetailView {
                 findViewById(R.id.description_partial_order_status);
         descriptionDate.setText(data.getPurchaseDate());
         responseTime.setText(data.getResponseTimeLimit());
-        descriptionBuyerName.setText(data.getDescriptionBuyerName());
+        descriptionBuyerName.setText(data.getBuyerName());
         descriptionCourierName.setText(data.getCourierName());
         descriptionShippingAddess.setText(data.getShippingAddress());
         descriptionPartialOrderStatus.setText(data.getPartialOrderStatus());
     }
 
-    private View.OnClickListener onStatusLayoutClickedListener() {
+    private View.OnClickListener onStatusLayoutClickedListener(final String orderId) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OrderDetailActivity.this, OrderHistoryActivity.class);
+                Intent intent = OrderHistoryActivity
+                        .createInstance(OrderDetailActivity.this, orderId);
                 startActivity(intent);
             }
         };
@@ -146,5 +154,66 @@ public class OrderDetailActivity extends TActivity implements OrderDetailView {
     @Override
     public void onError(String errorMessage) {
         NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void goToProductInfo(ProductPass productPass) {
+        Intent intent = ProductDetailRouter
+                .createInstanceProductDetailInfoActivity(this, productPass);
+        startActivity(intent);
+    }
+
+    @Override
+    public void trackShipment(String orderId) {
+        Intent intent = new Intent(OrderDetailActivity.this, TrackingActivity.class);
+        intent.putExtra("OrderID", orderId);
+        startActivity(intent);
+    }
+
+    @Override
+    public void showConfirmDialog(String orderId) {
+        FinishOrderDialog dialog = FinishOrderDialog.createDialog(orderId);
+        dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
+    }
+
+    @Override
+    public void showComplaintDialog(String shopName, String orderId) {
+        ComplaintDialog dialog = ComplaintDialog.createDialog(orderId,shopName);
+        dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onOrderFinished(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroyed();
+    }
+
+    private View.OnClickListener onInvoiceClickedListener(final OrderDetailData data) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.processInvoice(OrderDetailActivity.this, data);
+            }
+        };
+    }
+
+    private String getExtraOrderId() {
+        return getIntent().getStringExtra(EXTRA_ORDER_ID);
+    }
+
+    @Override
+    public void onConfirmFinish(String orderId) {
+        presenter.processFinish(this, orderId);
+    }
+
+    @Override
+    public void onComplaintClicked(String orderId) {
+        presenter.processComplain(this, orderId);
     }
 }

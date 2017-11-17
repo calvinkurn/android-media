@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +21,14 @@ import java.util.List;
  */
 
 public class OrderHistoryActivity extends TActivity{
+
+    private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
+
+    public static Intent createInstance(Context context, String orderId) {
+        Intent intent = new Intent(context, OrderHistoryActivity.class);
+        intent.putExtra(EXTRA_ORDER_ID, orderId);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

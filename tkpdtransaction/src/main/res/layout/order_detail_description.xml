@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_color"
+                android:textColor="@color/label_text_color"
                 tools:text="1 Sep 2017" />
 
         </LinearLayout>
@@ -37,6 +37,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_med"
+            android:layout_marginStart="@dimen/margin_med"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -83,7 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_color"
+                android:textColor="@color/label_text_color"
                 tools:text="Ryan Handy" />
 
         </LinearLayout>
@@ -91,6 +93,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_med"
+            android:layout_marginStart="@dimen/margin_med"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -105,7 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_color"
+                android:textColor="@color/label_text_color"
                 tools:text="Wahana Express" />
 
         </LinearLayout>
@@ -134,7 +138,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_vs"
-                android:textColor="@color/label_color"
+                android:textColor="@color/label_text_color"
                 tools:text="I make you break you move I take love is the answer so they said, but if I went awaaaaay what would you say would be enough to make you stay" />
 
         </LinearLayout>
@@ -142,6 +146,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_med"
+            android:layout_marginStart="@dimen/margin_med"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -149,7 +155,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Terima Sebagian"
-                android:textColor="@color/label_color"
                 android:textStyle="bold" />
 
             <TextView
@@ -157,6 +162,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_vs"
+                android:textColor="@color/label_text_color"
                 tools:text="Tidak" />
 
         </LinearLayout>
