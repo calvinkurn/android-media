@@ -114,7 +114,7 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
     private void renderPaymentMethodList(PaymentMethodList paymentMethodList) {
         ManagePaymentOptionsPresenter.this.paymentMethodList = paymentMethodList;
         visitables = new ArrayList<>();
-        getView().hideProgress();
+
 
         if (paymentMethodList != null && paymentMethodList.getPaymentMethods() != null) {
 
@@ -140,7 +140,10 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
             }
         }
 
-        getView().renderPaymentMethodList(visitables);
+        if (getView() != null) {
+            getView().hideProgress();
+            getView().renderPaymentMethodList(visitables);
+        }
     }
 
     @Override

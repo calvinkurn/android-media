@@ -3,16 +3,9 @@ package com.tokopedia.ride.scrooge;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.http.SslError;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,15 +13,10 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.ride.R;
-
-import java.util.Map;
-import java.util.Set;
 
 public class ScroogeActivity extends AppCompatActivity {
     //callbacks URL's
@@ -70,6 +58,8 @@ public class ScroogeActivity extends AppCompatActivity {
         isPostRequest = getIntent().getBooleanExtra(EXTRA_IS_POST_REQUEST, false);
         title = getIntent().getStringExtra(EXTRA_TITLE);
 
+        setContentView(R.layout.activity_scrooge_web_view);
+
         initUI();
 
         if (mPostParams == null) mPostParams = "";
@@ -85,79 +75,24 @@ public class ScroogeActivity extends AppCompatActivity {
         return true;
     }
 
-    private Map<String, String> getHeaders(Bundle mPostParams) {
-        Map<String, String> headers = new ArrayMap<>();
-        Set<String> keys = mPostParams.keySet();
-        for (String key : keys) {
-            headers.put(key, mPostParams.getString(key));
-        }
-
-        return headers;
-    }
-
-
     private void initUI() {
-        //create main layout
-        LinearLayout mainLayout = new LinearLayout(this);
-        mainLayout.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams linLayoutParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        mainLayout.setLayoutParams(linLayoutParam);
+        mWebView = (WebView) findViewById(R.id.webview);
+        mProgress = (ProgressBar) findViewById(R.id.progressbar);
 
-
-        //create and add toolbar
-        mToolbar = new Toolbar(this);
+        //setup toolbar
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
             mToolbar.setTitle(title);
             setSupportActionBar(mToolbar);
-            setToolbarColorWhite(mToolbar);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             invalidateOptionsMenu();
         }
-        mainLayout.addView(mToolbar);
 
-        //create and add web view layout
-        RelativeLayout webviewLayout = new RelativeLayout(this);
-        RelativeLayout.LayoutParams WebLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        webviewLayout.setLayoutParams(WebLayoutParams);
-
-        this.mWebView = new WebView(this);
-        RelativeLayout.LayoutParams WebParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        this.mWebView.setLayoutParams(WebParams);
-        setupWebView(this.mWebView);
-
-        mProgress = new ProgressBar(this, null, android.R.style.Widget_ProgressBar_Horizontal);
-        RelativeLayout.LayoutParams progressbarParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        progressbarParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        //mProgress.setLayoutParams(progressbarParams);
         mProgress.setIndeterminate(true);
-        mProgress.setVisibility(View.VISIBLE);
 
-        webviewLayout.addView(this.mWebView);
-        webviewLayout.addView(mProgress);
-
-        mainLayout.addView(webviewLayout);
-
-        setContentView(mainLayout);
-    }
-
-    protected void setToolbarColorWhite(Toolbar toolbar) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(10);
-        }
-        int textColor = ContextCompat.getColor(this, R.color.white);
-        toolbar.setTitleTextAppearance(this, R.style.ToolbarText);
-        toolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleText);
-        toolbar.setTitleTextColor(textColor);
-        toolbar.setSubtitleTextColor(textColor);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary)));
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
-        if (upArrow != null) {
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        }
+        setupWebView(this.mWebView);
     }
 
     /**
