@@ -14,14 +14,14 @@ export const getBaseAPI = (env) => {
     
     if (env === 'production'){
         const data_api = {
-            api_url_digital: `${BASE_API_DIGITAL.production}`,
-            api_url_marketplace: `${BASE_API_MARKETPLACE.production}`
+            digital: `${BASE_API_DIGITAL.production}`,
+            marketplace: `${BASE_API_MARKETPLACE.production}`
         }
         return data_api
     } else {
         const data_api = {
-            api_url_digital: `${BASE_API_DIGITAL.staging}`,
-            api_url_marketplace: `${BASE_API_MARKETPLACE.staging}`
+            digital: `${BASE_API_DIGITAL.staging}`,
+            marketplace: `${BASE_API_MARKETPLACE.staging}`
         }
         return data_api
     }

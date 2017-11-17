@@ -10,6 +10,7 @@ import {
 import { connect } from 'react-redux'
 import { NetworkModule } from 'NativeModules'
 import { fetchDataDigital } from '../actions'
+import { icons } from '../lib/icons'
 
 
 class SuccessScreen extends React.Component {
@@ -51,7 +52,7 @@ class SuccessScreen extends React.Component {
             <TouchableOpacity style={{ alignItems: 'center' }}>
                 <View style={{ flexDirection: 'row', marginTop: 15 }}>
                     <Text style={{ fontSize: 12, fontWeight: '300', color: '#42b549', textAlign: 'center', marginRight: 5 }}>Lihat detail transaksi</Text>
-                    <Image source={{ uri: 'http://ecs7.tokopedia.net/img/react_native/green-arrow-down.png' }} style={{ marginTop: 3, width: 10, height: 10, resizeMode: 'contain' }} />
+                    <Image source={{ uri: icons.green_arrow_down }} style={{ marginTop: 3, width: 10, height: 10, resizeMode: 'contain' }} />
                 </View>
             </TouchableOpacity>
         </View>

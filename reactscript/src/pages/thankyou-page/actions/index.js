@@ -22,7 +22,9 @@ const getData = async (order_id) => {
 const getDataDigital = async (order_id, base_api_url) => {
     console.log(base_api_url)
     console.log(order_id)
-    const url_digital = 'https://pulsa-api-staging.tokopedia.com/v1.4/track/thankyou'
+    const url_digital = `${base_api_url.digital}/v1.4/track/thankyou`
+    console.log(url_digital)
+    // const url_marketplace = base_api_url.marketplace 
     const payloads = {
         secret_key: 'Tok0p3di4123',
         order_id: order_id
