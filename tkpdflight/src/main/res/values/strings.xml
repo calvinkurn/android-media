@@ -137,8 +137,12 @@
     <string name="flight_booking_toolbar_title">Isi data pemesan</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
     <string name="flight_select_passenger_toolbar_title">Penumpang</string>
-    <string name="duration_flight_dd_hh_mm">%1$d Hari %2$d j %3$d m</string>
-    <string name="duration_flight_hh_mm">%1$d Jam %2$d Menit</string>
+    <string name="duration_flight_hh">%1$d Jm</string>
+    <string name="duration_flight_hhh">%1$d Jam</string>
+    <string name="duration_flight_dd">%1$d Hr</string>
+    <string name="duration_flight_ddd">%1$d Hari</string>
+    <string name="duration_flight_mm">%1$d Mnt</string>
+    <string name="duration_flight_mmm">%1$d Menit</string>
     <string name="flight_label_multi_maskapai">Multi Maskapai</string>
     <string name="activity_label_flight_search_departure">Pencarian Pergi</string>
     <string name="flight_dashboard_departure_airport_hint">Penerbangan Asal</string>
@@ -148,6 +152,7 @@
     <string name="flight_title_return">Pencarian Pulang</string>
     <string name="flight_label_saving_price_html"><![CDATA[<strike>%1$s</strike>]]></string>
     <string name="flight_label_duration_transit">%1$s (%2$s transit)</string>
+    <string name="flight_label_duration_direct">%1$s (langsung)</string>
     <string name="flight_label_duration_add_day">(+%1$d Hari)</string>
     <string name="flight_label_see_detail">Lihat Detail</string>
 </resources>
