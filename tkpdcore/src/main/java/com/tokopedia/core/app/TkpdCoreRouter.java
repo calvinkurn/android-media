@@ -13,6 +13,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -93,4 +94,7 @@ public interface TkpdCoreRouter {
     Intent getForgotPasswordIntent(Context context, String email);
 
     void invalidateCategoryMenuData();
+
+    ApplinkUnsupported getApplinkUnsupported(Activity activity);
+
 }

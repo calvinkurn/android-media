@@ -591,8 +591,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     new Bundle()
             );
         } else {
-            DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-            if (deepLinkDelegate.supportsUri(itemModel.getAppLinks())) {
+            if (getActivity() != null && ((TkpdCoreRouter) getActivity().getApplication())
+                    .isSupportedDelegateDeepLink(itemModel.getAppLinks())) {
                 DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
                         .appLinks(itemModel.getAppLinks())
                         .categoryId(itemModel.getCategoryId())

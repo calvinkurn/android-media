@@ -176,7 +176,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 mViewPager.setCurrentItem(initStateFragment);
             }
         }
-
+        checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
     }
 
     @Override
@@ -744,7 +744,20 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             public void onError(Exception e) {
                 e.printStackTrace();
             }
+
+            @Override
+            public void onNotNeedUpdate() {
+                checkIsNeedUpdateIfComeFromUnsupportedApplink(ParentIndexHome.this.getIntent());
+            }
         });
+    }
+
+    private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {
+        if (intent.getBooleanExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, false)) {
+            if (getApplication() instanceof TkpdCoreRouter) {
+                ((TkpdCoreRouter) getApplication()).getApplinkUnsupported(ParentIndexHome.this).showAndCheckApplinkUnsupported();
+            }
+        }
     }
 
 }
