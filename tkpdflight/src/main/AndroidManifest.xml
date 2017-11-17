@@ -46,7 +46,9 @@
         <activity
             android:name=".booking.view.activity.FlightBookingLuggageActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".booking.view.activity.FlightBookingPassengerActivity"></activity>
+        <activity
+            android:name=".booking.view.activity.FlightBookingPassengerActivity"
+            android:label="Isi Penumpang" />
         <activity
             android:name=".booking.view.activity.FlightBookingPhoneCodeActivity"
             android:label="@string/activity_label_flight_booking_phone_code"
