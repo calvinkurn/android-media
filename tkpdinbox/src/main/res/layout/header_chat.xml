@@ -57,7 +57,7 @@
             android:layout_marginStart="7dp"
             android:layout_toEndOf="@+id/title"
             android:layout_toRightOf="@+id/title"
-            android:background="@drawable/bg_stroke_rounded_corners"
+            android:background="@drawable/label_user_chat"
             android:fontFamily="sans-serif"
             android:padding="4dp"
             android:textColor="@color/medium_green"

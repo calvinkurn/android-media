@@ -58,6 +58,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         if (list.get(position) instanceof ListReplyViewModel) {
             showTime(holder.itemView.getContext(), holder.getAdapterPosition());
+            showHour(holder.itemView.getContext(), holder.getAdapterPosition());
         }
         holder.bind(list.get(holder.getAdapterPosition()));
     }
@@ -89,9 +90,47 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
+    private void showHour(Context context, int position) {
+//        if (position >= 0) {
+//            try {
+//                ListReplyViewModel now = (ListReplyViewModel) list.get(position);
+//                ListReplyViewModel prev = (ListReplyViewModel) list.get(position - 1);
+//                ListReplyViewModel next = (ListReplyViewModel) list.get(position + 1);
+//                String myTime = ChatTimeConverter.formatTime(Long.parseLong(now.getReplyTime()));
+//                String prevTime = ChatTimeConverter.formatTime(Long.parseLong(prev.getReplyTime()));
+//                String nextTime = ChatTimeConverter.formatTime(Long.parseLong(next.getReplyTime()));
+//
+//
+//                if(now.isOpposite() ^ prev.isOpposite() || now.isOpposite() ^ next.isOpposite()){
+//                    ((ListReplyViewModel) list.get(position)).setShowHour(true);
+//                }else {
+//                    if (compareHour(context, myTime, nextTime)) {
+//                        ((ListReplyViewModel) list.get(position)).setShowHour(false);
+//                    }else {
+//                        ((ListReplyViewModel) list.get(position)).setShowHour(true);
+//                    }
+//                }
+//
+//            } catch (NumberFormatException | ClassCastException | IndexOutOfBoundsException e) {
+//                ((ListReplyViewModel) list.get(position)).setShowHour(true);
+//            }
+//        } else {
+//            try {
+//                ((ListReplyViewModel) list.get(position)).setShowHour(true);
+//            } catch (ClassCastException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        ((ListReplyViewModel) list.get(position)).setShowHour(true);
+    }
+
     private boolean compareTime(Context context, long calCurrent, long calBefore) {
         return DateFormat.getLongDateFormat(context).format(new Date(calCurrent))
                 .equals(DateFormat.getLongDateFormat(context).format(new Date(calBefore)));
+    }
+
+    private boolean compareHour(Context context, String calCurrent, String calBefore) {
+        return calCurrent.equals(calBefore);
     }
 
     @Override
@@ -193,10 +232,10 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void setReadStatus(WebSocketResponse response) {
         for (int i = list.size()-1; i >=0; i--) {
             if(list.get(i) instanceof MyChatViewModel){
-                if(((MyChatViewModel) list.get(i)).isMessageIsRead()){
+                if(((MyChatViewModel) list.get(i)).isReadStatus()){
                     break;
                 }else {
-                    ((MyChatViewModel) list.get(i)).setMessageIsRead(true);
+                    ((MyChatViewModel) list.get(i)).setReadStatus(true);
                     notifyItemRangeChanged(i, 1);
                 }
             }

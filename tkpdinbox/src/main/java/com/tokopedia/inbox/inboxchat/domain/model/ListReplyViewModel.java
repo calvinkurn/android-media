@@ -25,7 +25,7 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
     private int attachmentId;
     private int oldMsgId;
     private boolean showTime;
-    private boolean messageIsRead;
+    private boolean showHour;
     private boolean isOpposite;
     private boolean isHighlight;
     private String oldMessageTitle;
@@ -106,6 +106,14 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
         return showTime;
     }
 
+    public boolean isShowHour() {
+        return showHour;
+    }
+
+    public void setShowHour(boolean showHour) {
+        this.showHour = showHour;
+    }
+
     public int getMsgId() {
         return msgId;
     }
@@ -136,14 +144,6 @@ public abstract class ListReplyViewModel implements Visitable<ChatRoomTypeFactor
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public boolean isMessageIsRead() {
-        return messageIsRead;
-    }
-
-    public void setMessageIsRead(boolean messageIsRead) {
-        this.messageIsRead = messageIsRead;
     }
 
     public boolean isOpposite() {

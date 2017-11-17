@@ -158,6 +158,7 @@ public class InboxChatFragment extends BaseDaggerFragment
         searchInputView = (SearchInputView) parentView.findViewById(R.id.simpleSearchView);
         searchInputView.setListener(this);
         searchInputView.setResetListener(this);
+        searchInputView.setSearchHint(getString(R.string.search_chat_user));
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mainList.setHasFixedSize(true);
         presenter.attachView(this);
@@ -214,10 +215,9 @@ public class InboxChatFragment extends BaseDaggerFragment
     private AlertDialog createDeleteDialog(int selected, final List<Pair> listMove) {
 
         return new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.title_delete)
-                .setMessage(String.format(getResources().getString(R.string.delete_confirmation)
-                        , selected))
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                .setTitle(R.string.delete_chat)
+                .setMessage(R.string.forever_deleted_chat)
+                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         presenter.deleteMessage(listMove);
@@ -225,7 +225,7 @@ public class InboxChatFragment extends BaseDaggerFragment
                     }
 
                 })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }

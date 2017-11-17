@@ -79,6 +79,11 @@ yang ditemukan</string>
     <string name="is_typing">"sedang mengetik"</string>
     <string name="just_now">"baru saja"</string>
     <string name="delete_error">"Gagal mengirim pesan."</string>
+    <string name="delete_chat">"Hapus chat?"</string>
+    <string name="forever_deleted_chat">"Chat akan terhapus selamanya"</string>
+    <string name="search_chat_user">"Cari chat atau pengguna"</string>
+    <string name="delete">"Hapus"</string>
+    <string name="cancel">"Batal"</string>
 
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
 

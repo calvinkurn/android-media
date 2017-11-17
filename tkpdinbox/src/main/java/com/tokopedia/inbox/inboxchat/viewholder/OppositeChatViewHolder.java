@@ -106,6 +106,13 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
 
         hour.setText(hourTime);
 
+        if (element.isShowHour()) {
+            hour.setVisibility(View.VISIBLE);
+        }else {
+            hour.setVisibility(View.GONE);
+        }
+
+
         element.getSenderId();
 
         name.setText(element.getSenderName());

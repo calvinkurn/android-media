@@ -48,6 +48,7 @@ public class ListReply {
     @SerializedName("old_msg_id")
     @Expose
     private int oldMsgId;
+    @SerializedName("message_is_read")
     @Expose
     private boolean messageIsRead;
     @SerializedName("is_opposite")

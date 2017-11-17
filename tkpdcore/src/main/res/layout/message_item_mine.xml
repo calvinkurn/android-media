@@ -3,7 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/padding_vs">
+    android:paddingRight="@dimen/padding_vs"
+    android:paddingLeft="@dimen/padding_vs"
+    android:paddingTop="2.5dp"
+    android:paddingBottom="2.5dp"
+    >
 
     <TextView
         android:id="@+id/date"
@@ -22,15 +26,13 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/main"
         android:layout_width="wrap_content"
-        android:maxWidth="@dimen/message_width"
+        android:maxWidth="@dimen/chat_width"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/date"
-        android:layout_marginTop="@dimen/margin_small_sm"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginBottom="@dimen/margin_vs"
         android:background="@drawable/right_bubble"
         android:padding="@dimen/padding_small">
 
@@ -64,6 +66,8 @@
         android:textColor="@color/time_color"
         android:textSize="@dimen/fontvvs"
         tools:text="10:13 pm"
+        tools:visibility="gone"
         android:layout_below="@id/main"
+        android:layout_marginTop="@dimen/margin_vs"
         android:layout_alignEnd="@id/main"/>
 </RelativeLayout>

@@ -97,11 +97,19 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
             hourTime = element.getReplyTime();
         }
 
+        if (element.isShowHour()) {
+            hour.setVisibility(View.VISIBLE);
+            chatStatus.setVisibility(View.VISIBLE);
+        }else {
+            hour.setVisibility(View.GONE);
+            chatStatus.setVisibility(View.GONE);
+        }
+
         hour.setText(hourTime);
 
         int imageResource;
 
-        if(element.isMessageIsRead()){
+        if(element.isReadStatus()){
             imageResource = R.drawable.ic_chat_read;
         }else {
             imageResource = R.drawable.ic_chat_unread;
