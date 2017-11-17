@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * Created by Hendry on 10/10/2017.
  */
 
-public class GalleryCropActivity extends GalleryActivity {
+public class GalleryCropWatermarkActivity extends GalleryCropActivity {
 
     public static void moveToImageGalleryCamera(Activity context, int position, boolean forceOpenCamera,
                                                 int maxImageSelection) {
@@ -54,7 +54,7 @@ public class GalleryCropActivity extends GalleryActivity {
                                        boolean forceOpenCamera,
                                        int maxImageSelection,
                                        boolean compressToTkpd) {
-        Intent imageGallery = new Intent(context, GalleryCropActivity.class);
+        Intent imageGallery = new Intent(context, GalleryCropWatermarkActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(ADD_PRODUCT_IMAGE_LOCATION, position);
         bundle.putString(FRAGMENT_TO_SHOW, ImageGalleryAlbumFragment.FRAGMENT_TAG);
@@ -69,31 +69,7 @@ public class GalleryCropActivity extends GalleryActivity {
     public void finishWithSingleImage(String imageUrl){
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add(imageUrl);
-        ImageEditorActivity.start(this,arrayList, true);
-    }
-
-    @Override
-    public void finishWithMultipleImage(ArrayList<String> imageUrls) {
-        if (imageUrls!= null && imageUrls.size() == 1) {
-            finishWithSingleImage(imageUrls.get(0));
-        } else {
-            super.finishWithMultipleImage(imageUrls);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case ImageEditorActivity.REQUEST_CODE: {
-                if (data != null && resultCode==Activity.RESULT_OK && data.hasExtra(ImageEditorActivity.RESULT_IMAGE_PATH)) {
-                    super.finishWithMultipleImage(
-                            data.getStringArrayListExtra(ImageEditorActivity.RESULT_IMAGE_PATH));
-                }
-            }
-            break;
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
-        }
+        ImageEditorWatermarkActivity.start(this,arrayList, true);
     }
 
 }

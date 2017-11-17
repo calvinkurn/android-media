@@ -31,7 +31,10 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
+import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
+import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
@@ -560,7 +563,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             @Override
             public void clickAddProductFromInstagram(int position) {
                 int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-                InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductAddFragment.this,
+                InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), ProductAddFragment.this,
                         INSTAGRAM_SELECT_REQUEST_CODE, remainingEmptySlot);
             }
         });
@@ -575,18 +578,18 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
             @Override
             public void clickEditImagePathFromCamera(int position) {
-                GalleryCropActivity.moveToImageGalleryCamera(getActivity(), ProductAddFragment.this, position,
+                GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), ProductAddFragment.this, position,
                         true, 1,true);
             }
 
             @Override
             public void clickEditImagePathFromGallery(int position) {
-                GalleryCropActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
+                GalleryCropWatermarkActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
             }
 
             @Override
             public void clickEditImagePathFromInstagram(int position) {
-                InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductAddFragment.this,
+                InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), ProductAddFragment.this,
                         INSTAGRAM_SELECT_REQUEST_CODE, 1);
             }
 
@@ -644,7 +647,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     public void onImageEditor(String uriOrPath) {
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(uriOrPath);
-        ImageEditorActivity.start(getContext(), ProductAddFragment.this, imageUrls, null, !isEdittingDraft());
+        ImageEditorWatermarkActivity.start(getContext(), ProductAddFragment.this, imageUrls, !isEdittingDraft());
     }
 
     @Override
@@ -671,14 +674,14 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryCropActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
+        GalleryCropWatermarkActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
     }
 
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToCamera(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), this, imagePosition,
+        GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, imagePosition,
                 true, remainingEmptySlot,true);
 
     }
