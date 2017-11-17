@@ -164,6 +164,9 @@
     <string name="string_buyer_text">Keterangan:</string>
     <string name="string_complaint_product">Produk yang Dikomplain:</string>
     <string name="string_see_all_product">Lihat Semua Produk</string>
+    <string name="string_chat_track_awb">Lacak Paket</string>
+    <string name="string_chat_edit_awb">Ubah Resi</string>
+    <string name="string_chat_edit_address">Ubah Alamat</string>
     <string name="string_seller_choice">Penjual dapat memilih untuk:</string>
     <string name="string_complaint_title">Komplain untuk <b>$store_name</b> telah dibuat.</string>
     <string name="string_complaint_title_identifier">$store_name</string>
