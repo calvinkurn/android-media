@@ -150,6 +150,14 @@ public class SpinnerCounterInputView extends BaseCustomView {
         return spinnerTextView.getSpinnerValue(position);
     }
 
+    public String getSpinnerEntry() {
+        return spinnerTextView.getSpinnerEntry();
+    }
+
+    public String getSpinnerEntry(int position) {
+        return spinnerTextView.getSpinnerEntry(position);
+    }
+
     public void setSpinnerValue(String value) {
         spinnerTextView.setSpinnerValue(value);
     }

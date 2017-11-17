@@ -131,6 +131,10 @@ dependencies {
     compile rootProject.ext.miscDependencies.chips
     compile rootProject.ext.miscDependencies.roundCornerProgressBar
     compile rootProject.ext.miscDependencies.loaderviewlibrary
+    compile (rootProject.ext.miscDependencies.imagecropper){
+        exclude group: "com.android.support"
+    }
+    compile rootProject.ext.supportLibDependencies.exifinterface
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler

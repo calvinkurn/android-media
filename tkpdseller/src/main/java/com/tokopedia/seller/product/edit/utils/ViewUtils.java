@@ -1,13 +1,15 @@
 package com.tokopedia.seller.product.edit.utils;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Pair;
+import android.view.View;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
-import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
+import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 
@@ -39,8 +41,8 @@ public class ViewUtils {
     }
 
     public static String getGeneralErrorMessage(@NonNull Context context, Throwable t) {
-        if (t instanceof ResponseErrorListStringException) {
-            return ((ResponseErrorListStringException) t).getErrorList().get(0);
+        if (t instanceof ResponseV4ErrorException) {
+            return ((ResponseV4ErrorException) t).getErrorList().get(0);
         } else if (t instanceof ResponseErrorException) {
             return getErrorMessage(t);
         } else if (t instanceof UnknownHostException) {
@@ -74,5 +76,22 @@ public class ViewUtils {
         double minPrice = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(minPriceString));
         double maxPrice = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(maxPriceString));
         return Pair.create(minPrice, maxPrice);
+    }
+
+    public static Rect locateView(View v) {
+        int[] loc_int = new int[2];
+        if (v == null) return null;
+        try {
+            v.getLocationOnScreen(loc_int);
+        } catch (NullPointerException npe) {
+            //Happens when the view doesn't exist on screen anymore.
+            return null;
+        }
+        Rect location = new Rect();
+        location.left = loc_int[0];
+        location.top = loc_int[1];
+        location.right = location.left + v.getWidth();
+        location.bottom = location.top + v.getHeight();
+        return location;
     }
 }

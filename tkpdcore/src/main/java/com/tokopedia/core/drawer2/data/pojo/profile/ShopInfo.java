@@ -127,4 +127,21 @@ public class ShopInfo {
     public void setShopDomain(String shopDomain) {
         this.shopDomain = shopDomain;
     }
+
+    @Override
+    public String toString() {
+        return "ShopInfo{" +
+                "shopOpenSince='" + shopOpenSince + '\'' +
+                ", shopLocation='" + shopLocation + '\'' +
+                ", shopId='" + shopId + '\'' +
+                ", shopTagline='" + shopTagline + '\'' +
+                ", shopUrl='" + shopUrl + '\'' +
+                ", shopName='" + shopName + '\'' +
+                ", shopOwnerId=" + shopOwnerId +
+                ", shopDescription='" + shopDescription + '\'' +
+                ", shopCover='" + shopCover + '\'' +
+                ", shopAvatar='" + shopAvatar + '\'' +
+                ", shopDomain='" + shopDomain + '\'' +
+                '}';
+    }
 }

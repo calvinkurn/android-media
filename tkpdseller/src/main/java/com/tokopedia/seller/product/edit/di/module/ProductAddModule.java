@@ -163,18 +163,6 @@ public class ProductAddModule {
     // FOR SHOP_INFO
     @ProductAddScope
     @Provides
-    ShopInfoRepository provideShopInfoRepository(@ApplicationContext Context context, ShopInfoDataSource shopInfoDataSource){
-        return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
-    }
-
-    @ProductAddScope
-    @Provides
-    ShopApi provideShopApi(@WsV4Qualifier Retrofit retrofit){
-        return retrofit.create(ShopApi.class);
-    }
-
-    @ProductAddScope
-    @Provides
     SimpleDataResponseMapper<ShopModel> provideShopModelMapper(){
         return new SimpleDataResponseMapper<>();
     }

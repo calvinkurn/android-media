@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.etalase.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
+import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.seller.product.etalase.domain.interactor.AddNewEtalaseUseCase;
 import com.tokopedia.seller.product.etalase.domain.interactor.FetchMyEtalaseUseCase;
 import com.tokopedia.seller.product.etalase.domain.model.MyEtalaseDomainModel;
@@ -108,7 +108,7 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
                 return;
             }
             getView().dismissLoadingDialog();
-            if (e instanceof ResponseErrorListStringException){
+            if (e instanceof ResponseV4ErrorException){
                 getView().showError(e);
             } else {
                 getView().showRetryAddNewEtalase(newEtalaseName);

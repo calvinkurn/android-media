@@ -21,7 +21,7 @@
             android:layout_height="@dimen/drawer_avatar"
             android:background="@drawable/bg_rounded_corners"
             android:backgroundTint="@color/white"
-            tools:src="@drawable/ic_loading_toped" />
+            tools:src="@drawable/default_avatar" />
 
         <TextView
             android:id="@+id/name_text"

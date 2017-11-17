@@ -29,6 +29,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.customview.BannerView;
+import com.tokopedia.tkpd.home.facade.FacadePromo;
 
 import org.json.JSONObject;
 
@@ -47,6 +48,11 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
     public BannerPagerAdapter(List<BannerView.PromoItem> promoList) {
         this.bannerList = promoList;
     }
+    public void setBannerList(List<BannerView.PromoItem> bannerList) {
+               this.bannerList = bannerList;
+            }
+
+
 
     public class BannerViewHolder extends RecyclerView.ViewHolder {
 

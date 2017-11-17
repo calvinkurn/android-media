@@ -13,11 +13,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.webview.fragment.BaseWebViewClient;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
 import butterknife.BindView;
@@ -48,7 +50,6 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
         unbinder = ButterKnife.bind(this);
         rideHistory = getIntent().getParcelableExtra(EXTRA_REQUEST_ID);
         setupToolbar();
-
         init();
     }
 
@@ -112,6 +113,7 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
 
     @Override
     public void onBackPressed() {
+        RideGATracking.eventBackPress(getScreenName());
         if (WebViewGeneral.canGoBack()) {
             WebViewGeneral.goBack();
         } else {
@@ -136,5 +138,10 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWeb
     @Override
     public void onWebTitlePageCompleted(String title) {
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_HISTORY_NEED_HELP;
     }
 }

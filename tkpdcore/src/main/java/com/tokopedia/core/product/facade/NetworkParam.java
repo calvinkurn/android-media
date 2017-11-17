@@ -34,6 +34,7 @@ public class NetworkParam {
     private static final String PARAM_PRODUCT_ETALASE_ID = "product_etalase_id";
     private static final String PARAM_PRODUCT_ETALASE_NAME = "product_etalase_name";
     private static final String PARAM_ID_FOR_OTHER_PRODUCT = "-id";
+    private static final String VALUE_DEVICE = "android";
 
 
 
@@ -47,6 +48,7 @@ public class NetworkParam {
 
     public static TKPDMapParam<String, String> paramProductDetailTest2(ProductPass productPass) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put(PARAM_DEVICE_ID, VALUE_DEVICE);
         params.put(PARAM_PRODUCT_ID, productPass.getProductId());
         params.put(PARAM_PRODUCT_KEY, productPass.getProductKey());
         params.put(PARAM_SHOP_DOMAIN, productPass.getShopDomain());
@@ -143,7 +145,7 @@ public class NetworkParam {
         params.put(PARAM_ITEM_ID, itemId);
         params.put(PARAM_USER_ID, userId);
         params.put(PARAM_ADS_TYPE, adsType);
-        params.put(PARAM_DEVICE_ID, "android");
+        params.put(PARAM_DEVICE_ID, VALUE_DEVICE);
         return params;
     }
 }
