@@ -231,13 +231,10 @@ public interface AppEventTracking {
         String TOP_ADS_PRODUCT_SHOP = "TopAds - Product/Shop";
         String REFERRAL="Referral";
         String FEATURED_PRODUCT = "Featured Product";
-        String HOMEPAGE_TOKOCASH_WIDGET = "Homepage TokoCash Widget";
     }
 
     interface Action {
         String CLICK = "Click";
-        String CLICK_ACTIVATE   = "click activate";
-        String CLICK_SALDO     = "click saldo";
         String CLICK_VIEW_ALL    = "click view all";
         String CLICK_CHANNEL = "Click Channel";
         String SEARCH = "Search";
