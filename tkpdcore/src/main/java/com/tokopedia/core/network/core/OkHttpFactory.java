@@ -19,8 +19,8 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.WalletAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
-import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.HashMap;
@@ -183,6 +183,15 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new StandardizedInterceptor(authorizationString))
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildClientBearerWalletAuth(String authKey) {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new WalletAuthInterceptor(authKey))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();

@@ -1,8 +1,7 @@
 package com.tokopedia.digital.widget.listener;
 
-import android.content.Intent;
-
 import com.tokopedia.digital.cart.listener.IBaseView;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
 
 import java.util.List;
@@ -28,5 +27,5 @@ public interface IDigitalCategoryListView extends IBaseView {
 
     boolean isUserLogin();
 
-    void sendBroadcastReceiver(Intent intent);
+    void renderTokoCashData(TokoCashBalanceData tokoCashData);
 }

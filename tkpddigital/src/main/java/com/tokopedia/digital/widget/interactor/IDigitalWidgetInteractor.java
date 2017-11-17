@@ -17,7 +17,8 @@ import rx.Subscriber;
 
 public interface IDigitalWidgetInteractor {
 
-    void getProductsFromPrefix(Subscriber<List<Product>> subscriber, int categoryId, String prefix, Boolean validatePrefix);
+    void getProductsFromPrefix(Subscriber<List<Product>> subscriber, int categoryId, String prefix,
+                               Boolean validatePrefix);
 
     void getOperatorsFromCategory(Subscriber<List<Operator>> subscriber, int categoryId);
 

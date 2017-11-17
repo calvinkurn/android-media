@@ -22,6 +22,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.instoped.InstopedSellerActivity;
+import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListCountComponent;
@@ -86,7 +87,7 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
     @Override
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void importFromInstagram() {
-        InstopedSellerCropperActivity.startInstopedActivityForResult(getContext(), ProductManageSellerFragment.this,
+        InstopedSellerCropWatermarkActivity.startInstopedActivityForResult(getContext(), ProductManageSellerFragment.this,
                 INSTAGRAM_SELECT_REQUEST_CODE, ProductManageSellerFragment.MAX_INSTAGRAM_SELECT);
         UnifyTracking.eventClickInstoped();
     }
@@ -117,12 +118,16 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
+        if(manager != null && manager.getRunningServices(Integer.MAX_VALUE) != null) {
+            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                if (serviceClass.getName().equals(service.service.getClassName())) {
+                    return true;
+                }
             }
+            return false;
+        }else {
+            return false;
         }
-        return false;
     }
 
     private void registerDraftReceiver(){
