@@ -264,7 +264,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
             return categoryName;
         }
 
-        void setCategoryName(String categoryName) {
+        public void setCategoryName(String categoryName) {
             this.categoryName = categoryName;
         }
 

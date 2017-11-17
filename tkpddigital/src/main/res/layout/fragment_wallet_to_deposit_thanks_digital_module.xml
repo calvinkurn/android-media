@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:padding="@dimen/digital_padding_20">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="@dimen/digital_padding_20"
+        android:visibility="gone"
+        tools:ignore="ContentDescription"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/tv_subtitle"
+        style="@style/TextTitleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_icon"
+        android:gravity="center"
+        android:lineSpacingExtra="5sp"
+        android:paddingTop="@dimen/digital_padding_10"
+        android:paddingRight="@dimen/digital_padding_20"
+        android:paddingLeft="@dimen/digital_padding_20"
+        android:visibility="gone"
+        tools:text="Pemindahan Dana ke Saldo Tokopedia Gagal"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/tv_description"
+        style="@style/TextSubTitleMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_subtitle"
+        android:gravity="center"
+        android:lineSpacingExtra="5sp"
+        android:padding="@dimen/digital_padding_16"
+        android:visibility="gone"
+        tools:text="Rp. 500.000"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/btn_negative"
+        style="@style/DigitalButtonBuy"
+        android:layout_height="@dimen/tab_height"
+        android:layout_below="@+id/tv_description"
+        android:layout_marginBottom="@dimen/digital_padding_10"
+        android:layout_marginLeft="@dimen/digital_padding_30"
+        android:layout_marginRight="@dimen/digital_padding_30"
+        android:layout_marginTop="@dimen/digital_padding_30"
+        android:background="@drawable/digital_white_button"
+        android:textColor="@color/digital_item_sub_title"
+        android:textSize="14sp"
+        android:visibility="gone"
+        tools:text="@string/label_btn_next_cart_digital"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/btn_positive"
+        style="@style/DigitalButtonBuy"
+        android:layout_height="@dimen/tab_height"
+        android:layout_below="@+id/btn_negative"
+        android:layout_marginLeft="@dimen/digital_padding_30"
+        android:layout_marginRight="@dimen/digital_padding_30"
+        android:layout_marginTop="@dimen/digital_padding_6"
+        android:background="@drawable/digital_green_button_rounded"
+        android:textSize="14sp"
+        android:visibility="gone"
+        tools:text="@string/label_btn_next_cart_digital"
+        tools:visibility="visible"/>
+
+
+</RelativeLayout>

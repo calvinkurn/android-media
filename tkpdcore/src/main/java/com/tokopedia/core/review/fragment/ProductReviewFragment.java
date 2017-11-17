@@ -253,6 +253,12 @@ public class ProductReviewFragment extends Fragment implements ProductReviewView
     }
 
     @Override
+    public String getShopId() {
+        return getArguments().getString("shop_id");
+
+    }
+
+    @Override
     public void returnHelpfulReview(HelpfulReviewList model) {
         Log.d("steven", "gotcha most helpful");
 

@@ -17,6 +17,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
 import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.webview.fragment.BaseWebViewClient;
 import com.tokopedia.ride.R;
 
@@ -76,7 +77,7 @@ public class TokoCashWebViewActivity extends BasePresenterActivity implements Ba
 
     private void deleteTokoCashCache() {
         GlobalCacheManager cacheManager = new GlobalCacheManager();
-        cacheManager.delete(TokoCashSourceFactory.KEY_TOKOCASH_DATA);
+        cacheManager.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
     @Override
