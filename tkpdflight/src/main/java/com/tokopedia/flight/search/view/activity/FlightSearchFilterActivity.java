@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,7 +21,7 @@ import com.tokopedia.flight.search.view.fragment.FlightFilterDepartureFragment;
 import com.tokopedia.flight.search.view.fragment.FlightFilterRefundableFragment;
 import com.tokopedia.flight.search.view.fragment.FlightFilterTransitFragment;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFilterFragment;
-import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightResettableListener;
+import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
@@ -101,8 +100,8 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
             @Override
             public void onClick(View v) {
                 Fragment f = getCurrentFragment();
-                if (f!=null && f instanceof OnFlightResettableListener) {
-                    ((OnFlightResettableListener) f).reset();
+                if (f!=null && f instanceof OnFlightBaseFilterListener) {
+                    ((OnFlightBaseFilterListener) f).resetFilter();
                 }
             }
         });
@@ -123,7 +122,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
             intent.putExtra(EXTRA_FILTER_MODEL, flightFilterModel);
             setResult(Activity.RESULT_OK, intent);
         }
-        this.onBackPressed();
+        this.onBackPressed(true);
     }
 
     private Fragment getCurrentFragment(){
@@ -139,7 +138,14 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
+        this.onBackPressed(false);
+    }
+
+    private void onBackPressed(boolean submitFilter){
         if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+            if (!submitFilter) {
+                backFilterToOriginal();
+            }
             int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
             if (backStackCount == 1) {
                 setUpTitleByTag(getTagFragment()); // set default
@@ -154,12 +160,19 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
         }
     }
 
+    private void backFilterToOriginal(){
+        Fragment f = getCurrentFragment();
+        if (f!=null && f instanceof OnFlightBaseFilterListener) {
+            ((OnFlightBaseFilterListener) f).changeFilterToOriginal();
+        }
+    }
+
     public void replaceFragment(Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
         setUpTitleByTag(tag);
-        if (fragment instanceof OnFlightResettableListener) {
+        if (fragment instanceof OnFlightBaseFilterListener) {
             vReset.setVisibility(View.VISIBLE);
         } else {
             vReset.setVisibility(View.GONE);

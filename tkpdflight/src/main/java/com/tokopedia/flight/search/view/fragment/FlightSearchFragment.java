@@ -29,6 +29,7 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.view.DepartureArrivalHeaderView;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
+import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
@@ -387,7 +388,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     }
 
     @Override
-    public void onSuccessGetDataFromCloud(List<FlightSearchViewModel> flightSearchViewModelList) {
+    public void onSuccessGetDataFromCloud(List<FlightSearchViewModel> flightSearchViewModelList, FlightMetaDataDB flightMetaDataDB) {
         // TODO check meta data update the list
         // TODO check if the data is empty, but there is data need to fetch, then keep the loading state
         hideLoading();

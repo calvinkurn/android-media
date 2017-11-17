@@ -13,6 +13,7 @@ import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
+import com.tokopedia.flight.search.data.db.FlightMetaDataDBSource;
 
 import dagger.Module;
 import dagger.Provides;
@@ -61,9 +62,11 @@ public class FlightModule {
                                                     FlightSearchSingleDataSource flightSearchSingleDataListSource,
                                                     FlightSearchReturnDataSource flightSearchReturnDataListSource,
                                                     FlightClassesDataSource getFlightClassesUseCase,
-                                                    FlightCartDataSource flightCartDataSource) {
+                                                    FlightCartDataSource flightCartDataSource,
+                                                    FlightMetaDataDBSource flightMetaDataDBSource) {
         return new FlightRepositoryImpl(flightAirportDataListSource,flightAirlineDataListSource,
-                flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase, flightCartDataSource);
+                flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase, flightCartDataSource,
+                flightMetaDataDBSource);
     }
 
     @FlightScope

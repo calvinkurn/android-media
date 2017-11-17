@@ -7,10 +7,10 @@ import com.tokopedia.flight.R;
  */
 
 public enum DepartureTimeEnum {
-    _00 (1, R.string.departure_0000_to_0559),
-    _06 (2, R.string.departure_0000_to_0559),
-    _12 (3, R.string.departure_1200_to_1759),
-    _18 (4, R.string.departure_1800_to_2359);
+    _00 (1, R.string.departure_0000_to_0600),
+    _06 (2, R.string.departure_0600_to_1200),
+    _12 (3, R.string.departure_1200_to_1800),
+    _18 (4, R.string.departure_1800_to_2400);
 
     private int id;
     private int valueRes;
