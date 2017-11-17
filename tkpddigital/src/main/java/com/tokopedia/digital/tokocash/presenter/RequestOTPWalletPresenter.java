@@ -102,9 +102,4 @@ public class RequestOTPWalletPresenter implements IRequestOTPWalletPresenter {
             view.onErrorOTPWallet(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         }
     }
-
-    @Override
-    public void onDestroyView() {
-        activateTokoCashInteractor.onDestroy();
-    }
 }

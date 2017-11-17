@@ -40,7 +40,7 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
 
 
     @Override
-    public void processGetCatalogDetailData(final Activity activity, String catalogId) {
+    public void processGetCatalogDetailData(final Activity activity,final String catalogId) {
         catalogView.showMainProcessLoading();
         catalogView.cleanAllContent();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
@@ -96,15 +96,16 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
 
                         catalogView.renderCatalogShareData(
                                 generateCatalogShareData(activity,
-                                        catalogDetailData.getCatalogInfo().getCatalogUrl())
+                                        catalogDetailData.getCatalogInfo().getCatalogUrl(), catalogId)
                         );
                         catalogView.renderButtonBuy();
                     }
                 });
     }
 
-    private ShareData generateCatalogShareData(Activity activity, String catalogUrl) {
+    private ShareData generateCatalogShareData(Activity activity, String catalogUrl,String catalogId) {
         return ShareData.Builder.aShareData()
+                .setId(catalogId)
                 .setName(activity.getString(R.string.message_share_catalog))
                 .setType(ShareData.CATALOG_TYPE)
                 .setTextContent(activity.getString(R.string.share_text_content))

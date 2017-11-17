@@ -1,48 +1,62 @@
 package com.tokopedia.digital.tokocash.domain;
 
-import com.tokopedia.core.network.apiservices.transaction.TokoCashCashBackService;
-import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.tokocash.entity.ResponseCashBack;
-import com.tokopedia.digital.tokocash.mapper.ITokoCashMapper;
-import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.digital.tokocash.entity.WalletTokenEntity;
+import com.tokopedia.digital.tokocash.mapper.ActivateTokoCashMapper;
+import com.tokopedia.digital.tokocash.mapper.TokenTokoCashMapper;
+import com.tokopedia.digital.tokocash.model.ActivateTokoCashData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * Created by kris on 6/16/17. Tokopedia
+ * Created by nabillasabbaha on 7/24/17.
  */
 
 public class TokoCashRepository implements ITokoCashRepository {
 
-    private final TokoCashCashBackService tokoCashCashBackService;
-    private final ITokoCashMapper tokoCashMapper;
+    private final TokoCashService tokoCashService;
+    private final ActivateTokoCashMapper activateTokoCashMapper;
+    private final TokenTokoCashMapper tokenTokoCashMapper;
 
-    public TokoCashRepository(TokoCashCashBackService tokoCashCashBackService,
-                              ITokoCashMapper iTokoCashMapper) {
-        this.tokoCashCashBackService = tokoCashCashBackService;
-        this.tokoCashMapper = iTokoCashMapper;
+    public TokoCashRepository(TokoCashService tokoCashService) {
+        this.tokoCashService = tokoCashService;
+        this.activateTokoCashMapper = new ActivateTokoCashMapper();
+        tokenTokoCashMapper = new TokenTokoCashMapper();
     }
 
     @Override
-    public Observable<CashBackData> getTokoCashPending() {
-        TKPDMapParam<String, String> tokoCashPendingParams = new TKPDMapParam<>();
-        tokoCashPendingParams.put("msisdn", SessionHandler.getPhoneNumber());
-        return tokoCashCashBackService.getApi().getTokoCashPending(tokoCashPendingParams)
-                .map(getFuncResponseToCashBackData());
+    public Observable<ActivateTokoCashData> requestOTPWallet() {
+        return tokoCashService.getApi()
+                .requestOtpWallet()
+                .map(activateTokoCashMapper);
     }
 
-    private Func1<Response<TkpdDigitalResponse>, CashBackData>
-    getFuncResponseToCashBackData() {
-        return new Func1<Response<TkpdDigitalResponse>, CashBackData>() {
-            @Override
-            public CashBackData call(Response<TkpdDigitalResponse> tkpdDigitalResponse) {
-                return tokoCashMapper.transformTokoCashCashbackData(tkpdDigitalResponse.body()
-                        .convertDataObj(ResponseCashBack.class));
-            }
-        };
+    @Override
+    public Observable<ActivateTokoCashData> linkedWalletToTokoCash(String otpCode) {
+        return tokoCashService.getApi()
+                .linkedWalletToTokocash(otpCode)
+                .map(activateTokoCashMapper);
+    }
+
+    @Override
+    public Observable<TokoCashBalanceData> getBalanceTokoCash() {
+        return tokoCashService.getApi().getTokoCash()
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<TokoCashBalanceData>>() {
+                    @Override
+                    public Observable<TokoCashBalanceData> call(Response<TkpdResponse> topCashItemResponse) {
+                        return Observable
+                                .just(topCashItemResponse.body().convertDataObj(TokoCashBalanceData.class));
+                    }
+                });
+    }
+
+    @Override
+    public Observable<WalletTokenEntity> getWalletToken() {
+        return tokoCashService.getApi().getTokenWallet()
+                .map(tokenTokoCashMapper);
     }
 }
