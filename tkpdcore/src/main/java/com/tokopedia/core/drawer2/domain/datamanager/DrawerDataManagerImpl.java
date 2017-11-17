@@ -37,6 +37,7 @@ import com.tokopedia.core.drawer2.domain.interactor.DepositUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
+import com.tokopedia.core.drawer2.domain.interactor.TopChatNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -45,6 +46,7 @@ import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.TokoCashSubscriber;
+import com.tokopedia.core.drawer2.view.subscriber.TopChatNotificationSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.TopPointsSubscriber;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.clover.CloverService;
@@ -69,6 +71,8 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     private final TokoCashUseCase tokoCashUseCase;
     private final TopPointsUseCase topPointsUseCase;
     private final GetUserAttributesUseCase userAttributesUseCase;
+    private final TopChatNotificationUseCase topChatNotificationUseCase;
+
 
     private final DrawerDataListener viewListener;
 
@@ -78,14 +82,16 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                                  NotificationUseCase notificationUseCase,
                                  TokoCashUseCase tokoCashUseCase,
                                  TopPointsUseCase topPointsUseCase,
-                                 GetUserAttributesUseCase uaUseCase) {
+                                 GetUserAttributesUseCase uaUseCase,
+                                 TopChatNotificationUseCase topChatNotificationUseCase) {
         this.viewListener = viewListener;
         this.profileUseCase = profileUseCase;
         this.depositUseCase = depositUseCase;
         this.notificationUseCase = notificationUseCase;
         this.tokoCashUseCase = tokoCashUseCase;
         this.topPointsUseCase = topPointsUseCase;
-        userAttributesUseCase = uaUseCase;
+        this.userAttributesUseCase = uaUseCase;
+        this.topChatNotificationUseCase = topChatNotificationUseCase;
     }
 
     @Override
@@ -114,6 +120,8 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                 NotificationUseCase.getRequestParam(
                         GlobalConfig.isSellerApp()),
                 new NotificationSubscriber(viewListener));
+        topChatNotificationUseCase.execute(RequestParams.EMPTY, new TopChatNotificationSubscriber
+                (viewListener));
     }
 
     @Override
@@ -123,11 +131,12 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         notificationUseCase.unsubscribe();
         tokoCashUseCase.unsubscribe();
         depositUseCase.unsubscribe();
+        topChatNotificationUseCase.unsubscribe();
     }
 
     @Override
     public void getProfileCompletion() {
-        if(viewListener.getActivity().getApplication() instanceof TkpdCoreRouter){
+        if (viewListener.getActivity().getApplication() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) viewListener.getActivity().getApplication()).getUserInfo(
                     RequestParams.EMPTY, new ProfileCompletionSubscriber(viewListener)
             );

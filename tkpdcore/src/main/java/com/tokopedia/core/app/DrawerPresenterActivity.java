@@ -245,7 +245,16 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         }
 
         setDataDrawer();
+    }
 
+    @Override
+    public void onErrorGetNotificationTopchat(String errorMessage) {
+
+    }
+
+    @Override
+    public void onSuccessGetTopChatNotification(int notifUnreads) {
+        setDataDrawer();
     }
 
     private void setDataDrawer() {
