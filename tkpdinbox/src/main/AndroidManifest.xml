@@ -154,7 +154,6 @@
             android:exported="false"/>
 
 
-        <activity android:name=".inboxchat.activity.DummyActivity"></activity>
     </application>
 
 </manifest>
