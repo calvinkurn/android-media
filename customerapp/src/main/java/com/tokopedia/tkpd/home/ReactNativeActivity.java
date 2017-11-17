@@ -13,6 +13,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.GlobalConfig;
@@ -25,6 +26,7 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
     public static final String USER_ID = "User_ID";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String EXTRA_URL = "EXTRA_URL";
+    public static final String OS_PROMO_PAGE = "OS Promo Page";
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORES})
     public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
@@ -36,6 +38,7 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO})
     public static Intent getOfficialStoresPromoApplinkCallingIntent(Context context, Bundle bundle) {
+        ScreenTracking.screen(OS_PROMO_PAGE);
         return ReactNativeActivity.createBannerReactNativeActivity(
                 context, ReactConst.Screen.PROMO,
                 bundle.getString("slug")
@@ -44,6 +47,7 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORE_PROMO})
     public static Intent getOfficialStorePromoApplinkCallingIntent(Context context, Bundle bundle) {
+        ScreenTracking.screen(OS_PROMO_PAGE);
         return ReactNativeActivity.createBannerReactNativeActivity(
                 context, ReactConst.Screen.PROMO,
                 bundle.getString("slug")
