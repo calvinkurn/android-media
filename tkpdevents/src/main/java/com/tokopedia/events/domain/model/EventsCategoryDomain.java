@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class CategoryEntity {
+public class EventsCategoryDomain {
 
     @SerializedName("title")
     @Expose
@@ -19,7 +19,7 @@ public class CategoryEntity {
     private String name;
     @SerializedName("items")
     @Expose
-    private List<ItemResponseEntity> items = null;
+    private List<EventsItemDomain> items = null;
 
     public String getTitle() {
         return title;
@@ -37,11 +37,11 @@ public class CategoryEntity {
         this.name = name;
     }
 
-    public List<ItemResponseEntity> getItems() {
+    public List<EventsItemDomain> getItems() {
         return items;
     }
 
-    public void setItems(List<ItemResponseEntity> items) {
+    public void setItems(List<EventsItemDomain> items) {
         this.items = items;
     }
 

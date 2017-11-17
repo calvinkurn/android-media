@@ -1,4 +1,4 @@
-package com.tokopedia.events.data.entity;
+package com.tokopedia.events.data.entity.response;
 
 /**
  * Created by ashwanityagi on 15/11/17.

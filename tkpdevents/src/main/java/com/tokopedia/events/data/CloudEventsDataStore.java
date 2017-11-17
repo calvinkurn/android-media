@@ -1,7 +1,8 @@
 package com.tokopedia.events.data;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.events.data.entity.EventResponseEntity;
+import com.tokopedia.events.data.entity.response.EventLocationEntity;
+import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.source.EventsApi;
 
 import rx.Observable;
@@ -10,7 +11,7 @@ import rx.Observable;
  * Created by ashwanityagi on 03/11/17.
  */
 
-public class CloudEventsDataStore implements EventDataStore{
+public class CloudEventsDataStore implements EventDataStore {
 
     private final EventsApi eventsApi;
 
@@ -24,4 +25,13 @@ public class CloudEventsDataStore implements EventDataStore{
         return eventsApi.getEvents();
     }
 
+    @Override
+    public Observable<EventResponseEntity> getSearchEvents(TKPDMapParam<String, Object> params) {
+        return eventsApi.getSearchEvents(params);
+    }
+
+    @Override
+    public Observable<EventLocationEntity> getEventsLocationList(TKPDMapParam<String, Object> params) {
+        return eventsApi.getEventsLocationList(params);
+    }
 }

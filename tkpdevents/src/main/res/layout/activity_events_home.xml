@@ -11,8 +11,8 @@
         android:layout_height="match_parent"
         android:background="@color/grey"
         android:orientation="vertical">
-        <include layout="@layout/event_banner" />
 
+        <include layout="@layout/event_banner" />
 
         <LinearLayout
             android:id="@+id/holder_category_list"

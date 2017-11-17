@@ -170,8 +170,7 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
     @Override
     public void renderCategoryList(List<CategoryViewModel> categoryList) {
         holderCategoryListLayout.removeAllViews();
-        for (CategoryViewModel categoryViewModel : categoryList
-                ) {
+        for (CategoryViewModel categoryViewModel : categoryList) {
             EventCategoryView eventCategoryView = new EventCategoryView(this);
             eventCategoryView.renderData(categoryViewModel.getItems(), categoryViewModel.getTitle());
             if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
@@ -210,7 +209,7 @@ public class EventsHomeActivity extends BasePresenterActivity implements HasComp
         });
 
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(0);
+        //viewPager.setCurrentItem(0);
     }
 
 }

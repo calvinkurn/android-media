@@ -14,16 +14,16 @@ import rx.Observable;
  * Created by ashwanityagi on 06/11/17.
  */
 
-public class GetEventsListRequestUseCase extends UseCase<List<EventsCategoryDomain>> {
+public class GetSearchEventsListRequestUseCase extends UseCase<List<EventsCategoryDomain>> {
     private final EventRepository eventRepository;
-    public GetEventsListRequestUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
+    public GetSearchEventsListRequestUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
         super(threadExecutor, postExecutionThread);
         this.eventRepository = eventRepository;
     }
 
     @Override
     public Observable<List<EventsCategoryDomain>> createObservable(RequestParams requestParams) {
-       return eventRepository.getEvents(requestParams.getParameters());
+       return eventRepository.getSearchEvents(requestParams.getParameters());
 
     }
 }

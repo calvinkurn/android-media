@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,19 +30,16 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView eventTitle;
-
         public TextView eventPrice;
-
         public ImageView eventImage;
-
-        public Button btnBookticket;
+        public TextView btnBookticket;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
             eventTitle = (TextView) itemView.findViewById(R.id.event_title);
             eventPrice = (TextView) itemView.findViewById(R.id.tv_event_price);
             eventImage = (ImageView) itemView.findViewById(R.id.img_event);
-            btnBookticket = (Button) itemView.findViewById(R.id.btn_bookticket);
+            btnBookticket = (TextView) itemView.findViewById(R.id.btn_bookticket);
 
         }
 
@@ -67,7 +63,7 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.eventTitle.setText("" + categoryItems.get(position).getTitle());
+        holder.eventTitle.setText("" + categoryItems.get(position).getDisplayName());
         holder.eventPrice.setText("" + categoryItems.get(position).getSalesPrice());
         ImageHandler.loadImageCover2(holder.eventImage, categoryItems.get(position).getImageApp());
     }

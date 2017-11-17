@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:text="The 90's Festival" />
 
-            <Button
+            <TextView
                 android:id="@+id/btn_bookticket"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,8 +41,10 @@
                 android:layout_alignParentRight="true"
 
                 android:background="@drawable/rounded_filled_theme_bttn_orange"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small"
                 android:text="Beli Ticket"
                 android:textColor="@color/white"
                 android:textSize="10sp" />

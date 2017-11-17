@@ -1,5 +1,5 @@
 
-package com.tokopedia.events.data.entity;
+package com.tokopedia.events.data.entity.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
