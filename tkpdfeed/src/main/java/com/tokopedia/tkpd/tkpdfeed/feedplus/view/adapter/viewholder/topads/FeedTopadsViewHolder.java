@@ -18,16 +18,13 @@ public class FeedTopadsViewHolder extends AbstractViewHolder<FeedTopAdsViewModel
     @LayoutRes
     public static final int LAYOUT = R.layout.feed_topads_layout;
 
-    TextView pos;
 
     public FeedTopadsViewHolder(View itemView, TopAdsItemClickListener topAdsItemClickListener) {
         super(itemView);
-        pos = (TextView) itemView.findViewById(R.id.position);
     }
 
     @Override
     public void bind(FeedTopAdsViewModel element) {
-        pos.setText("THIS IS TOPADS " + element.getPage() + " " + getAdapterPosition());
 
     }
 }
