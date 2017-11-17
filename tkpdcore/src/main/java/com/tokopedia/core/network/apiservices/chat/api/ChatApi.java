@@ -60,4 +60,6 @@ public interface ChatApi {
     @POST(TkpdBaseURL.Chat.SEND_MESSAGE)
     Observable<Response<TkpdResponse>> sendMessage(@FieldMap Map<String, Object> requestParams);
 
+    @GET(TkpdBaseURL.Chat.GET_TOPCHAT_NOTIFICATION)
+    Observable<Response<TkpdResponse>> getNotification(@QueryMap Map<String, Object> params);
 }

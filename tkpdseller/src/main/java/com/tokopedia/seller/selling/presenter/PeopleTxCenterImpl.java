@@ -11,18 +11,17 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
 import com.tokopedia.core.drawer2.data.mapper.NotificationMapper;
-import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
+import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
+import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.GlobalConfig;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import rx.Subscriber;
 
@@ -48,8 +47,16 @@ public class PeopleTxCenterImpl extends PeopleTxCenter {
                         new NotificationMapper(),
                         cacheHandler
                 );
+
+        ChatService chatService = new ChatService();
+        TopChatNotificationMapper topChatNotificationMapper = new TopChatNotificationMapper();
+
+        TopChatNotificationSource topChatNotificationSource = new TopChatNotificationSource(
+                chatService, topChatNotificationMapper, cacheHandler
+        );
+
         NotificationRepository notificationRepository =
-                new NotificationRepositoryImpl(notificationSourceFactory);
+                new NotificationRepositoryImpl(notificationSourceFactory, topChatNotificationSource);
         this.notificationUseCase =
                 new NotificationUseCase(
                         new JobExecutor(),

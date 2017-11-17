@@ -80,4 +80,14 @@ public abstract class NotificationListener implements DrawerDataListener {
     public void onSuccessGetProfileCompletion(int completion) {
         // no operation
     }
+
+    @Override
+    public void onErrorGetNotificationTopchat(String errorMessage) {
+
+    }
+
+    @Override
+    public void onSuccessGetTopChatNotification(int notifUnreads) {
+
+    }
 }

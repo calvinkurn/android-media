@@ -40,4 +40,8 @@ public interface DrawerDataListener {
     void onErrorGetProfileCompletion(String errorMessage);
 
     void onSuccessGetProfileCompletion(int completion);
+
+    void onErrorGetNotificationTopchat(String errorMessage);
+
+    void onSuccessGetTopChatNotification(int notifUnreads);
 }
