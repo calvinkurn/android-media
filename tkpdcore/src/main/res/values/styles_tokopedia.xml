@@ -293,10 +293,14 @@
     </style>
 
     <style name="ToolbarText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
         <item name="android:textSize">17sp</item>
     </style>
 
     <style name="ToolbarSubtitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_54</item>
         <item name="android:textSize">12sp</item>
     </style>
 
