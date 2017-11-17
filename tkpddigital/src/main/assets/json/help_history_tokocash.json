@@ -1,0 +1,22 @@
+[
+        {
+            "id": "Tx_Issue",
+            "translation": "Kendala Transaksi"
+        },
+        {
+            "id": "TopUp_Issue",
+            "translation": "Kendala Top Up"
+        },
+        {
+            "id": "Receipt_Issue",
+            "translation": "Kendala Penerimaan Dana"
+        },
+        {
+            "id": "Refund_Issue",
+            "translation": "Kendala Pengembalian Dana"
+        },
+        {
+            "id": "Cashback_Issue",
+            "translation": "Kendala Cashback"
+        }
+]

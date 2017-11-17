@@ -79,7 +79,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
 
-            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)) {
+            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS_SELLER)) {
                 Intent intent = new Intent(this, DeepLinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
