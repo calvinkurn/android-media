@@ -12,6 +12,7 @@ import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
@@ -94,6 +95,7 @@ import com.tokopedia.tkpd.home.database.HomeCategoryMenuDbManager;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
+import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
@@ -724,32 +726,46 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean getBooleanConfig(String key) {
-        return getFirebaseRemoteConfig().getBoolean(key);
+        if(getFirebaseRemoteConfig() != null) {
+            return getFirebaseRemoteConfig().getBoolean(key);
+        }
+        return false;
     }
 
     @Override
     public byte[] getByteArrayConfig(String key) {
-        return getFirebaseRemoteConfig().getByteArray(key);
+        if(getFirebaseRemoteConfig() != null) {
+            return getFirebaseRemoteConfig().getByteArray(key);
+        }
+        return new byte[0];
     }
 
     @Override
     public double getDoubleConfig(String key) {
-        return getFirebaseRemoteConfig().getDouble(key);
+        if(getFirebaseRemoteConfig() != null) {
+            return getFirebaseRemoteConfig().getDouble(key);
+        }
+        return 0.0D;
     }
 
     @Override
     public long getLongConfig(String key) {
-        return getFirebaseRemoteConfig().getLong(key);
+        if(getFirebaseRemoteConfig() != null) {
+            return getFirebaseRemoteConfig().getLong(key);
+        }
+        return 0L;
     }
 
     @Override
     public String getStringConfig(String key) {
-        return getFirebaseRemoteConfig().getString(key);
+        if(getFirebaseRemoteConfig() != null) {
+            return getFirebaseRemoteConfig().getString(key);
+        }
+        return "";
     }
 
     private FirebaseRemoteConfig getFirebaseRemoteConfig() {
-        if (firebaseRemoteConfig == null) firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        return firebaseRemoteConfig;
+        return RemoteConfigFetcher.initRemoteConfig(this);
     }
 
     @Override
