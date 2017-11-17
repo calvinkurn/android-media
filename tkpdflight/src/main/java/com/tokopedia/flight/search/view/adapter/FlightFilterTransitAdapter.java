@@ -1,6 +1,5 @@
 package com.tokopedia.flight.search.view.adapter;
 
-import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +8,6 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
-import com.tokopedia.abstraction.base.view.adapter.binder.LoadingDataBinder;
-import com.tokopedia.abstraction.base.view.adapter.binder.NoResultDataBinder;
-import com.tokopedia.abstraction.base.view.adapter.binder.RetryDataBinder;
 import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;

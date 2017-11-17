@@ -55,7 +55,7 @@ public class FlightFilterAirlineAdapter extends BaseListCheckableV2Adapter<Airli
             super.bindObject(airlineStat, isChecked);
             ivLogo.setImageResource(FlightAirlineIconUtil.getImageResource(airlineStat.getAirlineDB().getId()));
             tvTitle.setText(airlineStat.getAirlineDB().getName());
-            tvDesc.setText(airlineStat.getMinPriceString());
+            tvDesc.setText(getString(R.string.start_from_x, airlineStat.getMinPriceString()));
             itemView.setOnClickListener(this);
         }
 

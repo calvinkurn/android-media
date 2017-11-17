@@ -27,7 +27,7 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
         void onDetailClicked(FlightSearchViewModel flightSearchViewModel);
     }
 
-    ListenerOnDetailClicked listenerOnDetailClicked;
+    private ListenerOnDetailClicked listenerOnDetailClicked;
 
     public void setListenerOnDetailClicked(ListenerOnDetailClicked listenerOnDetailClicked) {
         this.listenerOnDetailClicked = listenerOnDetailClicked;
@@ -75,14 +75,17 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
             tvPrice.setText(flightSearchViewModel.getTotal());
             setDuration(flightSearchViewModel);
             setAirline(flightSearchViewModel);
-            containerDetail.setOnClickListener(new View.OnClickListener() {
+            View.OnClickListener detailClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listenerOnDetailClicked != null){
                         listenerOnDetailClicked.onDetailClicked(flightSearchViewModel);
                     }
                 }
-            });
+            };
+            tvPrice.setOnClickListener(detailClickListener);
+            containerDetail.setOnClickListener(detailClickListener);
+
             setRefundableInfo(flightSearchViewModel);
             setSavingPrice(flightSearchViewModel);
             setArrivalAddDay(flightSearchViewModel);
@@ -133,6 +136,7 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
                 airlineRefundableInfo.setText(flightSearchViewModel.isRefundable().getValueRes());
             }
         }
+
     }
 
     @Override

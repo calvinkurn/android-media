@@ -2,6 +2,8 @@ package com.tokopedia.flight.search.data.cloud.model.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.flight.booking.data.cloud.entity.Attribute;
+import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 
 /**
  * Created by User on 11/8/2017.
@@ -47,6 +49,16 @@ public class Attributes {
         this.child = child;
         this.infant = infant;
         this._class = _class;
+    }
+
+    public Attributes(FlightSearchApiRequestModel flightSearchApiRequestModel) {
+        this.departure = flightSearchApiRequestModel.getDepAirport();
+        this.arrival = flightSearchApiRequestModel.getArrAirport();
+        this.date = flightSearchApiRequestModel.getDate();
+        this.adult = flightSearchApiRequestModel.getAdult();
+        this.child = flightSearchApiRequestModel.getChildren();
+        this.infant = flightSearchApiRequestModel.getInfant();
+        this._class = flightSearchApiRequestModel.getClassID();
     }
 
     public void setDeparture(String departure) {

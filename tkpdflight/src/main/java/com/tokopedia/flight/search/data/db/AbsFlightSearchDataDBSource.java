@@ -188,13 +188,13 @@ public abstract class AbsFlightSearchDataDBSource
                     departureConditionGroup.or(getDepartureTimeColumn().between(0).and(559));
                     break;
                 case _06:
-                    departureConditionGroup.or(getDepartureTimeColumn().between(600).and(1159));
+                    departureConditionGroup.or(getDepartureTimeColumn().between(600).and(1200));
                     break;
                 case _12:
-                    departureConditionGroup.or(getDepartureTimeColumn().between(1200).and(1759));
+                    departureConditionGroup.or(getDepartureTimeColumn().between(1200).and(1800));
                     break;
                 case _18:
-                    departureConditionGroup.or(getDepartureTimeColumn().between(1800).and(2359));
+                    departureConditionGroup.or(getDepartureTimeColumn().between(1800).and(2400));
                     break;
             }
         }

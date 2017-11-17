@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -21,7 +21,7 @@ import com.tokopedia.flight.search.view.fragment.FlightFilterDepartureFragment;
 import com.tokopedia.flight.search.view.fragment.FlightFilterRefundableFragment;
 import com.tokopedia.flight.search.view.fragment.FlightFilterTransitFragment;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFilterFragment;
-import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightResettableListener;
+import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
@@ -55,6 +55,8 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     private String currentTag;
     private int count;
     private View vReset;
+
+    private TextView tvToolbarTitle;
 
     public static Intent createInstance(Context context,
                                         boolean isReturning,
@@ -98,11 +100,13 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
             @Override
             public void onClick(View v) {
                 Fragment f = getCurrentFragment();
-                if (f!=null && f instanceof OnFlightResettableListener) {
-                    ((OnFlightResettableListener) f).reset();
+                if (f!=null && f instanceof OnFlightBaseFilterListener) {
+                    ((OnFlightBaseFilterListener) f).resetFilter();
                 }
             }
         });
+        tvToolbarTitle = (TextView) findViewById(R.id.tv_toolbar_title);
+        tvToolbarTitle.setText(getTitle());
 
         DaggerFlightSearchComponent.builder()
                 .flightComponent(((FlightModuleRouter) getApplication()).getFlightComponent())
@@ -118,7 +122,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
             intent.putExtra(EXTRA_FILTER_MODEL, flightFilterModel);
             setResult(Activity.RESULT_OK, intent);
         }
-        this.onBackPressed();
+        this.onBackPressed(true);
     }
 
     private Fragment getCurrentFragment(){
@@ -134,7 +138,14 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
+        this.onBackPressed(false);
+    }
+
+    private void onBackPressed(boolean submitFilter){
         if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+            if (!submitFilter) {
+                backFilterToOriginal();
+            }
             int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
             if (backStackCount == 1) {
                 setUpTitleByTag(getTagFragment()); // set default
@@ -149,12 +160,19 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
         }
     }
 
+    private void backFilterToOriginal(){
+        Fragment f = getCurrentFragment();
+        if (f!=null && f instanceof OnFlightBaseFilterListener) {
+            ((OnFlightBaseFilterListener) f).changeFilterToOriginal();
+        }
+    }
+
     public void replaceFragment(Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
         setUpTitleByTag(tag);
-        if (fragment instanceof OnFlightResettableListener) {
+        if (fragment instanceof OnFlightBaseFilterListener) {
             vReset.setVisibility(View.VISIBLE);
         } else {
             vReset.setVisibility(View.GONE);
@@ -164,15 +182,15 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     public void setUpTitleByTag(String tag) {
         currentTag = tag;
         if (TextUtils.isEmpty(tag) || getTagFragment().equals(tag)) {
-            updateTitle(getTitle().toString());
+            tvToolbarTitle.setText(getTitle());
         } else if (FlightFilterDepartureFragment.TAG.equals(tag)) {
-            updateTitle(getString(R.string.flight_search_filter_departure_time));
+            tvToolbarTitle.setText(getString(R.string.flight_search_filter_departure_time));
         } else if (FlightFilterTransitFragment.TAG.equals(tag)) {
-            updateTitle(getString(R.string.transit));
+            tvToolbarTitle.setText(getString(R.string.transit));
         } else if (FlightFilterAirlineFragment.TAG.equals(tag)) {
-            updateTitle(getString(R.string.airline));
+            tvToolbarTitle.setText(getString(R.string.airline));
         } else if (FlightFilterRefundableFragment.TAG.equals(tag)) {
-            updateTitle(getString(R.string.refundable_policy));
+            tvToolbarTitle.setText(getString(R.string.refundable_policy));
         }
         updateButtonFilter(count);
     }
