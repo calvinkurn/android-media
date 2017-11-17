@@ -151,8 +151,13 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("bantuan"));
     }
 
+    private static boolean isEvents(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("events"));
+    }
+
     private static boolean isProduct(List<String> linkSegment) {
         return (linkSegment.size() == 2
+                && !isEvents(linkSegment)
                 && !isHelp(linkSegment)
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
@@ -294,7 +299,9 @@ public class DeepLinkChecker {
     }
 
     public static void openHomepage(Context context, int tab) {
-        if (context.getApplicationContext() instanceof TkpdCoreRouter){
+        if (context != null &&
+                context.getApplicationContext() != null &&
+                context.getApplicationContext() instanceof TkpdCoreRouter){
             Intent intent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
             intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, tab);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);

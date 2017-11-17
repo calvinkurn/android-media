@@ -19,8 +19,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Driver;
@@ -154,6 +156,10 @@ public class DriverDetailFragment extends BaseFragment {
             driverEtaTextView.setVisibility(View.VISIBLE);
             int duration = (int) destination.getEta();
             driverEtaTextView.setText(String.format("ETA %s", duration > 1 ? duration + getString(R.string.mins) : duration + getString(R.string.min)));
+        } else if (status != null && status.equalsIgnoreCase(RideStatus.COMPLETED)) {
+            cancelRideLayout.setVisibility(View.GONE);
+            driverEtaTextView.setVisibility(View.VISIBLE);
+            driverEtaTextView.setText(R.string.receipt_pending);
         } else {
             cancelRideLayout.setVisibility(View.GONE);
             driverEtaTextView.setVisibility(View.GONE);
@@ -182,11 +188,13 @@ public class DriverDetailFragment extends BaseFragment {
 
     @OnClick(R2.id.icon_call)
     public void actionCallDriver() {
+        RideGATracking.eventClickCall(status);
         DriverDetailFragmentPermissionsDispatcher.openCallIntentWithCheck(this, driver.getPhoneNumber());
     }
 
     @OnClick(R2.id.icon_message)
     public void actionSMSDriver() {
+        RideGATracking.eventClickSMS(status);
         openSmsIntent(driver.getPhoneNumber());
     }
 
@@ -218,11 +226,13 @@ public class DriverDetailFragment extends BaseFragment {
 
     @OnClick(R2.id.layout_cancel_ride)
     public void actionCancelRideBtnClicked() {
+        RideGATracking.eventClickCancel(status);
         onFragmentInteractionListener.actionCancelRide();
     }
 
     @OnClick(R2.id.help_layout)
     public void actionShareRideBtnClicked() {
+        RideGATracking.eventClickShareEta(status);
         onFragmentInteractionListener.actionShareEta();
     }
 }

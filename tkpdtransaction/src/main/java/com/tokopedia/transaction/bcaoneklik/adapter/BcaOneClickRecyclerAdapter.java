@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.bcaoneklik.model.BcaOneClickUserModel;
+import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.BcaOneClickUserModel;
 
 import java.util.List;
 

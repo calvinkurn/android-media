@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -37,6 +38,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.Drawer;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -45,6 +47,7 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 
 import java.util.ArrayList;
 
@@ -72,6 +75,8 @@ public class DrawerBuyerHelper extends DrawerHelper
     private SessionHandler sessionHandler;
     private GlobalCacheManager globalCacheManager;
 
+    FirebaseRemoteConfig firebaseRemoteConfig;
+
     public DrawerBuyerHelper(Activity activity,
                              SessionHandler sessionHandler,
                              LocalCacheHandler drawerCache,
@@ -96,6 +101,7 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public ArrayList<DrawerItem> createDrawerData() {
+        fetchRemoteConfig();
         ArrayList<DrawerItem> data = new ArrayList<>();
 
         if (sessionHandler.isV4Login()) {
@@ -108,6 +114,22 @@ public class DrawerBuyerHelper extends DrawerHelper
             footerShadow.setVisibility(View.GONE);
         }
         return data;
+    }
+
+    private void fetchRemoteConfig() {
+        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(context);
+        remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
+            @Override
+            public void onComplete(FirebaseRemoteConfig instance) {
+                firebaseRemoteConfig = instance;
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
     }
 
     private void createDataGuest(ArrayList<DrawerItem> data) {
@@ -146,10 +168,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 && !SessionHandler.getShopID(context).equals("")) {
             data.add(getSellerMenu());
             data.add(getProductMenu());
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
-                    R.drawable.ic_goldmerchant_drawer,
-                    TkpdState.DrawerPosition.GOLD_MERCHANT,
-                    false));
+            data.add(getGoldMerchantMenu());
             data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                     R.drawable.ic_top_ads,
                     TkpdState.DrawerPosition.SELLER_TOP_ADS,
@@ -160,13 +179,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SETTINGS,
                 true));
 
-        if (isAppshareButtonShow()) {
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
-                    R.drawable.share_ke_teman,
-                    TkpdState.DrawerPosition.APPSHARE,
-                    true, true));
-
-        }
+        showAppShareButton(data);
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_activity_contact_us),
                 R.drawable.ic_contactus,
@@ -182,6 +195,26 @@ public class DrawerBuyerHelper extends DrawerHelper
                 R.drawable.ic_menu_logout,
                 TkpdState.DrawerPosition.LOGOUT,
                 true));
+    }
+
+    private DrawerItem getGoldMerchantMenu(){
+        DrawerItem menu;
+        boolean isGoldMerchant = SessionHandler.isGoldMerchant(context);
+        if(isGoldMerchant) {
+            menu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
+                    R.drawable.ic_goldmerchant_drawer,
+                    TkpdState.DrawerPosition.GOLD_MERCHANT,
+                    drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
+                    0);
+            ((DrawerGroup)menu).add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
+                    TkpdState.DrawerPosition.FEATURED_PRODUCT, false, true));
+        }else {
+            menu = (new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
+                    R.drawable.ic_goldmerchant_drawer,
+                    TkpdState.DrawerPosition.GOLD_MERCHANT,
+                    false));
+        }
+        return menu;
     }
 
     private DrawerItem getProductMenu() {
@@ -459,6 +492,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                         ((TkpdCoreRouter) context.getApplication()).goToDraftProductList(context);
                     }
                     break;
+                case TkpdState.DrawerPosition.FEATURED_PRODUCT:
                 case TkpdState.DrawerPosition.GOLD_MERCHANT:
                     Intent launchIntent = context.getPackageManager()
                             .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
@@ -562,9 +596,12 @@ public class DrawerBuyerHelper extends DrawerHelper
         sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
     }
 
-    private boolean isAppshareButtonShow() {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.FIREBASE_REMOTE_CONFIG);
-        return localCacheHandler.getBoolean(TkpdCache.Key.SHOW_HIDE_APP_SHARE_BUTTON_KEY, true);
-
+    private void showAppShareButton(ArrayList<DrawerItem> data) {
+        if(firebaseRemoteConfig.getBoolean(TkpdCache.Key.CONFIG_SHOW_HIDE_APP_SHARE_BUTTON)) {
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
+                    R.drawable.share_ke_teman,
+                    TkpdState.DrawerPosition.APPSHARE,
+                    true, true));
+        }
     }
 }

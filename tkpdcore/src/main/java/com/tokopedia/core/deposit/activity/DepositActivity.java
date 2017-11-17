@@ -95,5 +95,8 @@ public class DepositActivity extends BasePresenterActivity<DepositPresenter> {
         }
     }
 
-
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

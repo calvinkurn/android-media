@@ -375,7 +375,7 @@ public class ProductList extends V2BaseFragment {
     }
 
     private void initAdapter() {
-        adapter = ShopProductListAdapter.createAdapter(productModel);
+        adapter = ShopProductListAdapter.createAdapter(productModel, shopId);
         initEtalaseAdapter();
         initFeaturedProductAdapter();
     }

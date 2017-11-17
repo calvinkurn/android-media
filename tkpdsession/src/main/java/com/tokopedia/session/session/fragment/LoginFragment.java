@@ -215,7 +215,6 @@ LoginFragment extends Fragment implements LoginView {
         super.onResume();
         login.initData();
         ScreenTracking.screen(AppScreen.SCREEN_LOGIN);
-        UnifyTracking.eventViewLoginPage();
         mEmailView.addTextChangedListener(watcher(wrapperEmail));
         mPasswordView.addTextChangedListener(watcher(wrapperPassword));
     }

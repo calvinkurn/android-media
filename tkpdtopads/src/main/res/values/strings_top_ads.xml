@@ -34,8 +34,8 @@
     <string name="menu_top_ads_add_promo_group">Tambah Grup Promo</string>
     <string name="menu_top_ads_add_promo_product">Tambah Promo Produk</string>
 
-    <string name="top_ads_delete_product_alert">Yakin menghapus produk ini?</string>
-    <string name="top_ads_delete_group_alert">Yakin menghapus grup ini?</string>
+    <string name="top_ads_delete_product_alert">Promo produk akan dihapus dari daftar promo TopAds Anda.</string>
+    <string name="top_ads_delete_group_alert">Semua promo produk dan kata kunci dalam grup ini akan dihapus.</string>
 
     <string name="action_filter_date">Filter Tanggal</string>
     <string name="label_manage_group">Atur Grup</string>
@@ -46,8 +46,8 @@
     <string name="title_group_ad_detail">Detil Promo Grup</string>
     <string name="title_group_ad_edit">Ubah Promo Grup</string>
     <string name="title_product_ad_edit">Ubah Promo Produk</string>
-    <string name="title_delete_promo">Hapus promo</string>
-    <string name="title_delete_group">Hapus grup</string>
+    <string name="title_delete_promo">Hapus Promo?</string>
+    <string name="title_delete_group">Hapus Grup?</string>
     <string name="title_edit_shop_ad">Ubah Promo Toko</string>
 
     <!-- Top Ads ad list -->
@@ -71,7 +71,7 @@
     <string name="label_top_ads_total_selected_product">%02d / 50 Terpilih</string>
     <string name="label_top_ads_total_selected_product_zero">%1$d / 50 Terpilih</string>
     <string name="label_top_ads_max_price_hint">Biaya Maks</string>
-    <string name="label_top_ads_max_price_description">Sesuaikan biaya dengan anggaran promo Anda.</string>
+    <string name="label_top_ads_max_price_description">Rekomendasi Biaya </string>
     <string name="label_top_ads_limit_price_description">Batas anggaran dihitung dari akumulasi biaya promo jika dalam satu grup promo.</string>
     <string name="label_top_ads_icon">Icon TopAds</string>
     <string name="top_ads_label_cost">Biaya</string>
@@ -156,6 +156,7 @@
     <string name="top_ads_label_total_selected_product"><![CDATA[<b>%02d/50</b> Produk Terpilih]]></string>
     <string name="top_ads_label_total_selected_product_zero"><![CDATA[<b>%1$d/50</b> Produk Terpilih]]></string>
     <string name="top_ads_label_count_product_group">%1d Produk</string>
+    <string name="top_ads_label_count_keyword">%1s Kata Kunci</string>
 
     <string name="top_ads_label_choose_product">Pilih Produk</string>
     <string name="top_ads_label_choose_product_desc_empty">Pilih produk yang akan dimasukkan ke grup promo.</string>
@@ -164,6 +165,7 @@
 
     <string name="error_top_ads_click_budget_max">Biaya maksimal maksimum %1s</string>
     <string name="error_top_ads_click_budget_minimum">Biaya minimal Rp %1s</string>
+    <string name="error_top_ads_click_budget_must_be_filled">Biaya harus diisi</string>
     <string name="error_top_ads_click_budget_multiple_by">Biaya harus kelipatan Rp %1s</string>
     <string name="error_top_ads_daily_budget_minimal">Biaya per hari minimal %1sx biaya maks per klik</string>
     <string name="error_top_ads_daily_budget_cannot_empyt">Anggaran tidak boleh kosong</string>
@@ -213,10 +215,11 @@
     <string name="top_ads_keyword_title_keyword_edit_keyword">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_cost_per_click">Biaya Per Klik</string>
+    <string name="top_ads_keyword_cost_per_click_desc">Kosongkan biaya per klik jika ingin disesuaikan dengan biaya grup sebesar Rp %1$d</string>
 
     <string name="top_ads_keyword_label_type">Tipe Kata Kunci</string>
-    <string name="top_ads_keyword_title_delete">Hapus kata kunci</string>
-    <string name="top_ads_keyword_confirmation_delete">Yakin menghapus kata kunci ini?</string>
+    <string name="top_ads_keyword_title_delete">Hapus Kata Kunci?</string>
+    <string name="top_ads_keyword_confirmation_delete">Kata kunci akan dihapus dari daftar promo TopAds Anda.</string>
 
     <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
     <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>
@@ -248,5 +251,6 @@
     <string name="top_ads_keyword_add_group_promo_no">Batal</string>
 
     <string name="topads_keyword_add_cancel_dialog">Kata kunci yang sudah Anda masukkan akan hilang\nTinggalkan halaman ini?</string>
+    <string name="static_suggestion_bid_recommendation">Sesuaikan biaya dengan anggaran promo Anda.</string>
 
 </resources>

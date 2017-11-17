@@ -40,7 +40,6 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     private ProductListPickerMultipleItem<ProductListPickerViewModel> productListPickerMultipleItem;
 
     private List<ProductListPickerViewModel> productListPickerViewModels;
-    private String keywordFilter = "";
     private boolean hasNextPage;
 
     @Override
@@ -98,27 +97,13 @@ public class ProductListPickerSearchFragment extends BaseSearchListFragment<Blan
     }
 
     @Override
-    public void onSearchSubmitted(String text) {
-        super.onSearchSubmitted(text);
-        keywordFilter = text;
-        resetPageAndSearch();
-    }
-
-    @Override
-    public void onSearchTextChanged(String text) {
-        super.onSearchTextChanged(text);
-        keywordFilter = text;
-        resetPageAndSearch();
-    }
-
-    @Override
     protected BaseListAdapter<ProductListPickerViewModel> getNewAdapter() {
         return new ProductListPickerSearchAdapter();
     }
 
     @Override
     protected void searchForPage(int page) {
-        productListPickerSearchPresenter.getProductList(page, keywordFilter);
+        productListPickerSearchPresenter.getProductList(page, searchInputView.getSearchText());
         hasNextPage = false;
     }
 

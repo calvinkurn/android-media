@@ -504,6 +504,9 @@ public class SessionHandler {
         editor.apply();
         TrackingUtils.eventPushUserID();
         Crashlytics.setUserIdentifier(u_id);
+
+        BranchSdkUtils.sendLoginEvent(u_id);
+
         //return status;
     }
 
@@ -515,6 +518,9 @@ public class SessionHandler {
                 Crashlytics.setUserIdentifier("");
             }
         }
+
+        //Set logout to Branch.io sdk,
+        BranchSdkUtils.sendLogoutEvent();
     }
 
     private void clearUserData() {
@@ -612,6 +618,10 @@ public class SessionHandler {
     public String getAccessToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN, "");
+    }
+
+    public Context getActiveContext() {
+        return this.context;
     }
 
     public String getWalletRefreshToken(Context context) {
