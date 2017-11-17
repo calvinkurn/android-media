@@ -1,6 +1,7 @@
 package com.tokopedia.core.drawer2.domain;
 
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
+import com.tokopedia.core.drawer2.data.viewmodel.TopChatNotificationModel;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import rx.Observable;
@@ -12,5 +13,8 @@ import rx.Observable;
 public interface NotificationRepository {
 
     Observable<NotificationModel> getNotification(TKPDMapParam<String, Object> params);
+
+    Observable<TopChatNotificationModel> getNotificationTopChat(TKPDMapParam<String, Object> params);
+
 
 }

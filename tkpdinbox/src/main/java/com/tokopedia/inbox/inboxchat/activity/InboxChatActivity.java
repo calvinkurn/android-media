@@ -8,7 +8,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -18,7 +17,6 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -204,5 +202,18 @@ public class InboxChatActivity extends DrawerPresenterActivity
             toolbar.setTitleTextColor(getResources().getColor(R.color.black));
             indicator.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onSuccessGetTopChatNotification(int notifUnreads) {
+        super.onSuccessGetTopChatNotification(notifUnreads);
+        if(notifUnreads > 0) {
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
+            titleTextView.setText("Chat (" + notifUnreads + ")");
+        }
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, InboxChatActivity.class);
     }
 }
