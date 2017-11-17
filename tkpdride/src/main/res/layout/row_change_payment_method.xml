@@ -25,6 +25,17 @@
         android:textColor="@color/black"
         tools:text="Credit Card" />
 
+    <TextView
+        android:id="@+id/tokocash_balance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/margin_ms"
+        android:layout_toRightOf="@id/payment_method_name"
+        android:textColor="@color/grey_700"
+        tools:text="(Rp 543.240)" />
+
     <ImageView
         android:id="@+id/img_tick"
         android:layout_width="24dp"

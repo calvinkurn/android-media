@@ -14,7 +14,7 @@ public interface RideUrl {
     String ESTIMATED_PRICE = "/uber/estimates/price";
     String ESTIMATED_TIME = "/uber/estimates/time";
     String ESTIMATED_FARE = "/uber/estimates/fare";
-    String REQUEST_CREATE = "/uber/request";
+    String REQUEST_CREATE = "v2/uber/request";
     String REQUEST_DETAIL = "/uber/request/details";
     String REQUEST_CANCEL = "/uber/request/cancel";
     String RECEIPT_DETAIL = "/uber/request/receipt";

@@ -28,6 +28,8 @@ public class ManagePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
     ImageView imageView;
     @BindView(R2.id.payment_method_name)
     TextView paymentMethodName;
+    @BindView(R2.id.tokocash_balance)
+    TextView tokocashBalance;
 
     private PaymentMethodItemClickListener itemClickListener;
     private PaymentMethodViewModel paymentMethodViewModel;
@@ -42,6 +44,13 @@ public class ManagePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
     @Override
     public void bind(PaymentMethodViewModel element) {
         paymentMethodViewModel = element;
+
+        if (paymentMethodViewModel.getTokoCashBalance() != null && paymentMethodViewModel.getTokoCashBalance().length() > 0) {
+            tokocashBalance.setText("(" + paymentMethodViewModel.getTokoCashBalance() + ")");
+            tokocashBalance.setVisibility(View.VISIBLE);
+        } else {
+            tokocashBalance.setVisibility(View.GONE);
+        }
 
         paymentMethodName.setText(element.getName());
 

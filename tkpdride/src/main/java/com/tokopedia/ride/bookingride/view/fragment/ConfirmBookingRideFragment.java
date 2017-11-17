@@ -91,7 +91,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     ConfirmBookingViewModel confirmBookingViewModel;
     ConfirmBookingPassData confirmBookingPassData;
     private boolean isOpenInterruptWebviewDialog;
-    private LinearLayout paymentMethodLayout;
+    private View paymentMethodLayout;
     private ImageView paymentMethodImage;
     private TextView paymentMethodTextView;
 
@@ -181,7 +181,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         promoLayout = (LinearLayout) view.findViewById(R.id.layout_promo);
         progressLayout = (ProgressBar) view.findViewById(R.id.indeterminate_progress_bar);
         confirmPageContainer = (LinearLayout) view.findViewById(R.id.confirm_page_container);
-        paymentMethodLayout = (LinearLayout) view.findViewById(R.id.layout_payment_method);
+        paymentMethodLayout = (View) view.findViewById(R.id.layout_payment_method);
         paymentMethodImage = (ImageView) view.findViewById(R.id.img_payment_method);
         paymentMethodTextView = (TextView) view.findViewById(R.id.tv_payment_method);
     }

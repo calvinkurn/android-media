@@ -28,6 +28,7 @@ import rx.Subscriber;
 
 public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingContract.View>
         implements ConfirmBookingContract.Presenter {
+
     private GetFareEstimateUseCase getFareEstimateUseCase;
     private GetPaymentMethodListUseCase getPaymentMethodListUseCase;
     private GetPaymentMethodListCacheUseCase getPaymentMethodListCacheUseCase;

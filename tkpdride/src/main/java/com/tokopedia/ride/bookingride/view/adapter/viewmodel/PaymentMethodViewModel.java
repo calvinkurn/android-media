@@ -27,6 +27,7 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
     private Bundle deleteBody;
     private String saveurl;
     private Bundle saveBody;
+    private String tokoCashBalance;
 
 
     public PaymentMethodViewModel() {
@@ -44,6 +45,7 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         saveurl = in.readString();
         saveBody = in.readBundle();
         cardType = in.readString();
+        tokoCashBalance = in.readString();
     }
 
     public static final Creator<PaymentMethodViewModel> CREATOR = new Creator<PaymentMethodViewModel>() {
@@ -146,6 +148,14 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         this.cardType = cardType;
     }
 
+    public String getTokoCashBalance() {
+        return tokoCashBalance;
+    }
+
+    public void setTokoCashBalance(String tokoCashBalance) {
+        this.tokoCashBalance = tokoCashBalance;
+    }
+
     @Override
     public int type(PaymentMethodTypeFactory paymentMethodTypeFactory) {
         return paymentMethodTypeFactory.type(this);
@@ -169,5 +179,6 @@ public class PaymentMethodViewModel implements Visitable<PaymentMethodTypeFactor
         dest.writeString(saveurl);
         dest.writeBundle(saveBody);
         dest.writeString(cardType);
+        dest.writeString(tokoCashBalance);
     }
 }

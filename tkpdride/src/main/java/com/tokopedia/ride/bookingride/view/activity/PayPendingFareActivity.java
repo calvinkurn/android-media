@@ -190,6 +190,7 @@ public class PayPendingFareActivity extends BaseActivity implements PayPendingFa
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE){
             if(resultCode == ScroogePGUtil.RESULT_CODE_SUCCESS){
+                hideProgressbar();
                 finish();
             }else{
                 NetworkErrorHelper.showCloseSnackbar(this , getString(R.string.error_fail_pay_pending));

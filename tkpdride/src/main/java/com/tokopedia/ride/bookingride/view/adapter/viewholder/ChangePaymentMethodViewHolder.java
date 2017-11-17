@@ -30,6 +30,8 @@ public class ChangePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
     TextView paymentMethodName;
     @BindView(R2.id.img_tick)
     ImageView tickImage;
+    @BindView(R2.id.tokocash_balance)
+    TextView tokocashBalance;
 
     private PaymentMethodItemClickListener itemClickListener;
     private PaymentMethodViewModel paymentMethodViewModel;
@@ -44,6 +46,13 @@ public class ChangePaymentMethodViewHolder extends AbstractViewHolder<PaymentMet
     @Override
     public void bind(PaymentMethodViewModel element) {
         paymentMethodViewModel = element;
+
+        if (paymentMethodViewModel.getTokoCashBalance() != null && paymentMethodViewModel.getTokoCashBalance().length() > 0) {
+            tokocashBalance.setText("(" + paymentMethodViewModel.getTokoCashBalance() + ")");
+            tokocashBalance.setVisibility(View.VISIBLE);
+        } else {
+            tokocashBalance.setVisibility(View.GONE);
+        }
 
         paymentMethodName.setText(element.getName());
 
