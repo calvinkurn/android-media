@@ -9,6 +9,7 @@ import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
 import com.tokopedia.flight.search.data.cloud.model.response.Meta;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
+import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 import java.util.HashMap;
@@ -33,11 +34,10 @@ public class FlightSearchDataCloudSource extends DataCloudSource<FlightDataRespo
 
     @Override
     public Observable<FlightDataResponse<List<FlightSearchData>>> getData(HashMap<String, Object> params) {
-        boolean isReturning = FlightSearchParamUtil.isReturning(params);
-        FlightSearchPassDataViewModel flightSearchPassDataViewModel = FlightSearchParamUtil.getInitialPassData(params);
+        FlightSearchApiRequestModel flightSearchApiRequestModel = FlightSearchParamUtil.getInitialPassData(params);
 
         FlightSearchSingleRequestData flightSearchSingleRequestData =
-                new FlightSearchSingleRequestData(flightSearchPassDataViewModel, isReturning);
+                new FlightSearchSingleRequestData(flightSearchApiRequestModel);
         DataRequest<FlightSearchSingleRequestData> dataRequest = new DataRequest<>(flightSearchSingleRequestData);
 
         return flightApi.searchFlightSingle(dataRequest).zipWith(Observable.just(flightSearchSingleRequestData),

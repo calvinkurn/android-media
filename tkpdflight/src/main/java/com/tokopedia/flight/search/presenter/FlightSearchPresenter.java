@@ -1,17 +1,14 @@
 package com.tokopedia.flight.search.presenter;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.search.constant.FlightSortOption;
-import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchWithSortUseCase;
 import com.tokopedia.flight.search.domain.FlightSortUseCase;
 import com.tokopedia.flight.search.view.FlightSearchView;
-import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
@@ -44,14 +41,14 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
     }
 
-    public void searchAndSortFlight(FlightSearchPassDataViewModel flightSearchPassDataViewModel,
+    public void searchAndSortFlight(FlightSearchApiRequestModel flightSearchApiRequestModel,
                                     boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel,
                                     @FlightSortOption int sortOptionId) {
         flightSearchWithSortUseCase.execute(FlightSearchUseCase.generateRequestParams(
-                flightSearchPassDataViewModel,
+                flightSearchApiRequestModel,
                 isReturning, isFromCache, flightFilterModel,
                 sortOptionId),
-                getSubscriberSearchFlight(sortOptionId));
+                getSubscriberSearchFlight(isFromCache, sortOptionId));
     }
 
     public void getFlightStatistic(boolean isReturning) {
@@ -102,7 +99,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         };
     }
 
-    private Subscriber<List<FlightSearchViewModel>> getSubscriberSearchFlight(final int sortOptionId) {
+    private Subscriber<List<FlightSearchViewModel>> getSubscriberSearchFlight(final boolean isFromCache, final int sortOptionId) {
         return new Subscriber<List<FlightSearchViewModel>>() {
             @Override
             public void onCompleted() {
@@ -118,9 +115,12 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
             @Override
             public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
                 getView().hideSortRouteLoading();
-                getView().onSearchLoaded(flightSearchViewModels, flightSearchViewModels.size());
+                if (isFromCache) {
+                    getView().onSuccessGetDataFromCache(flightSearchViewModels);
+                } else {
+                    getView().onSuccessGetDataFromCloud(flightSearchViewModels);
+                }
                 getView().setSelectedSortItem(sortOptionId);
-
             }
         };
     }
@@ -141,7 +141,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
             @Override
             public void onNext(List<FlightSearchViewModel> flightSearchViewModels) {
                 getView().hideSortRouteLoading();
-                getView().onSearchLoaded(flightSearchViewModels, flightSearchViewModels.size());
+                getView().onSuccessGetDataFromCache(flightSearchViewModels);
                 getView().setSelectedSortItem(sortOptionId);
             }
         };

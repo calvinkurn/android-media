@@ -8,16 +8,17 @@
     android:clickable="true"
     android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/padding_small"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/margin_small"
+
+
     android:clipChildren="false"
     android:clipToPadding="false">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/margin_small">
 
         <TextView
             android:id="@+id/tv_airline"
@@ -58,12 +59,15 @@
         android:layout_height="1dp"
         android:layout_marginBottom="@dimen/margin_vs"
         android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:background="@color/grey_200" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:clipChildren="false"
         android:clipToPadding="false">
 
@@ -71,7 +75,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/padding_vs"
-            android:layout_marginEnd="@dimen/padding_vs">
+            android:layout_marginEnd="@dimen/padding_vs"
+            android:layout_marginBottom="@dimen/padding_small">
 
             <ImageView
                 android:id="@+id/departure_time_circle"
@@ -110,7 +115,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/padding_small">
 
             <TextView
                 android:id="@+id/departure_time"
@@ -162,6 +168,7 @@
             </LinearLayout>
         </RelativeLayout>
 
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -174,38 +181,48 @@
                 style="@style/TextView.Caption.BlackDisabled"
                 android:visibility="gone"
                 tools:text="Rp. 25000"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
 
             <TextView
                 android:id="@+id/total_price"
                 style="@style/TextView.Subheading.Bold"
                 android:layout_marginBottom="@dimen/margin_vvvs"
-                tools:text="Rp 25.000" />
+                tools:text="Rp 25.000"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:id="@+id/container_detail"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginBottom="-5dp"
-                android:layout_marginRight="-5dp"
-                android:layout_marginEnd="-5dp"
-                android:padding="@dimen/padding_vs"
-                android:foreground="?attr/selectableItemBackground">
+                android:paddingLeft="@dimen/padding_ms"
+                android:paddingStart="@dimen/padding_ms"
+                android:background="@color/white">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:id="@+id/container_detail"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/padding_vvs"
+                    android:paddingBottom="@dimen/padding_small">
 
-                <TextView
-                    style="@style/TextView.Caption.Green"
-                    android:text="@string/flight_label_see_detail" />
+                    <TextView
+                        style="@style/TextView.Caption.Green"
+                        android:text="@string/flight_label_see_detail" />
 
-                <ImageView
-                    android:layout_width="@dimen/image_width_xxs"
-                    android:layout_height="@dimen/image_width_xxs"
-                    android:layout_marginLeft="@dimen/margin_vs"
-                    android:layout_marginStart="@dimen/margin_vs"
-                    android:src="@drawable/ic_arrow_down_detail_flight" />
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="@dimen/image_width_xxs"
+                        android:layout_height="@dimen/image_width_xxs"
+                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:layout_marginStart="@dimen/margin_vs"
+                        android:src="@drawable/ic_arrow_down_detail_flight" />
+                </LinearLayout>
+            </FrameLayout>
 
         </LinearLayout>
     </LinearLayout>

@@ -10,6 +10,7 @@ import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
+import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
@@ -99,10 +100,10 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
         return flightSearchViewModelList;
     }
 
-    public static RequestParams generateRequestParams(FlightSearchPassDataViewModel flightSearchPassDataViewModel,
+    public static RequestParams generateRequestParams(FlightSearchApiRequestModel flightSearchApiRequestModel,
                                                       boolean isReturning, boolean fromCache, FlightFilterModel flightFilterModel,
                                                       @FlightSortOption int sortOption) {
-        return FlightSearchParamUtil.generateRequestParams(flightSearchPassDataViewModel,
+        return FlightSearchParamUtil.generateRequestParams(flightSearchApiRequestModel,
                 isReturning, fromCache, flightFilterModel, sortOption);
     }
 

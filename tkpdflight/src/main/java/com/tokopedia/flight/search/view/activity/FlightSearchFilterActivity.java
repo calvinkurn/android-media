@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -55,6 +56,8 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     private String currentTag;
     private int count;
     private View vReset;
+
+    private TextView tvToolbarTitle;
 
     public static Intent createInstance(Context context,
                                         boolean isReturning,
@@ -103,6 +106,8 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
                 }
             }
         });
+        tvToolbarTitle = (TextView) findViewById(R.id.tv_toolbar_title);
+        tvToolbarTitle.setText(getTitle());
 
         DaggerFlightSearchComponent.builder()
                 .flightComponent(((FlightModuleRouter) getApplication()).getFlightComponent())
@@ -164,15 +169,15 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     public void setUpTitleByTag(String tag) {
         currentTag = tag;
         if (TextUtils.isEmpty(tag) || getTagFragment().equals(tag)) {
-            updateTitle(getTitle().toString());
+            tvToolbarTitle.setText(getTitle());
         } else if (FlightFilterDepartureFragment.TAG.equals(tag)) {
-            updateTitle(getString(R.string.flight_search_filter_departure_time));
+            tvToolbarTitle.setText(getString(R.string.flight_search_filter_departure_time));
         } else if (FlightFilterTransitFragment.TAG.equals(tag)) {
-            updateTitle(getString(R.string.transit));
+            tvToolbarTitle.setText(getString(R.string.transit));
         } else if (FlightFilterAirlineFragment.TAG.equals(tag)) {
-            updateTitle(getString(R.string.airline));
+            tvToolbarTitle.setText(getString(R.string.airline));
         } else if (FlightFilterRefundableFragment.TAG.equals(tag)) {
-            updateTitle(getString(R.string.refundable_policy));
+            tvToolbarTitle.setText(getString(R.string.refundable_policy));
         }
         updateButtonFilter(count);
     }
