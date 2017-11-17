@@ -840,9 +840,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSeeAllOfficialStoresFromBrands(int page, int rowNumber) {
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) +
-                        FeedTrackingEventLabel.Click.OFFICIAL_STORE_BRAND_SEE_ALL);
+        UnifyTracking.eventOfficialStoreBrandSeeAll(
+                getFeedAnalyticsHeader(page, rowNumber));
         openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.apiservices.product;
 import com.tokopedia.core.network.apiservices.product.apis.ReputationReviewApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.core.network.retrofit.services.BaseService;
 
 import retrofit2.Retrofit;
@@ -9,7 +10,7 @@ import retrofit2.Retrofit;
  * Created by alifa on 8/11/17.
  */
 
-public class ReputationReviewService extends BaseService<ReputationReviewApi> {
+public class ReputationReviewService extends AuthService<ReputationReviewApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {
         api = retrofit.create(ReputationReviewApi.class);
@@ -17,7 +18,7 @@ public class ReputationReviewService extends BaseService<ReputationReviewApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL;
+        return TkpdBaseURL.BASE_DOMAIN;
     }
 
     @Override

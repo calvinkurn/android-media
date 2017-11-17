@@ -4,13 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 
@@ -65,12 +68,7 @@ public class SuccessActivateTokoCashActivity extends BasePresenterActivity {
 
     @Override
     protected void setViewListener() {
-        backToHomeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+
     }
 
     @Override
@@ -80,14 +78,21 @@ public class SuccessActivateTokoCashActivity extends BasePresenterActivity {
 
     @Override
     protected void setActionVar() {
-
+        backToHomeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteCacheBalanceTokoCash();
+                onBackPressed();
+                setResult(RESULT_OK);
+                finish();
+            }
+        });
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        setResult(RESULT_OK);
-        finish();
+    @NonNull
+    private void deleteCacheBalanceTokoCash() {
+        GlobalCacheManager cacheBalance = new GlobalCacheManager();
+        cacheBalance.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
@@ -245,8 +246,9 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private boolean isSupportedApplinkNotification(Bundle bundle) {
         String applink = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(applink);
+        return ((TkpdCoreRouter) mContext.getApplicationContext())
+                .isSupportedDelegateDeepLink(applink);
+
     }
 
     private void prepareAndExecutePromoNotification(Bundle data) {

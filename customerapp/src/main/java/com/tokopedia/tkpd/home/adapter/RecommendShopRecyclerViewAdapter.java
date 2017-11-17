@@ -129,7 +129,7 @@ public class RecommendShopRecyclerViewAdapter extends RecyclerView.Adapter<Recom
             @Override
             public void onClick(View view) {
                 TopAdsUtil.clickTopAdsAction(context, shop.shopClickUrl);
-                UnifyTracking.eventFavoriteViewRecommendation(shop.name);
+                UnifyTracking.eventFavoriteViewRecommendation();
                 Intent intent = new Intent(context, ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(shop.id, "", shop.name, shop.iconUri, shop.coverUri, Integer.parseInt(shop.isFav));
                 bundle.putString(ShopInfoActivity.SHOP_AD_KEY, shop.adKey);
