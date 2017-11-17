@@ -169,7 +169,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private DrawerTokoCash tokoCashData;
 
-    RemoteConfigFetcher remoteConfigFetcher;
     FirebaseRemoteConfig firebaseRemoteConfig;
 
     @Override
@@ -287,7 +286,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void fetchRemoteConfig() {
-        remoteConfigFetcher = new RemoteConfigFetcher(getActivity());
+        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(getActivity());
         remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
             @Override
             public void onComplete(FirebaseRemoteConfig firebaseRemoteConfig) {
@@ -297,7 +296,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             @Override
             public void onError(Exception e) {
                 e.printStackTrace();
-                FragmentIndexCategory.this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
             }
         });
     }
@@ -1020,19 +1018,21 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     public void onReceivedTokoCashData(final DrawerTokoCash tokoCashData) {
         holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
-        final FirebaseRemoteConfig config = FirebaseRemoteConfig.getInstance();
-        config.setDefaults(R.xml.remote_config_default);
-        config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    config.activateFetched();
-                    holder.tokoCashHeaderView.renderData(tokoCashData, config
-                            .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));
-                    FragmentIndexCategory.this.tokoCashData = tokoCashData;
+        final FirebaseRemoteConfig config = RemoteConfigFetcher.initRemoteConfig(getActivity());
+        if(config != null) {
+            config.setDefaults(R.xml.remote_config_default);
+            config.fetch().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        config.activateFetched();
+                        holder.tokoCashHeaderView.renderData(tokoCashData, config
+                                .getBoolean("toko_cash_top_up"), config.getString("toko_cash_label"));
+                        FragmentIndexCategory.this.tokoCashData = tokoCashData;
+                    }
                 }
-            }
-        });
+            });
+        }
         holder.tokoCashHeaderView.renderData(tokoCashData, false, getActivity()
                 .getString(R.string.tokocash));
         this.tokoCashData = tokoCashData;
