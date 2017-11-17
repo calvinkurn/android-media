@@ -12,7 +12,7 @@ public class Contacts {
     private boolean hasNext;
     @SerializedName("data")
     @Expose
-    private List<Datum> data = null;
+    private List<RepliesContent> data = null;
 
     public boolean isHasNext() {
         return hasNext;
@@ -22,11 +22,11 @@ public class Contacts {
         this.hasNext = hasNext;
     }
 
-    public List<Datum> getData() {
+    public List<RepliesContent> getData() {
         return data;
     }
 
-    public void setData(List<Datum> data) {
+    public void setData(List<RepliesContent> data) {
         this.data = data;
     }
 

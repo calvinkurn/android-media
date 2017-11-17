@@ -9,7 +9,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.domain.model.search.Datum;
+import com.tokopedia.inbox.inboxchat.domain.model.search.RepliesContent;
 import com.tokopedia.inbox.inboxchat.domain.model.search.SearchedMessage;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatListViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
@@ -72,7 +72,7 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
 
             ArrayList<Visitable> listContact = new ArrayList<>();
 
-            for (Datum item : data.getContacts().getData()) {
+            for (RepliesContent item : data.getContacts().getData()) {
                 ChatListViewModel viewModel = new ChatListViewModel();
                 viewModel.setId(String.valueOf(item.getMsgId()));
                 viewModel.setName(item.getContact().getAttributes().getName());
@@ -106,7 +106,7 @@ public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChat
 
             ArrayList<Visitable> listReplies = new ArrayList<>();
 
-            for (Datum item : data.getReplies().getData()) {
+            for (RepliesContent item : data.getReplies().getData()) {
                 ChatListViewModel viewModel = new ChatListViewModel();
                 viewModel.setId(String.valueOf(item.getMsgId()));
                 viewModel.setName(item.getContact().getAttributes().getName());

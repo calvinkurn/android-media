@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.inbox.inboxchat.domain.model.message.Contact;
 
-public class Datum {
+public class RepliesContent {
 
     @SerializedName("msg_id")
     @Expose
