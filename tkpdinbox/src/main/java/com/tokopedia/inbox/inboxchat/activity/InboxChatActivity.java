@@ -207,7 +207,13 @@ public class InboxChatActivity extends DrawerPresenterActivity
     @Override
     public void onSuccessGetTopChatNotification(int notifUnreads) {
         super.onSuccessGetTopChatNotification(notifUnreads);
-        TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
-        titleTextView.setText("Chat (" + notifUnreads + ")");
+        if(notifUnreads > 0) {
+            TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
+            titleTextView.setText("Chat (" + notifUnreads + ")");
+        }
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, InboxChatActivity.class);
     }
 }

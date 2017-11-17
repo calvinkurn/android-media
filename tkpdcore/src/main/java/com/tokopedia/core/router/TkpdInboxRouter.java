@@ -1,5 +1,6 @@
 package com.tokopedia.core.router;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -8,6 +9,9 @@ import android.content.Intent;
  */
 
 public interface TkpdInboxRouter {
+
+    public static final String IS_TOPCHAT_DISABLED = "is_topchat_disabled";
+
     String TX_ASK_SELLER = "tx_ask_seller";
     String TX_ASK_BUYER = "tx_ask_buyer";
     String SHOP = "shop";
@@ -27,4 +31,8 @@ public interface TkpdInboxRouter {
                               String avatarUrl);
 
     Intent getAskUserIntent(Context context, String toUserId, String userName, String source, String avatarUrl);
+
+    Intent getTimeMachineIntent(Context context);
+
+    Intent getInboxMessageIntent(Context context);
 }
