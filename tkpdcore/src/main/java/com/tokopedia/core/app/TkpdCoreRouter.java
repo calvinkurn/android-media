@@ -89,4 +89,6 @@ public interface TkpdCoreRouter {
     void goToAddProduct(Activity activity);
 
     boolean isInMyShop(Context context, String shopId);
+
+    Intent getForgotPasswordIntent(Context context, String email);
 }

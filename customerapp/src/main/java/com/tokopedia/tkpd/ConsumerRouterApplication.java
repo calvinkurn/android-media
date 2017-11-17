@@ -12,6 +12,7 @@ import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -30,6 +31,7 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.OtpRouter;
+import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -41,6 +43,7 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
@@ -70,6 +73,7 @@ import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.edit.view.presenter.AddProductServicePresenterImpl;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
+import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
@@ -85,6 +89,9 @@ import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
+import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
@@ -106,7 +113,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
-        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter {
+        OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication,
+        TkpdInboxRouter, RemoteConfigRouter, TopAdsModuleRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -118,6 +126,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
+
+    private DaggerTopAdsComponent.Builder daggerTopAdsBuilder;
+    private TopAdsComponent topAdsComponent;
+
+    private FirebaseRemoteConfig firebaseRemoteConfig;
 
     @Override
     public void onCreate() {
@@ -135,6 +148,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                 .appComponent(getApplicationComponent())
         .reactNativeModule(new ReactNativeModule(this));
+        daggerTopAdsBuilder = DaggerTopAdsComponent.builder().topAdsModule(new TopAdsModule());
     }
 
     @Override
@@ -143,6 +157,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
         }
         return productComponent;
+    }
+
+    @Override
+    public TopAdsComponent getTopAdsComponent() {
+        if (topAdsComponent == null) {
+            topAdsComponent = daggerTopAdsBuilder.appComponent(getApplicationComponent()).build();
+        }
+        return topAdsComponent;
     }
 
     @Override
@@ -625,5 +647,40 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isInMyShop(Context context, String shopId) {
         return context != null && new SessionHandler(context).getShopID().trim().equalsIgnoreCase(shopId.trim());
+    }
+
+    @Override
+    public boolean getBooleanConfig(String key) {
+        return getFirebaseRemoteConfig().getBoolean(key);
+    }
+
+    @Override
+    public byte[] getByteArrayConfig(String key) {
+        return getFirebaseRemoteConfig().getByteArray(key);
+    }
+
+    @Override
+    public double getDoubleConfig(String key) {
+        return getFirebaseRemoteConfig().getDouble(key);
+    }
+
+    @Override
+    public long getLongConfig(String key) {
+        return getFirebaseRemoteConfig().getLong(key);
+    }
+
+    @Override
+    public String getStringConfig(String key) {
+        return getFirebaseRemoteConfig().getString(key);
+    }
+
+    private FirebaseRemoteConfig getFirebaseRemoteConfig() {
+        if(firebaseRemoteConfig == null) firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        return firebaseRemoteConfig;
+    }
+
+    @Override
+    public Intent getForgotPasswordIntent(Context context, String email) {
+        return ForgotPasswordActivity.getCallingIntent(context,email);
     }
 }

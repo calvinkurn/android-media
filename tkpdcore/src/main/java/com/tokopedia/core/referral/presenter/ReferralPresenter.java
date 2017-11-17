@@ -24,6 +24,7 @@ public class ReferralPresenter implements IReferralPresenter {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.APP_SHARE_TYPE)
                 .setName(activity.getString(R.string.app_share_title))
+                .setTextContent(activity.getString(R.string.app_share_title)+" ")
                 .setDescription(activity.getString(R.string.app_share_contents) + " ")
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
                 .build();

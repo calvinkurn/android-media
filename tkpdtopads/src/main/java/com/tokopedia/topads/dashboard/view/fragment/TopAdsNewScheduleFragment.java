@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -318,6 +319,11 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
     public void onSaveAdError(String errorMessage) {
         hideLoading();
         showSnackBarError(errorMessage);
+    }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        /* just deal with abstraction */
     }
 
     @Override

@@ -9,11 +9,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailProductFragment;
 import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
@@ -26,7 +29,7 @@ import com.tokopedia.showcase.ShowCasePreference;
 import java.util.ArrayList;
 
 public class TopAdsDetailGroupActivity extends BaseSimpleActivity
-        implements TopAdsDetailGroupFragment.OnTopAdsDetailGroupListener {
+        implements TopAdsDetailGroupFragment.OnTopAdsDetailGroupListener, HasComponent<TopAdsComponent> {
 
     private ShowCaseDialog showCaseDialog;
 
@@ -117,11 +120,13 @@ public class TopAdsDetailGroupActivity extends BaseSimpleActivity
         }else{
             GroupAd ad = null;
             String adId = null;
+            boolean forceRefresh = false;
             if (getIntent() != null && getIntent().getExtras() != null) {
                 ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
                 adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
+                forceRefresh = getIntent().getBooleanExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, false);
             }
-            fragment = TopAdsDetailGroupFragment.createInstance(ad, adId);
+            fragment = TopAdsDetailGroupFragment.createInstance(ad, adId, forceRefresh);
             return fragment;
         }
     }
@@ -134,5 +139,10 @@ public class TopAdsDetailGroupActivity extends BaseSimpleActivity
     @Override
     protected boolean isToolbarWhite() {
         return true;
+    }
+
+    @Override
+    public TopAdsComponent getComponent() {
+        return TopAdsComponentUtils.getTopAdsComponent(this);
     }
 }

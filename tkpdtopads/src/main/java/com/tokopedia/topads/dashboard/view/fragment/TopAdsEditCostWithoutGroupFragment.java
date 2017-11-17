@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
@@ -18,6 +19,7 @@ import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoCompon
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailEditProductPresenter;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
 
 import javax.inject.Inject;
 
@@ -26,6 +28,9 @@ import javax.inject.Inject;
  */
 
 public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<TopAdsDetailEditProductPresenter, TopAdsDetailProductViewModel, GroupAd> {
+
+    @Inject
+    TopAdsDetailNewProductPresenter topAdsDetailNewProductPresenter;
 
     @Override
     protected void initInjector() {
@@ -36,6 +41,7 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);
+        topAdsDetailNewProductPresenter.attachView(this);
     }
 
     @Override
@@ -81,8 +87,19 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
     }
 
     @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+
+    }
+
+    @Override
     protected void onSuggestionTitleUseClick() {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        topAdsDetailNewProductPresenter.detachView();
     }
 
     @Override

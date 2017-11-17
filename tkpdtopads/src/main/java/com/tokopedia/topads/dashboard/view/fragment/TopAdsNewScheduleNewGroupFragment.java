@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -75,7 +76,12 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
 
     @Override
     public void onSuggestionSuccess(GetSuggestionResponse s) {
-        // TODO insert this thing
+        /* just deal with abstraction */
+    }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        /* just deal with abstraction */
     }
 
     private void trackingNewScheduleTopads() {

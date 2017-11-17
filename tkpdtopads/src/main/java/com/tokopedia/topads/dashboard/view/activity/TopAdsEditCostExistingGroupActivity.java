@@ -10,7 +10,6 @@ import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditCostExistingGroupFragment;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsEditGroupMainPageFragment;
 
 /**
  * Created by zulfikarrahman on 8/9/17.

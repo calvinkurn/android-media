@@ -1,5 +1,7 @@
 package com.tokopedia.topads.common.util;
 
+import android.app.Activity;
+
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -11,13 +13,13 @@ import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 public class TopAdsComponentUtils {
 
     public static TopAdsComponent getTopAdsComponent(BaseDaggerFragment fragment){
-        if(fragment.getActivity() != null){
-            if(fragment.getActivity().getApplication() instanceof TopAdsModuleRouter){
-                return ((TopAdsModuleRouter)fragment.getActivity().getApplication()).getTopAdsComponent();
-            }else{
-                return null;
-            }
-        }else {
+        return getTopAdsComponent(fragment.getActivity());
+    }
+
+    public static TopAdsComponent getTopAdsComponent(Activity activity) {
+        if (activity != null && activity.getApplication() != null && activity.getApplication() instanceof TopAdsModuleRouter) {
+            return ((TopAdsModuleRouter) activity.getApplication()).getTopAdsComponent();
+        } else {
             return null;
         }
     }

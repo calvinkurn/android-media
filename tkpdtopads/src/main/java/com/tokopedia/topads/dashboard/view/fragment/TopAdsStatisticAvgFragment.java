@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
-import android.app.Fragment;
+
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.data.model.data.Cell;

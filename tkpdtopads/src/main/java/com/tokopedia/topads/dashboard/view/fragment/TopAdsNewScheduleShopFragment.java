@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -9,6 +10,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -43,7 +45,7 @@ public class TopAdsNewScheduleShopFragment extends TopAdsNewScheduleFragment<Top
         super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
-                .topAdsComponent(getComponent(TopAdsComponent.class))
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
                 .build()
                 .inject(this);
         daggerPresenter.attachView(this);
@@ -83,6 +85,11 @@ public class TopAdsNewScheduleShopFragment extends TopAdsNewScheduleFragment<Top
 
     @Override
     public void onSuggestionSuccess(GetSuggestionResponse s) {
-        // TODO things todo
+        /* just deal with abstraction */
+    }
+
+    @Override
+    public void onSuggestionError(@Nullable Throwable t) {
+        /* just deal with abstraction */
     }
 }
