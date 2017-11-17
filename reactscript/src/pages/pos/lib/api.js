@@ -1,6 +1,6 @@
 export const BASE_API_URL = {
     STAGING: 'http://o2o-staging.tokopedia.com/',
-    PRODUCTION: 'https://o2o.tokopedia.com/'
+    PRODUCTION: 'https://gw.tokopedia.com/'
 }
 
 export const BASE_API_URL_PAYMENT = {
