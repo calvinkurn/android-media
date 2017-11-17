@@ -207,5 +207,6 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         updateShopScheduleUseCase.unsubscribe();
         notificationUseCase.unsubscribe();
         cacheApiClearAllUseCase.unsubscribe();
+        topChatNotificationUseCase.unsubscribe();
     }
 }
