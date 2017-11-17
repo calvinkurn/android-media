@@ -7,15 +7,22 @@ import android.view.View;
 
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
+import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
+import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupEditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditCostExistingGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupNameActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditScheduleExistingGroupActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenterImpl;
+import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
+
+import javax.inject.Inject;
 
 /**
  * Created by zulfikarrahman on 8/8/17.
@@ -25,6 +32,23 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
 
     private LabelView productAdd;
     private LabelView name;
+    private LabelView keywordTotalAdd;
+
+    @Inject
+    TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
+
+    @Inject
+    TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
+
+    @Override
+    protected void initInjector() {
+        super.initInjector();
+        DaggerTopAdsCreatePromoComponent.builder()
+                .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
+                .topAdsComponent(TopAdsComponentUtils.getTopAdsComponent(this))
+                .build()
+                .inject(this);
+    }
 
     public static Fragment createInstance(GroupAd ad, String adId) {
         Fragment fragment = new TopAdsEditGroupMainPageFragment();
@@ -38,7 +62,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsDetailGroupPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()));
+        presenter = new TopAdsDetailGroupPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()), topAdsGetDetailGroupUseCase, topAdsGetSuggestionUseCase);
     }
 
     @Override
@@ -51,6 +75,7 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
         super.initView(view);
         productAdd = (LabelView) view.findViewById(R.id.product_add);
         name = (LabelView) view.findViewById(R.id.name);
+        keywordTotalAdd = (LabelView) view.findViewById(R.id.total_keyword_add);
     }
 
     @Override
@@ -66,6 +91,12 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
             @Override
             public void onClick(View view) {
                 startActivityForResult(TopAdsCreatePromoExistingGroupEditActivity.createIntent(getActivity(), String.valueOf(ad.getId()), null), REQUEST_CODE_AD_EDIT);
+            }
+        });
+        keywordTotalAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TopAdsKeywordNewChooseGroupActivity.start(TopAdsEditGroupMainPageFragment.this, getActivity(), REQUEST_CODE_AD_EDIT, true, ad.getName());
             }
         });
     }
@@ -85,11 +116,21 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
     protected void onCostClicked() {
         Intent intent;
         if(ad!= null) {
-            intent = TopAdsEditCostExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId()));
+            intent = TopAdsEditCostExistingGroupActivity.createIntent(getActivity(), String.valueOf(ad.getId()), ad);
         }else{
-            intent = TopAdsEditCostExistingGroupActivity.createIntent(getActivity(), adId);
+            intent = TopAdsEditCostExistingGroupActivity.createIntent(getActivity(), adId, ad);
         }
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
+    }
+
+    @Override
+    protected GroupAd fillFromPrevious(GroupAd current, GroupAd previous) {
+        if(ad != null && ad.getDatum() != null){
+            current.setDatum(ad.getDatum());
+        }else if(previous != null && previous.getDatum() != null){
+            current.setDatum(previous.getDatum());
+        }
+        return current;
     }
 
     @Override
@@ -106,5 +147,6 @@ public class TopAdsEditGroupMainPageFragment extends TopAdsDetailEditMainPageFra
         super.updateMainView(ad);
         name.setContent(ad.getName());
         productAdd.setTitle(getString(R.string.top_ads_label_count_product_group, ad.getTotalItem()));
+        keywordTotalAdd.setTitle(getString(R.string.top_ads_label_count_keyword, ad.getKeywordTotal()));
     }
 }

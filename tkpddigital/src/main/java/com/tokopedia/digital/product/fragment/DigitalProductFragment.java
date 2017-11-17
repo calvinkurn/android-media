@@ -74,9 +74,7 @@ import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.product.domain.ILastOrderNumberRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
-import com.tokopedia.digital.product.domain.LastOrderNumberRepository;
 import com.tokopedia.digital.product.domain.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.interactor.ProductDigitalInteractor;
@@ -266,14 +264,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
         IDigitalCategoryRepository digitalCategoryRepository =
                 new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
-        ILastOrderNumberRepository lastOrderNumberRepository =
-                new LastOrderNumberRepository(digitalEndpointService, productDigitalMapper);
         IUssdCheckBalanceRepository ussdCheckBalanceRepository = new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper);
 
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
                         compositeSubscription, digitalWidgetRepository, digitalCategoryRepository,
-                        lastOrderNumberRepository, cacheHandlerLastInputClientNumber, ussdCheckBalanceRepository
+                        cacheHandlerLastInputClientNumber, ussdCheckBalanceRepository
                 );
         presenter = new ProductDigitalPresenter(this, productDigitalInteractor);
     }
@@ -350,7 +346,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private List<BannerData> getBannerDataWithoutEmptyItem(List<BannerData> bannerDataList) {
         for (int i = bannerDataList.size() - 1; i >= 0; i--) {
-            if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) && TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
+            if (TextUtils.isEmpty(bannerDataList.get(i).getTitle()) &&
+                    TextUtils.isEmpty(bannerDataList.get(i).getSubtitle())) {
                 bannerDataList.remove(bannerDataList.get(i));
             }
         }
@@ -645,7 +642,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void closeView() {
-        getActivity().finish();
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -1003,6 +1002,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
+        if (orderClientNumber != null) {
+            UnifyTracking.eventSelectNumberOnUserProfileNative(categoryDataState.getName());
+        }
+
         if (categoryDataState.isSupportedStyle()) {
             switch (categoryDataState.getOperatorStyle()) {
                 case CategoryData.STYLE_PRODUCT_CATEGORY_1 :

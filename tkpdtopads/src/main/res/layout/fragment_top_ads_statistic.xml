@@ -3,33 +3,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".topads.dashboard.view.fragment.TopAdsStatisticFragment">
+    tools:context=".dashboard.view.activity.TopAdsStatisticActivity">
 
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        app:cardPreventCornerOverlap="false">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <com.tokopedia.design.label.DateLabelView
+            android:id="@+id/date_label_view"
+            android:layout_width="match_parent"
+            style="@style/LabelLayout.BorderBottom"/>
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/margin_sm">
+            android:layout_gravity="top"
+            app:cardPreventCornerOverlap="false">
 
-            <TextView
-                android:id="@+id/content_title_graph"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp" />
-
-            <com.tokopedia.seller.common.williamchart.view.LineChartView
-                android:id="@+id/content_graph"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/margin_sm">
+
+                <TextView
+                    android:id="@+id/content_title_graph"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp" />
+
+                <com.tokopedia.seller.common.williamchart.view.LineChartView
+                    android:id="@+id/content_graph"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
 
 
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
 </FrameLayout>

@@ -113,12 +113,14 @@ public class CategoryPickerAdapter
     }
 
     private boolean isSelectedParent() {
-        CategoryViewModel categoryViewModel = data.getSelectedModel();
-        if (categoryViewModel != null) {
-            return data.getSelectedModel().isHasChild();
-        } else {
+        if (data == null) {
             return false;
         }
+        CategoryViewModel categoryViewModel = data.getSelectedModel();
+        if (categoryViewModel == null) {
+            return false;
+        }
+        return data.getSelectedModel().isHasChild();
     }
 
     public void renderItems(CategoryLevelViewModel map) {

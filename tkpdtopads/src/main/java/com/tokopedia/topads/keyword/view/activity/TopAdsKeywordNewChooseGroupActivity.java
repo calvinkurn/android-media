@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -20,23 +21,37 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseSimpleActivity impl
     public static final String TAG = TopAdsKeywordNewChooseGroupActivity.class.getSimpleName();
 
     private static final String EXTRA_IS_POSITIVE = "is_pos";
+    private static final String EXTRA_CHOOSEN_GROUP = "EXTRA_CHOOSEN_GROUP";
 
     public static void start(Activity activity, int requestCode,
                              boolean isPositive) {
-        Intent intent = createIntent(activity, isPositive);
+        Intent intent = createIntent(activity, isPositive, null);
         activity.startActivityForResult(intent, requestCode);
     }
 
     public static void start(Fragment fragment, Context context, int requestCode,
                              boolean isPositive) {
-        Intent intent = createIntent(context, isPositive);
+        Intent intent = createIntent(context, isPositive, null);
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    private static Intent createIntent(Context context, boolean isPositive) {
+    public static void start(Activity activity, int requestCode,
+                             boolean isPositive, @Nullable String groupId) {
+        Intent intent = createIntent(activity, isPositive, groupId);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static void start(Fragment fragment, Context context, int requestCode,
+                             boolean isPositive, @Nullable String groupId) {
+        Intent intent = createIntent(context, isPositive, groupId);
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
+    private static Intent createIntent(Context context, boolean isPositive, String groupId) {
         Intent intent = new Intent(context, TopAdsKeywordNewChooseGroupActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(EXTRA_IS_POSITIVE, isPositive);
+        bundle.putString(EXTRA_CHOOSEN_GROUP, groupId);
         intent.putExtras(bundle);
         return intent;
     }
@@ -44,11 +59,17 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseSimpleActivity impl
     @Override
     protected Fragment getNewFragment() {
         boolean isPositive = getIntent().getBooleanExtra(EXTRA_IS_POSITIVE, true);
-        return TopAdsKeywordNewChooseGroupFragment.newInstance(isPositive);
+        String groupId = getIntent().getStringExtra(EXTRA_CHOOSEN_GROUP);
+        return TopAdsKeywordNewChooseGroupFragment.newInstance(isPositive, groupId);
     }
 
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 }

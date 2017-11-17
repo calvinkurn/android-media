@@ -3,11 +3,7 @@ package com.tokopedia.digital.product.adapter;
 import android.app.Fragment;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,12 +97,23 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @BindView(R2.id.empty_stock_notification)
         TextView emptyStockNotification;
 
+        private Product product;
+
         ItemDescAndPriceHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
+                        actionListener.onProductItemSelected(product);
+                    }
+                }
+            });
         }
 
         public void bind(Product product) {
+            this.product = product;
             setViewPriceDescription(product);
             setProductAvailability(product);
         }
@@ -124,19 +131,13 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         .getResources().getColor(R.color.white));
             } else {
                 enableView();
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        actionListener.onProductItemSelected(product);
-                    }
-                });
                 emptyStockNotification.setVisibility(View.GONE);
             }
         }
 
         private void enableView() {
-            tvTitlePrice.setTextColor(hostFragment.getResources().getColor(R.color.grey_800));
-            tvPrice.setTextColor(hostFragment.getResources().getColor(R.color.grey_800));
+            tvTitlePrice.setTextColor(hostFragment.getResources().getColor(R.color.black));
+            tvPrice.setTextColor(hostFragment.getResources().getColor(R.color.black));
         }
     }
 
@@ -150,12 +151,23 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @BindView(R2.id.empty_stock_notification)
         TextView emptyStockNotification;
 
+        private Product product;
+
         ItemPriceAdmin(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
+                        actionListener.onProductItemSelected(product);
+                    }
+                }
+            });
         }
 
         public void bind(Product product) {
+            this.product = product;
             setViewPriceAdditionalFee(product);
             setProductAvailability(product);
         }
@@ -167,7 +179,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 tvProductDescription.setVisibility(View.GONE);
             } else {
                 tvProductDescription.setVisibility(View.VISIBLE);
-                tvProductDescription.setText(product.getDetail());
+                tvProductDescription.setText(MethodChecker.fromHtml(product.getDetail()));
             }
         }
 
@@ -179,23 +191,17 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         .getResources().getColor(R.color.white));
             } else {
                 enableView();
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        actionListener.onProductItemSelected(product);
-                    }
-                });
                 emptyStockNotification.setVisibility(View.GONE);
             }
         }
 
         private void enableView() {
-            tvProductDescription.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.grey_800));
             tvProductPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.grey_800));
+                    .getColor(R.color.black));
+            tvProductDescription.setTextColor(hostFragment.getResources()
+                    .getColor(R.color.grey_500));
             tvProductTotalPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.grey_800));
+                    .getColor(R.color.black));
         }
     }
 
@@ -213,12 +219,23 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @BindView(R2.id.empty_stock_notification)
         TextView emptyStockNotification;
 
+        private Product product;
+
         ItemHolderPromoProduct(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (product.getStatus() != Product.STATUS_OUT_OF_STOCK) {
+                        actionListener.onProductItemSelected(product);
+                    }
+                }
+            });
         }
 
         void bind(Product product) {
+            this.product = product;
             setViewPromo(product);
             setProductAvailability(product);
         }
@@ -229,7 +246,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 tvProductPromoDescription.setVisibility(View.GONE);
             } else {
                 tvProductPromoDescription.setVisibility(View.VISIBLE);
-                tvProductPromoDescription.setText(product.getDetail());
+                tvProductPromoDescription.setText(MethodChecker.fromHtml(product.getDetail()));
             }
             if (TextUtils.isEmpty(product.getPromo().getTag())) {
                 tvProductPromoTag.setVisibility(View.GONE);
@@ -252,25 +269,21 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         .getResources().getColor(R.color.white));
             } else {
                 enableView();
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        actionListener.onProductItemSelected(product);
-                    }
-                });
                 emptyStockNotification.setVisibility(View.GONE);
             }
         }
 
         private void enableView() {
             tvProductPromoTitle.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.grey_800));
+                    .getColor(R.color.black));
+            tvProductPromoTag.setTextColor(hostFragment.getResources()
+                    .getColor(R.color.deep_orange_500));
             tvProductPromoDescription.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.grey_800));
+                    .getColor(R.color.grey_500));
             tvProductPromoOldPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.grey_800));
+                    .getColor(R.color.black));
             tvPromoProductPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.orange_900));
+                    .getColor(R.color.deep_orange_500));
         }
     }
 
@@ -292,7 +305,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     private void disableTextView(TextView textViewToDisable) {
-        textViewToDisable.setTextColor(hostFragment.getResources().getColor(R.color.grey));
+        textViewToDisable.setTextColor(hostFragment.getResources().getColor(R.color.grey_400));
     }
 
 }

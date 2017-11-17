@@ -123,7 +123,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     public void shareProductInfo(@NonNull ShareData shareData) {
-        replaceFragment(ProductShareFragment.newInstance(shareData),
+        replaceFragment(ProductShareFragment.newInstance(shareData,false),
                 ProductShareFragment.class.getSimpleName());
     }
 

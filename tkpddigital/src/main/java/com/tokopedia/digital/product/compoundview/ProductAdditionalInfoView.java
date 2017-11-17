@@ -1,12 +1,8 @@
 package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.URLSpan;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,13 +78,22 @@ public class ProductAdditionalInfoView extends RelativeLayout {
 
     @SuppressWarnings("deprecation")
     public void convertDetailWithHtml(final Product product) {
-        Spanned detail = Html.fromHtml(product.getDetail() + "<a href=\"" + product.getDetailUrl() + "\"> " +
-                product.getDetailUrlText() + "</a>");
-        tvInfo.setText(detail);
+        if (TextUtils.isEmpty(product.getDetailUrl()) ||  TextUtils.isEmpty(product.getDetailUrlText())) {
+            tvInfo.setText(MethodChecker.fromHtml(product.getDetail()));
+        } else {
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder(MethodChecker.fromHtml(product.getDetail()));
+            String detailUrl = "<a href=\"" + product.getDetailUrl() + "\"> " +
+                    product.getDetailUrlText() + "</a>";
+            stringBuilder.append(" ");
+            stringBuilder.append(MethodChecker.fromHtml(detailUrl));
+            tvInfo.setText(stringBuilder);
+        }
         tvInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionListener.onProductLinkClicked(product.getDetailUrl());
+                if (!TextUtils.isEmpty(product.getDetailUrl()) & !TextUtils.isEmpty(product.getDetailUrlText())) {
+                    actionListener.onProductLinkClicked(product.getDetailUrl());
+                }
             }
         });
     }

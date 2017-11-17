@@ -640,11 +640,13 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {
-        List<Badge> badges = data.badges;
-        for (int i = 0; i < badges.size(); i++) {
-            Badge badge = badges.get(i);
-            if (badge.getTitle().equals("Free Returns")) {
-                LuckyShopImage.loadImage(holder.freeReturns, badge.getImageUrl());
+        if(data.badges != null) {
+            List<Badge> badges = data.badges;
+            for (int i = 0; i < badges.size(); i++) {
+                Badge badge = badges.get(i);
+                if (badge.getTitle().equals("Free Returns")) {
+                    LuckyShopImage.loadImage(holder.freeReturns, badge.getImageUrl());
+                }
             }
         }
     }
@@ -753,7 +755,6 @@ public class ShopInfoActivity extends BaseActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent shareIntent = new Intent(ShopInfoActivity.this, ShareActivity.class);
                 ShareData shareData = ShareData.Builder.aShareData()
                         .setType(ShareData.SHOP_TYPE)
                         .setName(getString(R.string.message_share_shop))
@@ -761,8 +762,7 @@ public class ShopInfoActivity extends BaseActivity
                         .setUri(shopModel.info.shopUrl)
                         .setId(shopModel.info.shopId)
                         .build();
-                shareIntent.putExtra(ShareData.TAG, shareData);
-                startActivity(shareIntent);
+                startActivity(ShareActivity.createIntent(ShopInfoActivity.this,shareData));
             }
         };
     }
