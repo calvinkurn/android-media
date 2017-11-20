@@ -47,6 +47,16 @@ public class FlightDateUtil {
         }
     }
 
+    public static Date stringToDate(String format, String input) {
+        DateFormat fromFormat = new SimpleDateFormat(format);
+        try {
+            return fromFormat.parse(input);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Date doesnt valid (" + input + ")");
+        }
+    }
+
     public static String dateToString(Date currentDate, String outputFormat) {
         DateFormat format = new SimpleDateFormat(outputFormat, DEFAULT_LOCALE);
         return format.format(currentDate);
@@ -58,4 +68,15 @@ public class FlightDateUtil {
         cal.add(Calendar.DATE, days);
         return cal.getTime();
     }
+
+    public static Date removeTime(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+
 }

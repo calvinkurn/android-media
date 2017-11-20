@@ -1,7 +1,6 @@
 package com.tokopedia.flight.dashboard.view.fragment;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -126,6 +125,7 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
             throw new RuntimeException("Activity must implement OnFragmentInteractionListener");
         }
     }
+
 
     @Override
     public FlightPassengerViewModel getCurrentPassengerViewModel() {

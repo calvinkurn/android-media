@@ -1,10 +1,14 @@
 package com.tokopedia.flight.booking.view.fragment;
 
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
@@ -12,9 +16,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
@@ -28,6 +35,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -42,6 +50,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public static final String EXTRA_DEPARTURE = "EXTRA_DEPARTURE";
     public static final String EXTRA_RETURN = "EXTRA_RETURN";
 
+    public interface OnFragmentInteractionListener {
+        void actionSuccessUpdatePassengerData(FlightBookingPassengerViewModel flightBookingPassengerViewModel);
+    }
+
     private AppCompatTextView tvHeader;
     private AppCompatTextView tvSubheader;
     private SpinnerTextView spTitle;
@@ -53,11 +65,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private RecyclerView rvLuggages;
     private LinearLayout mealsContainer;
     private RecyclerView rvMeals;
-    private AppCompatButton buttonSubmit;
 
+    private AppCompatButton buttonSubmit;
     private FlightBookingPassengerViewModel viewModel;
     private List<FlightBookingLuggageViewModel> luggageViewModels;
     private List<FlightBookingMealViewModel> mealViewModels;
+
+    private OnFragmentInteractionListener interactionListener;
 
     @Inject
     FlightBookingPassengerPresenter presenter;
@@ -122,6 +136,18 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         mealsContainer = (LinearLayout) view.findViewById(R.id.meals_container);
         rvMeals = (RecyclerView) view.findViewById(R.id.rv_meals);
         buttonSubmit = (AppCompatButton) view.findViewById(R.id.button_submit);
+        buttonSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onSaveButtonClicked();
+            }
+        });
+        etBirthDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onBirthdateClicked();
+            }
+        });
         return view;
     }
 
@@ -191,5 +217,127 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public void renderPassengerLuggages(List<FlightBookingLuggageRouteViewModel> flightBookingLuggageRouteViewModels,
                                         List<FlightBookingLuggageRouteViewModel> selecteds) {
 
+    }
+
+    @Override
+    public void hideBirthdayInputView() {
+        tilBirthDate.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showBirthdayInputView() {
+        tilBirthDate.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void renderHeaderTitle(String headerTitle) {
+        tvHeader.setText(headerTitle);
+    }
+
+    @Override
+    public void renderHeaderSubtitle(int resId) {
+        tvSubheader.setText(getString(resId));
+    }
+
+    @Override
+    public String getPassengerName() {
+        return etName.getText().toString().trim();
+    }
+
+    @Override
+    public void showPassengerNameEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public String getPassengerTitle() {
+        return spTitle.getSpinnerValue().equalsIgnoreCase(String.valueOf(SpinnerTextView.DEFAULT_INDEX_NOT_SELECTED))
+                ? "" : spTitle.getSpinnerValue();
+    }
+
+    @Override
+    public void showPassengerTitleEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public String getPassengerBirthDate() {
+        return etBirthDate.getText().toString().trim();
+    }
+
+    @Override
+    public void showPassengerBirthdateEmptyError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassengerChildBirthdateShouldMoreThan2Years(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showPassengerInfantBirthdateShouldNoMoreThan2Years(int resID) {
+        showMessageErrorInSnackBar(resID);
+    }
+
+    @Override
+    public void navigateResultUpdatePassengerData(FlightBookingPassengerViewModel currentPassengerViewModel) {
+        if (interactionListener != null) {
+            interactionListener.actionSuccessUpdatePassengerData(currentPassengerViewModel);
+        }
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        if (context instanceof OnFragmentInteractionListener) {
+            interactionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException("Activity must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @SuppressWarnings("Range")
+    private void showMessageErrorInSnackBar(int resId) {
+        Snackbar snackBar = SnackbarManager.make(getActivity(),
+                getString(resId), Snackbar.LENGTH_LONG)
+                .setAction("Tutup", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+        Button snackBarAction = (Button) snackBar.getView().findViewById(android.support.design.R.id.snackbar_action);
+        snackBarAction.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+        snackBar.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_500));
+        snackBar.show();
+    }
+
+    @Override
+    public void showBirthdatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
+        DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                presenter.onBirthdateChange(year, month, dayOfMonth);
+            }
+        }, selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDay());
+        DatePicker datePicker1 = datePicker.getDatePicker();
+        datePicker1.setMinDate(minDate.getTime());
+        datePicker1.setMaxDate(maxDate.getTime());
+        datePicker.show();
+    }
+
+    @Override
+    public void renderBirthdate(String birthdateStr) {
+        etBirthDate.setText(birthdateStr);
+    }
+
+    @Override
+    public void renderPassengerName(String passengerName) {
+        etName.setText(passengerName);
+    }
+
+    @Override
+    public void renderPassengerTitle(String passengerTitle) {
+        spTitle.setSpinnerValueByEntries(passengerTitle);
     }
 }
