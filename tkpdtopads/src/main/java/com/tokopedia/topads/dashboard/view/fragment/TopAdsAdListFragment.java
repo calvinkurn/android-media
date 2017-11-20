@@ -23,7 +23,6 @@ import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.ItemType;
 import com.tokopedia.seller.base.view.listener.BaseListViewListener;
@@ -278,9 +277,6 @@ public abstract class TopAdsAdListFragment<P extends
                 return true;
             }
         });
-        if (getActivity() instanceof BaseSimpleActivity) {
-            ((BaseSimpleActivity) getActivity()).updateOptionMenuColor(menu);
-        }
     }
 
     @Override

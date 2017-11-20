@@ -94,7 +94,6 @@ public class TopAdsKeywordListActivity extends BaseTabActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
         getMenuInflater().inflate(R.menu.menu_top_ads_list, menu);
-        updateOptionMenuColor(menu);
         return true;
     }
 

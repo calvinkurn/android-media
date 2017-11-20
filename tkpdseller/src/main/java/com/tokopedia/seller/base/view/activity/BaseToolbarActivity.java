@@ -62,7 +62,7 @@ public abstract class BaseToolbarActivity extends BaseActivity {
     }
 
     @DrawableRes protected int closeButtonDrawable(){
-        return R.drawable.ic_close;
+        return R.drawable.ic_filter_detail_close;
     }
 
     protected int getThemeActivity() {

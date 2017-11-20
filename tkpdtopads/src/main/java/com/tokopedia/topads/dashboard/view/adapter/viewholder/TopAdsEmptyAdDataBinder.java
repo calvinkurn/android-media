@@ -10,6 +10,10 @@ import com.tokopedia.topads.R;
 public class TopAdsEmptyAdDataBinder extends BaseEmptyDataBinder {
 
     public TopAdsEmptyAdDataBinder(DataBindAdapter dataBindAdapter) {
-        super(dataBindAdapter, R.drawable.group_3);
+        super(dataBindAdapter, R.drawable.ic_empty_state_kaktus);
+    }
+
+    public TopAdsEmptyAdDataBinder(DataBindAdapter dataBindAdapter, int errorDrawableRes) {
+        super(dataBindAdapter, errorDrawableRes);
     }
 }

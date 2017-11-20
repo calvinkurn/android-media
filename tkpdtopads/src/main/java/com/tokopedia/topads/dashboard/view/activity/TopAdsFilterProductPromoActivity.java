@@ -6,9 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.topads.R;
-import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.base.view.activity.BaseFilterActivity;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsFilterEtalaseFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsFilterStatusPromoFragment;
 
@@ -91,8 +90,4 @@ public class TopAdsFilterProductPromoActivity extends BaseFilterActivity {
         return null;
     }
 
-    @Override
-    protected int closeButtonDrawable() {
-        return R.drawable.ic_close_top_ads ;
-    }
 }
