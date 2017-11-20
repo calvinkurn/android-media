@@ -1,15 +1,12 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.activity;
 
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -105,36 +102,32 @@ public class DetailResChatActivity
             toolbar.setTitle("Komplain ke " + shopName);
         }
         presenter.initFragment(isSeller);
-        addDetailNavigation();
-    }
-
-    private void addDetailNavigation() {
-        Button detailButton = new Button(this);
-        detailButton.setText("Detail");
-        detailButton.setAllCaps(false);
-        detailButton.setBackground(getResources().getDrawable(R.color.transparent));
-        detailButton.setLayoutParams(
-                new ActionBar.LayoutParams(
-                        ActionBar.LayoutParams.WRAP_CONTENT,
-                        ActionBar.LayoutParams.MATCH_PARENT));
-        detailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent;
-                if (isSeller) {
-                    intent = DetailResCenterActivity.newSellerInstance(DetailResChatActivity.this, resolutionId, userName);
-                } else {
-                    intent = DetailResCenterActivity.newBuyerInstance(DetailResChatActivity.this, resolutionId, shopName);
-                }
-                startActivityForResult(intent, REQUEST_GO_DETAIL);
-            }
-        });
-        detailButton.setGravity(Gravity.RIGHT | Gravity.CENTER);
-        toolbar.addView(detailButton);
     }
 
     @Override
     protected void setViewListener() {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_resolution_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_detail) {
+            Intent intent;
+            if (isSeller) {
+                intent = DetailResCenterActivity.newSellerInstance(DetailResChatActivity.this, resolutionId, userName);
+            } else {
+                intent = DetailResCenterActivity.newBuyerInstance(DetailResChatActivity.this, resolutionId, shopName);
+            }
+            startActivityForResult(intent, REQUEST_GO_DETAIL);
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
 
     }
 
