@@ -7,6 +7,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
         android:orientation="vertical"
         tools:context="com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment">
 
@@ -35,13 +37,6 @@
                 android:layout_marginBottom="@dimen/margin_sm"
                 android:textSize="@dimen/font_subheading"
                 tools:text="Usia diatas 12 tahun" />
-
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:text="Titel"
-                android:textColor="@color/label_color" />
 
             <com.tokopedia.design.text.SpinnerTextView
                 android:id="@+id/sp_title"
@@ -79,7 +74,8 @@
                     android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/ic_arrow_down_grey"
                     android:drawableRight="@drawable/ic_arrow_down_grey"
-                    android:enabled="false"
+                    android:focusable="false"
+                    android:clickable="true"
                     android:hint="Pilih Tanggal Lahir"
                     android:paddingEnd="10dp"
                     android:paddingRight="10dp"
