@@ -10,6 +10,7 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 
 /**
@@ -73,6 +74,12 @@ public class ChatRoomContract {
         void onSuccessSendReply(ReplyActionData data, String reply);
 
         void onErrorSendReply();
+
+        void resetReplyColumn();
+
+        boolean isCurrentThread(int msgId);
+
+        boolean isMyMessage(int fromUid);
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -87,5 +94,7 @@ public class ChatRoomContract {
         void onGoToDetail(String userId, String role);
 
         void sendMessageWithApi();
+
+        void addDummyMessage(WebSocketResponse response);
     }
 }

@@ -19,11 +19,14 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
+import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -159,6 +162,43 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                     getView().onSuccessSendReply(data, reply);
                 }
             });
+        }
+    }
+
+    @Override
+    public void addDummyMessage(WebSocketResponse response) {
+        if (getView().isCurrentThread(response.getData().getMsgId())
+                && getView().isMyMessage(response.getData().getFromUid())) {
+            getView().getAdapter().removeLast();
+            MyChatViewModel item = new MyChatViewModel();
+            item.setReplyId(response.getData().getMsgId());
+            item.setMsgId(response.getData().getMsgId());
+            item.setSenderId(String.valueOf(response.getData().getFromUid()));
+            item.setMsg(response.getData().getMessage().getCensoredReply());
+            item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
+            getView().getAdapter().addReply(item);
+            getView().finishLoading();
+            getView().resetReplyColumn();
+            getView().scrollToBottom();
+        } else if (getView().isCurrentThread(response.getData().getMsgId())) {
+            OppositeChatViewModel item = new OppositeChatViewModel();
+            item.setReplyId(response.getData().getMsgId());
+            item.setMsgId(response.getData().getMsgId());
+            item.setSenderId(String.valueOf(response.getData().getFromUid()));
+            item.setMsg(response.getData().getMessage().getCensoredReply());
+            item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
+            if (getView().getAdapter().isTyping()) {
+                getView().getAdapter().removeTyping();
+            }
+            getView().getAdapter().addReply(item);
+            getView().finishLoading();
+            getView().resetReplyColumn();
+            try {
+                readMessage(String.valueOf(response.getData().getMsgId()));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            getView().scrollToBottom();
         }
     }
 
@@ -338,5 +378,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             e.printStackTrace();
         }
     }
+
 
 }

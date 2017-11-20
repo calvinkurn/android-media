@@ -406,39 +406,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 @Override
                 public void run() {
                     setViewEnabled(true);
-                    if (isCurrentThread(response.getData().getMsgId())
-                            && isMyMessage(response.getData().getFromUid())) {
-                        adapter.removeLast();
-                        MyChatViewModel item = new MyChatViewModel();
-                        item.setReplyId(response.getData().getMsgId());
-                        item.setMsgId(response.getData().getMsgId());
-                        item.setSenderId(String.valueOf(response.getData().getFromUid()));
-                        item.setMsg(response.getData().getMessage().getCensoredReply());
-                        item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
-                        adapter.addReply(item);
-                        finishLoading();
-                        replyColumn.setText("");
-                        scrollToBottom();
-                    } else if (isCurrentThread(response.getData().getMsgId())) {
-                        OppositeChatViewModel item = new OppositeChatViewModel();
-                        item.setReplyId(response.getData().getMsgId());
-                        item.setMsgId(response.getData().getMsgId());
-                        item.setSenderId(String.valueOf(response.getData().getFromUid()));
-                        item.setMsg(response.getData().getMessage().getCensoredReply());
-                        item.setReplyTime(response.getData().getMessage().getTimeStampUnix());
-                        if (adapter.isTyping()) {
-                            adapter.removeTyping();
-                        }
-                        adapter.addReply(item);
-                        finishLoading();
-                        replyColumn.setText("");
-                        try {
-                            presenter.readMessage(String.valueOf(response.getData().getMsgId()));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        scrollToBottom();
-                    }
+                    presenter.addDummyMessage(response);
                     setResult();
                 }
             });
@@ -472,11 +440,18 @@ public class ChatRoomFragment extends BaseDaggerFragment
         showError(getString(R.string.delete_error).concat("\n").concat(getString(R.string.string_general_error)));
     }
 
-    private boolean isMyMessage(int fromUid) {
+    @Override
+    public void resetReplyColumn() {
+        replyColumn.setText("");
+    }
+
+    @Override
+    public boolean isMyMessage(int fromUid) {
         return String.valueOf(fromUid).equals(sessionHandler.getLoginID(MainApplication.getAppContext()));
     }
 
-    private boolean isCurrentThread(int msgId) {
+    @Override
+    public boolean isCurrentThread(int msgId) {
         return getArguments().getString(PARAM_MESSAGE_ID).equals(String.valueOf(msgId));
     }
 

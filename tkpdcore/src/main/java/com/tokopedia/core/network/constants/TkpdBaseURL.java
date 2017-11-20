@@ -269,7 +269,7 @@ public class TkpdBaseURL {
 
         public static final String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
         public static final String URL_INBOX_MESSAGE_TIME_MACHINE = MOBILE_DOMAIN +
-                "inbox-message-old.pl";
+                "inbox-message-old.pl?flag_app=1";
     }
 
     public static class Shop {

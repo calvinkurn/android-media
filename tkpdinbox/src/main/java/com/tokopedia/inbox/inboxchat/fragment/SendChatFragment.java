@@ -26,6 +26,7 @@ import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.listener.SendChat;
 import com.tokopedia.inbox.inboxchat.presenter.SendChatPresenter;
+import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 
 import javax.inject.Inject;
 
@@ -200,7 +201,14 @@ public class SendChatFragment extends BaseDaggerFragment
                 ImageHandler.loadImageCircle2(getActivity(), avatar, url, R.drawable
                         .ic_image_avatar_boy);
             user.setText(getArguments().getString(SendMessageActivity.PARAM_OWNER_FULLNAME));
-            label.setText(getArguments().getString(SendMessageActivity.PARAM_ROLE));
+            if (!TextUtils.isEmpty(getArguments().getString(SendMessageActivity.PARAM_ROLE, ""))
+                    && !getArguments().getString(SendMessageActivity.PARAM_ROLE, "").equals(SendMessageActivity
+                    .ROLE_USER)) {
+                label.setText(getArguments().getString(SendMessageActivity.PARAM_ROLE));
+                label.setVisibility(View.VISIBLE);
+            } else {
+                label.setVisibility(View.GONE);
+            }
         }
     }
 

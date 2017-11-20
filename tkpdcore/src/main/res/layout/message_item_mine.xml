@@ -43,6 +43,7 @@
             android:textColor="@color/white"
             android:textColorLink="@color/white"
             tools:text ="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"
+            android:clickable="true"
             android:textSize="@dimen/fonts" />
 
     </RelativeLayout>
