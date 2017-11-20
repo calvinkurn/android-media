@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -51,16 +52,54 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         final Request finalRequest = newRequest.build();
         Response response = getResponse(chain, finalRequest);
 
-        if (isNeedRelogin(response)) {
-            doRelogin();
-            response = getResponse(chain, finalRequest);
-        }
-
         if (!response.isSuccessful()) {
             throwChainProcessCauseHttpError(response);
         }
 
-        if (isUnauthorized(finalRequest, response)) {
+        checkForceLogout(chain, response, finalRequest);
+
+        String bodyResponse = response.body().string();
+        checkResponse(bodyResponse, response);
+
+        return createNewResponse(response, bodyResponse);
+    }
+
+    private Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws IOException{
+        if (isNeedRelogin(response)) {
+            refreshTokenWithRelogin();
+            if (finalRequest.header("authorization").contains("Bearer")) {
+                Request newest = chain.request();
+                Request.Builder newestRequestBuilder = chain.request().newBuilder();
+                generateHmacAuthRequest(newest, newestRequestBuilder);
+                String freshAccessToken = SessionHandler.getAccessToken();
+                newestRequestBuilder
+                        .header("authorization", "Bearer " + freshAccessToken)
+                        .header("accounts-authorization", "Bearer " + freshAccessToken);
+                Request newestRequest = newestRequestBuilder.build();
+
+                Response response1 = chain.proceed(newestRequest);
+                if (isUnauthorized(newestRequest, response1)) {
+                    showForceLogoutDialog();
+                    sendForceLogoutAnalytics(response1);
+                }
+                return response1;
+            } else {
+                Request newest = chain.request();
+                Request.Builder newestRequestBuilder = chain.request().newBuilder();
+                generateHmacAuthRequest(newest, newestRequestBuilder);
+                String freshAccessToken = SessionHandler.getAccessToken();
+                newestRequestBuilder
+                        .header("accounts-authorization", "Bearer " + freshAccessToken);
+                Request newestRequest = newestRequestBuilder.build();
+
+                Response response1 = chain.proceed(newestRequest);
+                if (isUnauthorized(newestRequest, response1)) {
+                    showForceLogoutDialog();
+                    sendForceLogoutAnalytics(response1);
+                }
+                return response1;
+            }
+        } else if (isUnauthorized(finalRequest, response)) {
             refreshToken();
             Request newest = recreateRequestWithNewAccessToken(chain);
             Response response1 = chain.proceed(newest);
@@ -70,11 +109,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             }
             return response1;
         }
-
-        String bodyResponse = response.body().string();
-        checkResponse(bodyResponse, response);
-
-        return createNewResponse(response, bodyResponse);
+        return response;
     }
 
     protected void checkResponse(String string, Response response) {
@@ -334,7 +369,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected void doRelogin() {
-        SessionRefresh sessionRefresh = new SessionRefresh();
+        doRelogin("");
+    }
+
+    protected void doRelogin(String newAccessToken) {
+        SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
             sessionRefresh.refreshLogin();
         } catch (IOException e) {
@@ -351,6 +390,16 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
+    protected void refreshTokenWithRelogin() {
+        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+        try {
+            String newAccessToken = accessTokenRefresh.refreshToken();
+            doRelogin(newAccessToken);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private Request recreateRequestWithNewAccessToken(Chain chain) {
         String freshAccessToken = SessionHandler.getAccessToken();
         return chain.request().newBuilder()
@@ -358,4 +407,5 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 .header("accounts-authorization", "Bearer " + freshAccessToken)
                 .build();
     }
+
 }
