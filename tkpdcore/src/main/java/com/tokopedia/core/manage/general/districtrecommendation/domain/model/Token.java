@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.people.address.model.districtrecomendation;
+package com.tokopedia.core.manage.general.districtrecommendation.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,10 +7,24 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Irfan Khoirul on 07/11/17.
+ * Created by Irfan Khoirul on 17/11/17.
  */
 
 public class Token implements Parcelable {
+    @SerializedName("district_recommendation")
+    @Expose
+    private String districtRecommendation;
+    @SerializedName("ut")
+    @Expose
+    private int unixTime;
+
+    public Token() {
+    }
+
+    protected Token(Parcel in) {
+        districtRecommendation = in.readString();
+        unixTime = in.readInt();
+    }
 
     public static final Creator<Token> CREATOR = new Creator<Token>() {
         @Override
@@ -23,17 +37,6 @@ public class Token implements Parcelable {
             return new Token[size];
         }
     };
-    @SerializedName("district_recommendation")
-    @Expose
-    private String districtRecommendation;
-    @SerializedName("ut")
-    @Expose
-    private int unixTime;
-
-    protected Token(Parcel in) {
-        districtRecommendation = in.readString();
-        unixTime = in.readInt();
-    }
 
     public String getDistrictRecommendation() {
         return districtRecommendation;
@@ -43,7 +46,7 @@ public class Token implements Parcelable {
         this.districtRecommendation = districtRecommendation;
     }
 
-    public long getUnixTime() {
+    public int getUnixTime() {
         return unixTime;
     }
 
@@ -57,9 +60,8 @@ public class Token implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(districtRecommendation);
-        parcel.writeInt(unixTime);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(districtRecommendation);
+        dest.writeInt(unixTime);
     }
-
 }

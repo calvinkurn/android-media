@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context="com.tokopedia.core.manage.people.address.fragment.DistrictRecommendationFragment">
+    tools:context="com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationFragment">
 
     <android.support.v7.widget.SearchView
         android:id="@+id/search_address"

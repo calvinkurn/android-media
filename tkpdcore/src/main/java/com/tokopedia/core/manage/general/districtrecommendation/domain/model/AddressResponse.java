@@ -1,18 +1,24 @@
-package com.tokopedia.core.manage.people.address.model.districtrecomendation;
+package com.tokopedia.core.manage.general.districtrecommendation.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
 
 /**
- * Created by Irfan Khoirul on 31/10/17.
+ * Created by Irfan Khoirul on 17/11/17.
  */
 
 public class AddressResponse implements Parcelable {
+    private boolean nextAvailable;
+    private ArrayList<Address> addresses;
+
+    public AddressResponse() {
+    }
+
+    protected AddressResponse(Parcel in) {
+        nextAvailable = in.readByte() != 0;
+    }
 
     public static final Creator<AddressResponse> CREATOR = new Creator<AddressResponse>() {
         @Override
@@ -25,16 +31,6 @@ public class AddressResponse implements Parcelable {
             return new AddressResponse[size];
         }
     };
-    @SerializedName("next_available")
-    @Expose
-    private boolean nextAvailable;
-    @SerializedName("data")
-    @Expose
-    private ArrayList<Address> addresses;
-
-    protected AddressResponse(Parcel in) {
-        nextAvailable = in.readByte() != 0;
-    }
 
     public boolean isNextAvailable() {
         return nextAvailable;
@@ -58,7 +54,8 @@ public class AddressResponse implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeByte((byte) (nextAvailable ? 1 : 0));
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (nextAvailable ? 1 : 0));
+        dest.writeList(addresses);
     }
 }
