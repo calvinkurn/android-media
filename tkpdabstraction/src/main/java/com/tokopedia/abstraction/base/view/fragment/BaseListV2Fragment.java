@@ -80,7 +80,7 @@ public abstract class BaseListV2Fragment<T extends ItemType> extends BaseDaggerF
     @Override
     public void onSearchLoaded(@NonNull List<T> list, int totalItem) {
         hideLoading();
-        if (adapter.isLoadInitialPage() && list.size() > 0) {
+        if (adapter.isLoadInitialPage() ) {
             adapter.clearData();
         }
         adapter.addData(list, totalItem);

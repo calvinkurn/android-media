@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight.common.view.DepartureArrivalHeaderView;
 import com.tokopedia.flight.search.view.activity.FlightSearchReturnActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
@@ -51,20 +53,15 @@ public class FlightSearchReturnFragment extends FlightSearchFragment {
         airlineName = (TextView) view.findViewById(R.id.airline_name);
         duration = (TextView) view.findViewById(R.id.duration);
 
-        String departureAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getArrivalAirport().getAirportId()) ?
-                flightSearchPassDataViewModel.getArrivalAirport().getCityId() : flightSearchPassDataViewModel.getArrivalAirport().getAirportId();
-        departureAirportCode.setText(departureAirportId);
-        departureAirportName.setText(flightSearchPassDataViewModel.getArrivalAirport().getCityName());
-        String arrivalAirportId = TextUtils.isEmpty(flightSearchPassDataViewModel.getDepartureAirport().getAirportId()) ?
-                flightSearchPassDataViewModel.getDepartureAirport().getCityId() : flightSearchPassDataViewModel.getDepartureAirport().getAirportId();
-        arrivalAirportCode.setText(arrivalAirportId);
-        arrivalAirportName.setText(flightSearchPassDataViewModel.getDepartureAirport().getCityName());
+        flightSearchPresenter.getDetailDepartureFlight(selectedFlightDeparture);
     }
 
-    @Override
-    public void loadData(int page, int currentDataSize, int rowPerPage) {
-        super.loadData(page, currentDataSize, rowPerPage);
-        flightSearchPresenter.getDetailDepartureFlight(selectedFlightDeparture);
+    protected FlightAirportDB getDepartureAirport(){
+        return flightSearchPassDataViewModel.getArrivalAirport();
+    }
+
+    protected FlightAirportDB getArrivalAirport(){
+        return flightSearchPassDataViewModel.getDepartureAirport();
     }
 
     protected boolean isReturning(){

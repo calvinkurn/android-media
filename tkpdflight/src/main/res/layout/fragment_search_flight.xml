@@ -10,14 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include
-            layout="@layout/include_header_flight_detail"
-            android:layout_height="80dp"
+        <com.tokopedia.flight.common.view.DepartureArrivalHeaderView
+            android:id="@+id/dep_arr_header_view"
             android:layout_width="match_parent"
-            app:layout_scrollFlags="scroll|snap|enterAlways" />
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|snap|enterAlways"/>
 
     </android.support.design.widget.AppBarLayout>
-
 
     <com.tokopedia.flight.search.view.adapter.FlightSearchRecyclerView
         android:id="@+id/recycler_view"

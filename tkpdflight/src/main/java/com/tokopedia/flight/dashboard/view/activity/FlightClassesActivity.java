@@ -2,6 +2,7 @@ package com.tokopedia.flight.dashboard.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -27,6 +28,12 @@ public class FlightClassesActivity extends BaseSimpleActivity implements HasComp
     @Override
     protected Fragment getNewFragment() {
         return FlightClassesfragment.newInstance();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        toolbar.setContentInsetStartWithNavigation(0);
     }
 
     @Override

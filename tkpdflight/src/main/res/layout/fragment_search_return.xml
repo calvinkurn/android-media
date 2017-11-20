@@ -56,11 +56,11 @@
 
             </LinearLayout>
 
-            <include
-                layout="@layout/include_header_flight_detail"
+            <com.tokopedia.flight.common.view.DepartureArrivalHeaderView
+                android:id="@+id/dep_arr_header_view"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
-                 />
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|snap|enterAlways"/>
         </LinearLayout>
 
     </android.support.design.widget.AppBarLayout>

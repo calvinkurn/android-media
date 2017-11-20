@@ -116,15 +116,17 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
             filterModel.setDurationMax(statMaxDur);
         }
         EditText minValueEditText = durationDecimalRangeInputView.getMinValueEditText();
-        if (minValueDurationTextWatcher == null) {
-            minValueDurationTextWatcher = new DurationTextWatcher(minValueEditText);
-            minValueEditText.addTextChangedListener(minValueDurationTextWatcher);
+        if (minValueDurationTextWatcher!= null) {
+            minValueEditText.removeTextChangedListener(minValueDurationTextWatcher);
         }
+        minValueDurationTextWatcher = new DurationTextWatcher(minValueEditText);
+        minValueEditText.addTextChangedListener(minValueDurationTextWatcher);
         EditText maxValueEditText = durationDecimalRangeInputView.getMaxValueEditText();
-        if (maxValueDurationTextWatcher == null) {
-            maxValueDurationTextWatcher = new DurationTextWatcher(maxValueEditText);
-            maxValueEditText.addTextChangedListener(maxValueDurationTextWatcher);
+        if (maxValueDurationTextWatcher != null) {
+            maxValueEditText.removeTextChangedListener(maxValueDurationTextWatcher);
         }
+        maxValueDurationTextWatcher = new DurationTextWatcher(maxValueEditText);
+        maxValueEditText.addTextChangedListener(maxValueDurationTextWatcher);
 
         durationDecimalRangeInputView.setPower(1);
         durationDecimalRangeInputView.setData(statMinDur, statMaxDur, filterMinDur, filterMaxDur);
@@ -155,15 +157,17 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
         }
 
         EditText minValueEditText = priceRangeInputView.getMinValueEditText();
-        if (minValueCurrencyTextWatcher == null) {
-            minValueCurrencyTextWatcher = new CurrencyTextWatcher(minValueEditText, CurrencyEnum.RP);
-            minValueEditText.addTextChangedListener(minValueCurrencyTextWatcher);
+        if (minValueCurrencyTextWatcher != null) {
+            minValueEditText.removeTextChangedListener(minValueCurrencyTextWatcher);
         }
+        minValueCurrencyTextWatcher = new CurrencyTextWatcher(minValueEditText, CurrencyEnum.RP);
+        minValueEditText.addTextChangedListener(minValueCurrencyTextWatcher);
         EditText maxValueEditText = priceRangeInputView.getMaxValueEditText();
-        if (maxValueCurrencyTextWatcher == null) {
-            maxValueCurrencyTextWatcher = new CurrencyTextWatcher(maxValueEditText, CurrencyEnum.RP);
-            maxValueEditText.addTextChangedListener(maxValueCurrencyTextWatcher);
+        if (maxValueCurrencyTextWatcher != null) {
+            maxValueEditText.removeTextChangedListener(maxValueCurrencyTextWatcher);
         }
+        maxValueCurrencyTextWatcher = new CurrencyTextWatcher(maxValueEditText, CurrencyEnum.RP);
+        maxValueEditText.addTextChangedListener(maxValueCurrencyTextWatcher);
 
         priceRangeInputView.setPower(1);
         priceRangeInputView.setData(statMinPrice, statMaxPrice, filterMinPrice, filterMaxPrice);

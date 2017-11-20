@@ -40,6 +40,9 @@ public class FlightMetaDataDB extends BaseModel {
     @Column(name = "retry_no")
     int retry_no;
 
+    @Column(name = "last_pulled")
+    long last_pulled;
+
     public FlightMetaDataDB(){
 
     }
@@ -52,5 +55,6 @@ public class FlightMetaDataDB extends BaseModel {
         this.refreshTime = meta.getRefreshTime();
         this.max_retry = meta.getMaxRetry();
         this.retry_no = 0;
+        this.last_pulled = System.currentTimeMillis() / 1000L;
     }
 }
