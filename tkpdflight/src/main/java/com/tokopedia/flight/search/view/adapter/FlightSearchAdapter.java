@@ -12,6 +12,8 @@ import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder;
 import com.tokopedia.abstraction.utils.MethodChecker;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.util.FlightAirlineIconUtil;
+import com.tokopedia.flight.search.util.DurationUtil;
+import com.tokopedia.flight.search.view.model.Duration;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
@@ -101,11 +103,14 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
         }
 
         void setDuration(FlightSearchViewModel flightSearchViewModel) {
+            Duration duration = DurationUtil.convertFormMinute(flightSearchViewModel.getDurationMinute());
+            String durationString = DurationUtil.getReadableString(itemView.getContext(),duration);
             if(flightSearchViewModel.getTotalTransit() > 0){
                 tvDuration.setText(itemView.getContext().getString(R.string.flight_label_duration_transit,
-                        flightSearchViewModel.getDuration(), String.valueOf(flightSearchViewModel.getTotalTransit())));
+                        durationString, String.valueOf(flightSearchViewModel.getTotalTransit())));
             }else {
-                tvDuration.setText(flightSearchViewModel.getDuration());
+                tvDuration.setText(itemView.getContext().getString(R.string.flight_label_duration_direct,
+                        durationString));
             }
         }
 
