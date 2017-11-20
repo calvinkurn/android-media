@@ -133,10 +133,10 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                     luggageDepartureLayout.setVisibility(View.GONE);
                 }
 
-                if (viewModel.getDepartureMeals() != null && viewModel.getDepartureMeals().size() > 0) {
+                if (viewModel.getFlightBookingMealRouteViewModels() != null && viewModel.getFlightBookingMealRouteViewModels().size() > 0) {
                     mealDepartureLayout.setVisibility(View.VISIBLE);
                     tvMealDepartureLabel.setText("Meal Departure");
-                    tvMealDeparture.setText(TextUtils.join(",", viewModel.getDepartureMeals()));
+                    tvMealDeparture.setText(TextUtils.join(",", viewModel.getFlightBookingMealRouteViewModels()));
                 } else {
                     mealDepartureLayout.setVisibility(View.GONE);
                 }
@@ -153,13 +153,13 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
                         luggageReturnLayout.setVisibility(View.GONE);
                     }
 
-                    if (viewModel.getReturnMeals() != null && viewModel.getReturnMeals().size() > 0) {
+                    /*if (viewModel.getReturnMeals() != null && viewModel.getReturnMeals().size() > 0) {
                         mealReturnLayout.setVisibility(View.VISIBLE);
                         tvMealReturnLabel.setText("Meal Departure");
                         tvMealReturn.setText(TextUtils.join(",", viewModel.getReturnMeals()));
                     } else {
                         mealReturnLayout.setVisibility(View.GONE);
-                    }
+                    }*/
                 }
 
             } else {
