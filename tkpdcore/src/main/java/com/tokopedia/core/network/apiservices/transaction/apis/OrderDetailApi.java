@@ -19,6 +19,6 @@ public interface OrderDetailApi {
     Observable<Response<String>> getOrderDetail(@QueryMap Map<String, Object> requestOrderDetailParams);
 
     @GET(TkpdBaseURL.Purchase.PATH_ORDER_HISTORY)
-    Observable<Response<String>> getOrderHistory(@QueryMap Map<String, String> requestOrderHistoryParams);
+    Observable<Response<String>> getOrderHistory(@QueryMap Map<String, Object> requestOrderHistoryParams);
 
 }

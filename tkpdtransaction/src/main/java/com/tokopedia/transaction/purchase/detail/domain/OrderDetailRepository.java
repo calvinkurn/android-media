@@ -12,7 +12,10 @@ import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDeta
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
+import com.tokopedia.transaction.purchase.detail.model.history.response.History;
+import com.tokopedia.transaction.purchase.detail.model.history.response.OrderHistoryResponse;
 import com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData;
+import com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryListData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +56,14 @@ public class OrderDetailRepository implements IOrderDetailRepository {
     }
 
     @Override
-    public Observable<OrderHistoryData> requestOrderHistoryData(TKPDMapParam<String, String> params) {
-        return null;
+    public Observable<OrderHistoryData> requestOrderHistoryData(TKPDMapParam<String, Object> params) {
+        return service.getApi().getOrderHistory(params).map(new Func1<Response<String>, OrderHistoryData>() {
+            @Override
+            public OrderHistoryData call(Response<String> stringResponse) {
+                return getOrderHistoryData(
+                        new Gson().fromJson(stringResponse.body(),OrderHistoryResponse.class));
+            }
+        });
     }
 
     @Override
@@ -143,6 +152,27 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         buttonData.setRequestPickupVisibility(buttons.getRequestPickup());
         viewData.setButtonData(buttonData);
 
+        return viewData;
+    }
+
+    private OrderHistoryData getOrderHistoryData(OrderHistoryResponse response) {
+        OrderHistoryData viewData = new OrderHistoryData();
+        com.tokopedia.transaction.purchase.detail.model.history.response
+                .Data historyData = response.getData();
+        viewData.setStepperMode(historyData.getOrderStatusCode());
+        viewData.setStepperStatusTitle(historyData.getOrderStatus());
+        List<OrderHistoryListData> historyListData = new ArrayList<>();
+        List<History> orderHistories = historyData.getHistories();
+        for(int i = 0; i < orderHistories.size(); i++) {
+            OrderHistoryListData listData = new OrderHistoryListData();
+            listData.setOrderHistoryDate(orderHistories.get(i).getDate());
+            listData.setActionBy(orderHistories.get(i).getActionBy());
+            listData.setOrderHistoryTitle(orderHistories.get(i).getStatus());
+            listData.setColor(orderHistories.get(i).getOrderStatusColor());
+            listData.setOrderHistoryTime(orderHistories.get(i).getHour());
+            historyListData.add(listData);
+        }
+        viewData.setOrderListData(historyListData);
         return viewData;
     }
 

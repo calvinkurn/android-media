@@ -57,7 +57,7 @@
                 android:layout_marginEnd="@dimen/margin_med"
                 android:layout_marginRight="@dimen/margin_med"
                 android:gravity="center"
-                android:text="Hapus"
+                android:text="Selesai"
                 android:textStyle="bold"
                 android:textColor="@color/medium_green" />
         </LinearLayout>

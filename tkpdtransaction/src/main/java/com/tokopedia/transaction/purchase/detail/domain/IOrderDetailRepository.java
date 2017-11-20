@@ -15,7 +15,7 @@ public interface IOrderDetailRepository {
 
     Observable<OrderDetailData> requestOrderDetailData(TKPDMapParam<String, Object> params);
 
-    Observable<OrderHistoryData> requestOrderHistoryData(TKPDMapParam<String, String> params);
+    Observable<OrderHistoryData> requestOrderHistoryData(TKPDMapParam<String, Object> params);
 
     Observable<String> confirmFinishDeliver(TKPDMapParam<String, String> params);
 

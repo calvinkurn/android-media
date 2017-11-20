@@ -10,19 +10,23 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderHistoryAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderHistoryStepperLayout;
+import com.tokopedia.transaction.purchase.detail.di.DaggerOrderHistoryComponent;
+import com.tokopedia.transaction.purchase.detail.di.OrderHistoryComponent;
 import com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryData;
-import com.tokopedia.transaction.purchase.detail.model.history.viewmodel.OrderHistoryListData;
+import com.tokopedia.transaction.purchase.detail.presenter.OrderHistoryPresenterImpl;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by kris on 11/7/17. Tokopedia
  */
 
-public class OrderHistoryActivity extends TActivity{
+public class OrderHistoryActivity extends TActivity implements OrderHistoryView {
 
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
+
+    @Inject
+    OrderHistoryPresenterImpl presenter;
 
     public static Intent createInstance(Context context, String orderId) {
         Intent intent = new Intent(context, OrderHistoryActivity.class);
@@ -34,8 +38,17 @@ public class OrderHistoryActivity extends TActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.order_history_layout);
-        //TODO delete after fetching data from ws
-        initView(dummyOrderHistoryData());
+        initInjector();
+        presenter.setMainViewListener(this);
+        presenter.fetchHistoryData(this, getExtraOrderId());
+    }
+
+    private void initInjector() {
+        OrderHistoryComponent component = DaggerOrderHistoryComponent
+                .builder()
+                .appComponent(getApplicationComponent())
+                .build();
+        component.inject(this);
     }
 
     private void initView(OrderHistoryData data) {
@@ -47,54 +60,26 @@ public class OrderHistoryActivity extends TActivity{
         orderHistoryList.setNestedScrollingEnabled(false);
         orderHistoryList.setLayoutManager(new LinearLayoutManager(this));
         orderHistoryList.setAdapter(new OrderHistoryAdapter(
-                dummyOrderHistoryData().getOrderListData()));
+                data.getOrderListData()));
     }
 
-    private OrderHistoryData dummyOrderHistoryData() {
-        OrderHistoryData data = new OrderHistoryData();
-        data.setOrderListData(dummyOrderHistoryListData());
-        data.setStepperMode(OrderHistoryData.ORDER_PROCESSED);
-        data.setStepperStatusTitle("Pesanan Sedang Diproses");
-        return data;
+    @Override
+    public void receivedHistoryData(OrderHistoryData data) {
+        initView(data);
     }
 
-    private List<OrderHistoryListData> dummyOrderHistoryListData() {
-        List<OrderHistoryListData> dataList = new ArrayList<>();
-        OrderHistoryListData data1 = new OrderHistoryListData();
-        data1.setColor("#42B549");
-        data1.setActionBy("Buyer");
-        data1.setOrderHistoryTitle("Transaksi selesai");
-        data1.setOrderHistoryDate("Jumat, 13 Okt 2017");
-        data1.setOrderHistoryTime("11:18 WIB");
-        OrderHistoryListData data2 = new OrderHistoryListData();
-        data2.setColor("#E0E0E0");
-        data2.setActionBy("Tokopedia");
-        data2.setOrderHistoryTitle( "Pesanan telah tiba di tujuan");
-        data2.setOrderHistoryDate("Jumat, 13 Okt 2017");
-        data2.setOrderHistoryTime("11:18 WIB");
-        OrderHistoryListData data3 = new OrderHistoryListData();
-        data3.setColor("#E0E0E0");
-        data3.setActionBy("Seller");
-        data3.setOrderHistoryTitle("Pesanan telah dikirim<br>Pesanan Anda dalam proses pengiriman oleh kurir");
-        data3.setOrderHistoryDate("Jumat, 13 Okt 2017");
-        data3.setOrderHistoryTime("11:18 WIB");
-        OrderHistoryListData data4 = new OrderHistoryListData();
-        data4.setColor("#E0E0E0");
-        data4.setActionBy("Seller");
-        data4.setOrderHistoryTitle("Pemesanan sedang diproses oleh penjual.");
-        data4.setOrderHistoryDate("Jumat, 13 Okt 2017");
-        data4.setOrderHistoryTime("11:18 WIB");
-        OrderHistoryListData data5 = new OrderHistoryListData();
-        data5.setColor("#E0E0E0");
-        data5.setActionBy("Buyer");
-        data5.setOrderHistoryTitle("Verifikasi Konfirmasi Pembayaran<br>Pembayaran telah diterima Tokopedia dan pesanan Anda sudah diteruskan ke penjual");
-        data5.setOrderHistoryDate("Jumat, 13 Okt 2017");
-        data5.setOrderHistoryTime("11:18 WIB");
-        dataList.add(data1);
-        dataList.add(data2);
-        dataList.add(data3);
-        dataList.add(data4);
-        dataList.add(data5);
-        return dataList;
+    @Override
+    public void onLoadError(String message) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    private String getExtraOrderId() {
+        return getIntent().getStringExtra(EXTRA_ORDER_ID);
     }
 }

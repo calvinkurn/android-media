@@ -20,7 +20,7 @@ public class OrderDetailService extends AuthService<OrderDetailApi>{
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.BASE_API_DOMAIN;
+        return TkpdBaseURL.BASE_DOMAIN;
     }
 
     @Override

@@ -21,6 +21,8 @@ public interface OrderDetailPresenter {
 
     void processShowComplain(Context context, OrderDetailData data);
 
+    void processComplaint(Context context, OrderDetailData data);
+
     void processConfirmDeliver(Context context, OrderDetailData data);
 
     void processTrackOrder(Context context, OrderDetailData data);
@@ -30,8 +32,6 @@ public interface OrderDetailPresenter {
     void processAskSeller(Context context, OrderDetailData data);
 
     void processRequestCancelOrder(Context context, OrderDetailData data);
-
-    void processComplain(Context context, String orderId);
 
     void processFinish(Context context, String orderId);
 

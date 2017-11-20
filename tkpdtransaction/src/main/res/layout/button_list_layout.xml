@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/margin_vs"
-    android:paddingTop="@dimen/margin_vs"
     android:background="@color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/margin_vs"
+    android:paddingTop="@dimen/margin_vs">
 
     <Button
         android:id="@+id/accept_order"
@@ -14,6 +14,7 @@
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
         android:text="Accept Order"
+        android:textAllCaps="false"
         android:textColor="@color/white" />
 
     <Button
@@ -23,6 +24,7 @@
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
         android:text="Change Courier"
+        android:textAllCaps="false"
         android:textColor="@color/white" />
 
     <Button
@@ -32,6 +34,7 @@
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
         android:text="Request Pickup"
+        android:textAllCaps="false"
         android:textColor="@color/white" />
 
     <Button
@@ -41,6 +44,7 @@
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
         android:text="Konfirmasi"
+        android:textAllCaps="false"
         android:textColor="@color/white" />
 
     <Button
@@ -50,6 +54,7 @@
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
         android:text="Finish Order"
+        android:textAllCaps="false"
         android:textColor="@color/white" />
 
     <Button
@@ -59,6 +64,7 @@
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
         android:text="Change Awb"
+        android:textAllCaps="false"
         android:textColor="@color/white" />
 
     <Button
@@ -68,6 +74,7 @@
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
         android:text="View Complaint"
+        android:textAllCaps="false"
         android:textColor="@color/white" />
 
     <Button
@@ -77,6 +84,7 @@
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
         android:text="Confirm Shipping"
+        android:textAllCaps="false"
         android:textColor="@color/white" />
 
     <Button
@@ -84,18 +92,18 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
-        android:background="@drawable/green_button_rounded_unify"
+        android:background="@drawable/white_button_rounded"
         android:text="Track"
-        android:textColor="@color/white" />
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/ask_seller_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
-        android:background="@drawable/green_button_rounded_unify"
+        android:background="@drawable/white_button_rounded"
         android:text="Ask Seller"
-        android:textColor="@color/white" />
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/ask_buyer_button"
@@ -104,6 +112,7 @@
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
         android:text="Ask Buyer"
+        android:textAllCaps="false"
         android:textColor="@color/white" />
 
     <Button
@@ -112,7 +121,8 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/white_button_rounded"
-        android:text="Reject Order" />
+        android:text="Reject Order"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/request_cancel_button"
@@ -121,6 +131,7 @@
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/white_button_rounded"
         android:text="Request Cancel"
+        android:textAllCaps="false"
         android:textColor="@color/white" />
 
     <Button
@@ -128,18 +139,10 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
-        android:background="@drawable/green_button_rounded_unify"
+        android:background="@drawable/white_button_rounded"
         android:text="Complaint"
-        android:textColor="@color/white" />
+        android:textAllCaps="false" />
 
-    <Button
-        android:id="@+id/order_detail_button"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_margin="@dimen/margin_small"
-        android:background="@drawable/green_button_rounded_unify"
-        android:text="Order Detail"
-        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/cancel_chance"
@@ -148,6 +151,7 @@
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
         android:text="Cancel Peluang"
+        android:textAllCaps="false"
         android:textColor="@color/white" />
 
 </LinearLayout>

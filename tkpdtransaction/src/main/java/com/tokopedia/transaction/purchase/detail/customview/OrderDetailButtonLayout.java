@@ -40,7 +40,11 @@ public class OrderDetailButtonLayout extends LinearLayout{
     private void initView(Context context) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mainView = inflater.inflate(R.layout.button_list_layout, this, true);
+        mainView = generateView(inflater);
+    }
+
+    private View generateView(LayoutInflater inflater) {
+        return inflater.inflate(R.layout.button_list_layout, this, true);
     }
 
     public void initButton(Context context,
@@ -70,9 +74,11 @@ public class OrderDetailButtonLayout extends LinearLayout{
         askSellerButton.setOnClickListener(onAskSeller(context, presenter, data));
         switchVisibilty(askSellerButton, buttonData.getAskSellerVisibility());
 
-        Button viewComplaint = (Button)mainView.findViewById(R.id.view_complaint_button);
-        viewComplaint.setOnClickListener(onViewComplaintClicked(context, presenter, data));
-        switchVisibilty(viewComplaint, buttonData.getViewComplaint());
+        Button complaint;
+        complaint = (Button) mainView.findViewById(R.id.complaint);
+        complaint.setOnClickListener(onComplaint(context, presenter, data));
+        switchVisibilty(complaint, buttonData.getComplaintVisibility());
+
     }
 
     private void setSellerOrderDetailOption(Context context, OrderDetailPresenter presenter, OrderDetailData data) {
@@ -117,15 +123,14 @@ public class OrderDetailButtonLayout extends LinearLayout{
         requestCancel.setOnClickListener(onRequestCancellation(context, presenter, data));
         switchVisibilty(requestCancel, buttonData.getRequestCancelVisibility());
 
-        Button complaint;
-        complaint = (Button) mainView.findViewById(R.id.complaint);
-        complaint.setOnClickListener(onComplaint(context));
-        switchVisibilty(complaint, buttonData.getComplaintVisibility());
-
         Button cancelChance;
         cancelChance = (Button) mainView.findViewById(R.id.cancel_chance);
         cancelChance.setOnClickListener(onCancelSearch(context));
         switchVisibilty(cancelChance, buttonData.getCancelPeluangVisibility());
+
+        Button viewComplaint = (Button)mainView.findViewById(R.id.view_complaint_button);
+        viewComplaint.setOnClickListener(onViewComplaintClicked(context, presenter, data));
+        switchVisibilty(viewComplaint, buttonData.getViewComplaint());
     }
 
     private View.OnClickListener onFinishButtonClicked(final Context context,
@@ -134,7 +139,6 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Finish Button", Toast.LENGTH_SHORT).show();
                 presenter.processConfirmDeliver(context, data);
             }
         };
@@ -146,7 +150,6 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Complaint Button Clicked", Toast.LENGTH_SHORT).show();
                 presenter.processShowComplain(context, data);
             }
         };
@@ -158,7 +161,6 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Receive Package", Toast.LENGTH_SHORT).show();
                 presenter.processConfirmDeliver(context, data);
             }
         };
@@ -170,7 +172,6 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Receive Package", Toast.LENGTH_SHORT).show();
                 presenter.processTrackOrder(context, data);
             }
         };
@@ -182,7 +183,6 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Ask Seller", Toast.LENGTH_SHORT).show();
                 presenter.processAskSeller(context, data);
             }
         };
@@ -192,7 +192,6 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Complaint", Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -201,7 +200,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Complaint", Toast.LENGTH_SHORT).show();
+
             }
         };
     }
@@ -210,7 +209,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Ask Seller", Toast.LENGTH_SHORT).show();
+
             }
         };
     }
@@ -219,7 +218,6 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Ask Seller", Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -228,7 +226,6 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Ask Seller", Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -237,7 +234,6 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Ask Seller", Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -246,7 +242,6 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Ask Seller", Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -257,17 +252,18 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Request Cancel", Toast.LENGTH_SHORT).show();
                 presenter.processRequestCancelOrder(context, data);
             }
         };
     }
 
-    private View.OnClickListener onComplaint(final Context context) {
+    private View.OnClickListener onComplaint(final Context context,
+                                             final OrderDetailPresenter presenter,
+                                             final OrderDetailData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Complaint", Toast.LENGTH_SHORT).show();
+                presenter.processComplaint(context, data);
             }
         };
     }
@@ -276,7 +272,6 @@ public class OrderDetailButtonLayout extends LinearLayout{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Cancel Search", Toast.LENGTH_SHORT).show();
             }
         };
     }

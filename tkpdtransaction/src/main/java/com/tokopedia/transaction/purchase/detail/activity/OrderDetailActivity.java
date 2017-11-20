@@ -8,15 +8,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
@@ -120,6 +125,7 @@ public class OrderDetailActivity extends TActivity
 
     private void setDescriptionView(OrderDetailData data) {
         TextView descriptionDate = (TextView) findViewById(R.id.description_date);
+        LinearLayout timeLimitLayout = (LinearLayout) findViewById(R.id.time_limit_layout);
         TextView responseTime = (TextView) findViewById(R.id.description_response_time);
         TextView descriptionBuyerName = (TextView) findViewById(R.id.description_buyer_name);
         TextView descriptionCourierName = (TextView) findViewById(R.id.description_courier_name);
@@ -128,11 +134,13 @@ public class OrderDetailActivity extends TActivity
         TextView descriptionPartialOrderStatus = (TextView)
                 findViewById(R.id.description_partial_order_status);
         descriptionDate.setText(data.getPurchaseDate());
-        responseTime.setText(data.getResponseTimeLimit());
         descriptionBuyerName.setText(data.getBuyerName());
         descriptionCourierName.setText(data.getCourierName());
         descriptionShippingAddess.setText(data.getShippingAddress());
         descriptionPartialOrderStatus.setText(data.getPartialOrderStatus());
+        if(data.getResponseTimeLimit() == null || data.getResponseTimeLimit().isEmpty()) {
+            timeLimitLayout.setVisibility(View.GONE);
+        } else responseTime.setText(data.getResponseTimeLimit());
     }
 
     private View.OnClickListener onStatusLayoutClickedListener(final String orderId) {
@@ -183,6 +191,22 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
+    public void onAskSeller(OrderDetailData orderData) {
+        Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                .getAskSellerIntent(this,
+                        orderData.getShopId(),
+                        orderData.getShopName(),
+                        orderData.getInvoiceNumber(),
+                        MethodChecker.fromHtml(
+                                getString(R.string.dialog_message_ask_seller)
+                                        .replace("XXX",
+                                                orderData.getInvoiceUrl())
+                        ).toString(),
+                        TkpdInboxRouter.TX_ASK_SELLER);
+        startActivity(intent);
+    }
+
+    @Override
     public void onOrderFinished(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         finish();
@@ -214,6 +238,6 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onComplaintClicked(String orderId) {
-        presenter.processComplain(this, orderId);
+
     }
 }

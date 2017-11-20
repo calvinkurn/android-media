@@ -60,6 +60,11 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void processShowComplain(Context context, OrderDetailData data) {
+
+    }
+
+    @Override
+    public void processComplaint(Context context, OrderDetailData data) {
         mainView.showComplaintDialog(data.getShopName(), data.getOrderId());
     }
 
@@ -80,16 +85,11 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void processAskSeller(Context context, OrderDetailData data) {
-
+        mainView.onAskSeller(data);
     }
 
     @Override
     public void processRequestCancelOrder(Context context, OrderDetailData data) {
-
-    }
-
-    @Override
-    public void processComplain(Context context, String orderId) {
 
     }
 

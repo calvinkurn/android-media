@@ -21,6 +21,8 @@ public interface OrderDetailView {
 
     void showComplaintDialog(String shopName, String orderId);
 
+    void onAskSeller(OrderDetailData data);
+
     void onOrderFinished(String message);
 
 }
