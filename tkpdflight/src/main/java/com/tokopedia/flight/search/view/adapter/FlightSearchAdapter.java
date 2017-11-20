@@ -104,7 +104,7 @@ public class FlightSearchAdapter extends BaseListV2Adapter<FlightSearchViewModel
 
         void setDuration(FlightSearchViewModel flightSearchViewModel) {
             Duration duration = DurationUtil.convertFormMinute(flightSearchViewModel.getDurationMinute());
-            String durationString = duration.getReadableString(itemView.getContext());
+            String durationString = DurationUtil.getReadableString(itemView.getContext(),duration);
             if(flightSearchViewModel.getTotalTransit() > 0){
                 tvDuration.setText(itemView.getContext().getString(R.string.flight_label_duration_transit,
                         durationString, String.valueOf(flightSearchViewModel.getTotalTransit())));

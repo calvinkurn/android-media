@@ -24,7 +24,7 @@ public class DurationTextWatcher extends AfterTextWatcher {
             int durationMinute = Integer.parseInt(s.toString());
             Duration duration = DurationUtil.convertFormMinute(durationMinute);
             editText.removeTextChangedListener(this);
-            editText.setText(duration.getReadableString(editText.getContext()));
+            editText.setText(DurationUtil.getReadableString(editText.getContext(), duration));
             editText.addTextChangedListener(this);
         } catch (Exception e) {
             // no op

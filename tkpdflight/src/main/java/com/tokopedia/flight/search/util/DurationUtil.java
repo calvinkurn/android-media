@@ -1,6 +1,7 @@
 package com.tokopedia.flight.search.util;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.model.Duration;
@@ -21,6 +22,46 @@ public class DurationUtil {
         int hour = durationModDay / MINUTE_PER_HOUR;
         int minute = durationModDay - (hour * MINUTE_PER_HOUR);
         return new Duration(day, hour, minute);
+    }
+
+    public static String getReadableString(Context context, Duration duration) {
+        boolean useLongFormat = true;
+        int day = duration.getDay();
+        int hour = duration.getHour();
+        int minute = duration.getMinute();
+        if (day > 0 && hour > 0 && minute > 0) {
+            useLongFormat = false;
+        }
+        String durationFormat = "";
+        if (day > 0) {
+            if (useLongFormat) {
+                durationFormat += context.getString(R.string.duration_flight_ddd, day);
+            } else {
+                durationFormat += context.getString(R.string.duration_flight_dd, day);
+            }
+        }
+        if (hour > 0) {
+            if (!TextUtils.isEmpty(durationFormat)) {
+                durationFormat += " ";
+            }
+            if (useLongFormat) {
+                durationFormat += context.getString(R.string.duration_flight_hhh, hour);
+            } else {
+                durationFormat += context.getString(R.string.duration_flight_hh, hour);
+            }
+        }
+
+        if (minute > 0) {
+            if (!TextUtils.isEmpty(durationFormat)) {
+                durationFormat += " ";
+            }
+            if (useLongFormat) {
+                durationFormat += context.getString(R.string.duration_flight_mmm, minute);
+            } else {
+                durationFormat += context.getString(R.string.duration_flight_mm, minute);
+            }
+        }
+        return durationFormat;
     }
 
 }

@@ -258,8 +258,6 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        setUpDepArrHeader(view);
         setUpBottomAction(view);
 
         setUpCombinationAirport();
@@ -310,23 +308,23 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         filterAndSortBottomAction.setVisibility(View.GONE);
     }
 
-    protected void setUpDepArrHeader(View view) {
-        DepartureArrivalHeaderView departureArrivalHeaderView = (DepartureArrivalHeaderView) view.findViewById(R.id.dep_arr_header_view);
-
-        String depAirportID = getDepartureAirport().getAirportId();
-        String depCityCode = getDepartureAirport().getCityCode();
-        String depCityName = getDepartureAirport().getCityName();
-        String departureAirportIdOrCityCode = TextUtils.isEmpty(depAirportID) ? depCityCode : depAirportID;
-
-        String arrAirportID = getArrivalAirport().getAirportId();
-        String arrCityCode = getArrivalAirport().getCityCode();
-        String arrCityName = getArrivalAirport().getCityName();
-        String arrivalAirportIdOrCityCode = TextUtils.isEmpty(arrAirportID) ? arrCityCode : arrAirportID;
-
-        departureArrivalHeaderView.setDeparture(departureAirportIdOrCityCode, depCityName);
-        departureArrivalHeaderView.setArrival(arrivalAirportIdOrCityCode, arrCityName);
-
-    }
+//    protected void setUpDepArrHeader(View view) {
+//        DepartureArrivalHeaderView departureArrivalHeaderView = (DepartureArrivalHeaderView) view.findViewById(R.id.dep_arr_header_view);
+//
+//        String depAirportID = getDepartureAirport().getAirportId();
+//        String depCityCode = getDepartureAirport().getCityCode();
+//        String depCityName = getDepartureAirport().getCityName();
+//        String departureAirportIdOrCityCode = TextUtils.isEmpty(depAirportID) ? depCityCode : depAirportID;
+//
+//        String arrAirportID = getArrivalAirport().getAirportId();
+//        String arrCityCode = getArrivalAirport().getCityCode();
+//        String arrCityName = getArrivalAirport().getCityName();
+//        String arrivalAirportIdOrCityCode = TextUtils.isEmpty(arrAirportID) ? arrCityCode : arrAirportID;
+//
+//        departureArrivalHeaderView.setDeparture(departureAirportIdOrCityCode, depCityName);
+//        departureArrivalHeaderView.setArrival(arrivalAirportIdOrCityCode, arrCityName);
+//
+//    }
 
 
     private void setUIMarkFilter() {

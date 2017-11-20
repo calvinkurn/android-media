@@ -10,9 +10,9 @@ import com.tokopedia.flight.R;
  */
 
 public class Duration {
-    int day;
-    int hour;
-    int minute;
+    private int day;
+    private int hour;
+    private int minute;
 
     public Duration(int day, int hour, int minute) {
         this.day = day;
@@ -20,40 +20,15 @@ public class Duration {
         this.minute = minute;
     }
 
-    public String getReadableString(Context context) {
-        boolean useLongFormat = true;
-        if (day > 0 && hour > 0 && minute > 0) {
-            useLongFormat = false;
-        }
-        String durationFormat = "";
-        if (day > 0) {
-            if (useLongFormat) {
-                durationFormat += context.getString(R.string.duration_flight_ddd, day);
-            } else {
-                durationFormat += context.getString(R.string.duration_flight_dd, day);
-            }
-        }
-        if (hour > 0) {
-            if (!TextUtils.isEmpty(durationFormat)) {
-                durationFormat += " ";
-            }
-            if (useLongFormat) {
-                durationFormat += context.getString(R.string.duration_flight_hhh, hour);
-            } else {
-                durationFormat += context.getString(R.string.duration_flight_hh, hour);
-            }
-        }
+    public int getDay() {
+        return day;
+    }
 
-        if (minute > 0) {
-            if (!TextUtils.isEmpty(durationFormat)) {
-                durationFormat += " ";
-            }
-            if (useLongFormat) {
-                durationFormat += context.getString(R.string.duration_flight_mmm, minute);
-            } else {
-                durationFormat += context.getString(R.string.duration_flight_mm, minute);
-            }
-        }
-        return durationFormat;
+    public int getHour() {
+        return hour;
+    }
+
+    public int getMinute() {
+        return minute;
     }
 }
