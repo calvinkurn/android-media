@@ -22,8 +22,8 @@ public class CloudReplyDataSource {
         this.getReplyMapper = getReplyMapper;
     }
 
-    public Observable<ChatRoomViewModel> getReply(TKPDMapParam<String, Object> requestParams) {
-        return chatService.getApi().getReply(String.valueOf(requestParams.get("msg_id")), requestParams).map(getReplyMapper);
+    public Observable<ChatRoomViewModel> getReply(String id, TKPDMapParam<String, Object> requestParams) {
+        return chatService.getApi().getReply(id, requestParams).map(getReplyMapper);
     }
 
 

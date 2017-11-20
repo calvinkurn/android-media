@@ -328,7 +328,6 @@ public class TkpdState {
         public static final int GCM_REVIEW = 103;
         public static final int GCM_TICKET = 104;
         public static final int GCM_RES_CENTER = 105;
-        public static final int GCM_CHAT = 111;
         public static final int GCM_REVIEW_EDIT = 113;
         public static final int GCM_REVIEW_REPLY = 123;
         public static final int GCM_REPUTATION_SMILEY = 202;

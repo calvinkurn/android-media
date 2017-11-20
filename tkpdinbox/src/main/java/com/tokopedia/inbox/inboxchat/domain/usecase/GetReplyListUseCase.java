@@ -27,7 +27,7 @@ public class GetReplyListUseCase extends UseCase<ChatRoomViewModel> {
 
     @Override
     public Observable<ChatRoomViewModel> createObservable(RequestParams requestParams) {
-        return replyRepository.getReply(requestParams.getParameters());
+        return replyRepository.getReply(String.valueOf(requestParams.getParameters().get("msg_id")), requestParams.getParameters());
     }
 
     public static RequestParams generateParam(String messageId, int page)

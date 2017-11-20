@@ -12,6 +12,10 @@
         android:src="@drawable/empty_chat">
     </ImageView>
 
+    <android.support.v4.widget.Space
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/padding_large" />
+
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -21,11 +25,12 @@
         android:fontFamily="sans-serif"
         android:textStyle="bold"
         android:textColor="@color/black_54"
+        android:layout_marginTop="@dimen/margin_ms"
         android:lineSpacingExtra="4sp"/>
 
     <android.support.v4.widget.Space
-        android:layout_width="@dimen/keyline_1_minus_8dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="@dimen/keyline_1_minus_8dp"
+        android:layout_width="wrap_content" />
 
     <TextView
         android:id="@+id/subtitle"
@@ -34,6 +39,8 @@
         android:text="@string/please_try_chat"
         android:gravity="center"
         android:textSize="14sp"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginRight="@dimen/margin_large"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="#61000000"

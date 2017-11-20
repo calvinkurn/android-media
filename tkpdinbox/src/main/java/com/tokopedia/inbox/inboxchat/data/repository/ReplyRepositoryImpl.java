@@ -22,8 +22,8 @@ public class ReplyRepositoryImpl implements ReplyRepository{
     }
 
     @Override
-    public Observable<ChatRoomViewModel> getReply(TKPDMapParam<String, Object> mapParam) {
-        return replyFactory.createCloudReplyDataSource().getReply(mapParam);
+    public Observable<ChatRoomViewModel> getReply(String id, TKPDMapParam<String, Object> requestParams) {
+        return replyFactory.createCloudReplyDataSource().getReply(id, requestParams);
     }
 
     @Override

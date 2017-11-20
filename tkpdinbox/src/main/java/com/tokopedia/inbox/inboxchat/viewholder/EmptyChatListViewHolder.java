@@ -84,8 +84,8 @@ public class EmptyChatListViewHolder extends AbstractViewHolder<EmptyChatModel> 
             }
         } else {
             logo.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.empty_search));
-            title.setText(context.getString(R.string.no_existing_chat_user));
-            subtitle.setVisibility(View.GONE);
+            subtitle.setText(context.getString(R.string.no_existing_chat_user));
+            title.setVisibility(View.GONE);
 
         }
     }

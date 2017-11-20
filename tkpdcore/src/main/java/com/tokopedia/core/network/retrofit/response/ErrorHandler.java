@@ -4,6 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
@@ -178,49 +182,38 @@ public class ErrorHandler {
 
 
     public static String getErrorMessage(Response<TkpdResponse> response) {
-        try {
-            JSONObject jsonObject = new JSONObject(response.errorBody().string());
+
+            JsonElement jsonElement = new JsonParser().parse(response.errorBody().toString());
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
 
             if (hasErrorMessage(jsonObject)) {
-                JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
+                JsonArray jsonArray = jsonObject.getAsJsonArray(ERROR_MESSAGE);
                 return getErrorMessageJoined(jsonArray);
             } else {
                 return "";
             }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 
 
-    private static boolean hasErrorMessage(JSONObject jsonObject) {
+    private static boolean hasErrorMessage(JsonObject jsonObject) {
         return jsonObject.has(ERROR_MESSAGE);
     }
 
-    public static String getErrorMessageJoined(JSONArray errorMessages) {
-        try {
+    public static String getErrorMessageJoined(JsonArray errorMessages) {
 
-            StringBuilder stringBuilder = new StringBuilder();
-            if (errorMessages.length() != 0) {
-                for (int i = 0, statusMessagesSize = errorMessages.length(); i < statusMessagesSize; i++) {
-                    String string = null;
-                    string = errorMessages.getString(i);
-                    stringBuilder.append(string);
-                    if (i != errorMessages.length() - 1
-                            && !errorMessages.get(i).equals("")
-                            && !errorMessages.get(i + 1).equals("")) {
-                        stringBuilder.append("\n");
-                    }
+        StringBuilder stringBuilder = new StringBuilder();
+        if (errorMessages.size() != 0) {
+            for (int i = 0, statusMessagesSize = errorMessages.size(); i < statusMessagesSize; i++) {
+                String string = String.valueOf(errorMessages.get(i));
+                stringBuilder.append(string);
+                if (i != errorMessages.size() - 1
+                        && !errorMessages.get(i).equals("")
+                        && !errorMessages.get(i + 1).equals("")) {
+                    stringBuilder.append("\n");
                 }
             }
-            return stringBuilder.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return "";
         }
+        return stringBuilder.toString();
     }
 }

@@ -14,7 +14,7 @@ import rx.Observable;
 
 public interface ReplyRepository {
 
-    Observable<ChatRoomViewModel> getReply(TKPDMapParam<String, Object> requestParams);
+    Observable<ChatRoomViewModel> getReply(String id, TKPDMapParam<String, Object> requestParams);
 
     Observable<ReplyActionData> replyMessage(TKPDMapParam<String, Object> parameters);
 }
