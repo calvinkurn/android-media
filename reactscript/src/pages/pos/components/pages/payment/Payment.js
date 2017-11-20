@@ -254,6 +254,9 @@ class payment extends Component {
                   </Picker>
                 </View>
               </View>
+              <Text style={styles.errorText}>
+                {this.state.errorMessage.date}
+              </Text>
             </View>
             <View style={{ flex: 0.275, marginRight: 15, borderBottomWidth: 2, borderBottomColor: '#F0F0F0', marginBottom: 1 }}>
               <Text style={styles.row4Text}>CVV</Text>
@@ -279,7 +282,7 @@ class payment extends Component {
             <View style={{ flex: 0.4 }} />
             <View style={{ flex: 0.27 }}>
               <Text style={styles.errorText}>
-                {this.state.errorMessage.date}
+                {this.state.errorMessage.cvv}
               </Text>
               <Text style={[styles.row4Text, {color: '#00000061'}]}>Masukan CVV</Text>
             </View>
