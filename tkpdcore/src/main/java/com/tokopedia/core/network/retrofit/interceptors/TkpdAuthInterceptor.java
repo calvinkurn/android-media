@@ -68,46 +68,25 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         if (isNeedRelogin(response)) {
             refreshTokenWithRelogin();
             if (finalRequest.header("authorization").contains("Bearer")) {
-                Request newest = chain.request();
-                Request.Builder newestRequestBuilder = chain.request().newBuilder();
-                generateHmacAuthRequest(newest, newestRequestBuilder);
-                String freshAccessToken = SessionHandler.getAccessToken();
-                newestRequestBuilder
-                        .header("authorization", "Bearer " + freshAccessToken)
-                        .header("accounts-authorization", "Bearer " + freshAccessToken);
-                Request newestRequest = newestRequestBuilder.build();
-
-                Response response1 = chain.proceed(newestRequest);
-                if (isUnauthorized(newestRequest, response1)) {
-                    showForceLogoutDialog();
-                    sendForceLogoutAnalytics(response1);
-                }
-                return response1;
+                Request newestRequest = recreateRequestWithNewAccessToken(chain);
+                return checkShowForceLogout(chain, newestRequest);
             } else {
-                Request newest = chain.request();
-                Request.Builder newestRequestBuilder = chain.request().newBuilder();
-                generateHmacAuthRequest(newest, newestRequestBuilder);
-                String freshAccessToken = SessionHandler.getAccessToken();
-                newestRequestBuilder
-                        .header("accounts-authorization", "Bearer " + freshAccessToken);
-                Request newestRequest = newestRequestBuilder.build();
-
-                Response response1 = chain.proceed(newestRequest);
-                if (isUnauthorized(newestRequest, response1)) {
-                    showForceLogoutDialog();
-                    sendForceLogoutAnalytics(response1);
-                }
-                return response1;
+                Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
+                return checkShowForceLogout(chain, newestRequest);
             }
         } else if (isUnauthorized(finalRequest, response)) {
             refreshToken();
             Request newest = recreateRequestWithNewAccessToken(chain);
-            Response response1 = chain.proceed(newest);
-            if (isUnauthorized(newest, response1)) {
-                showForceLogoutDialog();
-                sendForceLogoutAnalytics(response1);
-            }
-            return response1;
+            return checkShowForceLogout(chain, newest);
+        }
+        return response;
+    }
+
+    private Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException{
+        Response response = chain.proceed(newestRequest);
+        if (isUnauthorized(newestRequest, response)) {
+            showForceLogoutDialog();
+            sendForceLogoutAnalytics(response);
         }
         return response;
     }
@@ -400,12 +379,25 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private Request recreateRequestWithNewAccessToken(Chain chain) {
+    private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException{
+        Request newest = chain.request();
+        Request.Builder newestRequestBuilder = chain.request().newBuilder();
+        generateHmacAuthRequest(newest, newestRequestBuilder);
         String freshAccessToken = SessionHandler.getAccessToken();
-        return chain.request().newBuilder()
+        newestRequestBuilder
                 .header("authorization", "Bearer " + freshAccessToken)
-                .header("accounts-authorization", "Bearer " + freshAccessToken)
-                .build();
+                .header("accounts-authorization", "Bearer " + freshAccessToken);
+        return newestRequestBuilder.build();
+    }
+
+    private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) throws IOException {
+        Request newest = chain.request();
+        Request.Builder newestRequestBuilder = chain.request().newBuilder();
+        generateHmacAuthRequest(newest, newestRequestBuilder);
+        String freshAccessToken = SessionHandler.getAccessToken();
+        newestRequestBuilder
+                .header("accounts-authorization", "Bearer " + freshAccessToken);
+        return newestRequestBuilder.build();
     }
 
 }
