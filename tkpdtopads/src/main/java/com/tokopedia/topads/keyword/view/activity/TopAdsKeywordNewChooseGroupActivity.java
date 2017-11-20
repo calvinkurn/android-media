@@ -4,24 +4,34 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewCostNewGroupFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
+import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNewChooseGroupFragment;
+import com.tokopedia.topads.keyword.view.model.TopAdsKeywordStepperModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nathan on 5/17/17.
  */
 
-public class TopAdsKeywordNewChooseGroupActivity extends BaseSimpleActivity implements HasComponent<AppComponent> {
+public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity implements HasComponent<AppComponent>, TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
 
+    public static final String RESULT_WORDS = "rslt_wrds";
     public static final String TAG = TopAdsKeywordNewChooseGroupActivity.class.getSimpleName();
-
     private static final String EXTRA_IS_POSITIVE = "is_pos";
     private static final String EXTRA_CHOOSEN_GROUP = "EXTRA_CHOOSEN_GROUP";
+    List<Fragment> fragmentList;
 
     public static void start(Activity activity, int requestCode,
                              boolean isPositive) {
@@ -57,10 +67,31 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseSimpleActivity impl
     }
 
     @Override
-    protected Fragment getNewFragment() {
-        boolean isPositive = getIntent().getBooleanExtra(EXTRA_IS_POSITIVE, true);
-        String groupId = getIntent().getStringExtra(EXTRA_CHOOSEN_GROUP);
-        return TopAdsKeywordNewChooseGroupFragment.newInstance(isPositive, groupId);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        boolean isPositive = false;
+        String groupId = null;
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            isPositive = getIntent().getBooleanExtra(EXTRA_IS_POSITIVE, true);
+            groupId = getIntent().getStringExtra(EXTRA_CHOOSEN_GROUP);
+        }
+        stepperModel = new TopAdsKeywordStepperModel();
+        ((TopAdsKeywordStepperModel) stepperModel).setGroupId(groupId);
+        ((TopAdsKeywordStepperModel) stepperModel).setPositive(isPositive);
+        super.onCreate(savedInstanceState);
+    }
+
+    @NonNull
+    @Override
+    protected List<Fragment> getListFragment() {
+        if (fragmentList == null) {
+            fragmentList = new ArrayList<>();
+            fragmentList.add(TopAdsKeywordNewChooseGroupFragment.newInstance());
+            fragmentList.add(new TopAdsNewCostNewGroupFragment());
+            fragmentList.add(new TopAdsNewScheduleNewGroupFragment());
+            return fragmentList;
+        } else {
+            return fragmentList;
+        }
     }
 
     @Override
@@ -71,5 +102,26 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseSimpleActivity impl
     @Override
     protected boolean isToolbarWhite() {
         return true;
+    }
+
+    @Override
+    public void finishPage() {
+        setResultAdSaved();
+        super.finishPage();
+    }
+
+
+    private void setResultAdSaved() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public void onSuccessSave(ArrayList<String> keyWordsList) {
+        Intent intent = new Intent();
+        intent.putStringArrayListExtra(RESULT_WORDS, keyWordsList);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }
