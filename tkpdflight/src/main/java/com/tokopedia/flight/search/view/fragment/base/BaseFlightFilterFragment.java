@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,16 @@ public abstract class BaseFlightFilterFragment<T extends ItemType> extends BaseL
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_flight_filter_general, container, false);
+    }
+
+    @Override
+    public RecyclerView getRecyclerView(View view) {
+        RecyclerView recyclerView = super.getRecyclerView(view);
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
+        return recyclerView;
     }
 
     @Override
