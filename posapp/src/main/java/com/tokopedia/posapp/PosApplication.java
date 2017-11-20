@@ -15,9 +15,14 @@ public class PosApplication extends PosRouterApplication {
     public void onCreate() {
         setGlobalConfiguration();
         generatePosAppBaseUrl();
+        generatePosAppConstant();
         initializeDatabase();
         initReact();
         super.onCreate();
+    }
+
+    private void generatePosAppConstant() {
+        PosConstants.KEY_PAYMENT = PosAppConstants.KEY_PAYMENT;
     }
 
     private void initializeDatabase() {

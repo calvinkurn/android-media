@@ -5,5 +5,5 @@ package com.tokopedia.posapp;
  */
 
 public class PosAppConstants {
-    public static final String KEY_PAYMENT = "PdsU23He0aJ828P1st8";
+    public static final String KEY_PAYMENT = "yjhUyAyRzOsHC2h6EG2";
 }

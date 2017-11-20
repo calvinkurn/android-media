@@ -5,7 +5,7 @@ package com.tokopedia.posapp;
  */
 
 public class PosConstants {
-    public static final String KEY_PAYMENT = "PdsU23He0aJ828P1st8";
+    public static String KEY_PAYMENT = "PdsU23He0aJ828P1st8";
 
     public static class Payment {
         public static final String MERCHANT_CODE = "tokopediaos";
