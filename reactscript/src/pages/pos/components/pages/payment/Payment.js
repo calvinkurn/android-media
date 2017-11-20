@@ -52,10 +52,10 @@ class payment extends Component {
       date: ''
     };
 
-    // Validation 1
-    if (!ccNum || !ccNum.trim() || ccNum.length < 19 || getCardType(ccNum) === "") {
-      errorMessage.ccNum = 'Nomor kartu kredit tidak valid'
-    }
+    // Validation 1 temporary
+    // if (!ccNum || !ccNum.trim() || ccNum.length < 19 || getCardType(ccNum) === "") {
+    //   errorMessage.ccNum = 'Nomor kartu kredit tidak valid'
+    // }
     
     // Validation 2
     // start of oka
