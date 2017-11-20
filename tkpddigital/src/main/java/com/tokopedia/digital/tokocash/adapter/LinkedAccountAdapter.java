@@ -28,7 +28,6 @@ public class LinkedAccountAdapter extends RecyclerView.Adapter {
 
     private ActionListener actionListener;
     private Context context;
-    private AccountWalletItem accountWalletItem;
 
     public LinkedAccountAdapter(List<AccountWalletItem> accountTokoCashList) {
         this.accountTokoCashList = accountTokoCashList;
@@ -48,9 +47,11 @@ public class LinkedAccountAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ItemAccountViewHolder itemViewHolder = (ItemAccountViewHolder) holder;
-        accountWalletItem = accountTokoCashList.get(position);
+        renderItemView((ItemAccountViewHolder) holder, accountTokoCashList.get(position));
 
+    }
+
+    private void renderItemView(ItemAccountViewHolder itemViewHolder, final AccountWalletItem accountWalletItem) {
         ImageHandler.loadImageThumbs(context, itemViewHolder.ivIcon, accountWalletItem.getImgUrl());
         itemViewHolder.tvEmail.setText(accountWalletItem.getIdentifier());
         itemViewHolder.tvRegisteredDate.setText(String.format(
