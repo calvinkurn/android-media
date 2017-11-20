@@ -31,7 +31,7 @@ import com.tokopedia.seller.common.utils.MenuTintUtils;
 public abstract class BaseToolbarActivity extends BaseActivity {
 
     private final static int TOOLBAR_ELEVATION = 10;
-    private final static int TEXT_COLOR_BACKGROUND_WHITE = R.color.black;
+    private final static int TEXT_COLOR_BACKGROUND_WHITE = R.color.black_70;
     protected Toolbar toolbar;
 
     protected abstract void setupFragment(Bundle savedInstanceState);
