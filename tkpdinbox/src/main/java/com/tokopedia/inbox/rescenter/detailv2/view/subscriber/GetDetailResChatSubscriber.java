@@ -2,12 +2,12 @@ package com.tokopedia.inbox.rescenter.detailv2.view.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.inbox.rescenter.detailv2.view.fragment.DetailResChatFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatFragmentListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCreateLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedRightViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCommonLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemRightViewModel;
@@ -128,6 +128,13 @@ public class GetDetailResChatSubscriber extends Subscriber<DetailResChatDomain> 
                             conversationDomain,
                             isShowTitle));
                 }
+            } else if (actionType.equals(REPORT_RESOLUTION)
+                    || actionType.equals(ENTER_RETUR_SESSION_RESOLUTION)
+                    || actionType.equals(FINISH)
+                    || actionType.equals(REJECT_ADMIN_RESOLUTION)
+                    || actionType.equals(CANCEL)
+                    || actionType.equals(ACCEPT_ADMIN_SOLUTION)) {
+                items.add(new ChatCommonLeftViewModel(conversationDomain, actionType));
             } else {
                 if (detailResChatDomain.getActionBy() == conversationDomain.getAction().getBy()) {
                     items.add(new ChatNotSupportedRightViewModel(

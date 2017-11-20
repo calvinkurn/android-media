@@ -8,6 +8,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatNotSupportedLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatNotSupportedRightViewHolder;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatCommonLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatRightViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatSystemLeftViewHolder;
 import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard.ChatSystemRightViewHolder;
@@ -16,6 +17,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.C
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatNotSupportedRightViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatCommonLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatRightViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemLeftViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailchatadapter.ChatSystemRightViewModel;
@@ -67,6 +69,11 @@ public class DetailChatTypeFactoryImpl extends BaseAdapterTypeFactory  implement
     }
 
     @Override
+    public int type(ChatCommonLeftViewModel viewModel) {
+        return ChatCommonLeftViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
         if (type == ChatLeftViewHolder.LAYOUT) {
@@ -83,6 +90,8 @@ public class DetailChatTypeFactoryImpl extends BaseAdapterTypeFactory  implement
             viewHolder = new ChatSystemRightViewHolder(view, mainView);
         } else if (type == ChatSystemLeftViewHolder.LAYOUT) {
             viewHolder = new ChatSystemLeftViewHolder(view, mainView);
+        }  else if (type == ChatCommonLeftViewHolder.LAYOUT) {
+            viewHolder = new ChatCommonLeftViewHolder(view, mainView);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

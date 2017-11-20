@@ -30,17 +30,12 @@
                 android:textAllCaps="false"
                 android:textColor="@color/black_38"/>
 
-            <TextView
-                android:layout_marginLeft="@dimen/margin_vs"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:foregroundGravity="center"
+            <ImageView
+                android:layout_width="5dp"
+                android:layout_height="5dp"
                 android:layout_gravity="center"
-                android:textColor="@color/grey_warm"
-                context:text="&#8226;"/>
+                android:layout_marginLeft="@dimen/margin_vs"
+                android:background="@drawable/bg_circle_warm_grey"/>
 
             <TextView
                 android:id="@+id/tv_username"
@@ -56,6 +51,5 @@
 
         </LinearLayout>
     </LinearLayout>
-
 
 </RelativeLayout>

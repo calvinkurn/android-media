@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="80dp"
     tools:ignore="MergeRootFrame"
-    app:cardBackgroundColor="@color/white_three">
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:padding="@dimen/padding_small"
