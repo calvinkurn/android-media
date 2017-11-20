@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatActivityPresenter;
@@ -112,6 +115,10 @@ public class DetailResChatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_resolution_detail, menu);
+        MenuItem settingsMenuItem = menu.findItem(R.id.action_detail);
+        SpannableString s = new SpannableString(settingsMenuItem.getTitle());
+        s.setSpan(new ForegroundColorSpan(MethodChecker.getColor(this, R.color.black_70)), 0, s.length(), 0);
+        settingsMenuItem.setTitle(s);
         return true;
     }
 
@@ -128,7 +135,6 @@ public class DetailResChatActivity
             return true;
         } else
             return super.onOptionsItemSelected(item);
-
     }
 
     @Override

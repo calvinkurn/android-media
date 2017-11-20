@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -115,6 +116,7 @@ public class DetailResChatFragment
     private ImageView ivSend, ivAttachment;
     private View actionButtonLayout;
     private ImageUploadHandler uploadImageDialog;
+    private FloatingActionButton fabChat;
 
     private String resolutionId;
     private DetailResChatDomain detailResChatDomain;
@@ -280,11 +282,13 @@ public class DetailResChatFragment
         ivAttachment = (ImageView) view.findViewById(R.id.iv_attachment);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         actionButtonLayout = view.findViewById(R.id.layout_action);
+        fabChat = (FloatingActionButton) view.findViewById(R.id.fab_chat);
 
         actionButtonLayout.setVisibility(View.GONE);
         mainView.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
 
+        rvChat.addOnScrollListener(recyclerViewListener());
         presenter.initUploadImageHandler(getActivity(), uploadImageDialog);
         rvChat.setLayoutManager(new LinearLayoutManager(getActivity()));
         chatAdapter = new ChatAdapter(new DetailChatTypeFactoryImpl(this));
@@ -294,6 +298,20 @@ public class DetailResChatFragment
         attachmentAdapter.setListener(getAttachmentAdapterListener());
         rvAttachment.setAdapter(attachmentAdapter);
         initView(true);
+    }
+
+    private RecyclerView.OnScrollListener recyclerViewListener() {
+        return new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        };
     }
 
     private AttachmentAdapter.ProductImageListener getAttachmentAdapterListener() {
@@ -381,6 +399,12 @@ public class DetailResChatFragment
             }
         });
 
+        fabChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rvChat.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+            }
+        });
     }
 
     private ConversationDomain getTempConversationDomain(String message) {
