@@ -19,7 +19,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlightBookingPassengerActivity extends BaseSimpleActivity implements HasComponent<FlightBookingComponent> {
+public class FlightBookingPassengerActivity extends BaseSimpleActivity implements HasComponent<FlightBookingComponent>, FlightBookingPassengerFragment.OnFragmentInteractionListener {
     public static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
     public static final String EXTRA_LUGGAGES = "EXTRA_LUGGAGES";
     public static final String EXTRA_MEALS = "EXTRA_MEALS";
@@ -58,11 +58,13 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = getIntent().getParcelableExtra(EXTRA_PASSENGER);
+
     }
 
     @Override
     protected Fragment getNewFragment() {
+        viewModel = getIntent().getParcelableExtra(EXTRA_PASSENGER);
+
         List<FlightBookingLuggageViewModel> luggageViewModels = getIntent().getParcelableArrayListExtra(EXTRA_LUGGAGES);
         List<FlightBookingMealViewModel> mealViewModels = getIntent().getParcelableArrayListExtra(EXTRA_MEALS);
         if (getIntent().getStringExtra(EXTRA_RETURN) != null) {
@@ -93,5 +95,13 @@ public class FlightBookingPassengerActivity extends BaseSimpleActivity implement
                     .build();
         }
         throw new RuntimeException("Application must implement FlightModuleRouter");
+    }
+
+    @Override
+    public void actionSuccessUpdatePassengerData(FlightBookingPassengerViewModel flightBookingPassengerViewModel) {
+        Intent intent = getIntent();
+        intent.putExtra(EXTRA_PASSENGER, flightBookingPassengerViewModel);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }

@@ -13,6 +13,7 @@ public class FlightBookingPassengerViewModel implements Parcelable {
     private int passengerId; //passengerLocalNumber
     private boolean singleRoute;
     private int type;
+    private String passengerTitle;
     private String headerTitle;
     private String passengerName;
     private String passengerBirthdate;
@@ -26,6 +27,7 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         passengerId = in.readInt();
         singleRoute = in.readByte() != 0;
         type = in.readInt();
+        passengerTitle = in.readString();
         headerTitle = in.readString();
         passengerName = in.readString();
         passengerBirthdate = in.readString();
@@ -121,6 +123,14 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         this.flightBookingLuggageRouteViewModels = flightBookingLuggageRouteViewModels;
     }
 
+    public String getPassengerTitle() {
+        return passengerTitle;
+    }
+
+    public void setPassengerTitle(String passengerTitle) {
+        this.passengerTitle = passengerTitle;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -131,6 +141,7 @@ public class FlightBookingPassengerViewModel implements Parcelable {
         dest.writeInt(passengerId);
         dest.writeByte((byte) (singleRoute ? 1 : 0));
         dest.writeInt(type);
+        dest.writeString(passengerTitle);
         dest.writeString(headerTitle);
         dest.writeString(passengerName);
         dest.writeString(passengerBirthdate);
