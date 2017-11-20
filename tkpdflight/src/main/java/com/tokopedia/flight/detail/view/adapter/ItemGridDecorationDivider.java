@@ -25,8 +25,10 @@ public class ItemGridDecorationDivider extends RecyclerView.ItemDecoration {
     private Drawable mDivider;
 
     private int mOrientation;
+    private int column;
 
-    public ItemGridDecorationDivider(Context context, int orientation) {
+    public ItemGridDecorationDivider(Context context, int orientation, int column) {
+        this.column = column;
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
         a.recycle();
@@ -81,14 +83,17 @@ public class ItemGridDecorationDivider extends RecyclerView.ItemDecoration {
         final int bottom = parent.getHeight() - parent.getPaddingBottom();
 
         final int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount; i++) {
+        for (int i = childCount - 1; i >= 0; i--) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params =
                     (RecyclerView.LayoutParams) child.getLayoutParams();
             final int left = child.getRight() + params.rightMargin + mDivider.getIntrinsicHeight();
             final int right = left + mDivider.getIntrinsicWidth();
-            mDivider.setBounds(left, top, right, bottom);
-            mDivider.draw(c);
+
+            if( i % column != (column-1)) {
+                mDivider.setBounds(left, top, right, bottom);
+                mDivider.draw(c);
+            }
         }
     }
 

@@ -48,7 +48,7 @@ public class FlightDetailFacilityViewHolder extends BaseViewHolder<Route> {
         adapterInfo = new ListInfoAdapter();
         listInfo.setAdapter(adapterInfo);
         gridAmenity.setLayoutManager(new GridLayoutManager(itemView.getContext(), NUMBER_OF_COLUMN_AMENITY));
-        gridAmenity.addItemDecoration(new ItemGridDecorationDivider(itemView.getContext(), ItemGridDecorationDivider.GRID));
+        gridAmenity.addItemDecoration(new ItemGridDecorationDivider(itemView.getContext(), ItemGridDecorationDivider.GRID, NUMBER_OF_COLUMN_AMENITY));
         adapterAmenity = new AmenityAdapter();
         gridAmenity.setAdapter(adapterAmenity);
     }
@@ -56,25 +56,35 @@ public class FlightDetailFacilityViewHolder extends BaseViewHolder<Route> {
     @Override
     public void bindObject(Route route) {
         adapterInfo.addData(route.getInfos());
-        adapterAmenity.addData(route.getAmenities());
+        setDefaultAmenities(route);
         airlineName.setText(route.getAirlineName());
-        airlineCode.setText(route.getFlightNumber());
+        airlineCode.setText(String.format("%s - %s", route.getAirline(), route.getFlightNumber()));
         imageAirline.setImageResource(FlightAirlineIconUtil.getImageResource(route.getAirline()));
         setRefundableInfo(route);
     }
 
     private void setRefundableInfo(Route route) {
-        if(route.getRefundable()){
+        if (route.getRefundable()) {
             refundableInfo.setText(R.string.flight_label_refundable_info);
             refundableInfo.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             refundableInfo.setText(R.string.flight_label_non_refundable_info);
             refundableInfo.setVisibility(View.GONE);
         }
     }
 
+    public void setDefaultAmenities(Route defaultAmenities) {
+        while (defaultAmenities.getAmenities().size() % 3
+                != 0) {
+            Amenity amenity = new Amenity();
+            amenity.setDefault(true);
+            defaultAmenities.getAmenities().add(amenity);
+        }
+        adapterAmenity.addData(defaultAmenities.getAmenities());
+    }
+
     private class ListInfoAdapter extends RecyclerView.Adapter<FlightDetailFacilityInfoViewHolder> {
-        List<Info>  infoList;
+        List<Info> infoList;
 
         public ListInfoAdapter() {
             infoList = new ArrayList<>();

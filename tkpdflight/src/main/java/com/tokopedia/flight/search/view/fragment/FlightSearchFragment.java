@@ -29,6 +29,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.view.DepartureArrivalHeaderView;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
@@ -116,7 +117,10 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     @Override
     public void onDetailClicked(FlightSearchViewModel flightSearchViewModel) {
-        this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightSearchViewModel),
+        FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
+        flightDetailViewModel.build(flightSearchViewModel);
+        flightDetailViewModel.build(flightSearchPassDataViewModel);
+        this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightDetailViewModel),
                 REQUEST_CODE_SEE_DETAIL_FLIGHT);
     }
 
@@ -221,14 +225,14 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
                         .setMode(BottomSheetBuilder.MODE_LIST)
                         .addTitleItem(getString(R.string.flight_search_sort_title));
 
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), null, selectedSortOption == FlightSortOption.CHEAPEST);
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), null, selectedSortOption == FlightSortOption.MOST_EXPENSIVE);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), null, selectedSortOption == FlightSortOption.EARLIEST_DEPARTURE);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), null, selectedSortOption == FlightSortOption.LATEST_DEPARTURE);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration), null, selectedSortOption == FlightSortOption.SHORTEST_DURATION);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration), null, selectedSortOption == FlightSortOption.LONGEST_DURATION);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival), null, selectedSortOption == FlightSortOption.EARLIEST_ARRIVAL);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), null, selectedSortOption == FlightSortOption.LATEST_ARRIVAL);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), null, selectedSortOption == FlightSortOption.CHEAPEST);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), null, selectedSortOption == FlightSortOption.MOST_EXPENSIVE);
 
                 BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                         .setItemClickListener(new BottomSheetItemClickListener() {

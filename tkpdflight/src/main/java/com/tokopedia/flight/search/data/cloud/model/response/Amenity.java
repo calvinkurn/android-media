@@ -18,12 +18,24 @@ public class Amenity implements Parcelable {
     @SerializedName("label")
     @Expose
     private String label;
+    private boolean isDefault;
 
     public String getIcon() {
         return icon;
     }
     public String getLabel() {
         return label;
+    }
+
+    public Amenity() {
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
     }
 
     @Override
@@ -35,17 +47,16 @@ public class Amenity implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.icon);
         dest.writeString(this.label);
-    }
-
-    public Amenity() {
+        dest.writeByte(this.isDefault ? (byte) 1 : (byte) 0);
     }
 
     protected Amenity(Parcel in) {
         this.icon = in.readString();
         this.label = in.readString();
+        this.isDefault = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<Amenity> CREATOR = new Parcelable.Creator<Amenity>() {
+    public static final Creator<Amenity> CREATOR = new Creator<Amenity>() {
         @Override
         public Amenity createFromParcel(Parcel source) {
             return new Amenity(source);

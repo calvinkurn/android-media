@@ -8,6 +8,13 @@
     android:padding="@dimen/padding_small">
 
     <ImageView
+        android:id="@+id/icon_default"
+        android:layout_width="@dimen/image_width_m"
+        android:layout_height="@dimen/image_width_m"
+        android:src="@drawable/image_circle"
+        android:visibility="gone" />
+
+    <ImageView
         android:id="@+id/image_amenity"
         android:layout_width="@dimen/image_width_xs"
         android:layout_height="@dimen/image_width_xs"
