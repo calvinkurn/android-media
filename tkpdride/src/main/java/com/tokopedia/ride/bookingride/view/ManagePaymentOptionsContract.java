@@ -38,8 +38,12 @@ public interface ManagePaymentOptionsContract {
     interface Presenter extends CustomerPresenter<View> {
         void fetchPaymentMethodList();
 
+        void getPaymentMethodsFromCloud();
+
         void addCreditCard();
 
         void selectPaymentOption(PaymentMethodViewModel paymentMethodViewModel);
+
+        void deletePaymentMethodCache();
     }
 }

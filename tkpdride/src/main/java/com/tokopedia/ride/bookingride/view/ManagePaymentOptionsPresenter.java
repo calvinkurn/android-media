@@ -25,6 +25,7 @@ import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPaymentMethodListUseCase;
 import com.tokopedia.ride.bookingride.domain.RequestApiUseCase;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PaymentMethodViewModel;
+import com.tokopedia.ride.common.ride.data.PaymentMethodListCacheImpl;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethod;
 import com.tokopedia.ride.common.ride.domain.model.PaymentMethodList;
 
@@ -63,11 +64,12 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
     @Override
     public void fetchPaymentMethodList() {
         getPaymentMethodsFromCache();
-        getPaymentMethodList();
+        getPaymentMethodsFromCloud();
         fetchTokoCashBalance();
     }
 
-    private void getPaymentMethodList() {
+    @Override
+    public void getPaymentMethodsFromCloud() {
         getView().showProgress();
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetPaymentMethodListUseCase.PARAM_PAYMENT_METHOD, "cc");
@@ -79,7 +81,7 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("ManagePaymentOptionsPresenter :: getPaymentMethodList onError");
+                CommonUtils.dumper("ManagePaymentOptionsPresenter :: getPaymentMethodsFromCloud onError");
                 e.printStackTrace();
                 getView().hideProgress();
                 getView().showErrorMessage(e.getMessage());
@@ -87,7 +89,7 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
 
             @Override
             public void onNext(PaymentMethodList paymentMethodList) {
-                CommonUtils.dumper("ManagePaymentOptionsPresenter :: getPaymentMethodList onNext");
+                CommonUtils.dumper("ManagePaymentOptionsPresenter :: getPaymentMethodsFromCloud onNext");
                 renderPaymentMethodList(paymentMethodList);
             }
         });
@@ -153,6 +155,12 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
 
             getView().opeScroogePage(paymentMethodList.getAddPayment().getSaveUrl(), true, paymentMethodList.getAddPayment().getSaveBody());
         }
+    }
+
+    @Override
+    public void deletePaymentMethodCache() {
+        PaymentMethodListCacheImpl cache = new PaymentMethodListCacheImpl();
+        cache.evictAll();
     }
 
     @Override
@@ -310,4 +318,6 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
             }
         }
     }
+
+
 }

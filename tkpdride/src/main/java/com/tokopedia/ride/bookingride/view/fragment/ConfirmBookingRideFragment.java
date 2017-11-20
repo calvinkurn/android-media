@@ -505,7 +505,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void onResume() {
         super.onResume();
-        //presenter.actionCheckBalance();
+        presenter.getPaymentMethodListFromCache();
+        presenter.getPaymentMethodList();
     }
 
     @Override

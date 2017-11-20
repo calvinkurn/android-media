@@ -64,5 +64,9 @@ public interface ConfirmBookingContract {
         void actionGetFareAndEstimate(RequestParams showProgress);
 
         void initialize();
+
+        void getPaymentMethodList();
+
+        void getPaymentMethodListFromCache();
     }
 }

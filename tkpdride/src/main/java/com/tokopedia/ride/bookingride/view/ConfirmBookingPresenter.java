@@ -45,7 +45,6 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
         getView().renderInitialView();
 
         actionGetFareAndEstimate(getView().getParam());
-        getPaymentMethodList();
     }
 
     @Override
@@ -134,7 +133,8 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
     /**
      * Get payment method list
      */
-    private void getPaymentMethodList() {
+    @Override
+    public void getPaymentMethodList() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetPaymentMethodListUseCase.PARAM_PAYMENT_METHOD, "cc");
         getPaymentMethodListUseCase.execute(requestParams, new Subscriber<PaymentMethodList>() {
@@ -175,6 +175,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
     /**
      * Get payment method list from cache
      */
+    @Override
     public void getPaymentMethodListFromCache() {
         getPaymentMethodListCacheUseCase.execute(RequestParams.EMPTY, new Subscriber<PaymentMethodList>() {
             @Override
@@ -184,6 +185,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
 
             @Override
             public void onError(Throwable e) {
+                getView().hidePaymentMethod();
             }
 
             @Override

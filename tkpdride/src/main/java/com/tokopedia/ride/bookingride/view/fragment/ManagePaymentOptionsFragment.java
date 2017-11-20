@@ -79,9 +79,13 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
 
         if (type == TYPE_MANAGE_PAYMENT_OPTION && paymentMethodViewModel.getType().equalsIgnoreCase(PaymentMethodViewModel.MODE_CC)) {
             startActivityForResult(EditDeleteCreditCardActivity.getCallingActivity(getActivity(), paymentMethodViewModel), REQUEST_CODE_EDIT_CARD_DETAIL);
-        } else if (type == TYPE_CHANGE_PAYMENT_OPTION && !paymentMethodViewModel.isActive()) {
+        } else if (type == TYPE_CHANGE_PAYMENT_OPTION) {
             //set payment method and close the activity in result
-            presenter.selectPaymentOption(paymentMethodViewModel);
+            if (paymentMethodViewModel.isActive()) {
+                closeActivity(paymentMethodViewModel);
+            } else {
+                presenter.selectPaymentOption(paymentMethodViewModel);
+            }
         }
     }
 
@@ -170,7 +174,8 @@ public class ManagePaymentOptionsFragment extends BaseFragment implements Manage
         //referesh payment method list in case of success of delete card and add card
         if ((requestCode == REQUEST_CODE_EDIT_CARD_DETAIL && resultCode == Activity.RESULT_OK) ||
                 (requestCode == REQUEST_CODE_OPEN_SCROOGE_PAGE && resultCode == RESULT_CODE_ADD_CC_SUCCESS)) {
-            presenter.fetchPaymentMethodList();
+            presenter.deletePaymentMethodCache();
+            presenter.getPaymentMethodsFromCloud();
         }
     }
 
