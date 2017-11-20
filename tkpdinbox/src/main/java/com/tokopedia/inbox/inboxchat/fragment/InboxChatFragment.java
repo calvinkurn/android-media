@@ -510,7 +510,8 @@ public class InboxChatFragment extends BaseDaggerFragment
         if (requestCode == OPEN_DETAIL_MESSAGE && resultCode == Activity.RESULT_OK) {
             if (data.getExtras().getBoolean(MUST_REFRESH))
                 presenter.refreshData();
-            else {
+            else if (data.getExtras() != null &&
+                    data.getExtras().getParcelable(PARCEL) != null) {
                 Bundle bundle = data.getExtras();
                 ReplyParcelableModel model = bundle.getParcelable(PARCEL);
                 adapter.moveToTop(model.getMessageId(), model.getMsg(), null, false);

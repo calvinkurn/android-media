@@ -219,10 +219,19 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
 
     public ReplyParcelableModel getLastItem() {
-        ListReplyViewModel item = (ListReplyViewModel) list.get(list.size() - 1);
-        return new ReplyParcelableModel(String.valueOf(item.getMsgId()), item.getMsg(), item
-                .getReplyTime
-                        ());
+        ListReplyViewModel item;
+        if (list.size() > 0 && list.get(list.size() - 1) instanceof ListReplyViewModel) {
+            item = (ListReplyViewModel) list.get(list.size() - 1);
+            return new ReplyParcelableModel(String.valueOf(item.getMsgId()), item.getMsg(), item
+                    .getReplyTime
+                            ());
+        } else if (list.size() > 1 && list.get(list.size() - 2) instanceof ListReplyViewModel) {
+            item = (ListReplyViewModel) list.get(list.size() - 2);
+            return new ReplyParcelableModel(String.valueOf(item.getMsgId()), item.getMsg(), item
+                    .getReplyTime());
+        } else {
+            return null;
+        }
     }
 
     public void showTimeMachine() {
@@ -231,11 +240,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void setReadStatus(WebSocketResponse response) {
-        for (int i = list.size()-1; i >=0; i--) {
-            if(list.get(i) instanceof MyChatViewModel){
-                if(((MyChatViewModel) list.get(i)).isReadStatus()){
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (list.get(i) instanceof MyChatViewModel) {
+                if (((MyChatViewModel) list.get(i)).isReadStatus()) {
                     break;
-                }else {
+                } else {
                     ((MyChatViewModel) list.get(i)).setReadStatus(true);
                     notifyItemRangeChanged(i, 1);
                 }

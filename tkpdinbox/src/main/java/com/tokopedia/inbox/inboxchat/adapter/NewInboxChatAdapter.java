@@ -115,28 +115,33 @@ public class NewInboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     }
 
     public void addChecked(int position) {
-        if (listMove.size() + 1 <= MAX_MESSAGE_DELETE) {
+        if (!list.isEmpty()
+                && list.size() > position
+                && listMove.size() + 1 <= MAX_MESSAGE_DELETE) {
             ChatListViewModel item = (ChatListViewModel) list.get(position);
             item.setChecked(true);
             Pair<ChatListViewModel, Integer> pair = new Pair<>(item, position);
             listMove.add(pair);
             notifyItemChanged(position);
-        } else {
+        } else if (!list.isEmpty() && list.size() > position) {
             removeChecked(position);
             presenter.getView().showErrorWarningDelete(MAX_MESSAGE_DELETE);
         }
     }
 
     public void removeChecked(int position) {
-        ChatListViewModel item = (ChatListViewModel) list.get(position);
-        item.setChecked(false);
-        for (Pair pair : listMove) {
-            if (position == (int) pair.second) {
-                listMove.remove(pair);
-                break;
+        if (!list.isEmpty()
+                && list.size() > position) {
+            ChatListViewModel item = (ChatListViewModel) list.get(position);
+            item.setChecked(false);
+            for (Pair pair : listMove) {
+                if (position == (int) pair.second) {
+                    listMove.remove(pair);
+                    break;
+                }
             }
+            notifyItemChanged(position);
         }
-        notifyItemChanged(position);
     }
 
     public void setList(List<Visitable> newList) {
