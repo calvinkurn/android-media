@@ -39,6 +39,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewMod
 import com.tokopedia.flight.booking.widget.CardWithActionView;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
@@ -315,7 +316,10 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void navigateToDetailTrip(FlightSearchViewModel departureTrip) {
-        startActivity(FlightDetailActivity.createIntent(getActivity(), departureTrip));
+        FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
+        flightDetailViewModel.build(departureTrip);
+        flightDetailViewModel.build(paramViewModel.getSearchParam());
+        startActivity(FlightDetailActivity.createIntent(getActivity(), flightDetailViewModel));
     }
 
     @Override

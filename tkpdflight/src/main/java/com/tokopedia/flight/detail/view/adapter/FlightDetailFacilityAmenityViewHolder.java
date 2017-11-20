@@ -17,15 +17,26 @@ public class FlightDetailFacilityAmenityViewHolder extends RecyclerView.ViewHold
 
     private ImageView imageAmenity;
     private TextView textAmenity;
+    private ImageView defaultImage;
 
     public FlightDetailFacilityAmenityViewHolder(View itemView) {
         super(itemView);
         imageAmenity = (ImageView) itemView.findViewById(R.id.image_amenity);
         textAmenity = (TextView) itemView.findViewById(R.id.text_amenity);
+        defaultImage = (ImageView) itemView.findViewById(R.id.icon_default);
     }
 
     public void bindData(Amenity amenity) {
-        imageAmenity.setImageResource(FlightAmenityIconUtil.getImageResource(amenity.getIcon()));
-        textAmenity.setText(amenity.getLabel());
+        if(amenity.isDefault()){
+            imageAmenity.setVisibility(View.GONE);
+            textAmenity.setVisibility(View.GONE);
+            defaultImage.setVisibility(View.VISIBLE);
+        }else {
+            imageAmenity.setVisibility(View.VISIBLE);
+            textAmenity.setVisibility(View.VISIBLE);
+            defaultImage.setVisibility(View.GONE);
+            imageAmenity.setImageResource(FlightAmenityIconUtil.getImageResource(amenity.getIcon()));
+            textAmenity.setText(amenity.getLabel());
+        }
     }
 }

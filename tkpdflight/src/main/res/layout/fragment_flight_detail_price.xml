@@ -82,48 +82,57 @@
             android:layout_marginBottom="@dimen/margin_small"
             android:background="@color/grey_200" />
 
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/container_saving_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small">
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-            <TextView
-                style="@style/TextView.Body1"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/normal_price"
-                android:text="@string/flight_label_normal_price" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small">
 
-            <TextView
-                android:id="@+id/normal_price"
-                style="@style/TextView.Body1.BlackSecondary"
-                android:layout_alignParentRight="true"
-                tools:text="Rp. 500.000" />
-        </RelativeLayout>
+                <TextView
+                    style="@style/TextView.Body1"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/normal_price"
+                    android:text="@string/flight_label_normal_price" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_small">
+                <TextView
+                    android:id="@+id/normal_price"
+                    style="@style/TextView.Body1.BlackSecondary"
+                    android:layout_alignParentRight="true"
+                    tools:text="Rp. 500.000" />
+            </RelativeLayout>
 
-            <TextView
-                style="@style/TextView.Body1"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/saving_price"
-                android:text="@string/flight_label_saving_price" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small">
 
-            <TextView
-                android:id="@+id/saving_price"
-                style="@style/TextView.Body1.BlackSecondary"
-                android:layout_alignParentRight="true"
-                tools:text="Rp. 500.0000" />
-        </RelativeLayout>
+                <TextView
+                    style="@style/TextView.Body1"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/saving_price"
+                    android:text="@string/flight_label_saving_price" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:background="@color/grey_200" />
+                <TextView
+                    android:id="@+id/saving_price"
+                    style="@style/TextView.Body1.BlackSecondary"
+                    android:layout_alignParentRight="true"
+                    tools:text="Rp. 500.0000" />
+            </RelativeLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:background="@color/grey_200" />
+
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"

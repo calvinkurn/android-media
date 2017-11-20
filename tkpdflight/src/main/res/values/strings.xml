@@ -124,9 +124,9 @@
     <string name="activity_label_flight_booking_phone_code">Kode Telepon Negara</string>
     <string name="activity_label_flight_nationality">Kewarganegaraan</string>
     <string name="activity_label_flight_issuing_country">Negara Penerbit</string>
-    <string name="flight_label_adult">Dewasa</string>
-    <string name="flight_label_child">Anak</string>
-    <string name="flight_label_infant">Bayi</string>
+    <string name="flight_label_adult">Dewasa x%1$d</string>
+    <string name="flight_label_child">Anak x%1$d</string>
+    <string name="flight_label_infant">Bayi x%1$d</string>
     <string name="flight_label_finish_review_time">Selesaikan Pesanan Anda Dalam</string>
     <string name="flight_label_departure_flight">Penerbangan Pergi</string>
     <string name="flight_label_passenger_data">Data Penumpang</string>
@@ -155,4 +155,6 @@
     <string name="flight_label_duration_direct">%1$s (langsung)</string>
     <string name="flight_label_duration_add_day">(+%1$d Hari)</string>
     <string name="flight_label_see_detail">Lihat Detail</string>
+    <string name="flight_label_transit">Transit di %1$s • %2$s</string>
+    <string name="flight_label_currency">Rp %1$s</string>
 </resources>

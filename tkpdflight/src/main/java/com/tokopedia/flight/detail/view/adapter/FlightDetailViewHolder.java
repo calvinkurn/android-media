@@ -60,7 +60,7 @@ public class FlightDetailViewHolder extends BaseViewHolder<Route> {
     @Override
     public void bindObject(Route route) {
         airlineName.setText(route.getAirlineName());
-        airlineCode.setText(route.getFlightNumber());
+        airlineCode.setText(String.format("%s - %s", route.getAirline(), route.getFlightNumber()));
         setRefundableInfo(route);
         departureTime.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_TIME, route.getDepartureTimestamp()));
         departureDate.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_DATE, route.getDepartureTimestamp()));
@@ -72,7 +72,7 @@ public class FlightDetailViewHolder extends BaseViewHolder<Route> {
         arrivalDate.setText(DateFormatUtils.formatDate(FORMAT_DATE_API, FORMAT_DATE, route.getArrivalTimestamp()));
         arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirport()));
         arrivalAirportDesc.setText(route.getArrivalAirportName());
-        transitInfo.setText(route.getLayover());
+        transitInfo.setText(itemView.getContext().getString(R.string.flight_label_transit, route.getArrivalAirportCity(),route.getLayover()));
         imageAirline.setImageResource(FlightAirlineIconUtil.getImageResource(route.getAirline()));
     }
 

@@ -9,18 +9,18 @@
 
     <TextView
         android:id="@+id/title_info"
-        style="@style/TextView.Body1.BlackPrimary"
+        style="@style/TextView.Body1.Bold"
         android:layout_width="wrap_content"
         tools:text="Jarak antar kursi"/>
 
     <TextView
-        style="@style/TextView.Body1.BlackPrimary"
+        style="@style/TextView.Body1.Bold"
         android:layout_marginRight="@dimen/margin_vvs"
         android:layout_marginLeft="@dimen/margin_vvs"
         android:text=":"/>
 
     <TextView
         android:id="@+id/desc_info"
-        style="@style/TextView.Body1.BlackPrimary"
+        style="@style/TextView.Body1.BlackSecondary"
         tools:text="34 inci"/>
 </LinearLayout>

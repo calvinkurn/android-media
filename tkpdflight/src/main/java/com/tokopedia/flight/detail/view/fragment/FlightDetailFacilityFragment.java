@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,10 +14,11 @@ import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
+import com.tokopedia.abstraction.utils.MethodChecker;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailFacilityAdapter;
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 /**
  * Created by zulfikarrahman on 10/30/17.
@@ -24,14 +26,16 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 public class FlightDetailFacilityFragment extends BaseListV2Fragment<Route> implements BaseListV2Adapter.OnBaseListV2AdapterListener<Route> {
 
-    public static final String EXTRA_FLIGHT_SEARCH_MODEL = "EXTRA_FLIGHT_SEARCH_MODEL";
+    public static final String EXTRA_FLIGHT_DETAIL_MODEL = "EXTRA_FLIGHT_DETAIL_MODEL";
 
-    private FlightSearchViewModel flightSearchViewModel;
+    private FlightDetailViewModel flightDetailViewModel;
+    private TextView priceTotal;
+    private TextView savingPrice;
 
-    public static FlightDetailFacilityFragment createInstance(FlightSearchViewModel flightSearchViewModel) {
+    public static FlightDetailFacilityFragment createInstance(FlightDetailViewModel flightDetailViewModel) {
         FlightDetailFacilityFragment flightDetailFacilityFragment = new FlightDetailFacilityFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_FLIGHT_SEARCH_MODEL, flightSearchViewModel);
+        bundle.putParcelable(EXTRA_FLIGHT_DETAIL_MODEL, flightDetailViewModel);
         flightDetailFacilityFragment.setArguments(bundle);
         return flightDetailFacilityFragment;
     }
@@ -40,8 +44,15 @@ public class FlightDetailFacilityFragment extends BaseListV2Fragment<Route> impl
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_detail, container, false);
-        TextView priceTotal = (TextView) view.findViewById(R.id.flight_price_total);
-        priceTotal.setText(flightSearchViewModel.getTotal());
+        priceTotal = (TextView) view.findViewById(R.id.flight_price_total);
+        priceTotal.setText(flightDetailViewModel.getTotal());
+        savingPrice = (TextView) view.findViewById(R.id.saving_price);
+        if(!TextUtils.isEmpty(flightDetailViewModel.getBeforeTotal())){
+            savingPrice.setVisibility(View.VISIBLE);
+            savingPrice.setText(MethodChecker.fromHtml(getString(R.string.flight_label_saving_price_html, flightDetailViewModel.getBeforeTotal())));
+        }else{
+            savingPrice.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -58,7 +69,7 @@ public class FlightDetailFacilityFragment extends BaseListV2Fragment<Route> impl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        flightSearchViewModel = getArguments().getParcelable(EXTRA_FLIGHT_SEARCH_MODEL);
+        flightDetailViewModel = getArguments().getParcelable(EXTRA_FLIGHT_DETAIL_MODEL);
     }
 
     @Override
