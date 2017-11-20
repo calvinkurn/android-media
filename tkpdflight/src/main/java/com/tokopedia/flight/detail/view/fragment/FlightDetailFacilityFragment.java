@@ -79,7 +79,7 @@ public class FlightDetailFacilityFragment extends BaseListV2Fragment<Route> impl
 
     @Override
     public void loadData(int page, int currentDataSize, int rowPerPage) {
-        onSearchLoaded(flightSearchViewModel.getRouteList(), flightSearchViewModel.getRouteList().size());
+        onSearchLoaded(flightDetailViewModel.getRouteList(), flightDetailViewModel.getRouteList().size());
     }
 
     @Override

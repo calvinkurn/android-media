@@ -3,16 +3,12 @@ package com.tokopedia.flight.detail.view.fragment;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.utils.MethodChecker;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
 import com.tokopedia.flight.R;
@@ -53,7 +49,7 @@ public class FlightDetailFragment extends BaseListV2Fragment<Route> implements B
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_detail, container, false);
         TextView priceTotal = (TextView) view.findViewById(R.id.flight_price_total);
-        priceTotal.setText(flightSearchViewModel.getTotal());
+        priceTotal.setText(flightDetailViewModel.getTotal());
         savingPrice = (TextView) view.findViewById(R.id.saving_price);
         if(!TextUtils.isEmpty(flightDetailViewModel.getBeforeTotal())){
             savingPrice.setVisibility(View.VISIBLE);
@@ -76,7 +72,7 @@ public class FlightDetailFragment extends BaseListV2Fragment<Route> implements B
     }
 
     public void loadData(int page, int currentDataSize, int rowPerPage) {
-        onSearchLoaded(flightSearchViewModel.getRouteList(), flightSearchViewModel.getRouteList().size());
+        onSearchLoaded(flightDetailViewModel.getRouteList(), flightDetailViewModel.getRouteList().size());
     }
 
     @Override
