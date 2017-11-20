@@ -20,6 +20,8 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
@@ -30,10 +32,10 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
         implements DistrictRecommendationContract.Presenter {
 
     private ArrayList<Address> addresses = new ArrayList<>();
-    private GetDistrictRequestUseCase getDistrictRequestUseCase;
     private int lastPage = 0;
     private boolean hasNext;
     private Token token;
+    private GetDistrictRequestUseCase getDistrictRequestUseCase;
 
     @Override
     public void attachView(DistrictRecommendationContract.View view) {
@@ -46,13 +48,11 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
         getDistrictRequestUseCase.unsubscribe();
     }
 
-    public DistrictRecommendationPresenter(Token token) {
+    @Inject
+    public DistrictRecommendationPresenter(GetDistrictRequestUseCase getDistrictRequestUseCase,
+                                           Token token) {
         this.token = token;
-        this.getDistrictRequestUseCase =
-                new GetDistrictRequestUseCase(
-                        new DistrictRecommendationRepository(
-                                new DistrictRecommendationDataStore(
-                                        new KeroAuthService(3)), new DistrictRecommendationEntityMapper()));
+        this.getDistrictRequestUseCase = getDistrictRequestUseCase;
     }
 
     @Override

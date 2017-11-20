@@ -5,6 +5,8 @@ import com.tokopedia.core.manage.general.districtrecommendation.data.entity.Addr
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
@@ -16,6 +18,7 @@ import rx.functions.Func1;
 public class DistrictRecommendationDataStore {
     private final KeroAuthService service;
 
+    @Inject
     public DistrictRecommendationDataStore(KeroAuthService service) {
         this.service = service;
     }

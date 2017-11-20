@@ -16,12 +16,18 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.manage.general.districtrecommendation.di.DaggerDistrictRecommendationComponent;
+import com.tokopedia.core.manage.general.districtrecommendation.di.DistrictRecommendationComponent;
+import com.tokopedia.core.manage.general.districtrecommendation.di.DistrictRecommendationModule;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import rx.Observable;
@@ -51,6 +57,9 @@ public class DistrictRecommendationFragment
     private OnQueryListener queryListener;
     private DistrictRecommendationAdapter adapter;
     private CompositeSubscription compositeSubscription;
+
+    @Inject
+    DistrictRecommendationContract.Presenter presenter;
 
     public DistrictRecommendationFragment() {
         // Required empty public constructor
@@ -91,9 +100,20 @@ public class DistrictRecommendationFragment
 
     @Override
     protected void initialPresenter() {
-        presenter = new DistrictRecommendationPresenter(
-                (Token) getArguments().getParcelable(ARGUMENT_DATA_TOKEN));
+        initializeInjector();
         presenter.attachView(this);
+    }
+
+    private void initializeInjector() {
+        AppComponent component = ((DistrictRecommendationActivity) getActivity()).getApplicationComponent();
+        DistrictRecommendationModule module =
+                new DistrictRecommendationModule((Token) getArguments().getParcelable(ARGUMENT_DATA_TOKEN));
+        DistrictRecommendationComponent districtRecommendationComponent =
+                DaggerDistrictRecommendationComponent.builder()
+                        .appComponent(component)
+                        .districtRecommendationModule(module)
+                        .build();
+        districtRecommendationComponent.inject(this);
     }
 
     @Override

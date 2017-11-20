@@ -6,6 +6,8 @@ import com.tokopedia.core.manage.general.districtrecommendation.data.source.Dist
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.AddressResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -18,6 +20,7 @@ public class DistrictRecommendationRepository {
     private final DistrictRecommendationDataStore dataStore;
     private final DistrictRecommendationEntityMapper entityMapper;
 
+    @Inject
     public DistrictRecommendationRepository(DistrictRecommendationDataStore dataStore,
                                             DistrictRecommendationEntityMapper entityMapper) {
         this.dataStore = dataStore;
