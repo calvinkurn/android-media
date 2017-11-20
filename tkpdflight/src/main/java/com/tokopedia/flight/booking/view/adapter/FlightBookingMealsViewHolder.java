@@ -2,9 +2,12 @@ package com.tokopedia.flight.booking.view.adapter;
 
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseMultipleCheckViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
 
@@ -12,46 +15,36 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FlightBookingMealsViewHolder extends BaseMultipleCheckViewHolder<FlightBookingMealViewModel> {
+public class FlightBookingMealsViewHolder extends CheckableBaseViewHolder<FlightBookingMealViewModel> implements View.OnClickListener {
 
     private TextView mealName;
     private TextView mealPrice;
     private AppCompatCheckBox checkBox;
 
-    public FlightBookingMealsViewHolder(View layoutView) {
-        super(layoutView);
-        mealName = (TextView) layoutView.findViewById(R.id.meal_name);
-        mealPrice = (TextView) layoutView.findViewById(R.id.meal_price);
-        checkBox = (AppCompatCheckBox) layoutView.findViewById(R.id.checkbox);
+    public FlightBookingMealsViewHolder(View itemView,
+                                        BaseListCheckableV2Adapter<FlightBookingMealViewModel> baseListCheckableV2Adapter) {
+        super(itemView, baseListCheckableV2Adapter);
+        mealName = (TextView) itemView.findViewById(R.id.meal_name);
+        mealPrice = (TextView) itemView.findViewById(R.id.meal_price);
+        checkBox = (AppCompatCheckBox) itemView.findViewById(R.id.checkbox);
     }
 
     @Override
-    public void bindObject(FlightBookingMealViewModel flightBookingMealViewModel) {
+    public CompoundButton getCheckable() {
+        return checkBox;
+    }
+
+    @Override
+    public void bindObject(FlightBookingMealViewModel flightBookingMealViewModel, boolean isChecked) {
+        super.bindObject(flightBookingMealViewModel, isChecked);
         mealName.setText(flightBookingMealViewModel.getTitle());
         mealPrice.setText(flightBookingMealViewModel.getPrice());
+        itemView.setOnClickListener(this);
     }
 
     @Override
-    public void bindObject(final FlightBookingMealViewModel flightBookingMealViewModel, boolean checked) {
-        bindObject(flightBookingMealViewModel);
-        setChecked(checked);
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkedCallback != null) {
-                    checkedCallback.onItemChecked(flightBookingMealViewModel, checkBox.isChecked());
-                }
-            }
-        });
+    public void onClick(View v) {
+        toggle();
     }
 
-    @Override
-    public boolean isChecked() {
-        return checkBox.isChecked();
-    }
-
-    @Override
-    public void setChecked(boolean checked) {
-        checkBox.setChecked(checked);
-    }
 }

@@ -6,15 +6,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
-import com.tokopedia.abstraction.base.view.recyclerview.BaseListRecyclerView;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarRetry;
+import com.tokopedia.design.text.SearchInputView;
 
 import java.util.List;
 
@@ -29,6 +31,21 @@ public abstract class BaseListV2Fragment<T extends ItemType> extends BaseDaggerF
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = getNewAdapter();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_base_list, container, false);
+    }
+
+    public RecyclerView getRecyclerView(View view) {
+        return (RecyclerView) view.findViewById(R.id.recycler_view);
+    }
+
+    @Nullable
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return null;
     }
 
     @Override
@@ -64,10 +81,6 @@ public abstract class BaseListV2Fragment<T extends ItemType> extends BaseDaggerF
 
     protected abstract BaseListV2Adapter<T> getNewAdapter();
 
-    public abstract RecyclerView getRecyclerView(View view);
-
-    public abstract @Nullable SwipeRefreshLayout getSwipeRefreshLayout(View view);
-
     protected void showLoading(){
         adapter.showLoading(true);
         hideSnackBarRetry();
@@ -86,7 +99,7 @@ public abstract class BaseListV2Fragment<T extends ItemType> extends BaseDaggerF
         adapter.addData(list, totalItem);
     }
 
-    public BaseListV2Adapter<T> getAdapter() {
+    public final BaseListV2Adapter<T> getAdapter() {
         return adapter;
     }
 

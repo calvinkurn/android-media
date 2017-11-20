@@ -187,12 +187,6 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     @Nullable
     @Override
-    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
-        return null;
-    }
-
-    @Nullable
-    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_search_flight, container, false);
     }
