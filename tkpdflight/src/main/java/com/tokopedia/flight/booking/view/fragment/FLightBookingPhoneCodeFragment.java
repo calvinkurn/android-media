@@ -3,11 +3,19 @@ package com.tokopedia.flight.booking.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPhoneCodeAdapter;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodePresenterImpl;
@@ -21,7 +29,7 @@ import javax.inject.Inject;
  */
 
 public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<FlightBookingPhoneCodeViewModel> implements
-        FlightBookingPhoneCodeView{
+        FlightBookingPhoneCodeView, BaseListV2Adapter.OnBaseListV2AdapterListener<FlightBookingPhoneCodeViewModel> {
 
     public static final String EXTRA_SELECTED_PHONE_CODE = "EXTRA_SELECTED_PHONE_CODE";
 
@@ -40,13 +48,8 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
     }
 
     @Override
-    protected BaseListAdapter<FlightBookingPhoneCodeViewModel> getNewAdapter() {
-        return new FlightBookingPhoneCodeAdapter();
-    }
-
-    @Override
-    protected void searchForPage(int page) {
-        flightBookingPhoneCodePresenter.getPhoneCodeList();
+    protected BaseListV2Adapter<FlightBookingPhoneCodeViewModel> getNewAdapter() {
+        return new FlightBookingPhoneCodeAdapter(this);
     }
 
     @Override
@@ -58,8 +61,14 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
     }
 
     @Override
+    public void loadData(int page, int currentDataSize, int rowPerPage) {
+        flightBookingPhoneCodePresenter.getPhoneCodeList();
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         flightBookingPhoneCodePresenter.attachView(this);
     }
+
 }

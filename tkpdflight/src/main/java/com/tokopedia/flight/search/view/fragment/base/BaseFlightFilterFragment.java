@@ -59,17 +59,6 @@ public abstract class BaseFlightFilterFragment<T extends ItemType> extends BaseL
     }
 
     @Override
-    public final RecyclerView getRecyclerView(View view) {
-        return (RecyclerView) view.findViewById(R.id.recycler_view);
-    }
-
-    @Nullable
-    @Override
-    public final SwipeRefreshLayout getSwipeRefreshLayout(View view) {
-        return null;
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(SAVED_ORIGINAL_FILTER, originalFilterModel);
