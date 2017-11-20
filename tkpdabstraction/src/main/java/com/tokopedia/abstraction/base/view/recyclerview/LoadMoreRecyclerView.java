@@ -2,48 +2,27 @@ package com.tokopedia.abstraction.base.view.recyclerview;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 
 /**
  * Created by User on 11/2/2017.
  */
 
-public class BaseListRecyclerView extends RecyclerView {
+public class LoadMoreRecyclerView extends VerticalRecyclerView {
 
-    private LinearLayoutManager linearLayoutManager;
-
-    public BaseListRecyclerView(Context context) {
+    public LoadMoreRecyclerView(Context context) {
         super(context);
-        init();
     }
 
-    public BaseListRecyclerView(Context context, @Nullable AttributeSet attrs) {
+    public LoadMoreRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
-    public BaseListRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public LoadMoreRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
-    }
-
-    private void init() {
-        linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        this.setLayoutManager(linearLayoutManager);
-        RecyclerView.ItemDecoration itemDecoration = getItemDecoration();
-        if (itemDecoration != null) {
-            this.addItemDecoration(itemDecoration);
-        }
-    }
-
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getContext());
     }
 
     public void setAdapter(final BaseListV2Adapter adapter) {

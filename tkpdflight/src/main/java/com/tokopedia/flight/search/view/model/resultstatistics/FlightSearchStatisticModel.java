@@ -28,7 +28,7 @@ public class FlightSearchStatisticModel implements Parcelable {
     private List<TransitStat> transitTypeStatList;
     private List<AirlineStat> airlineStatList;
     private List<DepartureStat> departureTimeStatList;
-    private List<RefundableEnum> refundableTypeList;
+    private List<RefundableStat> refundableTypeStatList;
 
     public FlightSearchStatisticModel(List<FlightSearchViewModel> flightSearchViewModelList) {
         minPrice = Integer.MAX_VALUE;
@@ -38,11 +38,12 @@ public class FlightSearchStatisticModel implements Parcelable {
         transitTypeStatList = new ArrayList<>();
         airlineStatList = new ArrayList<>();
         departureTimeStatList = new ArrayList<>();
-        refundableTypeList = new ArrayList<>();
+        refundableTypeStatList = new ArrayList<>();
 
         SparseIntArray transitIDTrackArray = new SparseIntArray();
         HashMap<String, Integer> airlineIDTrackArray = new HashMap<>();
         SparseIntArray departureIDTrackArray = new SparseIntArray();
+        SparseIntArray refundableTrackArray = new SparseIntArray();
 
         for (int i = 0, sizei = flightSearchViewModelList.size(); i < sizei; i++) {
             FlightSearchViewModel flightSearchViewModel = flightSearchViewModelList.get(i);
@@ -137,8 +138,16 @@ public class FlightSearchStatisticModel implements Parcelable {
 
             // populate distinct refundable
             RefundableEnum refundable = flightSearchViewModel.isRefundable();
-            if (!refundableTypeList.contains(refundable)) {
-                refundableTypeList.add(refundable);
+            if (refundableTrackArray.get(refundable.getId(), -1) == -1) {
+                refundableTypeStatList.add(new RefundableStat(refundable, price, priceString));
+                refundableTrackArray.put(refundable.getId(), refundableTypeStatList.size() - 1);
+            } else {
+                int index = refundableTrackArray.get(refundable.getId());
+                RefundableStat prevRefundableStat = refundableTypeStatList.get(index);
+                if (price < prevRefundableStat.getMinPrice()) {
+                    prevRefundableStat.setMinPrice(price);
+                    prevRefundableStat.setMinPriceString(priceString);
+                }
             }
 
         }
@@ -162,10 +171,10 @@ public class FlightSearchStatisticModel implements Parcelable {
                 return o1.getDepartureTime().getId() - o2.getDepartureTime().getId();
             }
         });
-        Collections.sort(refundableTypeList, new Comparator<RefundableEnum>() {
+        Collections.sort(refundableTypeStatList, new Comparator<RefundableStat>() {
             @Override
-            public int compare(RefundableEnum o1, RefundableEnum o2) {
-                return o1.getId() - o2.getId();
+            public int compare(RefundableStat o1, RefundableStat o2) {
+                return o1.getRefundableEnum().getId() - o2.getRefundableEnum().getId();
             }
         });
     }
@@ -211,8 +220,8 @@ public class FlightSearchStatisticModel implements Parcelable {
         return transitTypeStatList;
     }
 
-    public List<RefundableEnum> getRefundableTypeList() {
-        return refundableTypeList;
+    public List<RefundableStat> getRefundableTypeStatList() {
+        return refundableTypeStatList;
     }
 
     @Override
@@ -229,7 +238,7 @@ public class FlightSearchStatisticModel implements Parcelable {
         dest.writeTypedList(this.transitTypeStatList);
         dest.writeTypedList(this.airlineStatList);
         dest.writeTypedList(this.departureTimeStatList);
-        dest.writeList(this.refundableTypeList);
+        dest.writeTypedList(this.refundableTypeStatList);
     }
 
     protected FlightSearchStatisticModel(Parcel in) {
@@ -240,8 +249,7 @@ public class FlightSearchStatisticModel implements Parcelable {
         this.transitTypeStatList = in.createTypedArrayList(TransitStat.CREATOR);
         this.airlineStatList = in.createTypedArrayList(AirlineStat.CREATOR);
         this.departureTimeStatList = in.createTypedArrayList(DepartureStat.CREATOR);
-        this.refundableTypeList = new ArrayList<RefundableEnum>();
-        in.readList(this.refundableTypeList, RefundableEnum.class.getClassLoader());
+        this.refundableTypeStatList = in.createTypedArrayList(RefundableStat.CREATOR);
     }
 
     public static final Parcelable.Creator<FlightSearchStatisticModel> CREATOR = new Parcelable.Creator<FlightSearchStatisticModel>() {

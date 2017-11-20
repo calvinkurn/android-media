@@ -3,10 +3,10 @@ package com.tokopedia.flight.search.view.adapter;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-import com.tokopedia.abstraction.base.view.recyclerview.BaseListRecyclerView;
+import com.tokopedia.abstraction.base.view.recyclerview.LoadMoreRecyclerView;
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.flight.R;
 
@@ -14,7 +14,7 @@ import com.tokopedia.flight.R;
  * Created by zulfikarrahman on 11/14/17.
  */
 
-public class FlightSearchRecyclerView extends BaseListRecyclerView {
+public class FlightSearchRecyclerView extends VerticalRecyclerView {
     public FlightSearchRecyclerView(Context context) {
         super(context);
     }

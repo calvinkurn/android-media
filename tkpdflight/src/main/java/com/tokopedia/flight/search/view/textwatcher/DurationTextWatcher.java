@@ -5,15 +5,14 @@ import android.widget.EditText;
 
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.search.util.DurationUtil;
+import com.tokopedia.flight.search.view.model.Duration;
 
 /**
  * Created by User on 11/10/2017.
  */
 
 public class DurationTextWatcher extends AfterTextWatcher {
-
-    public static final int MINUTE_PER_DAY = 1440; // 60*24
-    public static final int MINUTE_PER_HOUR = 60; // 60*24
 
     private EditText editText;
     public DurationTextWatcher (EditText editText){
@@ -22,17 +21,10 @@ public class DurationTextWatcher extends AfterTextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         try {
-            int duration = Integer.parseInt(s.toString());
-            int day = duration / MINUTE_PER_DAY;
-            int durationModDay = duration - day * MINUTE_PER_DAY;
-            int hour = durationModDay / MINUTE_PER_HOUR;
-            int minute = durationModDay - (hour * MINUTE_PER_HOUR);
+            int durationMinute = Integer.parseInt(s.toString());
+            Duration duration = DurationUtil.convertFormMinute(durationMinute);
             editText.removeTextChangedListener(this);
-            if (day > 0) {
-                editText.setText(editText.getContext().getString(R.string.duration_flight_dd_hh_mm, day, hour, minute));
-            } else {
-                editText.setText(editText.getContext().getString(R.string.duration_flight_hh_mm, hour, minute));
-            }
+            editText.setText(DurationUtil.getReadableString(editText.getContext(), duration));
             editText.addTextChangedListener(this);
         } catch (Exception e) {
             // no op

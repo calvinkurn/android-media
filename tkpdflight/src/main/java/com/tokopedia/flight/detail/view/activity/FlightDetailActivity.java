@@ -19,6 +19,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailFacilityFragment;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailFragment;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailPriceFragment;
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 /**
@@ -27,10 +28,10 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 public class FlightDetailActivity extends BaseTabActivity {
 
-    public static final String EXTRA_FLIGHT_SEARCH_MODEL = "EXTRA_FLIGHT_SEARCH_MODEL";
+    public static final String EXTRA_FLIGHT_SEARCH_MODEL = "EXTRA_FLIGHT_DETAIL_MODEL";
     public static final String EXTRA_FLIGHT_SELECTED = "EXTRA_FLIGHT_SELECTED";
 
-    private FlightSearchViewModel flightSearchViewModel;
+    private FlightDetailViewModel flightDetailViewModel;
     private Button buttonSubmit;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
@@ -39,9 +40,9 @@ public class FlightDetailActivity extends BaseTabActivity {
     private TextView arrivalAirportCode;
     private TextView arrivalAirportName;
 
-    public static Intent createIntent(Context context, FlightSearchViewModel flightSearchViewModel){
+    public static Intent createIntent(Context context, FlightDetailViewModel flightDetailViewModel){
         Intent intent = new Intent(context, FlightDetailActivity.class);
-        intent.putExtra(EXTRA_FLIGHT_SEARCH_MODEL, flightSearchViewModel);
+        intent.putExtra(EXTRA_FLIGHT_SEARCH_MODEL, flightDetailViewModel);
         return intent;
     }
 
@@ -52,7 +53,7 @@ public class FlightDetailActivity extends BaseTabActivity {
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
-        flightSearchViewModel = getIntent().getParcelableExtra(EXTRA_FLIGHT_SEARCH_MODEL);
+        flightDetailViewModel = getIntent().getParcelableExtra(EXTRA_FLIGHT_SEARCH_MODEL);
         super.setupLayout(savedInstanceState);
         buttonSubmit = (Button) findViewById(R.id.button_submit);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -63,10 +64,10 @@ public class FlightDetailActivity extends BaseTabActivity {
         arrivalAirportCode = (TextView) findViewById(R.id.arrival_airport_code);
         arrivalAirportName = (TextView) findViewById(R.id.arrival_airport_name);
 
-        departureAirportCode.setText(flightSearchViewModel.getDepartureAirport());
-        departureAirportName.setText(flightSearchViewModel.getDepartureAirportCity());
-        arrivalAirportCode.setText(flightSearchViewModel.getArrivalAirport());
-        arrivalAirportName.setText(flightSearchViewModel.getArrivalAirportCity());
+        departureAirportCode.setText(flightDetailViewModel.getDepartureAirport());
+        departureAirportName.setText(flightDetailViewModel.getDepartureAirportCity());
+        arrivalAirportCode.setText(flightDetailViewModel.getArrivalAirport());
+        arrivalAirportName.setText(flightDetailViewModel.getArrivalAirportCity());
         appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +80,7 @@ public class FlightDetailActivity extends BaseTabActivity {
 
     private void setResultAndFinish() {
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_FLIGHT_SELECTED, flightSearchViewModel.getId());
+        intent.putExtra(EXTRA_FLIGHT_SELECTED, flightDetailViewModel.getId());
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -106,11 +107,11 @@ public class FlightDetailActivity extends BaseTabActivity {
             public Fragment getItem(int position) {
                 switch (position){
                     case 0:
-                        return FlightDetailFragment.createInstance(flightSearchViewModel);
+                        return FlightDetailFragment.createInstance(flightDetailViewModel);
                     case 1:
-                        return FlightDetailFacilityFragment.createInstance(flightSearchViewModel);
+                        return FlightDetailFacilityFragment.createInstance(flightDetailViewModel);
                     case 2:
-                        return FlightDetailPriceFragment.createInstance(flightSearchViewModel);
+                        return FlightDetailPriceFragment.createInstance(flightDetailViewModel);
                     default:
                         return null;
                 }

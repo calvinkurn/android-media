@@ -2,6 +2,7 @@ package com.tokopedia.flight.search.data.cloud.model.request;
 
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 /**
@@ -15,24 +16,13 @@ public class FlightSearchSingleRequestData {
     @SerializedName("attributes")
     private Attributes attributes;
 
-    public FlightSearchSingleRequestData(FlightSearchPassDataViewModel flightSearchPassDataViewModel,
-                                         boolean isReturning) {
+    public FlightSearchSingleRequestData(FlightSearchApiRequestModel flightSearchApiRequestModel) {
         type = SEARCH_SINGLE;
-        FlightPassengerViewModel flightPassengerViewModel = flightSearchPassDataViewModel.getFlightPassengerViewModel();
-        attributes = new Attributes(flightSearchPassDataViewModel.getFlightClass().getId(), flightPassengerViewModel.getAdult(),
-                flightPassengerViewModel.getChildren(), flightPassengerViewModel.getInfant());
-        if (isReturning) {
-            attributes.setDeparture(flightSearchPassDataViewModel.getArrivalAirport().getAirportId());
-            attributes.setArrival(flightSearchPassDataViewModel.getDepartureAirport().getAirportId());
-            attributes.setDate(flightSearchPassDataViewModel.getReturnDate());
-        } else {
-            attributes.setDeparture(flightSearchPassDataViewModel.getDepartureAirport().getAirportId());
-            attributes.setArrival(flightSearchPassDataViewModel.getArrivalAirport().getAirportId());
-            attributes.setDate(flightSearchPassDataViewModel.getDepartureDate());
-        }
+        attributes = new Attributes(flightSearchApiRequestModel);
     }
 
     public Attributes getAttributes() {
         return attributes;
     }
+
 }

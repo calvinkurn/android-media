@@ -6,9 +6,16 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.adapter.FlightClassesAdapter;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
@@ -22,7 +29,7 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel> implements FlightClassesContract.View {
+public class FlightClassesfragment extends BaseListV2Fragment<FlightClassViewModel> implements FlightClassesContract.View, BaseListV2Adapter.OnBaseListV2AdapterListener<FlightClassViewModel> {
 
     private OnFragmentInteractionListener interactionListener;
 
@@ -58,19 +65,7 @@ public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel
 
     @Override
     protected FlightClassesAdapter getNewAdapter() {
-        return new FlightClassesAdapter();
-    }
-
-    @Override
-    protected void searchForPage(int page) {
-
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        presenter.attachView(this);
-        presenter.actionFetchClasses();
+        return new FlightClassesAdapter(this);
     }
 
     @Override
@@ -88,6 +83,12 @@ public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel
         if (interactionListener != null) {
             interactionListener.actionClassSelected(flightClassViewModel);
         }
+    }
+
+    @Override
+    public void loadData(int page, int currentDataSize, int rowPerPage) {
+        presenter.attachView(this);
+        presenter.actionFetchClasses();
     }
 
     @Override

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:padding="@dimen/padding_med">
+        android:padding="@dimen/padding_small">
 
         <RelativeLayout
             android:id="@+id/container_flight_info"

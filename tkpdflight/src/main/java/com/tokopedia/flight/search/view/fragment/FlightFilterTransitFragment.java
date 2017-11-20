@@ -1,24 +1,14 @@
 package com.tokopedia.flight.search.view.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
-import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.adapter.FlightFilterTransitAdapter;
-import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
-import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightResettableListener;
+import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.TransitEnum;
 import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
@@ -30,13 +20,11 @@ import java.util.List;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
+public class FlightFilterTransitFragment extends BaseFlightFilterFragment<TransitStat>
         implements BaseListV2Adapter.OnBaseListV2AdapterListener<TransitStat>,
-        BaseListCheckableV2Adapter.OnCheckableAdapterListener<TransitStat>,
-        OnFlightResettableListener {
+        BaseListCheckableV2Adapter.OnCheckableAdapterListener<TransitStat>{
     public static final String TAG = FlightFilterTransitFragment.class.getSimpleName();
 
-    private OnFlightFilterListener listener;
     private FlightFilterTransitAdapter flightFilterTransitAdapter;
 
     public static FlightFilterTransitFragment newInstance() {
@@ -49,28 +37,6 @@ public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_flight_filter_transit, container, false);
-    }
-
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
-
-    @Override
-    protected void initInjector() {
-        // no inject
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // TODO
         super.onCreateOptionsMenu(menu, inflater);
@@ -80,17 +46,6 @@ public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
     protected BaseListV2Adapter<TransitStat> getNewAdapter() {
         flightFilterTransitAdapter = new FlightFilterTransitAdapter(this, this);
         return flightFilterTransitAdapter;
-    }
-
-    @Override
-    public RecyclerView getRecyclerView(View view) {
-        return (RecyclerView) view.findViewById(R.id.recycler_view);
-    }
-
-    @Nullable
-    @Override
-    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
-        return null;
     }
 
     @Override
@@ -147,14 +102,9 @@ public class FlightFilterTransitFragment extends BaseListV2Fragment<TransitStat>
         flightFilterTransitAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    protected void onAttachActivity(Context context) {
-        listener = (OnFlightFilterListener) context;
-    }
-
 
     @Override
-    public void reset() {
+    public void resetFilter() {
         FlightFilterModel flightFilterModel = listener.getFlightFilterModel();
         flightFilterModel.setTransitTypeList(new ArrayList<TransitEnum>());
         flightFilterTransitAdapter.resetCheckedItemSet();

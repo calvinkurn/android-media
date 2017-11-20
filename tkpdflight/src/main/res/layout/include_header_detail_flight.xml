@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingTop="@dimen/padding_med"
-    android:paddingLeft="@dimen/padding_med"
-    android:paddingRight="@dimen/padding_med"
+    android:paddingTop="@dimen/padding_small"
+    android:paddingLeft="@dimen/padding_small"
+    android:paddingRight="@dimen/padding_small"
     tools:showIn="@layout/item_flight_detail">
 
     <ImageView
         android:id="@+id/airline_icon"
-        android:layout_width="@dimen/image_width_l"
-        android:layout_height="@dimen/image_width_l"
+        android:layout_width="@dimen/image_width_m"
+        android:layout_height="@dimen/image_width_m"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/margin_sm"
@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/airline_code"
-            style="@style/TextView.Body1.BlackPrimary"
+            style="@style/TextView.Body1.BlackSecondary"
             android:layout_alignLeft="@+id/airline_name"
             android:layout_below="@id/airline_name"
             tools:text="CP - 321" />
@@ -66,6 +66,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/airline_icon"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_small"
         android:background="@color/black_twenty_percent"/>
 </RelativeLayout>

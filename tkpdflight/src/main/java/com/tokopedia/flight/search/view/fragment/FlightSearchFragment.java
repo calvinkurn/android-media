@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListV2Fragment;
@@ -28,19 +27,23 @@ import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.view.DepartureArrivalHeaderView;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
+import com.tokopedia.flight.search.view.model.FlightAirportCombineModel;
+import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,6 +63,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
     private static final String SAVED_SORT_OPTION = "svd_sort_option";
     private static final String SAVED_STAT_MODEL = "svd_stat_model";
+    private static final String SAVED_AIRPORT_COMBINE = "svd_airport_combine";
 
     private BottomActionView filterAndSortBottomAction;
 
@@ -70,6 +74,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     int selectedSortOption = FlightSortOption.NO_PREFERENCE;
 
     private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
+    private ArrayList<FlightAirportCombineModel> airportCombineModelList;
 
     public interface OnFlightSearchFragmentListener {
         void selectFlight(String selectedFlightID);
@@ -98,12 +103,48 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
             flightFilterModel = new FlightFilterModel();
             selectedSortOption = FlightSortOption.NO_PREFERENCE;
             flightSearchStatisticModel = null;
+            setUpCombinationAirport();
         } else {
             flightFilterModel = savedInstanceState.getParcelable(SAVED_FILTER_MODEL);
             selectedSortOption = savedInstanceState.getInt(SAVED_SORT_OPTION);
             flightSearchStatisticModel = savedInstanceState.getParcelable(SAVED_STAT_MODEL);
+            airportCombineModelList = savedInstanceState.getParcelableArrayList(SAVED_AIRPORT_COMBINE);
         }
 
+    }
+
+
+    private void setUpCombinationAirport() {
+        List<String> departureAirportList;
+        String depAirportID = getDepartureAirport().getAirportId();
+        if (TextUtils.isEmpty(depAirportID)) {
+            String depAirportIDString = getDepartureAirport().getAirportIds();
+            String[] depAirportIDs = depAirportIDString.split(",");
+            departureAirportList = Arrays.asList(depAirportIDs);
+        } else {
+            departureAirportList = new ArrayList<>();
+            departureAirportList.add(depAirportID);
+        }
+
+        List<String> arrivalAirportList;
+        String arrAirportID = getArrivalAirport().getAirportId();
+        if (TextUtils.isEmpty(arrAirportID)) {
+            String arrAirportIDString = getArrivalAirport().getAirportIds();
+            String[] arrAirportIDs = arrAirportIDString.split(",");
+            arrivalAirportList = Arrays.asList(arrAirportIDs);
+        } else {
+            arrivalAirportList = new ArrayList<>();
+            arrivalAirportList.add(arrAirportID);
+        }
+
+        airportCombineModelList = new ArrayList<>();
+        for (int i = 0, sizei = departureAirportList.size(); i<sizei; i++) {
+            for (int j = 0, sizej = arrivalAirportList.size(); j<sizej; j++) {
+                airportCombineModelList.add(
+                        new FlightAirportCombineModel(departureAirportList.get(i),
+                                arrivalAirportList.get(j)));
+            }
+        }
     }
 
     protected FlightAirportDB getDepartureAirport() {
@@ -116,7 +157,10 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     @Override
     public void onDetailClicked(FlightSearchViewModel flightSearchViewModel) {
-        this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightSearchViewModel),
+        FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
+        flightDetailViewModel.build(flightSearchViewModel);
+        flightDetailViewModel.build(flightSearchPassDataViewModel);
+        this.startActivityForResult(FlightDetailActivity.createIntent(getActivity(), flightDetailViewModel),
                 REQUEST_CODE_SEE_DETAIL_FLIGHT);
     }
 
@@ -139,12 +183,6 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     @Override
     public RecyclerView getRecyclerView(View view) {
         return (RecyclerView) view.findViewById(R.id.recycler_view);
-    }
-
-    @Nullable
-    @Override
-    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
-        return null;
     }
 
     @Nullable
@@ -190,26 +228,37 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
 
     @Override
     public void loadData(int page, int currentDataSize, int rowPerPage) {
+        // load all data from server
         showLoading();
-        flightSearchPresenter.searchAndSortFlight(flightSearchPassDataViewModel,
-                isReturning(), false, flightFilterModel, selectedSortOption);
+        String date = isReturning()? flightSearchPassDataViewModel.getReturnDate():
+                flightSearchPassDataViewModel.getDepartureDate();
+        FlightPassengerViewModel flightPassengerViewModel = flightSearchPassDataViewModel.getFlightPassengerViewModel();
+        int adult = flightPassengerViewModel.getAdult();
+        int child = flightPassengerViewModel.getChildren();
+        int infant = flightPassengerViewModel.getInfant();
+        int classID = flightSearchPassDataViewModel.getFlightClass().getId();
+        for (int i = 0, sizei = airportCombineModelList.size(); i<sizei; i++) {
+            FlightAirportCombineModel flightAirportCombineModel = airportCombineModelList.get(i);
+            FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
+                    flightAirportCombineModel.getDepAirport(),flightAirportCombineModel.getArrAirport(),
+                    date, adult, child, infant,classID);
+            flightSearchPresenter.searchAndSortFlight(flightSearchApiRequestModel,
+                    isReturning(), false, flightFilterModel, selectedSortOption);
+        }
     }
 
     public void reloadDataFromCache() {
         showLoading();
-        getAdapter().setInitialPageToLoad();
-        flightSearchPresenter.searchAndSortFlight(flightSearchPassDataViewModel,
+        flightSearchPresenter.searchAndSortFlight(null,
                 isReturning(), true, flightFilterModel, selectedSortOption);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        setUpDepArrHeader(view);
         setUpBottomAction(view);
 
-        loadCombinationAirport();
+        setUpCombinationAirport();
     }
 
     protected void setUpBottomAction(View view) {
@@ -221,26 +270,21 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
                         .setMode(BottomSheetBuilder.MODE_LIST)
                         .addTitleItem(getString(R.string.flight_search_sort_title));
 
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), null, selectedSortOption == FlightSortOption.CHEAPEST);
+                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), null, selectedSortOption == FlightSortOption.MOST_EXPENSIVE);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), null, selectedSortOption == FlightSortOption.EARLIEST_DEPARTURE);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), null, selectedSortOption == FlightSortOption.LATEST_DEPARTURE);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration), null, selectedSortOption == FlightSortOption.SHORTEST_DURATION);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration), null, selectedSortOption == FlightSortOption.LONGEST_DURATION);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival), null, selectedSortOption == FlightSortOption.EARLIEST_ARRIVAL);
                 ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), null, selectedSortOption == FlightSortOption.LATEST_ARRIVAL);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), null, selectedSortOption == FlightSortOption.CHEAPEST);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), null, selectedSortOption == FlightSortOption.MOST_EXPENSIVE);
 
                 BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                         .setItemClickListener(new BottomSheetItemClickListener() {
                             @SuppressWarnings("WrongConstant")
                             @Override
                             public void onBottomSheetItemClick(MenuItem item) {
-                                if (getAdapter().getData() == null) {
-                                    showLoading();
-                                    getAdapter().setInitialPageToLoad();
-                                    flightSearchPresenter.searchAndSortFlight(flightSearchPassDataViewModel,
-                                            isReturning(), true, flightFilterModel, item.getItemId());
-                                } else {
+                                if (getAdapter().getData() != null) {
                                     flightSearchPresenter.sortFlight(getAdapter().getData(), item.getItemId());
                                 }
                             }
@@ -262,64 +306,32 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         filterAndSortBottomAction.setVisibility(View.GONE);
     }
 
-    private void loadCombinationAirport() {
-        List<String> departureAirportList;
-        String depAirportID = getDepartureAirport().getAirportId();
-        if (TextUtils.isEmpty(depAirportID)) {
-            String depAirportIDString = getArrivalAirport().getAirportIds();
-            String[] depAirportIDs = depAirportIDString.split(",");
-            departureAirportList = Arrays.asList(depAirportIDs);
-        } else {
-            departureAirportList = new ArrayList<>();
-            departureAirportList.add(depAirportID);
-        }
+//    protected void setUpDepArrHeader(View view) {
+//        DepartureArrivalHeaderView departureArrivalHeaderView = (DepartureArrivalHeaderView) view.findViewById(R.id.dep_arr_header_view);
+//
+//        String depAirportID = getDepartureAirport().getAirportId();
+//        String depCityCode = getDepartureAirport().getCityCode();
+//        String depCityName = getDepartureAirport().getCityName();
+//        String departureAirportIdOrCityCode = TextUtils.isEmpty(depAirportID) ? depCityCode : depAirportID;
+//
+//        String arrAirportID = getArrivalAirport().getAirportId();
+//        String arrCityCode = getArrivalAirport().getCityCode();
+//        String arrCityName = getArrivalAirport().getCityName();
+//        String arrivalAirportIdOrCityCode = TextUtils.isEmpty(arrAirportID) ? arrCityCode : arrAirportID;
+//
+//        departureArrivalHeaderView.setDeparture(departureAirportIdOrCityCode, depCityName);
+//        departureArrivalHeaderView.setArrival(arrivalAirportIdOrCityCode, arrCityName);
+//
+//    }
 
-        List<String> arrivalAirportList;
-        String arrAirportID = getArrivalAirport().getAirportId();
-        if (TextUtils.isEmpty(arrAirportID)) {
-            String arrAirportIDString = getArrivalAirport().getAirportIds();
-            String[] arrAirportIDs = arrAirportIDString.split(",");
-            arrivalAirportList = Arrays.asList(arrAirportIDs);
-        } else {
-            arrivalAirportList = new ArrayList<>();
-            arrivalAirportList.add(depAirportID);
-        }
-
-        for (int i = 0, sizei = departureAirportList.size(); i<sizei; i++) {
-            for (int j = 0, sizej = arrivalAirportList.size(); j<sizej; j++) {
-                //TODO do combination
-            }
-        }
-    }
-
-    protected void setUpDepArrHeader(View view) {
-        DepartureArrivalHeaderView departureArrivalHeaderView = (DepartureArrivalHeaderView) view.findViewById(R.id.dep_arr_header_view);
-
-        String depAirportID = getDepartureAirport().getAirportId();
-        String depCityCode = getDepartureAirport().getCityCode();
-        String depCityName = getDepartureAirport().getCityName();
-        String departureAirportIdOrCityCode = TextUtils.isEmpty(depAirportID) ? depCityCode : depAirportID;
-
-        String arrAirportID = getArrivalAirport().getAirportId();
-        String arrCityCode = getArrivalAirport().getCityCode();
-        String arrCityName = getArrivalAirport().getCityName();
-        String arrivalAirportIdOrCityCode = TextUtils.isEmpty(arrAirportID) ? arrCityCode : arrAirportID;
-
-        departureArrivalHeaderView.setDeparture(departureAirportIdOrCityCode, depCityName);
-        departureArrivalHeaderView.setArrival(arrivalAirportIdOrCityCode, arrCityName);
-
-    }
-
-    @Override
-    protected boolean needLoadDataAtStart() {
-        return true;
-    }
 
     private void setUIMarkFilter() {
         if (flightFilterModel.hasFilter(flightSearchStatisticModel)) {
             filterAndSortBottomAction.setMarkLeft(true);
+            getAdapter().setInFilterMode(true);
         } else {
             filterAndSortBottomAction.setMarkLeft(false);
+            getAdapter().setInFilterMode(false);
         }
     }
 
@@ -365,12 +377,18 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
     }
 
     @Override
-    public void onSearchLoaded(@NonNull List<FlightSearchViewModel> list, int totalItem) {
+    public void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList) {
         hideLoading();
-        if (getAdapter().isLoadInitialPage()) {
-            getAdapter().clearData();
-        }
-        getAdapter().addData(list, totalItem);
+        getAdapter().clearData();
+        getAdapter().addData(flightSearchViewModelList, flightSearchViewModelList.size());
+    }
+
+    @Override
+    public void onSuccessGetDataFromCloud(List<FlightSearchViewModel> flightSearchViewModelList, FlightMetaDataDB flightMetaDataDB) {
+        // TODO check meta data update the list
+        // TODO check if the data is empty, but there is data need to fetch, then keep the loading state
+        hideLoading();
+        getAdapter().addData(flightSearchViewModelList);
         if (getAdapter().getDataSize() > 0 && filterAndSortBottomAction.getVisibility() == View.GONE) {
             filterAndSortBottomAction.setVisibility(View.VISIBLE);
         }
@@ -422,6 +440,7 @@ public class FlightSearchFragment extends BaseListV2Fragment<FlightSearchViewMod
         outState.putParcelable(SAVED_FILTER_MODEL, flightFilterModel);
         outState.putInt(SAVED_SORT_OPTION, selectedSortOption);
         outState.putParcelable(SAVED_STAT_MODEL, flightSearchStatisticModel);
+        outState.putParcelableArrayList(SAVED_AIRPORT_COMBINE, airportCombineModelList);
     }
 
     @Override
