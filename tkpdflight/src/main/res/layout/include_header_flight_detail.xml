@@ -33,7 +33,9 @@
             android:id="@+id/departure_airport_name"
             style="@style/TextView.Caption.BlackSecondary"
             android:gravity="center"
-            tools:text="Jakarta" />
+            tools:text="Jakarta"
+            android:singleLine="true"
+            android:ellipsize="end"/>
     </LinearLayout>
 
     <com.tokopedia.flight.common.view.ArrowFlightView
@@ -60,6 +62,8 @@
             android:id="@+id/arrival_airport_name"
             style="@style/TextView.Caption.BlackSecondary"
             android:gravity="center"
-            tools:text="Denpasar" />
+            tools:text="Denpasar"
+            android:singleLine="true"
+            android:ellipsize="end"/>
     </LinearLayout>
 </LinearLayout>

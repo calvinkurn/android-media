@@ -26,7 +26,7 @@ public class FlightClassesDataSource {
 
     public Observable<List<FlightClassEntity>> getClasses() {
         List<FlightClassEntity> flightClassEntities = new ArrayList<>();
-        flightClassEntities.add(new FlightClassEntity(1, TYPE, "Semua"));
+//        flightClassEntities.add(new FlightClassEntity(1, TYPE, "Semua"));
         flightClassEntities.add(new FlightClassEntity(2, TYPE, "Ekonomi"));
         flightClassEntities.add(new FlightClassEntity(3, TYPE, "Bisnis"));
         flightClassEntities.add(new FlightClassEntity(4, TYPE, "Utama"));

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
@@ -46,17 +47,6 @@ public class FlightSearchReturnActivity extends FlightSearchActivity implements 
         passDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
         selectedDepartureID = getIntent().getStringExtra(EXTRA_SEL_DEPARTURE_ID);
 
-        String departureCode = passDataViewModel.getArrivalAirport().getAirportId();
-        if (TextUtils.isEmpty(departureCode)) {
-            departureCode = passDataViewModel.getArrivalAirport().getCityCode();
-        }
-        departureLocation = passDataViewModel.getArrivalAirport().getCityName() + " (" + departureCode + ")";
-
-        String arrivalCode = passDataViewModel.getDepartureAirport().getAirportId();
-        if (TextUtils.isEmpty(arrivalCode)) {
-            arrivalCode = passDataViewModel.getDepartureAirport().getCityCode();
-        }
-        arrivalLocation = passDataViewModel.getDepartureAirport().getCityName() + " (" + arrivalCode + ")";
         dateString = FlightDateUtil.formatDate(
                 FlightDateUtil.DEFAULT_FORMAT,
                 FlightDateUtil.DEFAULT_VIEW_FORMAT,
@@ -64,6 +54,14 @@ public class FlightSearchReturnActivity extends FlightSearchActivity implements 
         );
         passengerString = buildPassengerTextFormatted(passDataViewModel.getFlightPassengerViewModel());
         classString = passDataViewModel.getFlightClass().getTitle();
+    }
+
+    protected FlightAirportDB getDepartureAirport() {
+        return passDataViewModel.getArrivalAirport();
+    }
+
+    protected FlightAirportDB getArrivalAirport() {
+        return passDataViewModel.getDepartureAirport();
     }
 
     @Override
@@ -76,9 +74,4 @@ public class FlightSearchReturnActivity extends FlightSearchActivity implements 
         startActivity(FlightBookingActivity.getCallingIntent(this, passDataViewModel, selectedDepartureID, selectedFlightID));
     }
 
-    @NonNull
-    @Override
-    protected String getFlightTitle() {
-        return getString(R.string.flight_title_return);
-    }
 }

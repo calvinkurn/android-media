@@ -18,7 +18,7 @@ import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
-import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightResettableListener;
+import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
@@ -29,7 +29,7 @@ import com.tokopedia.flight.search.view.textwatcher.DurationTextWatcher;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlightSearchFilterFragment extends BaseDaggerFragment implements OnFlightResettableListener {
+public class FlightSearchFilterFragment extends BaseDaggerFragment implements OnFlightBaseFilterListener {
 
     private DurationTextWatcher minValueDurationTextWatcher;
     private DurationTextWatcher maxValueDurationTextWatcher;
@@ -90,7 +90,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
         populateRefundLabel(view, filterModel);
     }
 
-    public void reset() {
+    public void resetFilter() {
         View view = getView();
         if (view == null) {
             return;
@@ -99,6 +99,11 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
         FlightSearchStatisticModel statModel = onFilterFragmentListener.getFlightSearchStatisticModel();
         populateViews(view, filterModel, statModel);
         onFilterFragmentListener.onFilterModelChanged(filterModel);
+    }
+
+    @Override
+    public void changeFilterToOriginal() {
+        // no operation, this fragment is root.
     }
 
     private void populateDuration(View view, FlightFilterModel filterModel, FlightSearchStatisticModel statModel) {
