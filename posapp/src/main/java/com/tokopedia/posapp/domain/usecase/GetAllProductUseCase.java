@@ -86,7 +86,7 @@ public class GetAllProductUseCase extends UseCase<ProductListDomain> {
                         public void onNext(ProductListDomain productListDomain) {
                             if (productListDomain.getNextUri() != null && !productListDomain.getNextUri().isEmpty()) {
                                 page++;
-                                requestParams.putString(START_OFFSET, 1 + (requestParams.getInt(DATA_PER_ROW, 10) * (page - 1)) + "");
+                                requestParams.putString(START_OFFSET, (requestParams.getInt(DATA_PER_ROW, 10) * (page - 1)) + "");
                                 getNextPage = true;
                             } else {
                                 getNextPage = false;

@@ -173,7 +173,7 @@ public class CachePresenter implements Cache.Presenter {
     private RequestParams getGatewayProductParam(String etalaseId) {
         RequestParams params = RequestParams.create();
         params.putString(SHOP_ID, SessionHandler.getShopID(context));
-        params.putString(START_OFFSET, 1 + "");
+        params.putString(START_OFFSET, "0");
         params.putString(ROW_OFFSET, defaultRowPerPage + "");
         params.putString(ETALASE, etalaseId);
         params.putInt(DATA_PER_ROW, defaultRowPerPage);
