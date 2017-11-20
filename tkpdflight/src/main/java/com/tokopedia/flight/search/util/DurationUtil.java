@@ -16,9 +16,8 @@ public class DurationUtil {
     public static final int MINUTE_PER_HOUR = 60; // 60*24
 
     public static Duration convertFormMinute(int durationMinute){
-        int duration = durationMinute;
-        int day = duration / MINUTE_PER_DAY;
-        int durationModDay = duration - day * MINUTE_PER_DAY;
+        int day = durationMinute / MINUTE_PER_DAY;
+        int durationModDay = durationMinute - day * MINUTE_PER_DAY;
         int hour = durationModDay / MINUTE_PER_HOUR;
         int minute = durationModDay - (hour * MINUTE_PER_HOUR);
         return new Duration(day, hour, minute);
