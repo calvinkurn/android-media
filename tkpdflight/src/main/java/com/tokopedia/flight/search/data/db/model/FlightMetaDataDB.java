@@ -36,10 +36,10 @@ public class FlightMetaDataDB extends BaseModel implements Parcelable {
     int refreshTime;
 
     @Column(name = "max_retry")
-    int max_retry;
+    int maxRetry;
 
     @Column(name = "retry_no")
-    int retry_no;
+    int retryNo;
 
     @Column(name = "last_pulled")
     long last_pulled;
@@ -68,12 +68,12 @@ public class FlightMetaDataDB extends BaseModel implements Parcelable {
         return refreshTime;
     }
 
-    public int getMax_retry() {
-        return max_retry;
+    public int getMaxRetry() {
+        return maxRetry;
     }
 
-    public int getRetry_no() {
-        return retry_no;
+    public int getRetryNo() {
+        return retryNo;
     }
 
     public long getLast_pulled() {
@@ -86,8 +86,8 @@ public class FlightMetaDataDB extends BaseModel implements Parcelable {
         this.date = meta.getTime();
         this.needRefresh = meta.isNeedRefresh();
         this.refreshTime = meta.getRefreshTime();
-        this.max_retry = meta.getMaxRetry();
-        this.retry_no = 0;
+        this.maxRetry = meta.getMaxRetry();
+        this.retryNo = 0;
         this.last_pulled = System.currentTimeMillis() / 1000L;
     }
 
@@ -103,8 +103,8 @@ public class FlightMetaDataDB extends BaseModel implements Parcelable {
         dest.writeString(this.date);
         dest.writeByte(this.needRefresh ? (byte) 1 : (byte) 0);
         dest.writeInt(this.refreshTime);
-        dest.writeInt(this.max_retry);
-        dest.writeInt(this.retry_no);
+        dest.writeInt(this.maxRetry);
+        dest.writeInt(this.retryNo);
         dest.writeLong(this.last_pulled);
     }
 
@@ -114,8 +114,8 @@ public class FlightMetaDataDB extends BaseModel implements Parcelable {
         this.date = in.readString();
         this.needRefresh = in.readByte() != 0;
         this.refreshTime = in.readInt();
-        this.max_retry = in.readInt();
-        this.retry_no = in.readInt();
+        this.maxRetry = in.readInt();
+        this.retryNo = in.readInt();
         this.last_pulled = in.readLong();
     }
 

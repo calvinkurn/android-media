@@ -9,13 +9,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.tokopedia.flight.search.view.adapter.FlightSearchRecyclerView
-        android:id="@+id/recycler_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:fitsSystemWindows="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:orientation="vertical">
+
+        <com.tokopedia.flight.common.view.HorizontalProgressBar
+            android:id="@+id/horizontal_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/progress_bar_height" />
+
+        <com.tokopedia.flight.search.view.adapter.FlightSearchRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:fitsSystemWindows="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </LinearLayout>
+
 
     <com.tokopedia.design.button.BottomActionView
         android:id="@+id/bottom_action_filter_sort"

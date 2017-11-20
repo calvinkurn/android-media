@@ -146,13 +146,11 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
             @Override
             public void onError(Throwable e) {
-                getView().hideSortRouteLoading();
                 getView().onLoadSearchError(e);
             }
 
             @Override
             public void onNext(FlightSearchWithMetaViewModel flightSearchWithMetaViewModel) {
-                getView().hideSortRouteLoading();
                 getView().onSuccessGetDataFromCloud(flightSearchWithMetaViewModel.getFlightSearchViewModelList(), flightSearchWithMetaViewModel.getFlightMetaDataDB());
                 getView().setSelectedSortItem(sortOptionId);
             }
