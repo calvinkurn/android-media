@@ -21,7 +21,9 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerContract;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPassengerPresenter;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageRouteViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealRouteViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 
@@ -157,5 +159,37 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         String[] entries = getResources().getStringArray(R.array.child_infant_spinner_titles);
         spTitle.setEntries(entries);
         spTitle.setValues(entries);
+    }
+
+    @Override
+    public String getReturnTripId() {
+        return getArguments().getString(EXTRA_RETURN);
+    }
+
+    @Override
+    public String getDepartureId() {
+        return getArguments().getString(EXTRA_DEPARTURE);
+    }
+
+    @Override
+    public List<FlightBookingLuggageViewModel> getLuggageViewModels() {
+        return luggageViewModels;
+    }
+
+    @Override
+    public List<FlightBookingMealViewModel> getMealViewModels() {
+        return mealViewModels;
+    }
+
+    @Override
+    public void renderPassengerMeals(List<FlightBookingMealRouteViewModel> flightBookingMealRouteViewModels,
+                                     List<FlightBookingMealRouteViewModel> selecteds) {
+
+    }
+
+    @Override
+    public void renderPassengerLuggages(List<FlightBookingLuggageRouteViewModel> flightBookingLuggageRouteViewModels,
+                                        List<FlightBookingLuggageRouteViewModel> selecteds) {
+
     }
 }
