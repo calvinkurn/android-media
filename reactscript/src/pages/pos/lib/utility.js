@@ -46,7 +46,7 @@ export const getEnv = () => {
 export const getBaseAPI = (env) => {
     let data_api = {}
   
-    if (env === 'production'){
+    if (env === 'live'){
       const data_api = {
         api_url_payment: `${BASE_API_URL_PAYMENT.PRODUCTION}`,
         api_url_scrooge: `${BASE_API_URL_SCROOGE.PRODUCTION}`,

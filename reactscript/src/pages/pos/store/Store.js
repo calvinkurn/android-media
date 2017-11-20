@@ -6,7 +6,7 @@ import reducers from '../reducers'
 
 const middleware = [thunk, promiseMiddleware()]
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'live') {
   middleware.push(createLogger())
 }
 
