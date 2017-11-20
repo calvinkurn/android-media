@@ -509,7 +509,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (adapter != null && getActivity() != null) {
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
-            bundle.putParcelable(PARCEL, adapter.getLastItem());
+            if (adapter.getLastItem() != null)
+                bundle.putParcelable(PARCEL, adapter.getLastItem());
             intent.putExtras(bundle);
             getActivity().setResult(Activity.RESULT_OK, intent);
         }
