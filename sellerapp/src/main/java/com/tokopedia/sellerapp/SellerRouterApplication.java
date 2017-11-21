@@ -21,6 +21,7 @@ import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
@@ -35,6 +36,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.reputation.ReputationRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
@@ -43,13 +45,15 @@ import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
-import com.tokopedia.digital.tokocash.activity.ActivateTokoCashActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.gm.GMModuleRouter;
+import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
+import com.tokopedia.gm.cashback.domain.SetCashbackUseCase;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.common.logout.GMLogout;
+import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -59,23 +63,27 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.cashback.DataCashbackModel;
+import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
-import com.tokopedia.seller.myproduct.ManageProductSeller;
-import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
+import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
+import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
+import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
@@ -88,8 +96,10 @@ import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
@@ -103,8 +113,8 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
  */
 
 public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, ReputationRouter {
+        implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
+        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter, ReputationRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -174,7 +184,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, ManageProductSeller.class);
+        Intent intent = new Intent(context, ProductManageActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -195,7 +205,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void clearEtalaseCache() {
-        AddProductPresenterImpl.clearEtalaseCache(getApplicationContext());
+        EtalaseUtils.clearEtalaseCache(getApplicationContext());
     }
 
     @Override
@@ -205,8 +215,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void resetAddProductCache(Context context) {
-        AddProductPresenterImpl.clearEtalaseCache(context);
-        AddProductPresenterImpl.clearDepartementCache(context);
+        EtalaseUtils.clearEtalaseCache(context);
+        EtalaseUtils.clearDepartementCache(context);
     }
 
     @Override
@@ -228,6 +238,11 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void actionApplink(Activity activity, String linkUrl) {
+
+    }
+
+    @Override
+    public void actionApplink(Activity activity, String linkUrl, String extra) {
 
     }
 
@@ -511,11 +526,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent instanceIntentTokoCashActivation() {
-        return ActivateTokoCashActivity.newInstance(this);
-    }
-
-    @Override
     public String getBaseUrlDomainPayment() {
         return SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
     }
@@ -592,6 +602,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Observable<GMFeaturedProductDomainModel> getFeaturedProduct() {
+        GMFeaturedProductGetListUseCase gmFeaturedProductGetListUseCase = getGMComponent().getFeaturedProductGetListUseCase();
+        return gmFeaturedProductGetListUseCase.getExecuteObservableAsync(RequestParams.EMPTY);
+    }
+
+    @Override
     public Observable<DataDeposit> getDataDeposit(String shopId) {
         GetDepositTopAdsUseCase getDepositTopAdsUseCase = getTopAdsComponent().getDepositTopAdsUseCase();
         return getDepositTopAdsUseCase.getExecuteObservable(GetDepositTopAdsUseCase.createRequestParams(shopId));
@@ -610,6 +626,10 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public String getFlavor() {
+        return BuildConfig.FLAVOR;
+    }
+
     public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
         if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
                 || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {
@@ -617,6 +637,50 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             actionApplink(activity, appLinkScheme);
         }
+
+    }
+
+    @Override
+    public Observable<Boolean> setCashBack(String productId, int cashback) {
+        SetCashbackUseCase setCashbackUseCase = getGMComponent().getSetCashbackUseCase();
+        return setCashbackUseCase.getExecuteObservableAsync(SetCashbackUseCase.createRequestParams(productId, cashback));
+    }
+
+    @Override
+    public Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds) {
+        GetCashbackUseCase getCashbackUseCase = getGMComponent().getCashbackUseCase();
+        return getCashbackUseCase.getExecuteObservable(GetCashbackUseCase.createRequestParams(productIds));
+    }
+
+    public void goToAddProduct(Activity activity) {
+        if (activity != null) {
+            ProductAddActivity.start(activity);
+        }
+    }
+
+    @Override
+    public void goToUserPaymentList(Activity activity) {
+        Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
+        activity.startActivity(intent);
+    }
+
+    @Override
+    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public boolean isInMyShop(Context context, String shopId) {
+        return context != null && new SessionHandler(context).getShopID().trim().equalsIgnoreCase(shopId.trim());
+    }
+
+    @Override
+    public Intent getForgotPasswordIntent(Context context, String email) {
+        return ForgotPasswordActivity.getCallingIntent(context, email);
+    }
+
+    @Override
+    public void invalidateCategoryMenuData() {
 
     }
 }

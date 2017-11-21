@@ -24,6 +24,7 @@ import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.common.di.module.ProductModule;
 import com.tokopedia.seller.product.common.di.scope.ProductScope;
+import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -88,4 +89,6 @@ public interface ProductComponent {
     GCMHandler gcmHandler();
 
     ImageHandler imageHandler();
+
+    ShopInfoRepository shopInfoRepository();
 }

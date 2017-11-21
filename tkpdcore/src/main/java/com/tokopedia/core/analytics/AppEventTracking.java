@@ -130,14 +130,23 @@ public interface AppEventTracking {
         String CLICK_CANCEL_APP_UPDATE = "clickCancelAppUpdate";
 
         String SELLER_WIDGET = "sellerWidget";
-        String TOP_ADS_SELLER_APP = "TopAdsSellerApp";
+        String TOP_ADS_SELLER_APP = "topAdsSellerApp";
         String CLICK_CREATE_SHOP = "clickCreateShop";
         String CLICK_APP_SHARE_REFERRAL = "clickReferral";
         String HOME_DASHBOARD_CLICK_SELLER = "homeDashboardClicked";
+        String EVENT_MANAGE_PRODUCT = "eventManageProduct";
+
+        String EVENT_CLICK_USER_PROFILE = "clickUserProfile";
+        String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
+        String EVENT_ADD_TO_CART_DIGITAL = "addToCartDigital";
     }
 
     interface Category {
         String HOMEPAGE = "Homepage";
+        String HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
+        String HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget";
+        String HOMEPAGE_OFFICIAL_STORE_WIDGET = "homepage official store widget";
+        String HOMEPAGE_BANNER = "homepage banner";
         String PRODUCT_DETAIL = "Product Detail Page";
         String ADD_TO_CART = "Add to Cart";
         String CHECKOUT = "Checkout";
@@ -226,6 +235,7 @@ public interface AppEventTracking {
 
     interface Action {
         String CLICK = "Click";
+        String CLICK_VIEW_ALL    = "click view all";
         String CLICK_CHANNEL = "Click Channel";
         String SEARCH = "Search";
         String VOICE_SEARCH = "Voice Search";
@@ -283,20 +293,11 @@ public interface AppEventTracking {
         String OPEN = "Open";
         String OTP_SUCCESS = "OTP Success";
         String RECEIVED = "received";
-        String SELECT_PRODUCT_FROM_WIDGET = "Select Product from Widget";
-        String SELECT_OPERATOR_FROM_WIDGET = "Select Operator from Widget";
         String SELECT_PRODUCT = "Select Product";
         String SELECT_OPERATOR = "Select Operator";
         String CLICK_SEARCH_BAR = "Click Search Bar";
-        String CLICK_WIDGET_BAR = "Click Widget Bar";
-        String CHECK_INSTANT_SALDO_WIDGET = "Check Instant Saldo from Widget";
-        String UNCHECK_INSTANT_SALDO_WIDGET = "Uncheck Instant Saldo from Widget";
-        String CHECK_INSTANT_SALDO = "Check Instant Saldo";
-        String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
-        String CLICK_BELI = "Click Beli";
-        String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
-        String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
-        String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
+        String CLICK_BELI_LOWER = "click beli ";
+
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
         String CLICK_PHONEBOOK_ICON = "Click Phonebook Icon";
         String CLICK_DAFTAR_TX = "Click Daftar Transaksi";
@@ -314,6 +315,28 @@ public interface AppEventTracking {
         String VOUCHER_ERROR = "Voucher Error - ";
         String SUBMIT = "Submit";
         String CLICK_DASHBOARD_CARD = "Click - Dashboard Card";
+        String CLICK_TOP_NAV = "click top nav";
+        String CLICK_PRODUCT_LIST = "click product list";
+        String CLICK_SORT_PRODUCT = "click sort product";
+        String CLICK_FILTER_PRODUCT = "click filter product";
+        String CLICK_OVERFLOW_MENU = "click overflow menu";
+
+        String CLICK_WIDGET_BAR = "click widget";
+        String CLICK_BELI = "Click Beli";
+        String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
+        String CHECK_INSTANT_SALDO_WIDGET = "Check Instant Saldo from Widget";
+        String UNCHECK_INSTANT_SALDO_WIDGET = "Uncheck Instant Saldo from Widget";
+        String CHECK_INSTANT_SALDO = "Check Instant Saldo";
+        String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
+        String SELECT_NUMBER_ON_USER_PROFILE = "select number on user profile";
+        String CLICK_ACTIVATE = "click activate";
+        String CLICK_SALDO = "click saldo";
+        String CLICK_REMOVE_WISHLIST = "wishlist - remove item";
+        String CLICK_SHOP_FAVORITE = "favorite - click shop";
+        String CLICK_EMPTY_SEARCH_WISHLIST = "wishlist - click empty cari product";
+        String CLICK_SEARCH_ITEM_WISHLIST = "wishlist - search item";
+        String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
+        String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
     }
 
     interface EventLabel {
@@ -622,6 +645,16 @@ public interface AppEventTracking {
         String DASHBOARD_ITEM_DISKUSI_PRODUK = "Diskusi Produk";
         String DASHBOARD_ITEM_ULASAN = "Ulasan";
 
+        String SEARCH_PRODUCT = "search product";
+        String CLICK_PRODUCT_LIST = "click product list";
+        String CATEGORY = "category";
+        String CONDITION = "condition";
+        String PICTURE_STATUS = "picture status";
+        String CHECKOUT_INSTANT = "instant";
+        String CHECKOUT_NO_INSTANT = "no "+CHECKOUT_INSTANT;
+
+        String SELECT_PRODUCT_FROM_WIDGET = "select Product - ";
+        String CLICK_WIDGET_BAR = "click ";
     }
 
     interface SOCIAL_MEDIA {
@@ -727,6 +760,24 @@ public interface AppEventTracking {
         String PURCHASE_SITE = "purchase_site";
         String TOTAL_PRICE = "purchase_site";
         String REVIEW_SCORE = "review_score";
+
+        String TOTAL_SOLD_ITEM = "total_sold_item";
+        String REG_DATE = "registration_date";
+        String DATE_SHOP_CREATED = "date_shop_created";
+        String SHOP_LOCATION     = "shop_location";
+
+        String TOKOCASH_AMT     = "tokocash_amt";
+        String SALDO_AMT     = "saldo_amt";
+        String TOPADS_AMT     = "topads_amt";
+        String TOPADS_USER     = "is_topads_user";
+        String HAS_PURCHASED_TICKET     = "has_purchased_ticket";
+        String HAS_PURCHASED_MARKETPLACE     = "has_purchased_marketplace";
+        String HAS_PURCHASED_DIGITAL     = "has_purchased_digital";
+        String LAST_TRANSACT_DATE     = "last_transaction_date";
+        String TOTAL_ACTIVE_PRODUCT     = "total_active_product";
+        String SHOP_SCORE     = "shop_score";
+        String QUALITY_SCORE     = "quality_score";
+
     }
 
     interface EventMoEngage {
@@ -749,6 +800,7 @@ public interface AppEventTracking {
         String SEARCH_ATTEMPT = "Search_Attempt";
         String OPEN_THANKYOU_PAGE = "Thank_You_Page_Launched";
         String SUCCESS_PURCHASE_REVIEW = "Success_Purchase_Review";
+        String SUBMIT_ULASAN_REVIEW = "Submit_Ulasan_Review";
 
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";

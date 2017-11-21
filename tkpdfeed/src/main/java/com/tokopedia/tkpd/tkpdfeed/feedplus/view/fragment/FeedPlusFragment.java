@@ -34,6 +34,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
@@ -43,9 +44,9 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -64,7 +65,9 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabe
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
@@ -90,6 +93,8 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import retrofit2.http.HEAD;
+
 /**
  * @author by nisie on 5/15/17.
  */
@@ -106,6 +111,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     RelativeLayout mainContent;
     View newFeed;
     Trace trace;
+    private ShareBottomDialog shareBottomDialog;
+
 
     @Inject
     FeedPlusPresenter presenter;
@@ -311,7 +318,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.fetchFirstPage();
-        if(trace!=null)
+        if (trace != null)
             trace.stop();
     }
 
@@ -344,19 +351,32 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                      String pageRowNumber) {
 
         ShareData shareData = ShareData.Builder.aShareData()
-                               .setName(title)
-                                .setDescription(contentMessage)
-                                .setImgUri(imgUrl)
-                                .setUri(shareUrl)
-                                .setType(ShareData.FEED_TYPE)
-                                .build();
-               onProductShareClicked(shareData);
+                .setName(title)
+                .setDescription(contentMessage)
+                .setImgUri(imgUrl)
+                .setUri(shareUrl)
+                .setType(ShareData.FEED_TYPE)
+                .build();
+
+        if (shareBottomDialog == null) {
+            shareBottomDialog = new ShareBottomDialog(
+                    FeedPlusFragment.this,
+                    callbackManager);
+        }
+        shareBottomDialog.setShareModel(shareData);
+
+        shareBottomDialog.show();
 
     }
 
     private void goToProductDetail(String productId) {
         if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productId);
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
+                    getActivity(),
+                    ProductPass.Builder.aProductPass()
+                            .setProductId(productId)
+                            .build()
+            );
         }
     }
 
@@ -480,8 +500,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void goToAllPromo() {
-        Intent intent = BlogWebViewActivity.getIntent(getActivity(), TkpdBaseURL.URL_PROMO +
-                TkpdBaseURL.FLAG_APP);
+        Intent intent = new Intent(getContext(), BannerWebView.class);
+        intent.putExtra(BannerWebView.EXTRA_TITLE, getContext().getString(R.string.title_activity_promo));
+        intent.putExtra(BannerWebView.EXTRA_URL,
+                TkpdBaseURL.URL_PROMO + TkpdBaseURL.FLAG_APP
+        );
         startActivity(intent);
     }
 
@@ -492,7 +515,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
-        if(listFeed.get(0) instanceof RecentViewViewModel){
+        if (listFeed.get(0) instanceof RecentViewViewModel) {
             topAdsRecyclerAdapter.setHasHeader(true);
         } else {
             topAdsRecyclerAdapter.setHasHeader(false);
@@ -504,7 +527,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
         topAdsRecyclerAdapter.reset();
         topAdsRecyclerAdapter.shouldLoadAds(true);
-        if(listFeed.get(0) instanceof RecentViewViewModel){
+        if (listFeed.get(0) instanceof RecentViewViewModel) {
             topAdsRecyclerAdapter.setHasHeader(true);
         } else {
             topAdsRecyclerAdapter.setHasHeader(false);
@@ -527,7 +550,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.showEmpty();
         adapter.addList(listFeed);
         if (canShowTopads)
-            adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
+            adapter.addItem(new EmptyTopAdsProductModel(presenter.getUserId()));
+        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
     }
 
@@ -538,7 +562,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         adapter.showEmpty();
         if (canShowTopads)
-            adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
+            adapter.addItem(new EmptyTopAdsProductModel(presenter.getUserId()));
+        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
 
     }
@@ -815,9 +840,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSeeAllOfficialStoresFromBrands(int page, int rowNumber) {
-        UnifyTracking.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) +
-                        FeedTrackingEventLabel.Click.OFFICIAL_STORE_BRAND_SEE_ALL);
+        UnifyTracking.eventOfficialStoreBrandSeeAll(
+                getFeedAnalyticsHeader(page, rowNumber));
         openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
     }
 
@@ -876,9 +900,4 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 getFeedAnalyticsHeader(page, rowNumber) +
                         FeedTrackingEventLabel.Click.TOPPICKS_SEE_ALL);
     }
-    private void onProductShareClicked(@NonNull ShareData data) {
-                Intent intent = new Intent(getActivity(), ShareActivity.class);
-                intent.putExtra(ShareData.TAG, data);
-                startActivity(intent);
-            }
 }

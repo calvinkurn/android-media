@@ -15,12 +15,11 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
-import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -100,7 +99,7 @@ public class CategoryProductStyle2View extends
             for (Operator operator : data.getOperatorList()) {
                 if (operator.getOperatorId().equalsIgnoreCase(data.getDefaultOperatorId())) {
                     operatorSelected = operator;
-                    renderClientNumberInputForm();
+                    renderClientNumberInputForm(operatorSelected);
                 }
             }
         }
@@ -142,7 +141,6 @@ public class CategoryProductStyle2View extends
         return clientNumberInputView.getText();
     }
 
-
     @Override
     protected void onRestoreSelectedData(
             Operator operatorSelectedState, Product productSelectedState,
@@ -154,6 +152,11 @@ public class CategoryProductStyle2View extends
                 clientNumberInputView.setText(clientNumberState);
             }
         }
+    }
+
+    @Override
+    public void clearFocusOnClientNumber() {
+        clientNumberInputView.clearFocus();
     }
 
     private void renderInstantCheckoutOptions() {
@@ -194,19 +197,19 @@ public class CategoryProductStyle2View extends
         }
     }
 
-    private void renderClientNumberInputForm() {
+    private void renderClientNumberInputForm(Operator operator) {
         clearHolder(holderClientNumber);
         clearHolder(holderChooserProduct);
         clearHolder(holderAdditionalInfoProduct);
         clearHolder(holderPriceInfoProduct);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInput());
-        clientNumberInputView.renderData(operatorSelected.getClientNumberList().get(0));
+        clientNumberInputView.renderData(operator.getClientNumberList().get(0));
         holderClientNumber.addView(clientNumberInputView);
         clientNumberInputView.resetInputTyped();
 
         if (hasLastOrderHistoryData()) {
             if (historyClientNumber.getLastOrderClientNumber().getOperatorId().equalsIgnoreCase(
-                    operatorSelected.getOperatorId())) {
+                    operator.getOperatorId())) {
                 if (!TextUtils.isEmpty(historyClientNumber
                         .getLastOrderClientNumber().getClientNumber())) {
                     clientNumberInputView.setText(
@@ -217,15 +220,12 @@ public class CategoryProductStyle2View extends
         }
 
         if (hasLastOrderHistoryData()) {
-            if (!data.getClientNumberList().isEmpty()) {
-                List<String> recentClientNumberString = new ArrayList<>();
-                for (OrderClientNumber orderClientNumber
-                        : historyClientNumber.getRecentClientNumberList()) {
-                    recentClientNumberString.add(orderClientNumber.getClientNumber());
-                }
-                clientNumberInputView.setAdapterAutoCompleteClientNumber(recentClientNumberString);
+            if (!operator.getClientNumberList().isEmpty()) {
+                clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
             }
         }
+
+        clientNumberInputView.enableImageOperator(operatorSelected.getImage());
     }
 
     private void renderProductChooserOptions() {
@@ -272,8 +272,9 @@ public class CategoryProductStyle2View extends
             @Override
             public void onUpdateDataDigitalRadioChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
-                if (!data.getClientNumberList().isEmpty())
-                    renderClientNumberInputForm();
+                if (!data.getClientNumberList().isEmpty()) {
+                    renderClientNumberInputForm(operatorSelected);
+                }
             }
         };
     }
@@ -311,10 +312,30 @@ public class CategoryProductStyle2View extends
 
             @Override
             public void onClientNumberInputInvalid() {
-                clientNumberInputView.disableImageOperator();
                 clearHolder(holderChooserProduct);
                 clearHolder(holderAdditionalInfoProduct);
                 clearHolder(holderPriceInfoProduct);
+            }
+
+            @Override
+            public void onClientNumberHasFocus(String number) {
+                ClientNumber clientNumber = null;
+                if (!operatorSelected.getClientNumberList().isEmpty()) {
+                    clientNumber = operatorSelected.getClientNumberList().get(0);
+                }
+                actionListener.onClientNumberClicked(number,
+                        clientNumber,
+                        historyClientNumber.getRecentClientNumberList());
+            }
+
+            @Override
+            public void onClientNumberCleared() {
+                ClientNumber clientNumber = null;
+                if (!operatorSelected.getClientNumberList().isEmpty()) {
+                    clientNumber = operatorSelected.getClientNumberList().get(0);
+                }
+                actionListener.onClientNumberCleared(clientNumber,
+                        historyClientNumber.getRecentClientNumberList());
             }
         };
     }

@@ -98,4 +98,16 @@
     <string name="title_confirm_cancel_transaction">Konfirmasi Pembatalan Transaksi</string>
     <string name="question_cancel_transaction">Batalkan Transaksi?</string>
     <string name="string_splitter">|</string>
+
+    <string name="label_call_ondemand_driver_logistic">Hubungi</string>
+    <string name="label_call_ondemand_driver_logistic_action_1">Telepon Driver</string>
+    <string name="label_call_ondemand_driver_logistic_action_2">SMS Driver</string>
+    <string name="error_message_phone_dialer_app_not_found">Maaf, aplikasi telepon tidak ditemukan</string>
+    <string name="error_message_sms_app_not_found">Maaf, aplikasi SMS tidak ditemukan</string>
+    <string name="authentication_title_1">Autentikasi Tunggal</string>
+    <string name="authentication_title_2">Autentikasi Ganda (Direkomendasikan)</string>
+    <string name="authentication_description_1">Anda hanya akan diminta memasukkan CVV untuk setiap transaksi. Verifikasi via SMS akan diperlukan untuk transaksi kasus tertentu.</string>
+    <string name="authentication_description_2">Anda akan diminta memasukkan CVV dan verifikasi via SMS untuk setiap transaksi.</string>
+    <string name="menu_credit_card_authentication">Pengaturan Autentikasi</string>
+    <string name="title_preorder_proccess_time">Waktu Proses: </string>
 </resources>

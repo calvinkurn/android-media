@@ -287,6 +287,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             }
             isBottomBarFirstTimeChange = false;
         }
+
     }
 
     @Override

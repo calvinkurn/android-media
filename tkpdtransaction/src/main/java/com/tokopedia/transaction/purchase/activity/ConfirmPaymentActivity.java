@@ -554,7 +554,6 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
         );
         viewPaymentSuccess.setVisibility(View.VISIBLE);
         viewFormPayment.setVisibility(View.GONE);
-        presenter.setLocalyticsFlow(this, data);
         setResult(RESULT_OK);
     }
 

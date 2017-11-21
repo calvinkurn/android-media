@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.myproduct.fragment.ImageGalleryAlbumFragment;
 import com.tokopedia.core.newgallery.GalleryActivity;
+
 import java.util.ArrayList;
 
 /**
@@ -22,6 +23,9 @@ public class GalleryCropActivity extends GalleryActivity {
     }
     public static void moveToImageGallery(Context context, Fragment fragment, int position, int maxSelection, boolean compressToTkpd) {
         moveToImageGalleryCamera(context, fragment, position, false, maxSelection, compressToTkpd);
+    }
+    public static void moveToImageGallery(Activity activity, int position, int maxSelection, boolean compressToTkpd) {
+        moveToImageGalleryCamera(activity, position, false, maxSelection, compressToTkpd);
     }
     public static void moveToImageGalleryCamera(Context context, Fragment fragment,
                                                 int position,
@@ -65,7 +69,7 @@ public class GalleryCropActivity extends GalleryActivity {
     public void finishWithSingleImage(String imageUrl){
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add(imageUrl);
-        ImageEditorActivity.start(this,arrayList, null, true);
+        ImageEditorActivity.start(this,arrayList, true);
     }
 
     @Override

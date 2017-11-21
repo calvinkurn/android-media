@@ -1,13 +1,13 @@
 package com.tokopedia.seller.shop.fragment;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -25,19 +25,25 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
+import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
+import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.shop.presenter.ShopEditorPresenter;
 import com.tokopedia.seller.shop.presenter.ShopEditorPresenterImpl;
 import com.tokopedia.seller.shop.presenter.ShopEditorView;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+
 /**
  * Created by Toped10 on 5/19/2016.
  */
+@RuntimePermissions
 public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implements ShopEditorView {
 
     private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
@@ -67,7 +73,39 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     }
 
     public void uploadImage(View view) {
-        ImageGalleryEntry.moveToImageGallery((AppCompatActivity)getActivity(), 0, 1);
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        ImageEditDialogFragment dialogFragment = ImageEditDialogFragment.newInstance(0);
+        dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
+        dialogFragment.setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
+
+            @Override
+            public void clickEditProductFromCamera(int position) {
+                ShopEditorFragmentPermissionsDispatcher.goToCameraWithCheck(ShopEditorFragment.this, 0);
+            }
+
+            @Override
+            public void clickEditProductFromGallery(int position) {
+                ShopEditorFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopEditorFragment.this, 0);
+            }
+
+            @Override
+            public void clickEditProductFromInstagram(int position) {
+                InstopedSellerCropperActivity.startInstopedActivityForResult(getActivity(),
+                        GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE, 1);
+            }
+        });
+    }
+
+    @TargetApi(16)
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void goToGallery(int imagePosition) {
+        GalleryCropActivity.moveToImageGallery(getActivity(), imagePosition, 1, true);
+    }
+
+    @TargetApi(16)
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void goToCamera(int imagePosition) {
+        GalleryCropActivity.moveToImageGalleryCamera(getActivity(), imagePosition, true, 1,true);
     }
 
     public void kirimData(View view) {
@@ -256,7 +294,7 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
 
     @Override
     public void loadImageAva(String url) {
-        ImageHandler.LoadImage(mShopAva, url);
+        ImageHandler.loadImageFit2(getContext(), mShopAva, url);
     }
 
     @Override

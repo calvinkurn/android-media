@@ -1,16 +1,26 @@
 package com.tokopedia.digital.widget.interactor;
 
-import com.tokopedia.core.database.model.RechargeOperatorModel;
-import com.tokopedia.core.database.recharge.operator.Operator;
-import com.tokopedia.core.database.recharge.product.Product;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.model.mapper.OperatorMapper;
+import com.tokopedia.digital.widget.model.mapper.ProductMapper;
+import com.tokopedia.digital.widget.model.operator.Operator;
+import com.tokopedia.digital.widget.model.product.Product;
+import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -19,6 +29,7 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nabillasabbaha on 7/21/17.
+ * Modified by rizkyfadillah at 10/6/17.
  */
 
 public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
@@ -29,26 +40,45 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
 
     private DigitalWidgetRepository digitalWidgetRepository;
 
+    private ProductMapper productMapper;
+    private OperatorMapper operatorMapper;
+    private ThreadExecutor threadExecutor;
+    private PostExecutionThread postExecutionThread;
+    private boolean useCache;
+
     public DigitalWidgetInteractor(CompositeSubscription compositeSubscription,
-                                   DigitalWidgetRepository digitalWidgetRepository) {
+                                   DigitalWidgetRepository digitalWidgetRepository,
+                                   ProductMapper productMapper,
+                                   OperatorMapper operatorMapper,
+                                   JobExecutor jobExecutor,
+                                   PostExecutionThread postExecutionThread,
+                                   boolean useCache) {
         this.compositeSubscription = compositeSubscription;
         this.digitalWidgetRepository = digitalWidgetRepository;
+        this.operatorMapper = operatorMapper;
+        this.productMapper = productMapper;
+        this.threadExecutor = jobExecutor;
+        this.postExecutionThread = postExecutionThread;
+        this.useCache = useCache;
     }
 
     @Override
     public void getProductsFromPrefix(Subscriber<List<Product>> subscriber, final int categoryId, String prefix,
                                       Boolean validatePrefix) {
         compositeSubscription.add(
-                Observable.zip(getOperatorByPrefix(prefix),
-                        digitalWidgetRepository.getObservableProducts().doOnNext(
-                                new Action1<List<Product>>() {
-                                    @Override
-                                    public void call(List<Product> products) {
-                                        if (products.size() == 0)
-                                            throw new RuntimeException("kosong");
-                                    }
-                                }
-                        ), new Func2<List<Operator>, List<Product>, List<Product>>() {
+                Observable.zip(
+                        getOperatorByPrefix(prefix),
+                        digitalWidgetRepository.getObservableProducts(useCache)
+                                .map(productMapper)
+                                .doOnNext(
+                                        new Action1<List<Product>>() {
+                                            @Override
+                                            public void call(List<Product> products) {
+                                                if (products.size() == 0)
+                                                    throw new RuntimeException("kosong");
+                                            }
+                                        }
+                                ), new Func2<List<Operator>, List<Product>, List<Product>>() {
                             @Override
                             public List<Product> call(List<Operator> operators, List<Product> products) {
                                 return Observable.from(products)
@@ -64,15 +94,15 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                 return Observable.just(new ArrayList<Product>());
                             }
                         })
-
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
     }
 
     private Observable<List<Operator>> getOperatorByPrefix(final String prefix) {
-        return digitalWidgetRepository.getObservableOperators()
+        return digitalWidgetRepository.getObservableOperators(useCache)
+                .map(operatorMapper)
                 .flatMap(new Func1<List<Operator>, Observable<Operator>>() {
                     @Override
                     public Observable<Operator> call(List<Operator> operators) {
@@ -103,12 +133,12 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     }
 
     @Override
-    public void getOperatorsFromCategory(Subscriber<List<RechargeOperatorModel>> subscriber, final int categoryId) {
+    public void getOperatorsFromCategory(Subscriber<List<Operator>> subscriber, final int categoryId) {
         compositeSubscription.add(Observable.zip(
-                digitalWidgetRepository.getObservableOperators(), getIdOperators(categoryId),
-                new Func2<List<Operator>, List<Integer>, List<RechargeOperatorModel>>() {
+                digitalWidgetRepository.getObservableOperators(useCache).map(operatorMapper),
+                getIdOperators(categoryId), new Func2<List<Operator>, List<Integer>, List<Operator>>() {
                     @Override
-                    public List<RechargeOperatorModel> call(List<Operator> operators, final List<Integer> integers) {
+                    public List<Operator> call(List<Operator> operators, final List<Integer> integers) {
                         return Observable.just(operators)
                                 .flatMap(new Func1<List<Operator>, Observable<Operator>>() {
                                     @Override
@@ -122,21 +152,20 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                         return integers.contains(operator.getId());
                                     }
                                 })
-                                .map(convertToRechargeOperatorModel())
                                 .toList()
                                 .toBlocking()
                                 .single();
                     }
                 })
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.from(threadExecutor))
+                .subscribeOn(Schedulers.from(threadExecutor))
+                .observeOn(postExecutionThread.getScheduler())
                 .subscribe(subscriber));
-
     }
 
     private Observable<List<Integer>> getIdOperators(final int categoryId) {
-        return digitalWidgetRepository.getObservableProducts()
+        return digitalWidgetRepository.getObservableProducts(useCache)
+                .map(productMapper)
                 .flatMap(new Func1<List<Product>, Observable<Product>>() {
                     @Override
                     public Observable<Product> call(List<Product> products) {
@@ -166,7 +195,8 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     @Override
     public void getProductsFromOperator(Subscriber<List<Product>> subscriber, int categoryId, String operatorId) {
         compositeSubscription.add(
-                digitalWidgetRepository.getObservableProducts()
+                digitalWidgetRepository.getObservableProducts(useCache)
+                        .map(productMapper)
                         .flatMap(new Func1<List<Product>, Observable<Product>>() {
                             @Override
                             public Observable<Product> call(List<Product> products) {
@@ -175,16 +205,17 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         })
                         .filter(isProductValidToOperator(categoryId, Integer.parseInt(operatorId)))
                         .toList()
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
     }
 
     @Override
-    public void getOperatorById(Subscriber<RechargeOperatorModel> subscriber, final String operatorId) {
+    public void getOperatorById(Subscriber<Operator> subscriber, final String operatorId) {
         compositeSubscription.add(
-                digitalWidgetRepository.getObservableOperators()
+                digitalWidgetRepository.getObservableOperators(useCache)
+                        .map(operatorMapper)
                         .flatMap(new Func1<List<Operator>, Observable<Operator>>() {
                             @Override
                             public Observable<Operator> call(List<Operator> operators) {
@@ -197,10 +228,9 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                 return String.valueOf(operator.getId()).equals(operatorId);
                             }
                         })
-                        .map(convertToRechargeOperatorModel())
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
     }
 
@@ -208,7 +238,8 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
     public void getProductById(Subscriber<Product> subscriber, String categoryId, String operatorId,
                                String productId) {
         compositeSubscription.add(
-                digitalWidgetRepository.getObservableProducts()
+                digitalWidgetRepository.getObservableProducts(useCache)
+                        .map(productMapper)
                         .flatMap(new Func1<List<Product>, Observable<Product>>() {
                             @Override
                             public Observable<Product> call(List<Product> products) {
@@ -224,20 +255,23 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                                 return products.get(0);
                             }
                         })
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.from(threadExecutor))
+                        .subscribeOn(Schedulers.from(threadExecutor))
+                        .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
     }
 
     @Override
-    public void getRecentData(Subscriber<List<String>> subscriber, final int categoryId) {
-        compositeSubscription.add(
-                digitalWidgetRepository.getObservableRecentData(categoryId)
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(subscriber));
+    public void getNumberList(Subscriber<DigitalNumberList> subscriber,
+                              TKPDMapParam<String, String> param) {
+        if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
+            compositeSubscription.add(
+                    digitalWidgetRepository.getObservableNumberList(param)
+                            .subscribeOn(Schedulers.from(threadExecutor))
+                            .unsubscribeOn(Schedulers.from(threadExecutor))
+                            .observeOn(postExecutionThread.getScheduler())
+                            .subscribe(subscriber));
+        }
     }
 
     private Func1<Product, Boolean> isProductValidToOperator(final int categoryId, final int operatorId) {
@@ -282,33 +316,5 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         product.getAttributes().getStatus() != STATE_CATEGORY_NON_ACTIVE;
             }
         };
-    }
-
-    private Func1<Operator, RechargeOperatorModel> convertToRechargeOperatorModel() {
-        return new Func1<Operator, RechargeOperatorModel>() {
-            @Override
-            public RechargeOperatorModel call(Operator operator) {
-                RechargeOperatorModel rechargeModel = new RechargeOperatorModel();
-                rechargeModel.image = operator.getAttributes().getImage();
-                rechargeModel.maximumLength = operator.getAttributes().getMaximumLength();
-                rechargeModel.minimumLength = operator.getAttributes().getMinimumLength();
-                rechargeModel.name = operator.getAttributes().getName();
-                rechargeModel.nominalText = operator.getAttributes().getRule().getProductText();
-                rechargeModel.operatorId = operator.getId();
-                rechargeModel.showPrice = operator.getAttributes().getRule().isShowPrice();
-                rechargeModel.showProduct = operator.getAttributes().getRule().isShowProduct();
-                rechargeModel.status = operator.getAttributes().getStatus();
-                rechargeModel.weight = operator.getAttributes().getWeight();
-                rechargeModel.defaultProductId = operator.getAttributes().getDefaultProductId();
-                rechargeModel.allowAlphanumeric = operator.getAttributes().getRule().isAllowAphanumericNumber();
-                return rechargeModel;
-            }
-        };
-    }
-
-    @Override
-    public void onDestroy() {
-        if (compositeSubscription != null)
-            compositeSubscription.unsubscribe();
     }
 }

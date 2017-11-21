@@ -29,13 +29,6 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         wholesaleTitle = (TextView) itemView.findViewById(R.id.wholesale_title);
         wholesaleToggle = (SwitchCompat) itemView.findViewById(R.id.wholesale_toggle);
         priceRangeInputView = (PriceRangeInputView) itemView.findViewById(R.id.price_range_input_view);
-        priceRangeInputView.setOnValueChangedListener(new PriceRangeInputView.OnValueChangedListener() {
-            @Override
-            public void onValueChanged(int minValue, int maxValue) {
-                dynamicFilterView.saveTextInput(Option.KEY_PRICE_MIN, String.valueOf(minValue));
-                dynamicFilterView.saveTextInput(Option.KEY_PRICE_MAX, String.valueOf(maxValue));
-            }
-        });
     }
 
     @Override
@@ -79,6 +72,14 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
         } else {
             defaultMaxValue = Integer.parseInt(savedMaxValue);
         }
+
+        priceRangeInputView.setOnValueChangedListener(new PriceRangeInputView.OnValueChangedListener() {
+            @Override
+            public void onValueChanged(int minValue, int maxValue) {
+                dynamicFilterView.saveTextInput(Option.KEY_PRICE_MIN, String.valueOf(minValue));
+                dynamicFilterView.saveTextInput(Option.KEY_PRICE_MAX, String.valueOf(maxValue));
+            }
+        });
 
         priceRangeInputView.setData(minLabel, maxLabel, minBound, maxBound,
                 defaultMinValue, defaultMaxValue);

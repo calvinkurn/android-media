@@ -81,4 +81,9 @@ public class CartActivity extends BasePresenterActivity {
     public String getScreenName() {
         return AppScreen.SCREEN_CART;
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

@@ -87,7 +87,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
     }
 
     protected void resetNotificationStatus(Bundle data) {
-        switch (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))) {
+        switch (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))) {
             case TkpdState.GCMServiceState.GCM_DRAWER_UPDATE:
                 MainApplication.resetDrawerStatus(true);
                 break;

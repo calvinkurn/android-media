@@ -2,7 +2,6 @@ package com.tkpd.library.utils;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -25,7 +24,6 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
@@ -63,19 +61,20 @@ public class ImageHandler {
 	 * @return
 	 * @throws IOException
 	 */
-	public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
-		ExifInterface exif = new ExifInterface(file);
-		String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
-		int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
-		int rotationAngle = 0;
-		if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
-		if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
-		if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
-		Matrix matrix = new Matrix();
-		matrix.setRotate(rotationAngle, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
-		Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-        return rotatedBitmap;
+    public static Bitmap RotatedBitmap (Bitmap bitmap, String file) throws IOException {
+        ExifInterface exif = new ExifInterface(file);
+        String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+        int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
+        int rotationAngle = 0;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
+        if (rotationAngle == 0) {
+            return bitmap;
+        }
+        Matrix matrix = new Matrix();
+        matrix.setRotate(rotationAngle, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     public static void loadImageWithId(ImageView imageview, int resId) {
@@ -203,6 +202,7 @@ public class ImageHandler {
      * @param url
      */
     public static void LoadImage(ImageView imageview, String url) {
+
 
         if (imageview.getContext() != null) {
             Glide.with(imageview.getContext())
@@ -399,7 +399,6 @@ public class ImageHandler {
     public static void LoadImageWGender(ImageView imageview, String url, Activity context, String gender) {
         if (!url.equals("null")) {
             loadImageCircle2(imageview.getContext(), imageview, url);
-//            ImageHandler.LoadImageCircle(imageview, url);
         } else {
             if (gender.equals("1")) {
                 imageview.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_image_avatar_boy), 100));
@@ -407,6 +406,16 @@ public class ImageHandler {
                 imageview.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_image_avatar_girl), 100));
             }
         }
+    }
+
+    public static void loadImageFit2(Context context, ImageView imageView, File file) {
+        Glide.with(context)
+                .load(file)
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .centerCrop()
+                .into(imageView);
     }
 
     public static void loadImageFit2(Context context, ImageView imageView, String url) {

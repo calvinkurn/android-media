@@ -138,17 +138,22 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.shop_info, menu);
+        inflater.inflate(com.tokopedia.discovery.R.menu.menu_catalog_detail, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_share_prod) {
+        if (item.getItemId() == com.tokopedia.discovery.R.id.action_share_prod) {
             if (shareData != null) startActivity(ShareActivity.createIntent(this, shareData));
             else NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia");
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

@@ -1,9 +1,14 @@
 package com.tokopedia.transaction.bcaoneklik.domain;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.apiservices.transaction.CreditCardVaultService;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardModel;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardSuccessDeleteModel;
+import com.tokopedia.transaction.bcaoneklik.model.creditcard.authenticator.AuthenticatorCheckWhiteListResponse;
+import com.tokopedia.transaction.bcaoneklik.model.creditcard.authenticator.AuthenticatorLogicModel;
+import com.tokopedia.transaction.bcaoneklik.model.creditcard.authenticator.AuthenticatorPageModel;
+import com.tokopedia.transaction.bcaoneklik.model.creditcard.authenticator.AuthenticatorUpdateWhiteListResponse;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -13,9 +18,11 @@ import rx.Observable;
 
 public interface ICreditCardRepository {
 
-    Observable<CreditCardModel> getCreditCardList(CreditCardVaultService service,
-                                                  JsonObject requestBody);
+    Observable<CreditCardModel> getCreditCardList(JsonObject requestBody);
 
-    Observable<CreditCardSuccessDeleteModel> deleteCreditCard(CreditCardVaultService service,
-                                                              JsonObject requestBody);
+    Observable<CreditCardSuccessDeleteModel> deleteCreditCard(JsonObject requestBody);
+
+    Observable<AuthenticatorPageModel> checkCreditCardWhiteList(JsonObject object);
+
+    Observable<AuthenticatorUpdateWhiteListResponse> updateCreditCardWhiteList(JsonObject object);
 }

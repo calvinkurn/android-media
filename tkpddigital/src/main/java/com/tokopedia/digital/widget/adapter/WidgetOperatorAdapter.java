@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.widget.model.operator.Operator;
 
 import java.util.List;
 
@@ -20,12 +20,12 @@ import butterknife.ButterKnife;
  * Created by Alifa on 11/28/2016.
  */
 
-public class WidgetOperatorAdapter extends ArrayAdapter<RechargeOperatorModel> {
+public class WidgetOperatorAdapter extends ArrayAdapter<Operator> {
     private final static int OUT_OF_STOCK = 3;
     private final LayoutInflater inflater;
-    private List<RechargeOperatorModel> operatorList;
+    private List<Operator> operatorList;
 
-    public WidgetOperatorAdapter(Context context, int resource, List<RechargeOperatorModel> operatorList) {
+    public WidgetOperatorAdapter(Context context, int resource, List<Operator> operatorList) {
         super(context, resource, operatorList);
         this.operatorList = operatorList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -42,7 +42,7 @@ public class WidgetOperatorAdapter extends ArrayAdapter<RechargeOperatorModel> {
     }
 
     public View getCustomView(int position, View convertView, ViewGroup parent) {
-        RechargeOperatorModel operator = operatorList.get(position);
+        Operator operator = operatorList.get(position);
         NormalViewHolder normalViewHolder;
         View rowNormal = convertView;
         if (rowNormal == null) {
@@ -56,8 +56,8 @@ public class WidgetOperatorAdapter extends ArrayAdapter<RechargeOperatorModel> {
         return rowNormal;
     }
 
-    private void renderProduct(NormalViewHolder holder, RechargeOperatorModel operator) {
-        holder.operatorTextView.setText(operator.name);
+    private void renderProduct(NormalViewHolder holder, Operator operator) {
+        holder.operatorTextView.setText(operator.getAttributes().getName());
     }
 
     @Override

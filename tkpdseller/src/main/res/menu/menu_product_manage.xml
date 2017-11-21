@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/add_product_menu"
+        android:icon="@drawable/ic_action_add"
+        android:title="@string/title_add_product"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/label_view_added_from_camera"
+                app:showAsAction="never"
+                android:title="@string/added_from_camera_text_description"/>
+            <item
+                android:id="@+id/label_view_added_from_gallery"
+                app:showAsAction="never"
+                android:title="@string/added_from_gallery_text_description"/>
+            <item
+                android:id="@+id/label_view_import_from_instagram"
+                app:showAsAction="never"
+                android:title="@string/import_from_instagram_text_description"/>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/checklist_product_menu"
+        android:icon="@drawable/ic_action_checkable"
+        android:title="@string/title_multiple_select"
+        app:showAsAction="always"/>
+</menu>

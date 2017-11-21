@@ -24,6 +24,8 @@ import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
+
 /**
  * Created by nathan on 4/11/17.
  */
@@ -117,31 +119,37 @@ public class ProductImageViewHolder extends ProductViewHolder {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY && data != null) {
+        if ((requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY || (
+                requestCode == INSTAGRAM_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK)) &&
+                data != null) {
             String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
             if (!TextUtils.isEmpty(imageUrl)) {
-                if (imagesSelectView.getSelectedImageIndex() < 0) {
-                    imagesSelectView.addImageString(imageUrl);
-                } else {
-                    imagesSelectView.changeImagePath(imageUrl);
-                }
+                addOrChangeImage(imageUrl);
             } else {
                 ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
                 if (imageUrls != null) {
-                    imagesSelectView.addImagesString(imageUrls);
+                    if (imageUrls.size() > 1) {
+                        imagesSelectView.addImagesString(imageUrls);
+                    } else {
+                        addOrChangeImage(imageUrls.get(0));
+                    }
                 }
             }
         } else if (resultCode == Activity.RESULT_OK && requestCode == ImageEditorActivity.REQUEST_CODE && data != null) {
             List<String> resultImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_IMAGE_PATH);
-            if (resultImageUrl!= null && resultImageUrl.size() > 0) {
+            if (resultImageUrl != null && resultImageUrl.size() > 0) {
                 String imageUrl = resultImageUrl.get(0);
-                if (!TextUtils.isEmpty(imageUrl)) {
-                    if (imagesSelectView.getSelectedImageIndex() < 0) {
-                        imagesSelectView.addImageString(imageUrl);
-                    } else {
-                        imagesSelectView.changeImagePath(imageUrl);
-                    }
-                }
+                addOrChangeImage(imageUrl);
+            }
+        }
+    }
+
+    private void addOrChangeImage(String imageUrl) {
+        if (!TextUtils.isEmpty(imageUrl)) {
+            if (imagesSelectView.getSelectedImageIndex() < 0) {
+                imagesSelectView.addImageString(imageUrl);
+            } else {
+                imagesSelectView.changeImagePath(imageUrl);
             }
         }
     }
@@ -182,7 +190,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
             ImageProductInputViewModel productPhoto = productPhotos.getPhotos().get(i);
             String url = productPhoto.getUrl();
             String path = productPhoto.getImagePath();
-            if(StringUtils.isBlank(url)){
+            if (StringUtils.isBlank(url)) {
                 if (StringUtils.isBlank(path)) {
                     continue;
                 } else {

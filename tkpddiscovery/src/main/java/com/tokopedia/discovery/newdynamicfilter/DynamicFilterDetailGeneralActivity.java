@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdynamicfilter;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 
@@ -9,6 +10,7 @@ import com.tokopedia.discovery.newdynamicfilter.adapter.DynamicFilterDetailAdapt
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +29,7 @@ public class DynamicFilterDetailGeneralActivity
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterDetailGeneralActivity.class);
             intent.putExtra(EXTRA_PAGE_TITLE, pageTitle);
-            intent.putExtra(EXTRA_OPTION_LIST, Parcels.wrap(optionList));
+            intent.putParcelableArrayListExtra(EXTRA_OPTION_LIST, mappingParcelableOption(optionList));
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
             activity.startActivityForResult(intent, REQUEST_CODE);

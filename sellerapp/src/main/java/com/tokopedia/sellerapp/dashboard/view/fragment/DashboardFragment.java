@@ -41,6 +41,7 @@ import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.ticker.TickerView;
 import com.tokopedia.seller.common.constant.ShopStatusDef;
 import com.tokopedia.seller.common.widget.LabelView;
+import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
@@ -282,7 +283,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         emptyCardContentView.setContentText(null);
         swipeRefreshLayout.setRefreshing(false);
 
-        showSnackBarRetry();
+        showSnackBarRetry(ViewUtils.getErrorMessage(getActivity(), t));
     }
 
     @Override
@@ -445,7 +446,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     public void onErrorGetNotifiction(String message) {
         // just show the content without the count
         footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
-        showSnackBarRetry();
+        showSnackBarRetry(message);
     }
 
     @Override
@@ -470,9 +471,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     }
 
-    private void showSnackBarRetry() {
+    private void showSnackBarRetry(String message) {
         if (snackBarRetry == null) {
-            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
                     DashboardFragment.this.onRefresh();

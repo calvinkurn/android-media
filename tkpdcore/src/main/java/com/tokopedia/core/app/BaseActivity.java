@@ -5,16 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.localytics.android.Localytics;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -98,7 +100,6 @@ BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListene
         hadesBroadcastReceiver = new HadesBroadcastReceiver();
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
-        Localytics.registerPush(gcmHandler.getSenderID());
 
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
@@ -204,7 +205,6 @@ BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListene
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Localytics.onNewIntent(this, intent);
     }
 
     public void initGTM() {
@@ -230,6 +230,7 @@ BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListene
             if (GlobalConfig.isSellerApp()) {
                 intent = new Intent(this, WelcomeActivity.class);
             } else {
+                invalidateCategoryCache();
                 intent = HomeRouter.getHomeActivity(this);
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -356,12 +357,17 @@ BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListene
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         } else {
+                            invalidateCategoryCache();
                             Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         }
                     }
                 });
+    }
+
+    private void invalidateCategoryCache() {
+        ((TkpdCoreRouter) getApplication()).invalidateCategoryMenuData();
     }
 
     public void checkIfForceLogoutMustShow() {
@@ -389,4 +395,27 @@ BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListene
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            ApplicationInfo ai = null;
+            try {
+                ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+                Bundle bundle = ai.metaData;
+                String i = bundle.getString("APPS_HOME", "");
+                if (!TextUtils.isEmpty(i)) {
+                    Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent
+                            (this);
+                    startActivity(intentHome);
+                } else {
+                    super.onBackPressed();
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                super.onBackPressed();
+            }
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

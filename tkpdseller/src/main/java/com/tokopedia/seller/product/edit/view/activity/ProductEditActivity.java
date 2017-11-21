@@ -52,6 +52,11 @@ public class ProductEditActivity extends ProductDraftEditActivity {
     }
 
     @Override
+    protected boolean isToolbarWhite() {
+        return true;
+    }
+
+    @Override
     protected boolean needDeleteCacheOnBack() {
         return true;
     }

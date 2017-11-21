@@ -11,12 +11,12 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.widget.adapter.WidgetNominalAdapter;
+import com.tokopedia.digital.widget.model.lastorder.LastOrder;
+import com.tokopedia.digital.widget.model.product.Product;
 
 import java.util.List;
 
@@ -85,7 +85,6 @@ public class WidgetProductChooserView extends LinearLayout {
                 android.R.layout.simple_spinner_item, products, showPrice);
         spinnerNominal.setAdapter(adapter);
         spinnerNominal.setOnItemSelectedListener(getItemSelected(products));
-        spinnerNominal.setOnTouchListener(getOnTouchListener());
         setSpnNominalSelectionBasedStatus(products);
         setSpnNominalSelectionBasedLastOrder(products, lastOrder, lastProductSelected);
         checkStockProduct(products.get(spinnerNominal.getSelectedItemPosition()));
@@ -96,25 +95,13 @@ public class WidgetProductChooserView extends LinearLayout {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 listener.initDataView(products.get(i));
+                listener.trackingProduct();
                 checkStockProduct(products.get(i));
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
-            }
-        };
-    }
-
-    private OnTouchListener getOnTouchListener() {
-        return new OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    listener.trackingProduct();
-                }
-                return false;
             }
         };
     }
@@ -142,9 +129,8 @@ public class WidgetProductChooserView extends LinearLayout {
     private void setSpnNominalSelectionBasedLastOrder(List<Product> productList, LastOrder lastOrder,
                                                       String lastProductSelected) {
         if (SessionHandler.isV4Login(getContext())
-                && lastOrder != null && lastOrder.getData() != null
-                && lastOrder.getData().getAttributes() != null) {
-            int lastProductId = lastOrder.getData().getAttributes().getProduct_id();
+                && lastOrder != null && lastOrder.getAttributes() != null) {
+            int lastProductId = lastOrder.getAttributes().getProductId();
             for (int i = 0; i < productList.size(); i++) {
                 if (productList.get(i).getId() == (lastProductId)) {
                     spinnerNominal.setSelection(i);

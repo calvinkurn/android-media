@@ -3,6 +3,7 @@ package com.tokopedia.core.gallery;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.R;
+
+import java.io.File;
 
 public class GallerySelectedFragment extends Fragment implements AlbumMediaCollection.AlbumMediaCallbacks, AlbumMediaAdapter.OnMediaClickListener {
 
@@ -83,10 +86,19 @@ public class GallerySelectedFragment extends Fragment implements AlbumMediaColle
     @Override
     public void onMediaClick(AlbumItem album, MediaItem item, int adapterPosition) {
         // this finish here
+        getHeightAndWidth(item);
         Intent intent = new Intent();
         intent.putExtra("EXTRA_RESULT_SELECTION", item);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
+    }
+
+    public void getHeightAndWidth(MediaItem item) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(new File(item.getRealPath()).getAbsolutePath(), options);
+        item.width = options.outWidth;
+        item.height = options.outHeight;
     }
 
 }

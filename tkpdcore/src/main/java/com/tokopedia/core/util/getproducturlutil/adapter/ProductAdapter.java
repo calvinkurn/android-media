@@ -83,7 +83,7 @@ public class ProductAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindProduct(ViewHolder holder, final int position) {
-        if (position <= list.size()) {
+        if (position < list.size()) {
             holder.name.setText(list.get(position).getProductName());
             ImageHandler.LoadImage(holder.image, list.get(position).getProductImage());
             holder.main.setOnClickListener(new View.OnClickListener() {

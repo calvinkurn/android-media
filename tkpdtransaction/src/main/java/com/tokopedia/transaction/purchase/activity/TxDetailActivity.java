@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.TxProductListAdapter;
@@ -110,8 +112,8 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     TextView driverPhone;
     @BindView(R2.id.driver_license)
     TextView driverLicense;
-    @BindView(R2.id.driver_info_border)
-    TextView driverInfoBorder;
+    @BindView(R2.id.btn_call_driver)
+    TextView btnCallOnDemandDriver;
 
     private OrderData orderData;
     private TkpdProgressDialog progressDialog;
@@ -217,22 +219,71 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                 orderData.getOrderShipment().getShipmentProduct()));
         tvDestinationDetail.setText(orderData.getOrderDestination().getDetailDestination()
                 .replace("&amp;", "&"));
-
-        if(orderData.getDriverInfo() != null
+        if (orderData.getDriverInfo() != null
                 && !orderData.getDriverInfo().getDriverName().isEmpty()) {
             instantCourierDriverLayout.setVisibility(View.VISIBLE);
             ImageHandler.loadImageCircle2(this, driverPhoto, orderData.getDriverInfo().getDriverPhoto());
             driverName.setText(orderData.getDriverInfo().getDriverName());
             driverPhone.setText(orderData.getDriverInfo().getDriverPhone());
-            if(orderData.getDriverInfo().getLicenseNumber().isEmpty()) {
+            btnCallOnDemandDriver.setOnClickListener(getClickListenerCallDriver());
+            if (orderData.getDriverInfo().getLicenseNumber().isEmpty()) {
                 driverLicense.setVisibility(View.GONE);
-                driverInfoBorder.setVisibility(View.GONE);
             } else {
                 driverLicense.setVisibility(View.VISIBLE);
-                driverInfoBorder.setVisibility(View.VISIBLE);
                 driverLicense.setText(orderData.getDriverInfo().getLicenseNumber());
             }
         } else instantCourierDriverLayout.setVisibility(View.GONE);
+    }
+
+    @NonNull
+    private View.OnClickListener getClickListenerCallDriver() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new BottomSheetCallAction.Builder(TxDetailActivity.this)
+                        .actionListener(new BottomSheetCallAction.ActionListener() {
+                            @Override
+                            public void onCallAction1Clicked(BottomSheetCallAction.CallActionData callActionData) {
+                                openDialCaller(callActionData.getPhoneNumber());
+                            }
+
+                            @Override
+                            public void onCallAction2Clicked(BottomSheetCallAction.CallActionData callActionData) {
+                                openSmsApplication(callActionData.getPhoneNumber());
+                            }
+                        })
+                        .callActionData(
+                                new BottomSheetCallAction.CallActionData().setPhoneNumber(
+                                        orderData.getDriverInfo().getDriverPhone()
+                                ).setLabelAction1(
+                                        getString(R.string.label_call_ondemand_driver_logistic_action_1)
+                                ).setLabelAction2(
+                                        getString(R.string.label_call_ondemand_driver_logistic_action_2)
+                                )
+                        ).build().show();
+            }
+        };
+    }
+
+    void openSmsApplication(String phoneNumber) {
+        Intent smsIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + phoneNumber));
+        try {
+            startActivity(smsIntent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            showToastMessage(getString(R.string.error_message_sms_app_not_found));
+        }
+    }
+
+    void openDialCaller(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            showToastMessage(getString(R.string.error_message_phone_dialer_app_not_found));
+        }
     }
 
     private void renderActionButton() {
@@ -532,5 +583,8 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         }
     }
 
-
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

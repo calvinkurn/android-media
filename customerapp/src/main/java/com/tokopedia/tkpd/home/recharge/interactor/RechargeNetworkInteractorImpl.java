@@ -1,11 +1,14 @@
 package com.tokopedia.tkpd.home.recharge.interactor;
 
-import com.tokopedia.core.database.model.category.CategoryData;
-import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.core.database.recharge.status.Status;
+import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.model.category.Category;
+import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
+import com.tokopedia.digital.widget.model.mapper.StatusMapper;
+import com.tokopedia.digital.widget.model.status.Status;
 
-import java.util.Map;
+import java.util.List;
+import java.util.Observable;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -16,61 +19,39 @@ import rx.subscriptions.CompositeSubscription;
  * @author ricoharisin on 7/11/16.
  *         Modified by kulomady on 08/23/2016
  *         Modified by Nabilla Sabbaha on 08/07/2017
+ *         Modified by rizkyfadillah at 10/6/17.
  */
 public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor {
 
     private CompositeSubscription compositeSubscription;
     private DigitalWidgetRepository repository;
+    private CategoryMapper categoryMapper;
+    private StatusMapper statusMapper;
 
-    public RechargeNetworkInteractorImpl(DigitalWidgetRepository repository) {
+    public RechargeNetworkInteractorImpl(DigitalWidgetRepository repository,
+                                         CategoryMapper categoryMapper,
+                                         StatusMapper statusMapper) {
         compositeSubscription = new CompositeSubscription();
         this.repository = repository;
+        this.categoryMapper = categoryMapper;
+        this.statusMapper = statusMapper;
     }
 
     @Override
-    public void getRecentNumbers(Subscriber<Boolean> subscriber, Map<String, String> params) {
+    public void getCategoryData(Subscriber<List<Category>> subscriber, boolean useCache) {
         compositeSubscription.add(
-                repository.storeObservableRecentDataNetwork(params)
+                repository.getObservableCategoryData(useCache)
+                        .map(categoryMapper)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())
                         .subscribe(subscriber));
     }
 
-    @Override
-    public void getLastOrder(Subscriber<LastOrder> subscriber, Map<String, String> params) {
-        compositeSubscription.add(
-                repository.getObservableLastOrderNetwork(params)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber));
-    }
-
-    @Override
-    public void getCategoryData(Subscriber<CategoryData> subscriber) {
-        compositeSubscription.add(
-                repository.getObservableCategoryData()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber));
-    }
-
-    @Override
     public void getStatus(Subscriber<Status> subscriber) {
         compositeSubscription.add(
                 repository.getObservableStatus()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber));
-    }
-
-    @Override
-    public void getStatusResume(Subscriber<Status> subscriber) {
-        compositeSubscription.add(
-                repository.getObservableStatusOnResume()
+                        .map(statusMapper)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())

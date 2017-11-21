@@ -123,13 +123,17 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         imageUrls = new ArrayList<>();
         for (int i = 0; i < imagesCount; i++) {
             String imageUrl = oriImageUrls.get(i);
-            String fileNameToMove = FileUtils.generateUniqueFileName();
-            File photo = FileUtils.writeImageToTkpdPath(
-                    FileUtils.compressImage(imageUrl, DEF_WIDTH_CMPR,
-                            DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                    fileNameToMove);
-            if (photo != null) {
-                imageUrls.add(photo.getAbsolutePath());
+            if(FileUtils.isInTkpdCache(new File(imageUrl))) {
+                imageUrls.add(imageUrl);
+            } else {
+                String fileNameToMove = FileUtils.generateUniqueFileName();
+                File photo = FileUtils.writeImageToTkpdPath(
+                        FileUtils.compressImage(imageUrl, DEF_WIDTH_CMPR,
+                                DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
+                        fileNameToMove);
+                if (photo != null) {
+                    imageUrls.add(photo.getAbsolutePath());
+                }
             }
         }
         dismissDialog();
@@ -459,6 +463,11 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         start(this);
         startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(this));
         finish();
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return true;
     }
 
     @Override

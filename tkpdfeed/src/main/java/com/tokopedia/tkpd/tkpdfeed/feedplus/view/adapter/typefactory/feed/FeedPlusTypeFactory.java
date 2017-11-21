@@ -5,6 +5,7 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.AddFeedModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
@@ -46,6 +47,8 @@ public interface FeedPlusTypeFactory  {
     int type(EmptyModel emptyModel);
 
     int type(EmptyTopAdsModel emptyModel);
+
+    int type(EmptyTopAdsProductModel emptyModel);
 
     int type(ToppicksViewModel toppicksViewModel);
 

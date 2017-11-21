@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateDetailProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateNewGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveDetailGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
@@ -31,8 +32,9 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
                                              TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
                                              TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
                                              TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
-                                             TopAdsProductListUseCase topAdsProductListUseCase) {
-        super(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase, topAdsProductListUseCase);
+                                             TopAdsProductListUseCase topAdsProductListUseCase,
+                                             TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase) {
+        super(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase);
         this.topAdsCreateNewGroupUseCase = topAdsCreateNewGroupUseCase;
         this.topAdsCreateDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
     }

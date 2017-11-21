@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -192,8 +191,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     @Override
     protected void setActionVar() {
-        String screenName = getString(R.string.transaction_people_page);
-        ScreenTracking.screenLoca(screenName);
+
     }
 
     @Override

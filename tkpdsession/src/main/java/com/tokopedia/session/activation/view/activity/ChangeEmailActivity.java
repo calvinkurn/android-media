@@ -68,6 +68,7 @@ public class ChangeEmailActivity extends BasePresenterActivity {
 
     }
 
+
     @Override
     protected void setViewListener() {
 

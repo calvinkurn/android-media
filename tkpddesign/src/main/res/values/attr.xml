@@ -104,9 +104,18 @@
         <attr name="srv_show_tooltip" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="BottomActionView">
+        <attr name="bav_1_display" format="boolean"/>
+        <attr name="bav_2_display" format="boolean"/>
+        <attr name="bav_icon_1" format="reference" />
+        <attr name="bav_label_1" format="reference" />
+        <attr name="bav_icon_2" format="reference" />
+        <attr name="bav_label_2" format="reference" />
+    </declare-styleable>
+
     <declare-styleable name="PriceSeekbarDynamicBackground">
-        <attr name="backColor" format="color"/>
-        <attr name="foreColor" format="color"/>
+        <attr name="backColor" format="color" />
+        <attr name="foreColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="ReputationView">

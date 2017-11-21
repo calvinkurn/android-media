@@ -9,10 +9,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
-import com.tokopedia.core.analytics.container.ILocalyticsContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.container.IPerformanceMonitoring;
-import com.tokopedia.core.analytics.container.LocalyticsContainer;
 import com.tokopedia.core.analytics.container.MoEngageContainer;
 import com.tokopedia.core.analytics.container.PerfMonContainer;
 
@@ -53,10 +51,6 @@ public class Jordan {
             appsflyerContainer.initAppsFlyer(AppsflyerContainer.APPSFLYER_KEY, userID);
         }
         return appsflyerContainer;
-    }
-
-    public ILocalyticsContainer getLocalyticsContainer(){
-        return LocalyticsContainer.newLocalyticsContainer(context);
     }
 
     public IAppsflyerContainer getAFContainer(){

@@ -25,7 +25,7 @@
             <FrameLayout
                 android:layout_width="@dimen/dashboard_icon_shop_height"
                 android:layout_height="@dimen/dashboard_icon_shop_height"
-                android:background="@drawable/rect_gray_round">
+                android:background="@drawable/bg_rect_gray_round">
 
                 <ImageView
                     android:id="@+id/image_view_shop_icon"
@@ -38,7 +38,7 @@
                 <android.support.v7.widget.AppCompatImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/rect_stroke_light_gray" />
+                    android:background="@drawable/bg_rect_stroke_light_gray" />
 
             </FrameLayout>
 

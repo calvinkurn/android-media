@@ -1,5 +1,5 @@
 ext {
-    supportLibraryVersion = '25.3.1'
+    supportLibraryVersion = '26.0.0'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '8.4.0'
     dbFlowVersion = '3.0.1'
@@ -22,9 +22,9 @@ ext {
     tkpdFeedVersion = '1.+'
     tkpdRideVersion = '1.+'
     tkpdReactNativeVersion = '1.+'
-    compileSdkVersion = 25
+    compileSdkVersion = 26
     minSdkVersion = 16
-    targetSdkVersion = 25
+    targetSdkVersion = 26
     espressoVersion = "2.2.2"
     runnerVersion = "0.5"
     rulesVersion = "0.5"
@@ -98,7 +98,6 @@ ext {
     ]
 
     analyticsDependencies = [
-            localytics : "com.localytics.android:library:4.2.1",
             appsflyer : "com.appsflyer:af-android-sdk:4.7.4@aar",
             moengage   : "com.moengage:moe-android-sdk:7.7.10",
             moengageFCM: "com.moengage:moe-push-firebase:1.1.01",
@@ -127,7 +126,7 @@ ext {
             parceler              : "org.parceler:parceler:1.1.6",
             gson                  : "com.google.code.gson:gson:2.7",
             rxAndroid             : "io.reactivex:rxandroid:1.0.1",
-            rxJava                : "io.reactivex:rxjava:1.1.5",
+            rxJava                : "io.reactivex:rxjava:1.2.9",
             rxJavaMath            : "io.reactivex:rxjava-math:1.0.0",
             rxJavaComputation     : 'io.reactivex:rxjava-computation-expressions:0.21.0',
             multiDex              : "com.android.support:multidex:1.0.1",
@@ -143,7 +142,7 @@ ext {
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.3.0",
             imagecropper         : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
-            codePushReactNative   : "com.microsoft.codepush:rn-codepush:0.6.2"
+            codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3"
     ]
 
     testDependencies = [

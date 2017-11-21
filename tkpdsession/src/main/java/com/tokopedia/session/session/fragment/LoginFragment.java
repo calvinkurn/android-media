@@ -56,6 +56,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.service.DownloadService;
@@ -215,7 +216,6 @@ LoginFragment extends Fragment implements LoginView {
         super.onResume();
         login.initData();
         ScreenTracking.screen(AppScreen.SCREEN_LOGIN);
-        UnifyTracking.eventViewLoginPage();
         mEmailView.addTextChangedListener(watcher(wrapperEmail));
         mPasswordView.addTextChangedListener(watcher(wrapperPassword));
     }
@@ -697,6 +697,11 @@ LoginFragment extends Fragment implements LoginView {
         } else {
             login.clearSavedAccount();
         }
+    }
+
+    @Override
+    public void triggerClearCategoryData() {
+        ((TkpdCoreRouter) getActivity().getApplication()).invalidateCategoryMenuData();
     }
 
     private void loginProvideOnClick(final String url, final String name) {

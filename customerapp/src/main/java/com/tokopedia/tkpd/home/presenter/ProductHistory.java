@@ -47,13 +47,6 @@ public interface ProductHistory {
     void loadMore(Context context);
 
     /**
-     * send Data to Localitycs
-     * @param context
-     * @param screenName
-     */
-    void setLocalyticFlow(Context context, String screenName);
-
-    /**
      * do some activities in onSavedInstanceState
      * @param saved
      */

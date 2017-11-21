@@ -16,6 +16,8 @@ import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProduct
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenterImpl;
+import com.tokopedia.seller.product.manage.di.ProductManageModule;
+import com.tokopedia.seller.product.manage.di.ProductManageScope;
 
 import dagger.Module;
 import dagger.Provides;
@@ -23,17 +25,17 @@ import dagger.Provides;
 /**
  * Created by User on 6/21/2017.
  */
-@ProductAddScope
+@ProductManageScope
 @Module
-public class ProductDraftListCountModule extends ProductAddModule {
+public class ProductDraftListCountModule extends ProductManageModule {
 
-    @ProductAddScope
+    @ProductManageScope
     @Provides
     ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource, @ApplicationContext Context context){
         return new ProductDraftRepositoryImpl(productDraftDataSource, context);
     }
 
-    @ProductAddScope
+    @ProductManageScope
     @Provides
     ProductDraftListCountPresenter providePresenterDraft(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
                                                          ClearAllDraftProductUseCase clearAllDraftProductUseCase,

@@ -1,15 +1,8 @@
 package com.tokopedia.core.analytics.container;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
-
-import com.appsflyer.SingleInstallBroadcastReceiver;
-import com.google.android.gms.analytics.CampaignTrackingReceiver;
 import com.google.android.gms.tagmanager.TagManager;
-import com.localytics.android.ReferralReceiver;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.InstallReceiver;
 
 import java.util.Map;
 

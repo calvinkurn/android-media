@@ -8,7 +8,7 @@ import java.util.List;
 
 public class CreditCardModel {
 
-    List<CreditCardModelItem> creditCardList;
+    private List<CreditCardModelItem> creditCardList;
 
     public List<CreditCardModelItem> getCreditCardList() {
         return creditCardList;

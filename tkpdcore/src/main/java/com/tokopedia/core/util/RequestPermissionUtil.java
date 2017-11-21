@@ -84,6 +84,9 @@ public class RequestPermissionUtil {
             case Manifest.permission.READ_SMS:
                 Toast.makeText(context, R.string.permission_sms_denied, Toast.LENGTH_LONG).show();
                 break;
+            case Manifest.permission.SEND_SMS:
+                Toast.makeText(context, R.string.permission_send_sms_denied, Toast.LENGTH_LONG).show();
+                break;
             case Manifest.permission.CALL_PHONE:
                 Toast.makeText(context, R.string.permission_phone_denied, Toast.LENGTH_LONG).show();
                 break;
@@ -116,6 +119,9 @@ public class RequestPermissionUtil {
                 break;
             case Manifest.permission.READ_SMS:
                 Toast.makeText(context, R.string.permission_sms_neverask, Toast.LENGTH_LONG).show();
+                break;
+            case Manifest.permission.SEND_SMS:
+                Toast.makeText(context, R.string.permission_send_sms_neverask, Toast.LENGTH_LONG).show();
                 break;
             case Manifest.permission.CALL_PHONE:
                 Toast.makeText(context, R.string.permission_sms_neverask, Toast.LENGTH_LONG).show();
@@ -190,6 +196,8 @@ public class RequestPermissionUtil {
                 return R.string.need_permission_get_accounts;
             case Manifest.permission.READ_SMS:
                 return R.string.need_permission_SMS;
+            case Manifest.permission.SEND_SMS:
+                return R.string.need_permission_send_SMS;
             case Manifest.permission.CALL_PHONE:
                 return R.string.need_permission_SMS;
             default:

@@ -133,7 +133,7 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ShopStatistic"
             android:label="@string/title_activity_shop_statistic"
@@ -149,6 +149,10 @@
         <activity
             android:name=".manage.people.address.activity.ChooseAddressActivity"
             android:label="@string/title_activity_choose_address"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".manage.people.address.activity.DistrictRecommendationActivity"
+            android:label="@string/title_activity_search_address"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ManagePeople"
@@ -251,7 +255,6 @@
             android:name=".DeveloperOptions"
             android:label="@string/title_activity_developer_options"
             android:screenOrientation="portrait" />
-        <activity android:name="com.localytics.android.PushTrackingActivity" />
         <activity
             android:name=".TermPrivacy"
             android:label="@string/title_activity_term_and_privacy"
@@ -328,7 +331,7 @@
             android:theme="@style/Theme.BrowseProduct" />
         <activity
             android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".msisdn.activity.MsisdnActivity"
             android:label="@string/title_msisdn"
@@ -405,7 +408,6 @@
                 <category android:name="com.tokopedia.tkpd" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".msisdn.IncomingSmsReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
@@ -449,20 +451,6 @@
             android:name=".manage.people.address.service.ManagePeopleAddressService"
             android:exported="false" />
         <service
-            android:name="com.localytics.android.GcmListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
-        <service
-            android:name="com.localytics.android.InstanceIDListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
-        <service
             android:name=".product.intentservice.ProductInfoIntentService"
             android:exported="false" />
         <service
@@ -492,7 +480,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name="com.tokopedia.core.referral.ReferralActivity" />
+        <activity android:name=".referral.ReferralActivity" />
     </application>
 
 </manifest>

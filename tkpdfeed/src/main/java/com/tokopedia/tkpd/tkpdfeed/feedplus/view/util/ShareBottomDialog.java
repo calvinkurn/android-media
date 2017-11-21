@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -21,6 +22,8 @@ import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.plus.PlusShare;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.widgets.ShareItem;
@@ -48,7 +51,7 @@ public class ShareBottomDialog {
     private final Fragment fragment;
     private final android.support.v4.app.Fragment fragmentV4;
 
-    private ShareModel shareModel;
+    private ShareData shareModel;
     private ShareFeedAdapter adapter;
     private ArrayList<ShareItem> list;
 
@@ -98,11 +101,10 @@ public class ShareBottomDialog {
     private void initVar(Context context) {
         GridLayoutManager layoutManager = new GridLayoutManager(context, 3);
         appGrid.setLayoutManager(layoutManager);
-
         list = new ArrayList<>();
     }
 
-    public void setShareModel(ShareModel shareModel) {
+    public void setShareModel(ShareData shareModel) {
         this.shareModel = shareModel;
     }
 
@@ -135,7 +137,9 @@ public class ShareBottomDialog {
 
     private String getTrackingLabel(String method) {
         if (fragmentV4 != null && fragmentV4 instanceof FeedPlusFragment) {
-            return shareModel.getPageRowNumber()
+            //shareModel.getId() has the exacly same value with shareModel.getPageRowNumber()
+            //It is not the id it is PageRowNumber
+            return shareModel.getId()
                     + " "
                     + FeedTrackingEventLabel.Click.SHARE
                     + " "
@@ -143,7 +147,7 @@ public class ShareBottomDialog {
                     + " / "
                     + method;
         } else if (fragmentV4 != null && fragmentV4 instanceof FeedPlusDetailFragment) {
-            return shareModel.getPageRowNumber()
+            return shareModel.getId()
                     + " "
                     + FeedTrackingEventLabel.Click.SHARE
                     + " "
@@ -157,15 +161,20 @@ public class ShareBottomDialog {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String shareText = shareModel.getContentMessage() + CHECK_NOW + shareModel.getUrl();
+                //String shareText = shareModel.getContentMessage() + CHECK_NOW + shareModel.getUrl();
+                BranchSdkUtils.generateBranchLink(shareModel, activity, new BranchSdkUtils.GenerateShareContents() {
+                    @Override
+                    public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, shareContents);
+                        sendIntent.setType("text/plain");
+                        activity.startActivity(sendIntent);
 
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, shareText);
-                sendIntent.setType("text/plain");
-                activity.startActivity(sendIntent);
+                        UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share.OTHERS));
 
-                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share.OTHERS));
+                    }
+                });
 
             }
         };
@@ -176,11 +185,17 @@ public class ShareBottomDialog {
             @Override
             public void onClick(View v) {
 
-                String shareText = shareModel.getContentMessage() + " cek sekarang di :\n" + shareModel.getUrl();
-                Intent smsIntent = MethodChecker.getSmsIntent(activity, shareText);
-                activity.startActivity(smsIntent);
+                BranchSdkUtils.generateBranchLink(shareModel, activity, new BranchSdkUtils.GenerateShareContents() {
+                    @Override
+                    public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                        Intent smsIntent = MethodChecker.getSmsIntent(activity, shareUri);
+                        activity.startActivity(smsIntent);
 
-                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share.SMS));
+                        UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share.SMS));
+                    }
+                });
+                // String shareText = shareModel.getContentMessage() + " cek sekarang di :\n" + shareModel.getUrl();
+
 
             }
         };
@@ -210,25 +225,31 @@ public class ShareBottomDialog {
         };
     }
 
-    private void shareToApp(String appName) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.setPackage(appName);
+    private void shareToApp(final String appName) {
+        BranchSdkUtils.generateBranchLink(shareModel, activity, new BranchSdkUtils.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.setPackage(appName);
 
-        String shareText = shareModel.getContentMessage() + CHECK_NOW + shareModel.getUrl();
+                //  String shareText = shareModel.getContentMessage() + CHECK_NOW + shareModel.getUrl();
 
-        if (shareModel.getUrl() != null
-                && !shareModel.getUrl().equals(""))
-            intent.putExtra(Intent.EXTRA_TEXT, shareText);
+                if (shareUri != null
+                        && !shareUri.equals(""))
+                    intent.putExtra(Intent.EXTRA_TEXT, shareUri);
 
-        try {
-            activity.startActivity(intent);
-        } catch (android.content.ActivityNotFoundException ex) {
+                try {
+                    activity.startActivity(intent);
+                } catch (android.content.ActivityNotFoundException ex) {
 
-            Toast.makeText(activity,
-                    activity.getString(R.string.error_apps_not_installed),
-                    Toast.LENGTH_SHORT).show();
-        }
+                    Toast.makeText(activity,
+                            activity.getString(R.string.error_apps_not_installed),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
     private View.OnClickListener shareLine() {
@@ -246,28 +267,35 @@ public class ShareBottomDialog {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlusShare.Builder builder = new PlusShare.Builder(activity);
 
-                builder.setType("text/plain");
+                BranchSdkUtils.generateBranchLink(shareModel, activity, new BranchSdkUtils.GenerateShareContents() {
+                    @Override
+                    public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                        PlusShare.Builder builder = new PlusShare.Builder(activity);
 
-                String shareText = shareModel.getContentMessage() + CHECK_NOW + shareModel.getUrl();
+                        builder.setType("text/plain");
 
-                if (shareModel.getContentMessage() != null
-                        && !shareModel.getContentMessage().equals(""))
-                    builder.setText(shareText);
+                        // String shareText = shareModel.getContentMessage() + CHECK_NOW + shareModel.getUrl();
 
-                if (shareModel.getUrl() != null && !shareModel.getUrl().equals(""))
-                    builder.setContentUrl(Uri.parse(shareModel.getUrl()));
+                        if (shareContents != null
+                                && shareContents.equals(""))
+                            builder.setText(shareContents);
 
-                if (fragment != null)
-                    fragment.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
-                else if (fragmentV4 != null)
-                    fragmentV4.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
-                else
-                    activity.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
+                        if (shareUri != null && !shareUri.equals(""))
+                            builder.setContentUrl(Uri.parse(shareUri));
 
-                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share
-                        .GOOGLEPLUS));
+                        if (fragment != null)
+                            fragment.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
+                        else if (fragmentV4 != null)
+                            fragmentV4.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
+                        else
+                            activity.startActivityForResult(builder.getIntent(), SHARE_GOOGLE_REQUEST_CODE);
+
+                        UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share
+                                .GOOGLEPLUS));
+                    }
+                });
+
             }
         };
     }
@@ -280,73 +308,91 @@ public class ShareBottomDialog {
             @Override
             public void onClick(View view) {
                 dismissDialog();
-                ClipboardHandler.CopyToClipboard((Activity) activity, shareModel.getUrl());
-                Toast.makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+                BranchSdkUtils.generateBranchLink(shareModel, activity, new BranchSdkUtils.GenerateShareContents() {
+                    @Override
+                    public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                        ClipboardHandler.CopyToClipboard((Activity) activity, shareUri);
+                        Toast.makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT).show();
 
-                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share
-                        .COPY));
+                        UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share
+                                .COPY));
+                    }
+                });
+
             }
         };
     }
 
     protected View.OnClickListener shareFb() {
+
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dismissDialog();
-                ShareDialog shareDialog;
 
-                if (fragment != null)
-                    shareDialog = new ShareDialog(fragment);
-                else if (fragmentV4 != null)
-                    shareDialog = new ShareDialog(fragmentV4);
-                else
-                    shareDialog = new ShareDialog(activity);
+                BranchSdkUtils.generateBranchLink(shareModel, activity, new BranchSdkUtils.GenerateShareContents() {
+                    @Override
+                    public void onCreateShareContents(String shareContents, final String shareUri, String branchUrl) {
+                        final ShareDialog shareDialog;
 
-                shareDialog.registerCallback(callbackManager, new
-                        FacebookCallback<Sharer.Result>() {
-                            @Override
-                            public void onSuccess(Sharer.Result result) {
-                                dismissDialog();
+                        if (fragment != null)
+                            shareDialog = new ShareDialog(fragment);
+                        else if (fragmentV4 != null)
+                            shareDialog = new ShareDialog(fragmentV4);
+                        else
+                            shareDialog = new ShareDialog(activity);
+
+                        shareDialog.registerCallback(callbackManager, new
+                                FacebookCallback<Sharer.Result>() {
+                                    @Override
+                                    public void onSuccess(Sharer.Result result) {
+                                        dismissDialog();
+                                    }
+
+                                    @Override
+                                    public void onCancel() {
+                                        Log.i("facebook", "onCancel");
+                                    }
+
+                                    @Override
+                                    public void onError(FacebookException error) {
+                                        Log.i("facebook", "onError: " + error);
+                                        SnackbarManager.make(activity, error.toString(), SNACKBAR_DURATION).show();
+                                        dismissDialog();
+                                    }
+                                });
+
+                        if (ShareDialog.canShow(ShareLinkContent.class)) {
+
+                            if (shareModel != null && !TextUtils.isEmpty(branchUrl)) {
+                                ShareLinkContent.Builder linkBuilder = new ShareLinkContent.Builder()
+                                        .setContentUrl(Uri.parse(branchUrl));
+
+                                if (!TextUtils.isEmpty(shareModel.getName())) {
+                                    linkBuilder.setContentTitle(shareModel.getName());
+                                }
+                                if (!TextUtils.isEmpty(shareModel.getTextContent(activity))) {
+                                    linkBuilder.setContentDescription(shareModel.getTextContent(activity));
+                                }
+                                if (!TextUtils.isEmpty(shareModel.getDescription())) {
+                                    linkBuilder.setQuote(shareModel.getDescription());
+                                }
+                                if (!TextUtils.isEmpty(shareModel.getImgUri())) {
+                                    linkBuilder.setImageUrl(Uri.parse(shareModel.getImgUri()));
+                                }
+                                ShareLinkContent linkContent = linkBuilder.build();
+                                shareDialog.show(linkContent);
                             }
+                        }
 
-                            @Override
-                            public void onCancel() {
-                                Log.i("facebook", "onCancel");
-                            }
+                        UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share
+                                .FACEBOOK));
+                    }
+                });
 
-                            @Override
-                            public void onError(FacebookException error) {
-                                Log.i("facebook", "onError: " + error);
-                                SnackbarManager.make(activity, error.toString(), SNACKBAR_DURATION).show();
-                                dismissDialog();
-                            }
-                        });
-
-                if (ShareDialog.canShow(ShareLinkContent.class)) {
-
-                    ShareLinkContent.Builder builder = new ShareLinkContent.Builder();
-                    if (shareModel.getTitle() != null && !shareModel.getTitle().equals(""))
-                        builder.setContentTitle(shareModel.getTitle());
-
-                    if (shareModel.getContentMessage() != null && !shareModel.getContentMessage().equals(""))
-                        builder.setContentDescription(shareModel.getContentMessage());
-
-                    if (shareModel.getImageUrl() != null && !shareModel.getImageUrl().equals(""))
-                        builder.setImageUrl(Uri.parse(shareModel.getImageUrl()));
-
-                    if (shareModel.getUrl() != null && !shareModel.getUrl().equals(""))
-                        builder.setContentUrl(Uri.parse(shareModel.getUrl()));
-
-                    ShareLinkContent linkContent = builder.build();
-
-                    shareDialog.show(linkContent);
-                }
-
-                UnifyTracking.eventFeedClick(getTrackingLabel(FeedTrackingEventLabel.Share
-                        .FACEBOOK));
             }
         };
+
     }
 
     public void show() {

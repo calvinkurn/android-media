@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
@@ -16,6 +15,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -45,10 +45,12 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
         ShareData shareDa = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
         // [variable for add product before share]
         if(isAddingProduct){
-            viewListener.inflateFragment(ProductShareFragment.newInstance(isAddingProduct), ProductShareFragment.TAG);
-        // [variable for add product before share]
+            viewListener.navigateToActivity(ShareActivity.createIntent(context,shareDa,isAddingProduct));
+            viewListener.closeView();
+            // [variable for add product before share]
         }else if(shareDa !=null){
-            viewListener.inflateFragment(ProductShareFragment.newInstance(shareDa), ProductShareFragment.TAG);
+            viewListener.navigateToActivity(ShareActivity.createIntent(context,shareDa));
+            viewListener.closeView();
         } else if (bundle !=null && uri !=null && uri.getPathSegments().size() == 2) {
             viewListener.inflateFragment(ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
                             .setProductKey(uri.getPathSegments().get(1))
@@ -81,13 +83,6 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
 
     public void processToShareProduct(Context context, @NonNull ShareData shareData) {
         UnifyTracking.eventShareProduct();
-    }
-
-    @Override
-    public void setLocalyticFlow(@NonNull Context context) {
-        String screenName = context.getString(R.string.product_info_page);
-        ScreenTracking.screenLoca(screenName);
-
     }
 
     private ProductPass generateProductPass(Bundle bundleData, Uri uriData) {

@@ -96,7 +96,6 @@ public class ProductHistoryFragment extends Fragment implements ProductHistoryVi
     @Override
     public void onResume() {
         super.onResume();
-        productHistory.setLocalyticFlow(getActivity(), getString(R.string.home_history_product));
         productHistory.fetchDataFromCache(getActivity());
     }
 

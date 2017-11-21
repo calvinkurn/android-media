@@ -156,7 +156,6 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
     private void requestAddWishList(final Context context, final Integer productId, final int itemPosition) {
         view.loadingWishList();
-        TrackingUtils.eventLoca(AppScreen.EVENT_ADDED_WISHLIST);
         retrofitInteractor.addToWishList(context, productId,
                 new RetrofitInteractor.AddWishListListener() {
                     @Override
