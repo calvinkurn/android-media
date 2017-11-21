@@ -3,8 +3,8 @@ package com.tokopedia.flight.search.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.flight.search.view.adapter.FlightFilterRefundableAdapter;
 import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
@@ -20,8 +20,8 @@ import rx.functions.Func1;
 
 
 public class FlightFilterRefundableFragment extends BaseFlightFilterFragment<RefundableStat>
-        implements BaseListV2Adapter.OnBaseListV2AdapterListener<RefundableStat>,
-        BaseListCheckableV2Adapter.OnCheckableAdapterListener<RefundableStat>{
+        implements BaseListAdapter.OnBaseListV2AdapterListener<RefundableStat>,
+        BaseListCheckableAdapter.OnCheckableAdapterListener<RefundableStat>{
     public static final String TAG = FlightFilterRefundableFragment.class.getSimpleName();
 
     FlightFilterRefundableAdapter flightFilterRefundableAdapter;
@@ -37,7 +37,7 @@ public class FlightFilterRefundableFragment extends BaseFlightFilterFragment<Ref
 
 
     @Override
-    protected BaseListV2Adapter<RefundableStat> getNewAdapter() {
+    protected BaseListAdapter<RefundableStat> getNewAdapter() {
         flightFilterRefundableAdapter = new FlightFilterRefundableAdapter(this, this);
         return flightFilterRefundableAdapter;
     }

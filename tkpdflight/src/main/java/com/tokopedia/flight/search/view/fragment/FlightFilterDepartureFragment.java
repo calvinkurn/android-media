@@ -3,11 +3,10 @@ package com.tokopedia.flight.search.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableV2Adapter;
-import com.tokopedia.abstraction.base.view.adapter.BaseListV2Adapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableAdapter;
+import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.flight.search.view.adapter.FlightFilterDepartureAdapter;
 import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
-import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.DepartureStat;
@@ -20,8 +19,8 @@ import rx.Observable;
 import rx.functions.Func1;
 
 public class FlightFilterDepartureFragment extends BaseFlightFilterFragment<DepartureStat>
-        implements BaseListV2Adapter.OnBaseListV2AdapterListener<DepartureStat>,
-        BaseListCheckableV2Adapter.OnCheckableAdapterListener<DepartureStat> {
+        implements BaseListAdapter.OnBaseListV2AdapterListener<DepartureStat>,
+        BaseListCheckableAdapter.OnCheckableAdapterListener<DepartureStat> {
     public static final String TAG = FlightFilterDepartureFragment.class.getSimpleName();
 
     FlightFilterDepartureAdapter flightFilterDepartureAdapter;
@@ -36,7 +35,7 @@ public class FlightFilterDepartureFragment extends BaseFlightFilterFragment<Depa
     }
 
     @Override
-    protected BaseListV2Adapter<DepartureStat> getNewAdapter() {
+    protected BaseListAdapter<DepartureStat> getNewAdapter() {
         flightFilterDepartureAdapter = new FlightFilterDepartureAdapter(this, this);
         return flightFilterDepartureAdapter;
     }
