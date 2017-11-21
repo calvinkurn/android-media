@@ -4,7 +4,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.tkpd.home.feed.di.module.DataFeedModule;
 import com.tokopedia.tkpd.home.feed.di.scope.DataFeedScope;
 import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
-import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 
 import dagger.Component;
 
@@ -13,7 +12,7 @@ import dagger.Component;
  */
 
 @DataFeedScope
-@Component(modules = DataFeedModule.class, dependencies = TopAdsComponent.class)
+@Component(modules = DataFeedModule.class, dependencies = AppComponent.class)
 public interface DataFeedComponent {
     void inject(FragmentProductFeed fragmentProductFeed);
 }
