@@ -26,6 +26,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
+import com.tokopedia.payment.utils.Constant;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
@@ -192,6 +193,11 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
                     listener.onGetNotif(data);
                 }else {
+                    String applink  = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+                    String fullname = data
+                            .getString("full_name");
+                    applink += "?" + "fullname=" + fullname;
+                    data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
                     ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
                     applinkBuildAndShowNotification.showApplinkNotification(data);
                 }
