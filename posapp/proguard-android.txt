@@ -188,8 +188,8 @@ public protected *;
 -keep class com.tokopedia.core.home.model.** { *; }
 
 -keep class com.tokopedia.core.util.GlobalConfig
--keep class com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity
+-keep class com.tokopedia.tkpd.fdeeplink.activity.DeepLinkActivity
 
-# -- Feeds --
--keep class com.tkpdfeed.feeds.** { *; }
-# -- End of Feeds --
+-dontwarn android.content.pm.PackageManager
+
+-keep class com.tokopedia.posapp.database.** { *; }

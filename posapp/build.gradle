@@ -163,6 +163,4 @@ dependencies {
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.miscDependencies.frescoGif
-
-    compile rootProject.ext.testDependencies.junit
 }
