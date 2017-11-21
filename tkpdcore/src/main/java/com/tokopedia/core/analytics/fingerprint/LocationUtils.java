@@ -61,7 +61,7 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
-        LocationCache.saveLocation(location);
+        LocationCache.saveLocation(context, location);
         removeLocationUpdates();
     }
 
