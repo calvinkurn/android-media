@@ -320,12 +320,13 @@ public class OTPPresenter implements OTP.Presenter {
         createOrderParameter.setUserId(Integer.parseInt(SessionHandler.getLoginID(context)));
         createOrderParameter.setTransactionId(paymentStatusDomain.getTransactionId());
         createOrderParameter.setState(paymentStatusDomain.getState() + "");
+        createOrderParameter.setGatewayCode(paymentStatusDomain.getGatewayCode());
         createOrderParameter.setAmount(paymentStatusDomain.getAmount());
-        if (paymentStatusDomain.getGatewayCode().equals(CREDITCARD)) {
-            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.CREDITCARD + "");
-        } else if (paymentStatusDomain.getGatewayCode().equals(INSTALLMENT)) {
-            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.INSTALLMENT + "");
-        }
+//        if (paymentStatusDomain.getGatewayCode().equals(CREDITCARD)) {
+//            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.CREDITCARD + "");
+//        } else if (paymentStatusDomain.getGatewayCode().equals(INSTALLMENT)) {
+//            createOrderParameter.setGatewayCode(PosConstants.PaymentGateway.INSTALLMENT + "");
+//        }
         createOrderParameter.setUserDefinedString(paymentStatusDomain.getUserDefinedValue());
         createOrderParameter.setIpAddress("");
         createOrderParameter.setMerchantCode(paymentStatusDomain.getMerchantCode());
