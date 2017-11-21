@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply from: "../node_modules/react-native/react.gradle"
-apply from: "../node_modules/react-native-code-push/android/codepush.gradle"
+//apply from: "../node_modules/react-native-code-push/android/codepush.gradle"
 
 def getDpiId(String density) {
 
@@ -12,8 +12,9 @@ def getDpiId(String density) {
 }
 
 def allowSplit() {
-    return gradle.startParameter.taskNames.contains("assembleRelease") &&
-            !project.hasProperty('tkpdBuildType');
+//    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+//            !project.hasProperty('tkpdBuildType');
+    return false;
 }
 
 def allowDistribution() {
@@ -131,7 +132,6 @@ android {
     }
     productFlavors {
         staging {}
-        alpha {}
         live {}
     }
 }
