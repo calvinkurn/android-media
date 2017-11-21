@@ -329,8 +329,6 @@ public interface AppEventTracking {
         String CHECK_INSTANT_SALDO = "Check Instant Saldo";
         String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
         String SELECT_NUMBER_ON_USER_PROFILE = "select number on user profile";
-        String CLICK_ACTIVATE = "click activate";
-        String CLICK_SALDO = "click saldo";
         String CLICK_REMOVE_WISHLIST = "wishlist - remove item";
         String CLICK_SHOP_FAVORITE = "favorite - click shop";
         String CLICK_EMPTY_SEARCH_WISHLIST = "wishlist - click empty cari product";
