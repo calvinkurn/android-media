@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
@@ -24,7 +23,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by m.normansyah on 28/10/2015.
@@ -33,7 +31,7 @@ import butterknife.OnClick;
 public class HotListAdapter extends BaseRecyclerViewAdapter {
     HotList hotList;
 
-    private HotListModel temp;
+    private HotListModel hotListModel;
 
     public final class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.hotprod_img)
@@ -80,16 +78,16 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
             return;
         switch (getItemViewType(position)) {
             case TkpdState.RecyclerView.VIEW_STANDARD:
-                temp = ((HotListModel) data.get(position));
-                ImageHandler.loadImageFit2(((ViewHolder) viewHolder).getContext(), ((ViewHolder) viewHolder).mImageofProduct, temp.getHotListBiggerImage());
-                ((ViewHolder) viewHolder).mNameOfProduct.setText(temp.getHotListName());
-                ((ViewHolder) viewHolder).mPrice.setText(temp.getHotListPrice());
+                hotListModel = ((HotListModel) data.get(position));
+                ImageHandler.loadImageFit2(((ViewHolder) viewHolder).getContext(), ((ViewHolder) viewHolder).mImageofProduct, hotListModel.getHotListBiggerImage());
+                ((ViewHolder) viewHolder).mNameOfProduct.setText(hotListModel.getHotListName());
+                ((ViewHolder) viewHolder).mPrice.setText(hotListModel.getHotListPrice());
                 ((ViewHolder) viewHolder).cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        UnifyTracking.eventHotlist(temp.getHotListName());
-                        TrackingUtils.sendMoEngageClickHotListEvent(temp);
-                        hotList.moveToOtherActivity(temp);
+                        UnifyTracking.eventHotlist(hotListModel.getHotListName());
+                        TrackingUtils.sendMoEngageClickHotListEvent(hotListModel);
+                        hotList.moveToOtherActivity(hotListModel);
                     }
                 });
                 break;
