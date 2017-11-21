@@ -2,6 +2,7 @@ package com.tokopedia.flight.search.view;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
+import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
@@ -31,4 +32,7 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void onSuccessGetDetailFlightDeparture(FlightSearchViewModel flightSearchViewModel);
 
     void hideHorizontalProgress();
+
+    void loadDataFromCloud(FlightSearchApiRequestModel flightSearchApiRequestModel, boolean isReturning);
+
 }

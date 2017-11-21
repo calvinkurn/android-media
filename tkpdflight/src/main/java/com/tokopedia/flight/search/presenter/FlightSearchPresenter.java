@@ -77,8 +77,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     }
 
     public void searchAndSortFlightWithDelay(final FlightSearchApiRequestModel flightSearchApiRequestModel,
-                                             final boolean isReturning, final boolean isFromCache, final FlightFilterModel flightFilterModel,
-                                             @FlightSortOption final int sortOptionId, int delayInSecond) {
+                                             final boolean isReturning, int delayInSecond) {
         Subscription subscription = Observable.timer(delayInSecond, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -86,8 +85,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                 .subscribe(new OnNextSubscriber<Long>() {
                     @Override
                     public void onNext(Long aLong) {
-                        searchAndSortFlight(flightSearchApiRequestModel,
-                                isReturning, isFromCache, flightFilterModel, sortOptionId);
+                        getView().loadDataFromCloud(flightSearchApiRequestModel, isReturning);
                     }
                 });
         addSubscription(subscription);

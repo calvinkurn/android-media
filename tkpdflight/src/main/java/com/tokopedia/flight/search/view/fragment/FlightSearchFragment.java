@@ -86,7 +86,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
-    private boolean filterHasChanged;
+    private boolean needRefreshFromCache;
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle args = new Bundle();
@@ -115,6 +115,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             flightSearchStatisticModel = savedInstanceState.getParcelable(SAVED_STAT_MODEL);
             airportCombineModelList = savedInstanceState.getParcelable(SAVED_AIRPORT_COMBINE);
             progress = savedInstanceState.getInt(SAVED_PROGRESS, 0);
+            needRefreshFromCache = true;
         }
     }
 
@@ -188,7 +189,13 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         View view = inflater.inflate(R.layout.fragment_search_flight, container, false);
         progressBar = (HorizontalProgressBar) view.findViewById(R.id.horizontal_progress_bar);
         setUpProgress();
+        setUpBottomAction(view);
         return view;
+    }
+
+    @Override
+    protected boolean needLoadDataAtStart() {
+        return false; // load data will be handled in onResume Manually
     }
 
     private void setUpProgress() {
@@ -212,17 +219,24 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     public void onResume() {
         super.onResume();
         flightSearchPresenter.attachView(this);
-        if (filterHasChanged) {
+        if (needRefreshFromCache) {
             reloadDataFromCache();
             setUIMarkFilter();
-            filterHasChanged = false;
+            needRefreshFromCache = false;
         }
+        loadInitialData();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         flightSearchPresenter.detachView();
+    }
+
+    @Override
+    public void loadDataFromCloud(FlightSearchApiRequestModel flightSearchApiRequestModel, boolean isReturning) {
+        flightSearchPresenter.searchAndSortFlight(flightSearchApiRequestModel, isReturning,
+                false, flightFilterModel, selectedSortOption);
     }
 
     @Override
@@ -247,7 +261,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
      */
     @Override
     public void loadData(int page, int currentDataSize, int rowPerPage) {
-        showLoading();
+        if (getAdapter().getDataSize() == 0) {
+            showLoading();
+        }
         String date = flightSearchPassDataViewModel.getDate(isReturning());
         FlightPassengerViewModel flightPassengerViewModel = flightSearchPassDataViewModel.getFlightPassengerViewModel();
         int adult = flightPassengerViewModel.getAdult();
@@ -256,11 +272,17 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         int classID = flightSearchPassDataViewModel.getFlightClass().getId();
         for (int i = 0, sizei = airportCombineModelList.getData().size(); i < sizei; i++) {
             FlightAirportCombineModel flightAirportCombineModel = airportCombineModelList.getData().get(i);
-            FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
-                    flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
-                    date, adult, child, infant, classID);
-            flightSearchPresenter.searchAndSortFlight(flightSearchApiRequestModel,
-                    isReturning(), false, flightFilterModel, selectedSortOption);
+            boolean needLoadFromCloud = true;
+            if (flightAirportCombineModel.isHasLoad() && !flightAirportCombineModel.isNeedRefresh()) {
+                needLoadFromCloud = false;
+            }
+            if (needLoadFromCloud) {
+                FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
+                        flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
+                        date, adult, child, infant, classID);
+                flightSearchPresenter.searchAndSortFlight(flightSearchApiRequestModel,
+                        isReturning(), false, flightFilterModel, selectedSortOption);
+            }
         }
     }
 
@@ -268,17 +290,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
      * load all data from cache
      */
     public void reloadDataFromCache() {
-        showLoading();
         flightSearchPresenter.searchAndSortFlight(null,
                 isReturning(), true, flightFilterModel, selectedSortOption);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        setUpBottomAction(view);
-
-        setUpCombinationAirport();
     }
 
     protected void setUpBottomAction(View view) {
@@ -352,7 +365,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 case REQUEST_CODE_SEARCH_FILTER:
                     if (data != null && data.hasExtra(FlightSearchFilterActivity.EXTRA_FILTER_MODEL)) {
                         flightFilterModel = (FlightFilterModel) data.getExtras().get(FlightSearchFilterActivity.EXTRA_FILTER_MODEL);
-                        filterHasChanged = true;
+                        needRefreshFromCache = true;
                     }
                     break;
                 case REQUEST_CODE_SEE_DETAIL_FLIGHT:
@@ -392,21 +405,23 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         String arrivalAirport = flightMetaDataDB.getArrivalAirport();
         FlightAirportCombineModel flightAirportCombineModel = airportCombineModelList.getData(depAirport, arrivalAirport);
         int size = airportCombineModelList.getData().size();
-        int halfProgressAmount = (int) ((0.5 * MAX_PROGRESS / size) + 0.5);
+        int halfProgressAmount = divideTo(divideTo(MAX_PROGRESS, size), 2);
         if (!flightAirportCombineModel.isHasLoad()) {
             flightAirportCombineModel.setHasLoad(true);
             progress += halfProgressAmount;
         }
+        boolean dataFromCloudEmpty = (flightSearchViewModelList == null || flightSearchViewModelList.size() == 0);
+
         if (flightAirportCombineModel.isNeedRefresh()) {
             if (flightMetaDataDB.isNeedRefresh()) {
                 // TODO will update the retry and retry load data if max retry is not reached
                 int noRetry = flightAirportCombineModel.getNoOfRetry();
                 noRetry++;
                 flightAirportCombineModel.setNoOfRetry(noRetry);
+                progress += divideTo(halfProgressAmount, flightMetaDataDB.getMaxRetry());
                 // already reach max retry limit, end retrying.
                 if (noRetry >= flightMetaDataDB.getMaxRetry()) {
                     flightAirportCombineModel.setNeedRefresh(false);
-                    progress += halfProgressAmount;
                 } else { //no retry still below the max retry, do retry
                     //retry load data
                     String date = flightSearchPassDataViewModel.getDate(isReturning());
@@ -418,31 +433,42 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                     FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
                             flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
                             date, adult, child, infant, classID);
-                    flightSearchPresenter.searchAndSortFlightWithDelay(flightSearchApiRequestModel,
-                            isReturning(), false, flightFilterModel, selectedSortOption,flightMetaDataDB.getRefreshTime());
+                    flightSearchPresenter.searchAndSortFlightWithDelay(flightSearchApiRequestModel, isReturning(), flightMetaDataDB.getRefreshTime());
                 }
 
             } else {
                 flightAirportCombineModel.setNeedRefresh(false);
-                progress += halfProgressAmount;
+                progress += (flightMetaDataDB.getMaxRetry() - flightAirportCombineModel.getNoOfRetry())*
+                        divideTo(halfProgressAmount, flightMetaDataDB.getMaxRetry());
             }
         }
         setUpProgress();
 
         // if the data is empty, but there is data need to fetch, then keep the loading state
-        if (getAdapter().getDataSize() == 0 &&
-                (flightSearchViewModelList == null || flightSearchViewModelList.size() == 0) &&
+        if (getAdapter().getDataSize() == 0 && dataFromCloudEmpty &&
                 airportCombineModelList.isRetrievingData()) {
             return;
         }
 
         hideLoading();
-        // TODO to update the data instead of always adding those.
-        getAdapter().addData(flightSearchViewModelList);
-        // TODO refresh from cache if there is filter or sort
-        if (getAdapter().getDataSize() > 0 && filterAndSortBottomAction.getVisibility() == View.GONE) {
-            filterAndSortBottomAction.setVisibility(View.VISIBLE);
+
+        // will update the data
+        // if there is already data loaded, reload the data from cache
+        // because the data might have filter/sort in it, so cannot be added directly
+        if (!dataFromCloudEmpty) {
+            if (getAdapter().getDataSize() > 0) {
+                reloadDataFromCache();
+            } else {
+                getAdapter().addData(flightSearchViewModelList);
+            }
+            if (getAdapter().getDataSize() > 0 && filterAndSortBottomAction.getVisibility() == View.GONE) {
+                filterAndSortBottomAction.setVisibility(View.VISIBLE);
+            }
         }
+    }
+
+    private int divideTo(int number, int pieces) {
+        return (int) ((number / pieces) + 0.5);
     }
 
     @Override
