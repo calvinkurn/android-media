@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -64,7 +63,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return createNewResponse(response, bodyResponse);
     }
 
-    private Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws IOException{
+    protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
+            IOException{
         if (isNeedRelogin(response)) {
             refreshTokenWithRelogin();
             if (finalRequest.header("authorization").contains("Bearer")) {
@@ -82,11 +82,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return response;
     }
 
-    private Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException{
+    protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException{
         Response response = chain.proceed(newestRequest);
         if (isUnauthorized(newestRequest, response)) {
-            showForceLogoutDialog();
-            sendForceLogoutAnalytics(response);
+            ServerErrorHandler.showForceLogoutDialog();
+            ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
         }
         return response;
     }
@@ -94,16 +94,16 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected void checkResponse(String string, Response response) {
         String bodyResponse = string;
         if (isMaintenance(bodyResponse)) {
-            showMaintenancePage();
+            ServerErrorHandler.showMaintenancePage();
         } else if (isRequestDenied(bodyResponse)) {
-            showForceLogoutDialog();
-            sendForceLogoutAnalytics(response);
+            ServerErrorHandler.showForceLogoutDialog();
+            ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
-            showServerErrorSnackbar();
-            sendErrorNetworkAnalytics(response);
+            ServerErrorHandler.showServerErrorSnackbar();
+            ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
         } else if (isForbiddenRequest(bodyResponse, response.code())
                 && isTimezoneNotAutomatic()) {
-            showTimezoneErrorSnackbar();
+            ServerErrorHandler.showTimezoneErrorSnackbar();
         }
     }
 
@@ -271,56 +271,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 .networkResponse(oldResponse.networkResponse());
 
         return builder.build();
-    }
-
-    /**
-     * @deprecated Use {@link ServerErrorHandler#showTimezoneErrorSnackbar()} instead.
-     */
-    @Deprecated
-    protected void showTimezoneErrorSnackbar() {
-        ServerErrorHandler.showTimezoneErrorSnackbar();
-    }
-
-    /**
-     * @deprecated Use {@link ServerErrorHandler#showMaintenancePage()} instead.
-     */
-    @Deprecated
-    protected void showMaintenancePage() {
-        ServerErrorHandler.showMaintenancePage();
-    }
-
-    /**
-     * @deprecated Use {@link ServerErrorHandler#showForceLogoutDialog()} instead.
-     */
-    @Deprecated
-    protected void showForceLogoutDialog() {
-        ServerErrorHandler.showForceLogoutDialog();
-    }
-
-    /**
-     * @deprecated Use {@link ServerErrorHandler#sendForceLogoutAnalytics(String)} instead.
-     */
-    @Deprecated
-    protected void sendForceLogoutAnalytics(Response response) {
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
-    }
-
-    /**
-     * @deprecated Use {@link ServerErrorHandler#showServerErrorSnackbar()} instead.
-     */
-    @Deprecated
-    protected void showServerErrorSnackbar() {
-        ServerErrorHandler.showServerErrorSnackbar();
-    }
-
-    /**
-     * @deprecated Use {@link ServerErrorHandler#sendErrorNetworkAnalytics(String, int)} instead.
-     */
-    @Deprecated
-    protected void sendErrorNetworkAnalytics(Response response) {
-        ServerErrorHandler.sendErrorNetworkAnalytics(
-                response.request().url().toString(), response.code()
-        );
     }
 
     protected Boolean isNeedRelogin(Response response) {
