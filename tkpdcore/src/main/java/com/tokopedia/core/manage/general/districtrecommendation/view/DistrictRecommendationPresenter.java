@@ -5,14 +5,10 @@ import android.text.TextUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.manage.general.districtrecommendation.data.DistrictRecommendationEntityMapper;
-import com.tokopedia.core.manage.general.districtrecommendation.data.repository.DistrictRecommendationRepository;
-import com.tokopedia.core.manage.general.districtrecommendation.data.source.DistrictRecommendationDataStore;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.AddressResponse;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.usecase.GetDistrictRequestUseCase;
-import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 
 import java.net.ConnectException;
