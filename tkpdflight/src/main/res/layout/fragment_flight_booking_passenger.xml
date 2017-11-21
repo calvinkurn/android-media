@@ -1,39 +1,156 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tv_passenger_title"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vvs"
-        android:layout_marginTop="@dimen/margin_sm"
-        android:textSize="@dimen/font_headline"
-        android:textStyle="bold"
-        tools:text="Penumpang 1 (Dewasa)" />
+        android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        tools:context="com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tv_passenger_subtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_sm"
-        android:textSize="@dimen/font_subheading"
-        tools:text="Usia diatas 12 tahun" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_small">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
-        android:text="Titel"
-        android:textColor="@color/label_color" />
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vvs"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:textSize="@dimen/font_headline"
+                android:textStyle="bold"
+                tools:text="Penumpang 1 (Dewasa)" />
 
-    <com.tokopedia.design.text.SpinnerTextView
-        android:id="@+id/sp_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_subheader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:textSize="@dimen/font_subheading"
+                tools:text="Usia diatas 12 tahun" />
+
+            <com.tokopedia.design.text.SpinnerTextView
+                android:id="@+id/sp_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:spinner_hint="Pilih Titel" />
 
 
-</LinearLayout>
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/til_name"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nama (sesuai KTP/SIM/Passport)">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/et_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Isi Nama Lengkap"
+                    android:singleLine="true"
+                    android:textColor="@color/font_black_primary_70" />
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/til_birth_date"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tanggal Lahir">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/et_birth_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/ic_arrow_down_grey"
+                    android:drawableRight="@drawable/ic_arrow_down_grey"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:hint="Pilih Tanggal Lahir"
+                    android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/font_black_primary_70" />
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/luggage_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_med"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_small">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:text="Bagasi"
+                android:textSize="@dimen/font_headline"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_luggages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/meals_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_med"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_small">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:text="Makanan"
+                android:textSize="@dimen/font_headline"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_meals"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/bg_line_separator" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/button_submit"
+                style="@style/Button.Submit.Green"
+                android:text="Simpan" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
+
+
