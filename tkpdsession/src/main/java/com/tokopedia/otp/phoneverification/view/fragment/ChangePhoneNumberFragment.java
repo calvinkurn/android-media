@@ -126,6 +126,7 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhone
         changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(phoneNumberEditText!=null && !phoneNumberEditText.getText().toString().isEmpty())
                 KeyboardHandler.DropKeyboard(getActivity(), phoneNumberEditText);
                 showLoading();
                 presenter.changePhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
