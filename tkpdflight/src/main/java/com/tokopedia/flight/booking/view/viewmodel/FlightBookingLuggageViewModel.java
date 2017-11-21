@@ -66,6 +66,11 @@ public class FlightBookingLuggageViewModel implements Parcelable, ItemType {
     }
 
     @Override
+    public String toString() {
+        return weightFmt;
+    }
+
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(priceFmt);

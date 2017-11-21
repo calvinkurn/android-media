@@ -12,7 +12,9 @@ import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
+import com.tokopedia.flight.search.data.cloud.model.response.Fare;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -71,19 +73,86 @@ public class FlightBookingPresenter extends BaseDaggerPresenter<FlightBookingCon
     }
 
     private void renderUi(FlightBookingCartData flightBookingCartData) {
+        int totalPrice = 0;
         getView().renderCartData(flightBookingCartData);
+        totalPrice = flightBookingCartData.getDepartureTrip().getTotalNumeric();
+        Fare fare = flightBookingCartData.getDepartureTrip().getFare();
+        List<SimpleViewModel> simpleViewModels = new ArrayList<>();
+        if (fare.getAdult() != null) {
+            simpleViewModels.add(new SimpleViewModel(
+                    String.format("%s - %s  1x %s",
+                            flightBookingCartData.getDepartureTrip().getDepartureAirport(),
+                            flightBookingCartData.getDepartureTrip().getArrivalAirport(),
+                            getView().getString(R.string.flightbooking_price_adult_label)
+                    ),
+                    fare.getAdult())
+            );
+        }
+        if (fare.getChild() != null) {
+            simpleViewModels.add(new SimpleViewModel(
+                    String.format("%s - %s 1x %s",
+                            flightBookingCartData.getDepartureTrip().getDepartureAirport(),
+                            flightBookingCartData.getDepartureTrip().getArrivalAirport(),
+                            getView().getString(R.string.flightbooking_price_child_label)
+                    ),
+                    fare.getChild())
+            );
+        }
+        if (fare.getInfant() != null) {
+            simpleViewModels.add(new SimpleViewModel(
+                    String.format("%s - %s 1x %s",
+                            flightBookingCartData.getDepartureTrip().getDepartureAirport(),
+                            flightBookingCartData.getDepartureTrip().getArrivalAirport(),
+                            getView().getString(R.string.flightbooking_price_infant_label)
+                    ),
+                    fare.getInfant())
+            );
+        }
+        getView().getRenderDeparturePrice(simpleViewModels);
+        getView().showAndRenderDepartureTripCardDetail(getView().getCurrentBookingParamViewModel().getSearchParam(), flightBookingCartData.getDepartureTrip());
         if (isRoundTrip()) {
-            getView().showAndRenderDepartureTripCardDetail(getView().getCurrentBookingParamViewModel().getSearchParam(), flightBookingCartData.getDepartureTrip());
+            totalPrice += flightBookingCartData.getReturnTrip().getTotalNumeric();
+            Fare returnFare = flightBookingCartData.getDepartureTrip().getFare();
+            List<SimpleViewModel> returnSimpleViewModels = new ArrayList<>();
+            if (returnFare.getAdult() != null) {
+                returnSimpleViewModels.add(new SimpleViewModel(
+                        String.format("%s - %s  1x %s",
+                                flightBookingCartData.getReturnTrip().getDepartureAirport(),
+                                flightBookingCartData.getReturnTrip().getArrivalAirport(),
+                                getView().getString(R.string.flightbooking_price_adult_label)
+                        ),
+                        returnFare.getAdult())
+                );
+            }
+            if (returnFare.getChild() != null) {
+                returnSimpleViewModels.add(new SimpleViewModel(
+                        String.format("%s - %s 1x %s",
+                                flightBookingCartData.getReturnTrip().getDepartureAirport(),
+                                flightBookingCartData.getReturnTrip().getArrivalAirport(),
+                                getView().getString(R.string.flightbooking_price_child_label)
+                        ),
+                        returnFare.getChild())
+                );
+            }
+            if (returnFare.getInfant() != null) {
+                returnSimpleViewModels.add(new SimpleViewModel(
+                        String.format("%s - %s 1x %s",
+                                flightBookingCartData.getReturnTrip().getDepartureAirport(),
+                                flightBookingCartData.getReturnTrip().getArrivalAirport(),
+                                getView().getString(R.string.flightbooking_price_infant_label)
+                        ),
+                        returnFare.getInfant())
+                );
+            }
+            getView().getRenderReturnPrice(returnSimpleViewModels);
             getView().showAndRenderReturnTripCardDetail(getView().getCurrentBookingParamViewModel().getSearchParam(), flightBookingCartData.getReturnTrip());
-        } else {
-            getView().showAndRenderDepartureTripCardDetail(getView().getCurrentBookingParamViewModel().getSearchParam(), flightBookingCartData.getDepartureTrip());
         }
 
         List<FlightBookingPassengerViewModel> passengerViewModels = buildPassengerViewModel(getView().getCurrentBookingParamViewModel().getSearchParam());
         getView().getCurrentBookingParamViewModel().setPassengerViewModels(passengerViewModels);
         getView().renderPassengersList(passengerViewModels);
 
-        // TODO : Calculate and render "Rincian Harga"
+        getView().renderTotalPrices(String.valueOf(totalPrice));
     }
 
     @Override

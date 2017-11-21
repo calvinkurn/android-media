@@ -165,4 +165,12 @@
     <string name="flight_booking_passenger_birthdate_empty_error">Tanggal lahir harus diisi</string>
     <string name="flight_booking_passenger_birthdate_child_shoud_more_than_two_years">Umur penumpang anak harus lebih besar dari 2 tahun</string>
     <string name="flight_booking_passenger_birthdate_infant_should_no_more_than_two_years">Umur penumpang bayi harus dibawah sama 2 tahun</string>
+    <string name="flight_booking_passenger_change_label">Ubah</string>
+    <string name="flight_booking_passenger_fill_data_label">Isi Data</string>
+    <string name="flight_booking_list_passenger_birthdate_label">Tanggal Lahir</string>
+    <string name="flight_booking_list_passenger_luggage_label">Bagasi</string>
+    <string name="flight_booking_list_passenger_meals_label">Makanan</string>
+    <string name="flightbooking_price_adult_label">Dewasa</string>
+    <string name="flightbooking_price_child_label">Anak</string>
+    <string name="flightbooking_price_infant_label">Bayi</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.tokopedia.flight.booking.view.adapter;
 
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -9,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingLuggageRouteViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingMealRouteViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 
 import java.util.ArrayList;
@@ -66,45 +70,19 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
         private AppCompatTextView tvChangePassengerData;
         private LinearLayout passengerDetailLayout;
         private AppCompatTextView tvPassengerName;
-        private AppCompatTextView tvPassengerBirthdate;
-        private AppCompatTextView tvLuggageDepartureLabel;
-        private AppCompatTextView tvLuggageDeparture;
-        private AppCompatTextView tvLuggageReturnLabel;
-        private AppCompatTextView tvLuggageReturn;
-        private AppCompatTextView tvMealDepartureLabel;
-        private AppCompatTextView tvMealDeparture;
-        private AppCompatTextView tvMealReturnLabel;
-        private AppCompatTextView tvMealReturn;
-
-        private LinearLayout luggageDepartureLayout;
-        private LinearLayout luggageReturnLayout;
-        private LinearLayout mealDepartureLayout;
-        private LinearLayout mealReturnLayout;
+        private RecyclerView rvPassengerDetail;
 
         public ViewHolder(View itemView) {
             super(itemView);
             findViews(itemView);
         }
 
-
         private void findViews(View view) {
             tvHeaderTitle = (AppCompatTextView) view.findViewById(R.id.tv_header_title);
             tvChangePassengerData = (AppCompatTextView) view.findViewById(R.id.tv_change_passenger_data);
             passengerDetailLayout = (LinearLayout) view.findViewById(R.id.passenger_detail_layout);
             tvPassengerName = (AppCompatTextView) view.findViewById(R.id.tv_passenger_name);
-            tvPassengerBirthdate = (AppCompatTextView) view.findViewById(R.id.tv_passenger_birthdate);
-            tvLuggageDepartureLabel = (AppCompatTextView) view.findViewById(R.id.tv_luggage_departure_label);
-            tvLuggageDeparture = (AppCompatTextView) view.findViewById(R.id.tv_luggage_departure);
-            tvLuggageReturnLabel = (AppCompatTextView) view.findViewById(R.id.tv_luggage_return_label);
-            tvLuggageReturn = (AppCompatTextView) view.findViewById(R.id.tv_luggage_return);
-            tvMealDepartureLabel = (AppCompatTextView) view.findViewById(R.id.tv_meal_departure_label);
-            tvMealDeparture = (AppCompatTextView) view.findViewById(R.id.tv_meal_departure);
-            tvMealReturnLabel = (AppCompatTextView) view.findViewById(R.id.tv_meal_return_label);
-            tvMealReturn = (AppCompatTextView) view.findViewById(R.id.tv_meal_return);
-            luggageDepartureLayout = (LinearLayout) view.findViewById(R.id.luggage_departure_layout);
-            luggageReturnLayout = (LinearLayout) view.findViewById(R.id.luggage_return_layout);
-            mealDepartureLayout = (LinearLayout) view.findViewById(R.id.meal_departure_layout);
-            mealReturnLayout = (LinearLayout) view.findViewById(R.id.meal_return_layout);
+            rvPassengerDetail = (RecyclerView) view.findViewById(R.id.rv_list_details);
         }
 
         public void bind(final FlightBookingPassengerViewModel viewModel) {
@@ -119,54 +97,46 @@ public class FlightBookingPassengerAdapter extends RecyclerView.Adapter<FlightBo
             });
             if (viewModel.getPassengerName() != null) {
                 passengerDetailLayout.setVisibility(View.VISIBLE);
-                tvChangePassengerData.setText("Ubah");
+                tvChangePassengerData.setText(itemView.getContext().getString(R.string.flight_booking_passenger_change_label));
                 tvPassengerName.setText(String.valueOf(viewModel.getPassengerName()));
-                tvPassengerBirthdate.setText(String.valueOf(FlightDateUtil.formatDate(
-                        FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, viewModel.getPassengerBirthdate()
-                )));
+                List<SimpleViewModel> simpleViewModels = new ArrayList<>();
+                if (viewModel.getPassengerName() != null && viewModel.getPassengerName().length() > 0) {
+                    simpleViewModels.add(new SimpleViewModel(itemView.getContext().getString(R.string.flight_booking_list_passenger_birthdate_label), String.valueOf(FlightDateUtil.formatDate(
+                            FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, viewModel.getPassengerBirthdate()
+                    ))));
+                }
 
                 if (viewModel.getFlightBookingLuggageRouteViewModels() != null) {
-                    luggageDepartureLayout.setVisibility(View.VISIBLE);
-                    tvLuggageDepartureLabel.setText("Luggage departure");
-                    // TODO Flight Luggage
-//                    tvLuggageDeparture.setText(viewModel.getDepartureLugage().getWeightFmt());
-                } else {
-                    luggageDepartureLayout.setVisibility(View.GONE);
+                    for (FlightBookingLuggageRouteViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageRouteViewModels()) {
+                        simpleViewModels.add(new SimpleViewModel(
+                                itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + flightBookingLuggageRouteViewModel.getRoute().getDepartureAirport() + " - " + flightBookingLuggageRouteViewModel.getRoute().getArrivalAirport(), String.valueOf(FlightDateUtil.formatDate(
+                                FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, TextUtils.join(" + ", flightBookingLuggageRouteViewModel.getLuggage())
+                        ))));
+                    }
                 }
 
                 if (viewModel.getFlightBookingMealRouteViewModels() != null && viewModel.getFlightBookingMealRouteViewModels().size() > 0) {
-                    mealDepartureLayout.setVisibility(View.VISIBLE);
-                    tvMealDepartureLabel.setText("Meal Departure");
-                    tvMealDeparture.setText(TextUtils.join(",", viewModel.getFlightBookingMealRouteViewModels()));
-                } else {
-                    mealDepartureLayout.setVisibility(View.GONE);
+                    for (FlightBookingMealRouteViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealRouteViewModels()) {
+                        simpleViewModels.add(new SimpleViewModel(
+                                itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label) + flightBookingMealRouteViewModel.getRoute().getDepartureAirport() + " - " + flightBookingMealRouteViewModel.getRoute().getArrivalAirport(), String.valueOf(FlightDateUtil.formatDate(
+                                FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, TextUtils.join(" + ", flightBookingMealRouteViewModel.getMealViewModels())
+                        ))));
+                    }
                 }
 
-                if (viewModel.isSingleRoute()) {
-                    luggageReturnLayout.setVisibility(View.GONE);
-                    mealReturnLayout.setVisibility(View.GONE);
-                } else {
-                    // TODO : Flight Return Luggage
-                   /* if (viewModel.getReturnLugage() != null) {
-                        luggageReturnLayout.setVisibility(View.VISIBLE);
-                        tvLuggageReturnLabel.setText("Luggage Return");
-                        tvLuggageReturn.setText(viewModel.getReturnLugage().getWeightFmt());
-                    } else {
-                        luggageReturnLayout.setVisibility(View.GONE);
-                    }*/
-
-                    /*if (viewModel.getReturnMeals() != null && viewModel.getReturnMeals().size() > 0) {
-                        mealReturnLayout.setVisibility(View.VISIBLE);
-                        tvMealReturnLabel.setText("Meal Departure");
-                        tvMealReturn.setText(TextUtils.join(",", viewModel.getReturnMeals()));
-                    } else {
-                        mealReturnLayout.setVisibility(View.GONE);
-                    }*/
-                }
+                FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+                LinearLayoutManager layoutManager
+                        = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
+                rvPassengerDetail.setLayoutManager(layoutManager);
+                rvPassengerDetail.setHasFixedSize(true);
+                rvPassengerDetail.setNestedScrollingEnabled(false);
+                rvPassengerDetail.setAdapter(adapter);
+                adapter.setViewModels(simpleViewModels);
+                adapter.notifyDataSetChanged();
 
             } else {
                 passengerDetailLayout.setVisibility(View.GONE);
-                tvChangePassengerData.setText("Isi Data");
+                tvChangePassengerData.setText(itemView.getContext().getString(R.string.flight_booking_passenger_fill_data_label));
             }
         }
     }
