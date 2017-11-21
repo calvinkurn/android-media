@@ -203,6 +203,8 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                     .topAdsParams(params)
                     .build();
             topAdsView.setConfig(topAdsconfig);
+            topAdsView.setDisplayMode(DisplayMode.FEED);
+            topAdsView.setMaxItems(4);
             topAdsView.setAdsItemClickListener(this);
             actionBtn.setOnClickListener(clickListener);
         }
