@@ -248,9 +248,11 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
 
     private void processPayment() {
         tkpdProgressDialog.showDialog();
-        otpPresenter.processPayment();
+        scroogeWebView.stopLoading();
+        scroogeWebView.destroy();
         scroogeWebView.setEnabled(false);
         scroogeWebView.setVisibility(View.GONE);
+        otpPresenter.processPayment();
     }
 
     private class OTPWebViewChromeClient extends WebChromeClient {
