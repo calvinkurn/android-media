@@ -8,6 +8,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
@@ -174,6 +175,8 @@ public class ErrorHandler {
             }
         } else if (e instanceof ErrorMessageException
                 && e.getLocalizedMessage() != null) {
+            return e.getLocalizedMessage();
+        } else if (BuildConfig.DEBUG) {
             return e.getLocalizedMessage();
         } else {
             return context.getString(R.string.default_request_error_unknown);

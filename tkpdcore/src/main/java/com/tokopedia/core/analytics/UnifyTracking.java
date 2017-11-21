@@ -1802,24 +1802,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventActivateTokocash() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
-                AppEventTracking.Action.CLICK_ACTIVATE,
-                ""
-        ).getEvent());
-    }
-
-    public static void eventClickSaldoTokocash() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
-                AppEventTracking.Action.CLICK_SALDO,
-                ""
-        ).getEvent());
-    }
-
     public static void eventClickViewAllPromo() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
@@ -2669,7 +2651,8 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
                 AppEventTracking.Action.CLICK_ACTIVATE,
-                "").getEvent());
+                ""
+        ).getEvent());
     }
 
     public static void eventTokoCashCheckSaldoClick() {
@@ -2677,6 +2660,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
                 AppEventTracking.Action.CLICK_SALDO,
-                "").getEvent());
+                ""
+        ).getEvent());
     }
 }
