@@ -107,6 +107,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         paramViewModel.setSearchParam((FlightSearchPassDataViewModel) getArguments().getParcelable(EXTRA_SEARCH_PASS_DATA));
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setCancelable(false);
     }
 
     @Override
@@ -184,7 +185,17 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void onChangePassengerData(FlightBookingPassengerViewModel viewModel) {
-        startActivityForResult(FlightBookingPassengerActivity.getCallingIntent(getActivity(), viewModel), REQUEST_CODE_PASSENGER);
+        startActivityForResult(
+                FlightBookingPassengerActivity.getCallingIntent(
+                        getActivity(),
+                        getDepartureTripId(),
+                        getReturnTripId(),
+                        viewModel,
+                        flightBookingCartData.getLuggageViewModels(),
+                        flightBookingCartData.getMealViewModels()
+                ),
+                REQUEST_CODE_PASSENGER
+        );
     }
 
     @Override

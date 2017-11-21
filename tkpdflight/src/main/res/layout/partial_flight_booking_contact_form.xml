@@ -5,6 +5,8 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     android:padding="@dimen/padding_small">
 
     <android.support.v7.widget.AppCompatTextView
