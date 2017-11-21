@@ -180,7 +180,7 @@ public class OTPActivity extends BasePresenterActivity<OTP.Presenter>
                 processPayment();
                 return true;
             }
-            return shouldOverrideUrlLoading(view, url);
+            return super.shouldOverrideUrlLoading(view, url);
         }
 
         @Override
