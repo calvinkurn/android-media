@@ -8,7 +8,7 @@
                 android:paddingTop="@dimen/padding_small">
 
     <android.support.v7.widget.CardView
-        style="@style/CardViewDigital"
+        style="@style/CardViewWidget.Voucher"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true">
@@ -25,11 +25,11 @@
             <CheckBox
                 android:id="@+id/checkbox_voucher"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/btn_height"
+                android:layout_height="@dimen/height_button_voucher"
                 android:buttonTint="@color/tkpd_main_green"
                 android:gravity="center"
-                android:textColor="@color/digital_voucher"
-                android:textSize="@dimen/fontvs"
+                android:textColor="@color/font_voucher"
+                android:textSize="@dimen/font_caption"
                 android:textStyle="bold"
                 tools:ignore="UnusedAttribute"/>
 
@@ -52,12 +52,12 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="@dimen/margin_small"
                     android:layout_marginStart="@dimen/margin_small"
-                    android:background="@drawable/digital_green_button_rounded"
+                    android:background="@drawable/bg_button_green_enabled"
                     android:gravity="center"
                     android:padding="@dimen/padding_small"
                     android:text="@string/use_voucher"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/font_small"
+                    android:textSize="@dimen/font_button"
                     android:textStyle="bold"/>
 
                 <EditText
@@ -76,8 +76,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/edittext_voucher"
                     android:text="@string/error_voucher"
-                    android:textColor="@color/red_600"
-                    android:textSize="@dimen/fontvvs"
+                    android:textColor="@color/font_error_voucher"
+                    android:textSize="@dimen/font_small_caption_voucher"
                     android:visibility="gone"
                     tools:visibility="visible"/>
 
@@ -89,8 +89,8 @@
                     android:layout_marginBottom="@dimen/margin_small"
                     android:layout_marginTop="@dimen/margin_small"
                     android:text="@string/notes_voucher"
-                    android:textColor="@color/digital_voucher_notes"
-                    android:textSize="@dimen/fontvs"
+                    android:textColor="@color/font_voucher_caption"
+                    android:textSize="@dimen/font_caption"
                     android:visibility="gone"/>
 
             </RelativeLayout>
@@ -108,7 +108,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/digital_separator"/>
+                    android:background="@color/separator_voucher"/>
 
                 <TextView
                     android:id="@+id/button_cancel"
@@ -119,12 +119,12 @@
                     android:layout_marginLeft="@dimen/margin_small"
                     android:layout_marginStart="@dimen/margin_small"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:background="@drawable/digital_white_grey_button_rounded"
+                    android:background="@drawable/bg_button_white_stroke_gray"
                     android:gravity="center"
                     android:padding="@dimen/padding_small"
-                    android:text="@string/cancel_voucher"
-                    android:textColor="@color/digital_voucher_notes"
-                    android:textSize="@dimen/font_small"/>
+                    android:text="@string/button_cancel_voucher"
+                    android:textColor="@color/font_voucher_caption"
+                    android:textSize="@dimen/font_body1"/>
 
                 <TextView
                     android:id="@+id/textview_title_voucher"
@@ -135,8 +135,8 @@
                     android:layout_marginTop="@dimen/margin_small"
                     android:layout_toLeftOf="@+id/button_cancel"
                     android:layout_toStartOf="@+id/button_cancel"
-                    android:text="@string/title_detail_voucher"
-                    android:textColor="@color/digital_voucher"/>
+                    android:text="@string/title_success_get_voucher"
+                    android:textColor="@color/font_voucher"/>
 
                 <TextView
                     android:id="@+id/textview_voucher"
@@ -156,13 +156,13 @@
             <TextView
                 android:id="@+id/text_checkedbox"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/btn_height"
+                android:layout_height="@dimen/height_button_voucher"
                 android:layout_toEndOf="@+id/checkbox_voucher"
                 android:layout_toRightOf="@+id/checkbox_voucher"
                 android:gravity="center_vertical"
                 android:lines="1"
-                android:text="@string/title_use_promo_code"
-                android:textColor="@color/digital_voucher"/>
+                android:text="@string/checkbox_use_promo_code"
+                android:textColor="@color/font_voucher"/>
 
         </RelativeLayout>
 
