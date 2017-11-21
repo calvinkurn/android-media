@@ -9,6 +9,7 @@ import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
 import com.tokopedia.core.drawer2.data.mapper.TokoCashMapper;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
+import com.tokopedia.core.var.TkpdCache;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -43,6 +44,6 @@ public class LocalTokoCashSource {
     }
 
     private String getCache() {
-        return walletCache.getValueString(TokoCashSourceFactory.KEY_TOKOCASH_DATA);
+        return walletCache.getValueString(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
     }
 }

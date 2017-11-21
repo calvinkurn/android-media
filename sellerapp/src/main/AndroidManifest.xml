@@ -41,6 +41,9 @@
 
                 <data android:scheme="tkpd" />
             </intent-filter>
+            <meta-data
+                android:name="APPS_HOME"
+                android:value="true" />
         </activity>
 
         <meta-data

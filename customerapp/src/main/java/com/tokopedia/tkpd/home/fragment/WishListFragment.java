@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -264,6 +265,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             builder.setPositiveButton(R.string.title_delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    UnifyTracking.eventRemoveWishlist();
                     wishList.deleteWishlist(getActivity(), productId, position);
                     isDeleteDialogShown = false;
                 }
@@ -370,6 +372,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void findProduct() {
+        UnifyTracking.eventClickCariEmptyWishlist();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -470,6 +473,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        UnifyTracking.eventClickCariWishlist(query);
         wishList.searchWishlist(query);
         return false;
     }
