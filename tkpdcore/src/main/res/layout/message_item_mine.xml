@@ -39,11 +39,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textIsSelectable="true"
-            android:autoLink="web"
             android:textColor="@color/white"
             android:textColorLink="@color/white"
             tools:text ="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"
-            android:clickable="true"
+            android:linksClickable="true"
             android:textSize="@dimen/fonts" />
 
     </RelativeLayout>
