@@ -201,6 +201,8 @@ public class TkpdCache {
         public static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
 
         public static final String KEY_LOCATION = "KEY_FP_LOCATION";
+        public static final String KEY_LOCATION_LAT = "KEY_FP_LOCATION";
+        public static final String KEY_LOCATION_LONG = "KEY_FP_LOCATION";
 
         public static final String KEY_USSD_SIM1 = "KEY_USSD_SIM1";
         public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
