@@ -2,6 +2,7 @@ package com.tokopedia.core.network.core;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
+import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
@@ -17,6 +18,7 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.util.GlobalConfig;
@@ -348,6 +350,33 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new CreditCardInterceptor())
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildDaggerClientBearerTopAdsAuth(FingerprintInterceptor fingerprintInterceptor,
+                                                          TopAdsAuthInterceptor topAdsAuthInterceptor,
+                                                          OkHttpRetryPolicy okHttpRetryPolicy,
+                                                          @TopAdsQualifier TkpdErrorResponseInterceptor errorResponseInterceptor,
+                                                          ApiCacheInterceptor apiCacheInterceptor) {
+
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(apiCacheInterceptor)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(topAdsAuthInterceptor)
+                .addInterceptor(errorResponseInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy)
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildClientTopAdsAuth(String authorizationString) {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new ApiCacheInterceptor())
+                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new TopAdsAuthInterceptor(authorizationString))
+                .addInterceptor(new TkpdErrorResponseInterceptor(TopAdsResponseError.class))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();

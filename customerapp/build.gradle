@@ -246,7 +246,6 @@ dependencies {
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
-    compile project(':tkpdtopads')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpdride')
