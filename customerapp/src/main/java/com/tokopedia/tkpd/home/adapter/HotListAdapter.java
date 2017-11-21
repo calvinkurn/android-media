@@ -33,6 +33,8 @@ import butterknife.OnClick;
 public class HotListAdapter extends BaseRecyclerViewAdapter {
     HotList hotList;
 
+    private HotListModel temp;
+
     public final class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.hotprod_img)
         ImageView mImageofProduct;
@@ -49,18 +51,6 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
                 ButterKnife.bind(this, itemView);
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-        }
-
-        @OnClick(R.id.hot_list_cardview_listproduct)
-        public void hotListClick(View v) {
-            if (itemView.getContext() != null) {
-                RecyclerViewItem temp = data.get(getAdapterPosition());
-
-                HotListModel hlm = (HotListModel) data.get(getAdapterPosition());
-                UnifyTracking.eventHotlist(hlm.getHotListName());
-                TrackingUtils.sendMoEngageClickHotListEvent(hlm);
-                hotList.moveToOtherActivity(temp);
             }
         }
 
@@ -90,10 +80,18 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
             return;
         switch (getItemViewType(position)) {
             case TkpdState.RecyclerView.VIEW_STANDARD:
-                HotListModel temp = ((HotListModel) data.get(position));
+                temp = ((HotListModel) data.get(position));
                 ImageHandler.loadImageFit2(((ViewHolder) viewHolder).getContext(), ((ViewHolder) viewHolder).mImageofProduct, temp.getHotListBiggerImage());
                 ((ViewHolder) viewHolder).mNameOfProduct.setText(temp.getHotListName());
                 ((ViewHolder) viewHolder).mPrice.setText(temp.getHotListPrice());
+                ((ViewHolder) viewHolder).cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        UnifyTracking.eventHotlist(temp.getHotListName());
+                        TrackingUtils.sendMoEngageClickHotListEvent(temp);
+                        hotList.moveToOtherActivity(temp);
+                    }
+                });
                 break;
             default:
                 super.onBindViewHolder(viewHolder, position);
